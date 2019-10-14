@@ -15,7 +15,6 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
   constructor(private underfilledPicklistsService: UnderfilledPicklistsService) { }
 
   ngOnInit() {
-    // localStorage.setItem('ocap', JSON.stringify({"ocapServerIP":"localhost","port":"40407","apiKey":"sdkfjnb983t47h39gn7fh92fg39ng9h87ghf298h","clientId":"2EC882FD-D7BC-49CB-ACBA-C4186484EA55","machineName":"OMCLW10-5191tgq","useSecured":"true","endpointPrefix":"","endpoint":""}));
     this.picklists = this.underfilledPicklistsService.get().pipe(map(underfilledPicklists => {
       return underfilledPicklists.map(p => new UnderfilledPicklist(p));
     }));

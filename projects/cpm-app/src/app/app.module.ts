@@ -48,7 +48,7 @@ import { ProgressAnimationModule,
       provide: HTTP_INTERCEPTORS,
       useClass: ProgressbarInterceptor,
       multi: true
-    }
+    },
   ],
   bootstrap: [AppComponent]
 })

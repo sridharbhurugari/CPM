@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page.component';
+import { UnderfilledPicklistsComponent } from '../underfilled-picklists/underfilled-picklists.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { GridModule } from '@omnicell/webcorecomponents';
+import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
+import { of } from 'rxjs';
 
 describe('UnderfilledPicklistsPageComponent', () => {
   let component: UnderfilledPicklistsPageComponent;
@@ -8,7 +13,14 @@ describe('UnderfilledPicklistsPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnderfilledPicklistsPageComponent ]
+      declarations: [ UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent ],
+      imports: [
+        GridModule,
+        TranslateModule.forChild()
+      ],
+      providers: [
+        {provide: UnderfilledPicklistsService, useValue: { get: () => of([]) }}
+      ]
     })
     .compileComponents();
   }));
