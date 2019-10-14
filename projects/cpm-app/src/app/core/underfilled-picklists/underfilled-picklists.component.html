@@ -1,20 +1,20 @@
 <oc-grid #ocgrid ocgridfilter="false" ocgridcustomscroll="true">
   <ng-container class="ocgridheader">
     <div class="first"></div>
-    <div class="col">Type</div>
-    <div class="col">Order Id</div>
-    <div class="col">Description</div>
-    <div class="col">Destination</div>
-    <div class="last">Date</div>
+    <div class="col">{{'TYPE' | translate}}</div>
+    <div class="col">{{'ORDER_ID' | translate}}</div>
+    <div class="col">{{'DESCRIPTION' | translate}}</div>
+    <div class="col">{{'DESTINATION' | translate}}</div>
+    <div class="last">{{'DATE' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId">
       <div class="first">
         <div style="width:100%; height:100%;" [style.background-color]="picklist.PriorityColorCode"></div>
       </div>
-      <div class="col" [attr.data-title]="'Type'">{{picklist.PriorityDescription}}</div>
-      <div class="col" [attr.data-title]="'Order Id'">{{picklist.OrderId}}</div>
-      <div class="col" [attr.data-title]="'Description'">
+      <div class="col" [attr.data-title]="'TYPE' | translate">{{picklist.PriorityDescription}}</div>
+      <div class="col" [attr.data-title]="'ORDER_ID' | translate">{{picklist.OrderId}}</div>
+      <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
         <div *ngIf="picklist.DisplayGenericName">{{picklist.ItemGenericName}}</div>
         <div *ngIf="picklist.DisplayBrandName">{{picklist.ItemBrandName}}</div>
         <div *ngIf="picklist.DisplayItemCount">
@@ -23,7 +23,7 @@
         </div>
         <div *ngIf="picklist.DisplayRouteName">{{picklist.RouteName}}</div>
       </div>
-      <div class="col" [attr.data-title]="'Destination'">
+      <div class="col" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklist.DisplayPatientCount">
           <div>
             <span>{{picklist.UnderfilledPatientCount}}</span>
@@ -51,7 +51,7 @@
           {{picklist.PatientName}}
         </div>
       </div>
-      <div class="last" [attr.data-title]="'Date'">
+      <div class="last" [attr.data-title]="'DATE' | translate">
         <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
         <div>{{picklist.CompletedDate | date: 'mediumTime'}}</div>
       </div>

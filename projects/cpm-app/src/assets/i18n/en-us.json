@@ -1,5 +1,10 @@
 {
     "ITEMS": "Items",
     "PATIENTS": "Patients",
-    "COMMA_SEPARATOR": ","
+    "COMMA_SEPARATOR": ",",
+    "TYPE": "Type",
+    "ORDER_ID": "Order Id",
+    "DESCRIPTION": "Description",
+    "DESTINATION": "Destination",
+    "DATE": "Date"
 }
