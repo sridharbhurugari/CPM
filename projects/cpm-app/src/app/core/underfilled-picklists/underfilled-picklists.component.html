@@ -1,0 +1,60 @@
+<oc-grid #ocgrid ocgridfilter="false" ocgridcustomscroll="true">
+  <ng-container class="ocgridheader">
+    <div class="first"></div>
+    <div class="col">Type</div>
+    <div class="col">Order Id</div>
+    <div class="col">Description</div>
+    <div class="col">Destination</div>
+    <div class="last">Date</div>
+  </ng-container>
+  <ng-container class="ocgridbody">
+    <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId">
+      <div class="first">
+        <div style="width:100%; height:100%;" [style.background-color]="picklist.PriorityColorCode"></div>
+      </div>
+      <div class="col" [attr.data-title]="'Type'">{{picklist.PriorityDescription}}</div>
+      <div class="col" [attr.data-title]="'Order Id'">{{picklist.OrderId}}</div>
+      <div class="col" [attr.data-title]="'Description'">
+        <div *ngIf="picklist.DisplayGenericName">{{picklist.ItemGenericName}}</div>
+        <div *ngIf="picklist.DisplayBrandName">{{picklist.ItemBrandName}}</div>
+        <div *ngIf="picklist.DisplayItemCount">
+          <span>{{picklist.UnderfilledItemCount}}</span>
+          <span> {{'ITEMS' | translate}}</span>
+        </div>
+        <div *ngIf="picklist.DisplayRouteName">{{picklist.RouteName}}</div>
+      </div>
+      <div class="col" [attr.data-title]="'Destination'">
+        <div *ngIf="picklist.DisplayPatientCount">
+          <div>
+            <span>{{picklist.UnderfilledPatientCount}}</span>
+            <span> {{'PATIENTS' | translate}}</span>
+          </div>
+        </div>
+        <div *ngIf="picklist.DisplayPatientRoomAndArea">
+            <span>{{picklist.PatientRoom}}{{'COMMA_SEPARATOR' | translate}}</span>
+            <span> {{picklist.Area}}</span>
+        </div>
+        <div *ngIf="picklist.DisplayPatientRoom">
+          {{picklist.PatientRoom}}
+        </div>
+        <div *ngIf="picklist.DisplayArea">
+          {{picklist.Area}}
+        </div>
+        <div *ngIf="picklist.DisplayMultiDestination">
+            <span>{{picklist.UnderfilledDestinationCount}}</span>
+            <span> {{"Cabinets" | translate}}</span>
+        </div>
+        <div *ngIf="picklist.DisplayOmniName">
+          {{picklist.DesinationOmni}}
+        </div>
+        <div *ngIf="picklist.DisplayPatientNameSecondLine">
+          {{picklist.PatientName}}
+        </div>
+      </div>
+      <div class="last" [attr.data-title]="'Date'">
+        <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
+        <div>{{picklist.CompletedDate | date: 'mediumTime'}}</div>
+      </div>
+    </div>
+  </ng-container>
+</oc-grid>
