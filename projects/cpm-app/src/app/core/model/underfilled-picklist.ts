@@ -37,7 +37,7 @@ export class UnderfilledPicklist implements IUnderfilledPicklist{
     PatientVisitId: string;
     PatientMedicalRecordNumber: string;
     Area: string;
-    DesinationOmni: string;
+    DestinationOmni: string;
     CompletedDate: Date;
 
     DisplayBrandName: boolean;

@@ -16,7 +16,7 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
 
   ngOnInit() {
     this.picklists = this.underfilledPicklistsService.get().pipe(map(underfilledPicklists => {
-      return underfilledPicklists.map(p => new UnderfilledPicklist(p));
+      return underfilledPicklists.map(p => new UnderfilledPicklist(p)).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
     }));
   }
 

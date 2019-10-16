@@ -5,7 +5,7 @@ describe('UnderfilledPicklist', () => {
     expect(new UnderfilledPicklist({
       Area: '',
       CompletedDate: new Date(),
-      DesinationOmni: '',
+      DestinationOmni: '',
       ItemBrandName: '',
       ItemGenericName: '',
       ItemId: '',
