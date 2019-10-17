@@ -1,0 +1,14 @@
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+:host ::ng-deep .ocactionheader{
+  min-height: 64px;
+  background-color: #5e6a71;
+}
+.ocactiontitle{
+  line-height: 64px;
+  vertical-align: middle;
+  font-size: 28px;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: white;
+}

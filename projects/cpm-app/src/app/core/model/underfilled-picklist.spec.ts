@@ -3,11 +3,11 @@ import { UnderfilledPicklist } from "./underfilled-picklist";
 describe('UnderfilledPicklist', () => {
   it('should create an instance', () => {
     expect(new UnderfilledPicklist({
-      Area: '',
+      AreaDescription: '',
       CompletedDate: new Date(),
       DestinationOmni: '',
       ItemBrandName: '',
-      ItemGenericName: '',
+      ItemFormattedGenericName: '',
       ItemId: '',
       OrderId: '',
       PatientMedicalRecordNumber: '',

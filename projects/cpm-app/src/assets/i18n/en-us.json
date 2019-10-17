@@ -6,5 +6,8 @@
     "ORDER_ID": "Order Id",
     "DESCRIPTION": "Description",
     "DESTINATION": "Destination",
-    "DATE": "Date"
+    "DATE": "Date",
+    "QTY_FILLED_REQUESTED": "Qty Filled / Requested",
+    "DATE_COMPLETED": "Date",
+    "BACK": "Back"
 }

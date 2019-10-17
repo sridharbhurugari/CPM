@@ -8,14 +8,14 @@
     <div class="last">{{'DATE' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId">
+    <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId" (click)="navigate(picklist.OrderId)">
       <div class="first">
-        <div style="width:100%; height:100%;" [style.background-color]="picklist.PriorityColorCode"></div>
+        <div class="firstcolumncolorblock" [style.background-color]="picklist.PriorityColorCode"></div>
       </div>
       <div class="col" [attr.data-title]="'TYPE' | translate">{{picklist.PriorityDescription}}</div>
       <div class="col" [attr.data-title]="'ORDER_ID' | translate">{{picklist.OrderId}}</div>
       <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
-        <div *ngIf="picklist.DisplayGenericName">{{picklist.ItemGenericName}}</div>
+        <div *ngIf="picklist.DisplayGenericName">{{picklist.ItemFormattedGenericName}}</div>
         <div *ngIf="picklist.DisplayBrandName">{{picklist.ItemBrandName}}</div>
         <div *ngIf="picklist.DisplayItemCount">
           <span>{{picklist.UnderfilledItemCount}}</span>
@@ -32,13 +32,13 @@
         </div>
         <div *ngIf="picklist.DisplayPatientRoomAndArea">
             <span>{{picklist.PatientRoom}}{{'COMMA_SEPARATOR' | translate}}</span>
-            <span> {{picklist.Area}}</span>
+            <span> {{picklist.AreaDescription}}</span>
         </div>
         <div *ngIf="picklist.DisplayPatientRoom">
           {{picklist.PatientRoom}}
         </div>
         <div *ngIf="picklist.DisplayArea">
-          {{picklist.Area}}
+          {{picklist.AreaDescription}}
         </div>
         <div *ngIf="picklist.DisplayMultiDestination">
             <span>{{picklist.UnderfilledDestinationCount}}</span>
@@ -51,7 +51,7 @@
           {{picklist.PatientName}}
         </div>
       </div>
-      <div class="last" [attr.data-title]="'DATE' | translate">
+      <div class="last" [attr.data-title]="'DATE' | translate" style="text-align: right;">
         <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
         <div>{{picklist.CompletedDate | date: 'mediumTime'}}</div>
       </div>

@@ -1,0 +1,60 @@
+<oc-action-layout>
+  <ng-container class="ocactionheader">
+    <div class="ocactiontitle">
+      <span>FIRST DOSE</span>
+    </div>
+  </ng-container>
+  <ng-container class="ocactiondetails">
+    <oc-grid #ocgrid ocgridfilter="false" ocgridcustomscroll="true">
+      <ng-container class="ocgridheader">
+        <div class="first"></div>
+        <div class="col">{{'DESCRIPTION' | translate}}</div>
+        <div class="col">{{'DESTINATION' | translate}}</div>
+        <div class="col">{{'QTY_FILLED_REQUESTED' | translate}}</div>
+        <div class="last">{{'DATE_COMPLETED' | translate}}</div>
+      </ng-container>
+      <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let picklistLine of picklistLines">
+          <div class="first">
+          </div>
+          <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
+            <span>{{picklistLine.ItemFormattedGenericName}}</span>
+            <span>{{picklistLine.ItemBrandName}}</span>
+            <span>{{picklistLine.PickItemLocationDescription}}</span>
+          </div>
+          <div class="col" [attr.data-title]="'DESTINATION' | translate">
+            <div *ngIf="picklistLine.DisplayPatientRoomAndArea">
+              <span>{{picklistLine.PatientRoom}}{{'COMMA_SEPARATOR' | translate}}</span>
+              <span> {{picklistLine.AreaDescription}}</span>
+            </div>
+            <div *ngIf="picklistLine.DisplayPatientRoom">
+              {{picklistLine.PatientRoom}}
+            </div>
+            <div *ngIf="picklistLine.DisplayArea">
+              {{picklistLine.AreaDescription}}
+            </div>
+            <div *ngIf="picklistLine.DisplayOmniName">
+              {{picklistLine.DestinationOmni}}
+            </div>
+            <div *ngIf="picklistLine.DisplayPatientNameSecondLine">
+              {{picklistLine.PatientName}}
+            </div>
+          </div>
+          <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
+            {{picklistLine.FillQuantity}} / {{picklistLine.OrderQuantity}}
+          </div>
+          <div class="last" [attr.data-title]="'COMPLETED_DATE' | translate" style="text-align: right;">
+            <div>{{picklistLine.FillDate | date: 'shortDate'}}</div>
+            <div>{{picklistLine.FillDate | date: 'mediumTime'}}</div>
+          </div>
+        </div>
+      </ng-container>
+    </oc-grid>
+  </ng-container>
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <button class="green-button" (click)="navigateBack()">{{'BACK' | translate}}</button>
+      </div>
+    </oc-footer>
+  </ng-container>
