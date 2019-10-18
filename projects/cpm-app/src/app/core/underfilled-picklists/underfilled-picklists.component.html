@@ -1,20 +1,20 @@
 <oc-grid #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div class="first"></div>
-    <div class="col">{{'TYPE' | translate}}</div>
-    <div class="col">{{'ORDER_ID' | translate}}</div>
-    <div class="col">{{'DESCRIPTION' | translate}}</div>
-    <div class="col">{{'DESTINATION' | translate}}</div>
-    <div class="last">{{'DATE' | translate}}</div>
+    <div class="first" data-colwrap="true"></div>
+    <div class="col width-type" ocGridColResize data-width="160" data-colwrap="true">{{'TYPE' | translate}}</div>
+    <div class="col width=id" ocGridColResize data-width="180" data-colwrap="true">{{'ORDER_ID' | translate}}</div>
+    <div class="col width-description" ocGridColResize data-width="414" data-colwrap="true">{{'DESCRIPTION' | translate}}</div>
+    <div class="col width-destination" ocGridColResize data-width="270" data-colwrap="true">{{'DESTINATION' | translate}}</div>
+    <div class="last width-date" ocGridColResize data-width="160" data-colwrap="true">{{'DATE' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId">
-      <div class="first">
-        <div style="width:100%; height:100%;" [style.background-color]="picklist.PriorityColorCode"></div>
+    <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId" (click)="navigate(picklist.OrderId)">
+      <div class="first" style="align-items: center;">
+        <div class="firstcolumncolorblock" [style.background-color]="picklist.PriorityColorCode"></div>
       </div>
-      <div class="col" [attr.data-title]="'TYPE' | translate">{{picklist.PriorityDescription}}</div>
-      <div class="col" [attr.data-title]="'ORDER_ID' | translate">{{picklist.OrderId}}</div>
-      <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
+      <div class="col width-type" [attr.data-title]="'TYPE' | translate">{{picklist.PriorityDescription}}</div>
+      <div class="col width-id" [attr.data-title]="'ORDER_ID' | translate">{{picklist.OrderId}}</div>
+      <div class="col width-description" [attr.data-title]="'DESCRIPTION' | translate">
         <div *ngIf="picklist.DisplayGenericName">{{picklist.ItemGenericName}}</div>
         <div *ngIf="picklist.DisplayBrandName">{{picklist.ItemBrandName}}</div>
         <div *ngIf="picklist.DisplayItemCount">
@@ -23,7 +23,7 @@
         </div>
         <div *ngIf="picklist.DisplayRouteName">{{picklist.RouteName}}</div>
       </div>
-      <div class="col" [attr.data-title]="'DESTINATION' | translate">
+      <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklist.DisplayPatientCount">
           <div>
             <span>{{picklist.UnderfilledPatientCount}}</span>
@@ -51,7 +51,7 @@
           {{picklist.PatientName}}
         </div>
       </div>
-      <div class="last" [attr.data-title]="'DATE' | translate">
+      <div class="last width-date" [attr.data-title]="'DATE' | translate">
         <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
         <div>{{picklist.CompletedDate | date: 'mediumTime'}}</div>
       </div>
