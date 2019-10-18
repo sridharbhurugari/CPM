@@ -3,7 +3,7 @@
     "PATIENTS": "Patients",
     "COMMA_SEPARATOR": ",",
     "TYPE": "Type",
-    "ORDER_ID": "Order Id",
+    "ORDER_ID": "ID",
     "DESCRIPTION": "Description",
     "DESTINATION": "Destination",
     "DATE": "Date",
