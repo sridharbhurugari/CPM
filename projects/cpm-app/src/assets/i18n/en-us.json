@@ -11,5 +11,6 @@
     "QTY_FILLED_REQUESTED": "Filled / Req",
     "DATE_COMPLETED": "Date",
     "BACK": "Back",
-    "UNDERFILLED": "Underfilled"
+    "UNDERFILLED": "Underfilled",
+    "CANCEL": "Cancel"
 }
