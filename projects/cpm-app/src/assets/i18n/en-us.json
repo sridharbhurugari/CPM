@@ -5,9 +5,11 @@
     "TYPE": "Type",
     "ORDER_ID": "ID",
     "DESCRIPTION": "Description",
+    "DESCRIPTION_ID": "Description / ID",
     "DESTINATION": "Destination",
     "DATE": "Date",
-    "QTY_FILLED_REQUESTED": "Qty Filled / Requested",
+    "QTY_FILLED_REQUESTED": "Filled / Req",
     "DATE_COMPLETED": "Date",
-    "BACK": "Back"
+    "BACK": "Back",
+    "UNDERFILLED": "Underfilled"
 }

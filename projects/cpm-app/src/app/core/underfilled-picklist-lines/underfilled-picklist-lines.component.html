@@ -1,25 +1,26 @@
 <oc-action-layout>
   <ng-container class="ocactionheader">
     <div class="ocactiontitle">
-      <span>FIRST DOSE</span>
+      <span>{{'UNDERFILLED' | translate}}</span>
     </div>
   </ng-container>
   <ng-container class="ocactiondetails">
-    <oc-grid #ocgrid ocgridfilter="false" ocgridcustomscroll="true">
+    <oc-grid #ocgrid ocgridfilter="false">
       <ng-container class="ocgridheader">
-        <div class="first"></div>
-        <div class="col">{{'DESCRIPTION' | translate}}</div>
-        <div class="col">{{'DESTINATION' | translate}}</div>
-        <div class="col">{{'QTY_FILLED_REQUESTED' | translate}}</div>
-        <div class="last">{{'DATE_COMPLETED' | translate}}</div>
+        <div class="first" data-colwrap="true"></div>
+        <div class="col" ocGridColResize data-width="584" data-colwrap="true">{{'DESCRIPTION_ID' | translate}}</div>
+        <div class="col" ocGridColResize data-width="300" data-colwrap="true">{{'DESTINATION' | translate}}</div>
+        <div class="col" ocGridColResize data-width="140" data-colwrap="true">{{'QTY_FILLED_REQUESTED' | translate}}</div>
+        <div class="last" ocGridColResize data-width="160" data-colwrap="true">{{'DATE_COMPLETED' | translate}}</div>
       </ng-container>
       <ng-container class="ocgridbody">
         <div class="row" *ngFor="let picklistLine of picklistLines">
           <div class="first">
           </div>
-          <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
+          <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
             <span>{{picklistLine.ItemFormattedGenericName}}</span>
             <span>{{picklistLine.ItemBrandName}}</span>
+            <span>{{picklistLine.ItemId}}</span>
             <span>{{picklistLine.PickItemLocationDescription}}</span>
           </div>
           <div class="col" [attr.data-title]="'DESTINATION' | translate">
@@ -43,7 +44,7 @@
           <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
             {{picklistLine.FillQuantity}} / {{picklistLine.OrderQuantity}}
           </div>
-          <div class="last" [attr.data-title]="'COMPLETED_DATE' | translate" style="text-align: right;">
+          <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">
             <div>{{picklistLine.FillDate | date: 'shortDate'}}</div>
             <div>{{picklistLine.FillDate | date: 'mediumTime'}}</div>
           </div>

@@ -1,6 +1,7 @@
 export interface IUnderfilledPicklistLine{
   PriorityCode: string;
   PicklistTypeDb: string;
+  ItemId: string;
   ItemFormattedGenericName: string;
   ItemBrandName: string
   PatientRoom: string;
