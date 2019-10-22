@@ -15,4 +15,11 @@ export class UnderfilledPicklistsService {
       endpoint: '/api/picklists/underfilled'
     });
   }
+
+  public getForOrder(orderId: string) : Observable<IUnderfilledPicklist>{
+    var encodedOrderId = encodeURIComponent(orderId);
+    return this.ocapHttpClient.fetch({
+      endpoint: `/api/picklists/underfilled/order?orderId=${encodedOrderId}`
+    });
+  }
 }

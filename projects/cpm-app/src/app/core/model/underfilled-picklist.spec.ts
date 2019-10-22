@@ -10,6 +10,7 @@ describe('UnderfilledPicklist', () => {
       ItemFormattedGenericName: '',
       ItemId: '',
       OrderId: '',
+      OrderDate: new Date(),
       PatientMedicalRecordNumber: '',
       PatientName: '',
       PatientRoom: '',

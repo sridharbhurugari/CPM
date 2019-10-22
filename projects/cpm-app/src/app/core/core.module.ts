@@ -8,11 +8,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
 import { RouterModule } from '@angular/router';
+import { SharedModule } from '../shared/shared.module';
 
 
 
 @NgModule({
-  declarations: [UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent, UnderfilledPicklistLinesPageComponent, UnderfilledPicklistLinesComponent],
+  declarations: [UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent, UnderfilledPicklistLinesPageComponent, UnderfilledPicklistLinesComponent, UnderfilledPicklistHeaderComponent],
   imports: [
     CommonModule,
     GridModule,
@@ -21,6 +22,7 @@ import { RouterModule } from '@angular/router';
     ButtonActionModule,
     LayoutModule,
     FooterModule,
+    SharedModule,
   ]
 })
 export class CoreModule { }

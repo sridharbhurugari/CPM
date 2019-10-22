@@ -20,6 +20,7 @@ export class UnderfilledPicklist implements IUnderfilledPicklist{
     }
 
     OrderId: string;
+    OrderDate: Date;
     SequenceOrder: number;
     RouteName: string;
     PicklistTypeDb: string;

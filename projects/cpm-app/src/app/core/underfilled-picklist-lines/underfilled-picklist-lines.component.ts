@@ -25,10 +25,5 @@ export class UnderfilledPicklistLinesComponent {
 
   constructor(
     private windowRef: WindowRef,
-    private wpfActionControllerService: WpfActionControllerService
   ) { }
-
-  navigateBack(){
-    this.wpfActionControllerService.ExecuteBackAction();
-  }
 }

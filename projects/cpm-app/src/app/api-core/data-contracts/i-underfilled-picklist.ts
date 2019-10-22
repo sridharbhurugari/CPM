@@ -1,5 +1,6 @@
 export interface IUnderfilledPicklist {
     OrderId: string,
+    OrderDate: Date;
     SequenceOrder: number,
     RouteName: string,
     PicklistTypeDb: string,
