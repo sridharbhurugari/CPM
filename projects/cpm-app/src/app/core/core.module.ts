@@ -13,7 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
-  declarations: [UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent, UnderfilledPicklistLinesPageComponent, UnderfilledPicklistLinesComponent, UnderfilledPicklistHeaderComponent],
+  declarations: [UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent, UnderfilledPicklistLinesPageComponent, UnderfilledPicklistLinesComponent],
   imports: [
     CommonModule,
     GridModule,
