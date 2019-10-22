@@ -8,7 +8,7 @@
     <div class="last width-date" ocGridColResize data-width="160" data-colwrap="true">{{'DATE' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let picklist of picklists; trackBy: picklist?.OrderId" (click)="navigate(picklist.OrderId)">
+    <div class="row" *ngFor="let picklist of picklists" (click)="navigate(picklist.OrderId)">
       <div class="first" style="align-items: center;">
         <div class="firstcolumncolorblock" [style.background-color]="picklist.PriorityColorCode"></div>
       </div>

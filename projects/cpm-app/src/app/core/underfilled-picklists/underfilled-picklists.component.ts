@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
-import { Router } from '@angular/router';
 import { WindowRef } from '../../shared/services/window-ref';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
@@ -10,7 +9,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
   styleUrls: ['./underfilled-picklists.component.scss']
 })
 export class UnderfilledPicklistsComponent {
-  _picklists: UnderfilledPicklist[];
+  private _picklists: UnderfilledPicklist[];
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
@@ -30,7 +29,6 @@ export class UnderfilledPicklistsComponent {
   ) { }
 
   navigate(orderId: string){
-    // this.router.navigate([`/picklists/${orderId}/underfilled/picklistLines`]);
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/${orderId}/underfilled/picklistLines`);
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
   }
 }

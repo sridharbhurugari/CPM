@@ -6,7 +6,7 @@ import { UnderfilledPicklistLinesPageComponent } from './core/underfilled-pickli
 
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
-  { path: 'picklists/:orderId/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent }
+  { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent }
 ];
 
 @NgModule({

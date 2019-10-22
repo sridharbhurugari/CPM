@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Location } from '@angular/common';
 import { WindowRef } from '../window-ref';
-// import { LoggingService } from 'oal-core';
+import { Router, Params } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -8,39 +10,43 @@ import { WindowRef } from '../window-ref';
 
 export class WpfActionControllerService {
   private wpfActionController;
-  // private loggingService: LoggingService;
 
-  constructor(windowRef: WindowRef) {
+  constructor(
+    windowRef: WindowRef,
+    private location: Location,
+    private router: Router
+  ) {
     if(windowRef.nativeWindow){
       this.wpfActionController = windowRef.nativeWindow['actionController'];
     }
-    // this.loggingService = loggingService;
   }
 
   ExecuteBackAction() {
     if (this.wpfActionController != null) {
-      // this.loggingService.LogInfo(`WpfActionControllerService.ExecuteBackAction - Executing Back action.`);
       this.wpfActionController.executeBackAction();
     } else {
-      // this.loggingService.LogInfo(`WpfActionControllerService.ExecuteBackAction - No action controller. Back action NOT executed.`);
+      this.location.back();
     }
   }
 
   ExecuteContinueAction() {
     if (this.wpfActionController != null) {
-      // this.loggingService.LogInfo(`WpfActionControllerService.ExecuteContinueAction - Executing Continue action.`);
       this.wpfActionController.executeContinueAction();
     } else {
-      // this.loggingService.LogInfo(`WpfActionControllerService.ExecuteContinueAction - No action controller. Continue action NOT executed.`);
     }
   }
 
-  ExecuteContinueNavigationAction(newRoute: string) {
+  ExecuteContinueNavigationAction(newRoute: string, queryParams?: Params) {
     if (this.wpfActionController != null) {
-      // this.loggingService.LogInfo(`WpfActionControllerService.ExecuteContinueAction - Executing Continue action.`);
-      this.wpfActionController.executeContinueNavigationAction(newRoute);
+      var httpParamsObj = new HttpParams();
+      for(var i in queryParams){
+        httpParamsObj = httpParamsObj.set(i, queryParams[i]);
+      }
+
+      var qs = httpParamsObj.toString();
+      this.wpfActionController.executeContinueNavigationAction(`${newRoute}?${qs}`);
     } else {
-      // this.loggingService.LogInfo(`WpfActionControllerService.ExecuteContinueAction - No action controller. Continue action NOT executed.`);
+      this.router.navigate([newRoute], { queryParams: queryParams, preserveQueryParams: false });
     }
   }
 }

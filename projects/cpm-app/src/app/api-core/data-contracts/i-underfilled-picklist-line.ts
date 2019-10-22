@@ -1,4 +1,6 @@
 export interface IUnderfilledPicklistLine{
+  DestinationId: string;
+  DestinationType: string;
   PriorityCode: string;
   PicklistTypeDb: string;
   ItemId: string;

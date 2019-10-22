@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
-import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 import { Observable } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map } from 'rxjs/operators';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -20,9 +20,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    var orderId = this.route.snapshot.paramMap.get('orderId');
+    var orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.picklistLines = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
-      return underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
+      var displayObjects = underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
+      var result = _.orderBy(displayObjects, (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
+      return result;
     }));
   }
 

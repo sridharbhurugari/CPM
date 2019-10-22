@@ -9,11 +9,11 @@ export class PicklistTypeHelper {
                 priorityCode == DispensePriorityCodes.RemoteOrder);
     }
 
-    public static IsMedOrderOrManualDispense(picklistTypeDb: string, priorityCode: string): boolean{
-        return this.IsMedOrder(picklistTypeDb) || this.IsManualDispense(picklistTypeDb, priorityCode);
+    public static IsPatientMedOrderOrManualDispense(picklistTypeDb: string, priorityCode: string): boolean{
+        return this.IsPatientMedOrder(picklistTypeDb) || this.IsManualDispense(picklistTypeDb, priorityCode);
     }
 
-    public static IsMedOrder(pickListTypeDb: string): boolean {
+    public static IsPatientMedOrder(pickListTypeDb: string): boolean {
         return pickListTypeDb == RestockTypes.PatientMedOrder;
     }
 

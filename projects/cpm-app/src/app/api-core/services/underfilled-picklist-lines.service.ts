@@ -11,8 +11,9 @@ export class UnderfilledPicklistLinesService {
   constructor(private ocapHttpClient: OcapHttpClientService) { }
 
   public get(orderId: string): Observable<IUnderfilledPicklistLine[]>{
+    var encodedOrderId = encodeURIComponent(orderId);
     return this.ocapHttpClient.fetch<IUnderfilledPicklistLine[]>({
-      endpoint: `/api/picklists/underfilled/picklistLines?orderId=${orderId}`
+      endpoint: `/api/picklists/underfilled/picklistLines?orderId=${encodedOrderId}`
     });
   }
 }

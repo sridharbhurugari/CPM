@@ -1,5 +1,8 @@
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 import { PicklistDestinationDescriptionHelper } from '../utilities/picklist-destination-description-helper';
+import { RestockTypes } from '../constants/restock-types';
+import { DispensePriorityCodes } from '../constants/dispense-priority-codes';
+import { PicklistTypeHelper } from '../utilities/picklist-type-helper';
 
 export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     constructor(data: IUnderfilledPicklistLine){
@@ -11,6 +14,8 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
         this.DisplayPatientNameSecondLine = PicklistDestinationDescriptionHelper.DisplayPatientNameSecondLine(1, this.PicklistTypeDb, this.PriorityCode);
     }
 
+    DestinationId: string;
+    DestinationType: string;
     PriorityCode: string;
     PicklistTypeDb: string;
     ItemId: string;    
@@ -30,4 +35,20 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     DisplayArea: boolean;
     DisplayOmniName: boolean;
     DisplayPatientNameSecondLine: boolean;
+
+    get DestinationSortValue(): string{
+        if(this.DestinationType == 'P'){
+            return this.PatientName;
+        } 
+
+        if(this.DestinationType == 'A'){
+            this.AreaDescription;
+        } 
+
+        if(this.DestinationType == 'O'){
+            return this.DestinationOmni;
+        } 
+
+        return this.DestinationId;
+    }
 }
