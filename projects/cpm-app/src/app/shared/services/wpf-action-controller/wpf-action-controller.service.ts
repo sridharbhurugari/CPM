@@ -44,7 +44,8 @@ export class WpfActionControllerService {
       }
 
       var qs = httpParamsObj.toString();
-      this.wpfActionController.executeContinueNavigationAction(`${newRoute}?${qs}`);
+      var fragment = queryParams ? `${newRoute}?${qs}` : newRoute;
+      this.wpfActionController.executeContinueNavigationAction(fragment);
     } else {
       this.router.navigate([newRoute], { queryParams: queryParams, preserveQueryParams: false });
     }
