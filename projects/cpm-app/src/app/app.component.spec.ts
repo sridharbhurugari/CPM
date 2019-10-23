@@ -1,16 +1,32 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { ProgressbarModule, LayoutModule, ProgressAnimationModule, ProgressbarService } from '@omnicell/webcorecomponents';
+import { TranslateModule, TranslateService, TranslateLoader, TranslatePipe } from '@ngx-translate/core';
+import { ConfigurationService, OalCoreModule, HttpClientService } from 'oal-core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { of } from 'rxjs';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        ProgressbarModule,
+        LayoutModule,
+        ProgressAnimationModule,
+        HttpClientModule
       ],
       declarations: [
         AppComponent
       ],
+      providers: [
+        { provide: TranslateService, useValue: { setDefaultLang: () => {} } },
+        { provide: 'env', useValue: { interopType: 'console'} },
+        { provide: ConfigurationService, useValue: { init: () => {} }},
+        { provide: ProgressbarService, useValue: { progressSubject: of([1, 2]) } }
+      ]
     }).compileComponents();
   }));
 
@@ -24,12 +40,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('cpm-app');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to cpm-app!');
   });
 });

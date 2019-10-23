@@ -1,0 +1,22 @@
+export interface IUnderfilledPicklist {
+    OrderId: string,
+    SequenceOrder: number,
+    RouteName: string,
+    PicklistTypeDb: string,
+    PriorityCode: string,
+    PriorityDescription: string,
+    PriorityColorCode: string,
+    UnderfilledItemCount: number,
+    UnderfilledPatientCount: number,
+    UnderfilledDestinationCount: number,
+    ItemId: string,
+    ItemGenericName: string,
+    ItemBrandName: string,
+    PatientRoom: string,
+    PatientName: string,
+    PatientVisitId: string,
+    PatientMedicalRecordNumber: string,
+    Area: string,
+    DestinationOmni: string,
+    CompletedDate: Date
+}
