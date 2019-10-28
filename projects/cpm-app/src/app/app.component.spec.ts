@@ -2,11 +2,10 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { ProgressbarModule, LayoutModule, ProgressAnimationModule, ProgressbarService } from '@omnicell/webcorecomponents';
-import { TranslateModule, TranslateService, TranslateLoader, TranslatePipe } from '@ngx-translate/core';
-import { ConfigurationService, OalCoreModule, HttpClientService } from 'oal-core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
+import { LocalStorageService } from './shared/services/local-storage.service';
+import { WindowService } from './shared/services/window-service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -16,16 +15,15 @@ describe('AppComponent', () => {
         ProgressbarModule,
         LayoutModule,
         ProgressAnimationModule,
-        HttpClientModule
       ],
       declarations: [
         AppComponent
       ],
       providers: [
         { provide: TranslateService, useValue: { setDefaultLang: () => {} } },
-        { provide: 'env', useValue: { interopType: 'console'} },
-        { provide: ConfigurationService, useValue: { init: () => {} }},
-        { provide: ProgressbarService, useValue: { progressSubject: of([1, 2]) } }
+        { provide: ProgressbarService, useValue: { progressSubject: of([1, 2]) } },
+        { provide: WindowService, useValue: { } },
+        { provide: LocalStorageService, useValue: { } },
       ]
     }).compileComponents();
   }));
