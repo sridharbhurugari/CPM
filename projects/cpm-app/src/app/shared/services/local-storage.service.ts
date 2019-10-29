@@ -49,7 +49,7 @@ export class LocalStorageService implements Storage {
       return;
     }
 
-    this.localStorage.remove(key);
+    this.localStorage.removeItem(key);
   }
 
   setItemObject(key: string, value: object): void {

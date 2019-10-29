@@ -5,4 +5,5 @@ export interface IOcapHttpConfiguration {
     port: string;
     ocapServerIP: string;
     useSecured: string;
+    userLocale: string;
 }

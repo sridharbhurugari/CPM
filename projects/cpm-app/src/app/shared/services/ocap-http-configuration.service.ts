@@ -22,7 +22,8 @@ export class OcapHttpConfigurationService {
   private setConfiguration(){
     var ocapConfigurationString = this.localStorageService.getItem(OcapConfigurationConstants.storageKey);
     if(!ocapConfigurationString){
-      return { apiKey: '', machineName: '', clientId: '', ocapServerIp: '', port: '', useSecured: 'true' };
+      this.ocapHttpConfiguration = { apiKey: '', machineName: '', clientId: '', ocapServerIP: '', port: '', useSecured: 'true', userLocale: 'en-US' };
+      return;
     }
 
     this.ocapHttpConfiguration = JSON.parse(ocapConfigurationString);

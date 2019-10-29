@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { OcapConfigurationConstants } from './shared/constants/ocap-configuration-constants';
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
-import { OcapHttpConfiguration } from './shared/model/ocap-http-configuration';
+import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit {
   ){
     this.loading = true;
     if(windowService.nativeWindow){
-      var ocap = new OcapHttpConfiguration();
+      var ocap : Partial<IOcapHttpConfiguration> = {};
       var win = windowService.nativeWindow as Window;
       var url = new URL(win.location.href);
       var searchParams = new URLSearchParams(url.search.split('?')[1]);

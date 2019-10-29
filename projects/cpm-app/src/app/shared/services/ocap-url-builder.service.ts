@@ -14,6 +14,6 @@ export class OcapUrlBuilderService {
     var port = config.port;
     var protocol = config.useSecured ? 'https' : 'http';
 
-    return `${protocol}://${ipAddress}:${port}${fragment}`
+    return `${protocol}://${ipAddress}:${port}${fragment}`;
   }
 }
