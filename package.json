@@ -8,7 +8,7 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build cpm-app"
+    "deploy": "ng build cpm-app --prod"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +26,7 @@
     "@omnicell/webcorecomponents": "^0.1.18",
     "date-fns": "^1.30.1",
     "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.15",
     "oal-core": "^24.5.1",
     "rxjs": "~6.4.0",
     "signalr-no-jquery": "^0.1.8",
@@ -37,9 +38,10 @@
     "@angular/cli": "~8.2.2",
     "@angular/compiler-cli": "~8.2.0",
     "@angular/language-service": "~8.2.0",
-    "@types/node": "~8.9.4",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/lodash": "^4.14.144",
+    "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",

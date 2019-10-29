@@ -2,19 +2,19 @@ import { PicklistTypeHelper } from './picklist-type-helper';
 
 export class PicklistDestinationDescriptionHelper{
     public static DisplayPatientCount(patientCount: number, picklistTypeDb: string) : boolean{
-        return PicklistTypeHelper.IsMedOrder(picklistTypeDb) && patientCount > 1;
+        return PicklistTypeHelper.IsPatientMedOrder(picklistTypeDb) && patientCount > 1;
     }
 
     public static DisplayPatientRoomAndArea(patientCount: number, picklistTypeDb: string, patientRoom: string, area: string) : boolean{
-        return PicklistTypeHelper.IsMedOrder(picklistTypeDb) && patientCount == 1 && !!patientRoom && !!area;
+        return PicklistTypeHelper.IsPatientMedOrder(picklistTypeDb) && patientCount == 1 && !!patientRoom && !!area;
     }
 
     public static DisplayPatientRoom(patientCount: number, picklistTypeDb: string, patientRoom: string, area: string) : boolean{
-        return PicklistTypeHelper.IsMedOrder(picklistTypeDb) && patientCount == 1 && !!patientRoom && !area;
+        return PicklistTypeHelper.IsPatientMedOrder(picklistTypeDb) && patientCount == 1 && !!patientRoom && !area;
     }
 
     public static DisplayMultiDestination(destinationCount: number, picklistTypeDb: string) : boolean{
-        return !PicklistTypeHelper.IsMedOrder(picklistTypeDb) && this.IsMultiDestination(destinationCount);
+        return !PicklistTypeHelper.IsPatientMedOrder(picklistTypeDb) && this.IsMultiDestination(destinationCount);
     }
 
     public static DisplayArea(patientCount: number, destinationCount: number, picklistTypeDb: string, priorityCode: string, patientRoom: string, area: string) : boolean{
@@ -32,11 +32,11 @@ export class PicklistDestinationDescriptionHelper{
     }
 
     private static DisplayPatientArea(patientCount: number, picklistTypeDb: string, patientRoom: string, area: string) : boolean{
-        return PicklistTypeHelper.IsMedOrder(picklistTypeDb) && patientCount == 1 && !patientRoom && !!area;
+        return PicklistTypeHelper.IsPatientMedOrder(picklistTypeDb) && patientCount == 1 && !patientRoom && !!area;
     }
 
     private static DisplayGenericArea(destinationCount: number, picklistTypeDb: string, priorityCode: string){
-        return !PicklistTypeHelper.IsMedOrder(picklistTypeDb) && !this.IsMultiDestination(destinationCount) &&
+        return !PicklistTypeHelper.IsPatientMedOrder(picklistTypeDb) && !this.IsMultiDestination(destinationCount) &&
         (PicklistTypeHelper.IsStockOut(picklistTypeDb) || PicklistTypeHelper.IsManualDispense(picklistTypeDb, priorityCode) || PicklistTypeHelper.IsSelectiveRestock(picklistTypeDb, priorityCode))
     }
 

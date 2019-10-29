@@ -1,5 +1,6 @@
 export interface IUnderfilledPicklist {
     OrderId: string,
+    OrderDate: Date;
     SequenceOrder: number,
     RouteName: string,
     PicklistTypeDb: string,
@@ -10,13 +11,13 @@ export interface IUnderfilledPicklist {
     UnderfilledPatientCount: number,
     UnderfilledDestinationCount: number,
     ItemId: string,
-    ItemGenericName: string,
+    ItemFormattedGenericName: string,
     ItemBrandName: string,
     PatientRoom: string,
     PatientName: string,
     PatientVisitId: string,
     PatientMedicalRecordNumber: string,
-    Area: string,
+    AreaDescription: string,
     DestinationOmni: string,
     CompletedDate: Date
 }

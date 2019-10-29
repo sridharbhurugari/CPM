@@ -5,6 +5,13 @@
     "TYPE": "Type",
     "ORDER_ID": "ID",
     "DESCRIPTION": "Description",
+    "DESCRIPTION_ID": "Description / ID",
     "DESTINATION": "Destination",
-    "DATE": "Date"
+    "DATE": "Date",
+    "QTY_FILLED_REQUESTED": "Filled / Req",
+    "DATE_COMPLETED": "Date",
+    "BACK": "Back",
+    "UNDERFILLED": "Underfilled",
+    "CANCEL": "Cancel",
+    "ROUTE": "Route"
 }

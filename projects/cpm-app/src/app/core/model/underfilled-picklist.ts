@@ -11,15 +11,16 @@ export class UnderfilledPicklist implements IUnderfilledPicklist{
         this.DisplayBrandName = PicklistDescriptionHelper.DisplayBrandName(this.UnderfilledItemCount, this.PicklistTypeDb, this.PriorityCode);
 
         this.DisplayPatientCount = PicklistDestinationDescriptionHelper.DisplayPatientCount(this.UnderfilledPatientCount, this.PicklistTypeDb);
-        this.DisplayPatientRoomAndArea = PicklistDestinationDescriptionHelper.DisplayPatientRoomAndArea(this.UnderfilledPatientCount, this.PicklistTypeDb, this.PatientRoom, this.Area);
-        this.DisplayPatientRoom = PicklistDestinationDescriptionHelper.DisplayPatientRoom(this.UnderfilledPatientCount, this.PicklistTypeDb, this.PatientRoom, this.Area);
-        this.DisplayArea = PicklistDestinationDescriptionHelper.DisplayArea(this.UnderfilledPatientCount, this.UnderfilledDestinationCount, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.Area);
+        this.DisplayPatientRoomAndArea = PicklistDestinationDescriptionHelper.DisplayPatientRoomAndArea(this.UnderfilledPatientCount, this.PicklistTypeDb, this.PatientRoom, this.AreaDescription);
+        this.DisplayPatientRoom = PicklistDestinationDescriptionHelper.DisplayPatientRoom(this.UnderfilledPatientCount, this.PicklistTypeDb, this.PatientRoom, this.AreaDescription);
+        this.DisplayArea = PicklistDestinationDescriptionHelper.DisplayArea(this.UnderfilledPatientCount, this.UnderfilledDestinationCount, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayMultiDestination = PicklistDestinationDescriptionHelper.DisplayMultiDestination(this.UnderfilledDestinationCount, this.PicklistTypeDb);
         this.DisplayPatientNameSecondLine = PicklistDestinationDescriptionHelper.DisplayPatientNameSecondLine(this.UnderfilledDestinationCount, this.PicklistTypeDb, this.PriorityCode);
-        this.DisplayOmniName = PicklistDestinationDescriptionHelper.DisplayOmniName(this.UnderfilledPatientCount, this.UnderfilledDestinationCount, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.Area);
+        this.DisplayOmniName = PicklistDestinationDescriptionHelper.DisplayOmniName(this.UnderfilledPatientCount, this.UnderfilledDestinationCount, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
     }
 
     OrderId: string;
+    OrderDate: Date;
     SequenceOrder: number;
     RouteName: string;
     PicklistTypeDb: string;
@@ -30,13 +31,13 @@ export class UnderfilledPicklist implements IUnderfilledPicklist{
     UnderfilledPatientCount: number;
     UnderfilledDestinationCount: number;
     ItemId: string;
-    ItemGenericName: string;
+    ItemFormattedGenericName: string;
     ItemBrandName: string;
     PatientRoom: string;
     PatientName: string;
     PatientVisitId: string;
     PatientMedicalRecordNumber: string;
-    Area: string;
+    AreaDescription: string;
     DestinationOmni: string;
     CompletedDate: Date;
 

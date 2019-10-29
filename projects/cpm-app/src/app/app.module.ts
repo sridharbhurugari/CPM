@@ -19,6 +19,7 @@ import { ProgressAnimationModule,
          ProgressbarService,
          ProgressbarInterceptor
        } from '@omnicell/webcorecomponents';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { ProgressAnimationModule,
     LayoutModule,
     ProgressbarModule,
     FooterModule,
+    SharedModule,
   ],
   providers: [
     ProgressbarService,

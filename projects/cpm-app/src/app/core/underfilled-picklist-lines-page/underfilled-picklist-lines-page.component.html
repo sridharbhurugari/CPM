@@ -1,0 +1,23 @@
+<oc-action-layout>
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{(picklist$ | async)?.PriorityDescription}}</div>
+    </ng-container>
+    <ng-container class="ocactiondetails">
+        <div class="cpmheaderrow">
+            <app-header-container [title]="'ID' | translate">{{(picklist$ | async)?.OrderId}}</app-header-container>
+            <app-header-container [title]="'ROUTE' | translate">{{(picklist$ | async)?.RouteName}}</app-header-container>
+            <app-header-container [title]="'DATE' | translate">
+                {{(picklist$ | async)?.OrderDate | date:'shortDate'}}
+                {{(picklist$ | async)?.OrderDate | date:'mediumTime'}}
+            </app-header-container>
+        </div>
+        <app-underfilled-picklist-lines [picklistLines]="picklistLines$ | async"></app-underfilled-picklist-lines>
+    </ng-container>
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}</oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+</oc-action-layout>

@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService, TranslatePipe } from '@ngx-translate
 import { GridModule } from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { of } from 'rxjs';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 describe('UnderfilledPicklistsPageComponent', () => {
   let component: UnderfilledPicklistsPageComponent;
@@ -20,6 +21,7 @@ describe('UnderfilledPicklistsPageComponent', () => {
       ],
       providers: [
         { provide: UnderfilledPicklistsService, useValue: { get: () => of([]) } },
+        { provide: WpfActionControllerService, useVaule: { }}
       ]
     })
     .overrideComponent(UnderfilledPicklistsComponent, {

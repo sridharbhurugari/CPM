@@ -3,14 +3,14 @@ import { } from 'oal-core';
 
 export class PicklistDescriptionHelper{
     public static DisplayGenericName(itemCount: number, picklistTypeDb: string, priorityCode: string): boolean {
-        return (PicklistTypeHelper.IsMedOrderOrManualDispense(picklistTypeDb, priorityCode) && itemCount == 1) || PicklistTypeHelper.IsStockOut(picklistTypeDb);
+        return (PicklistTypeHelper.IsPatientMedOrderOrManualDispense(picklistTypeDb, priorityCode) && itemCount == 1) || PicklistTypeHelper.IsStockOut(picklistTypeDb);
     }
 
     public static DisplayItemCount(itemCount: number, picklistTypeDb: string, priorityCode: string): boolean {
-        return PicklistTypeHelper.IsMedOrderOrManualDispense(picklistTypeDb, priorityCode) && itemCount > 1
+        return PicklistTypeHelper.IsPatientMedOrderOrManualDispense(picklistTypeDb, priorityCode) && itemCount > 1
     }
 
     public static DisplayBrandName(itemCount: number, picklistTypeDb: string, priorityCode: string): boolean {
-        return PicklistTypeHelper.IsMedOrderOrManualDispense(picklistTypeDb, priorityCode) && itemCount == 1
+        return PicklistTypeHelper.IsPatientMedOrderOrManualDispense(picklistTypeDb, priorityCode) && itemCount == 1
     }
 }

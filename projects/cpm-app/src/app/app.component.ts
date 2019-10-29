@@ -3,7 +3,7 @@ import { OcAnimationSize, ProgressbarService } from '@omnicell/webcorecomponents
 import { Router, NavigationStart, NavigationEnd, NavigationCancel } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigurationService, HttpClientService } from 'oal-core';
-import { WindowRef } from './services/window-ref';
+import { WindowRef } from './shared/services/window-ref';
 
 @Component({
   selector: 'app-root',
