@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines.component';
-import { GridModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+import { GridModule } from '@omnicell/webcorecomponents';
+import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes.component';
 
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
@@ -13,20 +13,20 @@ class MockTranslatePipe implements PipeTransform {
   }
 }
 
-describe('UnderfilledPicklistLinesComponent', () => {
-  let component: UnderfilledPicklistLinesComponent;
-  let fixture: ComponentFixture<UnderfilledPicklistLinesComponent>;
+describe('PriorityCodePickRoutesComponent', () => {
+  let component: PriorityCodePickRoutesComponent;
+  let fixture: ComponentFixture<PriorityCodePickRoutesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnderfilledPicklistLinesComponent, MockTranslatePipe ],
-      imports: [ GridModule, FooterModule, LayoutModule ]
+      declarations: [ PriorityCodePickRoutesComponent, MockTranslatePipe ],
+      imports: [ GridModule ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UnderfilledPicklistLinesComponent);
+    fixture = TestBed.createComponent(PriorityCodePickRoutesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

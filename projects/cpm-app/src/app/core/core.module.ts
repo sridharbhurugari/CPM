@@ -9,11 +9,20 @@ import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-li
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes-page/priority-code-pick-routes-page.component';
+import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
 
 
 
 @NgModule({
-  declarations: [UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent, UnderfilledPicklistLinesPageComponent, UnderfilledPicklistLinesComponent],
+  declarations: [
+    UnderfilledPicklistsPageComponent,
+    UnderfilledPicklistsComponent,
+    UnderfilledPicklistLinesPageComponent,
+    UnderfilledPicklistLinesComponent,
+    PriorityCodePickRoutesPageComponent,
+    PriorityCodePickRoutesComponent
+  ],
   imports: [
     CommonModule,
     GridModule,
