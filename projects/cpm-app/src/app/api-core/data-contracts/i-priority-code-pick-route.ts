@@ -3,5 +3,7 @@ export class IPriorityCodePickRoute {
     PriorityCode: string;
     PriorityCodeDescription: string;
     PickRouteId: number;
-    PickRouteDescription: string
+    PickRouteDescription: string;
+    PriorityColorCode: string;
+    PrioritySequenceOrder: number;
 }

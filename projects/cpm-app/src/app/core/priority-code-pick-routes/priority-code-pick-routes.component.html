@@ -1,3 +1,6 @@
+<div class="cpmgridheader">
+  <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
 <oc-grid #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
     <div class="first"></div>
@@ -5,8 +8,9 @@
     <div class="col width=id">{{'ROUTE_NAME' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let priorityCodePickRoute of priorityCodePickRoutes">
-      <div class="first">
+    <div class="row" *ngFor="let priorityCodePickRoute of priorityCodePickRoutes | searchPipe:searchTextFilter:searchFields">
+      <div class="first" style="align-items: center;">
+        <div class="firstcolumncolorblock" [style.background-color]="priorityCodePickRoute.PriorityColorCode"></div>
       </div>
       <div class="col" [attr.data-title]="'TYPE' | translate">{{priorityCodePickRoute.PriorityCodeDescription}}</div>
       <div class="col" [attr.data-title]="'ROUTE_NAME' | translate">{{priorityCodePickRoute.PickRouteDescription}}</div>
