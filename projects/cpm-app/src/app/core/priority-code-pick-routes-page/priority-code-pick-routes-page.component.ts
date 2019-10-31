@@ -19,7 +19,7 @@ export class PriorityCodePickRoutesPageComponent implements OnInit {
 
   ngOnInit() {
     this.priorityCodePickRoutes$ = this.priorityCodePickRoutesService.get().pipe(map(p => {
-      return _.orderBy(p, (x: IPriorityCodePickRoute) => [x.PrioritySequenceOrder]);
+      return _.orderBy(p, (x: IPriorityCodePickRoute) => x.PrioritySequenceOrder);
     }));
   }
 
