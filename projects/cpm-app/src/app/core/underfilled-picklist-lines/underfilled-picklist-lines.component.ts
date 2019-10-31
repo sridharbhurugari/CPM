@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
-import { WindowRef } from '../../shared/services/window-ref';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-underfilled-picklist-lines',
@@ -14,8 +13,8 @@ export class UnderfilledPicklistLinesComponent {
   @Input('picklistLines')
   set picklistLines(value: UnderfilledPicklistLine[]){
     this._picklistLines = value;
-    if(this.windowRef.nativeWindow){
-      this.windowRef.nativeWindow.dispatchEvent(new Event('resize'));
+    if(this.windowService.nativeWindow){
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
   
@@ -24,6 +23,6 @@ export class UnderfilledPicklistLinesComponent {
   }
 
   constructor(
-    private windowRef: WindowRef,
+    private windowService: WindowService,
   ) { }
 }
