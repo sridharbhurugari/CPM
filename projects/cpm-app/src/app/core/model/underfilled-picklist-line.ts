@@ -42,7 +42,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
         } 
 
         if(this.DestinationType == 'A'){
-            this.AreaDescription;
+            return this.AreaDescription;
         } 
 
         if(this.DestinationType == 'O'){

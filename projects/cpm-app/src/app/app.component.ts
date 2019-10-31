@@ -1,9 +1,11 @@
 import { Component, AfterViewInit } from '@angular/core';
-import { OcAnimationSize, ProgressbarService } from '@omnicell/webcorecomponents';
+import { OcAnimationSize } from '@omnicell/webcorecomponents';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfigurationService, HttpClientService } from 'oal-core';
-import { WindowRef } from './shared/services/window-ref';
+import { OcapConfigurationConstants } from './shared/constants/ocap-configuration-constants';
+import { LocalStorageService } from './shared/services/local-storage.service';
+import { WindowService } from './shared/services/window-service';
+import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
 
 @Component({
   selector: 'app-root',
@@ -17,18 +19,16 @@ export class AppComponent implements AfterViewInit {
     size: OcAnimationSize.large
   };
   loading: boolean;
-
+  
   constructor(
     private router: Router,
     translate: TranslateService,
-    configurationService: ConfigurationService,
-    httpClient: HttpClientService,
-    windowService: WindowRef
+    windowService: WindowService,
+    localStorageService: LocalStorageService
   ){
     this.loading = true;
-    translate.setDefaultLang('en-us');
     if(windowService.nativeWindow){
-      var ocap = {};
+      var ocap : Partial<IOcapHttpConfiguration> = {};
       var win = windowService.nativeWindow as Window;
       var url = new URL(win.location.href);
       var searchParams = new URLSearchParams(url.search.split('?')[1]);
@@ -36,7 +36,8 @@ export class AppComponent implements AfterViewInit {
         ocap[k] = v == "True" ? 'true' : v == "False" ? 'false' : v || '';
       })
 
-      configurationService.init(httpClient, {'ocap': ocap});
+      localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
+      translate.setDefaultLang(ocap.userLocale);
     }
   }
 

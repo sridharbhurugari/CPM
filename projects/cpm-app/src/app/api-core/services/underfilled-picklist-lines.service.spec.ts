@@ -1,12 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { UnderfilledPicklistLinesService } from './underfilled-picklist-lines.service';
-import { OcapHttpClientService } from 'oal-core';
+import { HttpClient } from 'selenium-webdriver/http';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('UnderfilledPicklistLinesService', () => {
   beforeEach(() => TestBed.configureTestingModule({
+    imports: [
+      HttpClientModule
+    ],
     providers: [
-      {provide: OcapHttpClientService, UserClass: { fetch: () => {}}}
+      { provide: HttpClient, useValue: { get: () => {}} },
+      { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+      { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
     ]
   }));
 

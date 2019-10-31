@@ -3,10 +3,10 @@ import { Location, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { WpfActionControllerService } from './wpf-action-controller.service';
-import { WindowRef } from '../window-ref';
+import { WindowService } from '../window-service';
 
 describe('WpfActionControllerService', () => {
-  var router, location, actionController, windowRef;
+  var router, location, actionController, windowService;
   var service: WpfActionControllerService;
   beforeEach(() => {
     router = { navigate: () => { } };
@@ -21,12 +21,12 @@ describe('WpfActionControllerService', () => {
     spyOn(actionController, 'executeBackAction')
     spyOn(actionController, 'executeContinueAction')
     spyOn(actionController, 'executeContinueNavigationAction')
-    windowRef = { nativeWindow: {} };
+    windowService = { nativeWindow: {} };
   });
 
   describe('with actioncontroller set on window', () => {
     beforeEach(() => {
-      windowRef.nativeWindow.actionController = actionController;
+      windowService.nativeWindow.actionController = actionController;
       TestBed.configureTestingModule({
         imports: [
           CommonModule
@@ -34,7 +34,7 @@ describe('WpfActionControllerService', () => {
         providers: [
           { provide: Location, useValue: location },
           { provide: Router, useValue: router },
-          { provide: WindowRef, useValue: windowRef },
+          { provide: WindowService, useValue: windowService },
         ]
       });
       service = TestBed.get(WpfActionControllerService);
@@ -87,7 +87,7 @@ describe('WpfActionControllerService', () => {
         providers: [
           { provide: Location, useValue: location },
           { provide: Router, useValue: router },
-          { provide: WindowRef, useValue: windowRef },
+          { provide: WindowService, useValue: windowService },
         ]
       });
       service = TestBed.get(WpfActionControllerService);

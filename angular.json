@@ -123,6 +123,43 @@
               "devServerTarget": "cpm-app:serve:production"
             }
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/cpm-app-server",
+            "main": "projects/cpm-app/src/main.server.ts",
+            "tsConfig": "projects/cpm-app/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/cpm-app/src/environments/environment.ts",
+                  "with": "projects/cpm-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true
+              }
+            }
+          }
+        },
+        "app-shell": {
+          "builder": "@angular-devkit/build-angular:app-shell",
+          "options": {
+            "browserTarget": "cpm-app:build",
+            "serverTarget": "cpm-app:server",
+            "route": "shell"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "cpm-app:build:production",
+              "serverTarget": "cpm-app:server:production"
+            }
+          }
         }
       }
     }},

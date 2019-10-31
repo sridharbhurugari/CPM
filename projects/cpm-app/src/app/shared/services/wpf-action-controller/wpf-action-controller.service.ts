@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
-import { WindowRef } from '../window-ref';
 import { Router, Params } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
+import { WindowService } from '../window-service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +12,12 @@ export class WpfActionControllerService {
   private wpfActionController;
 
   constructor(
-    windowRef: WindowRef,
+    windowService: WindowService,
     private location: Location,
     private router: Router
   ) {
-    if(windowRef.nativeWindow){
-      this.wpfActionController = windowRef.nativeWindow['actionController'];
+    if(windowService.nativeWindow){
+      this.wpfActionController = windowService.nativeWindow['actionController'];
     }
   }
 

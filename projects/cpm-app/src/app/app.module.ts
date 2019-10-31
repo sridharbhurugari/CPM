@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 
-import { OalCoreModule, OcapHttpClientService } from 'oal-core';
 import { CoreModule } from './core/core.module';
 import { ApiCoreModule } from './api-core/api-core.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -20,17 +19,17 @@ import { ProgressAnimationModule,
          ProgressbarInterceptor
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     CoreModule,
     ApiCoreModule,
-    OalCoreModule.forRoot({environment: environment, httpClientService: OcapHttpClientService, configEndpointKey: 'configEndpoint'}),
     TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -43,6 +42,7 @@ import { SharedModule } from './shared/shared.module';
     ProgressbarModule,
     FooterModule,
     SharedModule,
+    RouterModule,
   ],
   providers: [
     ProgressbarService,
