@@ -4,7 +4,7 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { nameof } from '../../shared/functions/nameof';
-import { WindowRef } from '../../shared/services/window-ref';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-priority-code-pick-routes',
@@ -16,8 +16,8 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
 
   @Input()set priorityCodePickRoutes(value: IPriorityCodePickRoute[]){
     this._priorityCodePickRoutes = value;
-    if(this.windowRef.nativeWindow){
-      this.windowRef.nativeWindow.dispatchEvent(new Event('resize'));
+    if(this.windowService.nativeWindow){
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
   
@@ -35,7 +35,7 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
   searchFields = [ nameof<IPriorityCodePickRoute>('PriorityCodeDescription'), nameof<IPriorityCodePickRoute>('PickRouteDescription') ]
 
   constructor(
-    private windowRef: WindowRef
+    private windowService: WindowService
   ) { }
 
   ngAfterViewInit(): void {
@@ -47,8 +47,8 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
       )
       .subscribe(data => {
         this.searchTextFilter = data;
-        if (this.windowRef.nativeWindow) {
-          this.windowRef.nativeWindow.dispatchEvent(new Event('resize'));
+        if (this.windowService.nativeWindow) {
+          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
   }

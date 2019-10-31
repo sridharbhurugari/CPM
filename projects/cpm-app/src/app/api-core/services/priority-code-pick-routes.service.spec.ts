@@ -1,13 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
 import { PriorityCodePickRoutesService } from './priority-code-pick-routes.service';
-import { of } from 'rxjs';
-import { OcapHttpClientService } from 'oal-core';
+import { HttpClient } from '@angular/common/http';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 
 describe('PriorityCodePickRoutesService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      { provide: OcapHttpClientService, useValue: { get: () => of([]) }}
+      { provide: HttpClient, useValue: { get: () => {}} },
+      { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+      { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
     ]
   }));
 
