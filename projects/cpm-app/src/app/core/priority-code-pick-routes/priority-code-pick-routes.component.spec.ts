@@ -3,23 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GridModule, SearchModule, InputsModule, SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes.component';
 
-import { Pipe, PipeTransform, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { of, Observable } from 'rxjs';
-@Pipe({
-  name: 'translate'
-})
-class MockTranslatePipe implements PipeTransform {
-  transform(value: any, ...args: any[]) {
-    return value + '_translated';
-  }
-}
-
-@Pipe({ name: 'searchPipe' })
-class MockSearchPipe implements PipeTransform {
-  transform(allSearchData: any[], ...args: any[]) {
-    return allSearchData;
-  }
-}
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 
 @Component({
   selector: 'oc-search-box',

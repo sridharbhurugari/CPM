@@ -12,15 +12,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
-@Pipe({
-  name: 'translate'
-})
-class MockTranslatePipe implements PipeTransform {
-  transform(value: any, ...args: any[]) {
-    return value + '_translated';
-  }
-}
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
   let component: UnderfilledPicklistLinesPageComponent;
