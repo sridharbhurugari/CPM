@@ -13,5 +13,7 @@
     "BACK": "Back",
     "UNDERFILLED": "Underfilled",
     "CANCEL": "Cancel",
-    "ROUTE": "Route"
+    "ROUTE": "Route",
+    "ROUTE_NAME": "Route Name",
+    "ENTER_TEXT": "Enter Text"
 }

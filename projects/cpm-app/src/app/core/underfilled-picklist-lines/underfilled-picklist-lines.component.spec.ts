@@ -1,17 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines.component';
-import { Pipe, PipeTransform } from '@angular/core';
 import { GridModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
-
-@Pipe({
-  name: 'translate'
-})
-class MockTranslatePipe implements PipeTransform {
-  transform(value: any, ...args: any[]) {
-    return value + '_translated';
-  }
-}
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 describe('UnderfilledPicklistLinesComponent', () => {
   let component: UnderfilledPicklistLinesComponent;
