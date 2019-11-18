@@ -1,0 +1,15 @@
+<oc-grid #ocgrid ocgridfilter="false">
+  <ng-container class="ocgridheader">
+    <div class="first"></div>
+    <div class="col width=id">{{'ROUTE_NAME' | translate}}</div>
+  </ng-container>
+
+  <ng-container class="ocgridbody">
+    <div class="row" *ngFor="let pickrouteDevice of pickrouteDevices">
+      <div class="first" style="align-items: center;">
+          <input type="radio" name="selectedRoute" value={{pickrouteDevice.SelectedFlag}} readonly=true>
+      </div>
+      <div class="col" [attr.data-title]="'ROUTE_NAME' | translate">{{pickrouteDevice.PickRouteDescription}}</div>
+    </div>
+  </ng-container>
+</oc-grid>

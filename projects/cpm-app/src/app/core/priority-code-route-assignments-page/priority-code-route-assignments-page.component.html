@@ -1,0 +1,18 @@
+<oc-action-layout>
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{"ROUTE_ASSIGNMENT" | translate}}</div>
+    </ng-container>
+    <ng-container class="ocactiondetails">
+        <div class="cpmheaderrow">
+            <app-header-container [title]="'TYPE' | translate">{{(priorityCode$ | async)?.PriorityCodeDescription}}</app-header-container>
+        </div>
+        <app-priority-code-route-assignments [pickrouteDevices]="pickrouteDevices$ | async"></app-priority-code-route-assignments>
+    </ng-container>
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}</oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+</oc-action-layout>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 
 @Component({

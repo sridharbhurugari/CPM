@@ -11,7 +11,11 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes-page/priority-code-pick-routes-page.component';
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
+import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page/priority-code-route-assignments-page.component';
+import { PriorityCodeRouteAssignmentsComponent } from './priority-code-route-assignments/priority-code-route-assignments.component';
 import { SearchPipe } from '../shared/pipes/search.pipe';
+import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
+import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
 
 
 
@@ -22,7 +26,11 @@ import { SearchPipe } from '../shared/pipes/search.pipe';
     UnderfilledPicklistLinesPageComponent,
     UnderfilledPicklistLinesComponent,
     PriorityCodePickRoutesPageComponent,
-    PriorityCodePickRoutesComponent
+    PriorityCodePickRoutesComponent,
+    PriorityCodeRouteAssignmentsPageComponent,
+    PriorityCodeRouteAssignmentsComponent,
+    PickRouteSelectComponent,
+    DeviceSequenceOrderComponent
   ],
   imports: [
     CommonModule,

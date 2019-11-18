@@ -1,0 +1,11 @@
+:host{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+:host ::ng-deep oc-radiobutton{
+}
