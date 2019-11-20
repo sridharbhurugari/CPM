@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page.component';
-import { PriorityCodeRouteAssignmentsComponent } from '../priority-code-route-assignments/priority-code-route-assignments.component';
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
 import { of } from 'rxjs';
 import { Component, Input } from '@angular/core';
@@ -11,7 +10,7 @@ import { Component, Input } from '@angular/core';
   template: ''
 })
 
-class MockPriorityCodeRouteAssignmentsComponent{
+class MockPriorityCodeRouteAssignmentsComponent {
 }
 
 describe('PriorityCodeRouteAssignmentsPageComponent', () => {
