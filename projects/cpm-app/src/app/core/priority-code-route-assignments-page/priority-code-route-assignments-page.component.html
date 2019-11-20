@@ -6,8 +6,9 @@
         <div class="cpmheaderrow">
             <app-header-container [title]="'TYPE' | translate">{{(priorityCode$ | async)?.PriorityCodeDescription}}</app-header-container>
         </div>
+
         <div style=" display:flex; flex-direction:row; align-items:stretch; flex:1; overflow:hidden;">
-            <div style="padding:20px; flex:1;">
+            <div style="padding:20px; flex:1;border-top:solid 2px; border-right:solid 2px; ">
                 <oc-grid #ocgrid ocgridfilter="false" style="max-height:75px">
                     <ng-container class="ocgridheader">
                       <div class="col width=id">{{'ROUTE_NAME' | translate}}</div>
@@ -21,7 +22,7 @@
                 >
               </app-pick-route-select>
             </div>
-            <div style="padding:20px; flex:1;overflow-y:auto;">
+            <div style="padding:20px; flex:1;overflow-y:auto;border-top:solid 2px">
                 <app-device-sequence-order
                 [Devices]="deviceList$ | async">
                </app-device-sequence-order>
