@@ -1,3 +1,31 @@
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Create two equal columns that floats next to each other */
+  .column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px; /* Should be removed. Only for demonstration */
+  }
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .column {
+      width: 100%;
+    }
+  }
+  </style>
+
 <oc-action-layout>
     <ng-container class="ocactionheader">
         <div class="cpmactiontitle">{{"ROUTE_ASSIGNMENT" | translate}}</div>
@@ -6,7 +34,22 @@
         <div class="cpmheaderrow">
             <app-header-container [title]="'TYPE' | translate">{{(priorityCode$ | async)?.PriorityCodeDescription}}</app-header-container>
         </div>
-        <app-priority-code-route-assignments [pickrouteDevices]="pickrouteDevices$ | async"></app-priority-code-route-assignments>
+
+        <div class="row">
+          <div class="column">
+            <app-pick-route-select
+            (prChange)="pickrouteUpdated($event)"
+            [radioRange]="routeList$ | async"
+              [pickRouteIdSelected]="pickRouteId"
+              >
+            </app-pick-route-select>
+          </div>
+          <div class="column">
+            <app-device-sequence-order
+             [Devices]="deviceList$ | async">
+            </app-device-sequence-order>
+          </div>
+        </div>
     </ng-container>
     <ng-container class="ocactionfooter">
         <oc-footer>

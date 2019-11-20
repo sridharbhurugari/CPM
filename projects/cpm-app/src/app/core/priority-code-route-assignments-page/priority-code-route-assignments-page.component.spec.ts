@@ -5,7 +5,6 @@ import { PriorityCodeRouteAssignmentsComponent } from '../priority-code-route-as
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
 import { of } from 'rxjs';
 import { Component, Input } from '@angular/core';
-import { IPriorityCodeRouteAssignment } from '../../api-core/data-contracts/i-pickroute';
 
 @Component({
   selector: 'app-priority-code-route-assignments',
@@ -13,7 +12,6 @@ import { IPriorityCodeRouteAssignment } from '../../api-core/data-contracts/i-pi
 })
 
 class MockPriorityCodeRouteAssignmentsComponent{
-  @Input()priorityCodeRouteAssignments: IPriorityCodeRouteAssignment[];
 }
 
 describe('PriorityCodeRouteAssignmentsPageComponent', () => {

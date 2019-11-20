@@ -1,1 +1,14 @@
-<p>device-sequence-order works!</p>
+<oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" ></div>
+      <div class="col width=id">{{'DEVICE' | translate}}</div>
+    </ng-container>
+
+    <ng-container class="ocgridbody" >
+      <div class="row" *ngFor="let device of Devices">
+        <div class="first" style="align-items: center;">
+        </div>
+        <div class="col" [attr.data-title]="'DEVICE' | translate">{{device.DeviceDescription}}</div>
+      </div>
+    </ng-container>
+</oc-grid>

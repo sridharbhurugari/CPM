@@ -29,25 +29,22 @@
 </div>
 
 <div class="row">
-    <div class="column">
+ <div class="column">
+    <oc-grid #ocgrid ocgridfilter="false">
+        <ng-container class="ocgridheader">
+          <div class="first" ></div>
+          <div class="col" ocGridColResize data-width="584" data-colwrap="true">{{'ROUTE_NAME' | translate}}</div>
+        </ng-container>
 
-<oc-grid #ocgrid ocgridfilter="false">
-  <ng-container class="ocgridheader">
-    <div class="first"></div>
-    <div class="col width=id">{{'ROUTE_NAME' | translate}}</div>
-  </ng-container>
-
-  <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let pickrouteDevice of pickrouteDevices">
-      <div class="first" style="align-items: center;">
-xx
-      </div>
-      <div class="col" [attr.data-title]="'ROUTE_NAME' | translate">{{pickrouteDevice.RouteDescription}}</div>
-    </div>
-  </ng-container>
-</oc-grid>
-
-</div>
+        <ng-container class="ocgridbody" >
+          <div class="row" *ngFor="let rad of pickrouteDevices">
+            <div class="first" style="align-items: center;">
+            </div>
+            <div class="col" [attr.data-title]="'ROUTE_NAME' | translate">{{rad.RouteDescription}}</div>
+          </div>
+        </ng-container>
+    </oc-grid>
+   </div>
 <div class="column">
     <oc-grid #ocgrid ocgridfilter="false">
         <ng-container class="ocgridheader">
@@ -58,10 +55,10 @@ xx
         <ng-container class="ocgridbody" >
           <div class="row" *ngFor="let device of devices">
             <div class="first" style="align-items: center;">
-
             </div>
             <div class="col" [attr.data-title]="'DEVICE' | translate">{{device.DeviceDescription}}</div>
           </div>
         </ng-container>
-      </oc-grid>
+    </oc-grid>
+</div>
 </div>

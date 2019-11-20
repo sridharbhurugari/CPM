@@ -3,7 +3,7 @@ import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-seq
 
 export class PickRouteDevices implements IPickRouteDevices {
     constructor(pickRouteDevices: IPickRouteDevices, pickRouteId: number) {
-        Object.assign(this, PickRouteDevices);
+        Object.assign(this, pickRouteDevices);
 
         this.SelectedFlag = pickRouteDevices.PickRouteId === pickRouteId;
    }

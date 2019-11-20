@@ -18,13 +18,15 @@ export class PriorityCodeRouteAssignmentsService {
   ) { }
 
     getRoutes(): Observable<IPickRouteDevices[]> {
+
       const url = this.ocapUrlBuilderService.buildUrl('/api/PickRoutes');
 
       return this.httpClient.get<IPickRouteDevices[]>(url, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
-  /*
-
+    }
+  }
+/*
       let device1: IDeviceSequenceOrder;
       device1 = new IDeviceSequenceOrder({
        SequenceOrder: 1,
@@ -32,11 +34,12 @@ export class PriorityCodeRouteAssignmentsService {
        DeviceDescription: 'my Device'
      });
 
-      var pickRoute: IPickRouteDevices[];
-      pickRoute = [
-        new IPickRouteDevices({PickRouteId: 123, RouteDescription: 'hi', PickRouteDevices: [device1]})
-];
+      let pr1: IPickRouteDevices;
+      pr1 = new IPickRouteDevices({PickRouteId: 123, RouteDescription: 'hi', PickRouteDevices: [device1]});
+      let pr2: IPickRouteDevices;
+      pr2 = new IPickRouteDevices({PickRouteId: 124, RouteDescription: 'hello', PickRouteDevices: [device1]});
+      let pickRoute: IPickRouteDevices[];
+      pickRoute = [pr1, pr2];
       return of(pickRoute);
-      */
-    }
-}
+*/
+

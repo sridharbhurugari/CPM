@@ -9,7 +9,7 @@
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let priorityCodePickRoute of priorityCodePickRoutes | searchPipe:searchTextFilter:searchFields"
-     (click)="navigate(priorityCodePickRoute.PriorityCodePickRouteId)">
+     (click)="navigate(priorityCodePickRoute.PickRouteId)">
       <div class="first" style="align-items: center;">
         <div class="firstcolumncolorblock" [style.background-color]="priorityCodePickRoute.PriorityColorCode"></div>
       </div>
