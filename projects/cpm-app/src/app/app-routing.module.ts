@@ -3,11 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { UnderfilledPicklistsPageComponent } from './core/underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistLinesPageComponent } from './core/underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { PriorityCodePickRoutesPageComponent } from './core/priority-code-pick-routes-page/priority-code-pick-routes-page.component';
+import { PicklistsQueueComponent } from './xr2/picklists-queue/picklists-queue.component';
 
 
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
+  { path: 'picklists/queue', component: PicklistsQueueComponent },
   { path: 'priorityCodePickRoutes', component: PriorityCodePickRoutesPageComponent },
 ];
 
