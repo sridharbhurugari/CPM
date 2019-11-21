@@ -4,6 +4,7 @@ export interface IPicklistQueueItem {
   Destination: string;
   PriorityCodeDescription: string;
   ItemCount: number;
+  FilledItemCount: number;
   Status: string;
   StatusDisplay: string;
   DeviceDescription: string;

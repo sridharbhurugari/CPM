@@ -58,7 +58,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
     picklistQueueItem.Status = newStatus;
 
     if (newStatus === 'SENT') {
-      picklistQueueItem.StatusDisplay = '0 of ' + picklistQueueItem.ItemCount;
+      picklistQueueItem.StatusDisplay = picklistQueueItem.FilledItemCount + ' of ' + picklistQueueItem.ItemCount;
     }
 
   }
