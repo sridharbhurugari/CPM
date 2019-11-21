@@ -1,3 +1,36 @@
-<p>
-  picklists-queue works!
-</p>
+<div class="cpmgridheader">
+    <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  </div>
+<oc-grid #ocgrid ocgridfilter="false">
+  <ng-container class="ocgridheader">
+    <div class="first" data-colwrap="true"></div>
+    <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}</div>
+    <div class="col width=id" ocGridColResize data-width="180" data-colwrap="true">{{'ITEMS' | translate}}</div>
+    <div class="col width-description" ocGridColResize data-width="160" data-colwrap="true">{{'STATUS' | translate}}
+    </div>
+    <div class="col width-destination" ocGridColResize data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
+    </div>
+    <div class="last width-date" ocGridColResize data-width="160" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+  </ng-container>
+  <ng-container class="ocgridbody">
+    <div class="row" *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
+      <div class="first" style="align-items: center;">
+        <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
+      </div>
+      <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">
+        <span>{{picklistQueueItem.Destination}}</span>
+        <span>{{picklistQueueItem.PriorityCode}}</span>
+      </div>
+      <div class="col width-type" [attr.data-title]="'ITEMS' | translate">{{picklistQueueItem.ItemCount}}</div>
+      <div class="col width-type" [attr.data-title]="'STATUS' | translate">{{picklistQueueItem.StatusDisplay}}</div>
+      <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
+        <span>{{picklistQueueItem.DeviceDescription}}</span>
+        <span>{{picklistQueueItem.OutputDevice}}</span>
+      </div>
+      <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
+        <oc-button-action *ngIf="picklistQueueItem.Status==='NOT SENT'" [buttonText]="'PLAY' | translate" (click)="changeStatus(picklistQueueItem, 'SENT')"></oc-button-action>
+        <oc-button-action *ngIf="picklistQueueItem.Status==='SENT'" [buttonText]="'PRINT' | translate"></oc-button-action>
+      </div>
+    </div>
+  </ng-container>
+</oc-grid>
