@@ -5,12 +5,12 @@
   <ng-container class="ocgridheader">
     <div class="first" data-colwrap="true"></div>
     <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}</div>
-    <div class="col width=id" ocGridColResize data-width="180" data-colwrap="true">{{'ITEMS' | translate}}</div>
+    <div class="col width=id" ocGridColResize data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div>
     <div class="col width-description" ocGridColResize data-width="160" data-colwrap="true">{{'STATUS' | translate}}
     </div>
     <div class="col width-destination" ocGridColResize data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
     </div>
-    <div class="last width-date" ocGridColResize data-width="160" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+    <div class="last width-date" ocGridColResize data-width="400" data-colwrap="true">{{'ACTIONS' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
@@ -28,8 +28,11 @@
         <span>{{picklistQueueItem.OutputDevice}}</span>
       </div>
       <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
-        <oc-button-action *ngIf="picklistQueueItem.Status==='NOT SENT'" [buttonText]="'PLAY' | translate" (click)="changeStatus(picklistQueueItem, 'SENT')"></oc-button-action>
-        <oc-button-action *ngIf="picklistQueueItem.Status==='SENT'" [buttonText]="'PRINT' | translate"></oc-button-action>
+        <div class="btn-group">
+            <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button"></oc-button-action>
+            <oc-button-action *ngIf="picklistQueueItem.Status==='NOT SENT'" [buttonText]="'PLAY' | translate" (click)="changeStatus(picklistQueueItem, 'SENT')"></oc-button-action>
+            <oc-button-action *ngIf="picklistQueueItem.Status==='SENT'" [buttonText]="'PRINT' | translate"></oc-button-action>
+        </div>
       </div>
     </div>
   </ng-container>

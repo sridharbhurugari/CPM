@@ -20,5 +20,6 @@
     "DEVICE": "Device",
     "ACTIONS": "Actions",
     "PLAY": "Play",
-    "PRINT": "Print"
+    "PRINT": "Print",
+    "SKIP": "Skip"
 }
