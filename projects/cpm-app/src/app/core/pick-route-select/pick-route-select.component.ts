@@ -1,31 +1,30 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-
+import { Component, OnInit, Input, EventEmitter, Output, Optional } from '@angular/core';
+'@angular/forms'
 @Component({
   selector: 'app-pick-route-select',
   templateUrl: './pick-route-select.component.html',
   styleUrls: ['./pick-route-select.component.scss']
 })
 export class PickRouteSelectComponent implements OnInit {
-  private _pickRouteIdSelected: number;
+public groupName: string = 'RadioList';
+  constructor() {
+   }
 
-
-
-  constructor() { }
   @Input()
-  radioRange: any[];
-  @Input('pickRouteIdSelected')
-  set pickRouteIdSelected(value: number) {
-    this._pickRouteIdSelected = value;
-}
-get pickRouteIdSelected(): number {
-  return this._pickRouteIdSelected;
-}
+  listMap: Map<number, string>;
+  @Input()
+  selectedId: number = 0;
+  @Input()
+  colDescription: string = 'My Description';
   @Output()
-  prChange: EventEmitter<number> = new EventEmitter<number>();
+  SelectionChange: EventEmitter<number> = new EventEmitter<number>();
   ngOnInit() {
   }
 
-  selectionChanged(event: any) {
-    this.prChange.emit(+event.value);
+  selectionChanged(selectionId: number) {
+    if (selectionId !== this.selectedId) {
+      this.selectedId = selectionId;
+      this.SelectionChange.emit(selectionId);
+    }
   }
 }

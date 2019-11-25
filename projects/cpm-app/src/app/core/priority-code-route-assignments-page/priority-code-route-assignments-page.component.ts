@@ -10,6 +10,7 @@ import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { PickRouteDevices } from '../model/pickroute-devices';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+import { SourceListMap } from 'source-list-map';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -19,7 +20,7 @@ import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-seq
 export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   pickrouteDevices$: Observable<IPickRouteDevices[]>;
   priorityCode$: Observable<IPriorityCodePickRoute >;
-  routeList$: Observable<any[]>;
+  routeList: Observable<Map<number, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
   private _pickRouteId: number;
 
@@ -43,7 +44,7 @@ ngOnInit() {
     this._pickRouteId = +prId;
     this.priorityCode$ = this.priorityCodePickRoutesService.getPriority(this.pickRouteId).pipe(shareReplay(1));
     this.pickrouteDevices$ = this.getPickrouteDevices();
-    this.routeList$ = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
+    this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
     this.deviceList$ = this.getDevices();
 }
 navigateBack() {
@@ -66,17 +67,11 @@ getDevices(): Observable<IDeviceSequenceOrder[]> {
   }));
   return ds;
 }
-
-  prdsToRadio(pks: IPickRouteDevices[]) {
-        return pks.map(this.prdToRadio);
-  }
-
-  prdToRadio(pk: IPickRouteDevices) {
-    const displayField = pk.RouteDescription;
-    const valueField = pk.PickRouteId;
-    const disabled = false;
-    return {displayField , valueField , disabled};
-  }
+prdsToRadio(pks: IPickRouteDevices[]): Map<number, string> {
+  const listMap = new Map<number, string>();
+  pks.map(p => listMap.set(p.PickRouteId, p.RouteDescription));
+  return listMap;
+}
 
   pickrouteUpdated(pickrouteId: number)  {
     this.pickRouteId = pickrouteId;

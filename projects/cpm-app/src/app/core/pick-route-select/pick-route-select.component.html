@@ -1,7 +1,33 @@
-<oc-radiobutton
-class="filters"
-[columnSpacing]="false"
-[range]="radioRange"
-[selectedItem]="pickRouteIdSelected"
-(selection)="selectionChanged($event)"></oc-radiobutton>
+<oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" ></div>
+      <div class="col width-Description" ocGridColResize [attr.data-width]="'600'">{{colDescription}}</div>
+    </ng-container>
+
+    <ng-container class="ocgridbody">
+      <div class="row" *ngFor="let item of listMap | keyvalue"
+      (click)="selectionChanged(item.key)">
+        <div class="first" style="align-items: center;">
+          <div class="radio-container"  [ngClass]="{'radio-container-inline': inline}">
+            <div class="radio-item" >
+              <input
+              id='radio_{{item.key}}'
+              class="ocRadioButton"
+              name='{{groupName}}'
+              type='radio'
+              [value]='item.key'
+              [(ngModel)] = 'selectedId'
+              [disabled]=false
+              />
+              <label class='' for='radio_{{item.key}}'>
+                  <div class="radiomark"></div>
+                  <div class="labeltext"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col width-Description" [attr.data-title]="colDescription">{{item.value}}</div>
+      </div>
+    </ng-container>
+</oc-grid>
 

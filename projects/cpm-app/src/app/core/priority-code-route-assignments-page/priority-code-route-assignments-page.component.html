@@ -11,16 +11,12 @@
         <div style=" display:flex; flex-direction:row; flex:1; overflow:hidden; height: 100%">
 
             <div style="padding:20px; flex:1;border-top:solid 2px; border-right:solid 2px; height:100%">
-                <oc-grid #ocgrid ocgridfilter="false" style="max-height:65px; padding-bottom:0px;">
-                    <ng-container class="ocgridheader">
-                      <div class="col width=id">{{'ROUTE_NAME' | translate}}</div>
-                    </ng-container>
-                </oc-grid>
-                <div style=" display:flex; padding-top:0px;flex-direction:row; flex:1; overflow-y:auto; height: 86%;">
-              <app-pick-route-select
-              (prChange)="pickrouteUpdated($event)"
-              [radioRange]="routeList$ | async"
-                [pickRouteIdSelected]="pickRouteId"
+                <div style=" display:flex; padding-top:0px;flex-direction:row; flex:1; overflow-y:auto; height: 97%;">
+               <app-pick-route-select
+               (SelectionChange)="pickrouteUpdated($event)"
+               [listMap]="routeList | async"
+               [selectedId]="pickRouteId"
+               [colDescription]="'ROUTE_NAME' | translate"
                 >
               </app-pick-route-select>
             </div>

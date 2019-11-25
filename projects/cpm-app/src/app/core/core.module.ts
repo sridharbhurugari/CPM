@@ -4,6 +4,7 @@ import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
 import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, RadioButtonModule } from '@omnicell/webcorecomponents';
+import { FormStatusImageModule } from '@omnicell/webcorecomponents/esm5/lib/form-status-image/form-status-image.module.js';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -13,7 +14,7 @@ import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
 import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page/priority-code-route-assignments-page.component';
 import { SearchPipe } from '../shared/pipes/search.pipe';
-import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
+import { PickRouteSelectModule } from './pick-route-select/pick-route-select.module';
 import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
 
 
@@ -27,7 +28,6 @@ import { DeviceSequenceOrderComponent } from './device-sequence-order/device-seq
     PriorityCodePickRoutesPageComponent,
     PriorityCodePickRoutesComponent,
     PriorityCodeRouteAssignmentsPageComponent,
-    PickRouteSelectComponent,
     DeviceSequenceOrderComponent,
     PriorityCodePickRoutesComponent
   ],
@@ -43,6 +43,8 @@ import { DeviceSequenceOrderComponent } from './device-sequence-order/device-seq
     InputsModule,
     SearchModule,
     RadioButtonModule,
+    PickRouteSelectModule,
+    FormStatusImageModule
   ]
 })
 export class CoreModule { }
