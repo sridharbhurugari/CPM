@@ -1,59 +1,26 @@
 import { Injectable } from '@angular/core';
 import { IPicklistQueueItem } from '../data-contracts/i-picklist-queue-item';
 import { Observable, of } from 'rxjs';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PicklistsQueueService {
 
-  constructor() { }
+  constructor(
+    private httpClient: HttpClient,
+    private ocapUrlBuilderService: OcapUrlBuilderService,
+    private ocapHttpHeadersService: OcapHttpHeadersService
+    ) { }
 
   get(): Observable<IPicklistQueueItem[]> {
-    return of(this.createMockPicklistQueueItems());
-  }
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues');
+    return this.httpClient.get<IPicklistQueueItem[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
 
-  createMockPicklistQueueItems(): IPicklistQueueItem[] {
-    const picklistQueueItem = {
-      PriorityCode: 'CABINET',
-      PriorityCodeColor: 'Red',
-      Destination: 'Cab 01',
-      PriorityCodeDescription: 'Cabinet',
-      ItemCount: 5,
-      FilledItemCount: 0,
-      Status: 'NOT SENT',
-      StatusDisplay: 'NOT SENT',
-      DeviceDescription: 'Dave XR2',
-      OutputDevice: 'CART'
-    };
-
-    const picklistQueueItem2 = {
-      PriorityCode: 'CABINET',
-      PriorityCodeColor: 'Red',
-      Destination: 'Cab 02',
-      PriorityCodeDescription: 'Cabinet',
-      ItemCount: 8,
-      FilledItemCount: 0,
-      Status: 'NOT SENT',
-      StatusDisplay: 'NOT SENT',
-      DeviceDescription: 'Dave XR2',
-      OutputDevice: 'CART'
-    };
-
-    const picklistQueueItem3 = {
-      PriorityCode: 'AREA',
-      PriorityCodeColor: 'Green',
-      Destination: 'OCLD_PP',
-      PriorityCodeDescription: 'Area',
-      ItemCount: 12,
-      FilledItemCount: 0,
-      Status: 'NOT SENT',
-      StatusDisplay: 'NOT SENT',
-      DeviceDescription: 'Dave XR2',
-      OutputDevice: 'CART'
-    };
-
-    var picklistQueueItems = [picklistQueueItem, picklistQueueItem2, picklistQueueItem3];
-    return picklistQueueItems;
   }
 }

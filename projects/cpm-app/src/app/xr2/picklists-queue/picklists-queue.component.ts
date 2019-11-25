@@ -5,6 +5,7 @@ import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -13,17 +14,17 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 })
 export class PicklistsQueueComponent implements AfterViewInit {
 
-  private _picklistQueueItems: IPicklistQueueItem[];
+  private _picklistQueueItems: PicklistQueueItem[];
 
   @Input()
-  set picklistQueueItems(value: IPicklistQueueItem[]) {
+  set picklistQueueItems(value: PicklistQueueItem[]) {
     this._picklistQueueItems = value;
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
 
-  get picklistQueueItems(): IPicklistQueueItem[] {
+  get picklistQueueItems(): PicklistQueueItem[] {
     return this._picklistQueueItems;
   }
 
@@ -36,8 +37,8 @@ export class PicklistsQueueComponent implements AfterViewInit {
 
   searchTextFilter: string;
 
-  searchFields = [nameof<IPicklistQueueItem>('Destination'), nameof<IPicklistQueueItem>('PriorityCodeDescription'),
-  , nameof<IPicklistQueueItem>('DeviceDescription'), , nameof<IPicklistQueueItem>('OutputDevice')]
+  searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
+  , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
 
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
@@ -54,13 +55,9 @@ export class PicklistsQueueComponent implements AfterViewInit {
       });
   }
 
-  changeStatus(picklistQueueItem: IPicklistQueueItem, newStatus: string) {
+  changeStatus(picklistQueueItem: PicklistQueueItem, newStatus: string) {
     picklistQueueItem.Status = newStatus;
-
-    if (newStatus === 'SENT') {
-      picklistQueueItem.StatusDisplay = picklistQueueItem.FilledItemCount + ' of ' + picklistQueueItem.ItemCount;
-    }
-
+    picklistQueueItem.GenerateStatusDisplay();
   }
 
 }
