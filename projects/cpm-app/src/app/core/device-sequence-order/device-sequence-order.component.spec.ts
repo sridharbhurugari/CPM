@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { GridModule } from '@omnicell/webcorecomponents';
 import { DeviceSequenceOrderComponent } from './device-sequence-order.component';
 
 describe('DeviceSequenceOrderComponent', () => {
@@ -8,7 +8,8 @@ describe('DeviceSequenceOrderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceSequenceOrderComponent ]
+      declarations: [ DeviceSequenceOrderComponent ],
+      imports: [ GridModule ]
     })
     .compileComponents();
   }));

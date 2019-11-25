@@ -23,7 +23,8 @@
             </div>
             <div style="padding:20px; flex:1;overflow-y:auto;border-top:solid 2px">
                 <app-device-sequence-order
-                [Devices]="deviceList$ | async">
+                [Devices]="deviceList$ | async"
+                [colHeader] ="'DEVICE' | translate">
                </app-device-sequence-order>
             </div>
           </div>

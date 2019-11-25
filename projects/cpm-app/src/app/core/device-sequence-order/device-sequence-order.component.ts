@@ -7,7 +7,8 @@ import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-seq
   styleUrls: ['./device-sequence-order.component.scss']
 })
 export class DeviceSequenceOrderComponent implements OnInit {
-
+  @Input()
+   colHeader: string;
   @Input()
    Devices: IDeviceSequenceOrder[];
   constructor() { }
