@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
 import { of, Observable } from 'rxjs';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -24,7 +25,10 @@ describe('PriorityCodePickRoutesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PriorityCodePickRoutesComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox ],
-      imports: [ 
+      providers: [
+        { provide: WpfActionControllerService, useVaule: { } }
+      ],
+      imports: [
         GridModule,
       ]
     })
