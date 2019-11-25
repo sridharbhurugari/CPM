@@ -10,7 +10,7 @@ describe('PickRouteSelectComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PickRouteSelectComponent ],
-      imports: [ GridModule, FormsModule, FormStatusImageModule ]
+      imports: [ GridModule, FormsModule ]
     })
     .compileComponents();
   }));
