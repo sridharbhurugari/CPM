@@ -8,10 +8,10 @@
         </div>
       </ng-container>
         <ng-container class="ocactiondetails">
-        <div style=" display:flex; flex-direction:row; flex:1; overflow:hidden; height: 100%">
+        <div style=" display:flex; flex-direction:row; flex:1; overflow:hidden ">
 
-            <div style="padding:20px; flex:1;border-top:solid 2px; border-right:solid 2px; height:100%">
-                <div style=" display:flex; padding-top:0px;flex-direction:row; flex:1; overflow-y:auto; height: 97%;">
+            <div style="flex:1;border-top:solid 4px slategrey; border-right:solid slategrey 6px; height:100%; width:100%; box-sizing: border-box;">
+                <div style=" display:flex; flex-direction:row; flex:1; overflow-y:auto; height: 100%;">
                <app-pick-route-select
                (SelectionChange)="pickrouteUpdated($event)"
                [listMap]="routeList | async"
@@ -21,7 +21,7 @@
               </app-pick-route-select>
             </div>
             </div>
-            <div style="padding:20px; flex:1;overflow-y:auto;border-top:solid 2px">
+            <div style="flex:1;overflow-y:auto; border-top:solid slategrey 4px">
                 <app-device-sequence-order
                 [Devices]="deviceList$ | async"
                 [colHeader] ="'DEVICE' | translate">

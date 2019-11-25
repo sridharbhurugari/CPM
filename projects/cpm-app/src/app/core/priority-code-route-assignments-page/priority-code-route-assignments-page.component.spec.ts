@@ -11,7 +11,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { FooterModule, LayoutModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { DeviceSequenceOrderComponent } from '../device-sequence-order/device-sequence-order.component';
 import { FormsModule } from '@angular/forms';
-import { FormStatusImageModule } from '@omnicell/webcorecomponents/esm5/lib/form-status-image/form-status-image.module';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -47,7 +46,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       ],
       imports: [
         SharedModule, FooterModule, LayoutModule, ButtonActionModule,
-        FormStatusImageModule, FormsModule, GridModule, CommonModule
+        FormsModule, GridModule, CommonModule
       ]
     })
     .overrideComponent(PriorityCodeRouteAssignmentsPageComponent, {

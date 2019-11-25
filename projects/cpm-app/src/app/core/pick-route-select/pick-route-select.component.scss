@@ -66,3 +66,6 @@ input[type="radio"].ocRadioButton:disabled + label {
   cursor: default;/*not-allowed;*/
 }
 
+:host ::ng-deep oc-grid{
+  width: 100%;
+}

@@ -4,7 +4,6 @@ import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
 import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, RadioButtonModule } from '@omnicell/webcorecomponents';
-import { FormStatusImageModule } from '@omnicell/webcorecomponents/esm5/lib/form-status-image/form-status-image.module.js';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -43,8 +42,7 @@ import { DeviceSequenceOrderComponent } from './device-sequence-order/device-seq
     InputsModule,
     SearchModule,
     RadioButtonModule,
-    PickRouteSelectModule,
-    FormStatusImageModule
-  ]
+    PickRouteSelectModule
+    ]
 })
 export class CoreModule { }
