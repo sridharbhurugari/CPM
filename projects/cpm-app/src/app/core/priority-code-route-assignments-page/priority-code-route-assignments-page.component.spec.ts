@@ -26,13 +26,9 @@ class MockPriorityCodeRouteAssignmentsComponent {
 describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   let component: PriorityCodeRouteAssignmentsPageComponent;
   let fixture: ComponentFixture<PriorityCodeRouteAssignmentsPageComponent>;
-  var router, location
 
   beforeEach(async(() => {
-    router = { navigate: () => { } };
-    spyOn(router, 'navigate');
-    location = { back: () => { } };
-    spyOn(location, 'back');
+
     TestBed.configureTestingModule({
       declarations: [ PriorityCodeRouteAssignmentsPageComponent, MockPriorityCodeRouteAssignmentsComponent,
          MockTranslatePipe, PickRouteSelectComponent, DeviceSequenceOrderComponent ],
@@ -40,9 +36,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PriorityCodeRouteAssignmentsService, useValue: { get: () => of([]) } },
         { provide: PriorityCodeRouteAssignmentsService, useValue: { getRoutes: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: WpfActionControllerService, useVaule: { } },
-        { provide: Location, useValue: location },
-        { provide: Router, useValue: router }
+        { provide: WpfActionControllerService, useVaule: { } }
       ],
       imports: [
         SharedModule, FooterModule, LayoutModule, ButtonActionModule,

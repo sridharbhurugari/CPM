@@ -1,7 +1,7 @@
 <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
       <div class="first" ></div>
-      <div class="col width-Description" ocGridColResize [attr.data-width]="'600'">{{colDescription}}</div>
+      <div class="col">{{colDescription}}</div>
     </ng-container>
 
     <ng-container class="ocgridbody" >
@@ -11,15 +11,16 @@
           <div class="radio-container" >
             <div class="radio-item" >
               <input
-              id='radio_{{item.key}}'
+              id='{{item.key}}'
               class="ocRadioButton"
               name='{{groupName}}'
               type='radio'
               [value]='item.key'
               [(ngModel)] = 'selectedId'
+
               [disabled]=false
               />
-              <label class='' for='radio_{{item.key}}'>
+              <label class='' for='{{item.key}}'>
                   <div class="radiomark"></div>
                   <div class="labeltext"></div>
               </label>
