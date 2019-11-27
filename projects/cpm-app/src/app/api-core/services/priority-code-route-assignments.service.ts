@@ -3,8 +3,7 @@ import { Observable, of } from 'rxjs';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
-import { IPickRouteDevices } from '../data-contracts/i-pickroute-devices';
-import { IDeviceSequenceOrder } from '../data-contracts/i-device-sequenceorder';
+import { IPickRouteDevice } from '../data-contracts/i-pickroute-device';
 
 @Injectable({
   providedIn: 'root'
@@ -17,29 +16,13 @@ export class PriorityCodeRouteAssignmentsService {
     private ocapHttpHeadersService: OcapHttpHeadersService
   ) { }
 
-    getRoutes(): Observable<IPickRouteDevices[]> {
+    getRoutes(): Observable<IPickRouteDevice[]> {
 
       const url = this.ocapUrlBuilderService.buildUrl('/api/PickRoutes');
 
-      return this.httpClient.get<IPickRouteDevices[]>(url, {
+      return this.httpClient.get<IPickRouteDevice[]>(url, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
   }
-/*
-      let device1: IDeviceSequenceOrder;
-      device1 = new IDeviceSequenceOrder({
-       SequenceOrder: 1,
-       DeviceId: '12',
-       DeviceDescription: 'my Device'
-     });
-
-      let pr1: IPickRouteDevices;
-      pr1 = new IPickRouteDevices({PickRouteId: 123, RouteDescription: 'hi', PickRouteDevices: [device1]});
-      let pr2: IPickRouteDevices;
-      pr2 = new IPickRouteDevices({PickRouteId: 124, RouteDescription: 'hello', PickRouteDevices: [device1]});
-      let pickRoute: IPickRouteDevices[];
-      pickRoute = [pr1, pr2];
-      return of(pickRoute);
-*/
 

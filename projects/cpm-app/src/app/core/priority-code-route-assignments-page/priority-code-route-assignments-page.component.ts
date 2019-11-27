@@ -1,4 +1,4 @@
-import { IPickRouteDevices } from '../../api-core/data-contracts/i-pickroute-devices';
+import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
 import { map, shareReplay } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -8,9 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
-import { PickRouteDevices } from '../model/pickroute-devices';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
-import { SourceListMap } from 'source-list-map';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -18,7 +16,7 @@ import { SourceListMap } from 'source-list-map';
   styleUrls: ['./priority-code-route-assignments-page.component.scss']
 })
 export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
-  pickrouteDevices$: Observable<IPickRouteDevices[]>;
+  pickrouteDevices$: Observable<IPickRouteDevice[]>;
   priorityCode$: Observable<IPriorityCodePickRoute >;
   routeList: Observable<Map<number, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
@@ -51,23 +49,23 @@ navigateBack() {
     this.wpfActionControllerService.ExecuteBackAction();
   }
 
-getPickrouteDevices(): Observable<IPickRouteDevices[]> {
+getPickrouteDevices(): Observable<IPickRouteDevice[]> {
  return this.priorityCodeRouteAssignmentsService.getRoutes().pipe(map(prd => {
-    return _.orderBy(prd, (x: IPickRouteDevices) => [x.RouteDescription]);
+    return _.orderBy(prd, (x: IPickRouteDevice) => [x.RouteDescription]);
 }), shareReplay(1));
 }
 
 getDevices(): Observable<IDeviceSequenceOrder[]> {
   const prId = this._pickRouteId;
   const ds = this.pickrouteDevices$.pipe(map(rts => {
-  const prd = rts.find(rt => rt.PickRouteId === prId);
-  const dl = prd.PickRouteDevices;
-  const sdl = _.orderBy(dl, (d => d.SequenceOrder));
-  return sdl;
+    const prd = rts.filter(i => i.PickRouteId === prId)[0];
+    const dl = prd.PickRouteDevices;
+    const sdl = _.orderBy(dl, (d => d.SequenceOrder));
+    return sdl;
   }));
   return ds;
 }
-prdsToRadio(pks: IPickRouteDevices[]): Map<number, string> {
+prdsToRadio(pks: IPickRouteDevice[]): Map<number, string> {
   const listMap = new Map<number, string>();
   pks.map(p => listMap.set(p.PickRouteId, p.RouteDescription));
   return listMap;

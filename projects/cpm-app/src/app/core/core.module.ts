@@ -13,7 +13,7 @@ import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
 import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page/priority-code-route-assignments-page.component';
 import { SearchPipe } from '../shared/pipes/search.pipe';
-import { PickRouteSelectModule } from './pick-route-select/pick-route-select.module';
+import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
 import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
 
 
@@ -28,7 +28,8 @@ import { DeviceSequenceOrderComponent } from './device-sequence-order/device-seq
     PriorityCodePickRoutesComponent,
     PriorityCodeRouteAssignmentsPageComponent,
     DeviceSequenceOrderComponent,
-    PriorityCodePickRoutesComponent
+    PriorityCodePickRoutesComponent,
+    PickRouteSelectComponent
   ],
   imports: [
     CommonModule,
@@ -41,8 +42,7 @@ import { DeviceSequenceOrderComponent } from './device-sequence-order/device-seq
     SharedModule,
     InputsModule,
     SearchModule,
-    RadioButtonModule,
-    PickRouteSelectModule
+    RadioButtonModule
     ]
 })
 export class CoreModule { }
