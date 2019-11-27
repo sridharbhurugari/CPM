@@ -7,6 +7,8 @@ import { environment } from '../environments/environment';
 
 import { CoreModule } from './core/core.module';
 import { ApiCoreModule } from './api-core/api-core.module';
+import { ApiXr2Module } from './api-xr2/api-xr2.module';
+import { Xr2Module } from './xr2/xr2.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -29,6 +31,8 @@ import { RouterModule } from '@angular/router';
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     CoreModule,
+    Xr2Module,
+    ApiXr2Module,
     ApiCoreModule,
     TranslateModule.forRoot({
             loader: {
