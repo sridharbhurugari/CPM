@@ -21,5 +21,7 @@
     "ACTIONS": "Actions",
     "PLAY": "Play",
     "PRINT": "Print",
-    "SKIP": "Skip"
+    "SKIP": "Skip",
+    "NOTSENT": "NOT SENT",
+    "OF": "of"
 }

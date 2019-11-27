@@ -13,17 +13,17 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   PriorityCodeDescription: string;
   ItemCount: number;
   FilledItemCount: number;
-  Status: string;
+  Status: number;
   StatusDisplay: string;
   DeviceDescription: string;
   OutputDevice: string;
 
   GenerateStatusDisplay() {
-    if (this.Status === 'SENT') {
-      this.StatusDisplay = this.FilledItemCount + ' of ' + this.ItemCount;
+    if (this.Status === 2) {
+      this.StatusDisplay = 'OF';
       return;
     }
 
-    this.StatusDisplay = this.Status;
+    this.StatusDisplay = 'NOTSENT';
   }
 }

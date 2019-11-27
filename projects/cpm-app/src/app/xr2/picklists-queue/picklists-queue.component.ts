@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { WindowService } from '../../shared/services/window-service';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, GridModule } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
@@ -55,7 +55,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
       });
   }
 
-  changeStatus(picklistQueueItem: PicklistQueueItem, newStatus: string) {
+  changeStatus(picklistQueueItem: PicklistQueueItem, newStatus: number) {
     picklistQueueItem.Status = newStatus;
     picklistQueueItem.GenerateStatusDisplay();
   }
