@@ -46,6 +46,9 @@ ngOnInit() {
     this.priorityCode$ = this.priorityCodePickRoutesService.getPriority(this._priorityCodePickRouteId).pipe(single(), shareReplay(1));
     // we want the specific pick route id from the priority code
     // this._pickRouteId = this.priorityCode$.pipe(pluck('PickRouteId'))[0];
+    this.priorityCode$.subscribe(x => {
+      this.pickRouteId = x.PickRouteId;
+    });
     this.pickrouteDevices$ = this.getPickrouteDevices();
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
  //   this.deviceList$ = this.getDevices();
