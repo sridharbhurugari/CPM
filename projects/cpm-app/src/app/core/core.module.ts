@@ -15,6 +15,7 @@ import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route
 import { SearchPipe } from '../shared/pipes/search.pipe';
 import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
 import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -42,7 +43,8 @@ import { DeviceSequenceOrderComponent } from './device-sequence-order/device-seq
     SharedModule,
     InputsModule,
     SearchModule,
-    RadioButtonModule
+    RadioButtonModule,
+    FormsModule
     ]
 })
 export class CoreModule { }

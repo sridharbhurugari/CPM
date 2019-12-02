@@ -4,12 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { Component, OnInit, Input, EventEmitter, Output, Optional } from '@angular/core';
 
-@NgModule({
-  imports: [CommonModule, FormsModule, GridModule],
-  declarations: [PickRouteSelectComponent],
-  exports: [PickRouteSelectComponent]
-})
-
 @Component({
   selector: 'app-pick-route-select',
   templateUrl: './pick-route-select.component.html',

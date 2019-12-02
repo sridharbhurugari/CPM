@@ -1,4 +1,5 @@
 {
+  "ACTIONS": "Actions",
   "BACK": "Back",
   "CANCEL": "Cancel",
   "COMMA_SEPARATOR": ",",
@@ -12,10 +13,14 @@
   "ITEMS": "Items",
   "ORDER_ID": "ID",
   "PATIENTS": "Patients",
+  "PLAY": "Play",
+  "PRINT": "Print",
   "QTY_FILLED_REQUESTED": "Filled / Req",
   "ROUTE": "Route",
   "ROUTE_ASSIGNMENT": "Route Assignment",
   "ROUTE_NAME": "Route Name",
+  "SKIP": "Skip",
+  "STATUS": "Status",
   "TYPE": "Type",
   "UNDERFILLED": "Underfilled"
 }
