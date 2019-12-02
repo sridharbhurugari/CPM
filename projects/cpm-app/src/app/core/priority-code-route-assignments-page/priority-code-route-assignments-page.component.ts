@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
@@ -29,7 +29,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
   set pickRouteId(value: number) {
       this._pickRouteId = value;
-      this.deviceList$ = this.getDevices(this._pickRouteId);
+      this.setDevices(this._pickRouteId, this.pickrouteDevices$);
   }
 
   titleHeader = '\'ROUTE_ASSIGNMENT\' | translate';
@@ -44,14 +44,13 @@ ngOnInit() {
     const pcprId =  this.route.snapshot.queryParamMap.get('priorityCodePickRouteId');
     this._priorityCodePickRouteId = +pcprId;
     this.priorityCode$ = this.priorityCodePickRoutesService.getPriority(this._priorityCodePickRouteId).pipe(single(), shareReplay(1));
-    // we want the specific pick route id from the priority code
-    // this._pickRouteId = this.priorityCode$.pipe(pluck('PickRouteId'))[0];
-    this.priorityCode$.subscribe(x => {
-      this.pickRouteId = x.PickRouteId;
-    });
     this.pickrouteDevices$ = this.getPickrouteDevices();
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
- //   this.deviceList$ = this.getDevices();
+    forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
+      this.pickRouteId = results[0].PickRouteId;
+      this.setDevices(results[0].PickRouteId, of(results[1]));
+    }));
+    this.priorityCode$.subscribe(pc => this.pickRouteId = pc.PickRouteId);
 }
 navigateBack() {
     this.wpfActionControllerService.ExecuteBackAction();
@@ -63,10 +62,9 @@ getPickrouteDevices(): Observable<IPickRouteDevice[]> {
 }), shareReplay(1));
 }
 
-getDevices(prId: number): Observable<IDeviceSequenceOrder[]> {
-  // const prId = this._pickRouteId;
-// find and filter are not working with error: reference
-  const ds = this.pickrouteDevices$.pipe(map(rts => {
+setDevices(prId: number, allPrd: Observable<IPickRouteDevice[]>): void{
+
+  this.deviceList$ = allPrd.pipe(map(rts => {
     let prd: IPickRouteDevice;
     for (const r of rts) {
       if (r.PickRouteId === prId) {
@@ -74,22 +72,9 @@ getDevices(prId: number): Observable<IDeviceSequenceOrder[]> {
           break;
       }
     }
-      const sdl = _.orderBy(prd.PickRouteDevices, (d => d.SequenceOrder));
-      return sdl;
+    const sdl = _.orderBy(prd.PickRouteDevices, (d => d.SequenceOrder));
+    return sdl;
     }));
-    // let ds = this.pickrouteDevices$.pipe(map(rts => {
-    //   let prds: IPickRouteDevice[] = rts.filter((i) => rts.map((r) => r.PickRouteId === this._pickRouteId));
-    //   let prd: IPickRouteDevice = prds[0];
-    //   const dl:IDeviceSequenceOrder[] = prd.PickRouteDevices;
-    //   const sdl = _.orderBy(dl, (d => d.SequenceOrder));
-    //   return sdl;
-    //   }));
-
-
-    // let ds:Observable<IDeviceSequenceOrder[]> = this.pickrouteDevices$.pipe(map(rts => {
-    // return _.orderBy(rts.find(prds => prds.PickRouteId === this._pickRouteId)[0].PickRouteDevices, (d => d.SequenceOrder));
-    // }));
-    return ds;
 }
 prdsToRadio(pks: IPickRouteDevice[]): Map < number, string > {
   const listMap = new Map<number, string>();
