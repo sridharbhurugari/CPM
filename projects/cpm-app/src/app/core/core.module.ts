@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
-
-import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, RadioButtonModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -16,8 +15,6 @@ import { SearchPipe } from '../shared/pipes/search.pipe';
 import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
 import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
 import { FormsModule } from '@angular/forms';
-
-
 
 @NgModule({
   declarations: [
@@ -43,7 +40,6 @@ import { FormsModule } from '@angular/forms';
     SharedModule,
     InputsModule,
     SearchModule,
-    RadioButtonModule,
     FormsModule
     ]
 })

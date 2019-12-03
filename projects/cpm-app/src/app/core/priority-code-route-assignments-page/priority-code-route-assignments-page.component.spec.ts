@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 
 @Component({
   selector: 'app-priority-code-route-assignments',
@@ -33,10 +34,12 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       declarations: [ PriorityCodeRouteAssignmentsPageComponent, MockPriorityCodeRouteAssignmentsComponent,
          MockTranslatePipe, PickRouteSelectComponent, DeviceSequenceOrderComponent ],
       providers: [
-        { provide: PriorityCodeRouteAssignmentsService, useValue: { get: () => of([]) } },
-        { provide: PriorityCodeRouteAssignmentsService, useValue: { getRoutes: () => of() } },
+        { provide: PriorityCodeRouteAssignmentsService, useValue: { getRoutes: () => of()}},
+        { provide: PriorityCodePickRoutesService, useValue: { getPriority: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: WpfActionControllerService, useVaule: { } }
+        { provide: WpfActionControllerService, useVaule: { }
+
+      }
       ],
       imports: [
         SharedModule, FooterModule, LayoutModule, ButtonActionModule,

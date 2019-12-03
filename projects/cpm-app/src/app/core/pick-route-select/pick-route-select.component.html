@@ -5,7 +5,7 @@
     </ng-container>
 
     <ng-container class="ocgridbody" >
-      <div class="row #selectionRow" *ngFor="let item of listMap | keyvalue"
+      <div class="row selectionRow" *ngFor="let item of listMap | keyvalue"
       [id] = "item.key"
       (click)="selectionChanged(item.key)">
         <div class="first" style="align-items: center;">

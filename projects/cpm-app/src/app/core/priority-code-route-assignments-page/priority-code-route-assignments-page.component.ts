@@ -29,7 +29,9 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
   set pickRouteId(value: number) {
       this._pickRouteId = value;
-      this.setDevices(this._pickRouteId, this.pickrouteDevices$);
+      this.deviceList$ = this.pickrouteDevices$.pipe(map(results => {
+        return this.setDevices(this.pickRouteId, results);
+      }));
   }
 
   titleHeader = '\'ROUTE_ASSIGNMENT\' | translate';
@@ -46,11 +48,11 @@ ngOnInit() {
     this.priorityCode$ = this.priorityCodePickRoutesService.getPriority(this._priorityCodePickRouteId).pipe(single(), shareReplay(1));
     this.pickrouteDevices$ = this.getPickrouteDevices();
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
-    forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
+    this.deviceList$ = forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
       this.pickRouteId = results[0].PickRouteId;
-      this.setDevices(results[0].PickRouteId, of(results[1]));
+      return this.setDevices(this.pickRouteId, results[1]);
     }));
-    this.priorityCode$.subscribe(pc => this.pickRouteId = pc.PickRouteId);
+    // this.priorityCode$.subscribe(pc => this.pickRouteId = pc.PickRouteId);
 }
 navigateBack() {
     this.wpfActionControllerService.ExecuteBackAction();
@@ -62,11 +64,9 @@ getPickrouteDevices(): Observable<IPickRouteDevice[]> {
 }), shareReplay(1));
 }
 
-setDevices(prId: number, allPrd: Observable<IPickRouteDevice[]>): void{
-
-  this.deviceList$ = allPrd.pipe(map(rts => {
+setDevices(prId: number, allPrd: IPickRouteDevice[]): IDeviceSequenceOrder[] {
     let prd: IPickRouteDevice;
-    for (const r of rts) {
+    for (const r of allPrd) {
       if (r.PickRouteId === prId) {
           prd = r;
           break;
@@ -74,8 +74,8 @@ setDevices(prId: number, allPrd: Observable<IPickRouteDevice[]>): void{
     }
     const sdl = _.orderBy(prd.PickRouteDevices, (d => d.SequenceOrder));
     return sdl;
-    }));
-}
+    }
+
 prdsToRadio(pks: IPickRouteDevice[]): Map < number, string > {
   const listMap = new Map<number, string>();
   pks.map(p => listMap.set(p.PickRouteId, p.RouteDescription));
