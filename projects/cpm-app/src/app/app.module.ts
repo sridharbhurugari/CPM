@@ -18,7 +18,8 @@ import { ProgressAnimationModule,
          ProgressbarModule,
          FooterModule,
          ProgressbarService,
-         ProgressbarInterceptor
+         ProgressbarInterceptor,
+         PopupDialogService
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
 import { RouterModule } from '@angular/router';
@@ -54,7 +55,7 @@ import { RouterModule } from '@angular/router';
       provide: HTTP_INTERCEPTORS,
       useClass: ProgressbarInterceptor,
       multi: true
-    },
+    }, PopupDialogService
   ],
   bootstrap: [AppComponent]
 })

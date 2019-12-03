@@ -23,5 +23,7 @@
     "PRINT": "Print",
     "SKIP": "Skip",
     "NOTSENT": "NOT SENT",
-    "OF": "of"
+    "OF": "of",
+    "FAILEDTOSAVE_HEADER_TEXT": "Failed to Save",
+    "FAILEDTOSAVE_BODY_TEXT": "Please try again."
 }
