@@ -4,13 +4,13 @@ import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { SearchBoxComponent, GridModule } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 import * as _ from 'lodash';
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
-import { TranslateDirective, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-picklists-queue',
