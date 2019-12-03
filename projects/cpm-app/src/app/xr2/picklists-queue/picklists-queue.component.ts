@@ -71,6 +71,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
+      pickListLineDetail.Quantity = itemPicklistLine.Qty;
       globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
     });
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
