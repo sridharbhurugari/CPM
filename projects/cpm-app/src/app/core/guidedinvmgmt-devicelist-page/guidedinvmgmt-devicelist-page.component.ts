@@ -36,7 +36,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit {
     //   return guidedDeviceListItems.map(p => new GuidedDeviceList(p));
     // }));
 
-    this.guidedDeviceList = this._mockList;
+    this.guidedDeviceList = this._mockList.sort((a,b) => a.DeviceDescription.localeCompare(b.DeviceDescription));
   }
 
 }
