@@ -12,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
 import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes-page/priority-code-pick-routes-page.component';
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
 import { SearchPipe } from '../shared/pipes/search.pipe';
+import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist-page/guidedinvmgmt-devicelist-page.component';
 
 
 
@@ -22,7 +23,8 @@ import { SearchPipe } from '../shared/pipes/search.pipe';
     UnderfilledPicklistLinesPageComponent,
     UnderfilledPicklistLinesComponent,
     PriorityCodePickRoutesPageComponent,
-    PriorityCodePickRoutesComponent
+    PriorityCodePickRoutesComponent,
+    GuidedInvMgmtDevicelistPageComponent
   ],
   imports: [
     CommonModule,

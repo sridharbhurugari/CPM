@@ -1,0 +1,26 @@
+<oc-grid #ocgrid ocgridfilter="false">
+  <ng-container class="ocgridheader">
+      <div class="first" data-colwrap="true"></div>
+      <div class="col width-device" ocGridColResize data-width="180" data-colwrap="true">{{'DEVICE' | translate}}</div>
+      <div class="col width-lastcount" ocGridColResize data-width="380" data-colwrap="true">{{'LAST CYCLE COUNT DATE' | translate}}</div>
+      <div class="last width-exp" ocGridColResize data-width="414" data-colwrap="true">{{'EARLIESTEXPDATE' | translate}}</div>
+  </ng-container>
+  <ng-container class="ocgridbody">
+    <div class="row" *ngFor="let guidedDevice of guidedDeviceList">
+        <div class="first" style="align-items: center;"></div>
+        <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{guidedDevice.DeviceDescription}}</div>
+        <div class="col width-lastcount" [attr.data-title]="'LAST CYCLE COUNT DATE' | translate">
+          <div [ngPlural]="guidedDevice.NumberOfLocationsWithOutdatedCycleCount">
+              <ng-template ngPluralCase="=1">{{guidedDevice.NumberOfLocationsWithOutdatedCycleCount}} {{'BIN' | translate}}</ng-template>
+              <ng-template ngPluralCase="other">{{guidedDevice.NumberOfLocationsWithOutdatedCycleCount}} {{'BINS' | translate}}</ng-template>
+          </div>
+        </div>
+        <div class="last width-exp" [attr.data-title]="'EARLIESTEXPDATE' | translate">
+            <div [ngPlural]="guidedDevice.NumberOfLocationsExpiringSoon">
+                <ng-template ngPluralCase="=1">{{guidedDevice.NumberOfLocationsExpiringSoon}} {{'BIN' | translate}}</ng-template>
+                <ng-template ngPluralCase="other">{{guidedDevice.NumberOfLocationsExpiringSoon}} {{'BINS' | translate}}</ng-template>
+            </div>
+          </div>
+    </div>
+  </ng-container>
+</oc-grid>
