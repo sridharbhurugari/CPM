@@ -19,7 +19,6 @@ export class PicklistsQueuePageComponent implements OnInit {
 
   ngOnInit() {
     this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
-      //return _.orderBy(x, (p: IPicklistQueueItem) => p.PriorityCode);
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
       return displayObjects;
     }), shareReplay(1));
