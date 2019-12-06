@@ -1,3 +1,18 @@
 :host{
   height:100%;
 }
+
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+
+.searchbox{
+  width: 400px; 
+  align-self: right;
+}
+
+.badge {
+  position: relative;
+  bottom: 10px;
+  right: -100px;
+}

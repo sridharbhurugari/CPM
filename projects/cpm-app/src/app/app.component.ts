@@ -37,7 +37,7 @@ export class AppComponent implements AfterViewInit {
       })
 
       localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
-      translate.setDefaultLang(ocap.userLocale);
+      translate.setDefaultLang(ocap.userLocale || 'en-US');
     }
   }
 

@@ -1,26 +1,41 @@
-<oc-grid #ocgrid ocgridfilter="false">
-  <ng-container class="ocgridheader">
-      <div class="first" data-colwrap="true"></div>
-      <div class="col width-device" ocGridColResize data-width="180" data-colwrap="true">{{'DEVICE' | translate}}</div>
-      <div class="col width-lastcount" ocGridColResize data-width="380" data-colwrap="true">{{'LAST CYCLE COUNT DATE' | translate}}</div>
-      <div class="last width-exp" ocGridColResize data-width="414" data-colwrap="true">{{'EARLIEST EXPIRATION DATE' | translate}}</div>
-  </ng-container>
-  <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let guidedDevice of guidedDeviceList">
-        <div class="first" style="align-items: center;"></div>
-        <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{guidedDevice.DeviceDescription}}</div>
-        <div class="col width-lastcount" [attr.data-title]="'LAST CYCLE COUNT DATE' | translate">
-          <div [ngPlural]="guidedDevice.NumberOfLocationsWithOutdatedCycleCount">
-              <ng-template ngPluralCase="=1">{{guidedDevice.NumberOfLocationsWithOutdatedCycleCount}} {{'BIN' | translate}}</ng-template>
-              <ng-template ngPluralCase="other">{{guidedDevice.NumberOfLocationsWithOutdatedCycleCount}} {{'BINS' | translate}}</ng-template>
-          </div>
-        </div>
-        <div class="last width-exp" [attr.data-title]="'EARLIEST EXPIRATION DATE' | translate">
-            <div [ngPlural]="guidedDevice.NumberOfLocationsExpiringSoon">
-                <ng-template ngPluralCase="=1">{{guidedDevice.NumberOfLocationsExpiringSoon}} {{'BIN' | translate}}</ng-template>
-                <ng-template ngPluralCase="other">{{guidedDevice.NumberOfLocationsExpiringSoon}} {{'BINS' | translate}}</ng-template>
+<oc-action-layout>
+  <ng-container class="ocactiondetails">
+      <div class="cpmheaderrow">
+        <app-header-container></app-header-container>
+        <oc-search-box class="searchbox" #searchBox placeHolderText="Search"></oc-search-box>
+      </div>
+    <ng-container>
+      <oc-grid #ocgrid ocgridfilter="false">
+        <ng-container class="ocgridheader">
+            <div class="first" data-colwrap="true"></div>
+            <div class="col width-device"  ocGridColResize data-width="180" data-colwrap="true">{{'DEVICE' | translate}} <oc-svgicon icon="up"></oc-svgicon></div>
+            <div class="col width-lastcount" ocGridColResize data-width="380" data-colwrap="true">{{'LAST_CYCLE_COUNT_DATE' | translate}}</div>
+            <div class="last width-exp" ocGridColResize data-width="414" data-colwrap="true">{{'EARLIEST_EXPIRATION_DATE' | translate}}</div>
+        </ng-container>
+        <ng-container class="ocgridbody">
+          <div class="row" *ngFor="let guidedDevice of guidedDeviceList">
+              <div class="first" style="align-items: center;"></div>
+              <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{guidedDevice.DeviceDescription}}</div>
+              <div class="col width-lastcount" [attr.data-title]="'LAST_CYCLE_COUNT_DATE' | translate">
+                <div [ngPlural]="guidedDevice.NumberOfLocationsWithOutdatedCycleCount">
+                    <ng-template ngPluralCase="=1">{{guidedDevice.NumberOfLocationsWithOutdatedCycleCount}} {{'BIN' | translate}}</ng-template>
+                    <ng-template ngPluralCase="other">{{guidedDevice.NumberOfLocationsWithOutdatedCycleCount}} {{'BINS' | translate}}</ng-template>
+                </div>
+              </div>
+              <div class="last width-exp" [attr.data-title]="'EARLIEST_EXPIRATION_DATE' | translate">
+                <div>
+                  <span style="float: left; width: 90%;" [ngPlural]="guidedDevice.NumberOfLocationsExpiringSoon">
+                    <ng-template ngPluralCase="=1"> {{guidedDevice.NumberOfLocationsExpiringSoon}} {{'BIN' | translate}} </ng-template>
+                      <ng-template ngPluralCase="other"> {{guidedDevice.NumberOfLocationsExpiringSoon}} {{'BINS' | translate}} </ng-template>
+                  </span>
+                  <span>
+                    <oc-svgicon *ngIf="guidedDevice.ContainsExpiredItem" icon="warning" theme="dark"></oc-svgicon>  
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-    </div>
+        </ng-container>
+      </oc-grid>
+    </ng-container>
   </ng-container>
-</oc-grid>
+</oc-action-layout>

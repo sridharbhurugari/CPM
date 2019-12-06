@@ -21,5 +21,9 @@
     "ACTIONS": "Actions",
     "PLAY": "Play",
     "PRINT": "Print",
-    "SKIP": "Skip"
+    "SKIP": "Skip",
+    "BIN": "Bin",
+    "BINS": "Bins",
+    "LAST_CYCLE_COUNT_DATE": "Cycle Count Due",
+    "EARLIEST_EXPIRATION_DATE": "Earliest Expiration Due"
 }

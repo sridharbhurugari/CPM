@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
-import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -37,6 +37,6 @@ import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist
     SharedModule,
     InputsModule,
     SearchModule,
-  ]
-})
+    SvgIconModule,
+  ],})
 export class CoreModule { }

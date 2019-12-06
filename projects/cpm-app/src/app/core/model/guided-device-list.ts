@@ -3,6 +3,8 @@ import { IGuidedDeviceList } from '../../api-core/data-contracts/i-guided-device
 export class GuidedDeviceList implements IGuidedDeviceList {
   constructor(guidedDeviceList: IGuidedDeviceList){
     Object.assign(this, guidedDeviceList);
+
+    this.ContainsExpiredItem = this.EarliestExpirationDateInDevice >= new Date;
   }
 
   DeviceId: number;
@@ -10,4 +12,6 @@ export class GuidedDeviceList implements IGuidedDeviceList {
   NumberOfLocationsWithOutdatedCycleCount: number;
   NumberOfLocationsExpiringSoon: number;
   EarliestExpirationDateInDevice: Date;
+
+  ContainsExpiredItem: boolean;
 }
