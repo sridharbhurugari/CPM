@@ -13,8 +13,14 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 
 export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
-  guidedDeviceList: GuidedDeviceList[];
+  displayGuidedDeviceList: GuidedDeviceList[];
   private _guidedDeviceList: GuidedDeviceList[];
+  sortColumn: string;
+  sortAsc: boolean;
+  
+  readonly deviceColumn = "DeviceDescription";
+  readonly cycleCountColumn = "NumberOfLocationsWithOutdatedCycleCount";
+  readonly expiringSoonColumn = "NumberOfLocationsExpiringSoon";
 
   private _mockList = [
     {
@@ -47,12 +53,13 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   constructor(private guidedDeviceListService: GuidedDeviceListService) { }
 
   ngOnInit() {
-    // this.guidedDeviceList = this.guidedDeviceListService.get().pipe(map(guidedDeviceListItems => {
+    this.sortColumn = this.deviceColumn;
+    this.sortAsc = true;
+    // this.displayGuidedDeviceList = this._guidedDeviceList = this.guidedDeviceListService.get().pipe(map(guidedDeviceListItems => {
     //   return guidedDeviceListItems.map(p => new GuidedDeviceList(p));
     // }));
 
-    this._guidedDeviceList = this._mockList.sort((a,b) => a.DeviceDescription.localeCompare(b.DeviceDescription));
-    this.guidedDeviceList = this._guidedDeviceList;
+    this.displayGuidedDeviceList = this._guidedDeviceList = this._mockList.sort((a,b) => a.DeviceDescription.localeCompare(b.DeviceDescription));
   }
 
   ngAfterViewInit() {
@@ -64,8 +71,45 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
       )
       .subscribe(data => {
         console.log(data);
-        this.guidedDeviceList = this._guidedDeviceList.filter((x) => x.DeviceDescription.toLocaleLowerCase().includes(data.toLocaleLowerCase()));
+        this.displayGuidedDeviceList = this._guidedDeviceList.filter((x) => x.DeviceDescription.toLocaleLowerCase().includes(data.toLocaleLowerCase()));
       });
+  }
+
+  sort(column: string){
+    if(column != this.sortColumn){
+      this.sortAsc = true;
+    }
+
+    if(column==this.deviceColumn){
+      this.displayGuidedDeviceList = this._guidedDeviceList.sort((a,b) => {
+        if(this.sortAsc){
+          return b.DeviceDescription.localeCompare(a.DeviceDescription);
+        }else{
+          return a.DeviceDescription.localeCompare(b.DeviceDescription);
+        }
+      });
+    }
+    if(column==this.cycleCountColumn){
+      this.displayGuidedDeviceList = this._guidedDeviceList.sort((a,b) => {
+        if(this.sortAsc){
+          return b.NumberOfLocationsWithOutdatedCycleCount - a.NumberOfLocationsWithOutdatedCycleCount;
+        }else{
+          return a.NumberOfLocationsWithOutdatedCycleCount - b.NumberOfLocationsWithOutdatedCycleCount;
+        }
+      });
+    }
+    if(column==this.expiringSoonColumn){
+      this.displayGuidedDeviceList = this._guidedDeviceList.sort((a,b) => {
+        if(this.sortAsc){
+          return b.NumberOfLocationsExpiringSoon - a.NumberOfLocationsExpiringSoon;
+        }else{
+          return a.NumberOfLocationsExpiringSoon - b.NumberOfLocationsExpiringSoon;
+        }
+      });
+    }
+
+    this.sortColumn = column;
+    this.sortAsc = !this.sortAsc;
   }
 
 }
