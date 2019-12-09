@@ -13,8 +13,8 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 
 export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
-  displayGuidedDeviceList: GuidedDeviceList[];
-  private _guidedDeviceList: GuidedDeviceList[];
+  displayGuidedDeviceList: Observable<GuidedDeviceList[]>;
+  private _guidedDeviceList: Observable<GuidedDeviceList[]>;
   sortColumn: string;
   sortAsc: boolean;
   
@@ -22,44 +22,14 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   readonly cycleCountColumn = "NumberOfLocationsWithOutdatedCycleCount";
   readonly expiringSoonColumn = "NumberOfLocationsExpiringSoon";
 
-  private _mockList = [
-    {
-        DeviceId: 79, 
-        DeviceDescription: 'Carousel2',
-        EarliestExpirationDateInDevice: new Date(),
-        NumberOfLocationsExpiringSoon: 1,
-        NumberOfLocationsWithOutdatedCycleCount: 10,
-        ContainsExpiredItem : true
-    },
-    {
-      DeviceId: 79, 
-      DeviceDescription: 'Shelf',
-      EarliestExpirationDateInDevice: new Date('12/5/2020'),
-      NumberOfLocationsExpiringSoon: 3,
-      NumberOfLocationsWithOutdatedCycleCount: 4,
-      ContainsExpiredItem : false
-    },
-    {
-      DeviceId: 79, 
-      DeviceDescription: 'Carousel1',
-      EarliestExpirationDateInDevice: new Date('12/5/2019'),
-      NumberOfLocationsExpiringSoon: 2,
-      NumberOfLocationsWithOutdatedCycleCount: 0,
-      ContainsExpiredItem : true
-    },
-  ];
-
-
   constructor(private guidedDeviceListService: GuidedDeviceListService) { }
 
   ngOnInit() {
     this.sortColumn = this.deviceColumn;
     this.sortAsc = true;
-    // this.displayGuidedDeviceList = this._guidedDeviceList = this.guidedDeviceListService.get().pipe(map(guidedDeviceListItems => {
-    //   return guidedDeviceListItems.map(p => new GuidedDeviceList(p));
-    // }));
-
-    this.displayGuidedDeviceList = this._guidedDeviceList = this._mockList.sort((a,b) => a.DeviceDescription.localeCompare(b.DeviceDescription));
+    this.displayGuidedDeviceList = this._guidedDeviceList = this.guidedDeviceListService.get().pipe(map(guidedDeviceListItems => {
+       return guidedDeviceListItems.map(p => new GuidedDeviceList(p)).sort((a,b) => a.DeviceDescription.localeCompare(b.DeviceDescription));
+    }));
   }
 
   ngAfterViewInit() {
@@ -71,7 +41,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
       )
       .subscribe(data => {
         console.log(data);
-        this.displayGuidedDeviceList = this._guidedDeviceList.filter((x) => x.DeviceDescription.toLocaleLowerCase().includes(data.toLocaleLowerCase()));
+        this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(p => p.filter((x) => x.DeviceDescription.toLocaleLowerCase().includes(data.toLocaleLowerCase()))));
       });
   }
 
@@ -81,31 +51,31 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
     }
 
     if(column==this.deviceColumn){
-      this.displayGuidedDeviceList = this._guidedDeviceList.sort((a,b) => {
+      this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(o => o.sort((a,b) => {
         if(this.sortAsc){
           return b.DeviceDescription.localeCompare(a.DeviceDescription);
         }else{
           return a.DeviceDescription.localeCompare(b.DeviceDescription);
         }
-      });
+      })));
     }
     if(column==this.cycleCountColumn){
-      this.displayGuidedDeviceList = this._guidedDeviceList.sort((a,b) => {
+      this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(o => o.sort((a,b) => {
         if(this.sortAsc){
           return b.NumberOfLocationsWithOutdatedCycleCount - a.NumberOfLocationsWithOutdatedCycleCount;
         }else{
           return a.NumberOfLocationsWithOutdatedCycleCount - b.NumberOfLocationsWithOutdatedCycleCount;
         }
-      });
+      })));
     }
     if(column==this.expiringSoonColumn){
-      this.displayGuidedDeviceList = this._guidedDeviceList.sort((a,b) => {
+      this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(o => o.sort((a,b) => {
         if(this.sortAsc){
           return b.NumberOfLocationsExpiringSoon - a.NumberOfLocationsExpiringSoon;
         }else{
           return a.NumberOfLocationsExpiringSoon - b.NumberOfLocationsExpiringSoon;
         }
-      });
+      })));
     }
 
     this.sortColumn = column;
