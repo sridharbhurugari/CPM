@@ -1,0 +1,34 @@
+<oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" ></div>
+      <div class="col">{{colDescription}}</div>
+    </ng-container>
+
+    <ng-container class="ocgridbody" >
+      <div class="row selectionRow" *ngFor="let item of listMap | keyvalue"
+      [id] = "item.key"
+      (click)="selectionChanged(item.key)">
+        <div class="first" style="align-items: center;">
+          <div class="radio-container" >
+            <div class="radio-item" >
+              <input
+              id='{{item.key}}'
+              class="ocRadioButton"
+              name='{{groupName}}'
+              type='radio'
+              [value]='item.key'
+              [(ngModel)] = 'selectedId'
+              [disabled]=false
+              />
+              <label class='' for='{{item.key}}'>
+                  <div class="radiomark"></div>
+                  <div class="labeltext"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col" [attr.data-title]="colDescription">{{item.value}}</div>
+      </div>
+    </ng-container>
+</oc-grid>
+

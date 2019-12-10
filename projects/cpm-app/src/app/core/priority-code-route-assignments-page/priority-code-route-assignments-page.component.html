@@ -1,0 +1,36 @@
+<oc-action-layout>
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{"ROUTE_ASSIGNMENT" | translate}}</div>
+    </ng-container>
+    <ng-container class="ocactiondetails">
+        <div class="cpmheaderrow">
+            <app-header-container [title]="'TYPE' | translate">{{(priorityCode$ | async)?.PriorityCodeDescription}}</app-header-container>
+        </div>
+      </ng-container>
+        <ng-container class="ocactiondetails">
+        <div class="panelContainer" >
+            <div class="leftPanel" >
+               <app-pick-route-select
+               (SelectionChange)="pickrouteUpdated($event)"
+               [listMap]="routeList | async"
+               [selectedId]="pickRouteId"
+               [colDescription]="'ROUTE_NAME' | translate"
+                >
+              </app-pick-route-select>
+            </div>
+            <div class="rightPanel" >
+                <app-device-sequence-order
+                [Devices]="deviceList$ | async"
+                [colHeader] ="'DEVICE' | translate">
+               </app-device-sequence-order>
+            </div>
+          </div>
+    </ng-container>
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [buttonText]="'BACK' | translate" (click)="navigateBack()">}</oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+</oc-action-layout>

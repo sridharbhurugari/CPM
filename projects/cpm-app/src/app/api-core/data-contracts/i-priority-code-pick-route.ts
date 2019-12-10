@@ -1,4 +1,4 @@
-export class IPriorityCodePickRoute {
+export interface IPriorityCodePickRoute {
     PriorityCodePickRouteId: number;
     PriorityCode: string;
     PriorityCodeDescription: string;

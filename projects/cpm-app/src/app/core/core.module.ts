@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
-import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -11,7 +11,11 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes-page/priority-code-pick-routes-page.component';
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
+import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page/priority-code-route-assignments-page.component';
 import { SearchPipe } from '../shared/pipes/search.pipe';
+import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
+import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
+import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist-page/guidedinvmgmt-devicelist-page.component';
 
 
@@ -24,7 +28,11 @@ import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist
     UnderfilledPicklistLinesComponent,
     PriorityCodePickRoutesPageComponent,
     PriorityCodePickRoutesComponent,
-    GuidedInvMgmtDevicelistPageComponent
+    PriorityCodeRouteAssignmentsPageComponent,
+    DeviceSequenceOrderComponent,
+    PriorityCodePickRoutesComponent,
+    PickRouteSelectComponent,
+    GuidedInvMgmtDevicelistPageComponent,
   ],
   imports: [
     CommonModule,
@@ -38,5 +46,6 @@ import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist
     InputsModule,
     SearchModule,
     SvgIconModule,
+    FormsModule,
   ],})
 export class CoreModule { }

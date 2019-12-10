@@ -8,7 +8,8 @@
     <div class="col width=id">{{'ROUTE_NAME' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let priorityCodePickRoute of priorityCodePickRoutes | searchPipe:searchTextFilter:searchFields">
+    <div class="row" *ngFor="let priorityCodePickRoute of priorityCodePickRoutes | searchPipe:searchTextFilter:searchFields"
+     (click)="navigate(priorityCodePickRoute.PriorityCodePickRouteId)">
       <div class="first" style="align-items: center;">
         <div class="firstcolumncolorblock" [style.background-color]="priorityCodePickRoute.PriorityColorCode"></div>
       </div>

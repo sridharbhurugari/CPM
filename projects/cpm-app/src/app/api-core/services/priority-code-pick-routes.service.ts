@@ -22,4 +22,11 @@ export class PriorityCodePickRoutesService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
+  getPriority(priorityCodePickRouteId: number): Observable<IPriorityCodePickRoute> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/priorityCodePickRoutes/${priorityCodePickRouteId}`);
+    return this.httpClient.get<IPriorityCodePickRoute>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
 }
