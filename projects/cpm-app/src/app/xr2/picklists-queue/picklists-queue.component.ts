@@ -1,10 +1,16 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild } from '@angular/core';
-import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
+import { Component, Input, AfterViewInit, ViewChild } from '@angular/core';
 import { WindowService } from '../../shared/services/window-service';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
+import * as _ from 'lodash';
+import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -13,21 +19,24 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 })
 export class PicklistsQueueComponent implements AfterViewInit {
 
-  private _picklistQueueItems: IPicklistQueueItem[];
+  private _picklistQueueItems: PicklistQueueItem[];
 
   @Input()
-  set picklistQueueItems(value: IPicklistQueueItem[]) {
+  set picklistQueueItems(value: PicklistQueueItem[]) {
     this._picklistQueueItems = value;
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
 
-  get picklistQueueItems(): IPicklistQueueItem[] {
+  get picklistQueueItems(): PicklistQueueItem[] {
     return this._picklistQueueItems;
   }
 
-  constructor(private windowService: WindowService) { }
+  constructor(private windowService: WindowService,
+              private picklistsQueueService: PicklistsQueueService,
+              private dialogService: PopupDialogService,
+              private translateService: TranslateService) { }
 
   @ViewChild('searchBox', {
     static: true
@@ -36,8 +45,8 @@ export class PicklistsQueueComponent implements AfterViewInit {
 
   searchTextFilter: string;
 
-  searchFields = [nameof<IPicklistQueueItem>('Destination'), nameof<IPicklistQueueItem>('PriorityCodeDescription'),
-  , nameof<IPicklistQueueItem>('DeviceDescription'), , nameof<IPicklistQueueItem>('OutputDevice')]
+  searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
+  , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
 
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
@@ -54,13 +63,38 @@ export class PicklistsQueueComponent implements AfterViewInit {
       });
   }
 
-  changeStatus(picklistQueueItem: IPicklistQueueItem, newStatus: string) {
-    picklistQueueItem.Status = newStatus;
+  sendToRobot(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.Saving = true;
+    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
+    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
+    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
+      const pickListLineDetail = new PickListLineDetail();
+      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
+      pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
+    });
+    this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+      result => {
+        picklistQueueItem.Status = 2;
+        picklistQueueItem.Saving = false;
+      }, result => {
+        picklistQueueItem.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+  }
 
-    if (newStatus === 'SENT') {
-      picklistQueueItem.StatusDisplay = picklistQueueItem.FilledItemCount + ' of ' + picklistQueueItem.ItemCount;
-    }
+  private displayFailedToSaveDialog(): void {
 
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
   }
 
 }
