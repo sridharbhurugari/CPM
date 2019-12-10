@@ -11,7 +11,7 @@ import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority
   selector: 'app-priority-code-pick-routes',
   template: ''
 })
-class MockPriorityCodePickRoutesComponent{
+class MockPriorityCodePickRoutesComponent {
   @Input()priorityCodePickRoutes: IPriorityCodePickRoute[];
 }
 

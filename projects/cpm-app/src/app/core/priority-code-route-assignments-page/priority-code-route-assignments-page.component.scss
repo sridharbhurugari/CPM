@@ -1,0 +1,28 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host{
+    height: 100%;
+}
+.panelContainer
+{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+.leftPanel {
+  flex: 1;
+  overflow-y: auto;
+  border-top: solid $slate-grey 4px;
+  border-right: solid $slate-grey 6px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+.rightPanel {
+  flex: 1;
+  overflow-y: auto;
+  border-top:solid $slate-grey  4px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}

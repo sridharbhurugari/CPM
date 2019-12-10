@@ -11,14 +11,14 @@ export class UnderfilledPicklistLinesComponent {
   _picklistLines: UnderfilledPicklistLine[];
 
   @Input('picklistLines')
-  set picklistLines(value: UnderfilledPicklistLine[]){
+  set picklistLines(value: UnderfilledPicklistLine[]) {
     this._picklistLines = value;
     if(this.windowService.nativeWindow){
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
-  
-  get picklistLines(): UnderfilledPicklistLine[]{
+
+  get picklistLines(): UnderfilledPicklistLine[] {
     return this._picklistLines;
   }
 

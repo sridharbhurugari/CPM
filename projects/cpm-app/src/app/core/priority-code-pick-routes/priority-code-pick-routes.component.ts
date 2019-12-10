@@ -5,6 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { nameof } from '../../shared/functions/nameof';
 import { WindowService } from '../../shared/services/window-service';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
   selector: 'app-priority-code-pick-routes',
@@ -14,14 +15,14 @@ import { WindowService } from '../../shared/services/window-service';
 export class PriorityCodePickRoutesComponent implements AfterViewInit {
   _priorityCodePickRoutes: IPriorityCodePickRoute[];
 
-  @Input()set priorityCodePickRoutes(value: IPriorityCodePickRoute[]){
+  @Input()set priorityCodePickRoutes(value: IPriorityCodePickRoute[]) {
     this._priorityCodePickRoutes = value;
-    if(this.windowService.nativeWindow){
+    if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
-  
-  get priorityCodePickRoutes(): IPriorityCodePickRoute[]{
+
+  get priorityCodePickRoutes(): IPriorityCodePickRoute[] {
     return this._priorityCodePickRoutes;
   }
 
@@ -32,10 +33,11 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
 
   searchTextFilter: string;
 
-  searchFields = [ nameof<IPriorityCodePickRoute>('PriorityCodeDescription'), nameof<IPriorityCodePickRoute>('PickRouteDescription') ]
+  searchFields = [ nameof<IPriorityCodePickRoute>('PriorityCodeDescription'), nameof<IPriorityCodePickRoute>('PickRouteDescription') ];
 
   constructor(
-    private windowService: WindowService
+    private windowService: WindowService,
+    private wpfActionControllerService: WpfActionControllerService
   ) { }
 
   ngAfterViewInit(): void {
@@ -52,5 +54,8 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
         }
       });
   }
-
+  navigate(priorityCodePickRouteId: number) {
+    this.wpfActionControllerService.
+    ExecuteContinueNavigationAction(`priorityCode/RouteAssignments`, {priorityCodePickRouteId: priorityCodePickRouteId});
+  }
 }

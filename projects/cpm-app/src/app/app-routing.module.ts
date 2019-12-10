@@ -5,6 +5,8 @@ import { UnderfilledPicklistLinesPageComponent } from './core/underfilled-pickli
 import { PriorityCodePickRoutesPageComponent } from './core/priority-code-pick-routes-page/priority-code-pick-routes-page.component';
 import { PicklistsQueueComponent } from './xr2/picklists-queue/picklists-queue.component';
 import { PicklistsQueuePageComponent } from './xr2/picklists-queue-page/picklists-queue-page.component';
+// tslint:disable-next-line: max-line-length
+import { PriorityCodeRouteAssignmentsPageComponent } from './core/priority-code-route-assignments-page/priority-code-route-assignments-page.component';
 
 
 const routes: Routes = [
@@ -12,6 +14,7 @@ const routes: Routes = [
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
   { path: 'picklists/queue', component: PicklistsQueuePageComponent },
   { path: 'priorityCodePickRoutes', component: PriorityCodePickRoutesPageComponent },
+  { path: 'priorityCode/RouteAssignments', component: PriorityCodeRouteAssignmentsPageComponent },
 ];
 
 @NgModule({
