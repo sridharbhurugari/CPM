@@ -5,12 +5,12 @@
   <ng-container class="ocgridheader">
     <div class="first" data-colwrap="true"></div>
     <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}</div>
-    <div class="col width-type" ocGridColResize data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div>
-    <div class="col width-type" ocGridColResize data-width="160" data-colwrap="true">{{'STATUS' | translate}}
+    <div class="col width-type" data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div>
+    <div class="col width-type" data-width="160" data-colwrap="true">{{'STATUS' | translate}}
     </div>
-    <div class="col width-destination" ocGridColResize data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
+    <div class="col width-destination" data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
     </div>
-    <div class="last width-type" ocGridColResize data-width="400" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+    <div class="last width-type" data-width="350" data-colwrap="true">{{'ACTIONS' | translate}}</div>
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
