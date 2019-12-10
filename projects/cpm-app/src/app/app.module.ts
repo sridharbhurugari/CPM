@@ -22,7 +22,6 @@ import { ProgressAnimationModule,
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
 import { RouterModule } from '@angular/router';
-
 @NgModule({
   declarations: [
     AppComponent
@@ -46,7 +45,7 @@ import { RouterModule } from '@angular/router';
     ProgressbarModule,
     FooterModule,
     SharedModule,
-    RouterModule,
+    RouterModule
   ],
   providers: [
     ProgressbarService,
