@@ -5,7 +5,9 @@ export class GuidedDeviceList implements IGuidedDeviceList {
     Object.assign(this, guidedDeviceList);
 
     if(this.EarliestExpirationDateInDevice != null){
-      this.ContainsExpiredItem = this.EarliestExpirationDateInDevice <= new Date;
+      var now = new Date();
+      var expired = new Date(this.EarliestExpirationDateInDevice);
+      this.ContainsExpiredItem = expired.getTime() >= now.getTime();
     }
   }
 
