@@ -7,7 +7,7 @@
     <oc-grid #ocgrid ocgridfilter="false">
       <ng-container class="ocgridheader">
           <div class="first" data-colwrap="true"></div>
-          <div class="col width-device" ocGridColResize data-width="180" data-colwrap="true" (click)="sort(deviceColumn)">
+          <div class="col width-device" ocGridColResize data-width="500" data-colwrap="true" (click)="sort(deviceColumn)">
             <span class="headertext">
               <div >{{'DEVICE' | translate}}</div>
             </span>
@@ -18,7 +18,7 @@
               </div>
             </span>
           </div>
-          <div class="col width-lastcount" ocGridColResize data-width="380" data-colwrap="true" (click)="sort(cycleCountColumn)">
+          <div class="col width-lastcount" ocGridColResize data-width="280" data-colwrap="true" (click)="sort(cycleCountColumn)">
             <span class="headertext">
                 <div >{{'LAST_CYCLE_COUNT_DATE' | translate}}</div>
               </span>
@@ -29,7 +29,7 @@
                   </div>
                 </span>
           </div>
-          <div class="last width-exp" ocGridColResize data-width="414" data-colwrap="true" (click)="sort(expiringSoonColumn)">
+          <div class="last width-exp" ocGridColResize data-width="280" data-colwrap="true" (click)="sort(expiringSoonColumn)">
             <span class="headertext">
                 <div >{{'EARLIEST_EXPIRATION_DATE' | translate}}</div>
               </span>

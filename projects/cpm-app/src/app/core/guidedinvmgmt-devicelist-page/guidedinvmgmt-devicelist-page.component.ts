@@ -40,8 +40,9 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
         })
       )
       .subscribe(data => {
-        console.log(data);
         this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(p => p.filter((x) => x.DeviceDescription.toLocaleLowerCase().includes(data.toLocaleLowerCase()))));
+        this.sortAsc = !this.sortAsc;
+        this.sort(this.sortColumn);
       });
   }
 
@@ -51,7 +52,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
     }
 
     if(column==this.deviceColumn){
-      this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(o => o.sort((a,b) => {
+      this.displayGuidedDeviceList = this.displayGuidedDeviceList.pipe(map(o => o.sort((a,b) => {
         if(!this.sortAsc){
           return b.DeviceDescription.localeCompare(a.DeviceDescription);
         }else{
@@ -60,7 +61,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
       })));
     }
     if(column==this.cycleCountColumn){
-      this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(o => o.sort((a,b) => {
+      this.displayGuidedDeviceList = this.displayGuidedDeviceList.pipe(map(o => o.sort((a,b) => {
         if(!this.sortAsc){
           return b.NumberOfLocationsWithOutdatedCycleCount - a.NumberOfLocationsWithOutdatedCycleCount;
         }else{
@@ -69,7 +70,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
       })));
     }
     if(column==this.expiringSoonColumn){
-      this.displayGuidedDeviceList = this._guidedDeviceList.pipe(map(o => o.sort((a,b) => {
+      this.displayGuidedDeviceList = this.displayGuidedDeviceList.pipe(map(o => o.sort((a,b) => {
         if(!this.sortAsc){
           return b.NumberOfLocationsExpiringSoon - a.NumberOfLocationsExpiringSoon;
         }else{
