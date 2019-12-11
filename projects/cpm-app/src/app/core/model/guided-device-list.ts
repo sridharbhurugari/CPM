@@ -4,7 +4,9 @@ export class GuidedDeviceList implements IGuidedDeviceList {
   constructor(guidedDeviceList: IGuidedDeviceList){
     Object.assign(this, guidedDeviceList);
 
-    this.ContainsExpiredItem = this.EarliestExpirationDateInDevice >= new Date;
+    if(this.EarliestExpirationDateInDevice != null){
+      this.ContainsExpiredItem = this.EarliestExpirationDateInDevice <= new Date;
+    }
   }
 
   DeviceId: number;
@@ -12,6 +14,7 @@ export class GuidedDeviceList implements IGuidedDeviceList {
   NumberOfLocationsWithOutdatedCycleCount: number;
   NumberOfLocationsExpiringSoon: number;
   EarliestExpirationDateInDevice: Date;
+  DeviceDefaultOwner: string;
 
   ContainsExpiredItem: boolean;
 }

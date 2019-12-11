@@ -3,5 +3,6 @@ export interface IGuidedDeviceList{
   DeviceDescription: string,
   NumberOfLocationsWithOutdatedCycleCount: number,
   NumberOfLocationsExpiringSoon: number,
-  EarliestExpirationDateInDevice: Date
+  EarliestExpirationDateInDevice: Date,
+  DeviceDefaultOwner: string,
 }
