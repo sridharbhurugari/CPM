@@ -7,7 +7,8 @@ describe('GuidedDeviceList', () => {
       DeviceDescription: 'Carousel1',
       EarliestExpirationDateInDevice: new Date(),
       NumberOfLocationsExpiringSoon: 10,
-      NumberOfLocationsWithOutdatedCycleCount: 10
+      NumberOfLocationsWithOutdatedCycleCount: 10,
+      DeviceDefaultOwner: 'Wks01'
     })).toBeTruthy();
   });
 });
