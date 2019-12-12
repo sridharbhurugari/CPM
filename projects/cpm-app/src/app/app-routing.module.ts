@@ -7,6 +7,7 @@ import { PicklistsQueueComponent } from './xr2/picklists-queue/picklists-queue.c
 import { PicklistsQueuePageComponent } from './xr2/picklists-queue-page/picklists-queue-page.component';
 // tslint:disable-next-line: max-line-length
 import { PriorityCodeRouteAssignmentsPageComponent } from './core/priority-code-route-assignments-page/priority-code-route-assignments-page.component';
+import { GuidedInvMgmtDevicelistPageComponent } from './core/guidedinvmgmt-devicelist-page/guidedinvmgmt-devicelist-page.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'picklists/queue', component: PicklistsQueuePageComponent },
   { path: 'priorityCodePickRoutes', component: PriorityCodePickRoutesPageComponent },
   { path: 'priorityCode/RouteAssignments', component: PriorityCodeRouteAssignmentsPageComponent },
+  { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },
 ];
 
 @NgModule({

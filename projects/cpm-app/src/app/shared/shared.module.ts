@@ -10,7 +10,7 @@ import { SearchPipe } from './pipes/search.pipe';
   declarations: [HeaderContainerComponent, SearchPipe],
   imports: [
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   exports: [
     HeaderContainerComponent,
