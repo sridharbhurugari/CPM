@@ -50,4 +50,12 @@ export class WpfActionControllerService {
       this.router.navigate([newRoute], { queryParams: queryParams, preserveQueryParams: false });
     }
   }
+
+  ExecuteWpfContinueNavigationAction(action: string) {
+    if (this.wpfActionController != null) {
+      this.wpfActionController.executeWpfContinueNavigationAction(action);
+    } else {
+    }
+  }
+
 }
