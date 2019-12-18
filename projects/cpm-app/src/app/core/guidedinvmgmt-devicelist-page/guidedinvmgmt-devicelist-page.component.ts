@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
   selector: 'app-guidedinvmgmt-devicelist-page',
@@ -22,7 +23,10 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   readonly cycleCountColumn = "NumberOfLocationsWithOutdatedCycleCount";
   readonly expiringSoonColumn = "NumberOfLocationsExpiringSoon";
 
-  constructor(private guidedDeviceListService: GuidedDeviceListService) { }
+  constructor(
+    private guidedDeviceListService: GuidedDeviceListService,
+    private wpfActionControllerService: WpfActionControllerService
+    ) { }
 
   ngOnInit() {
     this.sortColumn = this.deviceColumn;
@@ -31,6 +35,10 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
        return guidedDeviceListItems.map(p => new GuidedDeviceList(p)).sort((a,b) => a.DeviceDescription.localeCompare(b.DeviceDescription));
     }));
   }
+  navigateManualCycleCount() {
+    this.wpfActionControllerService.ExecuteContinueAction();
+  }
+  
 
   ngAfterViewInit() {
     this.searchElement.searchOutput$
