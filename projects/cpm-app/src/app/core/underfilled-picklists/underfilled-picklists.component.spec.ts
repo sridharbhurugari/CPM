@@ -4,6 +4,8 @@ import { UnderfilledPicklistsComponent } from './underfilled-picklists.component
 import { GridModule } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { MockSearchBox } from '../testing/mock-search-box.spec';
+import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 
 describe('UnderfilledPicklistsComponent', () => {
   let component: UnderfilledPicklistsComponent;
@@ -11,7 +13,7 @@ describe('UnderfilledPicklistsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnderfilledPicklistsComponent, MockTranslatePipe ],
+      declarations: [ UnderfilledPicklistsComponent, MockTranslatePipe, MockSearchBox, MockSearchPipe ],
       providers: [
         { provide: WpfActionControllerService, useVaule: { }}
       ],

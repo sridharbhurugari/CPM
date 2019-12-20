@@ -1,22 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GridModule, SearchModule, InputsModule, SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { GridModule, SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes.component';
 
-import { Component, Input } from '@angular/core';
-import { of, Observable } from 'rxjs';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
+import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-
-@Component({
-  selector: 'oc-search-box',
-  template: ''
-})
-class MockSearchBox {
-  searchOutput$: Observable<string> = of();
-  @Input()placeHolderText: string;
-}
 
 describe('PriorityCodePickRoutesComponent', () => {
   let component: PriorityCodePickRoutesComponent;
@@ -31,12 +21,6 @@ describe('PriorityCodePickRoutesComponent', () => {
       imports: [
         GridModule,
       ]
-    })
-    .overrideComponent(SearchBoxComponent,
-    {
-      set: {
-        template: ''
-      }
     })
     .compileComponents();
   }));

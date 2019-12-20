@@ -1,12 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page.component';
-import { UnderfilledPicklistsComponent } from '../underfilled-picklists/underfilled-picklists.component';
-import { TranslateModule, TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { of } from 'rxjs';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { Component, Input } from '@angular/core';
+import { UnderfilledPicklist } from '../model/underfilled-picklist';
+
+@Component({
+  selector: 'app-underfilled-picklists',
+  template: ''
+})
+class MockUnderfilledPicklistsComponent {
+  @Input()picklists: UnderfilledPicklist[];
+}
 
 describe('UnderfilledPicklistsPageComponent', () => {
   let component: UnderfilledPicklistsPageComponent;
@@ -14,20 +23,16 @@ describe('UnderfilledPicklistsPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnderfilledPicklistsPageComponent, UnderfilledPicklistsComponent ],
+      declarations: [ UnderfilledPicklistsPageComponent, MockUnderfilledPicklistsComponent ],
       imports: [
         GridModule,
         TranslateModule.forChild()
       ],
       providers: [
         { provide: UnderfilledPicklistsService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useVaule: { }}
+        { provide: WpfActionControllerService, useVaule: { }},
+        { provide: TranslateService, useValue: { get: (k: any) => of(k) }}
       ]
-    })
-    .overrideComponent(UnderfilledPicklistsComponent, {
-      set: {
-        template: ''
-      }
     })
     .compileComponents();
   }));
