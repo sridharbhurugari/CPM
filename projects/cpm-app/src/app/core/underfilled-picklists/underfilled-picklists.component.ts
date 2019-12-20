@@ -6,6 +6,8 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -30,6 +32,14 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
     nameof<UnderfilledPicklist>('OrderId'),
   ];
 
+  sequencePropertyName = nameof<UnderfilledPicklist>('SequenceOrder');
+  orderPropertyName = nameof<UnderfilledPicklist>('OrderId');
+  typePropertyName =  nameof<UnderfilledPicklist>('PriorityDescription');
+  descriptionPropertyName =  nameof<UnderfilledPicklist>('DescriptionSearchValue');
+  destinationPropertyName = nameof<UnderfilledPicklist>('DesintationSearchValue');
+  datePropertyName = nameof<UnderfilledPicklist>('CompletedDate');
+
+  currentSortPropertyName: string;
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
@@ -66,5 +76,10 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
 
   navigate(orderId: string){
     this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
+  }
+
+  columnSelected(event: IColHeaderSortChanged){
+    this.currentSortPropertyName = event.ColumnPropertyName;
+    this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], event.SortDirection)
   }
 }

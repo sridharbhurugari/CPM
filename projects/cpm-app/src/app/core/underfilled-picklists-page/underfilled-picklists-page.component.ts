@@ -4,6 +4,8 @@ import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
 import { TranslateService } from '@ngx-translate/core';
+import * as _ from 'lodash';
+import { SortDirection } from '../../shared/constants/sort-direction';
 
 @Component({
   selector: 'app-underfilled-picklists-page',
@@ -38,7 +40,8 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
       var translatedItems = results[1];
       var translatedPatients = results[2];
       var translatedCabinets = results[3];
-      return underfilledPicklists.map(p => new UnderfilledPicklist(p, this.locale, translatedItems, translatedPatients, translatedCabinets)).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
+      var displayObjects = underfilledPicklists.map(p => new UnderfilledPicklist(p, this.locale, translatedItems, translatedPatients, translatedCabinets));
+      return _.orderBy(displayObjects, x => [ x.SequenceOrder, x.CompletedDate ], [ SortDirection.ascending, SortDirection.descending ]);
     }));
   }
 

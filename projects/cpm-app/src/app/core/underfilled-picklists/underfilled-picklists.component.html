@@ -3,12 +3,42 @@
 </div>
 <oc-grid #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div class="first" data-colwrap="true"></div>
-    <div class="col width-type" ocGridColResize data-width="160" data-colwrap="true">{{'TYPE' | translate}}</div>
-    <div class="col width=id" ocGridColResize data-width="180" data-colwrap="true">{{'ORDER_ID' | translate}}</div>
-    <div class="col width-description" ocGridColResize data-width="414" data-colwrap="true">{{'DESCRIPTION' | translate}}</div>
-    <div class="col width-destination" ocGridColResize data-width="270" data-colwrap="true">{{'DESTINATION' | translate}}</div>
-    <div class="last width-date" ocGridColResize data-width="160" data-colwrap="true">{{'DATE' | translate}}</div>
+      <div app-col-header-sortable class="first" data-colwrap="true"
+                               [columnPropertyName]='sequencePropertyName'
+                               headerResourceKey=''
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
+                               [columnPropertyName]='typePropertyName'
+                               headerResourceKey='TYPE'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
+                               [columnPropertyName]='orderPropertyName'
+                               headerResourceKey='ORDER_ID'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="414" data-colwrap="true"
+                               [columnPropertyName]='descriptionPropertyName'
+                               headerResourceKey='DESCRIPTION'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="270" data-colwrap="true"
+                               [columnPropertyName]='destinationPropertyName'
+                               headerResourceKey='DESTINATION'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="last" ocGridColResize data-width="160" data-colwrap="true"
+                               [columnPropertyName]='datePropertyName'
+                               headerResourceKey='DATE'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklist of picklists | searchPipe:searchTextFilter:searchFields" (click)="navigate(picklist.OrderId)">

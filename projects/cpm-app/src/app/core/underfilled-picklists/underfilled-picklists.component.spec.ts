@@ -6,6 +6,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
+import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 
 describe('UnderfilledPicklistsComponent', () => {
   let component: UnderfilledPicklistsComponent;
@@ -13,7 +14,13 @@ describe('UnderfilledPicklistsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnderfilledPicklistsComponent, MockTranslatePipe, MockSearchBox, MockSearchPipe ],
+      declarations: [ 
+        UnderfilledPicklistsComponent,
+        MockTranslatePipe,
+        MockSearchBox,
+        MockSearchPipe,
+        MockColHeaderSortable,
+      ],
       providers: [
         { provide: WpfActionControllerService, useVaule: { }}
       ],
