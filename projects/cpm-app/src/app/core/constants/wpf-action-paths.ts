@@ -1,3 +1,3 @@
-export class Values{
+export class WpfActionPaths{
     static ManualCycleCountPath: string = 'ManualCycleCountPath';
 }

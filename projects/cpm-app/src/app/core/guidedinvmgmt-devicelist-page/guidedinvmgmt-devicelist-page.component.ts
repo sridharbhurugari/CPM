@@ -5,7 +5,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { Values } from '../constants/values';
+import { WpfActionPaths } from '../constants/wpf-action-paths';
 
 @Component({
   selector: 'app-guidedinvmgmt-devicelist-page',
@@ -37,7 +37,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
     }));
   }
   navigateManualCycleCount() {
-    this.wpfActionControllerService.ExecuteWpfContinueNavigationAction(Values.ManualCycleCountPath);
+    this.wpfActionControllerService.ExecuteWpfContinueNavigationAction(WpfActionPaths.ManualCycleCountPath);
   }
   
 
