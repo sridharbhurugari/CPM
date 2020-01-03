@@ -110,7 +110,7 @@ export class UnderfilledPicklist implements IUnderfilledPicklist{
         }
 
         if(this.DisplayOmniName){
-            searchValues.push(this.DisplayOmniName);
+            searchValues.push(this.DestinationOmni);
         }
 
         if(this.DisplayPatientNameSecondLine){
