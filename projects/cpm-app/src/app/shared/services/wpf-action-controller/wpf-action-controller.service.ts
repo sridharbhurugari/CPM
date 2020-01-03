@@ -32,8 +32,7 @@ export class WpfActionControllerService {
   ExecuteContinueAction() {
     if (this.wpfActionController != null) {
       this.wpfActionController.executeContinueAction();
-    } else {
-    }
+    } 
   }
 
   ExecuteContinueNavigationAction(newRoute: string, queryParams?: Params) {
@@ -50,4 +49,11 @@ export class WpfActionControllerService {
       this.router.navigate([newRoute], { queryParams: queryParams, preserveQueryParams: false });
     }
   }
+
+  ExecuteWpfContinueNavigationAction(action: string) {
+    if (this.wpfActionController != null) {
+      this.wpfActionController.executeWpfContinueNavigationAction(action);
+    } 
+  }
+
 }
