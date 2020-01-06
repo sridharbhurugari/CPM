@@ -41,7 +41,14 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
       var translatedPatients = results[2];
       var translatedCabinets = results[3];
       var displayObjects = underfilledPicklists.map(p => new UnderfilledPicklist(p, this.locale, translatedItems, translatedPatients, translatedCabinets));
-      return _.orderBy(displayObjects, x => [ x.SequenceOrder, x.CompletedDate ], [ SortDirection.ascending, SortDirection.descending ]);
+      var sorted = displayObjects.sort(function (a,b) {
+        if (a.SequenceOrder < b.SequenceOrder) return -1;
+        if (a.SequenceOrder > b.SequenceOrder) return 1;
+        if (a.CompletedDate > b.CompletedDate) return -1;
+        if (a.CompletedDate < b.CompletedDate) return 1;
+      return 0;}
+      );
+      return sorted;
     }));
   }
 
