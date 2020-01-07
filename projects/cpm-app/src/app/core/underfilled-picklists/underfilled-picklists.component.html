@@ -1,14 +1,47 @@
+<div class="cpmgridheader">
+  <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
 <oc-grid #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div class="first" data-colwrap="true"></div>
-    <div class="col width-type" ocGridColResize data-width="160" data-colwrap="true">{{'TYPE' | translate}}</div>
-    <div class="col width=id" ocGridColResize data-width="180" data-colwrap="true">{{'ORDER_ID' | translate}}</div>
-    <div class="col width-description" ocGridColResize data-width="414" data-colwrap="true">{{'DESCRIPTION' | translate}}</div>
-    <div class="col width-destination" ocGridColResize data-width="270" data-colwrap="true">{{'DESTINATION' | translate}}</div>
-    <div class="last width-date" ocGridColResize data-width="160" data-colwrap="true">{{'DATE' | translate}}</div>
+      <div app-col-header-sortable class="first" data-colwrap="true"
+                               [columnPropertyName]='sequencePropertyName'
+                               headerResourceKey=''
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
+                               [columnPropertyName]='typePropertyName'
+                               headerResourceKey='TYPE'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
+                               [columnPropertyName]='orderPropertyName'
+                               headerResourceKey='ORDER_ID'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="414" data-colwrap="true"
+                               [columnPropertyName]='descriptionPropertyName'
+                               headerResourceKey='DESCRIPTION'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="270" data-colwrap="true"
+                               [columnPropertyName]='destinationPropertyName'
+                               headerResourceKey='DESTINATION'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="last" ocGridColResize data-width="160" data-colwrap="true"
+                               [columnPropertyName]='datePropertyName'
+                               headerResourceKey='DATE'
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
+      </div>
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let picklist of picklists" (click)="navigate(picklist.OrderId)">
+    <div class="row" *ngFor="let picklist of picklists | searchPipe:searchTextFilter:searchFields" (click)="navigate(picklist.OrderId)">
       <div class="first" style="align-items: center;">
         <div class="firstcolumncolorblock" [style.background-color]="picklist.PriorityColorCode"></div>
       </div>
@@ -18,16 +51,14 @@
         <div *ngIf="picklist.DisplayGenericName">{{picklist.ItemFormattedGenericName}}</div>
         <div *ngIf="picklist.DisplayBrandName">{{picklist.ItemBrandName}}</div>
         <div *ngIf="picklist.DisplayItemCount">
-          <span>{{picklist.UnderfilledItemCount}}</span>
-          <span> {{'ITEMS' | translate}}</span>
+          <span>{{picklist.UnderfilledItemCountDisplay}}</span>
         </div>
         <div *ngIf="picklist.DisplayRouteName">{{picklist.RouteName}}</div>
       </div>
       <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklist.DisplayPatientCount">
           <div>
-            <span>{{picklist.UnderfilledPatientCount}}</span>
-            <span> {{'PATIENTS' | translate}}</span>
+            <span>{{picklist.UnderfilledPatientCountDisplay}}</span>
           </div>
         </div>
         <div *ngIf="picklist.DisplayPatientRoomAndArea">
@@ -41,8 +72,7 @@
           {{picklist.AreaDescription}}
         </div>
         <div *ngIf="picklist.DisplayMultiDestination">
-            <span>{{picklist.UnderfilledDestinationCount}}</span>
-            <span> {{"Cabinets" | translate}}</span>
+            <span>{{picklist.UnderfilledDestinationCountDisplay}}</span>
         </div>
         <div *ngIf="picklist.DisplayOmniName">
           {{picklist.DestinationOmni}}
@@ -53,7 +83,7 @@
       </div>
       <div class="last width-date" [attr.data-title]="'DATE' | translate">
         <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
-        <div>{{picklist.CompletedDate | date: 'mediumTime'}}</div>
+        <div>{{picklist.CompletedDate | date: 'shortTime'}}</div>
       </div>
     </div>
   </ng-container>

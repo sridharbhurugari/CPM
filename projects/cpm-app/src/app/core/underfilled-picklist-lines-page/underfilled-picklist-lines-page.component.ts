@@ -6,7 +6,7 @@ import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map, shareReplay } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
-import { UnderfilledPicklist } from '../model/underfilled-picklist';
+import { IUnderfilledPicklist } from '../../api-core/data-contracts/i-underfilled-picklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 })
 export class UnderfilledPicklistLinesPageComponent implements OnInit {
   picklistLines$: Observable<UnderfilledPicklistLine[]>;
-  picklist$: Observable<UnderfilledPicklist>;
+  picklist$: Observable<IUnderfilledPicklist>;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,9 +27,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
   ngOnInit() {
     var orderId = this.route.snapshot.queryParamMap.get('orderId');
-    this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(map(underfilledPicklist => {
-      return new UnderfilledPicklist(underfilledPicklist);
-    }), shareReplay(1));
+    this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
     this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
       var displayObjects = underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
       var result = _.orderBy(displayObjects, (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
