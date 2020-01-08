@@ -18,7 +18,8 @@
             <div class="cpmnumericelement">
                 <oc-numeric [title]="'ITEM_QUANTITY' | translate"></oc-numeric>     
             </div>                  
-        </div>      
+        </div>   
+    <div>{{ (displayCycleCountItem | async).ItemId }}</div>   
     </ng-container>
 
     <!--Display the the med name which is currently being counted-->
