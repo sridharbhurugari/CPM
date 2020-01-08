@@ -40,6 +40,9 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
     this.wpfActionControllerService.ExecuteWpfContinueNavigationAction(WpfActionPaths.ManualCycleCountPath);
   }
   
+  navigate(deviceId: number){
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId});
+  }
 
   ngAfterViewInit() {
     this.searchElement.searchOutput$

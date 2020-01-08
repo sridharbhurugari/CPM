@@ -43,7 +43,7 @@
           </div>
       </ng-container>
       <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let guidedDevice of displayGuidedDeviceList | async">
+        <div class="row" *ngFor="let guidedDevice of displayGuidedDeviceList | async" (click)="navigate(guidedDevice.DeviceId)">
             <div class="first" style="align-items: center;"></div>
             <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{guidedDevice.DeviceDescription}}</div>
             <div class="col width-lastcount" [attr.data-title]="'LAST_CYCLE_COUNT_DATE' | translate">
