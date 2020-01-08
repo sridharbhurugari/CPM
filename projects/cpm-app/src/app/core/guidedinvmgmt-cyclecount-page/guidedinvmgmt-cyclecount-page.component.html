@@ -1,0 +1,58 @@
+<oc-action-layout>  
+    
+    <!--Displays the Guided Cycle Count gray header with white font-->
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{"GUIDED_CYCLE_COUNT" | translate}}</div>
+    </ng-container>
+
+    <ng-container class="ocactiondetails">  
+        <div class="panelContainer" >            
+            <div class="displayGuidedCycleCount" >  
+            </div>            
+        </div>
+    </ng-container>
+
+
+    <ng-container class="ocactiondetails">
+        <div class="numericControlPanel" >
+            <div class="cpmnumericelement">
+                <oc-numeric [title]="'ITEM_QUANTITY' | translate"></oc-numeric>     
+            </div>                  
+        </div>      
+    </ng-container>
+
+    <!--Display the the med name which is currently being counted-->
+    
+
+       
+       
+
+    <!--Display the ITEM_ID and LOCATION of the med being counted-->
+
+
+
+ 
+
+  
+    
+      
+    <!--Displays the Cancel and next button in the footer-->
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}</oc-button-action>
+            </div>
+            <div class="ocrightalign">
+                <oc-button-action [buttonText]="'NEXT' | translate" (click)="navigateBack()">}</oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+
+</oc-action-layout>
+
+
+
+
+
+
+ 

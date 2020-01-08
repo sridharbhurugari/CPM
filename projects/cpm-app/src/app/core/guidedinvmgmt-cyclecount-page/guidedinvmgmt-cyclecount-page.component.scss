@@ -1,0 +1,38 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host{
+    height: 100%;
+}
+
+
+.panelContainer {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+
+.displayGuidedCycleCount { 
+  flex: 1;
+  border-bottom: solid #c8c8c8 1px;  
+  height: 35%;
+  width: 100%;
+}
+
+.leftSidePanel {
+    flex: 1;
+    overflow-y: auto;   
+    border-top:solid #c8c8c8  1px; 
+    background-color: #c8c8c8; 
+    box-sizing: content-box;
+    height: 75%;
+    width: 25%;
+  }
+
+
+  .numericControlPanel {
+    flex: 1;    
+    border-top:solid #c8c8c8  2px;
+    height:100%;
+    width: 100%;
+    
+  }
