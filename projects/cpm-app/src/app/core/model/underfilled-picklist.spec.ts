@@ -2,7 +2,7 @@ import { UnderfilledPicklist } from "./underfilled-picklist";
 
 describe('UnderfilledPicklist', () => {
   it('should create an instance', () => {
-    expect(new UnderfilledPicklist({
+    const displayObject = new UnderfilledPicklist({
       AreaDescription: '',
       CompletedDate: new Date(),
       DestinationOmni: '',
@@ -24,6 +24,11 @@ describe('UnderfilledPicklist', () => {
       UnderfilledDestinationCount: 1,
       UnderfilledItemCount: 1,
       UnderfilledPatientCount: 1
-    })).toBeTruthy();
+    },
+    'en-us',
+    'items',
+    'patients',
+    'cabinets');
+    expect(displayObject).toBeTruthy();
   });
 });

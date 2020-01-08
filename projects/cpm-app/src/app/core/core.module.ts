@@ -12,7 +12,6 @@ import { SharedModule } from '../shared/shared.module';
 import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes-page/priority-code-pick-routes-page.component';
 import { PriorityCodePickRoutesComponent } from './priority-code-pick-routes/priority-code-pick-routes.component';
 import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page/priority-code-route-assignments-page.component';
-import { SearchPipe } from '../shared/pipes/search.pipe';
 import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.component';
 import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
 import { FormsModule } from '@angular/forms';
