@@ -84,6 +84,26 @@ export class PicklistsQueueComponent implements AfterViewInit {
       });
   }
 
+  printLabels(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.Saving = true;
+    const picklistLineDetails = new Array<PickListLineDetail>();
+    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
+      const pickListLineDetail = new PickListLineDetail();
+      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
+      pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      picklistLineDetails.push(pickListLineDetail);
+    });
+    this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
+      result => {
+        ////picklistQueueItem.Status = 4;
+        picklistQueueItem.Saving = false;
+      }, result => {
+        picklistQueueItem.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+  }
+
   private displayFailedToSaveDialog(): void {
 
     const properties = new PopupDialogProperties('Role-Status-Warning');
