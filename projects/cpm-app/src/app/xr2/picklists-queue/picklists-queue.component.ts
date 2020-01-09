@@ -92,6 +92,8 @@ export class PicklistsQueueComponent implements AfterViewInit {
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
+      pickListLineDetail.PickLocationDescription = itemPicklistLine.PickLocationDescription;
       picklistLineDetails.push(pickListLineDetail);
     });
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
