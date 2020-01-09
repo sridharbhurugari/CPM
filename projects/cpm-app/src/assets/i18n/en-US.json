@@ -32,5 +32,6 @@
   "SKIP": "Skip",
   "STATUS": "Status",
   "TYPE": "Type",
-  "UNDERFILLED": "Underfilled"
+  "UNDERFILLED": "Underfilled",
+  "REPRINT": "Reprint"
 }

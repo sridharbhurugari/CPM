@@ -23,7 +23,7 @@
       </div>
       <div class="col width-type" [attr.data-title]="'ITEMS' | translate">{{picklistQueueItem.ItemCount}}</div>
       <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">{{'NOT SENT' | translate}}</div>
-      <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===2">{{picklistQueueItem.FilledItemCount}} {{'OF' | translate}} {{picklistQueueItem.ItemCount}}</div>
+      <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3">{{picklistQueueItem.FilledItemCount}} {{'OF' | translate}} {{picklistQueueItem.ItemCount}}</div>
       <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
         <span>{{picklistQueueItem.DeviceDescription}}</span>
         <span>{{picklistQueueItem.OutputDevice}}</span>
@@ -33,6 +33,7 @@
             <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button" [disabled]="picklistQueueItem.Saving"></oc-button-action>
             <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'PLAY' | translate" (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
             <oc-button-action *ngIf="picklistQueueItem.Status===2" [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
+            <oc-button-action *ngIf="picklistQueueItem.Status===3" [buttonText]="'REPRINT' | translate" (click)="printLabels(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
         </div>
       </div>
     </div>

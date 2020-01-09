@@ -98,7 +98,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
     });
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
       result => {
-        ////picklistQueueItem.Status = 4;
+        picklistQueueItem.Status = 3;
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
