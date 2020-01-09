@@ -16,7 +16,7 @@ import { IGuidedCycleCount } from '../data-contracts/i-guided-cycle-count';
     ) { }
 
     public get(deviceId: string): Observable<IGuidedCycleCount[]>{
-        var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/cycleCount/${deviceId}`);
+        var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount`);
         return this.httpClient.get<IGuidedCycleCount[]>(url, {
           headers: this.ocapHttpHeadersService.getHeaders()
         });
