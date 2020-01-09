@@ -7,7 +7,8 @@ export class GuidedCycleCount implements IGuidedCycleCount {
   }
 
 
-  DeviceLocationId: number;  ItemId: string;
+  DeviceLocationId: number;  
+  ItemId: string;
   BrandNameFormatted: string;
   GenericNamdFOrmatted: string;
   ParLevel: number;
