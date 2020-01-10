@@ -9,6 +9,7 @@ import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { GuidedCycleCountUpdate } from '../model/guided-cycle-count-update';
 
 
 @Component({
@@ -78,7 +79,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
 
   navigateContinue(){
-    //save the record
+    var updateSucceeded = false;
+
+    let update = new GuidedCycleCountUpdate({
+      DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
+      ItemId: this.displayCycleCountItem.ItemId,
+      ExpirationData: this.displayCycleCountItem.ExpirationDate,
+      QuantityOnHand: this.displayCycleCountItem.QuantityOnHand
+        });
+
+    this.guidedCycleCountService.post(update).pipe(map(success => {
+      updateSucceeded = success;
+      return success;
+    }));
+
 
     if(this.isLastItem){
       this.wpfActionController.ExecuteContinueAction();
