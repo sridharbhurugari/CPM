@@ -1,38 +1,54 @@
-<oc-action-layout>  
-    
+<oc-action-layout>      
     <!--Displays the Guided Cycle Count gray header with white font-->
     <ng-container class="ocactionheader">
         <div class="cpmactiontitle">{{"GUIDED_CYCLE_COUNT" | translate}}</div>
-    </ng-container>
+    </ng-container>   
 
-    <ng-container class="ocactiondetails">  
-        <div class="panelContainer" >            
-            <div class="displayGuidedCycleCount" >  
-            </div>            
-        </div>
-    </ng-container>
+    <ng-container class="ocactiondetails">
+        <div class="displayGuidedCycleCount" >
+            <div class="BrandName" > 
+                <div>{{ (displayCycleCountItem | async).BrandNameFormatted }}</div>
+                <br><br>
+            </div>
+            <div class="GenericName" > 
+                <div>{{ (displayCycleCountItem | async).GenericNamdFOrmatted }}</div>                   
+            </div>
+        </div>                  
+    </ng-container> 
 
 
     <ng-container class="ocactiondetails">
-        <div class="numericControlPanel" >
-            <div class="cpmnumericelement">
-                <oc-numeric [title]="'ITEM_QUANTITY' | translate"></oc-numeric>     
-            </div>                  
-        </div>   
-    <div>{{ (displayCycleCountItem | async).ItemId }}</div>   
+        <div class="ItemId" >                    
+            <div>{{ (displayCycleCountItem | async).ItemId }}      
+                <span class="DeviceLocation" >
+                    <div>{{ (displayCycleCountItem | async).LocationDescription }}</div>  
+                </span>
+            </div>
+        </div> 
     </ng-container>
 
-    <!--Display the the med name which is currently being counted-->
     
+    <ng-container class="ocactiondetails">   
+       <div class="panelContainer">
+            <div class="leftPanel">
+                <div>
+                    Stock:
+                    <div>{{(displayCycleCountItem | async).QuantityOnHand}}</div>
+                </div>                
+            </div>
+            <div class="rightPanel">                                                     
+                <oc-numeric [title]="'ITEM_QUANTITY' | translate" style="align-items: center;"></oc-numeric>                                  
+            </div> 
+        </div>        
+   </ng-container>
 
        
+
        
 
-    <!--Display the ITEM_ID and LOCATION of the med being counted-->
 
 
-
- 
+      
 
   
     

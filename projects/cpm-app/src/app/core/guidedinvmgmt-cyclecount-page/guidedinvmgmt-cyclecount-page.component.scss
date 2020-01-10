@@ -2,37 +2,48 @@
 :host{
     height: 100%;
 }
-
-
-.panelContainer {
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-  overflow: hidden;
-}
-
-.displayGuidedCycleCount { 
-  flex: 1;
-  border-bottom: solid #c8c8c8 1px;  
-  height: 35%;
-  width: 100%;
-}
-
-.leftSidePanel {
+  
+  .BrandName{
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .GenericName{
+    font-size: 22px;
+  }
+  .ItemId{
+    font-size: 12px;
+  }
+  .DeviceLocation{
+    font-size: 12px;
+  }
+  .panelContainer {
+    display: flex;
+    flex-direction: row;
     flex: 1;
-    overflow-y: auto;   
-    border-top:solid #c8c8c8  1px; 
-    background-color: #c8c8c8; 
-    box-sizing: content-box;
-    height: 75%;
+    overflow: hidden;
+  }
+  .displayGuidedCycleCount { 
+    flex: 1;
+    border-bottom: solid $slate-grey 4px;
+    box-sizing: border-box;
+  }
+  .leftPanel {
+    flex: 1;
+    overflow-y: auto;
+    border-top: solid $slate-grey 4px;
+    border-right: solid $slate-grey 6px;
+    height: 100%;
     width: 25%;
+    box-sizing: border-box;
+    background-color: #c8c8c8;
+  }
+  .rightPanel {
+    flex: 1;
+    overflow-y: auto;
+    border-top: solid $slate-grey  4px;
+    height: 50%;
+    width:100%;
+    box-sizing: border-box;      
   }
 
-
-  .numericControlPanel {
-    flex: 1;    
-    border-top:solid #c8c8c8  2px;
-    height:100%;
-    width: 100%;
-    
-  }
+  

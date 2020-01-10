@@ -30,9 +30,24 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   ngOnInit() {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
 
-    this.displayCycleCountItem = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
-      return guidedCycleCountItems.map(p => new GuidedCycleCount(p))[0];
-   }));
+  //  this.displayCycleCountItem = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
+  //    return guidedCycleCountItems.map(p => new GuidedCycleCount(p))[0];
+  
+  this.displayCycleCountItem = of(new GuidedCycleCount({
+    
+  DeviceLocationId: 72,  
+  ItemId: "92854",
+  BrandNameFormatted: "Factor Vlla (Recombinant) 2mg 1 VIAL",
+  GenericNamdFOrmatted: "NOVOSEVEN",
+  ParLevel: 180,
+  ReorderLevel: 20,
+  ExpirationDate: new Date(),
+  LocationDescription: "Cubixx: 5-1-1",
+  QuantityOnHand: 50,
+  ReorderSource: "Cabinent",
+  }));
+
+   //}));
   }
 
   ngAfterViewInit() {
