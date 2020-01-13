@@ -62,26 +62,27 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   ngOnInit() {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
 
-<<<<<<< HEAD
-  //  this.displayCycleCountItem = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
-  //    return guidedCycleCountItems.map(p => new GuidedCycleCount(p))[0];
+
+    //this.displayCycleCountItem = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
+      //return guidedCycleCountItems.map(p => new GuidedCycleCount(p))[0];
   
-  this.displayCycleCountItem = of(new GuidedCycleCount({
+  //this.displayCycleCountItem = of(new GuidedCycleCount({    
+    this.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 72,  
+        ItemId: "92854",
+        BrandNameFormatted: "Factor Vlla (Recombinant) 2mg 1 VIAL",
+        GenericNamdFOrmatted: "NOVOSEVEN",
+        ParLevel: 180,
+        ReorderLevel: 20,
+        ExpirationDate: new Date(),
+        LocationDescription: "Cubixx: 5-1-1",
+        QuantityOnHand: 50,
+        ReorderSource: "Cabinet",
+      });
     
-  DeviceLocationId: 72,  
-  ItemId: "92854",
-  BrandNameFormatted: "Factor Vlla (Recombinant) 2mg 1 VIAL",
-  GenericNamdFOrmatted: "NOVOSEVEN",
-  ParLevel: 180,
-  ReorderLevel: 20,
-  ExpirationDate: new Date(),
-  LocationDescription: "Cubixx: 5-1-1",
-  QuantityOnHand: 50,
-  ReorderSource: "Cabinent",
-  }));
 
    //}));
-=======
+
     //this.cycleCountItems = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
     //  
     //  return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -89,7 +90,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     
     this.cycleCountItems = of(this.mockData);
     this.nextRecord();
->>>>>>> 8df17b92cc32e2088cddf49f21156b27ccfbf3b3
+
   }
 
   ngAfterViewInit() {
@@ -97,6 +98,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
 
   navigateBack(){
     this.wpfActionController.ExecuteBackAction();
+
   }
 
   navigateContinue(){
