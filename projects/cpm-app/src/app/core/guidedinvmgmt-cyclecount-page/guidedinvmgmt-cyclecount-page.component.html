@@ -7,33 +7,25 @@
     <ng-container class="ocactiondetails">
         <div class="displayGuidedCycleCount" >
             <div class="BrandName" > 
-                <div>{{ (displayCycleCountItem | async).BrandNameFormatted }}</div>
-                <br><br>
+                <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
             </div>
             <div class="GenericName" > 
-                <div>{{ (displayCycleCountItem | async).GenericNamdFOrmatted }}</div>                   
+                <div>{{ displayCycleCountItem.GenericNamdFormatted }}</div>                   
             </div>
         </div>                  
+        <div class="ItemId" >                    
+            <span>{{ displayCycleCountItem.ItemId }}   
+                    {{ displayCycleCountItem.LocationDescription }}
+            </span>
+        </div> 
     </ng-container> 
 
-
-    <ng-container class="ocactiondetails">
-        <div class="ItemId" >                    
-            <div>{{ (displayCycleCountItem | async).ItemId }}      
-                <span class="DeviceLocation" >
-                    <div>{{ (displayCycleCountItem | async).LocationDescription }}</div>  
-                </span>
-            </div>
-        </div> 
-    </ng-container>
-
-    
     <ng-container class="ocactiondetails">   
        <div class="panelContainer">
             <div class="leftPanel">
                 <div>
                     Stock:
-                    <div>{{(displayCycleCountItem | async).QuantityOnHand}}</div>
+                    <div>{{displayCycleCountItem.QuantityOnHand}}</div>
                 </div>                
             </div>
             <div class="rightPanel">                                                     
@@ -43,15 +35,6 @@
    </ng-container>
 
        
-
-       
-
-
-
-      
-
-  
-    
       
     <!--Displays the Cancel and next button in the footer-->
     <ng-container class="ocactionfooter">

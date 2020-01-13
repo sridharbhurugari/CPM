@@ -4,45 +4,55 @@
 }
   
   .BrandName{
-    font-size: 22px;
+    font-size: 25px;
     font-weight: bold;
+    position: relative;
+    top: 15px;
+    left: 15px;
   }
+
   .GenericName{
+    font-size: 25px;
+    position: relative;
+    top: 15px;
+    left: 15px;
+ }
+
+  .ItemId{
     font-size: 22px;
   }
-  .ItemId{
-    font-size: 12px;
-  }
+
   .DeviceLocation{
-    font-size: 12px;
+    font-size: 22px;
   }
+
   .panelContainer {
     display: flex;
     flex-direction: row;
     flex: 1;
     overflow: hidden;
   }
+
   .displayGuidedCycleCount { 
-    flex: 1;
-    border-bottom: solid $slate-grey 4px;
-    box-sizing: border-box;
+    border-bottom: solid  #c8c8c8 1px;
+    height: 100px;
   }
+
   .leftPanel {
-    flex: 1;
     overflow-y: auto;
-    border-top: solid $slate-grey 4px;
-    border-right: solid $slate-grey 6px;
+    border-top: solid  #c8c8c8 1px;
+    border-right: solid  #c8c8c8 6px;
     height: 100%;
-    width: 25%;
+    width: 150px;
     box-sizing: border-box;
     background-color: #c8c8c8;
   }
+
   .rightPanel {
-    flex: 1;
     overflow-y: auto;
-    border-top: solid $slate-grey  4px;
-    height: 50%;
-    width:100%;
+    border-top: solid  #c8c8c8  1px;
+    height: 100%;
+    width: 100%;
     box-sizing: border-box;      
   }
 

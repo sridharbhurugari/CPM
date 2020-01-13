@@ -37,7 +37,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
-        GenericNamdFOrmatted: "acetaminophen 500mg tab",
+        GenericNamdFormatted: "acetaminophen 500mg tab",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -49,7 +49,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         DeviceLocationId: 87,  
         ItemId: "ace325t",
         BrandNameFormatted: "Tylenol 325mg tab",
-        GenericNamdFOrmatted: "acetaminophen 325mg tab",
+        GenericNamdFormatted: "acetaminophen 325mg tab",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -62,27 +62,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   ngOnInit() {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
 
-
-    //this.displayCycleCountItem = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
-      //return guidedCycleCountItems.map(p => new GuidedCycleCount(p))[0];
-  
-  //this.displayCycleCountItem = of(new GuidedCycleCount({    
-    this.displayCycleCountItem = new GuidedCycleCount({
-        DeviceLocationId: 72,  
-        ItemId: "92854",
-        BrandNameFormatted: "Factor Vlla (Recombinant) 2mg 1 VIAL",
-        GenericNamdFOrmatted: "NOVOSEVEN",
-        ParLevel: 180,
-        ReorderLevel: 20,
-        ExpirationDate: new Date(),
-        LocationDescription: "Cubixx: 5-1-1",
-        QuantityOnHand: 50,
-        ReorderSource: "Cabinet",
-      });
-    
-
-   //}));
-
     //this.cycleCountItems = this.guidedCycleCountService.get(deviceId).pipe(map(guidedCycleCountItems => {
     //  
     //  return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -90,7 +69,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     
     this.cycleCountItems = of(this.mockData);
     this.nextRecord();
-
   }
 
   ngAfterViewInit() {
