@@ -3,7 +3,7 @@ import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent } from '@omnicell/webcorecomponents';
 import { InputsModule } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -20,6 +20,7 @@ import { GuidedCycleCountUpdate } from '../model/guided-cycle-count-update';
 
 export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewInit {
   @ViewChild('numericEle', null) numericElement: NumericComponent;  
+  @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   displayCycleCountItem: IGuidedCycleCount;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
   isLastItem: boolean;

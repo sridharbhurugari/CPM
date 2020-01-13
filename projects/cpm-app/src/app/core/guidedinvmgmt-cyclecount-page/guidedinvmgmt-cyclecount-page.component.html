@@ -2,7 +2,7 @@
     <!--Displays the Guided Cycle Count gray header with white font-->
     <ng-container class="ocactionheader">
         <div class="cpmactiontitle">{{"GUIDED_CYCLE_COUNT" | translate}}</div>
-    </ng-container>   
+    </ng-container>       
 
     <ng-container class="ocactiondetails">
         <div class="displayGuidedCycleCount" >
@@ -12,24 +12,43 @@
             <div class="GenericName" > 
                 <div>{{ displayCycleCountItem.GenericNamdFormatted }}</div>                   
             </div>
-        </div>                  
-        <div class="ItemId" >                    
-            <span>{{ displayCycleCountItem.ItemId }}   
-                    {{ displayCycleCountItem.LocationDescription }}
-            </span>
-        </div> 
+        </div>
+        
+        <div class="itemIdBox" >
+            <div class="ItemId" >                    
+                <span>{{ displayCycleCountItem.ItemId }}   
+                        {{ displayCycleCountItem.LocationDescription }}
+                </span>
+            </div> 
+        </div>
     </ng-container> 
 
     <ng-container class="ocactiondetails">   
        <div class="panelContainer">
+
             <div class="leftPanel">
-                <div>
-                    Stock:
-                    <div>{{displayCycleCountItem.QuantityOnHand}}</div>
-                </div>                
+                <div class="leftPanelRow"> {{"IN_STOCK" | translate}} 
+                    <br> {{displayCycleCountItem.QuantityOnHand}} <br>
+                </div>  
+                <div class="leftPanelRow"> {{"PAR_LEVEL" | translate}} 
+                    <br> {{displayCycleCountItem.ParLevel}} <br>
+                </div>  
+                <div class="leftPanelRow"> {{"REORDER_LEVEL" | translate}} 
+                    <br> {{displayCycleCountItem.ReorderLevel}} <br>
+                </div>  
+                <!--EXPIRATION DATE GOES HERE-->
+                <div class="leftPanelRow"> {{"EXPIRATION_DATE" | translate}} 
+                    <oc-datepicker [format]="dateFormat">
+                      
+                    </oc-datepicker>
+                    
+                </div>  
+            
             </div>
+
+
             <div class="rightPanel">                                                     
-                <oc-numeric [title]="'ITEM_QUANTITY' | translate" style="align-items: center;"></oc-numeric>                                  
+                <oc-numeric [title]="'ITEM_QUANTITY' | translate"> </oc-numeric> 
             </div> 
         </div>        
    </ng-container>
