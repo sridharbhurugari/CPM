@@ -61,8 +61,11 @@
             <div class="ocleftalign">
                 <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}</oc-button-action>
             </div>
-            <div class="ocrightalign">
-                <oc-button-action [buttonText]="'NEXT' | translate" (click)="navigateBack()">}</oc-button-action>
+            <div class="ocrightalign" *ngIf="!isLastItem" >
+                <oc-button-action [buttonText]="'NEXT' | translate" (click)="navigateContinue()">}</oc-button-action>
+            </div>
+            <div class="ocrightalign" *ngIf="isLastItem" >
+                <oc-button-action [buttonText]="'DONE' | translate" (click)="navigateContinue()">}</oc-button-action>
             </div>
         </oc-footer>
     </ng-container>
