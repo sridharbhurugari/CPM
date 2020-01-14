@@ -1,5 +1,5 @@
 export interface IDeviceSequenceOrder {
   SequenceOrder: number;
-  DeviceId: string;
+  DeviceId: number;
   DeviceDescription: string;
-  }
+}
