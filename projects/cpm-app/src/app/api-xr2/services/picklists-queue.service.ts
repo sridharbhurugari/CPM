@@ -6,6 +6,7 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { HttpClient } from '@angular/common/http';
 import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-sync-request';
 import { catchError } from 'rxjs/operators';
+import { PickListLineDetail } from '../data-contracts/pick-list-line-detail';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,13 @@ export class PicklistsQueueService {
   sendToRobot(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/SendToRobot');
     return this.httpClient.post(url, globalDispenseSyncRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  printLabels(deviceId: number, picklistLineDetails: Array<PickListLineDetail>) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
+    return this.httpClient.post(url, picklistLineDetails, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
