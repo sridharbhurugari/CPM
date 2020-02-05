@@ -82,6 +82,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
         picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
       });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private displayFailedToSaveDialog(): void {
