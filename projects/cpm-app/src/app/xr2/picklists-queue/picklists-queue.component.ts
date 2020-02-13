@@ -49,8 +49,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
   }
 
   private configureEventHandlers(): void {
-    this.eventConnectionService.dispenseBoxCompleteSubject.subscribe(message => this.filledBoxUpdateReceived(message));
-    this.eventConnectionService.orderBoxCountSubject.subscribe(message => this.orderBoxCountReceived(message));
+    this.eventConnectionService.receivedSubject.subscribe(message => this.onReceived(message));
   }  
 
   @ViewChild('searchBox', {
@@ -133,13 +132,28 @@ export class PicklistsQueueComponent implements AfterViewInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
-  }
+  }   
 
-  private filledBoxUpdateReceived(eventArgs: string): void{    
-    this.picklistQueueItems[0].FilledBoxCount = +eventArgs;
-  };  
+  private onReceived(eventArgs: string): void{    
+    const eventArgsAsAny = eventArgs as any;
+    const serializedObject = eventArgsAsAny.A[0];
+    const deserializedObject = JSON.parse(serializedObject);
 
-  private orderBoxCountReceived(eventArgs: string): void{    
-    this.picklistQueueItems[0].BoxCount = +eventArgs;
+    const messageTypeName: string = deserializedObject.$type;
+
+    const OrderBoxesReceivedMessage = `OrderBoxesReceivedMessage`;
+    const OrderBoxCompleteMessage = `OrderBoxCompleteMessage`;
+
+    if (messageTypeName.includes(OrderBoxesReceivedMessage)) {
+      const lineId: string = deserializedObject.PickListLineIdentifier;
+      const splitBoxCount: number = deserializedObject.SplitBoxCount;
+      this.picklistQueueItems[0].BoxCount = splitBoxCount;
+    }
+
+    if (messageTypeName.includes(OrderBoxCompleteMessage)) {
+      const lineId: string = deserializedObject.PickListLineIdentifier;
+      const completeBoxCount: number = deserializedObject.NumberOfCompletedBoxes;
+      this.picklistQueueItems[0].FilledBoxCount = completeBoxCount;
+    }
   };  
 }
