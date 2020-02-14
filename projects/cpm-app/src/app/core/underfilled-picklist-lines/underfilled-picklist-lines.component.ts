@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 export class UnderfilledPicklistLinesComponent {
   _picklistLines: UnderfilledPicklistLine[];
 
-  descriptionPropertyName = nameof<UnderfilledPicklistLine>('ItemFormattedGenericName');
+  descriptionPropertyName = nameof<UnderfilledPicklistLine>('DescriptionSortValue');
   destinationPropertyName = nameof<UnderfilledPicklistLine>('DestinationSortValue');
   qtyFillReqPropertyName = nameof<UnderfilledPicklistLine>('FillQuantity');
   fillDatePropertyName = nameof<UnderfilledPicklistLine>('FillDate');
