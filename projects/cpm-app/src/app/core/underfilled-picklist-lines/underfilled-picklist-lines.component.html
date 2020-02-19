@@ -1,10 +1,30 @@
 <oc-grid #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
     <div class="first" data-colwrap="true"></div>
-    <div class="col" ocGridColResize data-width="584" data-colwrap="true">{{'DESCRIPTION_ID' | translate}}</div>
-    <div class="col" ocGridColResize data-width="300" data-colwrap="true">{{'DESTINATION' | translate}}</div>
-    <div class="col" ocGridColResize data-width="140" data-colwrap="true">{{'QTY_FILLED_REQUESTED' | translate}}</div>
-    <div class="last" ocGridColResize data-width="160" data-colwrap="true">{{'DATE_COMPLETED' | translate}}</div>
+    <div app-col-header-sortable class="col" ocGridColResize data-width="570" data-colwrap="true"
+                            [columnPropertyName]='descriptionPropertyName'
+                            headerResourceKey='DESCRIPTION_ID'
+                            [currentSortPropertyName]="currentSortPropertyName"
+                            (columnSelected)="columnSelected($event)">  
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-width="274" data-colwrap="true"
+                            [columnPropertyName]='destinationPropertyName'
+                            headerResourceKey='DESTINATION'
+                            [currentSortPropertyName]="currentSortPropertyName"
+                            (columnSelected)="columnSelected($event)">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-width="190" data-colwrap="true"
+                            [columnPropertyName]='qtyFillReqPropertyName'
+                            headerResourceKey='QTY_FILLED_REQUESTED'
+                            [currentSortPropertyName]="currentSortPropertyName"
+                            (columnSelected)="columnSelected($event)">
+    </div>
+    <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
+                            [columnPropertyName]='fillDatePropertyName'
+                            headerResourceKey='DATE_COMPLETED'
+                            [currentSortPropertyName]="currentSortPropertyName"
+                            (columnSelected)="columnSelected($event)">  
+    </div>    
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistLine of picklistLines">
