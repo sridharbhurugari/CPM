@@ -7,6 +7,7 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 
 describe('UnderfilledPicklistsComponent', () => {
   let component: UnderfilledPicklistsComponent;
@@ -20,6 +21,7 @@ describe('UnderfilledPicklistsComponent', () => {
         MockSearchBox,
         MockSearchPipe,
         MockColHeaderSortable,
+        MockAppHeaderContainer,
       ],
       providers: [
         { provide: WpfActionControllerService, useVaule: { }}
