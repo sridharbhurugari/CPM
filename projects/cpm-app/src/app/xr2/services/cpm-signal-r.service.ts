@@ -15,11 +15,8 @@ const payloadKey = 'ocap-user-token';
 })
 export class CpmSignalRService {
 
-  private endpoint: string;
   private messageSubscription;
   private hubName = 'PubService';
-  private tokenService: TokenService;
-  private httpClient: IHttpClient;
 
   public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
   public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
@@ -28,29 +25,17 @@ export class CpmSignalRService {
     private configurationService: ConfigurationService,
     ocapHttpClient: OcapHttpClientService,
     private signalRService: SignalRService,
-    private loggerService: LoggerService,
-    private ocapHttpConfigurationService: OcapHttpConfigurationService,
-    private httpClientService: HttpClientService,
-    private hostNotificationService: HostNotificationService) {
-
-    this.httpClient = ocapHttpClient;
+    private loggerService: LoggerService) {
     this.startSignalRService();
-
-    this.tokenService = new TokenService(httpClientService, hostNotificationService, configurationService, loggerService);
-
-    this.init();
-  }
-
-  private initializeEndpoint(): void {
-    const path = this.configurationService.getItem('ocsUserTokenauthEndpoint');
-    this.endpoint = `/${path}`;
   }
 
   public init(): void {
-    this.initializeEndpoint();
-    this.tokenService.setHttpClient(this.httpClient);
     this.configurationService.setItem('tokenpayloadKey', payloadKey);
-    //// this.tokenService.init(TokenKey, this.endpoint, this.configurationService, true);
+  }
+
+  public shutdown(): void {
+    this.signalRService.stop();
+    this.unhookEventHandlers();
   }
 
   private async startSignalRService(): Promise<void> {
@@ -65,14 +50,6 @@ export class CpmSignalRService {
 
   private unhookEventHandlers(): void {
     this.messageSubscription.unsubscribe();
-  }
-
-  public get token(): string {
-    return this.tokenService.getToken(TokenKey);
-  }
-
-  public set token(value: string) {
-    this.tokenService.setToken(TokenKey, value);
   }
 
   private onReceived(eventArgs: string): void {

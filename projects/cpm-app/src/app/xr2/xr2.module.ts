@@ -9,9 +9,10 @@ import { SharedModule } from '../shared/shared.module';
 import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-queue-page.component';
 import { OalCoreModule } from 'oal-core';
 import { environment } from '../../environments/environment';
+import { CpmSignalRComponent } from './cpm-signal-r/cpm-signal-r.component';
 
 @NgModule({
-  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent],
+  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent, CpmSignalRComponent],
   imports: [
     CommonModule,
     GridModule,
