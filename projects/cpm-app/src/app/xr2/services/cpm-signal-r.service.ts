@@ -1,44 +1,63 @@
 import { Injectable } from '@angular/core';
-import { LoggerService, ConfigurationService, SignalRService, LogVerbosity, TokenService } from 'oal-core';
+import {
+  LoggerService, ConfigurationService, SignalRService, LogVerbosity, TokenService,
+  HttpClientService, HostNotificationService, OcapHttpClientService, IHttpClient
+} from 'oal-core';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { Subject } from 'rxjs';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
+
+const TokenKey = 'ocs-user-token';
+const payloadKey = 'ocap-user-token';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CpmSignalRService {
 
+  private endpoint: string;
   private messageSubscription;
   private hubName = 'PubService';
+  private tokenService: TokenService;
+  private httpClient: IHttpClient;
 
-  constructor(private configurationService: ConfigurationService,
-              private signalRService: SignalRService,
-              private loggerService: LoggerService,
-              private ocapHttpConfigurationService: OcapHttpConfigurationService) {
+  public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
+  public dispenseBoxCompleteSubject = new Subject<PicklistQueueItem>();
+
+  constructor(
+    private configurationService: ConfigurationService,
+    ocapHttpClient: OcapHttpClientService,
+    private signalRService: SignalRService,
+    private loggerService: LoggerService,
+    private ocapHttpConfigurationService: OcapHttpConfigurationService,
+    private httpClientService: HttpClientService,
+    private hostNotificationService: HostNotificationService) {
+
+    this.httpClient = ocapHttpClient;
     this.startSignalRService();
+
+    this.tokenService = new TokenService(httpClientService, hostNotificationService, configurationService, loggerService);
+
+    this.init();
   }
+
+  private initializeEndpoint(): void {
+    const path = this.configurationService.getItem('ocsUserTokenauthEndpoint');
+    this.endpoint = `/${path}`;
+  }
+
+  public init(): void {
+    this.initializeEndpoint();
+    this.tokenService.setHttpClient(this.httpClient);
+    this.configurationService.setItem('tokenpayloadKey', payloadKey);
+    this.tokenService.init(TokenKey, this.endpoint, this.configurationService, true);
+}
 
   private async startSignalRService(): Promise<void> {
     const hubUrl = this.getHubUrl();
-    const options = this.buildOptionsParam();
-    await this.signalRService.start(hubUrl, this.hubName, options);
+    await this.signalRService.start(hubUrl, this.hubName);
     this.hookupEventHandlers();
   }
-
-  private buildOptionsParam(): any {
-    const ocapHttpConfig = this.ocapHttpConfigurationService.get();
-    const apiKey = ocapHttpConfig.apiKey;
-    const clientId = ocapHttpConfig.clientId;
-    const machineName = ocapHttpConfig.machineName;
-    const ocapServerIP = this.configurationService.getItem('ocapServerIP');
-    const port = this.configurationService.getItem('port');
-    const endpointPrefix = this.configurationService.getItem('endpointPrefix');
-    const useSecured = this.configurationService.getItem('useSecured');
-    const options = { qs : 'apiKey=' + apiKey + ';clientId=' + clientId + ';machineName=' + machineName +
-    ';useSecured=' + useSecured + ';port=' + port + ';ocapServerIP=' + ocapServerIP + ';endpointPrefix=' +
-    endpointPrefix + ';userLocal=en-US;'  };
-
-    return options;
-  };
 
   private hookupEventHandlers(): void {
     this.messageSubscription = this.signalRService.receivedSubject.subscribe(message => this.onReceived(message));
@@ -54,6 +73,11 @@ export class CpmSignalRService {
     const deserializedObject = JSON.parse(serializedObject);
 
     const messageTypeName: string = deserializedObject.$type;
+
+    if (messageTypeName.includes('AddOrUpdatePicklistQueueItemMessage')) {
+      this.addOrUpdatePicklistQueueItemSubject.next(deserializedObject);
+      return;
+    }
 
     this.loggerService.logInfo(
       LogVerbosity.ExtremeVerbose,
