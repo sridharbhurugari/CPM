@@ -12,6 +12,7 @@ import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { EventConnectionService } from '../../api-xr2/services/event-connection.service';
+import { CpmSignalRService } from '../services/cpm-signal-r.service';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -39,8 +40,9 @@ export class PicklistsQueueComponent implements AfterViewInit {
               private picklistsQueueService: PicklistsQueueService,
               private dialogService: PopupDialogService,
               private translateService: TranslateService,
-              private eventConnectionService: EventConnectionService) {
-                this.startSignalR();
+              private eventConnectionService: EventConnectionService,
+              private cpmSignalRService: CpmSignalRService) {
+                //this.startSignalR();
                }
 
   private async startSignalR(): Promise<void> {
@@ -51,7 +53,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
   private configureEventHandlers(): void {
     this.eventConnectionService.dispenseBoxCompleteSubject.subscribe(message => this.filledBoxUpdateReceived(message));
     this.eventConnectionService.orderBoxCountSubject.subscribe(message => this.orderBoxCountReceived(message));
-  }  
+  }
 
   @ViewChild('searchBox', {
     static: true
@@ -75,7 +77,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
         if (this.windowService.nativeWindow) {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
-      });      
+      });
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
@@ -115,7 +117,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
       result => {
         picklistQueueItem.Status = 3;
-        picklistQueueItem.Saving = false;        
+        picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
@@ -135,11 +137,11 @@ export class PicklistsQueueComponent implements AfterViewInit {
     this.dialogService.showOnce(properties);
   }
 
-  private filledBoxUpdateReceived(eventArgs: string): void{    
+  private filledBoxUpdateReceived(eventArgs: string): void{
     this.picklistQueueItems[0].FilledBoxCount = +eventArgs;
-  };  
+  };
 
-  private orderBoxCountReceived(eventArgs: string): void{    
+  private orderBoxCountReceived(eventArgs: string): void{
     this.picklistQueueItems[0].BoxCount = +eventArgs;
-  };  
+  };
 }
