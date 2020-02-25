@@ -11,18 +11,25 @@ export class EventConnectionService {
   protected _hubProxy: hubProxy;
 
   private _hubName = 'PubService';
-  private _hubUrl;// = 'http://localhost:8077';
 
   public receivedSubject = new Subject<string>();
-  public dispenseBoxCompleteSubject = new Subject<string>();
-  public orderBoxCountSubject = new Subject<string>();
 
   constructor() {
     //this._hubUrl = this.getHubUrl();
   }
 
   public async startUp(): Promise<void> {
-    this._hubConnection = new hubConnection(this._hubUrl);
+
+    const hubUrl = this.getHubUrl();
+
+    const queryString = this.getQueryString();
+    const options = {
+      qs: queryString,
+      logging: false,
+      useDefaultPath: true,
+    };
+
+    this._hubConnection = await new hubConnection(hubUrl, options);
 
     await this.createHubProxy();
 
@@ -34,18 +41,25 @@ export class EventConnectionService {
   };
 
   private getHubUrl(): string {
-    const ocapConfigString = localStorage.getItem('ocap');
-    const ocapConfig = JSON.parse(ocapConfigString);
-
-    const ocapServerIP = ocapConfig.ocapServerIP;
-    const port = ocapConfig.port;
-    const useSecured = ocapConfig.useSecured;
+    const ocapServerIP = localStorage.getItem('ocapServerIP');
+    const port = localStorage.getItem('port');
+    const useSecured = localStorage.getItem('useSecured');
 
     const protocol = useSecured ? 'https' : 'http';
 
     const hubUrl = `${protocol}://${ocapServerIP}:${port}`;
-    alert(hubUrl);
+
     return hubUrl;
+  }
+
+  private getQueryString(): string {
+    const clientId = localStorage.getItem('clientId');
+    const apiKey = localStorage.getItem('apiKey');
+    const machineName = localStorage.getItem('machineName');
+
+    const queryString = `x-clientid=${clientId}&x-apikey=${apiKey}&x-machinename=${machineName}`;
+
+    return queryString;
   }
 
   private async createHubProxy(): Promise<void> {
@@ -61,23 +75,11 @@ export class EventConnectionService {
   }
 
   private configureEventHandlers(): void {
-    this._hubProxy.on('dispenseBoxComplete', message => { this.onComplete(message); });
-    this._hubProxy.on('orderBoxCount', message => { this.onCount(message); });
+    this._hubConnection.received(dataReceived => { this.onReceived(dataReceived); });
   }
 
   protected onReceived(message: string): void {
     console.log('Received ' + message);
     this.receivedSubject.next(message);
   }
-
-  protected onComplete(message: string): void {
-    console.log('Received complete ' + message);
-    this.dispenseBoxCompleteSubject.next(message);
-  }
-
-  protected onCount(message: string): void {
-    console.log('Received count ' + message);
-    this.orderBoxCountSubject.next(message);
-  }
-
 }

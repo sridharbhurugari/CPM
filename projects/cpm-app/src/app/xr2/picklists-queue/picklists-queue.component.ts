@@ -37,13 +37,13 @@ export class PicklistsQueueComponent implements AfterViewInit {
   }
 
   constructor(private windowService: WindowService,
-              private picklistsQueueService: PicklistsQueueService,
-              private dialogService: PopupDialogService,
-              private translateService: TranslateService,
-              private eventConnectionService: EventConnectionService,
-              private cpmSignalRService: CpmSignalRService) {
-                //this.startSignalR();
-               }
+    private picklistsQueueService: PicklistsQueueService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService,
+    private eventConnectionService: EventConnectionService,
+    private cpmSignalRService: CpmSignalRService) {
+    //this.startSignalR();
+  }
 
   private async startSignalR(): Promise<void> {
     await this.eventConnectionService.startUp();
@@ -51,9 +51,9 @@ export class PicklistsQueueComponent implements AfterViewInit {
   }
 
   private configureEventHandlers(): void {
-    this.eventConnectionService.dispenseBoxCompleteSubject.subscribe(message => this.filledBoxUpdateReceived(message));
-    this.eventConnectionService.orderBoxCountSubject.subscribe(message => this.orderBoxCountReceived(message));
+    this.eventConnectionService.receivedSubject.subscribe(message => this.onReceived(message));
   }
+
 
   @ViewChild('searchBox', {
     static: true
@@ -63,7 +63,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
   searchTextFilter: string;
 
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
-  , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
+    , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
 
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
@@ -137,11 +137,27 @@ export class PicklistsQueueComponent implements AfterViewInit {
     this.dialogService.showOnce(properties);
   }
 
-  private filledBoxUpdateReceived(eventArgs: string): void{
-    this.picklistQueueItems[0].FilledBoxCount = +eventArgs;
+  private onReceived(eventArgs: string): void {
+    const eventArgsAsAny = eventArgs as any;
+    const serializedObject = eventArgsAsAny.A[0];
+    const deserializedObject = JSON.parse(serializedObject);
+
+    const messageTypeName: string = deserializedObject.$type;
+
+    const OrderBoxesReceivedMessage = `OrderBoxesReceivedMessage`;
+    const OrderBoxCompleteMessage = `OrderBoxCompleteMessage`;
+
+    if (messageTypeName.includes(OrderBoxesReceivedMessage)) {
+      const lineId: string = deserializedObject.PickListLineIdentifier;
+      const splitBoxCount: number = deserializedObject.SplitBoxCount;
+      this.picklistQueueItems[0].BoxCount = splitBoxCount;
+    }
+
+    if (messageTypeName.includes(OrderBoxCompleteMessage)) {
+      const lineId: string = deserializedObject.PickListLineIdentifier;
+      const completeBoxCount: number = deserializedObject.NumberOfCompletedBoxes;
+      this.picklistQueueItems[0].FilledBoxCount = completeBoxCount;
+    }
   };
 
-  private orderBoxCountReceived(eventArgs: string): void{
-    this.picklistQueueItems[0].BoxCount = +eventArgs;
-  };
 }
