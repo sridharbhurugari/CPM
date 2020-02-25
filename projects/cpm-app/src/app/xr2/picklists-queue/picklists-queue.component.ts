@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
-import { EventConnectionService } from '../../api-xr2/services/event-connection.service';
 import { CpmSignalRService } from '../services/cpm-signal-r.service';
 
 @Component({
@@ -21,7 +20,6 @@ import { CpmSignalRService } from '../services/cpm-signal-r.service';
 })
 export class PicklistsQueueComponent implements AfterViewInit {
 
-  private _messageSubscription;
   private _picklistQueueItems: PicklistQueueItem[];
 
   @Input()
@@ -36,24 +34,14 @@ export class PicklistsQueueComponent implements AfterViewInit {
     return this._picklistQueueItems;
   }
 
-  constructor(private windowService: WindowService,
+  constructor(
+    private windowService: WindowService,
     private picklistsQueueService: PicklistsQueueService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private eventConnectionService: EventConnectionService,
     private cpmSignalRService: CpmSignalRService) {
-    //this.startSignalR();
+      this.configureEventHandlers();
   }
-
-  private async startSignalR(): Promise<void> {
-    await this.eventConnectionService.startUp();
-    this.configureEventHandlers();
-  }
-
-  private configureEventHandlers(): void {
-    this.eventConnectionService.receivedSubject.subscribe(message => this.onReceived(message));
-  }
-
 
   @ViewChild('searchBox', {
     static: true
@@ -78,6 +66,36 @@ export class PicklistsQueueComponent implements AfterViewInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+  }
+
+  private configureEventHandlers(): void {
+    this.cpmSignalRService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+    this.cpmSignalRService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
+  }
+
+  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
+    const picklistQueueItem = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem;
+    const matchingPicklistQueueItem = _.find(this.picklistQueueItems, (x) => {
+      return x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
+      x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
+    });
+
+    if (matchingPicklistQueueItem == null) {
+      this.picklistQueueItems.push(picklistQueueItem);
+      return;
+    }
+
+    matchingPicklistQueueItem.Status = picklistQueueItem.Status;
+    matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
+    matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+  }
+
+  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
+    const orderDestinationPickLocationKey = addOrUpdatePicklistQueueItemMessage.OrderDestinationPickLocationKey;
+    _.remove(this.picklistQueueItems, (x) => {
+      return x.OrderId === orderDestinationPickLocationKey.OrderId && x.Destination === orderDestinationPickLocationKey.Destination &&
+      x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId;
+    });
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
@@ -116,7 +134,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
     });
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
       result => {
-        picklistQueueItem.Status = 3;
+        picklistQueueItem.Status = 4;
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
@@ -136,28 +154,4 @@ export class PicklistsQueueComponent implements AfterViewInit {
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
   }
-
-  private onReceived(eventArgs: string): void {
-    const eventArgsAsAny = eventArgs as any;
-    const serializedObject = eventArgsAsAny.A[0];
-    const deserializedObject = JSON.parse(serializedObject);
-
-    const messageTypeName: string = deserializedObject.$type;
-
-    const OrderBoxesReceivedMessage = `OrderBoxesReceivedMessage`;
-    const OrderBoxCompleteMessage = `OrderBoxCompleteMessage`;
-
-    if (messageTypeName.includes(OrderBoxesReceivedMessage)) {
-      const lineId: string = deserializedObject.PickListLineIdentifier;
-      const splitBoxCount: number = deserializedObject.SplitBoxCount;
-      this.picklistQueueItems[0].BoxCount = splitBoxCount;
-    }
-
-    if (messageTypeName.includes(OrderBoxCompleteMessage)) {
-      const lineId: string = deserializedObject.PickListLineIdentifier;
-      const completeBoxCount: number = deserializedObject.NumberOfCompletedBoxes;
-      this.picklistQueueItems[0].FilledBoxCount = completeBoxCount;
-    }
-  };
-
 }

@@ -22,7 +22,7 @@ export class CpmSignalRService {
   private httpClient: IHttpClient;
 
   public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
-  public dispenseBoxCompleteSubject = new Subject<PicklistQueueItem>();
+  public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
 
   constructor(
     private configurationService: ConfigurationService,
@@ -50,8 +50,8 @@ export class CpmSignalRService {
     this.initializeEndpoint();
     this.tokenService.setHttpClient(this.httpClient);
     this.configurationService.setItem('tokenpayloadKey', payloadKey);
-    this.tokenService.init(TokenKey, this.endpoint, this.configurationService, true);
-}
+    //// this.tokenService.init(TokenKey, this.endpoint, this.configurationService, true);
+  }
 
   private async startSignalRService(): Promise<void> {
     const hubUrl = this.getHubUrl();
@@ -67,6 +67,14 @@ export class CpmSignalRService {
     this.messageSubscription.unsubscribe();
   }
 
+  public get token(): string {
+    return this.tokenService.getToken(TokenKey);
+  }
+
+  public set token(value: string) {
+    this.tokenService.setToken(TokenKey, value);
+  }
+
   private onReceived(eventArgs: string): void {
     const eventArgsAsAny = eventArgs as any;
     const serializedObject = eventArgsAsAny.A[0];
@@ -74,16 +82,25 @@ export class CpmSignalRService {
 
     const messageTypeName: string = deserializedObject.$type;
 
-    if (messageTypeName.includes('AddOrUpdatePicklistQueueItemMessage')) {
-      this.addOrUpdatePicklistQueueItemSubject.next(deserializedObject);
-      return;
-    }
-
     this.loggerService.logInfo(
       LogVerbosity.ExtremeVerbose,
       'SignalR',
       `CpmSignalRService.onReceived() - Received ${messageTypeName}.`
     );
+
+    if (messageTypeName === undefined) {
+      return;
+    }
+
+    if (messageTypeName.includes('AddOrUpdatePicklistQueueItemMessage')) {
+      this.addOrUpdatePicklistQueueItemSubject.next(deserializedObject);
+      return;
+    }
+
+    if (messageTypeName.includes('RemovePicklistQueueItemMessage')) {
+      this.removePicklistQueueItemSubject.next(deserializedObject);
+      return;
+    }
   }
 
   private getHubUrl(): string {
