@@ -26,16 +26,16 @@ export class CpmSignalRService {
     ocapHttpClient: OcapHttpClientService,
     private signalRService: SignalRService,
     private loggerService: LoggerService) {
-    this.startSignalRService();
   }
 
   public init(): void {
     this.configurationService.setItem('tokenpayloadKey', payloadKey);
+    this.startSignalRService();
   }
 
   public shutdown(): void {
-    this.signalRService.stop();
     this.unhookEventHandlers();
+    this.signalRService.stop();
   }
 
   private async startSignalRService(): Promise<void> {

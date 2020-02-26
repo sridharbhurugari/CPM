@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, ViewChild, OnInit } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { WindowService } from '../../shared/services/window-service';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
@@ -12,15 +12,17 @@ import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { CpmSignalRService } from '../services/cpm-signal-r.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-picklists-queue',
   templateUrl: './picklists-queue.component.html',
   styleUrls: ['./picklists-queue.component.scss']
 })
-export class PicklistsQueueComponent implements OnInit {
+export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   private _picklistQueueItems: PicklistQueueItem[];
+  private cpmSignalRService: CpmSignalRService;
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -39,7 +41,9 @@ export class PicklistsQueueComponent implements OnInit {
     private picklistsQueueService: PicklistsQueueService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private cpmSignalRService: CpmSignalRService) {
+    /*private cpmSignalRService: CpmSignalRService*/
+    private actr: ActivatedRoute) {
+      this.cpmSignalRService = actr.snapshot.data.cpmSignalR;
       this.configureEventHandlers();
   }
 
@@ -53,9 +57,7 @@ export class PicklistsQueueComponent implements OnInit {
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
     , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
 
-  ngOnInit(): void {}
-
-  AfterViewInit(): void {
+  ngAfterViewInit(): void {
     this.searchElement.searchOutput$
       .pipe(
         switchMap((searchData: string) => {
@@ -68,12 +70,10 @@ export class PicklistsQueueComponent implements OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
-
-    //this.cpmSignalRService.init();
   }
 
-  OnDestroy(): void {
-    //this.cpmSignalRService.shutdown();
+  ngOnDestroy(): void {
+    ////this.cpmSignalRService.shutdown();
   }
 
   private configureEventHandlers(): void {

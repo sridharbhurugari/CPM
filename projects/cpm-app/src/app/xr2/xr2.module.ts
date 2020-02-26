@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment';
 import { CpmSignalRComponent } from './cpm-signal-r/cpm-signal-r.component';
 
 @NgModule({
-  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent, CpmSignalRComponent],
+  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent/*, CpmSignalRComponent*/],
   imports: [
     CommonModule,
     GridModule,

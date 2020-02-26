@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CpmSignalRService } from '../services/cpm-signal-r.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { CpmSignalRService } from '../services/cpm-signal-r.service';
   templateUrl: './cpm-signal-r.component.html',
   styleUrls: ['./cpm-signal-r.component.scss']
 })
-export class CpmSignalRComponent implements OnInit {
+export class CpmSignalRComponent implements OnInit, OnDestroy  {
 
   codeImport = `
     constructor(private _cpmSignalRService: CpmSignalRService) {}
@@ -20,7 +20,7 @@ export class CpmSignalRComponent implements OnInit {
   ngOnInit() {
   }
 
-  OnDestroy() {
+  ngOnDestroy() {
     this._cpmSignalRService.shutdown();
     alert('dave');
   }
