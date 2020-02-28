@@ -15,6 +15,8 @@ const payloadKey = 'ocap-user-token';
 })
 export class CpmSignalRService {
 
+  private static readonly methodSetToIdle: string = 'SetToIdle';
+
   private messageSubscription;
   private hubName = 'PubService';
 
@@ -28,17 +30,19 @@ export class CpmSignalRService {
     private loggerService: LoggerService) {
   }
 
-  public init(): void {
+  public async init() {
     this.configurationService.setItem('tokenpayloadKey', payloadKey);
-    this.startSignalRService();
+    await this.startSignalRService();
   }
 
   public shutdown(): void {
+    this.setToIdle();
     this.unhookEventHandlers();
     this.signalRService.stop();
+    this.signalRService.dispose();
   }
 
-  private async startSignalRService(): Promise<void> {
+  private async startSignalRService() {
     const hubUrl = this.getHubUrl();
     await this.signalRService.start(hubUrl, this.hubName);
     this.hookupEventHandlers();
@@ -50,6 +54,10 @@ export class CpmSignalRService {
 
   private unhookEventHandlers(): void {
     this.messageSubscription.unsubscribe();
+  }
+
+  private setToIdle(): void {
+    this.signalRService.invokeNoReturn(CpmSignalRService.methodSetToIdle);
   }
 
   private onReceived(eventArgs: string): void {
