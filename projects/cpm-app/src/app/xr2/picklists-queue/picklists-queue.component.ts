@@ -13,6 +13,7 @@ import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omn
 import { TranslateService } from '@ngx-translate/core';
 import { CpmSignalRService } from '../services/cpm-signal-r.service';
 import { ActivatedRoute } from '@angular/router';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -41,10 +42,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private picklistsQueueService: PicklistsQueueService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    /*private cpmSignalRService: CpmSignalRService*/
-    private actr: ActivatedRoute) {
+    private actr: ActivatedRoute,
+    private wpfActionController: WpfActionControllerService) {
       this.cpmSignalRService = actr.snapshot.data.cpmSignalR;
-      this.configureEventHandlers();
   }
 
   @ViewChild('searchBox', {
@@ -70,10 +70,23 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+
+    this.configureEventHandlers();
   }
 
   ngOnDestroy(): void {
-    ////this.cpmSignalRService.shutdown();
+      this.shutdownSignalR();
+  }
+
+  back() {
+    this.shutdownSignalR();
+    this.wpfActionController.ExecuteBackAction();
+  }
+
+  private shutdownSignalR(): void {
+    if (this.cpmSignalRService) {
+      this.cpmSignalRService.shutdown();
+    }
   }
 
   private configureEventHandlers(): void {

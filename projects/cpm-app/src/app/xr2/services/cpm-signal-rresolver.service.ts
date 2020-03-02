@@ -9,8 +9,8 @@ export class CpmSignalRResolverService implements Resolve<any> {
 
   constructor(private cpmSignalRService: CpmSignalRService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    this.cpmSignalRService.init();
+  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    await this.cpmSignalRService.init();
     return this.cpmSignalRService;
   }
 }
