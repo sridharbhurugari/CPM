@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { WindowService } from '../../shared/services/window-service';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
@@ -44,7 +44,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     private actr: ActivatedRoute,
     private wpfActionController: WpfActionControllerService) {
-      this.cpmSignalRService = actr.snapshot.data.cpmSignalR;
+      if (actr && actr.snapshot && actr.snapshot.data) {
+        this.cpmSignalRService = actr.snapshot.data.cpmSignalR;
+      }
   }
 
   @ViewChild('searchBox', {
@@ -90,6 +92,10 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   private configureEventHandlers(): void {
+    if (!this.cpmSignalRService) {
+      return;
+    }
+
     this.cpmSignalRService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
     this.cpmSignalRService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
   }
