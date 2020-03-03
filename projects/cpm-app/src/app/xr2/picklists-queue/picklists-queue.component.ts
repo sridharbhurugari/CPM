@@ -120,7 +120,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
     const orderDestinationPickLocationKey = addOrUpdatePicklistQueueItemMessage.OrderDestinationPickLocationKey;
     _.remove(this.picklistQueueItems, (x) => {
-      return x.OrderId === orderDestinationPickLocationKey.OrderId && x.Destination === orderDestinationPickLocationKey.Destination &&
+      return x.OrderId === orderDestinationPickLocationKey.OrderId && x.DestinationId === orderDestinationPickLocationKey.DestinationId &&
       x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId;
     });
   }
