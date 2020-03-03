@@ -3,7 +3,8 @@
     <div class="cpmactiontitle">{{"ROBOT_QUEUE" | translate}}</div>
   </ng-container>
   <ng-container class="ocactiondetails">
-    <div class="cpmgridheader">
+    <div class="cpmheaderrow">
+      <app-header-container></app-header-container>
       <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
     </div>
     <oc-grid #ocgrid ocgridfilter="false">
