@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Observable, forkJoin } from 'rxjs';
 import { IPickRouteDetail } from '../../api-core/data-contracts/i-pickroute-detail';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { PickRoutesService } from '../../api-core/services/pick-routes.service';
 import { ActivatedRoute } from '@angular/router';
 import { map, shareReplay } from 'rxjs/operators';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
-import { PopupDialogService, PopupDialogProperties, PopupWindowService, PopupWindowProperties } from '@omnicell/webcorecomponents';
+import { PopupDialogService, PopupDialogProperties, PopupWindowService, PopupWindowProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
 import { ITextResultPopupData } from '../../shared/model/i-text-result-popup-data';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -23,20 +25,27 @@ export class EditPickRoutePageComponent implements OnInit {
   enabledDevices$: Observable<IDeviceSequenceOrder[]>;
   disabledDevices$: Observable<IDeviceSequenceOrder[]>;
 
+  duplicateErrorTitle$: Observable<string>;
+  duplicateErrorMessage$: Observable<string>;
+
   newDeviceSequence: IDeviceSequenceOrder[];
 
   constructor(
     private route: ActivatedRoute,
     private pickRoutesService: PickRoutesService,
     private devicesService: DevicesService,
-    private wpfActionControllerService: WpfActionControllerService,
+    private location: Location,
     private popupWindowService: PopupWindowService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService,
   ) { }
 
   ngOnInit() {
-    var pickRouteId = this.route.snapshot.queryParamMap.get('pickRouteId');
+    var pickRouteId = this.route.snapshot.paramMap.get('pickRouteId');
     this.pickRoute$ = this.pickRoutesService.get(pickRouteId).pipe(shareReplay(1));
     var allDevices$ = this.devicesService.get().pipe(shareReplay(1));
+    this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE')
+    this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE')
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
       var pickRouteDetail = results[0];
@@ -84,13 +93,13 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   navigateBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
+    this.location.back();
   }
 
   saveAs() {
     var properties = new PopupWindowProperties();
     var data: ITextResultPopupData = {
-      headerResourceKey: 'SAVE_AS',
+      headerResourceKey: 'SAVE_NEW_ROUTE',
       placeholderTextResouceKey: 'NEW_ROUTE_NAME',
       initialValue: undefined,
       resultValue: null,
@@ -102,7 +111,8 @@ export class EditPickRoutePageComponent implements OnInit {
     var component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if(selectedConfirm){
-        // this.pickRoutesService.saveAs(data.resultValue, this.newDeviceSequence);
+        this.pickRoutesService.saveAs(data.resultValue, this.newDeviceSequence)
+          .subscribe(result => this.navigateBack(), error => this.onSaveAsFailed(error));
       }
     });
   }
@@ -114,5 +124,26 @@ export class EditPickRoutePageComponent implements OnInit {
     }
 
     this.newDeviceSequence = newDeviceSequence;
+  }
+
+  onSaveAsFailed(error: HttpErrorResponse): any {
+    if(error.status === 500){
+      forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
+        this.displayDuplicateDescriptionError(r[0], r[1]);
+      });
+    }
+  }
+
+  displayDuplicateDescriptionError(title, message): void 
+  {
+    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.primaryButtonText = 'Ok';
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 0;
+    this.dialogService.showOnce(properties);
   }
 }
