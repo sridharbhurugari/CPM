@@ -41,4 +41,32 @@ describe('TextResultPopupComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('cancel', () => {
+    it('should dismiss with null resultValue and false', () => {
+      spyOn(component.dismiss, 'next');
+      component.cancel();
+      expect(component.data.resultValue).toBeNull();
+      expect(component.dismiss.next).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe('continue', () => {
+    it('should dismiss with resultValue from textValue and true', () => {
+      var expectedValue = 'entered text';
+      component.textValue = expectedValue;
+      spyOn(component.dismiss, 'next');
+      component.continue();
+      expect(component.data.resultValue).toBe(expectedValue);
+      expect(component.dismiss.next).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('textValueChanged', () => {
+    it('should set textValue', () => {
+      var expectedValue = 'entered text';
+      component.textValueChanged(expectedValue);
+      expect(component.textValue).toBe(expectedValue);
+    });
+  });
 });
