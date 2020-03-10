@@ -8,16 +8,16 @@ import { PicklistsQueuePageComponent } from './xr2/picklists-queue-page/picklist
 // tslint:disable-next-line: max-line-length
 import { PriorityCodeRouteAssignmentsPageComponent } from './core/priority-code-route-assignments-page/priority-code-route-assignments-page.component';
 import { GuidedInvMgmtDevicelistPageComponent } from './core/guidedinvmgmt-devicelist-page/guidedinvmgmt-devicelist-page.component';
-import { CpmSignalRResolverService } from './xr2/services/cpm-signal-rresolver.service';
+/*import { CpmSignalRResolverService } from './xr2/services/cpm-signal-rresolver.service';*/
 
 
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
-  { path: 'picklists/queue', component: PicklistsQueuePageComponent,
+  { path: 'picklists/queue', component: PicklistsQueuePageComponent/*,
   resolve: {
     cpmSignalR: CpmSignalRResolverService
-  } },
+  }*/ },
   { path: 'priorityCodePickRoutes', component: PriorityCodePickRoutesPageComponent },
   { path: 'priorityCode/RouteAssignments', component: PriorityCodeRouteAssignmentsPageComponent },
   { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },

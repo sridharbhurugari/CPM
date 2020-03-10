@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { CpmSignalRService } from './cpm-signal-r.service';
 
@@ -13,4 +13,4 @@ export class CpmSignalRResolverService implements Resolve<any> {
     await this.cpmSignalRService.init();
     return this.cpmSignalRService;
   }
-}
+}*/

@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+/*import { TestBed } from '@angular/core/testing';
 
 import { CpmSignalRResolverService } from './cpm-signal-rresolver.service';
 import { HttpClient } from '@angular/common/http';
@@ -16,4 +16,4 @@ describe('CpmSignalRResolverService', () => {
     const service: CpmSignalRResolverService = TestBed.get(CpmSignalRResolverService);
     expect(service).toBeTruthy();
   });
-});
+});*/

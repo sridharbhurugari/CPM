@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import {
   LoggerService, ConfigurationService, SignalRService, LogVerbosity, TokenService,
   HttpClientService, HostNotificationService, OcapHttpClientService, IHttpClient
@@ -99,4 +99,4 @@ export class CpmSignalRService {
 
     return hubUrl;
   }
-}
+}*/

@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
-import { CpmSignalRService } from '../services/cpm-signal-r.service';
+import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { ActivatedRoute } from '@angular/router';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
@@ -22,8 +22,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 })
 export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
-  private _picklistQueueItems: PicklistQueueItem[];
-  private cpmSignalRService: CpmSignalRService;
+  private _picklistQueueItems: PicklistQueueItem[];   
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -43,10 +42,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
     private actr: ActivatedRoute,
-    private wpfActionController: WpfActionControllerService) {
-      if (actr && actr.snapshot && actr.snapshot.data) {
-        this.cpmSignalRService = actr.snapshot.data.cpmSignalR;
-      }
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
+    private wpfActionController: WpfActionControllerService) {     
+      this.connectToEvents();
   }
 
   @ViewChild('searchBox', {
@@ -71,33 +69,36 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
         if (this.windowService.nativeWindow) {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
-      });
-
-    this.configureEventHandlers();
+      });    
   }
 
   ngOnDestroy(): void {
-      this.shutdownSignalR();
+      /*this.shutdownSignalR();*/
   }
 
   back() {
-    this.shutdownSignalR();
+    /*this.shutdownSignalR();*/
     this.wpfActionController.ExecuteBackAction();
   }
 
-  private shutdownSignalR(): void {
-    if (this.cpmSignalRService) {
-      this.cpmSignalRService.shutdown();
-    }
+  private async connectToEvents(): Promise<void> {
+    await this.picklistQueueEventConnectionService.openEventConnection();
+    this.configureEventHandlers();
   }
 
+  /*private shutdownSignalR(): void {
+    if (this.eventConnectionService) {
+      this.eventConnectionService.shutdown();
+    }
+  }*/
+
   private configureEventHandlers(): void {
-    if (!this.cpmSignalRService) {
+    if (!this.picklistQueueEventConnectionService) {
       return;
     }
 
-    this.cpmSignalRService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
-    this.cpmSignalRService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {

@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-queue-page.component';
-import { OalCoreModule } from 'oal-core';
+/*import { OalCoreModule } from 'oal-core';*/
 import { environment } from '../../environments/environment';
 
 @NgModule({
@@ -23,10 +23,10 @@ import { environment } from '../../environments/environment';
     SharedModule,
     InputsModule,
     SearchModule,
-    PopupDialogModule,
+    PopupDialogModule/*,
     OalCoreModule.forRoot({
       environment
-    })
+    })*/
   ]
 })
 export class Xr2Module {}

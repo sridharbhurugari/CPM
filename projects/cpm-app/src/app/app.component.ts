@@ -6,7 +6,7 @@ import { OcapConfigurationConstants } from './shared/constants/ocap-configuratio
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
 import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
-import { ConfigurationService, OcapHttpClientService } from 'oal-core';
+/*import { ConfigurationService, OcapHttpClientService } from 'oal-core';*/
 
 @Component({
   selector: 'app-root',
@@ -25,9 +25,9 @@ export class AppComponent implements AfterViewInit {
     private router: Router,
     translate: TranslateService,
     windowService: WindowService,
-    localStorageService: LocalStorageService,
+    localStorageService: LocalStorageService/*,
     configurationService: ConfigurationService,
-    httpClient: OcapHttpClientService
+    httpClient: OcapHttpClientService*/
   ){
     this.loading = true;
     if(windowService.nativeWindow){
@@ -42,7 +42,7 @@ export class AppComponent implements AfterViewInit {
       localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
       translate.setDefaultLang(ocap.userLocale || 'en-US');
 
-      configurationService.init(httpClient);
+      /*configurationService.init(httpClient);*/
     }
   }
 
