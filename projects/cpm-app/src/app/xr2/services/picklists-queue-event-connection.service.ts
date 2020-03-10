@@ -20,23 +20,23 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     this.receivedSubject.subscribe(message => this.configurePicklistEventHandlers(message));
   }
 
-  private configurePicklistEventHandlers(message: string): void {
-    const hubMessage = JSON.parse(JSON.stringify(message));
-
-    const messageTypeName: string = hubMessage.$type;    
-
-    if (messageTypeName === undefined) {
+  private configurePicklistEventHandlers(message: any): void {
+    if (message === undefined) {
+      return;
+    }
+    
+    if (message.EventId === undefined) {
       return;
     }
 
-    if (messageTypeName.includes('AddOrUpdatePicklistQueueItemMessage')) {
-      this.addOrUpdatePicklistQueueItemSubject.next(hubMessage);
+    if (message.EventId === 'AddOrUpdatePicklistQueueItemMessage') {
+      this.addOrUpdatePicklistQueueItemSubject.next(message);
       return;
     }
 
-    if (messageTypeName.includes('RemovePicklistQueueItemMessage')) {
-      this.removePicklistQueueItemSubject.next(hubMessage);
+    if (message.EventId === 'RemovePicklistQueueItemMessage') {
+      this.removePicklistQueueItemSubject.next(message);
       return;
-    }      
+    }    
   }
 }

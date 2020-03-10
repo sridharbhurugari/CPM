@@ -52,7 +52,7 @@ export class EventConnectionService {
     this._hubProxy.on('serverMessageSent', message => { this.onReceived(message); });
   }
 
-  protected onReceived(message: string): void {
+  protected onReceived(message: any): void {
     console.log('Received ' + message);   
     this.receivedSubject.next(message);
     return;    
