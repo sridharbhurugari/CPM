@@ -78,7 +78,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   back() {
     /*this.shutdownSignalR();*/
-    this.wpfActionController.ExecuteBackAction();
+    this.wpfActionController.ExecuteContinueAction();
   }
 
   private async connectToEvents(): Promise<void> {

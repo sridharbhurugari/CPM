@@ -15,6 +15,8 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
+import { CoreModule } from '../../core/core.module';
 
 @Component({
   selector: 'oc-search-box',
@@ -32,8 +34,8 @@ describe('PicklistsQueueComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox ],
-      imports: [GridModule, ButtonActionModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule],
+      declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
+      imports: [GridModule, ButtonActionModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule, CoreModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
