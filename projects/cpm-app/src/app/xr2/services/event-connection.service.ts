@@ -8,13 +8,13 @@ import { ConfigurationService } from 'oal-core';
 })
 export class EventConnectionService {
 
+  public receivedSubject = new Subject<string>();
+
   protected _hubConnection: hubConnection;
   protected _hubProxy: hubProxy;
 
   private _hubName = 'EventHub';
   private _hubUrl = 'http://localhost:8077';
-
-  public receivedSubject = new Subject<string>();
 
   constructor(
     protected _configurationService: ConfigurationService
