@@ -16,7 +16,9 @@ export class EventConnectionService {
 
   public receivedSubject = new Subject<string>();
 
-  constructor(protected _configurationService: ConfigurationService) { }
+  constructor(
+    protected _configurationService: ConfigurationService
+    ) { }
 
   public async startUp(): Promise<void> {
 
@@ -40,7 +42,6 @@ export class EventConnectionService {
   };
 
   private async createHubProxy(): Promise<void> {
-
     this._hubProxy = this._hubConnection.createHubProxy(this._hubName);
   }
 

@@ -12,7 +12,9 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
   public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
   public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
 
-  constructor(_configurationService: ConfigurationService) {
+  constructor(
+    _configurationService: ConfigurationService
+    ) {
     super(_configurationService);
    }
 
