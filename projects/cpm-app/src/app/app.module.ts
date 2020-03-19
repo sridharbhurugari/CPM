@@ -12,6 +12,7 @@ import { Xr2Module } from './xr2/xr2.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { OalCoreModule, OcapHttpClientService } from 'oal-core';
 
 import { ProgressAnimationModule,
          LayoutModule,
@@ -40,6 +41,11 @@ import { RouterModule } from '@angular/router';
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient]
             }
+    }),
+    OalCoreModule.forRoot({
+      environment,
+      httpClientService: OcapHttpClientService,
+      configEndpointKey: 'configEndpoint'
     }),
     ProgressAnimationModule,
     LayoutModule,
