@@ -8,7 +8,7 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng run cpm-app:app-shell:production"
+    "deploy": "ng build --prod=true"
   },
   "private": true,
   "dependencies": {
