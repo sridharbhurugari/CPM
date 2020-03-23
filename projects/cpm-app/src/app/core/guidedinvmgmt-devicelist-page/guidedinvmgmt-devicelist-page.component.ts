@@ -3,6 +3,8 @@ import { GuidedDeviceList } from '../model/guided-device-list';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
+import { PopupDialogModule } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WpfActionPaths } from '../constants/wpf-action-paths';
@@ -26,7 +28,8 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
 
   constructor(
     private guidedDeviceListService: GuidedDeviceListService,
-    private wpfActionControllerService: WpfActionControllerService
+    private wpfActionControllerService: WpfActionControllerService,
+    private dialogService: PopupDialogService
     ) { }
 
   ngOnInit() {
@@ -43,7 +46,25 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   navigate(deviceId: number){
     this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId});
   }
+  showWarning() {
+    this.displayDialog('No Bins', 'No Bins Warning', [], PopupDialogType.Warning);
+  }
 
+  private displayDialog(title: string, message: string, listOfItems: string[], popupType: PopupDialogType ): void {
+
+    const properties = new PopupDialogProperties('No-Bins-Warning');
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.messageElementText2 = 'There are no items to display';
+    properties.showPrimaryButton = true;
+    properties.primaryButtonText = 'Ok';
+    properties.showSecondaryButton = true;
+    properties.secondaryButtonText = 'Cancel';
+    properties.dialogDisplayType = popupType;
+    properties.listOfItems = listOfItems;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
   ngAfterViewInit() {
     this.searchElement.searchOutput$
       .pipe(

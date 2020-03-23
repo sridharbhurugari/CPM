@@ -2,7 +2,7 @@ export interface IGuidedCycleCount {
   DeviceLocationId: number,
   ItemId: string,
   BrandNameFormatted: string,
-  GenericNamdFormatted: string,
+  GenericNameFormatted: string,
   ParLevel: number,
   ReorderLevel: number,
   ExpirationDate: Date,

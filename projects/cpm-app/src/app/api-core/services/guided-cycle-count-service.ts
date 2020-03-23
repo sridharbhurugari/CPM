@@ -4,7 +4,8 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { Observable } from 'rxjs';
 import { IGuidedCycleCount } from '../data-contracts/i-guided-cycle-count';
-import { IGuidedCycleCountUpdate } from '../data-contracts/i-guided-cycle-count-update';
+import { deviceCycleCountItemUpdate } from '../data-contracts/guided-cycle-count-update';
+
 
 @Injectable({
     providedIn: 'root'
@@ -24,8 +25,8 @@ import { IGuidedCycleCountUpdate } from '../data-contracts/i-guided-cycle-count-
       }
     
 
-    public post(item: IGuidedCycleCountUpdate): Observable<boolean>{
-      var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/cycleCount`);
+  public post(deviceId: string,item: deviceCycleCountItemUpdate): Observable<boolean>{
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
       return this.httpClient.post<boolean>(url, item, {
         headers: this.ocapHttpHeadersService.getHeaders(),
       });
