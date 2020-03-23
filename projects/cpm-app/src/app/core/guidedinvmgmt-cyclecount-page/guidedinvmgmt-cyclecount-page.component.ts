@@ -68,29 +68,31 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.currentItemCount++;
     });
   }
-  showValidComponent()
-  {
-    return this.displayCycleCountItem && this.cycleCountItemsCopy.length > 1 ;
+
+  showValidComponent() {
+    return this.displayCycleCountItem && this.cycleCountItemsCopy.length > 1;
   }
+
   ngAfterViewInit() {
   }
-  FormatExpireDate(date:Date)
-  {
-    if(date)
-    {
-    var date = new Date(date);
-    return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 :date.getFullYear()) ;
+
+  FormatExpireDate(date: Date) {
+    if (date) {
+      var date = new Date(date);
+      return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
     }
   }
+
   navigateBack() {
     this.wpfActionController.ExecuteBackAction();
 
   }
-  onDateChange($event)
-  {
-    var newDate =$event.returnValue;
+
+  onDateChange($event) {
+    var newDate = $event.returnValue;
     console.log(newDate);
   }
+  
   navigateContinue() {
     var updateSucceeded = false;
     if (this.displayCycleCountItem != null) {
@@ -103,7 +105,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
 
       var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
 
-      this.guidedCycleCountService.post(deviceId,update).subscribe(
+      this.guidedCycleCountService.post(deviceId, update).subscribe(
         res => {
           console.log(res);
         }
