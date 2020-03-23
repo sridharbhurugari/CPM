@@ -71,7 +71,8 @@
                 </div>
             </div>
             <div class="rightPanel" >
-                <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand">
+                <oc-numeric [title]="'ITEM_QUANTITY' | translate" >
+                    {{displayCycleCountItem.QuantityOnHand}}
                 </oc-numeric>
             </div>
         </div>
