@@ -1,9 +1,18 @@
 import { GuidedCycleCount } from './guided-cycle-count';
-import { TestBed } from '@angular/core/testing';
 
 describe('GuidedCycleCount', () => {
   it('should create an instance', () => {
-    const component:GuidedCycleCount = TestBed.get(GuidedCycleCount);
-    expect(component).toBeTruthy();
+    expect(new GuidedCycleCount({
+      BrandNameFormatted: "Brand",
+      GenericNameFormatted: "Generic",
+      DeviceLocationId: 123,
+      ExpirationDate: new Date,
+      ItemId: "ItemId",
+      ParLevel: 10,
+      QuantityOnHand: 50,
+      ReorderSource: "I",
+      ReorderLevel: 10,
+      LocationDescription: "ER"
+    })).toBeTruthy();
   });
 });
