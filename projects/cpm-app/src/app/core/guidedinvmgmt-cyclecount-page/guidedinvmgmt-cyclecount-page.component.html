@@ -65,13 +65,14 @@
                 </div>
                 <!--EXPIRATION DATE GOES HERE-->
                 <div class="leftPanelRow"> {{"EXPIRATION_DATE" | translate}}
-                    <oc-datepicker format="mm/dd/yyyy" style="background-color: white; text-align: center;" selectedDate={{FormatExpireDate(displayCycleCountItem.ExpirationDate)}} (selectedDateChange)="onDateChange($event)">
+                    <oc-datepicker format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
+                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted">
                     </oc-datepicker>
 
                 </div>
             </div>
             <div class="rightPanel" >
-                <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)="displayCycleCountItem.QuantityOnHand">
+                <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand">
                 </oc-numeric>
             </div>
         </div>

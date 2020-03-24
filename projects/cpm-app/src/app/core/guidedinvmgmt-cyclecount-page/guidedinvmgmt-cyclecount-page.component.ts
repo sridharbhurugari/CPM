@@ -20,7 +20,6 @@ import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided
 export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewInit {
   @ViewChild('numericEle', null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
-  @Output() selectedDateChange: EventEmitter<string> = new EventEmitter<string>();
   displayCycleCountItem: IGuidedCycleCount;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
   cycleCountItemsCopy: IGuidedCycleCount[];
@@ -53,13 +52,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
     }));
     this.cycleCountItems.subscribe(x => {
-      if (x.length > 0 && x[0].ExpirationDate != null) {
+      if (x.length > 0 && x[0].ExpirationDate) {
         this.displayCycleCountItem = x[0];
+        var date = new Date(x[0].ExpirationDate);
+        this.displayCycleCountItem.ExpirationDateFormatted = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
         x.splice(0,1);
         this.itemCount = x.length + 1;
       }
-      if (this.itemCount >= 1) {
+      if (this.itemCount <= 1) {
         this.isLastItem = true;
       }
       else {
@@ -91,15 +92,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   onDateChange($event) {
     var newDate = $event.returnValue;
     console.log(newDate);
+
   }
   
   navigateContinue() {
-    var updateSucceeded = false;
     if (this.displayCycleCountItem != null) {
       let update = new deviceCycleCountItemUpdate({
         DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
         ItemId: this.displayCycleCountItem.ItemId,
-        ExpirationDate: this.displayCycleCountItem.ExpirationDate != null ? this.displayCycleCountItem.ExpirationDate : new Date(),
+        ExpirationDate: new Date(this.displayCycleCountItem.ExpirationDateFormatted),
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand
       });
 
