@@ -33,5 +33,7 @@
   "STATUS": "Status",
   "TYPE": "Type",
   "UNDERFILLED": "Underfilled",
-  "REPRINT": "Reprint"
+  "REPRINT": "Reprint",
+  "PROCESSING": "PROCESSING",
+  "ROBOT_QUEUE": "ROBOT QUEUE"
 }

@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { WindowService } from '../../shared/services/window-service';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
@@ -11,15 +11,18 @@ import * as _ from 'lodash';
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
+import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
+import { ActivatedRoute } from '@angular/router';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
   selector: 'app-picklists-queue',
   templateUrl: './picklists-queue.component.html',
   styleUrls: ['./picklists-queue.component.scss']
 })
-export class PicklistsQueueComponent implements AfterViewInit {
+export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
-  private _picklistQueueItems: PicklistQueueItem[];
+  private _picklistQueueItems: PicklistQueueItem[];   
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -33,10 +36,16 @@ export class PicklistsQueueComponent implements AfterViewInit {
     return this._picklistQueueItems;
   }
 
-  constructor(private windowService: WindowService,
-              private picklistsQueueService: PicklistsQueueService,
-              private dialogService: PopupDialogService,
-              private translateService: TranslateService) { }
+  constructor(
+    private windowService: WindowService,
+    private picklistsQueueService: PicklistsQueueService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService,
+    private actr: ActivatedRoute,
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
+    private wpfActionController: WpfActionControllerService) {     
+      this.connectToEvents();
+  }
 
   @ViewChild('searchBox', {
     static: true
@@ -46,7 +55,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
   searchTextFilter: string;
 
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
-  , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
+    , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
 
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
@@ -60,7 +69,61 @@ export class PicklistsQueueComponent implements AfterViewInit {
         if (this.windowService.nativeWindow) {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
-      });
+      });    
+  }
+
+  ngOnDestroy(): void {
+      /*this.shutdownSignalR();*/
+  }
+
+  back() {
+    /*this.shutdownSignalR();*/
+    this.wpfActionController.ExecuteContinueAction();
+  }
+
+  private async connectToEvents(): Promise<void> {
+    await this.picklistQueueEventConnectionService.openEventConnection();
+    this.configureEventHandlers();
+  }
+
+  /*private shutdownSignalR(): void {
+    if (this.eventConnectionService) {
+      this.eventConnectionService.shutdown();
+    }
+  }*/
+
+  private configureEventHandlers(): void {
+    if (!this.picklistQueueEventConnectionService) {
+      return;
+    }
+
+    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
+  }
+
+  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
+    const picklistQueueItem = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem;
+    const matchingPicklistQueueItem = _.find(this.picklistQueueItems, (x) => {
+      return x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
+      x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
+    });
+
+    if (matchingPicklistQueueItem == null) {
+      this.picklistQueueItems.push(picklistQueueItem);
+      return;
+    }
+
+    matchingPicklistQueueItem.Status = picklistQueueItem.Status;
+    matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
+    matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+  }
+
+  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
+    const orderDestinationPickLocationKey = addOrUpdatePicklistQueueItemMessage.OrderDestinationPickLocationKey;
+    _.remove(this.picklistQueueItems, (x) => {
+      return x.OrderId === orderDestinationPickLocationKey.OrderId && x.DestinationId === orderDestinationPickLocationKey.DestinationId &&
+      x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId;
+    });
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
@@ -99,7 +162,7 @@ export class PicklistsQueueComponent implements AfterViewInit {
     });
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
       result => {
-        picklistQueueItem.Status = 3;
+        picklistQueueItem.Status = 4;
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
@@ -119,5 +182,4 @@ export class PicklistsQueueComponent implements AfterViewInit {
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
   }
-
 }
