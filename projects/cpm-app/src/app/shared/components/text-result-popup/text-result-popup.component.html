@@ -6,8 +6,8 @@
       <p *ngIf="beforeTextboxResourceKey">
         {{beforeTextboxResourceKey | translate}}
       </p>
-      <oc-textbox [placeholder]="placeholderTextResourceKey | translate" (valueUpdated)="textValueChanged($event)"></oc-textbox>
-      <p *ngIf="beforeTextboxResourceKey">
+      <oc-textbox #nameInput [placeholder]="placeholderTextResourceKey | translate" (valueUpdated)="textValueChanged($event)"></oc-textbox>
+      <p *ngIf="afterTextboxResourceKey">
         {{afterTextboxResourceKey | translate}}
       </p>
     </ng-container>
