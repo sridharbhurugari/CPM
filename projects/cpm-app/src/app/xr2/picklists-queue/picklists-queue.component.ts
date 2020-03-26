@@ -22,7 +22,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 })
 export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
-  private _picklistQueueItems: PicklistQueueItem[];   
+  private _picklistQueueItems: PicklistQueueItem[];
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -43,7 +43,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     private actr: ActivatedRoute,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-    private wpfActionController: WpfActionControllerService) {     
+    private wpfActionController: WpfActionControllerService) {
       this.connectToEvents();
   }
 
@@ -69,7 +69,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
         if (this.windowService.nativeWindow) {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
-      });    
+      });
   }
 
   ngOnDestroy(): void {
@@ -135,6 +135,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
       globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
     });
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
