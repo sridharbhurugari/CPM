@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
 import { EventConnectionService } from './event-connection.service';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { ConfigurationService } from 'oal-core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,10 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
   public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
   public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
 
-  constructor() {
-    super();
+  constructor(
+    _configurationService: ConfigurationService
+    ) {
+    super(_configurationService);
    }
 
   public async openEventConnection(): Promise<void> {
@@ -24,7 +27,7 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     if (message === undefined) {
       return;
     }
-    
+
     if (message.EventId === undefined) {
       return;
     }
@@ -37,6 +40,8 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     if (message.EventId === 'RemovePicklistQueueItemMessage') {
       this.removePicklistQueueItemSubject.next(message);
       return;
-    }    
+    }
   }
 }
+
+

@@ -1,24 +1,36 @@
 import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
-import { hubConnection, hubProxy } from 'signalr-no-jquery'
+import { hubConnection, hubProxy } from 'signalr-no-jquery';
+import { ConfigurationService } from 'oal-core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventConnectionService {
 
+  public receivedSubject = new Subject<string>();
+
   protected _hubConnection: hubConnection;
   protected _hubProxy: hubProxy;
 
   private _hubName = 'EventHub';
-  private _hubUrl = 'http://localhost:8077'; 
+  private _hubUrl = 'http://localhost:8077';
 
-  public receivedSubject = new Subject<string>();
-
-  constructor() { }
+  constructor(
+    protected _configurationService: ConfigurationService
+    ) { }
 
   public async startUp(): Promise<void> {
-    this._hubConnection = new hubConnection(this._hubUrl);
+
+    const queryString = this.getQueryString();
+
+    const options = {
+        qs: queryString,
+        logging: false,
+        useDefaultPath: true,
+    };
+
+    this._hubConnection = new hubConnection(this._hubUrl, options);
 
     await this.createHubProxy();
 
@@ -26,11 +38,11 @@ export class EventConnectionService {
 
     await this._hubConnection.start()
     .done(() => { this.onConnectionStartSucceeded(); })
-    .fail(() => { this.onConnectionStartFailed(); });    
+    .fail(() => { this.onConnectionStartFailed(); });
   };
 
   private async createHubProxy(): Promise<void> {
-    this._hubProxy = this._hubConnection.createHubProxy(this._hubName);    
+    this._hubProxy = this._hubConnection.createHubProxy(this._hubName);
   }
 
   public shutdown(): void {
@@ -40,21 +52,34 @@ export class EventConnectionService {
     this.signalRService.dispose();*/
   }
 
-  private onConnectionStartSucceeded(): void {    
-    console.log('Hub working');       
+  private onConnectionStartSucceeded(): void {
+    console.log('Hub working');
   }
 
   private onConnectionStartFailed(): void {
     console.log('Hub not working');
   }
 
-  private configureEventHandlers(): void {    
+  private configureEventHandlers(): void {
     this._hubProxy.on('serverMessageSent', message => { this.onReceived(message); });
   }
 
   protected onReceived(message: any): void {
-    console.log('Received ' + message);   
+    console.log('Received ' + message);
     this.receivedSubject.next(message);
-    return;    
-  }   
+    return;
+  }
+
+  private getQueryString(): string {
+
+    const ocapClientDetails = this._configurationService.getItem('ocap');
+
+    const apiKey = ocapClientDetails.apiKey;
+    const machineName =  ocapClientDetails.machineName;
+    const clientId =  ocapClientDetails.clientId;
+
+    const queryString = `x-clientid=${clientId}&x-apikey=${apiKey}&x-machinename=${machineName}`;
+
+    return queryString;
+}
 }
