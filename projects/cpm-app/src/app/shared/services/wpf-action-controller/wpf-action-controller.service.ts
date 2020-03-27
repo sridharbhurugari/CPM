@@ -55,10 +55,4 @@ export class WpfActionControllerService {
       this.wpfActionController.executeWpfContinueNavigationAction(action);
     } 
   }
-
-  ExecuteRepositionAction(deviceLocationId: number, itemId: string){
-    if (this.wpfActionController != null) {
-      this.wpfActionController.executeRepositionAction(deviceLocationId, itemId);
-    } 
-  }
 }
