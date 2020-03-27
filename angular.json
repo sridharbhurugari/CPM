@@ -96,7 +96,11 @@
               "projects/cpm-app/src/styles.scss"
             ],
             "scripts": [],
-            "codeCoverage": true
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "projects/cpm-app/src/app/api-core/services/**/*",
+              "projects/cpm-app/src/app/api-xr2/services/**/*"
+            ]
           }
         },
         "lint": {
