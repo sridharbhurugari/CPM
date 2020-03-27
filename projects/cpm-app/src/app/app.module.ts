@@ -56,7 +56,6 @@ import { RouterModule } from '@angular/router';
     FooterModule,
     SharedModule,
     RouterModule,
-    RouterModule,
     PopupWindowModule,
   ],
   providers: [
