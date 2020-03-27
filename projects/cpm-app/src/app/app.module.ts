@@ -12,6 +12,7 @@ import { Xr2Module } from './xr2/xr2.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { OalCoreModule, OcapHttpClientService } from 'oal-core';
 
 import { ProgressAnimationModule,
          LayoutModule,
@@ -25,6 +26,7 @@ import { ProgressAnimationModule,
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
 import { RouterModule } from '@angular/router';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -43,11 +45,17 @@ import { RouterModule } from '@angular/router';
                 deps: [HttpClient]
             }
     }),
+    OalCoreModule.forRoot({
+      environment,
+      httpClientService: OcapHttpClientService,
+      configEndpointKey: 'configEndpoint'
+    }),
     ProgressAnimationModule,
     LayoutModule,
     ProgressbarModule,
     FooterModule,
     SharedModule,
+    RouterModule,
     RouterModule,
     PopupWindowModule,
   ],

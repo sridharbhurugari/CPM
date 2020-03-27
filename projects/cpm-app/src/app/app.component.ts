@@ -6,6 +6,7 @@ import { OcapConfigurationConstants } from './shared/constants/ocap-configuratio
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
 import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
+/*import { ConfigurationService, OcapHttpClientService } from 'oal-core';*/
 
 @Component({
   selector: 'app-root',
@@ -15,16 +16,18 @@ import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configur
 export class AppComponent implements AfterViewInit {
   title = 'cpm-app';
   loadingData = {
-    supportingText:'', 
+    supportingText:'',
     size: OcAnimationSize.large
   };
   loading: boolean;
-  
+
   constructor(
     private router: Router,
     translate: TranslateService,
     windowService: WindowService,
-    localStorageService: LocalStorageService
+    localStorageService: LocalStorageService/*,
+    configurationService: ConfigurationService,
+    httpClient: OcapHttpClientService*/
   ){
     this.loading = true;
     if(windowService.nativeWindow){
@@ -38,6 +41,8 @@ export class AppComponent implements AfterViewInit {
 
       localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
       translate.setDefaultLang(ocap.userLocale || 'en-US');
+
+      /*configurationService.init(httpClient);*/
     }
   }
 
