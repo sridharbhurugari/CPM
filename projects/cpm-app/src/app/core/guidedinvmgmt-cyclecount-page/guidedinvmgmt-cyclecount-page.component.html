@@ -1,5 +1,4 @@
 <oc-action-layout *ngIf="displayCycleCountItem">
-    <!--Displays the Guided Cycle Count gray header with white font-->
     <ng-container class="ocactionheader">
         <div class="cpmactiontitle">{{ 'GUIDED_CYCLE_COUNT' | translate }}</div>
         <div class="dateTime">
@@ -21,7 +20,7 @@
             <div class="itemIdBox">
 
                 <div class="itemIdHeader">
-                    <span>Item ID</span>
+                    <span>{{'ITEM_ID' | translate}}</span>
                 </div>
                 <div class="ItemId">
                     <span>{{ displayCycleCountItem.ItemId }}
@@ -31,7 +30,7 @@
             </div>
             <div class="DeviceLocation">
                 <div class="itemIdHeader">
-                    <span>Location</span>
+                    <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
                 </div>
                 <div class="ItemId">
                     <span>
@@ -49,21 +48,17 @@
 
             <div class="leftPanel">
                 <div class="leftPanelRow"> {{"IN_STOCK" | translate}}
-                    <!-- <br> {{displayCycleCountItem.QuantityOnHand}} <br> -->
                     <div class="textContent">{{displayCycleCountItem.QuantityOnHand}}
                     </div>
                 </div>
                 <div class="leftPanelRow"> {{"PAR_LEVEL" | translate}}
-                    <!-- <br> {{displayCycleCountItem.ParLevel}} <br> -->
                     <div class="textContent">{{displayCycleCountItem.ParLevel}}
                     </div>
                 </div>
                 <div class="leftPanelRow"> {{"REORDER_LEVEL" | translate}}
-                    <!-- <br> {{displayCycleCountItem.ReorderLevel}} <br> -->
                     <div class="textContent">{{displayCycleCountItem.ReorderLevel}}
                     </div>
                 </div>
-                <!--EXPIRATION DATE GOES HERE-->
                 <div class="leftPanelRow"> {{"EXPIRATION_DATE" | translate}}
                     <oc-datepicker format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
                         [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" >
@@ -79,9 +74,6 @@
         </div>
     </ng-container>
 
-
-
-    <!--Displays the Cancel and next button in the footer-->
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">

@@ -86,15 +86,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
 
   navigateBack() {
     this.wpfActionController.ExecuteBackAction();
-
   }
 
-  onDateChange($event) {
-    var newDate = $event.returnValue;
-    console.log(newDate);
-
-  }
-  
   navigateContinue() {
     if (this.displayCycleCountItem != null) {
       let update = new deviceCycleCountItemUpdate({

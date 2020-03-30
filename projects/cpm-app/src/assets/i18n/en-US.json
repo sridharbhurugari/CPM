@@ -23,6 +23,7 @@
   "ITEM_QUANTITY": "Item Quantity",
   "ITEMS": "Items",
   "LAST_CYCLE_COUNT_DATE": "Cycle Count Due",
+  "GUIDED_CYCLE_COUNT_LOCATION": "Location",
   "MANUAL_CYCLE_COUNT": "Manual Count",
   "GUIDED_CYCLE_COUNT": "Guided Cycle Count",
   "NEXT": "Next",
