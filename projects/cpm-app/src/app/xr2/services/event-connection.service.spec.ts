@@ -6,7 +6,10 @@ import { ConfigurationService } from 'oal-core';
 import { environment } from './../../../environments/environment';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 
-beforeEach(() => {
+
+
+describe('EventConnectionService', () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
         imports: [
           OalCoreModule.forRoot({
@@ -21,9 +24,6 @@ beforeEach(() => {
         ]
     });
 });
-
-describe('EventConnectionService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
     const service: EventConnectionService = TestBed.get(EventConnectionService);

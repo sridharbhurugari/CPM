@@ -18,7 +18,7 @@ export class EventConnectionService {
 
   constructor(
     protected configurationService: ConfigurationService,
-    private ocapUrlBuilderService: OcapUrlBuilderService
+    protected ocapUrlBuilderService: OcapUrlBuilderService
     ) { }
 
   public async startUp(): Promise<void> {
