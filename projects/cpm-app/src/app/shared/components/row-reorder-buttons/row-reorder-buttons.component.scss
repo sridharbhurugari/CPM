@@ -1,0 +1,20 @@
+:host {
+    display: inline-flex;
+}
+:host::ng-deep button{
+    border-radius: 25px !important;
+    min-width: 0px !important;
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+    height:50px;
+}
+:host::ng-deep oc-button-action{
+    display: flex !important;
+    margin-right: 12px;
+}
+:host::ng-deep   oc-svgicon {
+    left: 13px !important;
+}
+.reorderBtnLeft{
+    margin-right: 10px;
+}

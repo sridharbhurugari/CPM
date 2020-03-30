@@ -51,4 +51,10 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
 
         return this.DestinationId;
     }
+
+    get DescriptionSortValue(): string{
+        if(this.ItemFormattedGenericName){
+            return this.ItemFormattedGenericName.toLowerCase();
+        }
+    }
 }

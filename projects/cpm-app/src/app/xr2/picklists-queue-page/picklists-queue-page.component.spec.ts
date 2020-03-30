@@ -9,8 +9,11 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { Input, Component } from '@angular/core';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-import { ButtonActionModule, GridModule, PopupDialogService, PopupDialogModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, GridModule, PopupDialogService, PopupDialogModule,
+  FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
+import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
+import { CoreModule } from '../../core/core.module';
 
 @Component({
   selector: 'oc-search-box',
@@ -28,8 +31,8 @@ describe('PicklistsQueuePageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox , MockSearchPipe],
-      imports: [GridModule, ButtonActionModule, PopupDialogModule],
+      declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox , MockSearchPipe, MockAppHeaderContainer ],
+      imports: [ GridModule, ButtonActionModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: { get: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
