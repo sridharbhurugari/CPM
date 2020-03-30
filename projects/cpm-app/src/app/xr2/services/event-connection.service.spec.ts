@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EventConnectionService } from './event-connection.service';
 import { OalCoreModule, OcapHttpClientService } from 'oal-core';
 import { environment } from './../../../environments/environment';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 
 beforeEach(() => {
     TestBed.configureTestingModule({
@@ -12,6 +13,9 @@ beforeEach(() => {
             httpClientService: OcapHttpClientService,
             configEndpointKey: 'configEndpoint'
           }),
+        ],
+        providers: [
+          { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
         ]
     });
 });
