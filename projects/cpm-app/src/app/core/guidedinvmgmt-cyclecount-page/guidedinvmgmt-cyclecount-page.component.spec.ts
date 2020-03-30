@@ -42,16 +42,6 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-  it("titleHeader defaults to: 'GUIDED_CYCLE_COUNT' | MockTranslatePipe", () => {
-    expect(component.titleHeader).toEqual("'GUIDED_CYCLE_COUNT' | MockTranslatePipe");
-  });
-  describe('ngOnInit', () => {
-    it('makes expected calls', () => {
-      spyOn(component, 'getCycleCountData').and.callThrough();
-      component.ngOnInit();
-      expect(component.getCycleCountData).toHaveBeenCalled();
-    });
-  });
   describe('navigateBack', () => {
     it('makes expected calls', () => {
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
@@ -62,28 +52,6 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         'ExecuteBackAction'
       ).and.callThrough();
       component.navigateBack();
-      expect(
-        wpfActionControllerServiceStub.ExecuteBackAction
-      ).toHaveBeenCalled();
-    });
-  });
-  describe('navigateContinue', () => {
-    it('makes expected calls', () => {
-      const guidedCycleCountServiceStub: GuidedCycleCountService = fixture.debugElement.injector.get(
-        GuidedCycleCountService
-      );
-      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
-        WpfActionControllerService
-      );
-      spyOn(component, 'nextRecord').and.callThrough();
-      spyOn(guidedCycleCountServiceStub, 'post').and.callThrough();
-      spyOn(
-        wpfActionControllerServiceStub,
-        'ExecuteBackAction'
-      ).and.callThrough();
-      component.navigateContinue();
-      expect(component.nextRecord).toHaveBeenCalled();
-      expect(guidedCycleCountServiceStub.post).toHaveBeenCalled();
       expect(
         wpfActionControllerServiceStub.ExecuteBackAction
       ).toHaveBeenCalled();
