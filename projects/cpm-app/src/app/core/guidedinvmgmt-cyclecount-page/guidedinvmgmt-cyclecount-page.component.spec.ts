@@ -1,40 +1,91 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
-import { SharedModule } from '../../shared/shared.module';
-import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { InputsModule, LayoutModule, DatepickerModule, FooterModule, ButtonActionModule} from '@omnicell/webcorecomponents';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { FormsModule } from '@angular/forms';
+import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GuidedInvMgmtCycleCountPageComponent, MockTranslatePipe ],
-      imports: [SharedModule, LayoutModule, DatepickerModule, FooterModule, ButtonActionModule, InputsModule, FormsModule, ReactiveFormsModule ],
-      providers: [
-        { provide: WpfActionControllerService, useValue: { } },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: GuidedCycleCountService, useValue: { get: () => of([]) } },
-      ]
-    })
-    .compileComponents();
-  }));
-
   beforeEach(() => {
+    const activatedRouteStub = () => ({
+      snapshot: { queryParamMap: { get: () => ({}) } }
+    });
+    const guidedCycleCountServiceStub = () => ({
+      get: deviceID => ({ pipe: () => ({}) }),
+      post: (deviceId, update) => ({ subscribe: f => f({}) })
+    });
+    const wpfActionControllerServiceStub = () => ({
+      ExecuteBackAction: () => ({})
+    });
+    TestBed.configureTestingModule({
+      imports: [FormsModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [GuidedInvMgmtCycleCountPageComponent],
+      providers: [
+        { provide: ActivatedRoute, useFactory: activatedRouteStub },
+        {
+          provide: GuidedCycleCountService,
+          useFactory: guidedCycleCountServiceStub
+        },
+        {
+          provide: WpfActionControllerService,
+          useFactory: wpfActionControllerServiceStub
+        }
+      ]
+    });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
-
-  it('should create', () => {
+  it('can load instance', () => {
     expect(component).toBeTruthy();
   });
+  it("titleHeader defaults to: 'GUIDED_CYCLE_COUNT' | translate", () => {
+    expect(component.titleHeader).toEqual("'GUIDED_CYCLE_COUNT' | translate");
+  });
+  describe('ngOnInit', () => {
+    it('makes expected calls', () => {
+      spyOn(component, 'getCycleCountData').and.callThrough();
+      component.ngOnInit();
+      expect(component.getCycleCountData).toHaveBeenCalled();
+    });
+  });
+  describe('navigateBack', () => {
+    it('makes expected calls', () => {
+      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
+        WpfActionControllerService
+      );
+      spyOn(
+        wpfActionControllerServiceStub,
+        'ExecuteBackAction'
+      ).and.callThrough();
+      component.navigateBack();
+      expect(
+        wpfActionControllerServiceStub.ExecuteBackAction
+      ).toHaveBeenCalled();
+    });
+  });
+  describe('navigateContinue', () => {
+    it('makes expected calls', () => {
+      const guidedCycleCountServiceStub: GuidedCycleCountService = fixture.debugElement.injector.get(
+        GuidedCycleCountService
+      );
+      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
+        WpfActionControllerService
+      );
+      spyOn(component, 'nextRecord').and.callThrough();
+      spyOn(guidedCycleCountServiceStub, 'post').and.callThrough();
+      spyOn(
+        wpfActionControllerServiceStub,
+        'ExecuteBackAction'
+      ).and.callThrough();
+      component.navigateContinue();
+      expect(component.nextRecord).toHaveBeenCalled();
+      expect(guidedCycleCountServiceStub.post).toHaveBeenCalled();
+      expect(
+        wpfActionControllerServiceStub.ExecuteBackAction
+      ).toHaveBeenCalled();
+    });
+  });
 });
-
