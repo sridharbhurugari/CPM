@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ActivatedRoute } from '@angular/router';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
@@ -22,7 +23,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [GuidedInvMgmtCycleCountPageComponent],
+      declarations: [GuidedInvMgmtCycleCountPageComponent,MockTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useFactory: activatedRouteStub },
         {
@@ -41,8 +42,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-  it("titleHeader defaults to: 'GUIDED_CYCLE_COUNT' | translate", () => {
-    expect(component.titleHeader).toEqual("'GUIDED_CYCLE_COUNT' | translate");
+  it("titleHeader defaults to: 'GUIDED_CYCLE_COUNT' | MockTranslatePipe", () => {
+    expect(component.titleHeader).toEqual("'GUIDED_CYCLE_COUNT' | MockTranslatePipe");
   });
   describe('ngOnInit', () => {
     it('makes expected calls', () => {
