@@ -110,12 +110,14 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
     if (matchingPicklistQueueItem == null) {
       this.picklistQueueItems.push(picklistQueueItem);
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
       return;
     }
 
     matchingPicklistQueueItem.Status = picklistQueueItem.Status;
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
@@ -124,6 +126,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return x.OrderId === orderDestinationPickLocationKey.OrderId && x.DestinationId === orderDestinationPickLocationKey.DestinationId &&
       x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId;
     });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
