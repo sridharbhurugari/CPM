@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EventConnectionService } from './event-connection.service';
 import { OalCoreModule, OcapHttpClientService } from 'oal-core';
+import { ConfigurationService } from 'oal-core';
 import { environment } from './../../../environments/environment';
 
 beforeEach(() => {
@@ -12,6 +13,9 @@ beforeEach(() => {
             httpClientService: OcapHttpClientService,
             configEndpointKey: 'configEndpoint'
           }),
+        ],
+        providers: [
+          { provide: ConfigurationService, useValue: { getItem: () => {} } },
         ]
     });
 });
