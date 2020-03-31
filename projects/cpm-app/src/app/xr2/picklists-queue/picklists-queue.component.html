@@ -36,7 +36,7 @@
             {{'PROCESSING' | translate}}</div>
           <div class="col width-type" [attr.data-title]="'STATUS' | translate"
             *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">{{picklistQueueItem.FilledBoxCount}}
-            {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</oc-action-layout>
+            {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
             <span>{{picklistQueueItem.DeviceDescription}}</span>
             <span>{{picklistQueueItem.OutputDevice}}</span>
