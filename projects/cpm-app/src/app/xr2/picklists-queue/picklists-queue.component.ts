@@ -158,6 +158,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.DestinationType = picklistQueueItem.DestinationType;
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
       pickListLineDetail.PickLocationDescription = itemPicklistLine.PickLocationDescription;
       picklistLineDetails.push(pickListLineDetail);
