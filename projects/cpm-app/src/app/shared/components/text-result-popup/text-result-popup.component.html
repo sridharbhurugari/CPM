@@ -1,0 +1,24 @@
+<oc-popupwindow-layout [windowFooter]="true">
+    <ng-container class="ocwindowheader">
+      <div>{{data.headerResourceKey | translate}}</div>
+    </ng-container>
+    <ng-container class="ocwindowcontent">
+      <p *ngIf="beforeTextboxResourceKey">
+        {{beforeTextboxResourceKey | translate}}
+      </p>
+      <oc-textbox #nameInput [placeholder]="placeholderTextResourceKey | translate" (valueUpdated)="textValueChanged($event)"></oc-textbox>
+      <p *ngIf="afterTextboxResourceKey">
+        {{afterTextboxResourceKey | translate}}
+      </p>
+    </ng-container>
+    <ng-container class="ocwindowfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <oc-button-action [buttonText]="'CANCEL' | translate" (click) ="cancel()"></oc-button-action>
+      </div>
+      <div class="ocrightalign">
+        <oc-button-action [disabled]="!textValue" [buttonText]="'CONFIRM' | translate" (click) ="continue()"></oc-button-action>
+      </div>
+    </oc-footer>
+  </ng-container>
+</oc-popupwindow-layout>
