@@ -36,7 +36,7 @@
             {{'PROCESSING' | translate}}</div>
           <div class="col width-type" [attr.data-title]="'STATUS' | translate"
             *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">{{picklistQueueItem.FilledBoxCount}}
-            {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
+            {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</oc-action-layout>
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
             <span>{{picklistQueueItem.DeviceDescription}}</span>
             <span>{{picklistQueueItem.OutputDevice}}</span>
@@ -46,7 +46,7 @@
               <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button"
                 [disabled]="picklistQueueItem.Saving">
               </oc-button-action>
-              <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'PLAY' | translate"
+              <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
                 (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3"
                 [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
