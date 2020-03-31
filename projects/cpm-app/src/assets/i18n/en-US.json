@@ -25,7 +25,7 @@
   "MANUAL_CYCLE_COUNT": "Manual Count",
   "NAME": "Name",
   "NEW_ROUTE_NAME": "New Route Name",
-  "NOTSENT": "NOT SENT",
+  "NOTSENT": "Not Sent",
   "OF": "of",
   "OK": "OK",
   "ORDER_ID": "ID",
@@ -46,6 +46,6 @@
   "TYPE": "Type",
   "UNDERFILLED": "Underfilled",
   "REPRINT": "Reprint",
-  "PROCESSING": "PROCESSING",
-  "ROBOT_QUEUE": "ROBOT QUEUE"
+  "PROCESSING": "Processing...",
+  "ROBOT_QUEUE": "Robot Queue"
 }
