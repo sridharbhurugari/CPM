@@ -12,6 +12,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   PriorityCode: string;
   PriorityCodeColor: string;
   Destination: string;
+  DestinationType: string;
   PriorityCodeDescription: string;
   BoxCount: number;
   FilledBoxCount: number;
