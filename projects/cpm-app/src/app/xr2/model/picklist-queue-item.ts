@@ -8,10 +8,13 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   }
 
   PicklistId: string;
+  OrderId: string;
+  DeviceLocationId: number;
   ItemPicklistLines: Array<IItemPicklistLine>;
   PriorityCode: string;
   PriorityCodeColor: string;
   Destination: string;
+  DestinationId: string;
   DestinationType: string;
   PriorityCodeDescription: string;
   BoxCount: number;

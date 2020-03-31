@@ -29,8 +29,11 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [buttonText]="'BACK' | translate" (click)="navigateBack()">}</oc-button-action>
+                <oc-button-action [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
+            <a [routerLink]="['/pickRoutes', pickRouteId]" [class.disabled]="!isEditAvailable">
+                <oc-button-action [buttonText]="'MAINTENANCE' | translate" [disabled]="!isEditAvailable"></oc-button-action>
+            </a>
         </oc-footer>
     </ng-container>
 </oc-action-layout>

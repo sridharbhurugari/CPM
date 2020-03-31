@@ -87,3 +87,36 @@ a:visited {
   width: 45px;
   height: 45px;
 }
+.panelContainer
+{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+.leftPanel {
+  flex: 1;
+  overflow-y: auto;
+  border-top: solid $slate-grey 4px;
+  border-right: solid $slate-grey 6px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+.rightPanel {
+  flex: 1;
+  overflow-y: auto;
+  border-top:solid $slate-grey  4px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+#popup-window{
+    height: 40% !important;
+    width: 50% !important;
+    top:30% !important;
+    left: 25% !important;
+}
+#Duplicate-Description-Error{
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
