@@ -5,8 +5,10 @@
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
             <app-header-container [title]="'NAME' | translate">
-                <!-- <input ocTextbox [value]="(pickRoute$ | async).Description" /> -->
-                {{(pickRoute$ | async)?.Description}}
+              <!-- <input ocTextbox [value]="(pickRoute$ | async).Description" /> EDITABLE-->
+              <!-- {{(pickRoute$ | async)?.Description}}  DEFAULT -->
+              <div *ngIf="!isDefaultRoute"><input [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" /></div>
+              <div *ngIf="isDefaultRoute">{{newRouteName}}</div>
             </app-header-container>
         </div>
         <div class="panelContainer">
@@ -35,7 +37,8 @@
             <div class="ocleftalign">
                 <oc-button-action [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
-            <oc-button-action [disabled]="!newDeviceSequence || newDeviceSequence.length == 0" [buttonText]="'SAVE_AS' | translate" (click)="saveAs()"></oc-button-action>
+            <div *ngIf="isDefaultRoute"><oc-button-action [disabled]="!newDeviceSequence || newDeviceSequence.length == 0" [buttonText]="'SAVE_AS' | translate" (click)="saveAs()"></oc-button-action></div>
+            <div *ngIf="!isDefaultRoute"><oc-button-action [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged" [buttonText]="'SAVE' | translate" (click)="save()"></oc-button-action></div>
         </oc-footer>
     </ng-container>
 </oc-action-layout>
