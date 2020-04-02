@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
 import { hubConnection, hubProxy } from 'signalr-no-jquery';
 import { ConfigurationService } from 'oal-core';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,23 +15,23 @@ export class EventConnectionService {
   protected _hubProxy: hubProxy;
 
   private _hubName = 'EventHub';
-  private _hubUrl = 'http://localhost:8077';
 
   constructor(
-    protected _configurationService: ConfigurationService
+    protected configurationService: ConfigurationService,
+    protected ocapUrlBuilderService: OcapUrlBuilderService
     ) { }
 
   public async startUp(): Promise<void> {
 
     const queryString = this.getQueryString();
-
+    const hubUrl =  this.ocapUrlBuilderService.buildUrl('');
     const options = {
         qs: queryString,
         logging: false,
         useDefaultPath: true,
     };
 
-    this._hubConnection = new hubConnection(this._hubUrl, options);
+    this._hubConnection = new hubConnection(hubUrl, options);
 
     await this.createHubProxy();
 
@@ -72,7 +73,7 @@ export class EventConnectionService {
 
   private getQueryString(): string {
 
-    const ocapClientDetails = this._configurationService.getItem('ocap');
+    const ocapClientDetails = this.configurationService.getItem('ocap');
 
     const apiKey = ocapClientDetails.apiKey;
     const machineName =  ocapClientDetails.machineName;
@@ -81,5 +82,5 @@ export class EventConnectionService {
     const queryString = `x-clientid=${clientId}&x-apikey=${apiKey}&x-machinename=${machineName}`;
 
     return queryString;
-}
+  }
 }
