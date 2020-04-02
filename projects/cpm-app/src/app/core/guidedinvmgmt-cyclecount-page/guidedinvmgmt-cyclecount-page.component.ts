@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter,AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
 import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
@@ -9,6 +9,7 @@ import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-co
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
+import { stringify } from 'querystring';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided
   styleUrls: ['./guidedinvmgmt-cyclecount-page.component.scss']
 })
 
-export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewInit {
+export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
   @ViewChild('numericEle', null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   displayCycleCountItem: IGuidedCycleCount;
@@ -57,15 +58,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         var date = new Date(x[0].ExpirationDate);
         this.displayCycleCountItem.ExpirationDateFormatted = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
-        x.splice(0,1);
+        x.splice(0, 1);
         this.itemCount = x.length + 1;
       }
-      if (this.itemCount <= 1) {
-        this.isLastItem = true;
-      }
-      else {
-        this.isLastItem = false;
-      }
+      this.IsLastItem();
       this.currentItemCount++;
     });
   }
@@ -74,7 +70,14 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     return this.displayCycleCountItem && this.cycleCountItemsCopy.length > 1;
   }
 
-  ngAfterViewInit() {
+  IsLastItem()
+  {
+    if (this.itemCount <= 1) {
+      this.isLastItem = true;
+    }
+    else {
+      this.isLastItem = false;
+    }
   }
 
   FormatExpireDate(date: Date) {
