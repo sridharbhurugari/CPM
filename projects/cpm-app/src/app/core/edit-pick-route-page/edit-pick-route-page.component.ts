@@ -15,7 +15,6 @@ import { ITextResultPopupData } from '../../shared/model/i-text-result-popup-dat
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { TextboxModule, InputsModule } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-edit-pick-route-page',

@@ -10,7 +10,6 @@ import { IConfirmPopupData } from '../../model/i-confirm-popup-data';
 })
 export class ConfirmPopupComponent implements OnInit, IPopupWindowContainer {
 
-  confirmTextboxResourceKey: string;
   data: IConfirmPopupData;
 
   @Output()
@@ -19,7 +18,6 @@ export class ConfirmPopupComponent implements OnInit, IPopupWindowContainer {
   constructor() { }
 
   ngOnInit() {
-    this.confirmTextboxResourceKey = this.data.confirmTextboxResourceKey;
   }
 
   cancel() {
