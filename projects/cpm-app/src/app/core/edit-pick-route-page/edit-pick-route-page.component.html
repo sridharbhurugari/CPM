@@ -5,9 +5,7 @@
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
             <app-header-container [title]="'NAME' | translate">
-              <!-- <input ocTextbox [value]="(pickRoute$ | async).Description" /> EDITABLE-->
-              <!-- {{(pickRoute$ | async)?.Description}}  DEFAULT -->
-              <div *ngIf="!isDefaultRoute"><input [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" /></div>
+              <div *ngIf="!isDefaultRoute"><input ocTextbox [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" /></div>
               <div *ngIf="isDefaultRoute">{{newRouteName}}</div>
             </app-header-container>
         </div>
