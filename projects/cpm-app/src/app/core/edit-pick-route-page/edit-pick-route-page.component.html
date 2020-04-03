@@ -4,10 +4,14 @@
     </ng-container>
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
-            <app-header-container [title]="'NAME' | translate">
-              <div *ngIf="!isDefaultRoute"><input ocTextbox [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" /></div>
-              <div *ngIf="isDefaultRoute">{{newRouteName}}</div>
-            </app-header-container>
+           <div *ngIf="!isDefaultRoute">
+              <app-header-title-bottom-margin-container [title]="'NAME' | translate" >
+                 <input ocTextbox [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" />
+              </app-header-title-bottom-margin-container>
+            </div>
+            <div *ngIf="isDefaultRoute">
+               <app-header-container [title]="'NAME' | translate" >{{newRouteName}}</app-header-container>
+            </div>
         </div>
         <div class="panelContainer">
             <div class="leftPanel">
