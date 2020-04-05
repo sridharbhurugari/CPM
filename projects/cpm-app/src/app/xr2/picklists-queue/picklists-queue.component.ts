@@ -4,14 +4,12 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
-
 import { TranslateService } from '@ngx-translate/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
@@ -134,7 +132,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
-    this.resyncPickListQueueItem(picklistQueueItem);
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
