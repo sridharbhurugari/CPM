@@ -79,6 +79,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
       this.routeGuid = pickRouteDetail.PickRouteGuid;
       this.newRouteName = pickRouteDetail.Description;
+      this.isDefaultRoute = pickRouteDetail.Description === 'Default';
       return enabledDevices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
     }));
 
@@ -103,11 +104,10 @@ export class EditPickRoutePageComponent implements OnInit {
 
       this.routeGuid = pickRouteDetail.PickRouteGuid;
       this.newRouteName = pickRouteDetail.Description;
+      this.isDefaultRoute = pickRouteDetail.Description === 'Default';
 
       return disabledDevices.filter(x => x != null);
     }));
-
-    this.isDefaultRoute = this.newRouteName === 'Default';
 
     this.originalDeviceSequence = [];
     this.enabledDevices$.forEach(enabledDevice => {
