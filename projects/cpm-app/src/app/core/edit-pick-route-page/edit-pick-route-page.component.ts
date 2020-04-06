@@ -134,8 +134,7 @@ export class EditPickRoutePageComponent implements OnInit {
     }
   }
 
-  displayDuplicateDescriptionError(title, message): void 
-  {
+  displayDuplicateDescriptionError(title, message): void {
     const properties = new PopupDialogProperties('Duplicate-Description-Error');
     properties.titleElementText = title;
     properties.messageElementText = message;

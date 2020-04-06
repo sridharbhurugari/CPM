@@ -11,7 +11,7 @@ import { PriorityCodePickRoutesService } from '../../api-core/services/priority-
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogService, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
+import { PopupDialogService, PopupDialogProperties, PopupDialogType, PopupWindowProperties } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -98,6 +98,28 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   pickrouteUpdated(pickrouteId: number) {
     this.pickRouteId = pickrouteId;
     this.canSave = this._originalRouteId !== pickrouteId;
+  }
+
+  save() {
+    let properties = new PopupWindowProperties();
+    let data: IConfirmPopupData = {
+      headerResourceKey: 'SAVE_ROUTE_CHANGES',
+      confirmTextboxResourceKey: 'ROUTE_SAVE_BEFORE'
+    };
+
+    properties.data = data;
+
+    let change: IPriorityCodePickRouteEdit = {
+      PriorityCode = ;
+    }
+
+    let component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.subscribe(selectedConfirm => {
+      if (selectedConfirm) {
+        this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
+          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+      }
+    });
   }
 
   onSaveFailed(error: HttpErrorResponse): any {
