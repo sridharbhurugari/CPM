@@ -34,6 +34,7 @@
             <a [routerLink]="['/pickRoutes', pickRouteId]" [class.disabled]="!isEditAvailable">
                 <oc-button-action [buttonText]="'MAINTENANCE' | translate" [disabled]="!isEditAvailable"></oc-button-action>
             </a>
+            <oc-button-action [buttonText]="'SAVE' | translate" [disabled]="!canSave" (click)="onSave()"></oc-button-action>
         </oc-footer>
     </ng-container>
 </oc-action-layout>

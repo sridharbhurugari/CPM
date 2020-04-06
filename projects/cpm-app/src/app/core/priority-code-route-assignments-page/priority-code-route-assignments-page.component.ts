@@ -9,6 +9,9 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { PopupDialogService, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -20,9 +23,12 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   priorityCode$: Observable<IPriorityCodePickRoute>;
   routeList: Observable<Map<number, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
+  duplicateErrorTitle$: Observable<string>;
+  duplicateErrorMessage$: Observable<string>;
 
   private _priorityCodePickRouteId: number;
   private _pickRouteId: number;
+  private _originalRouteId: number;
 
   get pickRouteId(): number {
       return this._pickRouteId;
@@ -35,12 +41,15 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   isEditAvailable: boolean = true;
+  canSave: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private priorityCodeRouteAssignmentsService: PriorityCodeRouteAssignmentsService,
     private priorityCodePickRoutesService: PriorityCodePickRoutesService,
     private wpfActionControllerService: WpfActionControllerService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService,
   ) { }
 
   ngOnInit() {
@@ -51,8 +60,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
     this.deviceList$ = forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
       this.pickRouteId = results[0].PickRouteId;
+      this._originalRouteId = this.pickRouteId;
       return this.setDevices(this.pickRouteId, results[1]);
     }));
+    this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE')
+    this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE')
   }
 
   navigateBack() {
@@ -85,5 +97,26 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   pickrouteUpdated(pickrouteId: number) {
     this.pickRouteId = pickrouteId;
+    this.canSave = this._originalRouteId !== pickrouteId;
+  }
+
+  onSaveFailed(error: HttpErrorResponse): any {
+    if (error.status === 500) {
+      forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
+        this.displayDuplicateDescriptionError(r[0], r[1]);
+      });
+    }
+  }
+
+  displayDuplicateDescriptionError(title, message): void {
+    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.primaryButtonText = 'Ok';
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 0;
+    this.dialogService.showOnce(properties);
   }
 }
