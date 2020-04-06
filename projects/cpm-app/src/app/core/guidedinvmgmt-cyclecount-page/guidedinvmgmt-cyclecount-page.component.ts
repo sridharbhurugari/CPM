@@ -96,7 +96,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       let update = new deviceCycleCountItemUpdate({
         DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
         ItemId: this.displayCycleCountItem.ItemId,
-        ExpirationDate: new Date(this.displayCycleCountItem.ExpirationDateFormatted),
+        ExpirationDate: this.displayCycleCountItem.ExpirationDateFormatted != 'mm/dd/yyyy' ? new Date(this.displayCycleCountItem.ExpirationDateFormatted) : null,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand
       });
 
@@ -122,7 +122,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
     else {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
-      this.displayCycleCountItem.ExpirationDateFormatted = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? 'mm/dd/yyyy' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;

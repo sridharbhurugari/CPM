@@ -71,8 +71,7 @@
 
   }
 
-  .leftPanel {   
-    flex: 1;
+  .leftCycleCountPanel {   
     border-top: solid  #c8c8c8 1px;    
     border-left: solid  #c8c8c8 24px;
     border-right: solid  #c8c8c8 28px;
@@ -95,7 +94,7 @@
     font-weight: 600;
   }
 
-  .rightPanel {   
+  .rightCycleCountPanel {   
     border-top: solid  #c8c8c8  1px;
     height: 100%;
     width: 100%;

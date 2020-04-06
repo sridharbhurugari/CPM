@@ -46,7 +46,7 @@
     <ng-container class="ocactiondetails">
         <div class="panelContainer">
 
-            <div class="leftPanel">
+            <div class="leftCycleCountPanel">
                 <div class="leftPanelRow"> {{"IN_STOCK" | translate}}
                     <div class="textContent">{{displayCycleCountItem.QuantityOnHand}}
                     </div>
@@ -66,7 +66,7 @@
 
                 </div>
             </div>
-            <div class="rightPanel" >
+            <div class="rightCycleCountPanel" >
                 <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
                 [minValue]="0" [maxValue]="999999">
                 </oc-numeric>
