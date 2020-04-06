@@ -16,6 +16,8 @@ import { PickRouteSelectComponent } from './pick-route-select/pick-route-select.
 import { DeviceSequenceOrderComponent } from './device-sequence-order/device-sequence-order.component';
 import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist-page/guidedinvmgmt-devicelist-page.component';
+import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component';
+
 import { EditPickRoutePageComponent } from './edit-pick-route-page/edit-pick-route-page.component';
 import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-sequence.component';
 
@@ -34,6 +36,7 @@ import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-
     GuidedInvMgmtDevicelistPageComponent,
     EditPickRoutePageComponent,
     EditDeviceSequenceComponent,
+    GuidedInvMgmtCycleCountPageComponent,
   ],
   imports: [
     CommonModule,

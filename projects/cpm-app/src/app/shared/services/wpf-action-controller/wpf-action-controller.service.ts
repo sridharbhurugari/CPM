@@ -55,5 +55,4 @@ export class WpfActionControllerService {
       this.wpfActionController.executeWpfContinueNavigationAction(action);
     } 
   }
-
 }
