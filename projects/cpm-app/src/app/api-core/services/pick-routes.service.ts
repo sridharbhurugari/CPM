@@ -25,8 +25,22 @@ export class PickRoutesService {
     });
   }
 
+  save(pickRouteGuid: string, pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
+    var deviceSequenceDataContracts = deviceSequence.map(x => {
+      return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
+    });
+    var body = {
+      PickRouteGuid: pickRouteGuid,
+      Description: pickRouteDescription,
+      DeviceSequence: deviceSequenceDataContracts
+    };
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes`);
+    var headers = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.put(url, body, { headers: headers });
+  }
+
   saveAs(pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
-    var deviceSequenceDataContracts = deviceSequence.map(x => { 
+    var deviceSequenceDataContracts = deviceSequence.map(x => {
       return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
     });
     var body = {

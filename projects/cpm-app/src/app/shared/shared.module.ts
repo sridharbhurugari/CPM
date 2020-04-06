@@ -10,6 +10,8 @@ import { GridMultiSelectDirective } from './directives/grid-multi-select.directi
 import { GridReorderDirective } from './directives/grid-reorder.directive';
 import { RowReorderButtonsComponent } from './components/row-reorder-buttons/row-reorder-buttons.component';
 import { TextResultPopupComponent } from './components/text-result-popup/text-result-popup.component';
+import { ConfirmPopupComponent } from './components/confirm-popup/confirm-popup.component';
+import { HeaderTitleBottomMarginContainerComponent } from './components/header-title-bottom-margin-container/header-title-bottom-margin-container.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { TextResultPopupComponent } from './components/text-result-popup/text-re
     GridReorderDirective,
     RowReorderButtonsComponent,
     TextResultPopupComponent,
+    ConfirmPopupComponent,
+    HeaderTitleBottomMarginContainerComponent,
   ],
   imports: [
     CommonModule,
@@ -40,9 +44,12 @@ import { TextResultPopupComponent } from './components/text-result-popup/text-re
     RowReorderButtonsComponent,
     GridReorderDirective,
     TextResultPopupComponent,
+    ConfirmPopupComponent,
+    HeaderTitleBottomMarginContainerComponent,
   ],
   entryComponents: [
-    TextResultPopupComponent
+    TextResultPopupComponent,
+    ConfirmPopupComponent
   ]
 })
 export class SharedModule { }
