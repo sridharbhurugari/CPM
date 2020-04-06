@@ -11,7 +11,6 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
 import { stringify } from 'querystring';
 
-
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
   templateUrl: './guidedinvmgmt-cyclecount-page.component.html',
@@ -56,7 +55,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       if (x.length > 0 && x[0].ExpirationDate) {
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
-        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? 'mm/dd/yyyy' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -122,7 +121,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
     else {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
-      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? 'mm/dd/yyyy' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;
