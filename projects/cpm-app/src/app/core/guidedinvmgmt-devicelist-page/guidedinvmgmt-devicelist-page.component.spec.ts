@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist-page.component';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
-import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule } from '@omnicell/webcorecomponents';
+import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule, PopupDialogService } from '@omnicell/webcorecomponents';
 import { SharedModule } from '../../shared/shared.module';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
 import { of } from 'rxjs';
@@ -18,7 +18,8 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
       imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, SharedModule, ButtonActionModule],
       providers: [
         { provide: GuidedDeviceListService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useValue: { } }
+        { provide: WpfActionControllerService, useValue: { } },
+        { provide: PopupDialogService, useValue: {} }
       ]
     })
     .compileComponents();
