@@ -47,7 +47,7 @@
                 [disabled]="picklistQueueItem.Saving">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'PLAY' | translate"
-                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
+                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Status===2"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3"
                 [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
                 [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2"></oc-button-action>

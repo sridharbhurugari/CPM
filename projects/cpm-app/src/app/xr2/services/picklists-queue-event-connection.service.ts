@@ -45,5 +45,3 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     }
   }
 }
-
-

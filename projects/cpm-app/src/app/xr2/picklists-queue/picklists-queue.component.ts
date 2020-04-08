@@ -120,8 +120,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.Status = picklistQueueItem.Status;
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
-    matchingPicklistQueueItem.Saving = picklistQueueItem.Saving;
-    // this.resyncPickListQueueItem(picklistQueueItem);
+    this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
@@ -141,6 +140,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
     // picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
+
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
@@ -154,7 +154,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       result => {
         // picklistQueueItem.Status = 2;
         // picklistQueueItem.Saving = false;
-        // this.updateAllClientsPicklistItem(picklistQueueItem);
       }, result => {
         // picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
@@ -163,7 +162,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   printLabels(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.Saving = true;
+    // picklistQueueItem.Saving = true;
     const picklistLineDetails = new Array<PickListLineDetail>();
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
@@ -178,9 +177,8 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       result => {
         // picklistQueueItem.Status = 4;
         // picklistQueueItem.Saving = false;
-        // this.updateAllClientsPicklistItem(picklistQueueItem);
       }, result => {
-        // picklistQueueItem.Saving = false;
+        /// picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
       });
   }
