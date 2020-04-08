@@ -4,7 +4,6 @@ import { IPriorityCodePickRoute } from '../data-contracts/i-priority-code-pick-r
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
-import { IPriorityCodePickRouteEdit } from '../data-contracts/i-priority-code-pickroute-edit';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +25,6 @@ export class PriorityCodePickRoutesService {
 
   getPriority(priorityCodePickRouteId: number): Observable<IPriorityCodePickRoute> {
     var url = this.ocapUrlBuilderService.buildUrl(`/api/priorityCodePickRoutes/${priorityCodePickRouteId}`);
-    return this.httpClient.get<IPriorityCodePickRoute>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
-  save(priorityCodePickRouteChange: IPriorityCodePickRouteEdit): Observable<IPriorityCodePickRoute> {
-    let url = this.ocapUrlBuilderService.buildUrl(`/api/priorityCodePickRoutes/${priorityCodePickRouteChange}`);
     return this.httpClient.get<IPriorityCodePickRoute>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });

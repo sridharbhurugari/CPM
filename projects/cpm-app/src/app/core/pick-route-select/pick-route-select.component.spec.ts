@@ -3,9 +3,14 @@ import { GridModule } from '@omnicell/webcorecomponents';
 import { PickRouteSelectComponent } from './pick-route-select.component';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
+import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+
 describe('PickRouteSelectComponent', () => {
   let component: PickRouteSelectComponent;
   let fixture: ComponentFixture<PickRouteSelectComponent>;
+  let mockPickRouteDevices: IDeviceSequenceOrder[];
+
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,24 +31,55 @@ describe('PickRouteSelectComponent', () => {
   });
 
   it('should emit selectionChanged event', (gogo) => {
-    const newId: number = 11;
-    component.selectedId = 1;
+    const newItem: IPickRouteDevice = {
+      PickRouteId: 2,
+      RouteDescription: 'Two',
+      PickRouteGuid: '22222-22-2222-2222',
+      PickRouteDevices: mockPickRouteDevices,
+    };
+
+    component.selectedItem.PickRouteId = 1 ;
+    component.selectedItem.RouteDescription = 'Default' ;
+    component.selectedItem.PickRouteGuid = '11111-11-1111-1111' ;
+    component.selectedItem.PickRouteDevices = mockPickRouteDevices;
     component.SelectionChange.subscribe(g => {
-       expect(g).toEqual(newId);
+       expect(g).toEqual(newItem);
        gogo();
     });
-    component.selectionChanged(newId);
-    expect(component.selectedId).toEqual(newId);
-});
+    component.selectionChanged(newItem);
+    expect(component.selectedItem).toEqual(newItem);
+  });
 
   it('select change', async(() => {
-    const listMap = new Map<number, string>();
-    listMap.set(1, 'Default');
-    listMap.set(2, 'Two');
-    listMap.set(3, 'Three');
+    const listMap = new Map<IPickRouteDevice, string>();
+
+    const itemOne: IPickRouteDevice = {
+      PickRouteId: 1,
+      RouteDescription: 'Default',
+      PickRouteGuid: '11111-11-1111-1111',
+      PickRouteDevices: mockPickRouteDevices,
+    };
+
+    const itemTwo: IPickRouteDevice = {
+      PickRouteId: 2,
+      RouteDescription: 'Two',
+      PickRouteGuid: '22222-22-2222-2222',
+      PickRouteDevices: mockPickRouteDevices,
+    };
+
+    const itemThree: IPickRouteDevice = {
+      PickRouteId: 3,
+      RouteDescription: 'Three',
+      PickRouteGuid: '33333-33-3333-3333',
+      PickRouteDevices: mockPickRouteDevices,
+    };
+
+    listMap.set(itemOne, itemOne.RouteDescription);
+    listMap.set(itemTwo, itemTwo.RouteDescription);
+    listMap.set(itemThree, itemThree.RouteDescription);
 
     component.listMap = listMap;
-    component.selectedId = 1;
+    component.selectedItem = itemOne;
     component.colDescription = 'test description';
     fixture.detectChanges();
     spyOn(component, 'selectionChanged').and.callThrough();
@@ -53,21 +89,20 @@ describe('PickRouteSelectComponent', () => {
     let counter = 1;
     for (const r of radios) {
       const rElement = r.nativeElement;
-      if (rElement.id === '1') {
+      if (rElement.id === itemOne) {
         radio1 = rElement;
-      }
-      else if (rElement.id === '2') {
+      } else if (rElement.id === itemTwo) {
         radio2 = rElement;
       }
       counter++;
     }
-    component.selectionChanged(2);
+    component.selectionChanged(itemTwo);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-    fixture.detectChanges();
-    expect(component.selectionChanged).toHaveBeenCalled();
-    expect(radio1.checked).toEqual(false);
-    expect(radio2.checked).toEqual(true);
-  });
-}));
+      fixture.detectChanges();
+      expect(component.selectionChanged).toHaveBeenCalled();
+      expect(radio1.checked).toEqual(false);
+      expect(radio2.checked).toEqual(true);
+    });
+  }));
 });
