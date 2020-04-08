@@ -24,4 +24,5 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   DeviceId: number;
   OutputDevice: string;
   Saving: boolean;
+  ItemCount: number;
 }
