@@ -98,8 +98,10 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
-    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
+      .subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
+      .subscribe(message => this.onRemovePicklistQueueItem(message));
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
@@ -118,6 +120,8 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.Status = picklistQueueItem.Status;
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+    matchingPicklistQueueItem.Saving = picklistQueueItem.Saving;
+    // this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
@@ -130,8 +134,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
+  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.TrackById = Guid.create();
+  }
+
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.Saving = true;
+    // picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
@@ -144,11 +152,11 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
-        picklistQueueItem.Status = 2;
-        picklistQueueItem.Saving = false;
-        this.resyncPickListQueueItem(picklistQueueItem);
+        // picklistQueueItem.Status = 2;
+        // picklistQueueItem.Saving = false;
+        // this.updateAllClientsPicklistItem(picklistQueueItem);
       }, result => {
-        picklistQueueItem.Saving = false;
+        // picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
       });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
@@ -168,11 +176,11 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
       result => {
-        picklistQueueItem.Status = 4;
-        picklistQueueItem.Saving = false;
-        this.resyncPickListQueueItem(picklistQueueItem);
+        // picklistQueueItem.Status = 4;
+        // picklistQueueItem.Saving = false;
+        // this.updateAllClientsPicklistItem(picklistQueueItem);
       }, result => {
-        picklistQueueItem.Saving = false;
+        // picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
       });
   }
@@ -188,10 +196,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
-  }
-
-  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.TrackById = Guid.create();
   }
 
   trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
