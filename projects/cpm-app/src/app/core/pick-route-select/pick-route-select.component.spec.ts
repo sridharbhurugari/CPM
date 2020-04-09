@@ -11,6 +11,27 @@ describe('PickRouteSelectComponent', () => {
   let fixture: ComponentFixture<PickRouteSelectComponent>;
   let mockPickRouteDevices: IDeviceSequenceOrder[];
 
+  const defaultItem: IPickRouteDevice = {
+    PickRouteId: 1,
+    RouteDescription: 'Default',
+    PickRouteGuid: '11111-11-1111-1111',
+    PickRouteDevices: mockPickRouteDevices,
+  };
+
+  const itemTwo: IPickRouteDevice = {
+    PickRouteId: 2,
+    RouteDescription: 'Two',
+    PickRouteGuid: '22222-22-2222-2222',
+    PickRouteDevices: mockPickRouteDevices,
+  };
+
+  const itemThree: IPickRouteDevice = {
+    PickRouteId: 3,
+    RouteDescription: 'Three',
+    PickRouteGuid: '33333-33-3333-3333',
+    PickRouteDevices: mockPickRouteDevices,
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PickRouteSelectComponent ],
@@ -30,52 +51,18 @@ describe('PickRouteSelectComponent', () => {
   });
 
   it('should emit selectionChanged event', (gogo) => {
-    const newItem: IPickRouteDevice = {
-      PickRouteId: 2,
-      RouteDescription: 'Two',
-      PickRouteGuid: '22222-22-2222-2222',
-      PickRouteDevices: mockPickRouteDevices,
-    };
-
-    const defaultItem: IPickRouteDevice = {
-      PickRouteId: 1,
-      RouteDescription: 'Default',
-      PickRouteGuid: '11111-11-1111-1111',
-      PickRouteDevices: mockPickRouteDevices,
-    };
 
     component.selectedItem = defaultItem ;
     component.SelectionChange.subscribe(g => {
-       expect(g).toEqual(newItem);
+       expect(g).toEqual(itemTwo);
        gogo();
     });
-    component.selectionChanged(newItem);
-    expect(component.selectedItem).toEqual(newItem);
+    component.selectionChanged(itemTwo);
+    expect(component.selectedItem).toEqual(itemTwo);
   });
 
   it('select change', async(() => {
     const listMap = new Map<IPickRouteDevice, string>();
-
-    const defaultItem: IPickRouteDevice = {
-      PickRouteId: 1,
-      RouteDescription: 'Default',
-      PickRouteGuid: '11111-11-1111-1111',
-      PickRouteDevices: mockPickRouteDevices,
-    };
-
-    const itemTwo: IPickRouteDevice = {
-      PickRouteId: 2,
-      RouteDescription: 'Two',
-      PickRouteGuid: '22222-22-2222-2222',
-      PickRouteDevices: mockPickRouteDevices,
-    };
-
-    const itemThree: IPickRouteDevice = {
-      PickRouteId: 3,
-      RouteDescription: 'Three',
-      PickRouteGuid: '33333-33-3333-3333',
-      PickRouteDevices: mockPickRouteDevices,
-    };
 
     listMap.set(defaultItem, defaultItem.RouteDescription);
     listMap.set(itemTwo, itemTwo.RouteDescription);
@@ -87,16 +74,16 @@ describe('PickRouteSelectComponent', () => {
     fixture.detectChanges();
     spyOn(component, 'selectionChanged').and.callThrough();
     const radios = fixture.debugElement.queryAll(By.css('input.ocRadioButton'));
-    let radio1;
-    let radio2;
-    let radio3;
+    let radio1: { checked: any; };
+    let radio2: { checked: any; };
+    let radio3: { checked: any; };
     for (const r of radios) {
       const rElement = r.nativeElement;
-      if (rElement.id === defaultItem) {
+      if (rElement.id === defaultItem.PickRouteId.toString()) {
         radio1 = rElement;
-      } else if (rElement.id === itemTwo) {
+      } else if (rElement.id === itemTwo.PickRouteId.toString()) {
         radio2 = rElement;
-      } else if (rElement.id === itemThree) {
+      } else if (rElement.id === itemThree.PickRouteId.toString()) {
         radio3 = rElement;
       }
     }
