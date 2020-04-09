@@ -21,7 +21,7 @@
       </ng-container>
       <ng-container class="ocgridbody">
         <div class="row"
-          *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields;trackBy: trackByPickListQueueItemId">
+          *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
           <div class="first" style="align-items: center;">
             <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
           </div>
@@ -44,10 +44,10 @@
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
               <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button"
-                [disabled]="picklistQueueItem.Saving">
+                [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
-                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Status===2"></oc-button-action>
+                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3"
                 [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
                 [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2"></oc-button-action>

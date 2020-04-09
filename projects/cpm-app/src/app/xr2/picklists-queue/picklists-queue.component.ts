@@ -138,7 +138,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
-    // picklistQueueItem.Saving = true;
+    picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
 
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
@@ -153,19 +153,20 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
         // picklistQueueItem.Status = 2;
-        // picklistQueueItem.Saving = false;
+        picklistQueueItem.Saving = false;
       }, result => {
-        // picklistQueueItem.Saving = false;
+        picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
       });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   printLabels(picklistQueueItem: PicklistQueueItem) {
-    // picklistQueueItem.Saving = true;
+    picklistQueueItem.Saving = true;
     const picklistLineDetails = new Array<PickListLineDetail>();
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
+      pickListLineDetail.RobotPickListLineIdentifier = picklistQueueItem.PicklistId;
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
@@ -176,9 +177,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
       result => {
         // picklistQueueItem.Status = 4;
-        // picklistQueueItem.Saving = false;
+        picklistQueueItem.Saving = false;
       }, result => {
-        /// picklistQueueItem.Saving = false;
+        picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
       });
   }
