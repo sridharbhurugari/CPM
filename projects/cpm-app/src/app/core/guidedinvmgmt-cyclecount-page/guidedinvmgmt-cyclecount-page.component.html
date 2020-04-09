@@ -48,7 +48,7 @@
 
             <div class="leftCycleCountPanel">
                 <div class="leftPanelRow"> {{"IN_STOCK" | translate}}
-                    <div class="textContent">{{displayCycleCountItem.QuantityOnHand}}
+                    <div class="textContent">{{displayCycleCountItem.InStockQuantity}}
                     </div>
                 </div>
                 <div class="leftPanelRow"> {{"PAR_LEVEL" | translate}}
@@ -61,7 +61,7 @@
                 </div>
                 <div class="leftPanelRow"> {{"EXPIRATION_DATE" | translate}}
                     <oc-datepicker format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
-                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" >
+                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted">
                     </oc-datepicker>
 
                 </div>

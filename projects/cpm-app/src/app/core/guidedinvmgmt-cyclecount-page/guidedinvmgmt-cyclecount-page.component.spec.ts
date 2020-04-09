@@ -88,7 +88,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
@@ -152,7 +153,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -174,7 +176,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -208,7 +211,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceLocationId: 87,  
@@ -221,7 +225,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       }));
       component.itemCount = 2;
       component.nextRecord();
@@ -244,7 +249,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceLocationId: 87,  
@@ -257,7 +263,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        InStockQuantity :55
       }));
       component.itemCount = 2;
       component.currentItemCount = 1;
