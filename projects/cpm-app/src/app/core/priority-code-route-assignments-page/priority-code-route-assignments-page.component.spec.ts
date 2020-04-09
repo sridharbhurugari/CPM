@@ -34,12 +34,10 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       declarations: [ PriorityCodeRouteAssignmentsPageComponent, MockPriorityCodeRouteAssignmentsComponent,
          MockTranslatePipe, PickRouteSelectComponent, DeviceSequenceOrderComponent ],
       providers: [
-        { provide: PriorityCodeRouteAssignmentsService, useValue: { getRoutes: () => of()}},
+        { provide: PriorityCodeRouteAssignmentsService, useValue: { getRoutes: () => of() } },
         { provide: PriorityCodePickRoutesService, useValue: { getPriority: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: WpfActionControllerService, useVaule: { }
-
-      }
+        { provide: WpfActionControllerService, useVaule: { } },
       ],
       imports: [
         SharedModule, FooterModule, LayoutModule, ButtonActionModule,

@@ -11,7 +11,6 @@ describe('PickRouteSelectComponent', () => {
   let fixture: ComponentFixture<PickRouteSelectComponent>;
   let mockPickRouteDevices: IDeviceSequenceOrder[];
 
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PickRouteSelectComponent ],
@@ -38,10 +37,14 @@ describe('PickRouteSelectComponent', () => {
       PickRouteDevices: mockPickRouteDevices,
     };
 
-    component.selectedItem.PickRouteId = 1 ;
-    component.selectedItem.RouteDescription = 'Default' ;
-    component.selectedItem.PickRouteGuid = '11111-11-1111-1111' ;
-    component.selectedItem.PickRouteDevices = mockPickRouteDevices;
+    const defaultItem: IPickRouteDevice = {
+      PickRouteId: 1,
+      RouteDescription: 'Default',
+      PickRouteGuid: '11111-11-1111-1111',
+      PickRouteDevices: mockPickRouteDevices,
+    };
+
+    component.selectedItem = defaultItem ;
     component.SelectionChange.subscribe(g => {
        expect(g).toEqual(newItem);
        gogo();
@@ -53,7 +56,7 @@ describe('PickRouteSelectComponent', () => {
   it('select change', async(() => {
     const listMap = new Map<IPickRouteDevice, string>();
 
-    const itemOne: IPickRouteDevice = {
+    const defaultItem: IPickRouteDevice = {
       PickRouteId: 1,
       RouteDescription: 'Default',
       PickRouteGuid: '11111-11-1111-1111',
@@ -74,35 +77,39 @@ describe('PickRouteSelectComponent', () => {
       PickRouteDevices: mockPickRouteDevices,
     };
 
-    listMap.set(itemOne, itemOne.RouteDescription);
+    listMap.set(defaultItem, defaultItem.RouteDescription);
     listMap.set(itemTwo, itemTwo.RouteDescription);
     listMap.set(itemThree, itemThree.RouteDescription);
 
     component.listMap = listMap;
-    component.selectedItem = itemOne;
+    component.selectedItem = defaultItem;
     component.colDescription = 'test description';
     fixture.detectChanges();
     spyOn(component, 'selectionChanged').and.callThrough();
     const radios = fixture.debugElement.queryAll(By.css('input.ocRadioButton'));
     let radio1;
     let radio2;
-    let counter = 1;
+    let radio3;
     for (const r of radios) {
       const rElement = r.nativeElement;
-      if (rElement.id === itemOne) {
+      if (rElement.id === defaultItem) {
         radio1 = rElement;
       } else if (rElement.id === itemTwo) {
         radio2 = rElement;
+      } else if (rElement.id === itemThree) {
+        radio3 = rElement;
       }
-      counter++;
     }
+
     component.selectionChanged(itemTwo);
     fixture.detectChanges();
+
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(component.selectionChanged).toHaveBeenCalled();
       expect(radio1.checked).toEqual(false);
       expect(radio2.checked).toEqual(true);
+      expect(radio3.checked).toEqual(false);
     });
   }));
 });
