@@ -28,7 +28,9 @@
           </div>
       </ng-container>
       <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let guidedDevice of (displayGuidedDeviceList$ | async) | searchPipe:searchTextFilter:searchFields">
+        <div class="row" *ngFor="let guidedDevice of (displayGuidedDeviceList$ | async) | searchPipe:searchTextFilter:searchFields"
+          (click)="(guidedDevice.NumberOfLocationsWithOutdatedCycleCount > 0
+          || guidedDevice.NumberOfLocationsExpiringSoon > 0 ) && navigate(guidedDevice.DeviceId)">
             <div class="first" style="align-items: center;"></div>
             <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{guidedDevice.DeviceDescription}}</div>
             <div class="col width-lastcount" [attr.data-title]="'LAST_CYCLE_COUNT_DATE' | translate">

@@ -33,7 +33,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
 
   constructor(
     private guidedDeviceListService: GuidedDeviceListService,
-    private wpfActionControllerService: WpfActionControllerService
+    private wpfActionControllerService: WpfActionControllerService,
     ) { }
 
   ngOnInit() {
@@ -45,7 +45,11 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   navigateManualCycleCount() {
     this.wpfActionControllerService.ExecuteWpfContinueNavigationAction(WpfActionPaths.ManualCycleCountPath);
   }
-
+  
+  navigate(deviceId: number){
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId});
+  }
+  
   ngAfterViewInit() {
     this.searchElement.searchOutput$
       .pipe(
