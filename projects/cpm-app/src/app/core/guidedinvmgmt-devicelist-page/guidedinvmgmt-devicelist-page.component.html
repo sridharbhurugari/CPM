@@ -8,42 +8,29 @@
     <oc-grid #ocgrid ocgridfilter="false">
       <ng-container class="ocgridheader">
           <div class="first" data-colwrap="true"></div>
-          <div class="col width-device" ocGridColResize data-width="500" data-colwrap="true" (click)="sort(deviceColumn)">
-            <span class="headertext">
-              <div >{{'DEVICE' | translate}}</div>
-            </span>
-            <span class="headericon">
-              <div *ngIf="sortColumn==deviceColumn">
-                <oc-svgicon *ngIf="sortAsc" icon="up" theme="white"></oc-svgicon>
-                <oc-svgicon *ngIf="sortAsc==false" icon="down" theme="white"></oc-svgicon>
-              </div>
-            </span>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+                               [columnPropertyName]="devicePropertyName"
+                               headerResourceKey="DEVICE"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
           </div>
-          <div class="col width-lastcount" ocGridColResize data-width="280" data-colwrap="true" (click)="sort(cycleCountColumn)">
-            <span class="headertext">
-                <div >{{'LAST_CYCLE_COUNT_DATE' | translate}}</div>
-              </span>
-              <span class="headericon">
-                  <div *ngIf="sortColumn==cycleCountColumn">
-                    <oc-svgicon *ngIf="sortAsc" icon="up" theme="white"></oc-svgicon>
-                    <oc-svgicon *ngIf="sortAsc==false" icon="down" theme="white"></oc-svgicon>
-                  </div>
-                </span>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="280" data-colwrap="true"
+                               [columnPropertyName]="lastCycleCountPropertyName"
+                               headerResourceKey="LAST_CYCLE_COUNT_DATE"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
           </div>
-          <div class="last width-exp" ocGridColResize data-width="280" data-colwrap="true" (click)="sort(expiringSoonColumn)">
-            <span class="headertext">
-                <div >{{'EARLIEST_EXPIRATION_DATE' | translate}}</div>
-              </span>
-              <span class="headericon">
-                <div *ngIf="sortColumn==expiringSoonColumn">
-                  <oc-svgicon *ngIf="sortAsc" icon="up" theme="white"></oc-svgicon>
-                  <oc-svgicon *ngIf="sortAsc==false" icon="down" theme="white"></oc-svgicon>
-                </div>
-              </span>
+          <div app-col-header-sortable class="last" ocGridColResize data-width="280" data-colwrap="true"
+                               [columnPropertyName]="earliestExpirationDatePropertyName"
+                               headerResourceKey="EARLIEST_EXPIRATION_DATE"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               (columnSelected)="columnSelected($event)">
           </div>
       </ng-container>
       <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let guidedDevice of displayGuidedDeviceList | async">
+        <div class="row" *ngFor="let guidedDevice of (displayGuidedDeviceList$ | async) | searchPipe:searchTextFilter:searchFields"
+          (click)="(guidedDevice.NumberOfLocationsWithOutdatedCycleCount > 0
+          || guidedDevice.NumberOfLocationsExpiringSoon > 0 ) && navigate(guidedDevice.DeviceId)">
             <div class="first" style="align-items: center;"></div>
             <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{guidedDevice.DeviceDescription}}</div>
             <div class="col width-lastcount" [attr.data-title]="'LAST_CYCLE_COUNT_DATE' | translate">

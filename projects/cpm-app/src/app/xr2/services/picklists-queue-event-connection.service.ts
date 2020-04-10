@@ -3,6 +3,7 @@ import { Subject, of, Observable } from 'rxjs';
 import { EventConnectionService } from './event-connection.service';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { ConfigurationService } from 'oal-core';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,10 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
   public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
 
   constructor(
-    _configurationService: ConfigurationService
+    configurationService: ConfigurationService,
+    ocapUrlBuilderService: OcapUrlBuilderService
     ) {
-    super(_configurationService);
+    super(configurationService, ocapUrlBuilderService);
    }
 
   public async openEventConnection(): Promise<void> {

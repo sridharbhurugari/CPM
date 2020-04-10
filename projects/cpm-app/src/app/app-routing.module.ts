@@ -9,6 +9,7 @@ import { PriorityCodeRouteAssignmentsPageComponent } from './core/priority-code-
 import { GuidedInvMgmtDevicelistPageComponent } from './core/guidedinvmgmt-devicelist-page/guidedinvmgmt-devicelist-page.component';
 import { EditPickRoutePageComponent } from './core/edit-pick-route-page/edit-pick-route-page.component';
 /*import { CpmSignalRResolverService } from './xr2/services/cpm-signal-rresolver.service';*/
+import { GuidedInvMgmtCycleCountPageComponent } from './core/guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'priorityCode/RouteAssignments', component: PriorityCodeRouteAssignmentsPageComponent },
   { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },
   { path: 'pickRoutes/:pickRouteId', component: EditPickRoutePageComponent },
+  { path: 'guidedinvmgmt/cyclecount', component: GuidedInvMgmtCycleCountPageComponent },
 ];
 
 @NgModule({
