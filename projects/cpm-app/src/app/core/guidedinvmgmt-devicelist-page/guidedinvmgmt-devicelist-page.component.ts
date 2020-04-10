@@ -8,6 +8,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { WpfActionPaths } from '../constants/wpf-action-paths';
 import { TranslateService } from '@ngx-translate/core';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 
 @Component({
   selector: 'app-guidedinvmgmt-devicelist-page',
@@ -47,11 +48,11 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
 
   navigate(deviceId: number) {
 
-    this.hardwareLeaseService.HasDeviceLease(deviceId.toString()).subscribe(
+    this.hardwareLeaseService.HasDeviceLease(deviceId).subscribe(
       currentDeviceLeaseOwner => {
         console.log('Current Device Lease Owner : ' + currentDeviceLeaseOwner);
-        if (currentDeviceLeaseOwner) {
-           this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId});
+        if (currentDeviceLeaseOwner === LeaseVerificationResult.Success) {
+           this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId.toString()});
         } else {
             this.displayRequestLeaseDialog();
         }
