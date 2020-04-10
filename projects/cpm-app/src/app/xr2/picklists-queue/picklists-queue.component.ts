@@ -132,11 +132,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
-    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
+    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;    
     globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
