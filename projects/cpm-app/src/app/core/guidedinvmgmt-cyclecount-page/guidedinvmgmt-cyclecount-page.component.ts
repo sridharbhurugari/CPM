@@ -3,13 +3,15 @@ import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent, DatepickerComponent } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent ,ValidationBadgeComponent} from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
 import { stringify } from 'querystring';
+import { ValidationBadgeModule } from '@omnicell/webcorecomponents';
+import { SystemMessageModule } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -41,7 +43,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
     this.currentItemCount = 0;
   }
 
-
+  attrs = {
+    nullCheck: null,
+    required: false,
+    disabled: false
+  };
   ngOnInit() {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.getCycleCountData(deviceId);
@@ -55,6 +61,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       if (x.length > 0 && x[0].ExpirationDate) {
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
+        var sample = this.displayCycleCountItem.ItmExpDateGranularity;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
@@ -122,6 +129,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      var sample = this.displayCycleCountItem.ItmExpDateGranularity;
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;

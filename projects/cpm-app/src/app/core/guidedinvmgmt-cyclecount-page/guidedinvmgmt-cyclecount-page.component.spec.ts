@@ -82,13 +82,16 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
@@ -146,13 +149,16 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -168,13 +174,16 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -202,26 +211,32 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceLocationId: 87,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       }));
       component.itemCount = 2;
       component.nextRecord();
@@ -238,26 +253,32 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceLocationId: 87,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
         ExpirationDateFormatted: "10/03/2020",
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 55,
-        ReorderSource: "Internal"
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10
       }));
       component.itemCount = 2;
       component.currentItemCount = 1;

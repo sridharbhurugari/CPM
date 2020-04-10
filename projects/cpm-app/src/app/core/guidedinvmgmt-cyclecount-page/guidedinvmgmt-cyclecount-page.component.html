@@ -55,20 +55,24 @@
                     <div class="textContent">{{displayCycleCountItem.ParLevel}}
                     </div>
                 </div>
-                <div class="leftPanelRow"> {{"REORDER_LEVEL" | translate}}
-                    <div class="textContent">{{displayCycleCountItem.ReorderLevel}}
+                <div class="leftPanelRow"> {{(displayCycleCountItem.ReorderSource == 'B' ? "RESTOCK_LEVEL" : "REORDER_LEVEL") | translate}}
+                    <div class="textContent">{{displayCycleCountItem.ReorderSource == 'B' ? displayCycleCountItem.ReorderLevel:displayCycleCountItem.QuantityMin}}
                     </div>
                 </div>
-                <div class="leftPanelRow"> {{"EXPIRATION_DATE" | translate}}
-                    <oc-datepicker format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
-                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" >
+                <div class="leftPanelRow" *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'" > {{"EXPIRATION_DATE" | translate}}
+                    <oc-datepicker  format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
+                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" popupDirection="UP">
                     </oc-datepicker>
-
+                </div>
+                <div class="leftPanelRow" *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Month'" > {{"EXPIRATION_DATE" | translate}}
+                    <oc-datepicker  format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
+                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted"  popupDirection="UP">
+                    </oc-datepicker>
                 </div>
             </div>
             <div class="rightCycleCountPanel" >
                 <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
-                [minValue]="0" [maxValue]="999999">
+                [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [setFocus]="true">
                 </oc-numeric>
             </div>
         </div>

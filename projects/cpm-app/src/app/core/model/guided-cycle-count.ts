@@ -11,6 +11,7 @@ export class GuidedCycleCount implements IGuidedCycleCount {
   ItemId: string;
   BrandNameFormatted: string;
   GenericNameFormatted: string;
+  Units: string;
   ParLevel: number;
   ReorderLevel: number;
   ExpirationDate: Date;
@@ -18,4 +19,6 @@ export class GuidedCycleCount implements IGuidedCycleCount {
   LocationDescription: string;
   QuantityOnHand: number;
   ReorderSource: string;
+  ItmExpDateGranularity: string;
+  QuantityMin: number;
 }

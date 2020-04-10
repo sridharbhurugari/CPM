@@ -3,6 +3,7 @@ export interface IGuidedCycleCount {
   ItemId: string,
   BrandNameFormatted: string,
   GenericNameFormatted: string,
+  Units: string,
   ParLevel: number,
   ReorderLevel: number,
   ExpirationDate: Date,
@@ -10,4 +11,6 @@ export interface IGuidedCycleCount {
   LocationDescription: string,
   QuantityOnHand: number,
   ReorderSource: string,
+  ItmExpDateGranularity:string,
+  QuantityMin: number
 }
