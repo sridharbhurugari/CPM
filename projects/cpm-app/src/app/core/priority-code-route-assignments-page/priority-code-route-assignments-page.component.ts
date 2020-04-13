@@ -11,7 +11,8 @@ import { PriorityCodePickRoutesService } from '../../api-core/services/priority-
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogService, PopupDialogProperties, PopupDialogType, PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
+import { PopupDialogService, PopupDialogProperties, PopupDialogType,
+   PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 
@@ -28,10 +29,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   duplicateErrorTitle$: Observable<string>;
   duplicateErrorMessage$: Observable<string>;
 
+  priorityCode: string;
+
   private _priorityCodePickRouteId: number;
   private _pickRoute: IPickRouteDevice;
   private _originalRoute: IPickRouteDevice;
-  private _priorityCode: string;
 
   get pickRoute(): IPickRouteDevice {
       return this._pickRoute;
@@ -55,7 +57,6 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
-
   ) { }
 
   ngOnInit() {
@@ -66,9 +67,9 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
     this.deviceList$ = forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
       this._originalRoute = this.getOriginalPickRouteForPriorityType(results[0].PickRouteId, results[1]);
-      this._pickRoute = this._originalRoute;
-      this._priorityCode = results[0].PriorityCode;
-      this.routerLinkPickRouteId = this._pickRoute.PickRouteId;
+      this.pickRoute = this._originalRoute;
+      this.priorityCode = results[0].PriorityCode;
+      this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
       return this.setDevices(this.pickRoute, results[1]);
     }));
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
@@ -120,7 +121,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.canSave = this._originalRoute.PickRouteId !== pickroute.PickRouteId;
   }
 
-  onSave() {
+  save() {
     const properties = new PopupWindowProperties();
     const data: IConfirmPopupData = {
       headerResourceKey: 'SAVE_ROUTE_CHANGES',
@@ -132,7 +133,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
-        this.priorityCodeRouteAssignmentsService.save(this.pickRoute.PickRouteGuid, this._priorityCode)
+        this.priorityCodeRouteAssignmentsService.save(this.pickRoute.PickRouteGuid, this.priorityCode)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
     });

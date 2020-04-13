@@ -35,7 +35,7 @@
                <oc-button-action [buttonText]="'MAINTENANCE' | translate" [disabled]="!isEditAvailable"></oc-button-action>
             </a>
             <div class="buttonSpacer">                                                                                                                                                                                                                                                                                                                                               </div>
-            <oc-button-action [buttonText]="'SAVE' | translate" [disabled]="!canSave" (click)="onSave()"></oc-button-action>
+            <oc-button-action [buttonText]="'SAVE' | translate" [disabled]="!canSave" (click)="save()"></oc-button-action>
         </oc-footer>
     </ng-container>
 </oc-action-layout>
