@@ -1,17 +1,16 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild ,AfterViewChecked} from '@angular/core';
 import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent, DatepickerComponent ,ValidationBadgeComponent} from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent , ButtonActionComponent} from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
-import { stringify } from 'querystring';
-import { ValidationBadgeModule } from '@omnicell/webcorecomponents';
-import { SystemMessageModule } from '@omnicell/webcorecomponents';
+
+import { Button } from 'protractor';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -19,15 +18,20 @@ import { SystemMessageModule } from '@omnicell/webcorecomponents';
   styleUrls: ['./guidedinvmgmt-cyclecount-page.component.scss']
 })
 
-export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
-  @ViewChild('numericEle', null) numericElement: NumericComponent;
+export class GuidedInvMgmtCycleCountPageComponent implements OnInit,AfterViewInit,AfterViewChecked {
+  @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
+  @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
+  @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
+  @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
   displayCycleCountItem: IGuidedCycleCount;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
   cycleCountItemsCopy: IGuidedCycleCount[];
   itemCount: number;
   isLastItem: boolean;
   currentItemCount: number;
+  nextButtonDisable: boolean;
+  doneButtonDisable: boolean;
   public time: Date = new Date();
   titleHeader = '\'GUIDED_CYCLE_COUNT\' | translate';
   route: any;
@@ -35,12 +39,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private guidedCycleCountService: GuidedCycleCountService,
     private wpfActionController: WpfActionControllerService
-  ) {
+   ) {
     setInterval(() => {
       this.time = new Date();
     }, 1);
     this.itemCount = 0;
     this.currentItemCount = 0;
+    this.nextButtonDisable = false;
+    this.doneButtonDisable = false;
+
   }
 
   attrs = {
@@ -52,7 +59,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.getCycleCountData(deviceId);
   }
+ngAfterViewInit(): void {
+}
 
+ngAfterViewChecked() {
+ }
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -61,7 +72,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       if (x.length > 0 && x[0].ExpirationDate) {
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
-        var sample = this.displayCycleCountItem.ItmExpDateGranularity;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
@@ -129,11 +139,53 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-      var sample = this.displayCycleCountItem.ItmExpDateGranularity;
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;
       }
     }
+  }
+
+  onQuantityChange($event){
+    if(!this.CheckItemExpGranularity())
+    {
+    if($event=== "0")
+    {
+      this.datepicker.selectedDate = null;
+      this.datepicker.isRequired=false;
+    }
+    else if(this.datepicker.selectedDate === null)
+    {
+      this.datepicker.isRequired=true;
+      this.DisableActionButtons(true);
+    }
+    else
+    {
+      this.DisableActionButtons(false);
+    }
+  }
+  }
+
+  onDateChange($event){
+    var valueQuanity = this.numericElement.displayValue;
+    if($event === null || valueQuanity === "0")
+    {
+      this.DisableActionButtons(true);
+    }
+    else 
+    {
+      this.DisableActionButtons(false);
+    }
+  }
+
+  DisableActionButtons(value : boolean)
+  {
+    if( this.isLastItem !== true) this.nextButtonDisable = value;
+    if( this.isLastItem === true) this.doneButtonDisable = value;
+  }
+
+  CheckItemExpGranularity()
+  {
+    return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity !== "None" ? false : true;
   }
 }
