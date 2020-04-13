@@ -19,6 +19,7 @@ import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/con
 import { TranslateService } from '@ngx-translate/core';
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-priority-code-route-assignments',
@@ -46,6 +47,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   };
 
   beforeEach(async(() => {
+
     wpfActionControllerService = { ExecuteBackAction: () => { } };
     spyOn(wpfActionControllerService, 'ExecuteBackAction');
 
@@ -65,7 +67,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PriorityCodeRouteAssignmentsService, useValue: priorityCodeRouteAssignmentsService },
         { provide: PriorityCodePickRoutesService, useValue: { getPriority: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: WpfActionControllerService, useVaule: wpfActionControllerService },
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
