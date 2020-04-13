@@ -47,13 +47,14 @@ export class EventConnectionService {
     protected configurationService: ConfigurationService,
     protected ocapUrlBuilderService: OcapUrlBuilderService
   ) {
-    this._hubUrl =  this.ocapUrlBuilderService.buildUrl('');
     this._hubName = hubConfigurationService.hubName;
+    this._hubUrl =  this.ocapUrlBuilderService.buildUrl('');
   }
 
   public async startUp(): Promise<void> {
     this.initialize();
     this.createHubProxy();
+    this.configureEventHandlers();
     this._hubConnection
     .start(() => {this.onConnectionStart(); })
     .done(() => { this.onConnectionStartSucceeded(); })
@@ -84,8 +85,8 @@ export class EventConnectionService {
     this._hubConnection = new hubConnection(this._hubUrl, options);
   }
 
-  private async createHubProxy() {
-    this._hubProxy = await this._hubConnection.createHubProxy(this._hubName);
+  private async createHubProxy(): Promise<void> {
+    this._hubProxy = this._hubConnection.createHubProxy(this._hubName);
   }
 
   private onConnectionStart(): void {
@@ -93,7 +94,6 @@ export class EventConnectionService {
   }
 
   private onConnectionStartSucceeded(): void {
-    this.configureEventHandlers();
     console.log('SignalR Hub connection has been established');
     console.log('Connection ID: ' + this.connectionId);
     console.log('Hub Name: ' + this.hubName);
