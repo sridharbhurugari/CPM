@@ -51,24 +51,24 @@ export class EditPickRoutePageComponent implements OnInit {
 
   ngOnInit() {
     this.routeNameChanged = false;
-    let pickRouteId = this.route.snapshot.paramMap.get('pickRouteId');
+    const pickRouteId = this.route.snapshot.paramMap.get('pickRouteId');
     this.pickRoute$ = this.pickRoutesService.get(pickRouteId).pipe(shareReplay(1));
 
-    let allDevices$ = this.devicesService.get().pipe(shareReplay(1));
+    const allDevices$ = this.devicesService.get().pipe(shareReplay(1));
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
-      let pickRouteDetail = results[0];
-      let allDevices = results[1];
-      let enabledDevices = allDevices.map(x => {
-        let pickRouteDevice = pickRouteDetail.DeviceSequence.find(d => d.DeviceId === x.Id);
-        let isSelected = pickRouteDevice !== undefined;
+      const pickRouteDetail = results[0];
+      const allDevices = results[1];
+      const enabledDevices = allDevices.map(x => {
+        const pickRouteDevice = pickRouteDetail.DeviceSequence.find(d => d.DeviceId === x.Id);
+        const isSelected = pickRouteDevice !== undefined;
         if (!isSelected) {
           return null;
         }
 
-        let sequenceOrder = pickRouteDevice.SequenceOrder;
+        const sequenceOrder = pickRouteDevice.SequenceOrder;
 
         return {
           DeviceId: x.Id,
@@ -84,16 +84,16 @@ export class EditPickRoutePageComponent implements OnInit {
     }));
 
     this.disabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
-      let pickRouteDetail = results[0];
-      let allDevices = results[1];
-      let disabledDevices = allDevices.map(x => {
-        let pickRouteDevice = pickRouteDetail.DeviceSequence.find(d => d.DeviceId === x.Id);
-        let isSelected = pickRouteDevice !== undefined;
+      const pickRouteDetail = results[0];
+      const allDevices = results[1];
+      const disabledDevices = allDevices.map(x => {
+        const pickRouteDevice = pickRouteDetail.DeviceSequence.find(d => d.DeviceId === x.Id);
+        const isSelected = pickRouteDevice !== undefined;
         if (isSelected) {
           return null;
         }
 
-        let sequenceOrder = 999;
+        const sequenceOrder = 999;
 
         return {
           DeviceId: x.Id,
@@ -122,8 +122,8 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   saveAs() {
-    let properties = new PopupWindowProperties();
-    let data: ITextResultPopupData = {
+    const properties = new PopupWindowProperties();
+    const data: ITextResultPopupData = {
       headerResourceKey: 'SAVE_NEW_ROUTE',
       placeholderTextResouceKey: 'NEW_ROUTE_NAME',
       initialValue: undefined,
@@ -133,7 +133,7 @@ export class EditPickRoutePageComponent implements OnInit {
     };
     properties.data = data;
 
-    let component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
+    const component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
         this.pickRoutesService.saveAs(data.resultValue, this.newDeviceSequence)
@@ -143,8 +143,8 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   save() {
-    let properties = new PopupWindowProperties();
-    let data: IConfirmPopupData = {
+    const properties = new PopupWindowProperties();
+    const data: IConfirmPopupData = {
       headerResourceKey: 'SAVE_ROUTE_CHANGES',
       confirmTextboxResourceKey: 'ROUTE_SAVE_BEFORE'
     };
@@ -155,7 +155,7 @@ export class EditPickRoutePageComponent implements OnInit {
       this.newDeviceSequence = this.originalDeviceSequence;
     }
 
-    let component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
         this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
@@ -166,7 +166,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   onDeviceSequenceChanged(newDeviceSequence: IDeviceSequenceOrder[]) {
     for (let i = 0; i < newDeviceSequence.length; i++) {
-      let device = newDeviceSequence[i];
+      const device = newDeviceSequence[i];
       device.SequenceOrder = i + 1;
     }
 
