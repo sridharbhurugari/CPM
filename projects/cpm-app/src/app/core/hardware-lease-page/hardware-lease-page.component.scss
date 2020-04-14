@@ -1,0 +1,145 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host{
+    height: 100%;
+}
+  
+  .BrandName{
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+    top: 15px;
+    left: 15px;
+  }
+
+  .GenericName{
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    position:relative;
+    top: 15px;
+    left: 15px;
+ }
+
+  .ItemId{
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .DeviceLocation{
+    font-size: 22px;
+    height: 50px;
+    box-sizing: border-box;  
+    margin-top: 8px;
+    margin-bottom:8px;  
+    margin-left: 20px;
+  }
+  .panelContainer1 {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .panelContainer {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
+    width: 100%
+  }
+
+  .displayGuidedCycleCount { 
+    border-bottom: solid  #c8c8c8 1px;    
+    height: 100px;  
+    overflow: hidden;  
+  }
+
+  .itemIdBox{     
+    height: 50px;
+    width: 327px;  
+    border-left: solid white 24px;
+    border-right: solid  #c8c8c8 1px; 
+    margin-top: 8px;
+    margin-bottom:8px;   
+  }
+
+  .locationOfCycleCount {
+    height: 50px;
+    width: 327px; 
+    margin-left: 330px; 
+    border-left: solid white 24px;
+    border-right: solid  #c8c8c8 1px; 
+
+  }
+
+  .leftCycleCountPanel {   
+    border-top: solid  #c8c8c8 1px;    
+    border-left: solid  #c8c8c8 24px;
+    border-right: solid  #c8c8c8 28px;
+    height: 100%;
+    width: 450px;
+    box-sizing: border-box;
+    background-color: #c8c8c8;
+  }
+
+  .leftPanelRow{
+    border-bottom: solid white 1px;
+    width: 300px;
+    height: 125px;
+    font-style: #333333;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    justify-content: center;   
+    align-items: center;
+    margin-top: 15px;
+    font-weight: 600;
+  }
+
+  .rightCycleCountPanel {   
+    border-top: solid  #c8c8c8  1px;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;  
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+  }
+
+.itemIdHeader{
+  font-size: 14px; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+  
+.dateTime{
+  font-size: 11px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color:white;
+  position: relative;
+  margin-top: 20px;
+ margin-right: 200px;
+}
+
+
+.textContent{    
+  border-bottom: solid  #C8C8C8 2px;
+  font-weight: bold;
+  font-size : 25px;
+  height: 100%;
+  width: 100%;
+  margin-bottom: 100px;
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.totalItemCount{
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color:white;
+  position: relative;
+  margin-top: 16px;
+}
+

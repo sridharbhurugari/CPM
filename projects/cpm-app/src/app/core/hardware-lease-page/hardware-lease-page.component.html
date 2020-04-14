@@ -1,0 +1,51 @@
+<oc-action-layout>
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{ 'Request Device Access' }}</div>
+        <div class="dateTime">
+            {{time| date:'M/d/yyyy h:mm a'}}</div>
+    </ng-container>
+
+    <ng-container class="ocactiondetails">
+        <div class="panelContainer" >
+            <div class="occenteralign">
+                <h3 style="padding-left: 10px;">Additional device control required to continue this workflow. Press Go to request device access.</h3>
+                <ng-container>
+                    <oc-grid #ocgrid ocgridfilter="false">
+                      <ng-container class="ocgridheader">
+                          <div class="first" data-colwrap="true"></div>
+                          <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+                                               [columnPropertyName]="devicePropertyName"
+                                               headerResourceKey="DEVICE"
+                                               >
+                          </div>
+                          <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+                                               [columnPropertyName]="deviceOwnerPropertyName"
+                                               headerResourceKey="Device Owner"
+                                               >
+                          </div>
+                      </ng-container>
+                      <ng-container class="ocgridbody">
+                        <div class="row" *ngFor="let device of (displayDeviceLeaseList$ | async)">
+                            <div class="first" style="align-items: center;"></div>
+                            <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{device.DeviceDescription}}</div>
+                            <div class="col width-device" [attr.data-title]="'Device Owner' | translate">{{device.DeviceOwner}}</div>
+                          </div>
+                      </ng-container>
+                    </oc-grid>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [buttonText]="'Cancel' | translate" (click)="navigateBack()">}</oc-button-action>
+            </div>
+            <div class="ocrightalign">
+                <oc-button-action [buttonText]="'Go' | translate" (click)="requestAccessClick()">}</oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+
+</oc-action-layout>
