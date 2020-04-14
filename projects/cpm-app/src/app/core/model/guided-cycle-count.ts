@@ -18,4 +18,5 @@ export class GuidedCycleCount implements IGuidedCycleCount {
   LocationDescription: string;
   QuantityOnHand: number;
   ReorderSource: string;
+  InStockQuantity: number;
 }
