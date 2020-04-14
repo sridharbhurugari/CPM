@@ -26,6 +26,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@omnicell/webcorecomponents": "^0.1.25",
     "date-fns": "^1.30.1",
+    "guid-typescript": "^1.0.9",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "rxjs": "~6.4.0",
