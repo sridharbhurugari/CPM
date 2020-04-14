@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, ElementRef } from '@angular/core';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ActivatedRoute } from '@angular/router';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { of } from 'rxjs';
+import { NumericComponent, DatepickerComponent, OcEventService } from '@omnicell/webcorecomponents';
+import { EventManager } from '@angular/platform-browser';
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
@@ -285,6 +287,97 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.nextRecord();
       var bReturn = component.isLastItem;
       expect(bReturn).toBeTruthy();
+    });
+  });
+  describe('returns item expiredate granularity', () => {
+    it('returns item expiredate granularity', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2020",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 55,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Month",
+        QuantityMin:10
+      });
+      var value = component.CheckItemExpGranularity(); 
+      expect(value).toBeFalsy();
+    });
+  });
+  describe('returns item expiredate granularity', () => {
+    it('returns item expiredate granularity', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2020",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 55,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"None",
+        QuantityMin:10
+      });
+      var value = component.CheckItemExpGranularity(); 
+      expect(value).toBeTruthy();
+    });
+  });
+  describe('disable action buttons', () => {
+    it('disable action buttons', () => {
+      component.isLastItem = true;
+      component.DisableActionButtons(true); 
+      expect(component.nextButtonDisable).toBeFalsy();
+      expect(component.doneButtonDisable).toBeTruthy();
+    });
+  });
+  describe('returns last item false', () => {
+    it('return with is last item', () => {
+      component.isLastItem = false;
+      component.DisableActionButtons(true); 
+      expect(component.nextButtonDisable).toBeTruthy();
+      expect(component.doneButtonDisable).toBeFalsy();
+    });
+  });
+  describe('date changes validation', () => {
+    it('date changes validation', () => {
+      component.onDateChange('');
+      component.numericElement = new NumericComponent();
+      component.numericElement.displayValue = "0";
+      component.DisableActionButtons(true); 
+      expect(component.nextButtonDisable).toBeTruthy();
+      expect(component.doneButtonDisable).toBeFalsy();
+    });
+  });
+  describe('date changes validation', () => {
+    it('date changes validation', () => {
+      component.onDateChange(null);
+      component.numericElement = new NumericComponent();
+      component.numericElement.displayValue = "0";
+      component.DisableActionButtons(true); 
+      expect(component.nextButtonDisable).toBeTruthy();
+      expect(component.doneButtonDisable).toBeFalsy();
+    });
+  });
+  describe('quantity changes validation', () => {
+    it('quantity changes validation', () => {
+      component.onQuantityChange("0");
+      var dummy,dummy1;
+      component.datepicker = new DatepickerComponent(dummy,dummy1);
+      var datevalue = component.datepicker.selectedDate;
+      expect(datevalue).toEqual('');
+      component.daterequired = false;
+      expect(component.daterequired).toBeFalsy();
     });
   });
  });

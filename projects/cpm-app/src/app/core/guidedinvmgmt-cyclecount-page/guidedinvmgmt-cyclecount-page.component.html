@@ -61,13 +61,13 @@
                 </div>
                 <div class="leftPanelRow" *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'" > {{"EXPIRATION_DATE" | translate}}
                     <oc-datepicker  format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
-                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" popupDirection="UP" id="datepicker">
+                        [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" popupDirection="UP" id="datepicker" [required]="daterequired">
                     </oc-datepicker>
                 </div>
                 <div class="leftPanelRow" *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Month'" > {{"EXPIRATION_DATE" | translate}}
                     <oc-datepicker  format="mm/dd/yyyy" style="background-color: white; text-align: center;" 
                         [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted"  popupDirection="UP" 
-                        id="datepicker" (ngModelChange)=onDateChange($event)>
+                        id="datepicker" (ngModelChange)=onDateChange($event) [required]="daterequired" aria-required="daterequired">
                     </oc-datepicker>
                 </div>
             </div>

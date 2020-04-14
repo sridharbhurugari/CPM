@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild ,AfterViewChecked} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild, AfterViewChecked } from '@angular/core';
 import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent, DatepickerComponent , ButtonActionComponent} from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, ButtonActionComponent } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
@@ -18,7 +18,7 @@ import { Button } from 'protractor';
   styleUrls: ['./guidedinvmgmt-cyclecount-page.component.scss']
 })
 
-export class GuidedInvMgmtCycleCountPageComponent implements OnInit,AfterViewInit,AfterViewChecked {
+export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewInit, AfterViewChecked {
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
@@ -32,6 +32,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit,AfterViewIni
   currentItemCount: number;
   nextButtonDisable: boolean;
   doneButtonDisable: boolean;
+  daterequired: boolean;
   public time: Date = new Date();
   titleHeader = '\'GUIDED_CYCLE_COUNT\' | translate';
   route: any;
@@ -39,7 +40,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit,AfterViewIni
     private activatedRoute: ActivatedRoute,
     private guidedCycleCountService: GuidedCycleCountService,
     private wpfActionController: WpfActionControllerService
-   ) {
+  ) {
     setInterval(() => {
       this.time = new Date();
     }, 1);
@@ -47,7 +48,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit,AfterViewIni
     this.currentItemCount = 0;
     this.nextButtonDisable = false;
     this.doneButtonDisable = false;
-
+    this.daterequired = false;
   }
 
   attrs = {
@@ -59,11 +60,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit,AfterViewIni
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.getCycleCountData(deviceId);
   }
-ngAfterViewInit(): void {
-}
+  ngAfterViewInit(): void {
+  }
 
-ngAfterViewChecked() {
- }
+  ngAfterViewChecked() {
+  }
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -72,7 +73,7 @@ ngAfterViewChecked() {
       if (x.length > 0 && x[0].ExpirationDate) {
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
-        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -86,8 +87,7 @@ ngAfterViewChecked() {
     return this.displayCycleCountItem && this.cycleCountItemsCopy.length > 1;
   }
 
-  IsLastItem()
-  {
+  IsLastItem() {
     if (this.itemCount <= 1) {
       this.isLastItem = true;
     }
@@ -138,7 +138,7 @@ ngAfterViewChecked() {
     else {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
-      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;
@@ -146,46 +146,41 @@ ngAfterViewChecked() {
     }
   }
 
-  onQuantityChange($event){
-    if(!this.CheckItemExpGranularity())
-    {
-    if($event=== "0")
-    {
-      this.datepicker.selectedDate = null;
-      this.datepicker.isRequired=false;
+  onQuantityChange($event) {
+    if (!this.CheckItemExpGranularity()) {
+      if ($event === "0") {
+        this.datepicker.selectedDate = null;
+        this.daterequired = false;
+      }
+      else if (this.datepicker.selectedDate === null) {
+        this.daterequired = true;
+        this.DisableActionButtons(true);
+      }
+      else {
+        this.DisableActionButtons(false);
+      }
     }
-    else if(this.datepicker.selectedDate === null)
-    {
-      this.datepicker.isRequired=true;
+  }
+
+  onDateChange($event) {
+    var valueQuanity = this.numericElement && this.numericElement.displayValue;
+    if ($event === null || valueQuanity === "0")
       this.DisableActionButtons(true);
-    }
-    else
-    {
-      this.DisableActionButtons(false);
-    }
-  }
-  }
-
-  onDateChange($event){
-    var valueQuanity = this.numericElement.displayValue;
-    if($event === null || valueQuanity === "0")
-    {
-      this.DisableActionButtons(true);
-    }
-    else 
-    {
-      this.DisableActionButtons(false);
+    else {
+      var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
+      if ($event.match(dateReg))
+        this.DisableActionButtons(false);
+      else
+        this.DisableActionButtons(true);
     }
   }
 
-  DisableActionButtons(value : boolean)
-  {
-    if( this.isLastItem !== true) this.nextButtonDisable = value;
-    if( this.isLastItem === true) this.doneButtonDisable = value;
+  DisableActionButtons(value: boolean) {
+    if (this.isLastItem !== true) this.nextButtonDisable = value;
+    if (this.isLastItem === true) this.doneButtonDisable = value;
   }
 
-  CheckItemExpGranularity()
-  {
-    return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity !== "None" ? false : true;
+  CheckItemExpGranularity() {
+    return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity != "None" ? false : true;
   }
 }

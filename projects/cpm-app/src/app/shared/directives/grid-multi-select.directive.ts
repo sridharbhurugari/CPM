@@ -24,7 +24,7 @@ export class GridMultiSelectDirective {
       this._subscriptions.forEach(x => x.unsubscribe());
     }
 
-    values.forEach(x => this._subscriptions.push(x.valueChange.subscribe(x => this.onRowCheckChanged(x))));
+    values && values.forEach(x => this._subscriptions.push(x.valueChange && x.valueChange.subscribe(x => this.onRowCheckChanged(x))));
   }
 
   constructor() { }
