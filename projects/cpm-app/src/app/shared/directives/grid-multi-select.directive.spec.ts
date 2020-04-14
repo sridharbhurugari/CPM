@@ -20,12 +20,12 @@ describe('GridMultiSelectDirective', () => {
       selectedCheckbox = {
         valueField: 'selectedValue',
         selected: true,
-        valueChange: new EventEmitter<any>(),
+        selection: new EventEmitter<any>(),
       };
       unselectedCheckbox = {
         valueField: 'unselectedValue',
         selected: false,
-        valueChange: new EventEmitter<any>(),
+        selection: new EventEmitter<any>(),
       };
       var checkboxes = [selectedCheckbox, unselectedCheckbox];
       var rows = jasmine.createSpyObj('rows', ['map', 'filter', 'forEach']);
@@ -38,7 +38,7 @@ describe('GridMultiSelectDirective', () => {
     describe('checkbox selection', () => {
       it('should call onRowCheckChanged', () => {
         spyOn(directive, 'onRowCheckChanged');
-        unselectedCheckbox.valueChange.emit({ selectedState: true, selectedValue: unselectedCheckbox.valueField });
+        unselectedCheckbox.selection.emit({ selectedState: true, selectedValue: unselectedCheckbox.valueField });
         expect(directive.onRowCheckChanged).toHaveBeenCalled();
       });
     })
@@ -80,7 +80,7 @@ describe('GridMultiSelectDirective', () => {
 
       it('should ignore old checkbox events', () => {
         spyOn(directive, 'onRowCheckChanged');
-        unselectedCheckbox.valueChange.emit({ selectedState: true, selectedValue: unselectedCheckbox.valueField });
+        unselectedCheckbox.selection.emit({ selectedState: true, selectedValue: unselectedCheckbox.valueField });
         expect(directive.onRowCheckChanged).not.toHaveBeenCalled();
       })
     })
