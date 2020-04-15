@@ -62,7 +62,14 @@
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
   "ROBOT_QUEUE": "Robot Queue",
-  "DeviceConfiguration_NoLeaseMessage": "This workstation does not have access to this device, and cannot perform this operation.",
-  "DeviceConfiguration_MessageBoxTitle": "Device Configuration"
+  "DeviceConfiguration_NoLeaseMessage": "This workstation could not obtain a lease",
+  "DeviceConfiguration_MessageBoxTitle": "Device Configuration",
+  "DeviceOperationOutcome_DeviceNotLeasedToClient": "This workstation does not have access to this device",
+  "DeviceOperationOutcome_DeviceOfflineOrNotFound": "Device was not found or is offline",
+  "DeviceOperationOutcome_DeviceInactive": "Device is configured as Inactive",
+  "DeviceOperationOutcome_DeviceLeaseNotRequired": "Device lease is not required",
+  "DeviceOperationOutcome_PendingLeaseRequestExistsForDevice": "Device has a pending request",
+  "DeviceOperationOutcome_ItemsAssignedToDevice": "Items are currently assigned to this device",
+  "DeviceOperationOutcome_Unsuccessful": "Operation was not successful"
 
 }

@@ -7,6 +7,8 @@ import { DeviceConfigurationList } from '../model/device-configuration-list';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-configuration';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 
 
 @Component({
@@ -30,7 +32,9 @@ export class HardwareLeasePageComponent implements OnInit {
     private wpfActionController: WpfActionControllerService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private hardwareLeaseService: HardwareLeaseService ) {
+    private hardwareLeaseService: HardwareLeaseService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService ) {
 
     setInterval(() => {
       this.time = new Date();
@@ -52,12 +56,29 @@ export class HardwareLeasePageComponent implements OnInit {
 
   requestAccessClick() {
 
-    const navigationExtras: NavigationExtras = {
-      queryParams: { deviceId: this.deviceId },
-      fragment: 'anchor'
-    };
-
-    this.router.navigate([this.routeToPath], navigationExtras );
+    this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
+      console.log(results);
+      if (results.IsSuccessful === false) {
+        this.displayRequestLeaseDialog(results.OutcomeText);
+      } else {
+        const navigationExtras: NavigationExtras = {
+          queryParams: { deviceId: this.deviceId },
+          fragment: 'anchor'
+        };
+        this.router.navigate([this.routeToPath], navigationExtras );
+      }
+    });
   }
 
+  private displayRequestLeaseDialog(outcomeText: string): void {
+    const properties = new PopupDialogProperties('Request-Device-Lease');
+    this.translateService.get('DeviceConfiguration_MessageBoxTitle').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get(outcomeText).subscribe(result => { properties.messageElementText = outcomeText; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'OK';
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
 }

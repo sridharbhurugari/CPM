@@ -6,6 +6,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { LeaseVerificationRequest } from '../data-contracts/lease-verification-request';
 import { LeaseVerificationResult } from '../data-contracts/lease-verification-result'
 import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
+import { RequestHardwareLeaseRequest } from '../data-contracts/request-hardware-lease-request';
+import { DeviceOperationResult } from '../data-contracts/device-operation-result';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +29,12 @@ export class HardwareLeaseService {
       });
     }
 
-  public RequestDeviceLease(deviceId: number): Observable<boolean> {
+  public RequestDeviceLease(deviceId: number): Observable<DeviceOperationResult> {
     console.log(deviceId);
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/hardwareLease/requestLease/${deviceId}`);
-    return this.httpClient.get<boolean>(url, {
+    const requestHardwareLeaseRequest = new RequestHardwareLeaseRequest();
+    requestHardwareLeaseRequest.DeviceId = deviceId;
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/hardwareLease/requestLease`);
+    return this.httpClient.post<DeviceOperationResult>(url, requestHardwareLeaseRequest, {
         headers: this.ocapHttpHeadersService.getHeaders(),
       });
     }
