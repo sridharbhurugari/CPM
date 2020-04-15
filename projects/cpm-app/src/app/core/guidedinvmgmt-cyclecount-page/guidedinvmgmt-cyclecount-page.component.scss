@@ -4,26 +4,34 @@
 }
   
   .BrandName{
-    font-size: 25px;
+    font-size: 38px;
     font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: $font-family-sans-serif;
     position: relative;
-    top: 15px;
-    left: 15px;
+    color:$text-color;
+    margin-top: 60px;
+    margin-left: 16px;
+    
   }
 
   .GenericName{
-    font-size: 30px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: 38px;
+    font-family: $font-family-sans-serif;
     position:relative;
-    top: 15px;
-    left: 15px;
+    font-weight: normal;
+    color:$text-color;
+    margin-top: 6px;
+    margin-bottom: 8px!important;
+    margin-left: 16px;
  }
 
   .ItemId{
-    font-size: 25px;
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: 38px;
+    font-weight: $bold;
+    font-family: $font-family-sans-serif;
+    color:$text-color;
+    bottom: 16px;
+    left: 16px;
   }
 
   .DeviceLocation{
@@ -38,6 +46,7 @@
     display: flex;
     flex-direction: row;
     overflow: hidden;
+    margin-top: 16px!important;
   }
 
   .panelContainer {
@@ -49,17 +58,17 @@
 
   .displayGuidedCycleCount { 
     border-bottom: solid  #c8c8c8 1px;    
-    height: 100px;  
+    height: 180px;  
     overflow: hidden;  
   }
 
   .itemIdBox{     
-    height: 50px;
-    width: 327px;  
+    height: 75px;
+    width: 340px;  
     border-left: solid white 24px;
     border-right: solid  #c8c8c8 1px; 
     margin-top: 8px;
-    margin-bottom:8px;   
+    margin-bottom:8px;    
   }
 
   .locationOfCycleCount {
@@ -72,26 +81,29 @@
   }
 
   .leftCycleCountPanel {   
+    flex: 1;
     border-top: solid  #c8c8c8 1px;    
     border-left: solid  #c8c8c8 24px;
     border-right: solid  #c8c8c8 28px;
     height: 100%;
-    width: 450px;
+    width: 360px;
+    left: 24px;
     box-sizing: border-box;
     background-color: #c8c8c8;
   }
 
   .leftPanelRow{
-    border-bottom: solid white 1px;
     width: 300px;
-    height: 125px;
-    font-style: #333333;
-    font-size: 16px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100px;
+    color:$text-color;
+    font-size: 18px;
+    font-family: $font-family-sans-serif;
     justify-content: center;   
     align-items: center;
-    margin-top: 15px;
-    font-weight: 600;
+    font-weight: $bold;
+    margin-left: 24px;
+    margin-top: 16px;
+    margin-bottom: 16px;
   }
 
   .rightCycleCountPanel {   
@@ -102,41 +114,189 @@
     display: flex; 
     align-items: center;
     justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: $font-family-sans-serif;
     font-weight: 500;
   }
 
 .itemIdHeader{
   font-size: 14px; 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: $font-family-sans-serif;
+  font-weight: normal;
+  color:$text-color;
+  left: 16px;
+  top: 16px;
+  bottom: 10px;
 }
   
 .dateTime{
-  font-size: 11px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color:white;
+  font-size: 14px;
+  font-family: $font-family-sans-serif;
+  color:#ffffff;
+  font-weight: normal;;
   position: relative;
+  vertical-align: center;
   margin-top: 20px;
- margin-right: 200px;
+  margin-right: 200px;
 }
 
 
 .textContent{    
-  border-bottom: solid  #C8C8C8 2px;
   font-weight: bold;
-  font-size : 25px;
+  font-size : 38px;
+  font-family: $font-family-sans-serif;
   height: 100%;
   width: 100%;
-  margin-bottom: 100px;
+  color:$text-color;
   box-sizing: content-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 24px;
 }
 .totalItemCount{
-  font-size: 16px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color:white;
+  font-size: 20px;
+  font-family: $font-family-sans-serif;
+  color: #ffffff;
+  font-weight: normal;
+  vertical-align: Center;
   position: relative;
   margin-top: 16px;
+  right: 16px;
+}
+
+.whiteline{
+  height: 1px;
+  background-color: #ffffff;
+  vertical-align: center!important;
+  glyph-orientation-horizontal: center!important;
+}
+.demo{
+  vertical-align: center!important;
+  glyph-orientation-horizontal: center!important;
+  margin-bottom: 100px!important;
+  ::ng-deep{
+    div{
+      &:first-child{
+        font-family: $font-family-sans-serif;
+        color:$text-color;
+        font-size: 20px!important;
+        line-height: 16px!important;
+        width: 400px;
+      }
+    }
+  }
+  ::ng-deep{
+    div:nth-child(2){
+      height: 100px;
+    }
+  }
+  ::ng-deep{
+    input{
+      &:first-child{
+        margin-top: 16px!important;
+        margin-bottom: 4px!important;
+        font-size: 32px!important;
+        font-weight: bold;
+        font-family: $font-family-sans-serif;
+        color:$text-color;
+      }
+    }
+  }
+  ::ng-deep{
+    div{
+      &:last-child{
+      margin-top: 8px!important;
+      font-size: 18px!important;
+      font-family: $font-family-sans-serif;
+      font-weight: normal;
+      color:$text-color;
+      }
+    }
+  } 
+}
+.expiration{
+  margin-top: 6px!important;
+    ::ng-deep{
+      div{
+        &.first-Child{
+          margin-right: 24px!important;
+          width: 200px!important;
+        }
+      }
+    }
+    ::ng-deep{
+      form{
+          height: 60px!important;
+          width: 280px;
+          background-color: #ffffff;
+        }
+      }
+    ::ng-deep{
+     input{
+       font-size: 38px!important;
+       font-weight: bold;
+       font-family: $font-family-sans-serif;
+       margin-left: 2px!important;
+       margin-right: 0px!important;
+       padding-right: none!important;
+       position: relative;
+       flex: 0px!important;
+       min-width:45px!important;
+       width: 120px!important;
+       display: initial!important;
+       text-align: left!important;
+       bottom: 4px!important;
+       flex: 0!important;
+       flex-wrap: 0!important;
+       flex-shrink: 0!important;
+       flex-basis: 0!important;
+       flex-flow:0!important;
+    }
+
+    }
+    ::ng-deep{
+      input:nth-child(5){
+       font-size: 38px!important;
+       font-weight: bold;
+       font-family: $font-family-sans-serif;
+       margin-left: 2px!important;
+       margin-right: 0px!important;
+       padding-right: none!important;
+       position: relative;
+       flex: 0px!important;
+       bottom: 6px!important;
+       min-width:100px!important;
+       display: initial!important;
+       text-align: left!important;
+       bottom: 5px!important;
+       flex: 0!important;
+       flex-wrap: 0!important;
+       flex-shrink: 0!important;
+       flex-basis: 0!important;
+       flex-flow:0!important;
+      }
+    }
+
+   ::ng-deep{
+     span{
+       font-weight: bold;
+       padding: 0px!important;
+       margin: 0px!important;
+       font-size: 30px!important;
+       flex: none!important;
+       display: inline!important;
+     }
+   }
+   
+  ::ng-deep{
+    svg{
+       position: initial!important;
+       right: 6px!important;
+       left: 8px!important;
+       margin-top: 4px!important;
+    }
+  }
+}
+.buttonadjust{
+  margin-left: 24px!important;
 }

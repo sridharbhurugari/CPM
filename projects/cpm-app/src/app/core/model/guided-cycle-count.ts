@@ -21,4 +21,5 @@ export class GuidedCycleCount implements IGuidedCycleCount {
   ReorderSource: string;
   ItmExpDateGranularity: string;
   QuantityMin: number;
+  InStockQuantity: number;
 }

@@ -12,5 +12,6 @@ export interface IGuidedCycleCount {
   QuantityOnHand: number,
   ReorderSource: string,
   ItmExpDateGranularity:string,
-  QuantityMin: number
+  QuantityMin: number,
+  InStockQuantity: number;
 }
