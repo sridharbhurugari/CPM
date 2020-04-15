@@ -40,7 +40,7 @@ export class EventConnectionService {
     await this._hubConnection.start()
     .done(() => { this.onConnectionStartSucceeded(); })
     .fail(() => { this.onConnectionStartFailed(); });
-  };
+  }
 
   private async createHubProxy(): Promise<void> {
     this._hubProxy = this._hubConnection.createHubProxy(this._hubName);

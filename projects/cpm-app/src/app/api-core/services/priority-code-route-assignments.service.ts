@@ -24,5 +24,14 @@ export class PriorityCodeRouteAssignmentsService {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
-  }
 
+    save(pickRouteGuid: string, priorityCode: string) {
+        const body = {
+          PriorityCode: priorityCode,
+          PickRouteGuid: pickRouteGuid,
+        };
+        const url = this.ocapUrlBuilderService.buildUrl(`/api/priorityCodePickRoutes`);
+        const headers = this.ocapHttpHeadersService.getHeaders();
+        return this.httpClient.put(url, body, { headers });
+      }
+  }

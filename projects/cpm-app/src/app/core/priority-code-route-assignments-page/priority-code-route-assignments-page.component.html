@@ -13,9 +13,9 @@
                <app-pick-route-select
                (SelectionChange)="pickrouteUpdated($event)"
                [listMap]="routeList | async"
-               [selectedId]="pickRouteId"
+               [selectedItem]="pickRoute"
                [colDescription]="'ROUTE_NAME' | translate"
-                >
+               >
               </app-pick-route-select>
             </div>
             <div class="rightPanel" >
@@ -31,9 +31,11 @@
             <div class="ocleftalign">
                 <oc-button-action [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
-            <a [routerLink]="['/pickRoutes', pickRouteId]" [class.disabled]="!isEditAvailable">
-                <oc-button-action [buttonText]="'MAINTENANCE' | translate" [disabled]="!isEditAvailable"></oc-button-action>
+            <a [routerLink]="['/pickRoutes', routerLinkPickRouteId]" [class.disabled]="!isEditAvailable">
+               <oc-button-action [buttonText]="'MAINTENANCE' | translate" [disabled]="!isEditAvailable"></oc-button-action>
             </a>
+            <div class="buttonSpacer">                                                                                                                                                                                                                                                                                                                                               </div>
+            <oc-button-action [buttonText]="'SAVE' | translate" [disabled]="!canSave" (click)="save()"></oc-button-action>
         </oc-footer>
     </ng-container>
 </oc-action-layout>

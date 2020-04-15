@@ -7,6 +7,9 @@ import { SharedModule } from '../../shared/shared.module';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
 import { of } from 'rxjs';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
+import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 
 describe('GuidedinvmgmtDevicelistPageComponent', () => {
   let component: GuidedInvMgmtDevicelistPageComponent;
@@ -14,8 +17,8 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe ],
-      imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, SharedModule, ButtonActionModule],
+      declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe, MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe ],
+      imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, ButtonActionModule],
       providers: [
         { provide: GuidedDeviceListService, useValue: { get: () => of([]) } },
         { provide: WpfActionControllerService, useValue: { } },

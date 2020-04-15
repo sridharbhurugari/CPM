@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
+import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 
 @Component({
   selector: 'app-pick-route-select',
@@ -10,26 +11,26 @@ import { Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
   styleUrls: ['./pick-route-select.component.scss']
 })
 export class PickRouteSelectComponent implements OnInit {
-public groupName: string = 'RadioList';
+public groupName = 'RadioList';
   constructor() {
    }
 
 @Input()
-listMap: Map<number, string>;
+listMap: Map<IPickRouteDevice, string>;
 @Input()
-selectedId: number = 0;
+selectedItem: IPickRouteDevice;
 @Input()
-colDescription: string = 'My Description';
+colDescription = 'My Description';
 @Output()
-SelectionChange: EventEmitter<number> = new EventEmitter<number>();
+SelectionChange: EventEmitter<IPickRouteDevice> = new EventEmitter<IPickRouteDevice>();
 
 ngOnInit() {
   }
 
-selectionChanged(selectionId: number) {
-    if (selectionId !== this.selectedId) {
-      this.selectedId = selectionId;
-      this.SelectionChange.emit(selectionId);
+selectionChanged(selectionItem: IPickRouteDevice) {
+    if (selectionItem !== this.selectedItem) {
+      this.selectedItem = selectionItem;
+      this.SelectionChange.emit(this.selectedItem);
     }
   }
 }
