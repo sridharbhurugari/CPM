@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
 import { nameof } from '../../shared/functions/nameof';
@@ -15,9 +15,11 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./hardware-lease-page.component.scss']
 })
 export class HardwareLeasePageComponent implements OnInit {
-  readonly devicePropertyName = nameof<DeviceConfigurationList>("DeviceDescription");
-  readonly deviceOwnerPropertyName = nameof<DeviceConfigurationList>("DefaultOwnerShortname");
-  displayDeviceConfigurationList$: Observable<DeviceConfigurationList>;
+  readonly devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
+  readonly deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
+
+  @Input()
+  displayDeviceConfigurationList: DeviceConfigurationList[] = [];
 
   public time: Date = new Date();
   deviceId: any;
@@ -38,7 +40,10 @@ export class HardwareLeasePageComponent implements OnInit {
   ngOnInit() {
     this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.routeToPath  = this.activatedRoute.snapshot.queryParamMap.get('routeToPath');
-    this.displayDeviceConfigurationList$ = this.hardwareLeaseService.getDeviceConfiguration(this.deviceId);
+    this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
+      console.log(res);
+      this.displayDeviceConfigurationList.push(res);
+    });
   }
 
   navigateBack() {
@@ -46,6 +51,7 @@ export class HardwareLeasePageComponent implements OnInit {
   }
 
   requestAccessClick() {
+
     const navigationExtras: NavigationExtras = {
       queryParams: { deviceId: this.deviceId },
       fragment: 'anchor'

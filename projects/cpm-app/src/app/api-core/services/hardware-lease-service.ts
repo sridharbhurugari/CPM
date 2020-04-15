@@ -35,9 +35,9 @@ export class HardwareLeaseService {
       });
     }
 
-  public getDeviceConfiguration(deviceId: number): Observable<IDeviceConfiguration[]> {
+  public getDeviceConfiguration(deviceId: number): Observable<IDeviceConfiguration> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/configuration`);
-    return this.httpClient.get<IDeviceConfiguration[]>(url, {
+    return this.httpClient.get<IDeviceConfiguration>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

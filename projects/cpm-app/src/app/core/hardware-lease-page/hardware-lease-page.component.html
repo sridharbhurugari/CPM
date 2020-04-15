@@ -25,7 +25,7 @@
                           </div>
                       </ng-container>
                       <ng-container class="ocgridbody">
-                        <div class="row" *ngFor="let device of (displayDeviceConfigurationList$ | async)">
+                        <div class="row" *ngFor="let device of displayDeviceConfigurationList">
                             <div class="first" style="align-items: center;"></div>
                             <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{device.DeviceDescription}}</div>
                             <div class="col width-device" [attr.data-title]="'Device Owner' | translate">{{device.DefaultOwnerShortname}}</div>
