@@ -4,6 +4,9 @@ import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/route
 import { DeviceLeaseList } from '../model/device-lease-list';
 import { nameof } from '../../shared/functions/nameof';
 import { Observable, of } from 'rxjs';
+import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
+import { map } from 'rxjs/operators';
+import { DeviceConfigurationList } from '../model/device-configuration-list';
 
 @Component({
   selector: 'app-hardware-lease-page',
@@ -11,16 +14,20 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./hardware-lease-page.component.scss']
 })
 export class HardwareLeasePageComponent implements OnInit {
-  readonly devicePropertyName = nameof<DeviceLeaseList>("DeviceDescription");
-  readonly deviceOwnerPropertyName = nameof<DeviceLeaseList>("DeviceOwner");
-  displayDeviceLeaseList$: Observable<DeviceLeaseList[]>;
+  readonly devicePropertyName = nameof<DeviceConfigurationList>("DeviceDescription");
+  readonly deviceOwnerPropertyName = nameof<DeviceConfigurationList>("DefaultOwnerShortname");
+  displayDeviceConfigurationList$: Observable<DeviceConfigurationList[]>;
 
   public time: Date = new Date();
   deviceId: any;
   queryParams: Params;
   routeToPath: any;
 
-  constructor(private wpfActionController: WpfActionControllerService, private activatedRoute: ActivatedRoute, private router: Router ) {
+  constructor(
+    private wpfActionController: WpfActionControllerService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private guideDeviceListService: GuidedDeviceListService ) {
 
     setInterval(() => {
       this.time = new Date();
@@ -30,7 +37,7 @@ export class HardwareLeasePageComponent implements OnInit {
   ngOnInit() {
     this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.routeToPath  = this.activatedRoute.snapshot.queryParamMap.get('routeToPath');
-    this.displayDeviceLeaseList$ = new Observable<DeviceLeaseList[]>();
+    this.displayDeviceConfigurationList$ = this.guideDeviceListService.getDeviceDefaultOwner(this.deviceId);
   }
 
   navigateBack() {

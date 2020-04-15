@@ -5,6 +5,7 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { Observable, BehaviorSubject } from 'rxjs';
 import { IGuidedDeviceList } from '../data-contracts/i-guided-device-list';
 import { GuidedDeviceList } from '../../core/model/guided-device-list';
+import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,13 @@ export class GuidedDeviceListService {
     return this.httpClient.get<IGuidedDeviceList[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
-  }  
+  }
+
+  public getDeviceDefaultOwner(deviceId: number): Observable<IDeviceConfiguration[]> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/configuration`);
+    return this.httpClient.get<IDeviceConfiguration[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
 }
