@@ -4,7 +4,7 @@ export class DeviceConfigurationList implements IDeviceConfiguration {
   constructor(deviceConfiguration: IDeviceConfiguration) {
     Object.assign(this, deviceConfiguration);
   }
-   Active: boolean;
+  Active: boolean;
    DefaultOwner: string;
    DefaultOwnerShortname: string;
    DeviceDescription: string;
