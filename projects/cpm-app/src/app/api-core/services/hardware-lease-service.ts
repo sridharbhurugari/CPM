@@ -5,6 +5,7 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { Observable, BehaviorSubject } from 'rxjs';
 import { LeaseVerificationRequest } from '../data-contracts/lease-verification-request';
 import { LeaseVerificationResult } from '../data-contracts/lease-verification-result'
+import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -33,4 +34,11 @@ export class HardwareLeaseService {
         headers: this.ocapHttpHeadersService.getHeaders(),
       });
     }
+
+  public getDeviceDefaultOwner(deviceId: number): Observable<IDeviceConfiguration[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/configuration`);
+    return this.httpClient.get<IDeviceConfiguration[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
 }

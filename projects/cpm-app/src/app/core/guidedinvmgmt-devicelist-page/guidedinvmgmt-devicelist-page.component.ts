@@ -52,7 +52,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   navigateManualCycleCount() {
     this.wpfActionControllerService.ExecuteWpfContinueNavigationAction(WpfActionPaths.ManualCycleCountPath);
   }
-  
+
   navigate(deviceId: number) {
 
     this.hardwareLeaseService.HasDeviceLease(deviceId).subscribe(
@@ -61,22 +61,11 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
         if (currentDeviceLeaseOwner === LeaseVerificationResult.Success) {
            this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId.toString()});
         } else {
-            this.displayRequestLeaseDialog();
+           this.wpfActionControllerService.ExecuteContinueNavigationAction(
+             `hardwareLease/requestLease`,
+             {deviceId, routeToPath: `guidedinvmgmt/cyclecount` });
         }
       });
-  }
-
-  private displayRequestLeaseDialog(): void {
-
-    const properties = new PopupDialogProperties('Request-Device-Lease');
-    this.translateService.get('DeviceConfiguration_MessageBoxTitle').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('DeviceConfiguration_NoLeaseMessage').subscribe(result => { properties.messageElementText = result; });
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
-    properties.dialogDisplayType = PopupDialogType.Info;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
   }
 
   ngAfterViewInit() {
