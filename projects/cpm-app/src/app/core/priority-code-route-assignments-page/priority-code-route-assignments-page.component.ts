@@ -26,14 +26,15 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   priorityCode$: Observable<IPriorityCodePickRoute>;
   routeList: Observable<Map<IPickRouteDevice, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
-  duplicateErrorTitle$: Observable<string>;
-  duplicateErrorMessage$: Observable<string>;
 
   priorityCode: string;
 
   private _priorityCodePickRouteId: number;
   private _pickRoute: IPickRouteDevice;
   private _originalRoute: IPickRouteDevice;
+  genericErrorTitle$: Observable<string>;
+  genericErrorMessage$: Observable<string>;
+  saveInProgress: boolean = false;
 
   get pickRoute(): IPickRouteDevice {
       return this._pickRoute;
@@ -72,8 +73,8 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
       return this.setDevices(this.pickRoute, results[1]);
     }));
-    this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
-    this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
+    this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
+    this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
   }
 
   navigateBack() {
@@ -133,6 +134,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
+        this.saveInProgress = true;
         this.priorityCodeRouteAssignmentsService.save(this.pickRoute.PickRouteGuid, this.priorityCode)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
@@ -140,15 +142,14 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   onSaveFailed(error: HttpErrorResponse): any {
-    if (error.status === 500) {
-      forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
-        this.displayDuplicateDescriptionError(r[0], r[1]);
-      });
-    }
+    this.saveInProgress = false;
+    forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
+      this.displayError('Generic-Error', r[0], r[1]);
+    });
   }
 
-  displayDuplicateDescriptionError(title, message): void {
-    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+  displayError(uniqueId, title, message) {
+    const properties = new PopupDialogProperties(uniqueId);
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;

@@ -30,6 +30,8 @@ export class EditPickRoutePageComponent implements OnInit {
 
   duplicateErrorTitle$: Observable<string>;
   duplicateErrorMessage$: Observable<string>;
+  genericErrorTitle$: Observable<string>;
+  genericErrorMessage$: Observable<string>;
 
   routeGuid: string;
   newDeviceSequence: IDeviceSequenceOrder[];
@@ -38,6 +40,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
+  requestStatus: 'none' | 'save' | 'saveAs' = 'none';
 
   constructor(
     private route: ActivatedRoute,
@@ -57,6 +60,8 @@ export class EditPickRoutePageComponent implements OnInit {
     const allDevices$ = this.devicesService.get().pipe(shareReplay(1));
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
+    this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
+    this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
       const pickRouteDetail = results[0];
@@ -136,6 +141,7 @@ export class EditPickRoutePageComponent implements OnInit {
     const component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
+        this.requestStatus = 'saveAs';
         this.pickRoutesService.saveAs(data.resultValue, this.newDeviceSequence)
           .subscribe(result => this.navigateBack(), error => this.onSaveAsFailed(error));
       }
@@ -158,6 +164,7 @@ export class EditPickRoutePageComponent implements OnInit {
     const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
+        this.requestStatus = 'save';
         this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
@@ -179,23 +186,33 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   onSaveAsFailed(error: HttpErrorResponse): any {
-    if (error.status === 500) {
+    this.requestStatus = 'none';
+    if (error.status === 400) {
       forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
-        this.displayDuplicateDescriptionError(r[0], r[1]);
+        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+      });
+    } else {
+      forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
+        this.displayError('Generic-Error', r[0], r[1]);
       });
     }
   }
 
   onSaveFailed(error: HttpErrorResponse): any {
-    if (error.status === 500) {
+    this.requestStatus = 'none';
+    if (error.status === 400) {
       forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
-        this.displayDuplicateDescriptionError(r[0], r[1]);
+        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+      });
+    } else {
+      forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
+        this.displayError('Generic-Error', r[0], r[1]);
       });
     }
   }
 
-  displayDuplicateDescriptionError(title, message): void {
-    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+  displayError(uniqueId, title, message) {
+    const properties = new PopupDialogProperties(uniqueId);
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
