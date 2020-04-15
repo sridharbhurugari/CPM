@@ -72,6 +72,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       });
   }
 
+  ngOnDestroy(): void {
+  }
+
   back() {
     this.wpfActionController.ExecuteContinueAction();
   }
