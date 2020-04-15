@@ -70,7 +70,6 @@ export class EventConnectionService {
   }
 
   protected onReceived(message: any): void {
-    console.log('Received Message: ' + message);
     this.receivedSubject.next(message);
     return;
   }

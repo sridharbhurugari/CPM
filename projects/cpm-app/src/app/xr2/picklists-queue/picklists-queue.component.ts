@@ -72,12 +72,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-      /*this.shutdownSignalR();*/
-  }
-
   back() {
-    /*this.shutdownSignalR();*/
     this.wpfActionController.ExecuteContinueAction();
   }
 
@@ -85,12 +80,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     await this.picklistQueueEventConnectionService.openEventConnection();
     this.configureEventHandlers();
   }
-
-  /*private shutdownSignalR(): void {
-    if (this.eventConnectionService) {
-      this.eventConnectionService.shutdown();
-    }
-  }*/
 
   private configureEventHandlers(): void {
     if (!this.picklistQueueEventConnectionService) {
