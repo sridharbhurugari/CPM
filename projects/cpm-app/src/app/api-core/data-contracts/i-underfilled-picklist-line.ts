@@ -5,12 +5,12 @@ export interface IUnderfilledPicklistLine{
   PicklistTypeDb: string;
   ItemId: string;
   ItemFormattedGenericName: string;
-  ItemBrandName: string
+  ItemBrandName: string;
   PatientRoom: string;
   PatientName: string;
   AreaDescription: string;
   DestinationOmni: string;
-  FillDate: Date
+  FillDate: Date;
   FillQuantity: number;
   OrderQuantity: number;
   PickItemLocationDescription: string;

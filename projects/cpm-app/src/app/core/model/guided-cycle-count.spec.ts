@@ -13,7 +13,8 @@ describe('GuidedCycleCount', () => {
       QuantityOnHand: 50,
       ReorderSource: "I",
       ReorderLevel: 10,
-      LocationDescription: "ER"
+      LocationDescription: "ER",
+      InStockQuantity: 50
     })).toBeTruthy();
   });
 });
