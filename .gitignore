@@ -45,3 +45,5 @@ testem.log
 .DS_Store
 Thumbs.db
 *.orig
+/.vs/slnx.sqlite
+/.vs/CPM-AngularLibrary/config/applicationhost.config
