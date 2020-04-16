@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { WindowService } from '../../shared/services/window-service';
+import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 
 @Component({
   selector: 'app-priority-code-route-assignments',
@@ -71,6 +72,10 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: OcsStatusService, useValue:
+          { openEventConnection: () => {},
+            ocsIsHealthySubject: new Subject(),
+          }},
       ],
       imports: [
         GridModule,
@@ -126,6 +131,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       component.pickRoute = defaultItem;
       component.priorityCode = 'STAT';
       component.save();
+      component.ocsIsHealthy = true;
     });
 
     it('should show popup for confirm save', () => {

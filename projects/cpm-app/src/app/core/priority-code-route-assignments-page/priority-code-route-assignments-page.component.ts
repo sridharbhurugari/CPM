@@ -15,6 +15,7 @@ import { PopupDialogService, PopupDialogProperties, PopupDialogType,
    PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
+import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -49,6 +50,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   routerLinkPickRouteId: number;
   isEditAvailable = true;
   canSave = false;
+  ocsIsHealthy = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,6 +60,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
+    private ocsStatusService: OcsStatusService,
   ) { }
 
   ngOnInit() {
@@ -75,6 +78,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     }));
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+    this.connectToEvents();
   }
 
   navigateBack() {
@@ -158,5 +162,23 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
     this.dialogService.showOnce(properties);
+  }
+
+  private async connectToEvents(): Promise<void> {
+    await this.ocsStatusService.openEventConnection();
+    this.configureEventHandlers();
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.ocsStatusService) {
+      return;
+    }
+
+    this.ocsStatusService.ocsIsHealthySubject
+      .subscribe(message => this.setOcsStatus(message));
+  }
+
+  private setOcsStatus(isHealthy: boolean): void {
+    this.ocsIsHealthy = isHealthy;
   }
 }
