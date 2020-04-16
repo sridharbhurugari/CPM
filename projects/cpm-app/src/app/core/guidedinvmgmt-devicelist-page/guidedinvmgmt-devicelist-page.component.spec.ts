@@ -9,10 +9,12 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 
 describe('GuidedinvmgmtDevicelistPageComponent', () => {
   let component: GuidedInvMgmtDevicelistPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtDevicelistPageComponent>;
+  let hardwareLeaseService: Partial<HardwareLeaseService>;
 
   beforeEach(async(() => {
 
@@ -22,7 +24,8 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
       imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, ButtonActionModule],
       providers: [
         { provide: GuidedDeviceListService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useValue: { } }
+        { provide: WpfActionControllerService, useValue: { } },
+        { provide: HardwareLeaseService, useValue: hardwareLeaseService }
       ]
     })
     .compileComponents();
@@ -34,7 +37,7 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
