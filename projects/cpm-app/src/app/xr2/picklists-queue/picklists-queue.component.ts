@@ -1,19 +1,21 @@
 import { Component, Input, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { WindowService } from '../../shared/services/window-service';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
+import { Guid } from 'guid-typescript';
+import * as _ from 'lodash';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { ActivatedRoute } from '@angular/router';
+import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
+import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
+import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
-import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
-import * as _ from 'lodash';
-import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
+import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
-import { ActivatedRoute } from '@angular/router';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -89,8 +91,10 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
-    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject.subscribe(message => this.onRemovePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
+      .subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
+      .subscribe(message => this.onRemovePicklistQueueItem(message));
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
@@ -109,6 +113,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.Status = picklistQueueItem.Status;
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+    this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
@@ -121,9 +126,14 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
+  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.TrackById = Guid.create();
+  }
+
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
+
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
@@ -135,7 +145,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
-        picklistQueueItem.Status = 2;
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
@@ -146,7 +155,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   printLabels(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
-    const picklistLineDetails = new Array<PickListLineDetail>();
+    const robotPrintRequest = new RobotPrintRequest();
+
+    robotPrintRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
@@ -154,11 +165,10 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
       pickListLineDetail.PickLocationDescription = itemPicklistLine.PickLocationDescription;
-      picklistLineDetails.push(pickListLineDetail);
+      robotPrintRequest.PickListLineDetails.push(pickListLineDetail);
     });
-    this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, picklistLineDetails).subscribe(
+    this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, robotPrintRequest).subscribe(
       result => {
-        picklistQueueItem.Status = 4;
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
@@ -177,5 +187,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
+  }
+
+  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
+    if (!picklistQueueItem) {
+      return null;
+    }
+    return picklistQueueItem.TrackById;
   }
 }

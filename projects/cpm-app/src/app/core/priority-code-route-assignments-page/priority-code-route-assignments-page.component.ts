@@ -9,6 +9,12 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { PopupDialogService, PopupDialogProperties, PopupDialogType,
+   PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
+import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
+import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -18,29 +24,39 @@ import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-seq
 export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   pickrouteDevices$: Observable<IPickRouteDevice[]>;
   priorityCode$: Observable<IPriorityCodePickRoute>;
-  routeList: Observable<Map<number, string>>;
+  routeList: Observable<Map<IPickRouteDevice, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
+  duplicateErrorTitle$: Observable<string>;
+  duplicateErrorMessage$: Observable<string>;
+
+  priorityCode: string;
 
   private _priorityCodePickRouteId: number;
-  private _pickRouteId: number;
+  private _pickRoute: IPickRouteDevice;
+  private _originalRoute: IPickRouteDevice;
 
-  get pickRouteId(): number {
-      return this._pickRouteId;
+  get pickRoute(): IPickRouteDevice {
+      return this._pickRoute;
   }
-  set pickRouteId(value: number) {
-      this._pickRouteId = value;
+  set pickRoute(value: IPickRouteDevice) {
+      this._pickRoute = value;
       this.deviceList$ = this.pickrouteDevices$.pipe(map(results => {
-        return this.setDevices(this.pickRouteId, results);
+        return this.setDevices(this.pickRoute, results);
       }));
   }
 
-  isEditAvailable: boolean = true;
+  routerLinkPickRouteId: number;
+  isEditAvailable = true;
+  canSave = false;
 
   constructor(
     private route: ActivatedRoute,
     private priorityCodeRouteAssignmentsService: PriorityCodeRouteAssignmentsService,
     private priorityCodePickRoutesService: PriorityCodePickRoutesService,
     private wpfActionControllerService: WpfActionControllerService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService,
+    private popupWindowService: PopupWindowService,
   ) { }
 
   ngOnInit() {
@@ -50,9 +66,14 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.pickrouteDevices$ = this.getPickrouteDevices();
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
     this.deviceList$ = forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
-      this.pickRouteId = results[0].PickRouteId;
-      return this.setDevices(this.pickRouteId, results[1]);
+      this._originalRoute = this.getOriginalPickRouteForPriorityType(results[0].PickRouteId, results[1]);
+      this.pickRoute = this._originalRoute;
+      this.priorityCode = results[0].PriorityCode;
+      this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
+      return this.setDevices(this.pickRoute, results[1]);
     }));
+    this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
+    this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
   }
 
   navigateBack() {
@@ -65,25 +86,76 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     }), shareReplay(1));
   }
 
-  setDevices(prId: number, allPrd: IPickRouteDevice[]): IDeviceSequenceOrder[] {
-    let prd: IPickRouteDevice;
-    for (const r of allPrd) {
-      if (r.PickRouteId === prId) {
-        prd = r;
+  getOriginalPickRouteForPriorityType(pickRouteDeviceId: number, allPickRouteDevices: IPickRouteDevice[]): IPickRouteDevice {
+    let pickRouteDevice: IPickRouteDevice;
+    for (const r of allPickRouteDevices) {
+      if (r.PickRouteId === pickRouteDeviceId) {
+        pickRouteDevice = r;
         break;
       }
     }
-    const sdl = _.orderBy(prd.PickRouteDevices, (d => d.SequenceOrder));
+    return pickRouteDevice;
+  }
+
+  setDevices(pickRouteDeviceToSet: IPickRouteDevice, allPickRouteDevices: IPickRouteDevice[]): IDeviceSequenceOrder[] {
+    let pickRouteDevice: IPickRouteDevice;
+    for (const r of allPickRouteDevices) {
+      if (r.PickRouteId === pickRouteDeviceToSet.PickRouteId) {
+        pickRouteDevice = r;
+        break;
+      }
+    }
+    const sdl = _.orderBy(pickRouteDevice.PickRouteDevices, (d => d.SequenceOrder));
     return sdl;
   }
 
-  prdsToRadio(pks: IPickRouteDevice[]): Map<number, string> {
-    const listMap = new Map<number, string>();
-    pks.map(p => listMap.set(p.PickRouteId, p.RouteDescription));
+  prdsToRadio(pks: IPickRouteDevice[]): Map<IPickRouteDevice, string> {
+    const listMap = new Map<IPickRouteDevice, string>();
+    pks.map(p => listMap.set(p, p.RouteDescription));
     return listMap;
   }
 
-  pickrouteUpdated(pickrouteId: number) {
-    this.pickRouteId = pickrouteId;
+  pickrouteUpdated(pickroute: IPickRouteDevice) {
+    this.pickRoute = pickroute;
+    this.routerLinkPickRouteId = pickroute.PickRouteId;
+    this.canSave = this._originalRoute.PickRouteId !== pickroute.PickRouteId;
+  }
+
+  save() {
+    const properties = new PopupWindowProperties();
+    const data: IConfirmPopupData = {
+      headerResourceKey: 'SAVE_ROUTE_CHANGES',
+      confirmTextboxResourceKey: 'ROUTE_SAVE_BEFORE'
+    };
+
+    properties.data = data;
+
+    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.subscribe(selectedConfirm => {
+      if (selectedConfirm) {
+        this.priorityCodeRouteAssignmentsService.save(this.pickRoute.PickRouteGuid, this.priorityCode)
+          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+      }
+    });
+  }
+
+  onSaveFailed(error: HttpErrorResponse): any {
+    if (error.status === 500) {
+      forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
+        this.displayDuplicateDescriptionError(r[0], r[1]);
+      });
+    }
+  }
+
+  displayDuplicateDescriptionError(title, message): void {
+    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.primaryButtonText = 'Ok';
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 0;
+    this.dialogService.showOnce(properties);
   }
 }
