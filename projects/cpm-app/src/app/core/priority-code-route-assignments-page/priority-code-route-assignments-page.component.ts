@@ -173,7 +173,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       return;
     }
 
-    this.ocsStatusService.OcsIsHealthySubject
+    this.ocsStatusService.ocsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 
