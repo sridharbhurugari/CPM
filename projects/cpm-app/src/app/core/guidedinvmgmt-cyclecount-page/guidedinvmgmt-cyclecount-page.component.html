@@ -65,7 +65,7 @@
                 </div>
                 <div class="whiteline"></div>
                 <div class="leftPanelRow"
-                    *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Month'">
+                    *ngIf="displayCycleCountItem.ItmExpDateGranularity === 'Month'">
                     {{"EXPIRATION_DATE" | translate}}
                     <div class="expiration">
                         <oc-datepicker format="mm/dd/yyyy" id="datepicker"
@@ -75,7 +75,7 @@
 
                     </div>
                     <div class="leftPanelRow"
-                        *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'">
+                        *ngIf="displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'">
                         {{"EXPIRATION_DATE" | translate}}
                         <div class="expiration">
                             <oc-datepicker format="mm/dd/yyyy" id="datepicker"
