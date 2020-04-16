@@ -215,6 +215,11 @@
       }
     }
   } 
+  ::ng-deep{
+    span{
+      min-width: 120px!important;
+    }
+  }
 }
 .expiration{
   margin-top: 6px!important;
