@@ -77,7 +77,7 @@ export class HardwareLeasePageComponent implements OnInit {
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'OK';
-    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
   }

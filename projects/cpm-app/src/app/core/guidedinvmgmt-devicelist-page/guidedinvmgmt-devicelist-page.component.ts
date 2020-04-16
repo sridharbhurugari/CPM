@@ -6,7 +6,6 @@ import { GuidedDeviceListService } from '../../api-core/services/guided-device-l
 import { SearchBoxComponent, PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WpfActionPaths } from '../constants/wpf-action-paths';
-import { TranslateService } from '@ngx-translate/core';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -37,8 +36,6 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
   constructor(
     private guidedDeviceListService: GuidedDeviceListService,
     private wpfActionControllerService: WpfActionControllerService,
-    private dialogService: PopupDialogService,
-    private translateService: TranslateService,
     private hardwareLeaseService: HardwareLeaseService
 
     ) { }
@@ -58,7 +55,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
     this.hardwareLeaseService.HasDeviceLease(deviceId).subscribe(
       currentDeviceLeaseOwner => {
         console.log('Current Device Lease Owner : ' + currentDeviceLeaseOwner);
-        if (currentDeviceLeaseOwner !== LeaseVerificationResult.Success) {
+        if (currentDeviceLeaseOwner === LeaseVerificationResult.Success) {
            this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId.toString()});
         } else {
            this.wpfActionControllerService.ExecuteContinueNavigationAction(
