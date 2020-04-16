@@ -60,7 +60,6 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
     private ocsStatusService: OcsStatusService,
-
   ) { }
 
   ngOnInit() {

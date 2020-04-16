@@ -15,6 +15,7 @@ import { ITextResultPopupData } from '../../shared/model/i-text-result-popup-dat
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -38,6 +39,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
+  ocsIsHealthy = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +49,7 @@ export class EditPickRoutePageComponent implements OnInit {
     private popupWindowService: PopupWindowService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
+    private ocsStatusService: OcsStatusService,
   ) { }
 
   ngOnInit() {
@@ -115,6 +118,8 @@ export class EditPickRoutePageComponent implements OnInit {
         this.originalDeviceSequence.push(device);
       });
     });
+
+    this.connectToEvents();
   }
 
   navigateBack() {
@@ -204,5 +209,23 @@ export class EditPickRoutePageComponent implements OnInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
     this.dialogService.showOnce(properties);
+  }
+
+  private async connectToEvents(): Promise<void> {
+    await this.ocsStatusService.openEventConnection();
+    this.configureEventHandlers();
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.ocsStatusService) {
+      return;
+    }
+
+    this.ocsStatusService.OcsIsHealthySubject
+      .subscribe(message => this.setOcsStatus(message));
+  }
+
+  private setOcsStatus(isHealthy: boolean): void {
+    this.ocsIsHealthy = isHealthy;
   }
 }
