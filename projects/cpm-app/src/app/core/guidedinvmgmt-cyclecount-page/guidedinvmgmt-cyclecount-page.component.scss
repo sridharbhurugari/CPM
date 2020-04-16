@@ -27,7 +27,7 @@
 
   .ItemId{
     font-size: 38px;
-    font-weight: $bold;
+    font-weight: bold;
     font-family: $font-family-sans-serif;
     color:$text-color;
     bottom: 16px;
@@ -149,9 +149,10 @@
   color:$text-color;
   box-sizing: content-box;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: left;
+  justify-content: left;
   margin-bottom: 24px;
+  margin-left: 100px;
 }
 .totalItemCount{
   font-size: 20px;
@@ -182,6 +183,7 @@
         font-size: 20px!important;
         line-height: 16px!important;
         width: 400px;
+        min-width: 120px;
       }
     }
   }
@@ -216,6 +218,8 @@
 }
 .expiration{
   margin-top: 6px!important;
+  margin-bottom:16px;
+
     ::ng-deep{
       div{
         &.first-Child{
