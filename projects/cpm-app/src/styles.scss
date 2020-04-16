@@ -63,6 +63,11 @@ a:visited {
     border-right: 8px solid #FFFFFF;
     background: #ECECEE;
 }
+::-webkit-input-placeholder{
+    color: #333333;
+    font-size: 24px;
+    vertical-align:top!important;
+  }
 .cpmactiontitle{
     line-height: 60px;
     vertical-align: middle;
