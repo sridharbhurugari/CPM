@@ -44,8 +44,7 @@
           </div>
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
-              <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button"
-                [disabled]="picklistQueueItem.Saving">
+              <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
                 (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>

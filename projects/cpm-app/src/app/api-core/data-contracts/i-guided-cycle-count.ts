@@ -10,4 +10,5 @@ export interface IGuidedCycleCount {
   LocationDescription: string,
   QuantityOnHand: number,
   ReorderSource: string,
+  InStockQuantity: number;
 }
