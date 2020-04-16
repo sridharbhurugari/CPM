@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist-page.component';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule } from '@omnicell/webcorecomponents';
@@ -18,11 +17,12 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe, MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe ],
+      declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe,
+        MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe ],
       imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, ButtonActionModule],
       providers: [
         { provide: GuidedDeviceListService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useValue: { } },
+        { provide: WpfActionControllerService, useValue: { } }
       ]
     })
     .compileComponents();

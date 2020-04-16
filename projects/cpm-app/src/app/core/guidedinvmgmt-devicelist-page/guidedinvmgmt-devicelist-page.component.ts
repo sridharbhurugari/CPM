@@ -3,7 +3,7 @@ import { GuidedDeviceList } from '../model/guided-device-list';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, shareReplay } from 'rxjs/operators';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
-import { SearchBoxComponent, PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WpfActionPaths } from '../constants/wpf-action-paths';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
