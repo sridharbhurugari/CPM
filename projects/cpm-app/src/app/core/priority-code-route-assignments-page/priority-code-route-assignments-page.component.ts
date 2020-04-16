@@ -49,7 +49,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   routerLinkPickRouteId: number;
   isEditAvailable = true;
   canSave = false;
-  ocsIsHealthy = true;
+  ocsIsHealthy = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,6 +78,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     }));
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
+    this.connectToEvents();
   }
 
   navigateBack() {
