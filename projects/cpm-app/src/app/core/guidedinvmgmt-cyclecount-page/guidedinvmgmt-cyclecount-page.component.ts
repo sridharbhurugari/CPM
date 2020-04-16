@@ -148,6 +148,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       if ($event === "0") {
         this.datepicker.selectedDate = null;
         this.daterequired = false;
+        this.DisableActionButtons(false);
       }
       else if (this.datepicker.selectedDate === null) {
         this.daterequired = true;
@@ -155,7 +156,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.datepicker.onFocus();
         this.DisableActionButtons(true);
       }
-      else {
+      else
+      {
         this.DisableActionButtons(false);
       }
     }
