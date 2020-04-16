@@ -394,4 +394,69 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.daterequired).toBeFalsy();
     });
   });
+  describe('quantity changes validation', () => {
+    it('quantity changes validation', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2020",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 55,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Month",
+        QuantityMin:10,
+        InStockQuantity:10,
+      });
+      var value = component.CheckItemExpGranularity(); 
+      expect(value).toBeFalsy();
+      component.datepicker = new DatepickerComponent(dummy,dummy1);
+      component.datepicker.selectedDate = null;
+      component.onQuantityChange("0");
+      var dummy,dummy1;
+
+      var datevalue = component.datepicker.selectedDate;
+      expect(datevalue).toEqual('');
+      component.daterequired = false;
+      expect(component.daterequired).toBeFalsy();
+      component.DisableActionButtons(false);
+    });
+  });
+  describe('quantity changes validation', () => {
+    it('quantity changes validation', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2020",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 55,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Month",
+        QuantityMin:10,
+        InStockQuantity:10,
+      });
+      var value = component.CheckItemExpGranularity(); 
+      expect(value).toBeFalsy();
+      component.datepicker = new DatepickerComponent(dummy,dummy1);
+      component.datepicker.selectedDate = null;
+      component.onQuantityChange("10");
+      var dummy,dummy1;
+      var datevalue = component.datepicker.selectedDate;
+      expect(datevalue).toEqual('');
+      component.daterequired = true;
+      expect(component.daterequired).toBeTruthy();
+      component.DisableActionButtons(true);
+    });
+  });
  });

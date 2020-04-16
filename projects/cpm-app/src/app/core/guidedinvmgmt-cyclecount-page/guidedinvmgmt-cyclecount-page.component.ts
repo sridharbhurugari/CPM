@@ -33,6 +33,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   nextButtonDisable: boolean;
   doneButtonDisable: boolean;
   daterequired: boolean;
+  todaydate: string;
   public time: Date = new Date();
   titleHeader = '\'GUIDED_CYCLE_COUNT\' | translate';
   route: any;
@@ -49,6 +50,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.nextButtonDisable = false;
     this.doneButtonDisable = false;
     this.daterequired = false;
+    this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
   }
 
   ngOnInit() {
@@ -170,11 +172,13 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     else {
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
-          if (new Date($event).getTime() < new Date().getTime()) {
-          this.DisableActionButtons(false);
+        var eventdate = new Date($event).getTime();
+          if (eventdate <= new Date().getTime() || isNaN(eventdate)) {
+          this.DisableActionButtons(true);
           this.daterequired = true;
          }
-        else {     
+        else
+        {
           this.daterequired = false;
           this.DisableActionButtons(false);
         }

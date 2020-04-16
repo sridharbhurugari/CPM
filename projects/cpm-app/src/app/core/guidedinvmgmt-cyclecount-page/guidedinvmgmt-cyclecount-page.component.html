@@ -69,8 +69,8 @@
                         {{"EXPIRATION_DATE" | translate}}
                         <div class="expiration">
                             <oc-datepicker format="mm/dd/yyyy" id="datepicker"
-                                [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
-                                popupDirection="UP" (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy" (ngFocus)="daterequired">
+                                [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired" [autocorrect]="false"
+                                popupDirection="UP" (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy" (ngFocus)="daterequired" [minDate]="todaydate">
                             </oc-datepicker>
 
                         </div>
