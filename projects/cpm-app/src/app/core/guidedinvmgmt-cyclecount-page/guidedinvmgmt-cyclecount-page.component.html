@@ -64,18 +64,8 @@
                     </div>
                 </div>
                 <div class="whiteline"></div>
-                <div class="leftPanelRow"
-                    *ngIf="displayCycleCountItem.ItmExpDateGranularity === 'Month'">
-                    {{"EXPIRATION_DATE" | translate}}
-                    <div class="expiration">
-                        <oc-datepicker format="mm/dd/yyyy" id="datepicker"
-                            [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
-                            popupDirection="UP" (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy" (ngFocus)="daterequired">
-                        </oc-datepicker>
-
-                    </div>
                     <div class="leftPanelRow"
-                        *ngIf="displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'">
+                        *ngIf="!CheckItemExpGranularity()">
                         {{"EXPIRATION_DATE" | translate}}
                         <div class="expiration">
                             <oc-datepicker format="mm/dd/yyyy" id="datepicker"
@@ -86,8 +76,7 @@
                         </div>
                         <div class="whiteline"></div>
                     </div>
-                </div>
-            </div>
+             </div>
             <div class="rightCycleCountPanel">
                 <div class="demo">
                     <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
