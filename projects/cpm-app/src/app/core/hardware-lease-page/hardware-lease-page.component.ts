@@ -8,7 +8,9 @@ import { HardwareLeaseService } from '../../api-core/services/hardware-lease-ser
 import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-configuration';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType,
+  PopupDialogService, PopupDialogComponent } from '@omnicell/webcorecomponents';
+import { HardwareLeaseEventConnectionService } from '../../xr2/services/hardware-lease-event-connection.service';
 
 
 @Component({
@@ -17,16 +19,19 @@ import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omn
   styleUrls: ['./hardware-lease-page.component.scss']
 })
 export class HardwareLeasePageComponent implements OnInit {
+
   readonly devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
   readonly deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
+  popupDialogComponent: PopupDialogComponent;
 
-  @Input()
-  displayDeviceConfigurationList: DeviceConfigurationList[] = [];
+  @Input() displayDeviceConfigurationList: DeviceConfigurationList[] = [];
 
   public time: Date = new Date();
   deviceId: any;
   queryParams: Params;
   routeToPath: any;
+  spinIcon = 'clear';
+  disabledButtons = true;
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -34,8 +39,12 @@ export class HardwareLeasePageComponent implements OnInit {
     private router: Router,
     private hardwareLeaseService: HardwareLeaseService,
     private translateService: TranslateService,
-    private dialogService: PopupDialogService ) {
+    private dialogService: PopupDialogService,
+    private hardwareLeaseEventConnectionService: HardwareLeaseEventConnectionService
+    // TODO: get timeout for hardware request
+    ) {
 
+    this.connectToEvents();
     setInterval(() => {
       this.time = new Date();
     }, 1);
@@ -47,6 +56,7 @@ export class HardwareLeasePageComponent implements OnInit {
     this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
       console.log(res);
       this.displayDeviceConfigurationList.push(res);
+      this.disabledButtons = false;
     });
   }
 
@@ -55,19 +65,30 @@ export class HardwareLeasePageComponent implements OnInit {
   }
 
   requestAccessClick() {
+    this.disabledButtons = true;
+    this.spinIcon = 'spin';
 
+    // TODO: subscribe to signal r event
     this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
       console.log(results);
       if (results.IsSuccessful === false) {
         this.displayRequestLeaseDialog(results.OutcomeText);
-      } else {
-        const navigationExtras: NavigationExtras = {
-          queryParams: { deviceId: this.deviceId },
-          fragment: 'anchor'
-        };
-        this.router.navigate([this.routeToPath], navigationExtras );
       }
     });
+
+    setTimeout(() => {
+      this.spinIcon = 'clear';
+      this.disabledButtons = false;
+    }, 10000);
+  }
+
+  navigateNext() {
+    // TODO: check signal R event type and move next or show failed popup
+    const navigationExtras: NavigationExtras = {
+      queryParams: { deviceId: this.deviceId },
+      fragment: 'anchor'
+    };
+    this.router.navigate([this.routeToPath], navigationExtras );
   }
 
   private displayRequestLeaseDialog(outcomeText: string): void {
@@ -80,5 +101,19 @@ export class HardwareLeasePageComponent implements OnInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
+  }
+
+  private async connectToEvents(): Promise<void> {
+    await this.hardwareLeaseEventConnectionService.openEventConnection();
+    this.configureEventHandlers();
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.hardwareLeaseEventConnectionService) {
+      return;
+    }
+
+    this.hardwareLeaseEventConnectionService.hardwareResponseSubject
+      .subscribe(message => {console.log(message); } );
   }
 }

@@ -55,7 +55,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
     this.hardwareLeaseService.HasDeviceLease(deviceId).subscribe(
       currentDeviceLeaseOwner => {
         console.log('Current Device Lease Owner : ' + currentDeviceLeaseOwner);
-        if (currentDeviceLeaseOwner === LeaseVerificationResult.Success) {
+        if (currentDeviceLeaseOwner !== LeaseVerificationResult.Success) {
            this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId.toString()});
         } else {
            this.wpfActionControllerService.ExecuteContinueNavigationAction(
