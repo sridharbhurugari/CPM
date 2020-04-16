@@ -4,6 +4,7 @@
   </ng-container>
   <ng-container class="ocactiondetails">
     <div class="cpmheaderrow">
+      <oc-button-action class="print-button" [buttonText]="'Print'" [buttonIcon] ="'print'" (click)="generatePdf()"></oc-button-action>
       <app-header-container></app-header-container>
       <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
     </div>
@@ -44,7 +45,7 @@
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
               <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button"
-                [disabled]="picklistQueueItem.Saving" (click)="generatePdf('open')">
+                [disabled]="picklistQueueItem.Saving">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
                 (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>

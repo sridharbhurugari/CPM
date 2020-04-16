@@ -14,8 +14,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { ActivatedRoute } from '@angular/router';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import * as pdfMake from 'pdfmake/build/pdfmake.js';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
+import { PdfGridReportService } from '../../api-core/services/pdf-grid-report-service';
+
 
 @Component({
   selector: 'app-picklists-queue',
@@ -45,9 +45,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     private actr: ActivatedRoute,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-    private wpfActionController: WpfActionControllerService) {
+    private wpfActionController: WpfActionControllerService,
+    private pdfGridReportService: PdfGridReportService) {
       this.connectToEvents();
-      pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
   @ViewChild('searchBox', {
@@ -177,67 +177,24 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  generatePdf(action = 'open') {
-    console.log(pdfMake);
-    const documentDefinition = this.getDocumentDefinition();
-
-    switch (action) {
-      case 'open': pdfMake.createPdf(documentDefinition).open(); break;
-      case 'print': pdfMake.createPdf(documentDefinition).print(); break;
-      case 'download': pdfMake.createPdf(documentDefinition).download(); break;
-
-      default: pdfMake.createPdf(documentDefinition).open(); break;
-    }
+  generatePdf() {
+    const tableBody = this.buidMainTableBody();
+    this.pdfGridReportService.generatePdf(tableBody, 'Robot Queue');
   }
 
-  getDocumentDefinition() {
-    return {
-      content: [
-        {
-          text: 'Robot Queue',
-          bold: true,
-          fontSize: 20,
-          alignment: 'center',
-          margin: [0, 0, 0, 20]
-        },
-        {
-          table: {
-            widths: ['*', 100, 200, '*'],
-            headerRows: 1,
-            body: this.buidMainTableBody()
-          },
-          layout: 'lightHorizontalLines'
-        }
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 0, 0, 10]
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 13,
-          color: 'black'
-        }
-      },
-    };
-  }
-
-  private buidMainTableBody() {
+  private  buidMainTableBody(): any[] {
     const body = [];
 
     body.push([{text: 'Destination', style: 'tableHeader'}, {text: 'Items', style: 'tableHeader'},
     {text: 'Status', style: 'tableHeader'}, {text: 'Device', style: 'tableHeader'}]);
-
-    this._picklistQueueItems.forEach((item) => {
+    for (let i = 0; i < 100; i++) {
+      this._picklistQueueItems.forEach((item) => {
         const description = item.Destination === null ? item.PriorityCodeDescription : item.Destination;
         body.push([description, item.ItemCount.toString(), item.Status.toString(), item.DeviceDescription.toString()]);
     });
-
+    }
     return body;
   }
-
 
   private displayFailedToSaveDialog(): void {
 
