@@ -3,8 +3,8 @@
         <div class="cpmactiontitle">{{ 'GUIDED_CYCLE_COUNT' | translate }}</div>
         <div class="dateTime">
             {{time| date:'M/d/yyyy h:mm a'}}</div>
-            <div class="totalItemCount">
-                <span>{{currentItemCount}} / {{itemCount}}</span></div> 
+        <div class="totalItemCount">
+            <span>{{currentItemCount}} / {{itemCount}}</span></div>
     </ng-container>
 
     <ng-container class="ocactiondetails">
@@ -12,11 +12,11 @@
             <div class="BrandName">
                 <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
             </div>
-            <div class="GenericName" >
+            <div class="GenericName">
                 <div>{{ displayCycleCountItem.GenericNameFormatted }}</div>
             </div>
         </div>
-        <div class="panelContainer1" >
+        <div class="panelContainer1">
             <div class="itemIdBox">
 
                 <div class="itemIdHeader">
@@ -58,34 +58,42 @@
                 </div>
                 <div class="whiteline"></div>
                 <div class="leftPanelRow">
-                  {{(displayCycleCountItem.ReorderSource == 'B' ? "RESTOCK_LEVEL" : "REORDER_LEVEL") | translate}}
-                  <div class="textContent">
-                    {{displayCycleCountItem.ReorderSource == 'B' ? displayCycleCountItem.ReorderLevel:displayCycleCountItem.QuantityMin}}
-                  </div>
+                    {{(displayCycleCountItem.ReorderSource == 'B' ? "RESTOCK_LEVEL" : "REORDER_LEVEL") | translate}}
+                    <div class="textContent">
+                        {{displayCycleCountItem.ReorderSource == 'B' ? displayCycleCountItem.ReorderLevel:displayCycleCountItem.QuantityMin}}
+                    </div>
                 </div>
                 <div class="whiteline"></div>
-                <div class="leftPanelRow" *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Month'"> {{"EXPIRATION_DATE" | translate}}
-                  <div class="expiration">
-                    <oc-datepicker format="mm/dd/yyyy" id="datepicker" [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" 
-                                   [required]="daterequired" popupDirection="UP"  (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy">
-                    </oc-datepicker>
-
-                  </div>
-                  <div class="leftPanelRow" *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'"> {{"EXPIRATION_DATE" | translate}}
+                <div class="leftPanelRow"
+                    *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Month'">
+                    {{"EXPIRATION_DATE" | translate}}
                     <div class="expiration">
-                      <oc-datepicker format="mm/dd/yyyy" id="datepicker" [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" 
-                                     [required]="daterequired" popupDirection="UP"  (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy">
-                      </oc-datepicker>
+                        <oc-datepicker format="mm/dd/yyyy" id="datepicker"
+                            [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
+                            popupDirection="UP" (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy" (ngFocus)="daterequired">
+                        </oc-datepicker>
 
                     </div>
-                <div class="whiteline"></div>
+                    <div class="leftPanelRow"
+                        *ngIf="displayCycleCountItem && displayCycleCountItem.ItmExpDateGranularity === 'Day' || displayCycleCountItem.ItmExpDateGranularity === 'Time'">
+                        {{"EXPIRATION_DATE" | translate}}
+                        <div class="expiration">
+                            <oc-datepicker format="mm/dd/yyyy" id="datepicker"
+                                [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
+                                popupDirection="UP" (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy" (ngFocus)="daterequired">
+                            </oc-datepicker>
+
+                        </div>
+                        <div class="whiteline"></div>
+                    </div>
+                </div>
             </div>
-            <div class="rightCycleCountPanel" >
+            <div class="rightCycleCountPanel">
                 <div class="demo">
-                <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
-                            [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" 
-                            (valueChange) = "onQuantityChange($event)">
-                </oc-numeric>
+                    <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
+                        [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units"
+                        (valueChange)="onQuantityChange($event)">
+                    </oc-numeric>
                 </div>
             </div>
         </div>
@@ -93,19 +101,20 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action id="cancelbutton" [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}</oc-button-action>
+                <oc-button-action id="cancelbutton" [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}
+                </oc-button-action>
             </div>
             <div class="buttonadjust">
-            <div class="ocrightalign" *ngIf="!isLastItem">
-                <oc-button-action id="nextbutton"  [buttonText]="'NEXT' | translate" [disabled]="nextButtonDisable"
-                (click)="navigateContinue()">}</oc-button-action>
-            </div>
+                <div class="ocrightalign" *ngIf="!isLastItem">
+                    <oc-button-action id="nextbutton" [buttonText]="'NEXT' | translate" [disabled]="nextButtonDisable"
+                        (click)="navigateContinue()">}</oc-button-action>
+                </div>
             </div>
             <div class="buttonadjust">
-            <div class="ocrightalign" *ngIf="isLastItem">
-                <oc-button-action id="donebutton"  [buttonText]="'DONE' | translate" [disabled]="doneButtonDisable" 
-                (click)="navigateContinue()">}</oc-button-action>
-            </div>
+                <div class="ocrightalign" *ngIf="isLastItem">
+                    <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" [disabled]="doneButtonDisable"
+                        (click)="navigateContinue()">}</oc-button-action>
+                </div>
             </div>
         </oc-footer>
     </ng-container>

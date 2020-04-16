@@ -31,6 +31,9 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     LocationDescription: '',
     QuantityOnHand: 0,
     ReorderSource: '',
+    ItmExpDateGranularity: "Month",
+    QuantityMin: 10,
+    InStockQuantity: 10
         };
         return of([obj]);
 
@@ -93,7 +96,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
@@ -160,7 +164,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -185,7 +190,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10,
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -222,7 +228,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10,
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceLocationId: 87,  
@@ -238,7 +245,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10
       }));
       component.itemCount = 2;
       component.nextRecord();
@@ -264,7 +272,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10,
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceLocationId: 87,  
@@ -280,7 +289,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Day",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10
       }));
       component.itemCount = 2;
       component.currentItemCount = 1;
@@ -305,7 +315,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"Month",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeFalsy();
@@ -327,7 +338,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityOnHand: 55,
         ReorderSource: "Internal",
         ItmExpDateGranularity:"None",
-        QuantityMin:10
+        QuantityMin:10,
+        InStockQuantity:10,
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeTruthy();
@@ -352,7 +364,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('date changes validation', () => {
     it('date changes validation', () => {
       component.onDateChange('');
-      component.numericElement = new NumericComponent();
+      var dummy,dummy1;
+      component.numericElement = new NumericComponent(dummy,dummy1);
       component.numericElement.displayValue = "0";
       component.DisableActionButtons(true); 
       expect(component.nextButtonDisable).toBeTruthy();
@@ -362,7 +375,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('date changes validation', () => {
     it('date changes validation', () => {
       component.onDateChange(null);
-      component.numericElement = new NumericComponent();
+      var dummy,dummy1;
+      component.numericElement = new NumericComponent(dummy,dummy1);
       component.numericElement.displayValue = "0";
       component.DisableActionButtons(true); 
       expect(component.nextButtonDisable).toBeTruthy();

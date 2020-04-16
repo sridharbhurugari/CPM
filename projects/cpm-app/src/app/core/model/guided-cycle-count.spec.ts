@@ -16,7 +16,8 @@ describe('GuidedCycleCount', () => {
       ReorderLevel: 10,
       LocationDescription: "ER",
       ItmExpDateGranularity:"Month",
-      QuantityMin:10
+      QuantityMin:10,
+      InStockQuantity:10
     })).toBeTruthy()
   });
 });

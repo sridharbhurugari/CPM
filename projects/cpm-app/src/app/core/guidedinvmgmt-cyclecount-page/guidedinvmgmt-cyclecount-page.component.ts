@@ -51,11 +51,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.daterequired = false;
   }
 
-  attrs = {
-    nullCheck: null,
-    required: false,
-    disabled: false
-  };
   ngOnInit() {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.getCycleCountData(deviceId);
@@ -140,7 +135,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
-      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' :((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;
@@ -156,6 +151,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       }
       else if (this.datepicker.selectedDate === null) {
         this.daterequired = true;
+        document.getElementById("datepicker").focus();
+        this.datepicker.onFocus();
         this.DisableActionButtons(true);
       }
       else {
@@ -170,10 +167,21 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.DisableActionButtons(true);
     else {
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
-      if ($event.match(dateReg))
-        this.DisableActionButtons(false);
+      if ($event.match(dateReg)) {
+          if (new Date($event).getTime() < new Date().getTime()) {
+          this.DisableActionButtons(false);
+          this.daterequired = true;
+         }
+        else {     
+          this.daterequired = false;
+          this.DisableActionButtons(false);
+        }
+      }
       else
+      {
+        this.daterequired = true;
         this.DisableActionButtons(true);
+      }
     }
   }
 
