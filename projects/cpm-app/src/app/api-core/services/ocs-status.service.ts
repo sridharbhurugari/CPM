@@ -9,7 +9,7 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 })
 export class OcsStatusService extends EventConnectionService {
 
-  public OCSAvailableSubject = new Subject<boolean>();
+  public OcsIsHealthySubject = new Subject<boolean>();
 
   constructor(
     configurationService: ConfigurationService,
@@ -32,13 +32,13 @@ export class OcsStatusService extends EventConnectionService {
       return;
     }
 
-    if (message.EventId === 'OCSDown') {
-      this.OCSAvailableSubject.next(false);
+    if (message.EventId === 'CpmGatewayIsHealthyStatus') {
+      this.OcsIsHealthySubject.next(true);
       return;
     }
 
-    if (message.EventId === 'OCSUp') {
-      this.OCSAvailableSubject.next(true);
+    if (message.EventId === 'CpmGatewayIsNotHealthyStatus') {
+      this.OcsIsHealthySubject.next(false);
       return;
     }
   }

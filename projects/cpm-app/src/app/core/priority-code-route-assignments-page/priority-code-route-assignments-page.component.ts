@@ -49,7 +49,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   routerLinkPickRouteId: number;
   isEditAvailable = true;
   canSave = false;
-  ocsAvailable = true;
+  ocsIsHealthy = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -173,11 +173,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       return;
     }
 
-    this.ocsStatusService.OCSAvailableSubject
+    this.ocsStatusService.OcsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 
-  private setOcsStatus(availabeStstaus: boolean): void {
-    this.ocsAvailable = availabeStstaus;
+  private setOcsStatus(isHealthy: boolean): void {
+    this.ocsIsHealthy = isHealthy;
   }
 }
