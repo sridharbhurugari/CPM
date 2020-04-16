@@ -49,14 +49,14 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('navigate', () => {
-    beforeEach(() => {
-      component.navigate(1);
-    });
+  // describe('navigate', () => {
+  //   beforeEach(() => {
+  //     component.navigate(1);
+  //   });
 
-    it('should show popup for failure', () => {
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
-    });
-  });
+  //   it('should show popup for failure', () => {
+  //     expect(popupDialogService.showOnce).toHaveBeenCalled();
+  //   });
+  // });
 
 });
