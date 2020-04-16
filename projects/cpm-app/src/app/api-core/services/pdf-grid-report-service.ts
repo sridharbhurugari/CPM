@@ -10,7 +10,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 })
 export class PdfGridReportService
 {
-  private tableBody: any[];
+  private tableBody: any;
   private reportBaseData: AngularReportBaseData;
   private reportTitle: string;
 
@@ -18,7 +18,7 @@ export class PdfGridReportService
     private pdfPrintService: PdfPrintService) {
   }
 
-  async generatePdf(tableBody: any[], reportTitle: string) {
+  async generatePdf(tableBody, reportTitle: string) {
     console.log(pdfMake);
     this.tableBody = tableBody;
     this.reportTitle = reportTitle;
@@ -87,16 +87,7 @@ export class PdfGridReportService
             },
             { canvas: [ { type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1 } ] },
             { text: '   ', alignment: 'center', fontSize: 12, bold: true, lineHeight: 1.25 },
-            {
-              layout: 'lightHorizontalLines', // optional
-              table: {
-                    // headers are automatically repeated if the table spans over multiple pages
-                    // you can declare how many rows should be treated as headers
-                    headerRows: 1,
-                    widths: [ '*', '*', '*', '*' ],
-                    body: this.buidMainTableBody()
-                }
-            },
+            this.tableBody,
       ]
     };
   }
@@ -119,9 +110,5 @@ export class PdfGridReportService
       };
       img.src = url;
     });
-  }
-
-  private buidMainTableBody() {
-    return this.tableBody;
   }
 }

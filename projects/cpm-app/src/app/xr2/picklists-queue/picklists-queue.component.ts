@@ -191,18 +191,28 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.pdfGridReportService.generatePdf(tableBody, 'Robot Queue');
   }
 
-  private  buidMainTableBody(): any[] {
-    const body = [];
+  private  buidMainTableBody() {
+    const compiledBody = [];
 
-    body.push([{text: 'Destination', style: 'tableHeader'}, {text: 'Items', style: 'tableHeader'},
-    {text: 'Status', style: 'tableHeader'}, {text: 'Device', style: 'tableHeader'}]);
-    for (let i = 0; i < 100; i++) {
-      this._picklistQueueItems.forEach((item) => {
-        const description = item.Destination === null ? item.PriorityCodeDescription : item.Destination;
-        body.push([description, item.ItemCount.toString(), item.Status.toString(), item.DeviceDescription.toString()]);
+    compiledBody.push([{text: 'Destination', style: 'tableHeader'}, {text: 'Items', style: 'tableHeader'},
+    {text: 'Status', style: 'tableHeader'}, {text: 'Device', style: 'tableHeader'},
+    {text: 'QR Code', style: 'tableHeader'}]);
+
+    this._picklistQueueItems.forEach((item) => {
+      const description = item.Destination === null ? item.PriorityCodeDescription : item.Destination;
+      compiledBody.push([description, item.ItemCount.toString(), item.Status.toString(),
+        { stack: [item.DeviceDescription.toString(), item.OutputDevice.toString()]},
+        { qr: item.DeviceDescription.toString(), fit: '50', margin: 10 }]);
     });
-    }
-    return body;
+
+    return {
+      layout: 'lightHorizontalLines',
+      table: {
+        headerRows: 1,
+        widths: [ '*', '*', '*', '*', '*' ],
+        body: compiledBody
+      }
+    };
   }
 
   private displayFailedToSaveDialog(): void {
