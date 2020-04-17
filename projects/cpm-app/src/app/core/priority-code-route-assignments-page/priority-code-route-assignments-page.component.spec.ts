@@ -21,7 +21,7 @@ import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-devi
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { WindowService } from '../../shared/services/window-service';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
-
+import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 @Component({
   selector: 'app-priority-code-route-assignments',
   template: ''
@@ -72,11 +72,12 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: OcsStatusService, useValue:
+        { provide: OcsStatusEventConnectionService, useValue:
           { openEventConnection: () => {},
             ocsIsHealthySubject: new Subject(),
           }},
-      ],
+          { provide: OcsStatusService, useValue: { requestStatus: () => '' } },
+        ],
       imports: [
         GridModule,
         SharedModule,

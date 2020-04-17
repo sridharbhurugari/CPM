@@ -15,6 +15,7 @@ import { PopupDialogService, PopupDialogProperties, PopupDialogType,
    PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
+import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 
 @Component({
@@ -49,7 +50,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   routerLinkPickRouteId: number;
   isEditAvailable = true;
   canSave = false;
-  ocsIsHealthy = false;
+  ocsIsHealthy = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,7 +60,8 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
-    private ocsStatusService: OcsStatusService,
+    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
+    private ocsStatusService: OcsStatusService
   ) { }
 
   ngOnInit() {
@@ -78,6 +80,8 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
     this.connectToEvents();
+
+    const serviceStatus: Observable<any> = this.ocsStatusService.requestStatus();
   }
 
   navigateBack() {
@@ -164,16 +168,16 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   private async connectToEvents(): Promise<void> {
-    await this.ocsStatusService.openEventConnection();
+    await this.ocsStatusEventConnectionService.openEventConnection();
     this.configureEventHandlers();
   }
 
   private configureEventHandlers(): void {
-    if (!this.ocsStatusService) {
+    if (!this.ocsStatusEventConnectionService) {
       return;
     }
 
-    this.ocsStatusService.ocsIsHealthySubject
+    this.ocsStatusEventConnectionService.ocsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 
