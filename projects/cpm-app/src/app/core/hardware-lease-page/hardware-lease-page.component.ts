@@ -11,6 +11,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogType,
   PopupDialogService, PopupDialogComponent } from '@omnicell/webcorecomponents';
 import { HardwareLeaseEventConnectionService } from '../../xr2/services/hardware-lease-event-connection.service';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { IConfigurationService } from 'oal-core';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 
 
 @Component({
@@ -32,6 +35,7 @@ export class HardwareLeasePageComponent implements OnInit {
   routeToPath: any;
   spinIcon = 'clear';
   disabledButtons = true;
+  systemConfig: IConfigurationValue[];
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -40,7 +44,8 @@ export class HardwareLeasePageComponent implements OnInit {
     private hardwareLeaseService: HardwareLeaseService,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
-    private hardwareLeaseEventConnectionService: HardwareLeaseEventConnectionService
+    private hardwareLeaseEventConnectionService: HardwareLeaseEventConnectionService,
+    private systemConfigurationService: SystemConfigurationService
     // TODO: get timeout for hardware request
     ) {
 
@@ -51,8 +56,20 @@ export class HardwareLeasePageComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.routeToPath  = this.activatedRoute.snapshot.queryParamMap.get('routeToPath');
+
+    this.systemConfigurationService.GetConfigurationValues().subscribe(result => {
+      console.log(result);
+      this.systemConfig = result;
+    });
+
+    this.systemConfigurationService.Get().subscribe(result => {
+      console.log( 'single get');
+      console.log( result);
+    });
+
     this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
       console.log(res);
       this.displayDeviceConfigurationList.push(res);
