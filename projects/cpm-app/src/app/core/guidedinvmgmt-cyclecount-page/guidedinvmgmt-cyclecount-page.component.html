@@ -70,7 +70,7 @@
                         <div class="expiration">
                             <oc-datepicker format="mm/dd/yyyy" id="datepicker"
                                 [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" 
-                                [isRequired]="daterequired && (displayCycleCountItem.ReorderSource == 'B' ? displayCycleCountItem.ReorderLevel:displayCycleCountItem.QuantityMin) > '0'" [autocorrect]="false" 
+                                [isRequired]="daterequired" [autocorrect]="false" 
                                 popupDirection="UP" (ngModelChange)=onDateChange($event) aria-placeholder="mm/dd/yyyy" (ngFocus)="daterequired" [minDate]="todaydate">
                             </oc-datepicker>
 
