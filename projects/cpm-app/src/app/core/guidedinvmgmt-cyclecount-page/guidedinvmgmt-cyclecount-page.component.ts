@@ -168,7 +168,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   onDateChange($event) {
     var valueQuanity = this.numericElement && this.numericElement.displayValue;
     if ($event === null || valueQuanity === "0")
+    {
       this.DisableActionButtons(true);
+      this.daterequired = true;
+    }
     else {
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {

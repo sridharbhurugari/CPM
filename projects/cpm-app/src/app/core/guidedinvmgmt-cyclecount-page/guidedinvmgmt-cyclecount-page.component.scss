@@ -46,7 +46,6 @@
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    margin-top: 16px!important;
   }
 
   .panelContainer {
@@ -64,11 +63,10 @@
 
   .itemIdBox{     
     height: 75px;
-    width: 340px;  
+    width: 335px;  
     border-left: solid white 24px;
     border-right: solid  #c8c8c8 1px; 
     margin-top: 8px;
-    margin-bottom:8px;    
   }
 
   .locationOfCycleCount {
@@ -101,9 +99,9 @@
     justify-content: center;   
     align-items: center;
     font-weight: $bold;
-    margin-left: 24px;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-left: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
   }
 
   .rightCycleCountPanel {   
@@ -170,11 +168,13 @@
   background-color: #ffffff;
   vertical-align: center!important;
   glyph-orientation-horizontal: center!important;
+  margin-left: 16px;
 }
 .demo{
   vertical-align: center!important;
   glyph-orientation-horizontal: center!important;
   margin-bottom: 100px!important;
+  width: 400px!important;
   ::ng-deep{
     div{
       &:first-child{
@@ -182,8 +182,6 @@
         color:$text-color;
         font-size: 20px!important;
         line-height: 16px!important;
-        width: 400px;
-        min-width: 120px;
       }
     }
   }
@@ -197,7 +195,7 @@
       &:first-child{
         margin-top: 16px!important;
         margin-bottom: 4px!important;
-        font-size: 32px!important;
+        font-size: 38px!important;
         font-weight: bold;
         font-family: $font-family-sans-serif;
         color:$text-color;
@@ -217,7 +215,7 @@
   } 
   ::ng-deep{
     span{
-      min-width: 120px!important;
+      min-width: 80px!important;
     }
   }
 }

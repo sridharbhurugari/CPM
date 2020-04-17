@@ -383,6 +383,17 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
+  describe('date changes validation', () => {
+    it('date changes validation', () => {
+      component.onDateChange("01/02/2021");
+      var dummy,dummy1;
+      component.numericElement = new NumericComponent(dummy,dummy1);
+      component.numericElement.displayValue = "10";
+      component.DisableActionButtons(false); 
+      expect(component.nextButtonDisable).toBeFalsy();
+      expect(component.doneButtonDisable).toBeFalsy();
+    });
+  });
   describe('quantity changes validation', () => {
     it('quantity changes validation', () => {
       component.onQuantityChange("0");
@@ -457,6 +468,22 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.daterequired = true;
       expect(component.daterequired).toBeTruthy();
       component.DisableActionButtons(true);
+    });
+  });
+  describe('skip the item', () => {
+    it('skip the item ', () => {
+      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
+        WpfActionControllerService
+      );
+      spyOn(
+        wpfActionControllerServiceStub,
+        'ExecuteBackAction'
+      ).and.callThrough();
+      component.isLastItem = false;
+      component.navigateSkip();
+      expect(
+        wpfActionControllerServiceStub.ExecuteBackAction
+      ).toHaveBeenCalled();
     });
   });
  });
