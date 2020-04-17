@@ -4,6 +4,7 @@ import { EventConnectionService } from './event-connection.service';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { HubConfigurationService } from './hub-configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,11 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
   public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
 
   constructor(
+    hubConfigurationService: HubConfigurationService,
     configurationService: ConfigurationService,
     ocapUrlBuilderService: OcapUrlBuilderService
     ) {
-    super(configurationService, ocapUrlBuilderService);
+    super(hubConfigurationService, configurationService, ocapUrlBuilderService);
    }
 
   public async openEventConnection(): Promise<void> {
@@ -45,5 +47,3 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     }
   }
 }
-
-

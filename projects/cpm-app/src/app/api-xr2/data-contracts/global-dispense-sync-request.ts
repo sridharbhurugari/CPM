@@ -1,4 +1,4 @@
-import { PickListLineDetail } from "./pick-list-line-detail";
+import { PickListLineDetail } from './pick-list-line-detail';
 
 export class GlobalDispenseSyncRequest {
 

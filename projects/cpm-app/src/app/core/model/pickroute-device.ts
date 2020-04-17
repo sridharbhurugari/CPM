@@ -10,6 +10,7 @@ export class PickRouteDevice implements IPickRouteDevice {
 
    PickRouteId: number;
    RouteDescription: string;
+   PickRouteGuid: string;
    PickRouteDevices: IDeviceSequenceOrder[];
 
    SelectedFlag: boolean;
