@@ -199,4 +199,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   CheckItemExpGranularity() {
     return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity != "None" ? false : true;
   }
+  navigateSkip() {
+    if (this.isLastItem || this.currentItemCount == this.itemCount) {
+      this.wpfActionController.ExecuteBackAction();
+    }
+    else {
+      this.nextRecord();
+    }
+  }
 }
