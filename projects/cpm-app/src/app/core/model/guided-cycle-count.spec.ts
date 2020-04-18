@@ -17,7 +17,8 @@ describe('GuidedCycleCount', () => {
       LocationDescription: "ER",
       ItmExpDateGranularity:"Month",
       QuantityMin:10,
-      InStockQuantity:10
+      InStockQuantity:10,
+      ItemDateFormat: "MM/DD/YYYY",
     })).toBeTruthy()
   });
 });

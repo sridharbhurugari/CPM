@@ -14,4 +14,5 @@ export interface IGuidedCycleCount {
   ItmExpDateGranularity:string,
   QuantityMin: number,
   InStockQuantity: number;
+  ItemDateFormat: string;
 }

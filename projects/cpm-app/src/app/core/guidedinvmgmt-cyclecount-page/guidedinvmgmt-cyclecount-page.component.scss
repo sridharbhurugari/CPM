@@ -100,8 +100,8 @@
     align-items: center;
     font-weight: $bold;
     margin-left: 16px;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 12px;
+    margin-bottom: 12px;
   }
 
   .rightCycleCountPanel {   
@@ -147,10 +147,8 @@
   color:$text-color;
   box-sizing: content-box;
   display: flex;
-  align-items: left;
-  justify-content: left;
-  margin-bottom: 24px;
-  margin-left: 100px;
+  align-items: center;
+  justify-content: center;
 }
 .totalItemCount{
   font-size: 20px;
@@ -193,8 +191,7 @@
   ::ng-deep{
     input{
       &:first-child{
-        margin-top: 16px!important;
-        margin-bottom: 4px!important;
+        margin-top: 12px!important;
         font-size: 38px!important;
         font-weight: bold;
         font-family: $font-family-sans-serif;
@@ -210,6 +207,7 @@
       font-family: $font-family-sans-serif;
       font-weight: normal;
       color:$text-color;
+      margin-bottom: 4px;
       }
     }
   } 
@@ -221,8 +219,6 @@
 }
 .expiration{
   margin-top: 6px!important;
-  margin-bottom:16px;
-
     ::ng-deep{
       div{
         &.first-Child{
@@ -234,7 +230,7 @@
     ::ng-deep{
       form{
           height: 60px!important;
-          width: 280px;
+          width: 290px;
           background-color: #ffffff;
         }
       }
@@ -243,8 +239,10 @@
        font-size: 38px!important;
        font-weight: bold;
        font-family: $font-family-sans-serif;
-       margin-left: 2px!important;
-       margin-right: 0px!important;
+       margin-left: 0px!important;
+       margin-right: 8px!important;
+       margin-top: 3px!important;
+       height: 45px!important;
        padding-right: none!important;
        position: relative;
        flex: 0px!important;
@@ -258,23 +256,45 @@
        flex-shrink: 0!important;
        flex-basis: 0!important;
        flex-flow:0!important;
+      }
     }
-
+    ::ng-deep{
+      input:nth-child(3){
+        font-size: 38px!important;
+        font-weight: bold;
+        font-family: $font-family-sans-serif;
+        margin-left: 4px!important;
+        margin-right: 4px!important;
+        padding-right: none!important;
+        position: relative;
+        flex: 0px!important;
+        min-width:45px!important;
+        width: 120px!important;
+        display: initial!important;
+        text-align:center!important;
+        bottom: 4px!important;
+        flex: 0!important;
+        flex-wrap: 0!important;
+        flex-shrink: 0!important;
+        flex-basis: 0!important;
+        flex-flow:0!important;
+      }
     }
     ::ng-deep{
       input:nth-child(5){
        font-size: 38px!important;
        font-weight: bold;
        font-family: $font-family-sans-serif;
-       margin-left: 2px!important;
+       margin-left: 0px!important;
        margin-right: 0px!important;
+       margin-bottom: 2px!important;
        padding-right: none!important;
        position: relative;
        flex: 0px!important;
        bottom: 6px!important;
-       min-width:100px!important;
+       min-width:104px!important;
        display: initial!important;
-       text-align: left!important;
+       text-align: center!important;
        bottom: 5px!important;
        flex: 0!important;
        flex-wrap: 0!important;
@@ -289,7 +309,7 @@
        font-weight: bold;
        padding: 0px!important;
        margin: 0px!important;
-       font-size: 30px!important;
+       font-size: 32px!important;
        flex: none!important;
        display: inline!important;
      }

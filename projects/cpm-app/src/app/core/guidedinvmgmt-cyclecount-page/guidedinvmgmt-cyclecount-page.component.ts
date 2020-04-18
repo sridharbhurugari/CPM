@@ -3,13 +3,12 @@ import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent, DatepickerComponent, ButtonActionComponent } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
-
 import { Button } from 'protractor';
 
 @Component({
@@ -33,6 +32,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   nextButtonDisable: boolean;
   doneButtonDisable: boolean;
   daterequired: boolean;
+  disablethedate: boolean;
   todaydate: string;
   public time: Date = new Date();
   titleHeader = '\'GUIDED_CYCLE_COUNT\' | translate';
@@ -50,6 +50,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.nextButtonDisable = false;
     this.doneButtonDisable = false;
     this.daterequired = false;
+    this.disablethedate = false;
     this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
   }
 
@@ -71,6 +72,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
         this.displayCycleCountItem.InStockQuantity = x[0].QuantityOnHand;
+        this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
@@ -107,10 +109,18 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
 
   navigateContinue() {
     if (this.displayCycleCountItem != null) {
+      var expireddate = null, actualexpiradationdate = null;
+      expireddate = new Date(this.displayCycleCountItem.ExpirationDateFormatted);
+      if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
+        actualexpiradationdate = this.displayCycleCountItem.QuantityOnHand !== 0 ? new Date(expireddate.getFullYear(), expireddate.getMonth() + 1, 0) : null;
+      }
+      else {
+        actualexpiradationdate = this.displayCycleCountItem.QuantityOnHand !== 0 ? new Date(expireddate) : null;
+      }
       let update = new deviceCycleCountItemUpdate({
         DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
         ItemId: this.displayCycleCountItem.ItemId,
-        ExpirationDate: this.displayCycleCountItem.ExpirationDateFormatted != 'mm/dd/yyyy' ? new Date(this.displayCycleCountItem.ExpirationDateFormatted) : null,
+        ExpirationDate: actualexpiradationdate,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand
       });
 
@@ -146,48 +156,48 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
 
   onQuantityChange($event) {
-    if (!this.CheckItemExpGranularity()) {
-      if ($event === "0") {
-        this.datepicker.selectedDate = null;
-        this.daterequired = false;
-        this.DisableActionButtons(false);
-      }
-      else if (this.datepicker.selectedDate === null) {
-        this.daterequired = true;
-        document.getElementById("datepicker").focus();
-        this.datepicker.onFocus();
+    if ($event == "0") {
+      this.daterequired = false;
+      this.disablethedate = true;
+      var element = document.getElementById("datepicker");
+      element && element.classList.contains("ng-dirty") && element.classList.contains("ng-untouched") ? element.classList.remove("ng-dirty") : null;
+      element && element.classList.contains("ng-invalid") && element.classList.contains("ng-untouched") ? element.classList.remove("ng-invalid") : null;
+    }
+    else {
+      this.disablethedate = false;
+      if (this.datepicker.selectedDate === null) {
         this.DisableActionButtons(true);
       }
-      else
-      {
-        this.DisableActionButtons(false);
+      else {
+
       }
     }
   }
 
   onDateChange($event) {
     var valueQuanity = this.numericElement && this.numericElement.displayValue;
-    if ($event === null || valueQuanity === "0")
-    {
-      this.DisableActionButtons(true);
+    if ($event === '' || $event === null) {
       this.daterequired = true;
-    }
-    else {
+    } else {
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
         var eventdate = new Date($event).getTime();
-          if (eventdate <= new Date().getTime() || isNaN(eventdate)) {
-          this.DisableActionButtons(true);
+        if (eventdate <= new Date().getTime() || isNaN(eventdate)) {
           this.daterequired = true;
-         }
-        else
-        {
+          var element = document.getElementById("datepicker");
+          if (element.classList.contains("ng-touched")
+            || element.classList.contains("ng-untouched")) {
+              element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
+              element.classList.contains("ng-invalid") ?null: element.classList.add("ng-invalid");
+          }
+          this.DisableActionButtons(false);
+        }
+        else {
           this.daterequired = false;
           this.DisableActionButtons(false);
         }
       }
-      else
-      {
+      else {
         this.daterequired = true;
         this.DisableActionButtons(true);
       }

@@ -22,4 +22,5 @@ export class GuidedCycleCount implements IGuidedCycleCount {
   ItmExpDateGranularity: string;
   QuantityMin: number;
   InStockQuantity: number;
+  ItemDateFormat: string;
 }
