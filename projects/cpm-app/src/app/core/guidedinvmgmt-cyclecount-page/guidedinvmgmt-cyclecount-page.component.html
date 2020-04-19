@@ -80,7 +80,7 @@
             <div class="rightCycleCountPanel">
                 <div class="demo">
                     <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
-                        [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units"
+                        [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true"
                         (valueChange)="onQuantityChange($event)">
                     </oc-numeric>
                 </div>

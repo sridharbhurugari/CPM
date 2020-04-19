@@ -10,6 +10,7 @@ import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
 import { Button } from 'protractor';
+import { CompileTemplateMetadata } from '@angular/compiler';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -62,6 +63,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
 
   ngAfterViewChecked() {
+    this.showredborderforfirstitem();
   }
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
@@ -72,15 +74,22 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
         this.displayCycleCountItem.InStockQuantity = x[0].QuantityOnHand;
+        
+       
+        this.togglecalendarborderred(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
       }
       this.IsLastItem();
       this.currentItemCount++;
-    });
+    },
+    (response)=> {this.showredborderforfirstitem()},
+    () => { this.showredborderforfirstitem()}
+    )
   }
 
   showValidComponent() {
@@ -146,6 +155,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     else {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
+      if (this.displayCycleCountItem.QuantityOnHand === 0) {
+        this.disabledatecomponent(true);
+      }
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       this.currentItemCount++;
@@ -153,21 +165,29 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.isLastItem = true;
       }
     }
-    this.forcecalendarborderred();
+    this.togglecalendarborderred(true);
   }
 
   onQuantityChange($event) {
     if ($event == "0") {
       this.daterequired = false;
-      this.disablethedate = true;
-      var element = document.getElementById("datepicker");
-      element && element.classList.contains("ng-dirty") && element.classList.contains("ng-untouched") ? element.classList.remove("ng-dirty") : null;
-      element && element.classList.contains("ng-invalid") && element.classList.contains("ng-untouched") ? element.classList.remove("ng-invalid") : null;
+      this.disabledatecomponent(true);
+      this.togglecalendarborderred(true);
+      this.DisableActionButtons(false);
     }
     else {
-      this.disablethedate = false;
-      if (this.datepicker.selectedDate === null) {
+      this.disabledatecomponent(false);
+      var eventdate = new Date(this.datepicker.selectedDate);
+      if (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "") {
         this.DisableActionButtons(true);
+        this.togglecalendarborderred(false);
+      }
+      else if (this.IsDateExpired(this.datepicker.selectedDate)) {
+        this.togglecalendarborderred(false);
+      }
+      else if (isNaN(eventdate.getTime())) {
+        this.DisableActionButtons(true);
+        this.togglecalendarborderred(false);
       }
     }
   }
@@ -179,15 +199,19 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     } else {
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
-        var eventdate = new Date($event).getTime();
-        if (eventdate <= new Date().getTime() || isNaN(eventdate)) {
+        var eventdate = new Date($event);
+        if (this.IsDateExpired($event)) {
           this.daterequired = true;
-          this.forcecalendarborderred();
+          this.togglecalendarborderred(false);
           this.DisableActionButtons(false);
+        }
+        else if (isNaN(eventdate.getTime())) {
+          this.DisableActionButtons(true);
         }
         else {
           this.daterequired = false;
           this.DisableActionButtons(false);
+          this.togglecalendarborderred(true);
         }
       }
       else {
@@ -205,6 +229,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   CheckItemExpGranularity() {
     return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity != "None" ? false : true;
   }
+
   navigateSkip() {
     if (this.isLastItem || this.currentItemCount == this.itemCount) {
       this.wpfActionController.ExecuteBackAction();
@@ -213,12 +238,49 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.nextRecord();
     }
   }
-  forcecalendarborderred() {
+
+  togglecalendarborderred(nextrecordonly: boolean) {
     var element = document.getElementById("datepicker");
-    if ((element && element.classList.contains("ng-touched"))
-      || (element && element.classList.contains("ng-untouched"))) {
-      element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
-      element.classList.contains("ng-invalid") ? null : element.classList.add("ng-invalid");
+    if (!nextrecordonly) {
+      if ((element && element.classList.contains("ng-touched"))
+        || (element && element.classList.contains("ng-untouched"))) {
+        element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
+        element.classList.contains("ng-invalid") ? null : element.classList.add("ng-invalid");
+      }
+    }
+    else {
+      element && element.classList.contains("ng-invalid") ? element.classList.remove("ng-invalid") : null;
+      element && element.classList.contains("ng-dirty") ? element.classList.remove("ng-dirty") : null;
+      element && element.classList.contains("ng-pristine") ? element.classList.remove("ng-pristine") : null;
     }
   }
+
+  disabledatecomponent(value: boolean) {
+    this.disablethedate = value;
+  }
+
+  IsDateExpired(input: string) {
+    var todayDate = new Date();
+    var todayMonth = todayDate.getMonth() + 1;
+    var todayDay = todayDate.getDate();
+    var todayYear = todayDate.getFullYear();
+    var todayDateText = todayMonth + "/" + todayDay + "/" + todayYear;
+    var inputToDate = Date.parse(input);
+    var todayToDate = Date.parse(todayDateText);
+    return (inputToDate < todayToDate);
+  }
+
+  showredborderforfirstitem()
+  {
+    var element = document.getElementById("datepicker");
+    if (this.displayCycleCountItem && this.displayCycleCountItem.QuantityOnHand === 0) {
+      this.disabledatecomponent(true);
+      this.togglecalendarborderred(true);
+    }
+    if (this.IsDateExpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)) {
+      if(!(this.datepicker && this.datepicker.isDisabled ))
+      this.togglecalendarborderred(false);
+    }
+  }
+
 }
