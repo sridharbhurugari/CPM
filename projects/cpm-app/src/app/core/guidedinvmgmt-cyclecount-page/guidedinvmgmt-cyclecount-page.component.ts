@@ -215,8 +215,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
   forcecalendarborderred() {
     var element = document.getElementById("datepicker");
-    if (element.classList.contains("ng-touched")
-      || element.classList.contains("ng-untouched")) {
+    if ((element && element.classList.contains("ng-touched"))
+      || (element && element.classList.contains("ng-untouched"))) {
       element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
       element.classList.contains("ng-invalid") ? null : element.classList.add("ng-invalid");
     }
