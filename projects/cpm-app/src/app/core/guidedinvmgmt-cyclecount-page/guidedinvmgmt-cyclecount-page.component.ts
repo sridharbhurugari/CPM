@@ -153,6 +153,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.isLastItem = true;
       }
     }
+    this.forcecalendarborderred();
   }
 
   onQuantityChange($event) {
@@ -168,9 +169,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       if (this.datepicker.selectedDate === null) {
         this.DisableActionButtons(true);
       }
-      else {
-
-      }
     }
   }
 
@@ -184,12 +182,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         var eventdate = new Date($event).getTime();
         if (eventdate <= new Date().getTime() || isNaN(eventdate)) {
           this.daterequired = true;
-          var element = document.getElementById("datepicker");
-          if (element.classList.contains("ng-touched")
-            || element.classList.contains("ng-untouched")) {
-              element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
-              element.classList.contains("ng-invalid") ?null: element.classList.add("ng-invalid");
-          }
+          this.forcecalendarborderred();
           this.DisableActionButtons(false);
         }
         else {
@@ -218,6 +211,14 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     }
     else {
       this.nextRecord();
+    }
+  }
+  forcecalendarborderred() {
+    var element = document.getElementById("datepicker");
+    if (element.classList.contains("ng-touched")
+      || element.classList.contains("ng-untouched")) {
+      element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
+      element.classList.contains("ng-invalid") ? null : element.classList.add("ng-invalid");
     }
   }
 }
