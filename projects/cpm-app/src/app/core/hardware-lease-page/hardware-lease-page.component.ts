@@ -14,6 +14,8 @@ import { HardwareLeaseEventConnectionService } from '../../xr2/services/hardware
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { IConfigurationService } from 'oal-core';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { isUndefined } from 'util';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -36,6 +38,8 @@ export class HardwareLeasePageComponent implements OnInit {
   spinIcon = 'clear';
   disabledButtons = true;
   systemConfig: IConfigurationValue[];
+  hwTimeout = 10000;
+  successfulOutcome = [0, 1, 2, 3, 4];
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -46,7 +50,6 @@ export class HardwareLeasePageComponent implements OnInit {
     private dialogService: PopupDialogService,
     private hardwareLeaseEventConnectionService: HardwareLeaseEventConnectionService,
     private systemConfigurationService: SystemConfigurationService
-    // TODO: get timeout for hardware request
     ) {
 
     this.connectToEvents();
@@ -60,20 +63,15 @@ export class HardwareLeasePageComponent implements OnInit {
     this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.routeToPath  = this.activatedRoute.snapshot.queryParamMap.get('routeToPath');
 
-    this.systemConfigurationService.GetConfigurationValues().subscribe(result => {
-      console.log(result);
-      this.systemConfig = result;
-    });
-
-    this.systemConfigurationService.Get().subscribe(result => {
-      console.log( 'single get');
-      console.log( result);
-    });
-
     this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
       console.log(res);
       this.displayDeviceConfigurationList.push(res);
       this.disabledButtons = false;
+    });
+
+    this.systemConfigurationService.GetConfigurationValues('HARDWARE', 'LEASE_REQUEST_TIMEOUT').subscribe(result => {
+      console.log(result);
+      this.hwTimeout = Number(result) * 1000;
     });
   }
 
@@ -85,22 +83,22 @@ export class HardwareLeasePageComponent implements OnInit {
     this.disabledButtons = true;
     this.spinIcon = 'spin';
 
-    // TODO: subscribe to signal r event
     this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
       console.log(results);
-      if (results.IsSuccessful === false) {
+      if (results.IsSuccessful === false || this.successfulOutcome.includes(results.DeviceOperationOutcome)) {
         this.displayRequestLeaseDialog(results.OutcomeText);
+      } else {
+        this.navigateNext();
       }
     });
 
     setTimeout(() => {
       this.spinIcon = 'clear';
       this.disabledButtons = false;
-    }, 10000);
+    }, Number(this.hwTimeout));
   }
 
   navigateNext() {
-    // TODO: check signal R event type and move next or show failed popup
     const navigationExtras: NavigationExtras = {
       queryParams: { deviceId: this.deviceId },
       fragment: 'anchor'
@@ -131,6 +129,9 @@ export class HardwareLeasePageComponent implements OnInit {
     }
 
     this.hardwareLeaseEventConnectionService.hardwareResponseSubject
-      .subscribe(message => {console.log(message); } );
+      .subscribe(message => {
+        console.log(message);
+        // TODO: check type and navigate or show popup
+      });
   }
 }

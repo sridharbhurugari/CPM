@@ -4,6 +4,7 @@ import { EventConnectionService } from './event-connection.service';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +12,21 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 export class HardwareLeaseEventConnectionService extends EventConnectionService {
 
   public hardwareResponseSubject = new Subject<string>();
+  clientId: string;
 
   constructor(
     configurationService: ConfigurationService,
-    ocapUrlBuilderService: OcapUrlBuilderService
+    ocapUrlBuilderService: OcapUrlBuilderService,
+    private ocapConfigurationService: OcapHttpConfigurationService
     ) {
     super(configurationService, ocapUrlBuilderService);
+    this.setClientId();
+   }
+
+   private setClientId() {
+    const configuration = this.ocapConfigurationService.get();
+    console.log('ClientId found : ' + configuration.clientId);
+    this.clientId = configuration.clientId;
    }
 
   public async openEventConnection(): Promise<void> {
@@ -25,13 +35,17 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
   }
 
   private configureHardwareLeaseHandlers(message: any): void {
+    console.log(message);
+
     if (message === undefined) {
       return;
     }
-    console.log(message);
 
     if (message.EventId === undefined) {
-        return;
+      if (message.clientId !== undefined && message.clientId === this.clientId) {
+          console.log('Matching Client Id triggering event subscription');
+          this.hardwareResponseSubject.next(message);
+      }
     }
   }
 }
