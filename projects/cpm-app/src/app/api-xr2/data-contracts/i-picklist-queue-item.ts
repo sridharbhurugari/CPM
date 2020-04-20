@@ -9,6 +9,7 @@ export interface IPicklistQueueItem {
   PriorityCodeColor: string;
   Destination: string;
   DestinationId: string;
+  DestinationType: string;
   PriorityCodeDescription: string;
   BoxCount: number;
   FilledBoxCount: number;

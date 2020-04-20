@@ -4,6 +4,8 @@ import { PicklistsQueueEventConnectionService } from './picklists-queue-event-co
 import { EventConnectionService } from './event-connection.service';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { HubConfigurationService } from './hub-configuration.service';
+
 
 describe('PicklistsQueueEventConnectionService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -11,6 +13,7 @@ describe('PicklistsQueueEventConnectionService', () => {
       { provide: EventConnectionService, useValue: {} },
       { provide: ConfigurationService, useValue: { getItem: () => {} } },
       { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+      { provide: HubConfigurationService, useValue: {} }
     ]
   }));
 
