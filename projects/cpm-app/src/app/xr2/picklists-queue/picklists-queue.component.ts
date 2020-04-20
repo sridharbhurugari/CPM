@@ -77,11 +77,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      /*this.shutdownSignalR();*/
   }
 
   back() {
-    /*this.shutdownSignalR();*/
     this.wpfActionController.ExecuteContinueAction();
   }
 
@@ -89,12 +87,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     await this.picklistQueueEventConnectionService.openEventConnection();
     this.configureEventHandlers();
   }
-
-  /*private shutdownSignalR(): void {
-    if (this.eventConnectionService) {
-      this.eventConnectionService.shutdown();
-    }
-  }*/
 
   private configureEventHandlers(): void {
     if (!this.picklistQueueEventConnectionService) {
@@ -143,11 +135,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
-
-    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
+    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;    
+    globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
@@ -173,6 +166,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
       pickListLineDetail.ItemId = itemPicklistLine.ItemId;
       pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.DestinationType = picklistQueueItem.DestinationType;
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
       pickListLineDetail.PickLocationDescription = itemPicklistLine.PickLocationDescription;
       robotPrintRequest.PickListLineDetails.push(pickListLineDetail);
