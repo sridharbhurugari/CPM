@@ -166,7 +166,20 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   delete(){
+    const properties = new PopupWindowProperties();
+    const data: IConfirmPopupData = {
+      headerResourceKey: 'ROUTE_DELETE',
+      confirmTextboxResourceKey: 'ROUTE_DELETE_AFTER'
+    };
 
+    properties.data = data;
+    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.subscribe(selectedConfirm => {
+      if (selectedConfirm) {
+        this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
+          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+      }
+    });
   }
 
   onDeviceSequenceChanged(newDeviceSequence: IDeviceSequenceOrder[]) {

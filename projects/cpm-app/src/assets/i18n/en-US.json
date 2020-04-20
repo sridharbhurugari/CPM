@@ -47,6 +47,8 @@
   "REORDER_LEVEL": "Reorder Level",
   "ROUTE": "Route",
   "ROUTE_ASSIGNMENT": "Route Assignment",
+  "ROUTE_DELETE": "Delete Route",
+  "ROUTE_DELETE_AFTER": "Are you sure you want to delete the route?",
   "ROUTE_MAINTENANCE": "Route Maintenance",
   "ROUTE_NAME": "Route Name",
   "ROUTE_SAVE_BEFORE": "Are you sure you want to save the changes?",
