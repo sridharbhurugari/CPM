@@ -83,18 +83,18 @@ export class HardwareLeasePageComponent implements OnInit {
     this.disabledButtons = true;
     this.spinIcon = 'spin';
 
-    this.hardwareLeaseService.get().subscribe(res => {
-      console.log(res);
-    });
-
-    // this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
-    //   console.log(results);
-    //   if (results.IsSuccessful === false || this.successfulOutcome.includes(results.DeviceOperationOutcome)) {
-    //     this.displayRequestLeaseDialog(results.OutcomeText);
-    //   } else {
-    //     this.navigateNext();
-    //   }
+    // this.hardwareLeaseService.get().subscribe(res => {
+    //   console.log(res);
     // });
+
+    this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
+      console.log(results);
+      if (results.IsSuccessful === false || this.successfulOutcome.includes(results.DeviceOperationOutcome)) {
+        this.displayRequestLeaseDialog(results.OutcomeText);
+      } else {
+        this.navigateNext();
+      }
+    });
 
     setTimeout(() => {
       this.spinIcon = 'clear';
@@ -132,11 +132,18 @@ export class HardwareLeasePageComponent implements OnInit {
       return;
     }
 
-    this.hardwareLeaseEventConnectionService.hardwareResponseSubject
+    this.hardwareLeaseEventConnectionService.hardwareLeaseGrantedSubject
       .subscribe(message => {
-        console.log('ReceivedEvent hardwareResponse');
+        console.log('Received Granted Event');
         console.log(message);
-        // TODO: check type and navigate or show popup
+        this.navigateNext();
+      });
+
+    this.hardwareLeaseEventConnectionService.hardwareLeaseDeniedSubject
+      .subscribe(message => {
+        console.log('Received Denied Event');
+        console.log(message);
+        this.displayRequestLeaseDialog('Access Denied');
       });
   }
 }

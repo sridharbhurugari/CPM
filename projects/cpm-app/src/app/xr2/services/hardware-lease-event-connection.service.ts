@@ -12,7 +12,8 @@ import { HubConfigurationService } from './hub-configuration.service';
 })
 export class HardwareLeaseEventConnectionService extends EventConnectionService {
 
-  public hardwareResponseSubject = new Subject<string>();
+  public hardwareLeaseDeniedSubject = new Subject();
+  public hardwareLeaseGrantedSubject = new Subject();
   clientId: string;
 
   constructor(
@@ -48,7 +49,11 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
       console.log('eventUndefined');
       if (message.ClientId === this.clientId) {
           console.log('Matching Client Id triggering event subscription');
-          this.hardwareResponseSubject.next(message);
+          if (message.$type.includes('HardwareLeaseGrantedEvent')) {
+              this.hardwareLeaseGrantedSubject.next();
+          } else if (message.$type.includes('HardwareLeaseGrantedDenied')) {
+            this.hardwareLeaseDeniedSubject.next();
+          }
       }
     }
   }
