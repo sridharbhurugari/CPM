@@ -65,8 +65,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-  describe('navigateBack', () => {
-    it('makes expected calls', () => {
+  describe('navigateBack to guided cycle count page', () => {
+    it('navigateBack to guided cycle count page', () => {
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
       );
@@ -80,8 +80,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       ).toHaveBeenCalled();
     });
   });
-  describe('navigateContinue', () => {
-    it('makes expected calls', () => {
+  describe('navigateContinue to the next item', () => {
+    it('navigateContinue to the next item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 86,  
         ItemId: "ace500t",
@@ -113,8 +113,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       ).toHaveBeenCalled();
     });
   });
-  describe('navigateContinue', () => {
-    it('makes expected calls', () => {
+  describe('navigateContinue with month item granularity', () => {
+    it('navigateContinue with month item granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 86,  
         ItemId: "ace500t",
@@ -159,7 +159,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect('03/31/2020').toBe(strDate);
     });
   });
-  describe('Sending proper date with required format', () => {
+  describe('Sending wrong date', () => {
     it('return required date format', () => {
       var testDate = new Date('');
       var strDate = component.FormatExpireDate(testDate);
@@ -339,7 +339,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(bReturn).toBeTruthy();
     });
   });
-  describe('returns item expiredate granularity', () => {
+  describe('returns item expiredate granularity with month', () => {
     it('returns item expiredate granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
@@ -363,7 +363,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(value).toBeFalsy();
     });
   });
-  describe('returns item expiredate granularity', () => {
+  describe('returns item expiredate granularity with none', () => {
     it('returns item expiredate granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
@@ -387,7 +387,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(value).toBeTruthy();
     });
   });
-  describe('disable action buttons', () => {
+  describe('disable action buttons for last item', () => {
     it('disable action buttons', () => {
       component.isLastItem = true;
       component.DisableActionButtons(true); 
@@ -395,7 +395,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeTruthy();
     });
   });
-  describe('returns last item false', () => {
+  describe('toggle action buttons when last item is false', () => {
     it('return with is last item', () => {
       component.isLastItem = false;
       component.DisableActionButtons(true); 
@@ -403,7 +403,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
-  describe('date changes validation', () => {
+  describe('empty date with numeric value 0 changes validation', () => {
     it('date changes validation', () => {
       component.onDateChange('');
       var dummy,dummy1;
@@ -414,7 +414,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
-  describe('date changes validation', () => {
+  describe('null date changes validation', () => {
     it('date changes validation', () => {
       component.onDateChange(null);
       var dummy,dummy1;
@@ -425,7 +425,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
-  describe('date changes validation', () => {
+  describe('future date changes validation', () => {
     it('date changes validation', () => {
       component.onDateChange("01/02/2021");
       var dummy,dummy1;
@@ -436,7 +436,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
-  describe('quantity changes validation', () => {
+  describe('zero quantity changes validation', () => {
     it('quantity changes validation', () => {
       component.onQuantityChange("0");
       var dummy,dummy1;
@@ -514,7 +514,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.DisableActionButtons(true);
     });
   });
-  describe('skip the item', () => {
+  describe('skip the item for last item', () => {
     it('skip the item ', () => {
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
@@ -530,7 +530,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       ).toHaveBeenCalled();
     });
   });
-  describe('skip the item', () => {
+  describe('skip the item for last item false', () => {
     it('skip the item ', () => {
       component.isLastItem = false;
       component.navigateSkip();
@@ -581,7 +581,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(value).toBeFalsy();
      });
   });
-  describe('date changes validation', () => {
+  describe('wrong format date changes validation', () => {
     it('date changes validation', () => {
       component.onDateChange("1/1/00");
       var dummy,dummy1;
