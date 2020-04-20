@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { OcapUrlBuilderService } from './ocap-url-builder.service';
 import { OcapHttpHeadersService } from './ocap-http-headers.service';
 import { IConfigurationValue } from '../interfaces/i-configuration-value';
@@ -16,21 +16,11 @@ export class SystemConfigurationService {
     private ocapHttpHeadersService: OcapHttpHeadersService
   ) { }
 
-  GetConfigurationValues(): Observable<IConfigurationValue[]> {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/configuration/GetConfigurationValues');
-    return this.httpClient.get<IConfigurationValue[]>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
-  Get(): Observable<IConfigurationValue> {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/configuration/');
-    const params = new HttpParams();
-    params.set('category', 'HARDWARE');
-    params.set('subCategory', 'Hardware Access Request Timeout In Seconds');
+  GetConfigurationValues(categoryId: string, subCategoryId: string): Observable<IConfigurationValue> {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/configuration/Get');
+    const params = {category: categoryId, subCategory: subCategoryId};
     return this.httpClient.get<IConfigurationValue>(url, {
       headers: this.ocapHttpHeadersService.getHeaders(), params }
       );
   }
-
 }
