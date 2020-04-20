@@ -38,11 +38,13 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
     console.log(message);
 
     if (message === undefined) {
+      console.log('message undefined');
       return;
     }
 
     if (message.EventId === undefined) {
-      if (message.clientId !== undefined && message.clientId === this.clientId) {
+      console.log('eventUndefined');
+      if (message.ClientId === this.clientId) {
           console.log('Matching Client Id triggering event subscription');
           this.hardwareResponseSubject.next(message);
       }

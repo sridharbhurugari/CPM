@@ -14,7 +14,6 @@ import { HardwareLeaseEventConnectionService } from '../../xr2/services/hardware
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { IConfigurationService } from 'oal-core';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
-import { isUndefined } from 'util';
 import * as _ from 'lodash';
 
 
@@ -70,8 +69,9 @@ export class HardwareLeasePageComponent implements OnInit {
     });
 
     this.systemConfigurationService.GetConfigurationValues('HARDWARE', 'LEASE_REQUEST_TIMEOUT').subscribe(result => {
+      console.log('hw timeout : ' + result);
       console.log(result);
-      this.hwTimeout = Number(result) * 1000;
+      this.hwTimeout = (Number(result.Value) * 1000) + 2000;
     });
   }
 
@@ -83,14 +83,18 @@ export class HardwareLeasePageComponent implements OnInit {
     this.disabledButtons = true;
     this.spinIcon = 'spin';
 
-    this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
-      console.log(results);
-      if (results.IsSuccessful === false || this.successfulOutcome.includes(results.DeviceOperationOutcome)) {
-        this.displayRequestLeaseDialog(results.OutcomeText);
-      } else {
-        this.navigateNext();
-      }
+    this.hardwareLeaseService.get().subscribe(res => {
+      console.log(res);
     });
+
+    // this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
+    //   console.log(results);
+    //   if (results.IsSuccessful === false || this.successfulOutcome.includes(results.DeviceOperationOutcome)) {
+    //     this.displayRequestLeaseDialog(results.OutcomeText);
+    //   } else {
+    //     this.navigateNext();
+    //   }
+    // });
 
     setTimeout(() => {
       this.spinIcon = 'clear';
@@ -130,6 +134,7 @@ export class HardwareLeasePageComponent implements OnInit {
 
     this.hardwareLeaseEventConnectionService.hardwareResponseSubject
       .subscribe(message => {
+        console.log('ReceivedEvent hardwareResponse');
         console.log(message);
         // TODO: check type and navigate or show popup
       });

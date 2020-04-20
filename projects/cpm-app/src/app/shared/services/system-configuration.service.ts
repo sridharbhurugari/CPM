@@ -16,9 +16,9 @@ export class SystemConfigurationService {
     private ocapHttpHeadersService: OcapHttpHeadersService
   ) { }
 
-  GetConfigurationValues(category: string, subCategory: string): Observable<IConfigurationValue> {
+  GetConfigurationValues(categoryId: string, subCategoryId: string): Observable<IConfigurationValue> {
     const url = this.ocapUrlBuilderService.buildUrl('/api/configuration/Get');
-    const params = {category, subCategory};
+    const params = {category: categoryId, subCategory: subCategoryId};
     return this.httpClient.get<IConfigurationValue>(url, {
       headers: this.ocapHttpHeadersService.getHeaders(), params }
       );
