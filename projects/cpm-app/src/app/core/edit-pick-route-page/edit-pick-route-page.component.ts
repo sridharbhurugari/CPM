@@ -38,6 +38,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
+  canDelete = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -162,6 +163,10 @@ export class EditPickRoutePageComponent implements OnInit {
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
     });
+  }
+
+  delete(){
+
   }
 
   onDeviceSequenceChanged(newDeviceSequence: IDeviceSequenceOrder[]) {
