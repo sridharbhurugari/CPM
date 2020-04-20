@@ -5,6 +5,7 @@ import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { HubConfigurationService } from './hub-configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,12 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
   clientId: string;
 
   constructor(
+    hubConfigurationService: HubConfigurationService,
     configurationService: ConfigurationService,
     ocapUrlBuilderService: OcapUrlBuilderService,
     private ocapConfigurationService: OcapHttpConfigurationService
     ) {
-    super(configurationService, ocapUrlBuilderService);
+    super(hubConfigurationService, configurationService, ocapUrlBuilderService);
     this.setClientId();
    }
 

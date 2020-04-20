@@ -28,6 +28,10 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
   }
 
   private configurePicklistEventHandlers(message: any): void {
+    console.log(message);
+    const messageTypeName: string = message.$type;
+    console.log(messageTypeName);
+
     if (message === undefined) {
       return;
     }
@@ -47,3 +51,4 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     }
   }
 }
+
