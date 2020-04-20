@@ -130,4 +130,13 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit {
       }
     }
   }
+
+  navigateSkip() {
+    if (this.isLastItem || this.currentItemCount == this.itemCount) {
+      this.wpfActionController.ExecuteBackAction();
+    } 
+    else{
+    this.nextRecord();
+    }
+  }
 }
