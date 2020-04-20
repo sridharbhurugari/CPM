@@ -113,6 +113,39 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       ).toHaveBeenCalled();
     });
   });
+  describe('navigateContinue', () => {
+    it('makes expected calls', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 86,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2020",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 55,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Month",
+        QuantityMin:10,
+        InStockQuantity:10,
+        ItemDateFormat: "MM/DD/YYYY"
+      });
+      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
+        WpfActionControllerService
+      );
+      spyOn(
+        wpfActionControllerServiceStub,
+        'ExecuteBackAction'
+      ).and.callThrough();
+      component.navigateContinue();
+      expect(
+        wpfActionControllerServiceStub.ExecuteBackAction
+      ).toHaveBeenCalled();
+    });
+  });
   describe('cycle count data retrieval',()=>{
     it('cycle count data retrieval',() => {
       var deviceID = "1";
@@ -495,6 +528,70 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(
         wpfActionControllerServiceStub.ExecuteBackAction
       ).toHaveBeenCalled();
+    });
+  });
+  describe('skip the item', () => {
+    it('skip the item ', () => {
+      component.isLastItem = false;
+      component.navigateSkip();
+    });
+  });
+  describe('toggle red border line for calendar control', () => {
+    it('toggle red border line for calendar control', () => {
+      var dummyElement = document.createElement('datepicker');
+      document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
+
+    });
+  });
+  describe('quantity changes null date validation', () => {
+    it('quantity changes null date validation', () => {
+      component.onQuantityChange("0");
+      var dummy,dummy1;
+      component.datepicker = new DatepickerComponent(dummy,dummy1);
+      var datevalue = component.datepicker.selectedDate;
+      expect(datevalue).toEqual('');
+      component.daterequired = false;
+      expect(component.daterequired).toBeFalsy();
+    });
+  });
+  describe('toggle calendar border with red color for first item', () => {
+    it('toggle calendar border with red color for first item', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2018",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 12,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Month",
+        QuantityMin:10,
+        InStockQuantity:12,
+        ItemDateFormat: "MM/DD/YYYY"
+      });
+      component.toggleredborderforfirstitem();
+      var dummy,dummy1;
+      component.datepicker = new DatepickerComponent(dummy,dummy1);
+      var  value =component.datepicker.isDisabled;
+      expect(value).toBeFalsy();
+     });
+  });
+  describe('date changes validation', () => {
+    it('date changes validation', () => {
+      component.onDateChange("1/1/00");
+      var dummy,dummy1;
+      component.numericElement = new NumericComponent(dummy,dummy1);
+      component.numericElement.displayValue = "10";
+      component.DisableActionButtons(true); 
+      var val = component.daterequired;
+      expect(val).toBeTruthy();
+      expect(component.nextButtonDisable).toBeTruthy();
+      expect(component.doneButtonDisable).toBeFalsy();
     });
   });
  });

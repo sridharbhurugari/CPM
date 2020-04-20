@@ -32,7 +32,7 @@
                 <div class="itemIdHeader">
                     <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
                 </div>
-                <div class="ItemId">
+                <div class="location">
                     <span>
                         {{ displayCycleCountItem.LocationDescription }}
                     </span>
@@ -70,7 +70,7 @@
                         <div class="expiration">
                             <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat" [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" 
                                 [isRequired]="daterequired" [autocorrect]="false"  [isDisabled]="disablethedate" 
-                                popupDirection="UP" (ngModelChange)=onDateChange($event) [minDate]="todaydate">
+                                popupDirection="UP" (ngModelChange)=onDateChange($event) [minDate]="todaydate" > 
                             </oc-datepicker>
 
                         </div>

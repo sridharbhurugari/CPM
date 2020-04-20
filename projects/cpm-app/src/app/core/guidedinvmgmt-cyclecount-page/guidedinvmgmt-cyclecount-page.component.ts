@@ -63,7 +63,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
 
   ngAfterViewChecked() {
-    this.showredborderforfirstitem();
+    this.toggleredborderforfirstitem();
   }
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
@@ -74,12 +74,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.displayCycleCountItem = x[0];
         var date = new Date(x[0].ExpirationDate);
         this.displayCycleCountItem.InStockQuantity = x[0].QuantityOnHand;
-        
-       
-        this.togglecalendarborderred(true);
+
+        this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-        
+
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -87,8 +86,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.IsLastItem();
       this.currentItemCount++;
     },
-    (response)=> {this.showredborderforfirstitem()},
-    () => { this.showredborderforfirstitem()}
+      (response) => { this.toggleredborderforfirstitem() },
+      () => { this.toggleredborderforfirstitem() }
     )
   }
 
@@ -165,29 +164,29 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.isLastItem = true;
       }
     }
-    this.togglecalendarborderred(true);
+    this.toggleredborderfornonfirstitem(true);
   }
 
   onQuantityChange($event) {
     if ($event == "0") {
       this.daterequired = false;
       this.disabledatecomponent(true);
-      this.togglecalendarborderred(true);
+      this.toggleredborderfornonfirstitem(true);
       this.DisableActionButtons(false);
     }
     else {
       this.disabledatecomponent(false);
-      var eventdate = new Date(this.datepicker.selectedDate);
-      if (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "") {
+      var eventdate = new Date( this.datepicker && this.datepicker.selectedDate);
+      if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
         this.DisableActionButtons(true);
-        this.togglecalendarborderred(false);
+        this.toggleredborderfornonfirstitem(false);
       }
-      else if (this.IsDateExpired(this.datepicker.selectedDate)) {
-        this.togglecalendarborderred(false);
+      else if (this.isdateexpired(this.datepicker.selectedDate)) {
+        this.toggleredborderfornonfirstitem(false);
       }
       else if (isNaN(eventdate.getTime())) {
         this.DisableActionButtons(true);
-        this.togglecalendarborderred(false);
+        this.toggleredborderfornonfirstitem(false);
       }
     }
   }
@@ -200,9 +199,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
         var eventdate = new Date($event);
-        if (this.IsDateExpired($event)) {
+        if (this.isdateexpired($event)) {
           this.daterequired = true;
-          this.togglecalendarborderred(false);
+          this.toggleredborderfornonfirstitem(false);
           this.DisableActionButtons(false);
         }
         else if (isNaN(eventdate.getTime())) {
@@ -211,7 +210,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         else {
           this.daterequired = false;
           this.DisableActionButtons(false);
-          this.togglecalendarborderred(true);
+          this.toggleredborderfornonfirstitem(true);
         }
       }
       else {
@@ -239,19 +238,21 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     }
   }
 
-  togglecalendarborderred(nextrecordonly: boolean) {
+  toggleredborderfornonfirstitem(nextrecordonly: boolean) {
     var element = document.getElementById("datepicker");
-    if (!nextrecordonly) {
-      if ((element && element.classList.contains("ng-touched"))
-        || (element && element.classList.contains("ng-untouched"))) {
-        element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
-        element.classList.contains("ng-invalid") ? null : element.classList.add("ng-invalid");
+    if (element) {
+      if (!nextrecordonly) {
+        if ((element.classList.contains("ng-touched"))
+          || (element.classList.contains("ng-untouched"))) {
+          element.classList.contains("ng-valid") ? element.classList.remove("ng-valid") : null;
+          element.classList.contains("ng-invalid") ? null : element.classList.add("ng-invalid");
+        }
       }
-    }
-    else {
-      element && element.classList.contains("ng-invalid") ? element.classList.remove("ng-invalid") : null;
-      element && element.classList.contains("ng-dirty") ? element.classList.remove("ng-dirty") : null;
-      element && element.classList.contains("ng-pristine") ? element.classList.remove("ng-pristine") : null;
+      else {
+        element.classList.contains("ng-invalid") ? element.classList.remove("ng-invalid") : null;
+        element.classList.contains("ng-dirty") ? element.classList.remove("ng-dirty") : null;
+        element.classList.contains("ng-pristine") ? element.classList.remove("ng-pristine") : null;
+      }
     }
   }
 
@@ -259,28 +260,22 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.disablethedate = value;
   }
 
-  IsDateExpired(input: string) {
+  isdateexpired(input: string) {
     var todayDate = new Date();
-    var todayMonth = todayDate.getMonth() + 1;
-    var todayDay = todayDate.getDate();
-    var todayYear = todayDate.getFullYear();
-    var todayDateText = todayMonth + "/" + todayDay + "/" + todayYear;
+    var todayDateText = (todayDate.getMonth() + 1) + "/" + todayDate.getDate() + "/" + todayDate.getFullYear();
     var inputToDate = Date.parse(input);
     var todayToDate = Date.parse(todayDateText);
     return (inputToDate < todayToDate);
   }
 
-  showredborderforfirstitem()
-  {
-    var element = document.getElementById("datepicker");
+  toggleredborderforfirstitem() {
     if (this.displayCycleCountItem && this.displayCycleCountItem.QuantityOnHand === 0) {
       this.disabledatecomponent(true);
-      this.togglecalendarborderred(true);
+      this.toggleredborderfornonfirstitem(true);
     }
-    if (this.IsDateExpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)) {
-      if(!(this.datepicker && this.datepicker.isDisabled ))
-      this.togglecalendarborderred(false);
+    else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)) {
+      if (!(this.datepicker && this.datepicker.isDisabled))
+        this.toggleredborderfornonfirstitem(false);
     }
   }
-
 }
