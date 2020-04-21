@@ -14,7 +14,7 @@ describe('HardwareLeasePageComponent', () => {
   let component: HardwareLeasePageComponent;
   let fixture: ComponentFixture<HardwareLeasePageComponent>;
   let hardwareLeaseService: Partial<HardwareLeaseService>;
-  let leaseVerificationResult: LeaseVerificationResult = 1;
+  const leaseVerificationResult: LeaseVerificationResult = 1;
   let popupDialogService: Partial<PopupDialogService>;
 
   const devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
