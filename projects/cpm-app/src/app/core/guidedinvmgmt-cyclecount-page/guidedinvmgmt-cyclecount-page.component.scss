@@ -27,7 +27,16 @@
 
   .ItemId{
     font-size: 38px;
-    font-weight: $bold;
+    font-weight: bold;
+    font-family: $font-family-sans-serif;
+    color:$text-color;
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .location{
+    font-size: 28px;
+    font-weight: bold;
     font-family: $font-family-sans-serif;
     color:$text-color;
     bottom: 16px;
@@ -46,7 +55,6 @@
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    margin-top: 16px!important;
   }
 
   .panelContainer {
@@ -64,11 +72,11 @@
 
   .itemIdBox{     
     height: 75px;
-    width: 340px;  
+    width: 335px;  
     border-left: solid white 24px;
     border-right: solid  #c8c8c8 1px; 
-    margin-top: 8px;
-    margin-bottom:8px;    
+    margin-top: 6px;
+    margin-bottom: 6px;
   }
 
   .locationOfCycleCount {
@@ -101,7 +109,7 @@
     justify-content: center;   
     align-items: center;
     font-weight: $bold;
-    margin-left: 24px;
+    margin-left: 16px;
     margin-top: 16px;
     margin-bottom: 16px;
   }
@@ -136,7 +144,7 @@
   position: relative;
   vertical-align: center;
   margin-top: 20px;
-  margin-right: 200px;
+  margin-right: 240px;
 }
 
 
@@ -151,7 +159,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
 }
 .totalItemCount{
   font-size: 20px;
@@ -169,11 +176,13 @@
   background-color: #ffffff;
   vertical-align: center!important;
   glyph-orientation-horizontal: center!important;
+  margin-left: 16px;
 }
 .demo{
   vertical-align: center!important;
   glyph-orientation-horizontal: center!important;
   margin-bottom: 100px!important;
+  width: 400px!important;
   ::ng-deep{
     div{
       &:first-child{
@@ -181,7 +190,6 @@
         color:$text-color;
         font-size: 20px!important;
         line-height: 16px!important;
-        width: 400px;
       }
     }
   }
@@ -193,9 +201,8 @@
   ::ng-deep{
     input{
       &:first-child{
-        margin-top: 16px!important;
-        margin-bottom: 4px!important;
-        font-size: 32px!important;
+        margin-top: 12px!important;
+        font-size: 38px!important;
         font-weight: bold;
         font-family: $font-family-sans-serif;
         color:$text-color;
@@ -210,9 +217,15 @@
       font-family: $font-family-sans-serif;
       font-weight: normal;
       color:$text-color;
+      margin-bottom: 4px;
       }
     }
   } 
+  ::ng-deep{
+    span{
+      min-width: 80px!important;
+    }
+  }
 }
 .expiration{
   margin-top: 6px!important;
@@ -226,18 +239,20 @@
     }
     ::ng-deep{
       form{
-          height: 60px!important;
-          width: 280px;
+          height: 65px!important;
+          width: 290px;
           background-color: #ffffff;
         }
       }
     ::ng-deep{
-     input{
-       font-size: 38px!important;
+     input:nth-child(1){
+       font-size: 30px!important;
        font-weight: bold;
        font-family: $font-family-sans-serif;
-       margin-left: 2px!important;
-       margin-right: 0px!important;
+       margin-left: 0px!important;
+       margin-right: 2px!important;
+       margin-top: 3px!important;
+       height: 50px!important;
        padding-right: none!important;
        position: relative;
        flex: 0px!important;
@@ -251,24 +266,46 @@
        flex-shrink: 0!important;
        flex-basis: 0!important;
        flex-flow:0!important;
+      }
     }
-
+    ::ng-deep{
+      input:nth-child(3){
+        font-size: 30px!important;
+        font-weight: bold;
+        font-family: $font-family-sans-serif;
+        margin-left: 3px!important;
+        margin-right: 3px!important;
+        padding-right: none!important;
+        position: relative;
+        flex: 0px!important;
+        min-width:45px!important;
+        width: 120px!important;
+        display: initial!important;
+        text-align:center!important;
+        bottom: 3px!important;
+        flex: 0!important;
+        flex-wrap: 0!important;
+        flex-shrink: 0!important;
+        flex-basis: 0!important;
+        flex-flow:0!important;
+      }
     }
     ::ng-deep{
       input:nth-child(5){
-       font-size: 38px!important;
+       font-size: 30px!important;
        font-weight: bold;
        font-family: $font-family-sans-serif;
-       margin-left: 2px!important;
+       margin-left: 4px!important;
        margin-right: 0px!important;
+       margin-bottom: 0px!important;
        padding-right: none!important;
        position: relative;
        flex: 0px!important;
        bottom: 6px!important;
-       min-width:100px!important;
+       min-width:85px!important;
        display: initial!important;
        text-align: left!important;
-       bottom: 5px!important;
+       bottom: 4px!important;
        flex: 0!important;
        flex-wrap: 0!important;
        flex-shrink: 0!important;
@@ -280,7 +317,7 @@
    ::ng-deep{
      span{
        font-weight: bold;
-       padding: 0px!important;
+      // padding: 0px!important;
        margin: 0px!important;
        font-size: 30px!important;
        flex: none!important;
@@ -293,7 +330,7 @@
        position: initial!important;
        right: 6px!important;
        left: 8px!important;
-       margin-top: 4px!important;
+       margin-top: 5px!important;
     }
   }
 }
