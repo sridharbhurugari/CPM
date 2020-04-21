@@ -81,7 +81,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
     this.connectToEvents();
 
-    const serviceStatus: Observable<any> = this.ocsStatusService.requestStatus();
+    this.ocsStatusService.requestStatus().subscribe();
   }
 
   navigateBack() {

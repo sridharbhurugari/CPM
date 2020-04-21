@@ -122,7 +122,7 @@ export class EditPickRoutePageComponent implements OnInit {
     });
 
     this.connectToEvents();
-    this.ocsStatusService.requestStatus();
+    this.ocsStatusService.requestStatus().subscribe();
   }
 
   navigateBack() {
