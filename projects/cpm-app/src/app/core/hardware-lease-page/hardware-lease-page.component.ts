@@ -15,6 +15,7 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 import { IConfigurationService } from 'oal-core';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 import * as _ from 'lodash';
+import { DeviceOperationOutcome } from '../../api-core/data-contracts/device-operation-outcome';
 
 
 @Component({
@@ -38,7 +39,12 @@ export class HardwareLeasePageComponent implements OnInit {
   disabledButtons = true;
   systemConfig: IConfigurationValue[];
   hwTimeout = 10000;
-  successfulOutcome = [0, 1, 2, 3, 4];
+
+  failureOutcome =  [ DeviceOperationOutcome.DeviceOperationOutcome_DeviceInactive,
+     DeviceOperationOutcome.DeviceOperationOutcome_DeviceNotLeasedToClient,
+     DeviceOperationOutcome.DeviceOperationOutcome_DeviceOfflineOrNotFound,
+     DeviceOperationOutcome.DeviceOperationOutcome_ItemsAssignedToDevice,
+     DeviceOperationOutcome.DeviceOperationOutcome_PendingLeaseRequestExistsForDevice ];
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -83,15 +89,11 @@ export class HardwareLeasePageComponent implements OnInit {
     this.disabledButtons = true;
     this.spinIcon = 'spin';
 
-    // this.hardwareLeaseService.get().subscribe(res => {
-    //   console.log(res);
-    // });
-
     this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
       console.log(results);
-      if (results.IsSuccessful === false || this.successfulOutcome.includes(results.DeviceOperationOutcome)) {
-        this.displayRequestLeaseDialog(results.OutcomeText);
-      } else {
+      if (results.IsSuccessful === false || this.failureOutcome.includes(results.DeviceOperationOutcome)) {
+        this.displayRequestLeaseDialog(results.DeviceOperationOutcome.toString());
+      } else if ( results.DeviceOperationOutcome === DeviceOperationOutcome.DeviceOperationOutcome_DeviceLeaseNotRequired ) {
         this.navigateNext();
       }
     });
@@ -143,7 +145,7 @@ export class HardwareLeasePageComponent implements OnInit {
       .subscribe(message => {
         console.log('Received Denied Event');
         console.log(message);
-        this.displayRequestLeaseDialog('Access Denied');
+        this.displayRequestLeaseDialog('HardwareLease_Access_Denied');
       });
   }
 }
