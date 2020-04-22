@@ -68,8 +68,10 @@ describe('EditPickRoutePageComponent', () => {
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: OcsStatusEventConnectionService, useValue:
-          { openEventConnection: () => {},
+          { 
+            openEventConnection: () => {},
             ocsIsHealthySubject: new Subject(),
+            startedSubject: new Subject(),
           }},
         { provide: OcsStatusService, useValue: { requestStatus: () => '' } },
       ],

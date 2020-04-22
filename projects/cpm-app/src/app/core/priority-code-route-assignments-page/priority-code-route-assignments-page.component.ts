@@ -51,7 +51,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   routerLinkPickRouteId: number;
   isEditAvailable = true;
   canSave = false;
-  ocsIsHealthy = true;
+  ocsIsHealthy = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,7 +81,6 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
     this.connectToEvents();
-    this.ocsStatusService.requestStatus().subscribe();
   }
 
   navigateBack() {
@@ -168,8 +167,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   private async connectToEvents(): Promise<void> {
-    await this.ocsStatusEventConnectionService.openEventConnection();
+    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
+      this.ocsStatusService.requestStatus().subscribe();
+    });
     this.configureEventHandlers();
+    await this.ocsStatusEventConnectionService.openEventConnection();
   }
 
   private configureEventHandlers(): void {

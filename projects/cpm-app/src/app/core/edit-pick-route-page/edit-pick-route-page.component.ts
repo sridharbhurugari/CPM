@@ -43,7 +43,7 @@ export class EditPickRoutePageComponent implements OnInit {
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
   requestStatus: 'none' | 'save' | 'saveAs' = 'none';
-  ocsIsHealthy = true;
+  ocsIsHealthy = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -127,7 +127,6 @@ export class EditPickRoutePageComponent implements OnInit {
     });
 
     this.connectToEvents();
-    this.ocsStatusService.requestStatus().subscribe();
   }
 
   navigateBack() {
@@ -232,8 +231,11 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   private async connectToEvents(): Promise<void> {
-    await this.ocsStatusEventConnectionService.openEventConnection();
+    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
+      this.ocsStatusService.requestStatus().subscribe();
+    });
     this.configureEventHandlers();
+    await this.ocsStatusEventConnectionService.openEventConnection();
   }
 
   private configureEventHandlers(): void {
