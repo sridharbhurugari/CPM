@@ -16,6 +16,7 @@ import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
+import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -52,7 +53,8 @@ export class EditPickRoutePageComponent implements OnInit {
     private popupWindowService: PopupWindowService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private ocsStatusService: OcsStatusService,
+    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
+    private ocsStatusService: OcsStatusService
   ) { }
 
   ngOnInit() {
@@ -125,6 +127,7 @@ export class EditPickRoutePageComponent implements OnInit {
     });
 
     this.connectToEvents();
+    this.ocsStatusService.requestStatus().subscribe();
   }
 
   navigateBack() {
@@ -229,16 +232,16 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   private async connectToEvents(): Promise<void> {
-    await this.ocsStatusService.openEventConnection();
+    await this.ocsStatusEventConnectionService.openEventConnection();
     this.configureEventHandlers();
   }
 
   private configureEventHandlers(): void {
-    if (!this.ocsStatusService) {
+    if (!this.ocsStatusEventConnectionService) {
       return;
     }
 
-    this.ocsStatusService.ocsIsHealthySubject
+    this.ocsStatusEventConnectionService.ocsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 

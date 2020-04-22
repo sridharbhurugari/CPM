@@ -63,5 +63,8 @@
   "UNDERFILLED": "Underfilled",
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
-  "ROBOT_QUEUE": "Robot Queue"
+  "ROBOT_QUEUE": "Robot Queue",
+  "DeviceConfiguration_NoLeaseMessage": "This workstation does not have access to this device, and cannot perform this operation.",
+  "DeviceConfiguration_MessageBoxTitle": "Device Configuration"
+
 }

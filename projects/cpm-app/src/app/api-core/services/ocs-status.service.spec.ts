@@ -1,18 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OcsStatusService } from './ocs-status.service';
-import { EventConnectionService } from '../../xr2/services/event-connection.service';
-import { ConfigurationService } from 'oal-core';
+import { HttpClient } from '@angular/common/http';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 
 describe('OcsStatusService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-    { provide: EventConnectionService, useValue: {} },
-    { provide: ConfigurationService, useValue: { getItem: () => {} } },
-    { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
-  ]
-}));
+      { provide: HttpClient, useValue: { get: () => {}} },
+      { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+      { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
+    ]
+  }));
 
   it('should be created', () => {
     const service: OcsStatusService = TestBed.get(OcsStatusService);
