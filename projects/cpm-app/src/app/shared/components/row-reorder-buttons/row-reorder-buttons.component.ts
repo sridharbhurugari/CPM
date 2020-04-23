@@ -21,6 +21,9 @@ export class RowReorderButtonsComponent implements OnInit {
   @Input()
   downDisabled: boolean;
 
+  @Input()
+  disabled: boolean;
+
   constructor() { }
 
   ngOnInit() {

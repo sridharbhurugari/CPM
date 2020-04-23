@@ -18,6 +18,8 @@ export class EventConnectionService {
 
   public receivedSubject = new Subject<string>();
 
+  public startedSubject = new Subject();
+
   public get connectionState(): signalR.connectionState {
     if (this._hubConnection === null) {
         return signalR.connectionState.disconnected;
@@ -53,7 +55,7 @@ export class EventConnectionService {
 
   public async startUp(): Promise<void> {
     this.initialize();
-    this.createHubProxy();
+    await this.createHubProxy();
     this.configureEventHandlers();
     this._hubConnection
     .start(() => {this.onConnectionStart(); })
@@ -96,6 +98,7 @@ export class EventConnectionService {
     console.log('SignalR Hub connection has been established');
     console.log('Connection ID: ' + this.connectionId);
     console.log('Hub Name: ' + this.hubName);
+    this.startedSubject.next();
   }
 
   private onConnectionStartFailed(error: Error): void {
