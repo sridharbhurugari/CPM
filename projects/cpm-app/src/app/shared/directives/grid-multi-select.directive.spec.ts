@@ -1,5 +1,5 @@
 import { GridMultiSelectDirective } from './grid-multi-select.directive';
-import { ɵbj as CheckboxComponent } from '@omnicell/webcorecomponents';
+import { ɵbi as CheckboxComponent } from '@omnicell/webcorecomponents';
 import { EventEmitter } from '@angular/core';
 import { EMPTY_PARSE_LOCATION } from '@angular/compiler';
 

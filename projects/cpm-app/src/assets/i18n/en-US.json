@@ -57,6 +57,7 @@
   "PRINT": "Print",
   "QTY_FILLED_REQUESTED": "Filled / Req",
   "REORDER_LEVEL": "Reorder Level",
+  "RESTOCK_LEVEL": "Restock Level",
   "ROUTE": "Route",
   "ROUTE_ASSIGNMENT": "Route Assignment",
   "ROUTE_MAINTENANCE": "Route Maintenance",
