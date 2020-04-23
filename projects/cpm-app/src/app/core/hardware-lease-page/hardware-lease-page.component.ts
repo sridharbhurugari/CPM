@@ -25,8 +25,8 @@ import { DeviceOperationOutcome } from '../../api-core/data-contracts/device-ope
 })
 export class HardwareLeasePageComponent implements OnInit, OnDestroy {
 
-  readonly devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
-  readonly deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
+  @Input() devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
+  @Input() deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
   popupDialogComponent: PopupDialogComponent;
 
   pageDescription$;
@@ -163,7 +163,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   private displayRequestLeaseDialog(outcomeText: string): void {
     const properties = new PopupDialogProperties('Request-Device-Lease');
     this.translateService.get('DeviceConfiguration_MessageBoxTitle').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get(outcomeText).subscribe(result => { properties.messageElementText = outcomeText; });
+    this.translateService.get(outcomeText).subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'OK';
@@ -195,6 +195,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
       this.hardwareLeaseEventConnectionService.hardwareLeaseDeniedSubject
         .subscribe(message => {
           clearTimeout(this.timeoutPending);
+          this.resetPageAfterResults();
           console.log('Received Denied Event');
           console.log(message);
           this.displayRequestLeaseDialog('HardwareLease_Access_Denied');

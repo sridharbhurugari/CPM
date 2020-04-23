@@ -56,7 +56,7 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
           console.log('Matching Client Id triggering event subscription');
           if (message.$type.includes('HardwareLeaseGrantedEvent')) {
               this.hardwareLeaseGrantedSubject.next();
-          } else if (message.$type.includes('HardwareLeaseGrantedDenied')) {
+          } else if (message.$type.includes('HardwareLeaseDeniedEvent')) {
             this.hardwareLeaseDeniedSubject.next();
           }
       }
