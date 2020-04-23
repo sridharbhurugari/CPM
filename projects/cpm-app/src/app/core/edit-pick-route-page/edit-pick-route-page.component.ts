@@ -38,7 +38,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
-  canDelete = true;
+  canDelete: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,6 +58,8 @@ export class EditPickRoutePageComponent implements OnInit {
     const allDevices$ = this.devicesService.get().pipe(shareReplay(1));
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
+
+    this.pickRoute$.subscribe(x => this.canDelete = x.AssignedPriorities.length == 0);
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
       const pickRouteDetail = results[0];
@@ -173,10 +175,11 @@ export class EditPickRoutePageComponent implements OnInit {
     };
 
     properties.data = data;
+
     const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
-        this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
+        this.pickRoutesService.delete(this.routeGuid)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
     });

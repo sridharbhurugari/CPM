@@ -52,17 +52,12 @@ export class PickRoutesService {
     return this.httpClient.post(url, body, { headers: headers });
   }
 
-  delete(pickRouteGuid: string, pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
-    var deviceSequenceDataContracts = deviceSequence.map(x => {
-      return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
-    });
-    var body = {
-      PickRouteGuid: pickRouteGuid,
-      Description: pickRouteDescription,
-      DeviceSequence: deviceSequenceDataContracts
-    };
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes`);
+    delete(pickRouteGuid: string): Observable<void> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes/${pickRouteGuid}`);
     var headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.delete(url, { headers: headers });
+    return this.httpClient.delete<void>(url, {
+      headers: headers
+    });
   }
+
 }
