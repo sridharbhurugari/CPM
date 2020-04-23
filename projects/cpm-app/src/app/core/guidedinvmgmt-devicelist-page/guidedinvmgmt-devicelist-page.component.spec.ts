@@ -60,7 +60,7 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
       expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
     });
     it('navigates to hardware lease page without lease', () => {
-      leaseVerificationResult = 0;
+      leaseVerificationResult = 1;
       component.navigate(1);
       expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
     });
