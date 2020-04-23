@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Location, CommonModule } from '@angular/common';
 import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page.component';
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
-import { of, Subject } from 'rxjs';
-import { Component, Input } from '@angular/core';
+import { of, Subject, throwError } from 'rxjs';
+import { Component } from '@angular/core';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
 import { PickRouteSelectComponent } from '../pick-route-select/pick-route-select.component';
@@ -19,7 +18,6 @@ import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/con
 import { TranslateService } from '@ngx-translate/core';
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
-import { WindowService } from '../../shared/services/window-service';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 @Component({
@@ -37,7 +35,9 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   let popupDialogService: Partial<PopupDialogService>;
   let priorityCodeRouteAssignmentsService: Partial<PriorityCodeRouteAssignmentsService>;
   let popupWindowService: any;
+  let eventConnectionService: Partial<OcsStatusEventConnectionService>;
   const popupDismissedSubject = new Subject<boolean>();
+  let saveSucceeded = true;
 
   let mockPickRouteDevices: IDeviceSequenceOrder[];
   const defaultItem: IPickRouteDevice = {
@@ -47,20 +47,28 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     PickRouteDevices: mockPickRouteDevices,
   };
 
-  beforeEach(async(() => {
+  let ocsStatusService: Partial<OcsStatusService>;
 
+  beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: () => { } };
     spyOn(wpfActionControllerService, 'ExecuteBackAction');
-
-    const saveSpy = jasmine.createSpy('save').and.returnValue(of({}));
-    priorityCodeRouteAssignmentsService = { getRoutes: () => of(), save: saveSpy };
+    let saveSucceededSpy = jasmine.createSpy('saveSucceeded').and.returnValue(of({}));
+    let saveFailedSpy = jasmine.createSpy('saveFailed').and.returnValue(throwError(''));
+    let serviceSave = saveSucceeded ? saveSucceededSpy : saveFailedSpy;
+    priorityCodeRouteAssignmentsService = { getRoutes: () => of(), save: serviceSave };
 
     const popupResult: Partial<ConfirmPopupComponent> = { dismiss: popupDismissedSubject };
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
     popupWindowService = { show: showSpy };
 
     popupDialogService = { showOnce: jasmine.createSpy('showOnce') };
-
+    const requestStatusSpy = jasmine.createSpy('requestStatus').and.returnValue(of());
+    ocsStatusService = { requestStatus: requestStatusSpy };
+    eventConnectionService = {
+      openEventConnection: () => Promise.resolve(),
+      ocsIsHealthySubject: new Subject(),
+      startedSubject: new Subject(),
+    };
     TestBed.configureTestingModule({
       declarations: [ PriorityCodeRouteAssignmentsPageComponent, MockPriorityCodeRouteAssignmentsComponent,
          MockTranslatePipe, PickRouteSelectComponent, DeviceSequenceOrderComponent ],
@@ -72,14 +80,9 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: OcsStatusEventConnectionService, useValue:
-          { 
-            openEventConnection: () => {},
-            ocsIsHealthySubject: new Subject(),
-            startedSubject: new Subject(),
-          }},
-          { provide: OcsStatusService, useValue: { requestStatus: () => '' } },
-        ],
+        { provide: OcsStatusEventConnectionService, useValue: eventConnectionService },
+        { provide: OcsStatusService, useValue: ocsStatusService },
+      ],
       imports: [
         GridModule,
         SharedModule,
@@ -153,6 +156,50 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         popupDismissedSubject.next(false);
         expect(priorityCodeRouteAssignmentsService.save).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('save failure', () => {
+    saveSucceeded = false;
+
+    beforeEach(() => {
+      component.pickRoute = defaultItem;
+      component.priorityCode = 'STAT';
+      component.save();
+      popupDismissedSubject.next(true);
+    });
+
+    it('should display error', () => {
+      expect(popupDialogService.showOnce).toHaveBeenCalled();
+    });
+
+    afterEach(() => {
+      saveSucceeded = true;
+    });
+  });
+
+  describe('event connection service started', () => {
+    it('should call ocsStatusService.requestStatus', () => {
+      eventConnectionService.startedSubject.next();
+      expect(ocsStatusService.requestStatus).toHaveBeenCalled();
+    });
+  });
+
+  describe('getOriginalPickRouteForPriorityType', () => {
+    it('returns value', () => {
+      const pickRouteId = 5;
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId: pickRouteId,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      let pickRouteDevices: IPickRouteDevice[] = [
+        pickRouteDevice
+      ];
+      let result  = component.getOriginalPickRouteForPriorityType(pickRouteId, pickRouteDevices)
+
+      expect(result).toBe(pickRouteDevice);
     });
   });
 });
