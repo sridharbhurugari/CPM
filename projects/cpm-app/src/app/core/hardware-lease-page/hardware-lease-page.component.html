@@ -2,24 +2,16 @@
     <ng-container class="ocactionheader">
         <div class="cpmactiontitle">{{ 'Request Device Access' }}</div>
         <div class="dateTime">
-            {{time| date:'M/d/yyyy h:mm a'}}</div>
+            {{time | date:'M/d/yyyy h:mm a'}}</div>
     </ng-container>
 
-    <ng-container class="ocactiondetails">
-        <h3 style="padding-left: 10px;">Additional device control required to continue this workflow. Press Go to request device access.</h3>
+     <ng-container class="ocactiondetails">
+        <h3 style="padding-left: 10px;">{{pageDescription$}}</h3>
         <oc-grid #ocgrid ocgridfilter="false">
             <ng-container class="ocgridheader">
                 <div class="first"></div>
-                <div app-col-header-sortable class="col" ocGridColResize data-width="500"
-                                    [columnPropertyName]="devicePropertyName"
-                                    headerResourceKey="DEVICE"
-                                    >
-                </div>
-                <div app-col-header-sortable class="col" data-colwrap="true"
-                                    [columnPropertyName]="deviceOwnerPropertyName"
-                                    headerResourceKey="Device Owner"
-                                    >
-                </div>
+                <app-header-container class="col" ocGridColResize data-width="500" [title]="'devicePropertyName' | translate"></app-header-container>
+                <app-header-container class="col" [title]="'deviceOwnerPropertyName' | translate"></app-header-container>
             </ng-container>
             <ng-container class="ocgridbody">
             <div class="row" *ngFor="let device of displayDeviceConfigurationList">

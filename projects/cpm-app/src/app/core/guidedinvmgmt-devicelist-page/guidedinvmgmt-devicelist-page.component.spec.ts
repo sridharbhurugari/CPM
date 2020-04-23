@@ -10,13 +10,21 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { NavigationEnd } from '@angular/router';
 
 describe('GuidedinvmgmtDevicelistPageComponent', () => {
   let component: GuidedInvMgmtDevicelistPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtDevicelistPageComponent>;
   let hardwareLeaseService: Partial<HardwareLeaseService>;
+  let wpfActionControllerService: Partial<WpfActionControllerService>;
+
+  let leaseVerificationResult: LeaseVerificationResult;
 
   beforeEach(async(() => {
+    hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult) };
+    wpfActionControllerService = { ExecuteWpfContinueNavigationAction: jasmine.createSpy('ExecuteWpfContinueNavigationAction'),
+      ExecuteContinueNavigationAction: jasmine.createSpy('ExecuteContinueNavigationAction')};
 
     TestBed.configureTestingModule({
       declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe,
@@ -24,7 +32,7 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
       imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, ButtonActionModule],
       providers: [
         { provide: GuidedDeviceListService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useValue: { } },
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: HardwareLeaseService, useValue: hardwareLeaseService }
       ]
     })
@@ -39,5 +47,22 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('navigation on page', () => {
+    it('navigates to manual cycle count page', () => {
+       component.navigateManualCycleCount();
+       expect(wpfActionControllerService.ExecuteWpfContinueNavigationAction).toHaveBeenCalled();
+    });
+    it('navigates if it has device lease', () => {
+      leaseVerificationResult = 0;
+      component.navigate(1);
+      expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
+    });
+    it('navigates to hardware lease page without lease', () => {
+      leaseVerificationResult = 0;
+      component.navigate(1);
+      expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
+    });
   });
 });

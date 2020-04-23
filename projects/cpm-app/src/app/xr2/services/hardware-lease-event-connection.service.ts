@@ -37,6 +37,11 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
     this.receivedSubject.subscribe(message => this.configureHardwareLeaseHandlers(message));
   }
 
+  public closeEventConnection() {
+    this.stop();
+    this.receivedSubject.unsubscribe();
+  }
+
   private configureHardwareLeaseHandlers(message: any): void {
     console.log(message);
 
