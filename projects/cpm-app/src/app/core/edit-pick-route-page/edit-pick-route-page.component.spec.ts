@@ -45,7 +45,8 @@ describe('EditPickRoutePageComponent', () => {
 
     const saveAsSpy = jasmine.createSpy('saveAs').and.returnValue(of({}));
     const saveSpy = jasmine.createSpy('save').and.returnValue(of({}));
-    pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy };
+    const deleteSpy = jasmine.createSpy('delete').and.returnValue(of({}));
+    pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy, delete: deleteSpy };
     popupDialogService = { showOnce: jasmine.createSpy('showOnce') };
     TestBed.configureTestingModule({
       declarations: [ EditPickRoutePageComponent, MockTranslatePipe, EditDeviceSequenceComponent ],
