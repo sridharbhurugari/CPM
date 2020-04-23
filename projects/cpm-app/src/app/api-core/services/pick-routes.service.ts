@@ -52,12 +52,9 @@ export class PickRoutesService {
     return this.httpClient.post(url, body, { headers: headers });
   }
 
-    delete(pickRouteGuid: string): Observable<void> {
+  delete(pickRouteGuid: string) {
     var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes/${pickRouteGuid}`);
     var headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.delete<void>(url, {
-      headers: headers
-    });
+    return this.httpClient.delete(url, { headers: headers });
   }
-
 }

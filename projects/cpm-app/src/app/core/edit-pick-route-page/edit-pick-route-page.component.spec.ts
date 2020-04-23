@@ -181,6 +181,30 @@ describe('EditPickRoutePageComponent', () => {
     });
   });
 
+  describe('delete', () => {
+    beforeEach(() => {
+      component.delete();
+    });
+
+    it('should show popul for confirm delete', () => {
+      expect(popupWindowService.show).toHaveBeenCalled();
+    });
+
+    describe('given confirm delete popup dismissed with ok', () => {
+      it('should call pickRoutesService.delete', () => {
+        popupDismissedSubject.next(true);
+        expect(pickRoutesService.delete).toHaveBeenCalled();
+      });
+    });
+
+    describe('given confirm delete popup dismissed with cancel', () => {
+      it('should not call pickRoutesService.delete', () => {
+        popupDismissedSubject.next(false);
+        expect(pickRoutesService.delete).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('onDeviceSequenceChanged', () => {
     it('should set newDevcieSequence', () => {
       const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5};
