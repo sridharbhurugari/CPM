@@ -6,20 +6,23 @@
     </ng-container>
 
      <ng-container class="ocactiondetails">
-        <h3 style="padding-left: 10px;">{{pageDescription$}}</h3>
+        <h3 class="description">{{pageDescription$}}</h3>
+
         <oc-grid #ocgrid ocgridfilter="false">
             <ng-container class="ocgridheader">
-                <div class="first"></div>
-                <app-header-container [title]="devicePropertyName | translate"></app-header-container>
-                <app-header-container [title]="deviceOwnerPropertyName | translate"></app-header-container>
-            </ng-container>
-            <ng-container class="ocgridbody">
-            <div class="row" *ngFor="let device of displayDeviceConfigurationList">
                 <div class="first" style="align-items: center;"></div>
-                <div class="col width-device" [attr.data-title]="'devicePropertyName' | translate">{{device.DeviceDescription}}</div>
-                <div class="col width-device" [attr.data-title]="'deviceOwnerPropertyName' | translate">{{device.DefaultOwnerShortname}}</div>
+                <div class="col width-device" ocGridColResize [attr.data-width]="'350'" >{{devicePropertyName | translate}}</div>
+                <div class="col width-device" ocGridColResize [attr.data-width]="'500'">{{deviceOwnerPropertyName | translate}}</div>
+            </ng-container>
+
+            <ng-container class="ocgridbody">
+                <div class="row" *ngFor="let device of displayDeviceConfigurationList">
+                    <div class="first" style="align-items: center;"></div>
+                    <div class="col width-device" [attr.data-title]="'devicePropertyName' | translate">{{device.DeviceDescription}}</div>
+                    <div class="col width-device" [attr.data-title]="'deviceOwnerPropertyName' | translate">{{device.DefaultOwnerShortname}}</div>
                 </div>
             </ng-container>
+
         </oc-grid>
     </ng-container>
 
