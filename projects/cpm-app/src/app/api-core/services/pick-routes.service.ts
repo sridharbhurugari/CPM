@@ -18,38 +18,38 @@ export class PickRoutesService {
   ) { }
 
   get(pickRouteId: string): Observable<IPickRouteDetail> {
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes/${pickRouteId}`);
-    var headers = this.ocapHttpHeadersService.getHeaders();
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes/${pickRouteId}`);
+    const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
     return this.httpClient.get<IPickRouteDetail>(url, {
-      headers: headers
+      headers: serviceHeaders
     });
   }
 
   save(pickRouteGuid: string, pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
-    var deviceSequenceDataContracts = deviceSequence.map(x => {
+    const deviceSequenceDataContracts = deviceSequence.map(x => {
       return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
     });
-    var body = {
+    const body = {
       PickRouteGuid: pickRouteGuid,
       Description: pickRouteDescription,
       DeviceSequence: deviceSequenceDataContracts
     };
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes`);
-    var headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.put(url, body, { headers: headers });
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes`);
+    const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.put(url, body, { headers: serviceHeaders });
   }
 
   saveAs(pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
-    var deviceSequenceDataContracts = deviceSequence.map(x => {
+    const deviceSequenceDataContracts = deviceSequence.map(x => {
       return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
     });
-    var body = {
+    const body = {
       Description:  pickRouteDescription,
       DeviceSequence: deviceSequenceDataContracts
     };
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes`);
-    var headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.post(url, body, { headers: headers });
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes`);
+    const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.post(url, body, { headers: serviceHeaders });
   }
 
   delete(pickRouteGuid: string) {

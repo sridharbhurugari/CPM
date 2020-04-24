@@ -18,6 +18,8 @@ import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-seq
 import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
+import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 
 describe('EditPickRoutePageComponent', () => {
   let component: EditPickRoutePageComponent;
@@ -66,6 +68,13 @@ describe('EditPickRoutePageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: OcsStatusEventConnectionService, useValue:
+          { 
+            openEventConnection: () => {},
+            ocsIsHealthySubject: new Subject(),
+            startedSubject: new Subject(),
+          }},
+        { provide: OcsStatusService, useValue: { requestStatus: () => '' } },
       ],
     })
     .overrideComponent(EditDeviceSequenceComponent, {
@@ -136,6 +145,7 @@ describe('EditPickRoutePageComponent', () => {
 
   describe('saveAs', () => {
     beforeEach(() => {
+      component.ocsIsHealthy = true;
       component.saveAs();
     });
 

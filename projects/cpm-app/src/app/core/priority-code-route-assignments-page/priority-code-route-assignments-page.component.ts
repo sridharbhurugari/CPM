@@ -15,6 +15,8 @@ import { PopupDialogService, PopupDialogProperties, PopupDialogType,
    PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
+import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
+import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -26,14 +28,15 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   priorityCode$: Observable<IPriorityCodePickRoute>;
   routeList: Observable<Map<IPickRouteDevice, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
-  duplicateErrorTitle$: Observable<string>;
-  duplicateErrorMessage$: Observable<string>;
 
   priorityCode: string;
 
   private _priorityCodePickRouteId: number;
   private _pickRoute: IPickRouteDevice;
   private _originalRoute: IPickRouteDevice;
+  genericErrorTitle$: Observable<string>;
+  genericErrorMessage$: Observable<string>;
+  saveInProgress: boolean = false;
 
   get pickRoute(): IPickRouteDevice {
       return this._pickRoute;
@@ -48,6 +51,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   routerLinkPickRouteId: number;
   isEditAvailable = true;
   canSave = false;
+  ocsIsHealthy = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,6 +61,8 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
+    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
+    private ocsStatusService: OcsStatusService
   ) { }
 
   ngOnInit() {
@@ -72,8 +78,9 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
       return this.setDevices(this.pickRoute, results[1]);
     }));
-    this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
-    this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
+    this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
+    this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+    this.connectToEvents();
   }
 
   navigateBack() {
@@ -133,6 +140,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
+        this.saveInProgress = true;
         this.priorityCodeRouteAssignmentsService.save(this.pickRoute.PickRouteGuid, this.priorityCode)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
@@ -140,15 +148,14 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   onSaveFailed(error: HttpErrorResponse): any {
-    if (error.status === 500) {
-      forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
-        this.displayDuplicateDescriptionError(r[0], r[1]);
-      });
-    }
+    this.saveInProgress = false;
+    forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
+      this.displayError('Generic-Error', r[0], r[1]);
+    });
   }
 
-  displayDuplicateDescriptionError(title, message): void {
-    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+  displayError(uniqueId, title, message) {
+    const properties = new PopupDialogProperties(uniqueId);
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
@@ -157,5 +164,26 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
     this.dialogService.showOnce(properties);
+  }
+
+  private async connectToEvents(): Promise<void> {
+    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
+      this.ocsStatusService.requestStatus().subscribe();
+    });
+    this.configureEventHandlers();
+    await this.ocsStatusEventConnectionService.openEventConnection();
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.ocsStatusEventConnectionService) {
+      return;
+    }
+
+    this.ocsStatusEventConnectionService.ocsIsHealthySubject
+      .subscribe(message => this.setOcsStatus(message));
+  }
+
+  private setOcsStatus(isHealthy: boolean): void {
+    this.ocsIsHealthy = isHealthy;
   }
 }
