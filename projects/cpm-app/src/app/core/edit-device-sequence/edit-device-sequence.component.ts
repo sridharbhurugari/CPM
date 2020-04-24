@@ -18,6 +18,9 @@ export class EditDeviceSequenceComponent implements OnInit {
   @Input()
   disabledDevices: IDeviceSequenceOrder[];
 
+  @Input()
+  disabled: boolean;
+
   constructor() { }
 
   ngOnInit() {

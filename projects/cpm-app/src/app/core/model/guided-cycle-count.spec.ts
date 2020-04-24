@@ -8,13 +8,17 @@ describe('GuidedCycleCount', () => {
       DeviceLocationId: 123,
       ExpirationDate: new Date(),
       ExpirationDateFormatted: "12/10/2020",
+      Units:"EA",
       ItemId: "ItemId",
       ParLevel: 10,
       QuantityOnHand: 50,
       ReorderSource: "I",
       ReorderLevel: 10,
       LocationDescription: "ER",
-      InStockQuantity: 50
-    })).toBeTruthy();
+      ItmExpDateGranularity:"Month",
+      QuantityMin:10,
+      InStockQuantity:10,
+      ItemDateFormat: "MM/DD/YYYY",
+    })).toBeTruthy()
   });
 });

@@ -8,7 +8,7 @@
     <ng-container class="ocgridbody">
         <div class="row" *ngFor="let device of enabledDevices; let isFirst = first; let isLast = last">
             <div class="first">
-                <oc-checkbox [valueField]="device" [selected]="true"></oc-checkbox>
+                <oc-checkbox [isEnabled]="!disabled" [valueField]="device" [selected]="true"></oc-checkbox>
             </div>
             <div style="flex-direction: row;" class="col" [attr.data-title]="'DEVICE' | translate">
                 <div style="flex-grow: 1;">
@@ -16,12 +16,12 @@
                         {{device.DeviceDescription}}
                     </div>
                 </div>
-                <app-row-reorder-buttons [value]="device" [upDisabled]="isFirst" [downDisabled]="isLast"></app-row-reorder-buttons>
+                <app-row-reorder-buttons [disabled]="disabled" [value]="device" [upDisabled]="isFirst" [downDisabled]="isLast"></app-row-reorder-buttons>
             </div>
         </div>
         <div class="row" *ngFor="let device of disabledDevices">
             <div class="first">
-                <oc-checkbox [valueField]="device" [selected]="false"></oc-checkbox>
+                <oc-checkbox [isEnabled]="!disabled" [valueField]="device" [selected]="false"></oc-checkbox>
             </div>
             <div [attr.data-title]="'DEVICE' | translate">
                 {{device.DeviceDescription}}

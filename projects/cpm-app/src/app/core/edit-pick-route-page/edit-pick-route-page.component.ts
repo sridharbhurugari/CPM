@@ -15,6 +15,8 @@ import { ITextResultPopupData } from '../../shared/model/i-text-result-popup-dat
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { OcsStatusService } from '../../api-core/services/ocs-status.service';
+import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -30,6 +32,8 @@ export class EditPickRoutePageComponent implements OnInit {
 
   duplicateErrorTitle$: Observable<string>;
   duplicateErrorMessage$: Observable<string>;
+  genericErrorTitle$: Observable<string>;
+  genericErrorMessage$: Observable<string>;
 
   routeGuid: string;
   newDeviceSequence: IDeviceSequenceOrder[];
@@ -39,6 +43,8 @@ export class EditPickRoutePageComponent implements OnInit {
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
   canDelete: boolean;
+  requestStatus: 'none' | 'save' | 'saveAs' = 'none';
+  ocsIsHealthy = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +54,8 @@ export class EditPickRoutePageComponent implements OnInit {
     private popupWindowService: PopupWindowService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
+    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
+    private ocsStatusService: OcsStatusService
   ) { }
 
   ngOnInit() {
@@ -58,6 +66,8 @@ export class EditPickRoutePageComponent implements OnInit {
     const allDevices$ = this.devicesService.get().pipe(shareReplay(1));
     this.duplicateErrorTitle$ = this.translateService.get('ERROR_DUPLICATE_NAME_TITLE');
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
+    this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
+    this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
 
     this.pickRoute$.subscribe(x => this.canDelete = x.AssignedPriorities.length == 0);
 
@@ -118,6 +128,8 @@ export class EditPickRoutePageComponent implements OnInit {
         this.originalDeviceSequence.push(device);
       });
     });
+
+    this.connectToEvents();
   }
 
   navigateBack() {
@@ -139,6 +151,7 @@ export class EditPickRoutePageComponent implements OnInit {
     const component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
+        this.requestStatus = 'saveAs';
         this.pickRoutesService.saveAs(data.resultValue, this.newDeviceSequence)
           .subscribe(result => this.navigateBack(), error => this.onSaveAsFailed(error));
       }
@@ -161,6 +174,7 @@ export class EditPickRoutePageComponent implements OnInit {
     const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
     component.dismiss.subscribe(selectedConfirm => {
       if (selectedConfirm) {
+        this.requestStatus = 'save';
         this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
@@ -200,23 +214,33 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   onSaveAsFailed(error: HttpErrorResponse): any {
-    if (error.status === 500) {
+    this.requestStatus = 'none';
+    if (error.status === 400) {
       forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
-        this.displayDuplicateDescriptionError(r[0], r[1]);
+        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+      });
+    } else {
+      forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
+        this.displayError('Generic-Error', r[0], r[1]);
       });
     }
   }
 
   onSaveFailed(error: HttpErrorResponse): any {
-    if (error.status === 500) {
+    this.requestStatus = 'none';
+    if (error.status === 400) {
       forkJoin(this.duplicateErrorTitle$, this.duplicateErrorMessage$).subscribe(r => {
-        this.displayDuplicateDescriptionError(r[0], r[1]);
+        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+      });
+    } else {
+      forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
+        this.displayError('Generic-Error', r[0], r[1]);
       });
     }
   }
 
-  displayDuplicateDescriptionError(title, message): void {
-    const properties = new PopupDialogProperties('Duplicate-Description-Error');
+  displayError(uniqueId, title, message) {
+    const properties = new PopupDialogProperties(uniqueId);
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
@@ -225,5 +249,26 @@ export class EditPickRoutePageComponent implements OnInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
     this.dialogService.showOnce(properties);
+  }
+
+  private async connectToEvents(): Promise<void> {
+    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
+      this.ocsStatusService.requestStatus().subscribe();
+    });
+    this.configureEventHandlers();
+    await this.ocsStatusEventConnectionService.openEventConnection();
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.ocsStatusEventConnectionService) {
+      return;
+    }
+
+    this.ocsStatusEventConnectionService.ocsIsHealthySubject
+      .subscribe(message => this.setOcsStatus(message));
+  }
+
+  private setOcsStatus(isHealthy: boolean): void {
+    this.ocsIsHealthy = isHealthy;
   }
 }
