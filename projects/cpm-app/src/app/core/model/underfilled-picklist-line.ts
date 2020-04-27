@@ -18,8 +18,8 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     DestinationType: string;
     PriorityCode: string;
     PicklistTypeDb: string;
-    ItemId: string;    
-    ItemFormattedGenericName: string;    
+    ItemId: string;
+    ItemFormattedGenericName: string;
     ItemBrandName: string;
     PatientRoom: string;
     PatientName: string;
@@ -35,19 +35,20 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     DisplayArea: boolean;
     DisplayOmniName: boolean;
     DisplayPatientNameSecondLine: boolean;
+    PharmacyQOH: number;
 
     get DestinationSortValue(): string{
         if(this.DestinationType == 'P'){
             return this.PatientName;
-        } 
+        }
 
         if(this.DestinationType == 'A'){
             return this.AreaDescription;
-        } 
+        }
 
         if(this.DestinationType == 'O'){
             return this.DestinationOmni;
-        } 
+        }
 
         return this.DestinationId;
     }

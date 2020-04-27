@@ -1,30 +1,26 @@
 <oc-grid #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
     <div class="first" data-colwrap="true"></div>
-    <div app-col-header-sortable class="col" ocGridColResize data-width="570" data-colwrap="true"
-                            [columnPropertyName]='descriptionPropertyName'
-                            headerResourceKey='DESCRIPTION_ID'
-                            [currentSortPropertyName]="currentSortPropertyName"
-                            (columnSelected)="columnSelected($event)">  
+    <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+      [columnPropertyName]='descriptionPropertyName' headerResourceKey='DESCRIPTION_ID'
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-width="274" data-colwrap="true"
-                            [columnPropertyName]='destinationPropertyName'
-                            headerResourceKey='DESTINATION'
-                            [currentSortPropertyName]="currentSortPropertyName"
-                            (columnSelected)="columnSelected($event)">
+    <div app-col-header-sortable class="col" ocGridColResize data-width="194" data-colwrap="true"
+      [columnPropertyName]='descriptionPropertyName' headerResourceKey='PHARMACY_QOH'
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-width="190" data-colwrap="true"
-                            [columnPropertyName]='qtyFillReqPropertyName'
-                            headerResourceKey='QTY_FILLED_REQUESTED'
-                            [currentSortPropertyName]="currentSortPropertyName"
-                            (columnSelected)="columnSelected($event)">
+    <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
+      [columnPropertyName]='destinationPropertyName' headerResourceKey='DESTINATION'
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
+      [columnPropertyName]='qtyFillReqPropertyName' headerResourceKey='QTY_FILLED_REQUESTED'
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
-                            [columnPropertyName]='fillDatePropertyName'
-                            headerResourceKey='DATE_COMPLETED'
-                            [currentSortPropertyName]="currentSortPropertyName"
-                            (columnSelected)="columnSelected($event)">  
-    </div>    
+      [columnPropertyName]='fillDatePropertyName' headerResourceKey='DATE_COMPLETED'
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+    </div>
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistLine of picklistLines">
@@ -34,7 +30,9 @@
         <span>{{picklistLine.ItemFormattedGenericName}}</span>
         <span>{{picklistLine.ItemBrandName}}</span>
         <span>{{picklistLine.ItemId}}</span>
-        <span>{{picklistLine.PickItemLocationDescription}}</span>
+      </div>
+      <div class="col" [attr.data-title]="'PHARMACY_QOH' | translate">
+        <span>{{picklistLine.PharmacyQOH}}</span>
       </div>
       <div class="col" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklistLine.DisplayPatientRoomAndArea">
