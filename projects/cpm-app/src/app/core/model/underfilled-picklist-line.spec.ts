@@ -18,7 +18,8 @@ describe('UnderfilledPicklistLine', () => {
       PatientRoom: '',
       PickItemLocationDescription: '',
       PicklistTypeDb: '',
-      PriorityCode: ''
+      PriorityCode: '',
+      PharmacyQOH: 0
     });
   });
 
