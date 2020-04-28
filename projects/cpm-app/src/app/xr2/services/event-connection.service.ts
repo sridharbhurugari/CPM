@@ -18,6 +18,8 @@ export class EventConnectionService {
 
   public receivedSubject = new Subject<string>();
 
+  public startedSubject = new Subject();
+
   public get connectionState(): signalR.connectionState {
     if (this._hubConnection === null) {
         return signalR.connectionState.disconnected;
@@ -101,6 +103,7 @@ export class EventConnectionService {
     console.log('Connection ID: ' + this.connectionId);
     console.log('Hub Name: ' + this.hubName);
     this.hookupHubEventHandlers();
+    this.startedSubject.next();
   }
 
   private onConnectionStartFailed(error: Error): void {
