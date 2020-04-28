@@ -40,7 +40,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   disabledButtons = true;
   systemConfig: IConfigurationValue[];
   hwTimeout = 10000;
-  popupTimeout = 10000;
+  popupTimeoutSeconds = 10;
   timeoutPending: any;
 
   failureOutcome =  [ DeviceOperationOutcome.DeviceOperationOutcome_DeviceInactive,
@@ -89,7 +89,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
       console.log('popup message timeout : ' + result);
       console.log(result);
-      this.popupTimeout = (Number(result.Value) * 1000);
+      this.popupTimeoutSeconds = (Number(result.Value));
     });
   }
 
@@ -107,14 +107,11 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
 
     this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
       console.log(results);
-      console.log('a');
-      console.log(DeviceOperationOutcome[0]);
-      console.log(DeviceOperationOutcome[Number(results.DeviceOperationOutcome)]);
-      if (results.IsSuccessful === false || this.failureOutcome.includes(results.DeviceOperationOutcome)) {
+      if (results.IsSuccessful === false || this.failureOutcome.includes(results.Outcome)) {
         this.resetPageAfterResults();
         clearTimeout(this.timeoutPending);
-        this.displayRequestLeaseDialog2(results.OutcomeText);
-      } else if ( results.DeviceOperationOutcome === DeviceOperationOutcome.DeviceOperationOutcome_DeviceLeaseNotRequired ) {
+        this.displayRequestLeaseDialog(DeviceOperationOutcome[results.Outcome]);
+      } else if ( results.Outcome === DeviceOperationOutcome.DeviceOperationOutcome_DeviceLeaseNotRequired ) {
         this.navigateNext();
       }
     });
@@ -150,19 +147,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = this.popupTimeout;
-    this.dialogService.showOnce(properties);
-  }
-
-  private displayRequestLeaseDialog2(outcomeText: string): void {
-    const properties = new PopupDialogProperties('Request-Device-Lease');
-    this.translateService.get('DeviceConfiguration_MessageBoxTitle').subscribe(result => { properties.titleElementText = result; });
-    properties.messageElementText = outcomeText;
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = this.popupTimeout;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
 
