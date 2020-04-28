@@ -38,12 +38,18 @@
             *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">{{picklistQueueItem.FilledBoxCount}}
             {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
-            <span>{{picklistQueueItem.DeviceDescription}}</span>
-            <span>{{picklistQueueItem.OutputDevice}}</span>
+            <div class="device-selection">
+              <oc-singleselect
+              [disabled] = "picklistQueueItem.Status > 1"
+              [tableData] = "this._outputDeviceDisplayList"
+              [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
+              (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
+              </oc-singleselect>
+            </div>
           </div>
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
-              <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button">
+              <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button" (click) = "skip(picklistQueueItem)">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
                 (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
