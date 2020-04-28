@@ -46,12 +46,10 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
     console.log(message);
 
     if (message === undefined) {
-      console.log('message undefined');
       return;
     }
 
     if (message.EventId === undefined) {
-      console.log('eventUndefined');
       if (message.ClientId === this.clientId) {
           console.log('Matching Client Id triggering event subscription');
           if (message.$type.includes('HardwareLeaseGrantedEvent')) {
