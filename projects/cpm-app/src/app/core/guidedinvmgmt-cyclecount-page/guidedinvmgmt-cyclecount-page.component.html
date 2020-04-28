@@ -69,19 +69,19 @@
                         {{"EXPIRATION_DATE" | translate}}
                         <div class="expiration">
                             <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat" [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" 
-                                [isRequired]="daterequired" [autocorrect]="false"  [isDisabled]="disablethedate" 
-                                popupDirection="UP" (ngModelChange)=onDateChange($event) [minDate]="todaydate" > 
+                                [isRequired]="daterequired" [autocorrect]="false"  [disabled]="disablethedate" 
+                                popupDirection="UP" (ngModelChange)=onDateChange($event) [minDate]="todaydate" [tabIndexes]="datepickerindexes"> 
                             </oc-datepicker>
 
                         </div>
                     </div>
-                    <div class="whiteline"></div>
+                    <div class="expirationwhiteline"></div>
              </div>
             <div class="rightCycleCountPanel">
                 <div class="demo">
                     <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
-                        [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true"
-                        (valueChange)="onQuantityChange($event)">
+                        [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true" 
+                        (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes" id="numericElement" (blur)="tabclickedonquantity($event)">
                     </oc-numeric>
                 </div>
             </div>
@@ -90,15 +90,15 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()"></oc-button-action>
+                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()" tabindex="-1"></oc-button-action>
             </div>
             <div class="buttonadjust">
             <div class="ocrightalign" >
-                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()"></oc-button-action>
+                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6" (blur)="tabclickedonskip($event)"></oc-button-action>
                 <oc-button-action id="nextbutton" [buttonText]="'NEXT' | translate" 
-                        (click)="navigateContinue()" *ngIf="!isLastItem" [disabled]="nextButtonDisable" ></oc-button-action>
+                        (click)="navigateContinue()" *ngIf="!isLastItem" [disabled]="nextButtonDisable" tabindex="5"></oc-button-action>
                     <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" 
-                        (click)="navigateContinue()" *ngIf="isLastItem" [disabled]="doneButtonDisable" ></oc-button-action>
+                        (click)="navigateContinue()" *ngIf="isLastItem" [disabled]="doneButtonDisable" tabindex="5"></oc-button-action>
             </div>
         </div>
         </oc-footer>

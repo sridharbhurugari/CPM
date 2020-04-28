@@ -74,9 +74,9 @@
     height: 75px;
     width: 335px;  
     border-left: solid white 24px;
-    border-right: solid  #c8c8c8 1px; 
-    margin-top: 6px;
-    margin-bottom: 6px;
+    border-right: solid  #C8C8C8 1px; 
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
 
   .locationOfCycleCount {
@@ -228,7 +228,7 @@
   }
 }
 .expiration{
-  margin-top: 6px!important;
+  margin-top: 22px!important;
     ::ng-deep{
       div{
         &.first-Child{
@@ -336,4 +336,12 @@
 }
 .buttonadjust{
   margin-left: 24px!important;
+}
+.expirationwhiteline{
+  height: 1px;
+  background-color: #FFFFFF;
+  vertical-align: center!important;
+  glyph-orientation-horizontal: center!important;
+  margin-left: 16px;
+  margin-top: 25px;
 }

@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, AfterViewChecked } from '@angular/core';
 import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat , Util} from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
@@ -18,7 +18,7 @@ import { CompileTemplateMetadata } from '@angular/compiler';
   styleUrls: ['./guidedinvmgmt-cyclecount-page.component.scss']
 })
 
-export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewChecked {
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
@@ -35,6 +35,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   daterequired: boolean;
   disablethedate: boolean;
   todaydate: string;
+  numericfocus: boolean;
+  numericindexes = ['', 1, ''];
+  datepickerindexes = [2, 3, 4, ''];
   public time: Date = new Date();
   titleHeader = '\'GUIDED_CYCLE_COUNT\' | translate';
   route: any;
@@ -52,6 +55,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.doneButtonDisable = false;
     this.daterequired = false;
     this.disablethedate = false;
+    this.numericfocus = false;
     this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
   }
 
@@ -59,12 +63,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.getCycleCountData(deviceId);
   }
-  ngAfterViewInit(): void {
-  }
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
+    
   }
+  
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -86,8 +90,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.IsLastItem();
       this.currentItemCount++;
     },
-      (response) => { this.toggleredborderforfirstitem() },
-      () => { this.toggleredborderforfirstitem() }
+      (response) => { this.toggleredborderforfirstitem();Util.setByTabIndex(this.numericindexes[1]);},
+      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]);}
     )
   }
 
@@ -176,7 +180,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     }
     else {
       this.disabledatecomponent(false);
-      var eventdate = new Date( this.datepicker && this.datepicker.selectedDate);
+      var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
       if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
@@ -235,7 +239,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     }
     else {
       this.nextRecord();
+     // Util.setByTabIndex(this.numericindexes[1]);
     }
+  }
+
+  tabclickedonquantity($event : Event)
+  {
+    $event.preventDefault();
+    Util.setByTabIndex(this.datepickerindexes[2]);
+  }
+
+  tabclickedonskip($event : Event)
+  {
+    $event.preventDefault();
+    Util.setByTabIndex(this.numericindexes[1]);
   }
 
   toggleredborderfornonfirstitem(nextrecordonly: boolean) {
