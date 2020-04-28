@@ -28,11 +28,11 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   // Temporary until device configuration
   // Needs to be translated too
-  private _outputDeviceDisplayList = [
+  _outputDeviceDisplayList = [
     new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
     new SingleselectRowItem('Cart', 'CART'),
     new SingleselectRowItem('Bagger', 'BAGGER')];
-  private _outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'BAGGER': 300};
+  _outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'BAGGER': 300};
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
