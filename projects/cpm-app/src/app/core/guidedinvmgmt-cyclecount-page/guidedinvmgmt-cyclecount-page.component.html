@@ -33,13 +33,17 @@
                     <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
                 </div>
                 <div class="location">
-                    <span>
-                        {{ displayCycleCountItem.LocationDescription }}
-                    </span>
+                    <div class="locationdescription">
+                        <div>
+                            {{ displayCycleCountItem.LocationDescription }}
+                        </div>
+                    </div>
+                    <div class="devicelocationaccess">
+                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
+                            (isAccessBusy)="deviceLocationAccessBusy = $event" (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
         </div>
     </ng-container>
 
@@ -94,11 +98,11 @@
             </div>
             <div class="buttonadjust">
             <div class="ocrightalign" >
-                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()"></oc-button-action>
+                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" [disabled]="deviceLocationAccessBusy"></oc-button-action>
                 <oc-button-action id="nextbutton" [buttonText]="'NEXT' | translate" 
-                        (click)="navigateContinue()" *ngIf="!isLastItem" [disabled]="nextButtonDisable" ></oc-button-action>
+                        (click)="navigateContinue()" *ngIf="!isLastItem" [disabled]="nextButtonDisable || deviceLocationAccessBusy" ></oc-button-action>
                     <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" 
-                        (click)="navigateContinue()" *ngIf="isLastItem" [disabled]="doneButtonDisable" ></oc-button-action>
+                        (click)="navigateContinue()" *ngIf="isLastItem" [disabled]="doneButtonDisable || deviceLocationAccessBusy" ></oc-button-action>
             </div>
         </div>
         </oc-footer>

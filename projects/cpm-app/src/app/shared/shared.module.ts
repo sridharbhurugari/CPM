@@ -12,6 +12,7 @@ import { RowReorderButtonsComponent } from './components/row-reorder-buttons/row
 import { TextResultPopupComponent } from './components/text-result-popup/text-result-popup.component';
 import { ConfirmPopupComponent } from './components/confirm-popup/confirm-popup.component';
 import { HeaderTitleBottomMarginContainerComponent } from './components/header-title-bottom-margin-container/header-title-bottom-margin-container.component';
+import { DeviceLocationAccessComponent } from './components/device-location-access/device-location-access.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { HeaderTitleBottomMarginContainerComponent } from './components/header-t
     TextResultPopupComponent,
     ConfirmPopupComponent,
     HeaderTitleBottomMarginContainerComponent,
+    DeviceLocationAccessComponent,
   ],
   imports: [
     CommonModule,
@@ -46,6 +48,7 @@ import { HeaderTitleBottomMarginContainerComponent } from './components/header-t
     TextResultPopupComponent,
     ConfirmPopupComponent,
     HeaderTitleBottomMarginContainerComponent,
+    DeviceLocationAccessComponent,
   ],
   entryComponents: [
     TextResultPopupComponent,

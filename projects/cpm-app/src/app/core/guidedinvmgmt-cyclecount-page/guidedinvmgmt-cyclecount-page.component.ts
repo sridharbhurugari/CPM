@@ -11,6 +11,8 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
 import { Button } from 'protractor';
 import { CompileTemplateMetadata } from '@angular/compiler';
+import { DeviceLocationAccessService } from '../../shared/services/devices/device-location-access.service';
+import { DeviceLocationAccessResult } from '../../shared/enums/device-location-access-result';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -24,6 +26,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
+
+  deviceLocationAccessBusy: boolean;
   displayCycleCountItem: IGuidedCycleCount;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
   cycleCountItemsCopy: IGuidedCycleCount[];
@@ -41,7 +45,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   constructor(
     private activatedRoute: ActivatedRoute,
     private guidedCycleCountService: GuidedCycleCountService,
-    private wpfActionController: WpfActionControllerService
+    private wpfActionController: WpfActionControllerService,
   ) {
     setInterval(() => {
       this.time = new Date();
@@ -276,6 +280,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)) {
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
+    }
+  }
+
+  handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult){
+    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable){
+      this.navigateBack();
     }
   }
 }

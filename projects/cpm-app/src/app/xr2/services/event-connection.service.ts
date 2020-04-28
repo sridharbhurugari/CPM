@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, of, Observable } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 import { signalR, hubConnection, hubProxy } from 'signalr-no-jquery';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
@@ -18,7 +18,9 @@ export class EventConnectionService {
 
   public receivedSubject = new Subject<string>();
 
-  public startedSubject = new Subject();
+  public startedSubject = new ReplaySubject(1);
+
+  public started: boolean = false;
 
   public get connectionState(): signalR.connectionState {
     if (this._hubConnection === null) {
@@ -50,10 +52,10 @@ export class EventConnectionService {
     protected ocapUrlBuilderService: OcapUrlBuilderService
   ) {
     this._hubName = hubConfigurationService.hubName;
-    this._hubUrl =  this.ocapUrlBuilderService.buildUrl('');
   }
 
   public async startUp(): Promise<void> {
+    this._hubUrl =  this.ocapUrlBuilderService.buildUrl('');
     this.initialize();
     await this.createHubProxy();
     this.configureEventHandlers();
@@ -98,6 +100,7 @@ export class EventConnectionService {
     console.log('SignalR Hub connection has been established');
     console.log('Connection ID: ' + this.connectionId);
     console.log('Hub Name: ' + this.hubName);
+    this.started = true;
     this.startedSubject.next();
   }
 

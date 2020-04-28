@@ -21,19 +21,19 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       get: deviceID => {
         const obj = {
           DeviceLocationId: 1,
-    ItemId: '1',
-    BrandNameFormatted: '',
-    GenericNameFormatted: '',
-    ParLevel: 0,
-    ReorderLevel: 0,
-    ExpirationDate: null,
-    ExpirationDateFormatted: '',
-    LocationDescription: '',
-    QuantityOnHand: 0,
-    ReorderSource: '',
-    ItmExpDateGranularity: "Month",
-    QuantityMin: 10,
-    InStockQuantity: 10
+          temId: '1',
+          BrandNameFormatted: '',
+          GenericNameFormatted: '',
+          ParLevel: 0,
+          ReorderLevel: 0,
+          ExpirationDate: null,
+          ExpirationDateFormatted: '',
+          LocationDescription: '',
+          QuantityOnHand: 0,
+          ReorderSource: '',
+          ItmExpDateGranularity: "Month",
+          QuantityMin: 10,
+          InStockQuantity: 10
         };
         return of([obj]);
 
@@ -83,6 +83,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('navigateContinue to the next item', () => {
     it('navigateContinue to the next item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -116,6 +121,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('navigateContinue with month item granularity', () => {
     it('navigateContinue with month item granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -185,6 +195,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('returning false component data', () => {
     it('return proper valid component', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -212,6 +227,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('returning true component data', () => {
     it('return proper valid component', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -251,6 +271,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.currentItemCount = 2;
       component.cycleCountItemsCopy = [];
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -269,6 +294,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 87,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -297,6 +327,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.currentItemCount = 1;
       component.cycleCountItemsCopy = [];
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -315,6 +350,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 87,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -343,6 +383,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('returns item expiredate granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -367,6 +412,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('returns item expiredate granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -451,6 +501,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('quantity changes validation', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -485,6 +540,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('quantity changes validation', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -558,6 +618,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('toggle calendar border with red color for first item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route-assignments-page.component';
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
-import { of, Subject, throwError } from 'rxjs';
+import { of, Subject, throwError, ReplaySubject } from 'rxjs';
 import { Component } from '@angular/core';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
-import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 @Component({
   selector: 'app-priority-code-route-assignments',
   template: ''
@@ -35,7 +35,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   let popupDialogService: Partial<PopupDialogService>;
   let priorityCodeRouteAssignmentsService: Partial<PriorityCodeRouteAssignmentsService>;
   let popupWindowService: any;
-  let eventConnectionService: Partial<OcsStatusEventConnectionService>;
+  let eventConnectionService: Partial<CoreEventConnectionService>;
   const popupDismissedSubject = new Subject<boolean>();
   let saveSucceeded = true;
 
@@ -67,7 +67,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     eventConnectionService = {
       openEventConnection: () => Promise.resolve(),
       ocsIsHealthySubject: new Subject(),
-      startedSubject: new Subject(),
+      startedSubject: new ReplaySubject(),
     };
     TestBed.configureTestingModule({
       declarations: [ PriorityCodeRouteAssignmentsPageComponent, MockPriorityCodeRouteAssignmentsComponent,
@@ -80,7 +80,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: OcsStatusEventConnectionService, useValue: eventConnectionService },
+        { provide: CoreEventConnectionService, useValue: eventConnectionService },
         { provide: OcsStatusService, useValue: ocsStatusService },
       ],
       imports: [

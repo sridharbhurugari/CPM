@@ -1,4 +1,9 @@
-export interface IGuidedCycleCount {    
+export interface IGuidedCycleCount {
+  SlotNumber: number;
+  BinNumber: number;
+  ShelfNumber: number;
+  DeviceLocationTypeId: string;
+  DeviceId: number;    
   DeviceLocationId: number,
   ItemId: string,
   GenericNameFormatted: string,

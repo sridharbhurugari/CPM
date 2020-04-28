@@ -16,7 +16,7 @@ import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
-import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -53,8 +53,8 @@ export class EditPickRoutePageComponent implements OnInit {
     private popupWindowService: PopupWindowService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
-    private ocsStatusService: OcsStatusService
+    private coreEventConnectionService: CoreEventConnectionService,
+    private ocsStatusService: OcsStatusService,
   ) { }
 
   ngOnInit() {
@@ -230,20 +230,19 @@ export class EditPickRoutePageComponent implements OnInit {
     this.dialogService.showOnce(properties);
   }
 
-  private async connectToEvents(): Promise<void> {
-    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
-      this.ocsStatusService.requestStatus().subscribe();
-    });
+  private connectToEvents() {
     this.configureEventHandlers();
-    await this.ocsStatusEventConnectionService.openEventConnection();
+    if(this.coreEventConnectionService.started){
+      this.ocsStatusService.requestStatus().subscribe();
+    } else {
+      this.coreEventConnectionService.startedSubject.subscribe(() => {
+        this.ocsStatusService.requestStatus().subscribe();
+      });
+    }
   }
 
   private configureEventHandlers(): void {
-    if (!this.ocsStatusEventConnectionService) {
-      return;
-    }
-
-    this.ocsStatusEventConnectionService.ocsIsHealthySubject
+    this.coreEventConnectionService.ocsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 

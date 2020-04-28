@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { OcAnimationSize } from '@omnicell/webcorecomponents';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -6,7 +6,7 @@ import { OcapConfigurationConstants } from './shared/constants/ocap-configuratio
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
 import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
-/*import { ConfigurationService, OcapHttpClientService } from 'oal-core';*/
+import { CoreEventConnectionService } from './api-core/services/core-event-connection.service';
 
 @Component({
   selector: 'app-root',
@@ -25,9 +25,8 @@ export class AppComponent implements AfterViewInit {
     private router: Router,
     translate: TranslateService,
     windowService: WindowService,
-    localStorageService: LocalStorageService/*,
-    configurationService: ConfigurationService,
-    httpClient: OcapHttpClientService*/
+    localStorageService: LocalStorageService,
+    private coreEventConnectionService: CoreEventConnectionService,
   ){
     this.loading = true;
     if(windowService.nativeWindow){
@@ -41,8 +40,7 @@ export class AppComponent implements AfterViewInit {
 
       localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
       translate.setDefaultLang(ocap.userLocale || 'en-US');
-
-      /*configurationService.init(httpClient);*/
+      this.coreEventConnectionService.openEventConnection();
     }
   }
 

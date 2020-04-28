@@ -4,13 +4,18 @@ import { EventConnectionService } from '../../xr2/services/event-connection.serv
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { HubConfigurationService } from '../../xr2/services/hub-configuration.service';
+import { IDeviceOperationResultEvent } from '../events/i-device-operation-result-event';
+import { IDeviceLeaseDeniedEvent } from '../events/i-device-lease-denied-event';
+import { IDeviceLeaseGrantedEvent } from '../events/i-device-lease-granted-event';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OcsStatusEventConnectionService extends EventConnectionService {
-
+export class CoreEventConnectionService extends EventConnectionService {
   public ocsIsHealthySubject = new Subject<boolean>();
+  public deviceOperationResultEventSubject = new Subject<IDeviceOperationResultEvent>();
+  public deviceLeaseGrantedSubject = new Subject<IDeviceLeaseGrantedEvent>();
+  public deviceLeaseDeniedSubject = new Subject<IDeviceLeaseDeniedEvent>();
 
   constructor(
     hubConfigurationService: HubConfigurationService,
@@ -42,6 +47,29 @@ export class OcsStatusEventConnectionService extends EventConnectionService {
     if (message.EventId === 'Ocs2Unavailable') {
       this.ocsIsHealthySubject.next(false);
       return;
+    }
+
+    if(message.EventId === 'DeviceOperationResultEvent') {
+      this.deviceOperationResultEventSubject.next({
+        DeviceId: message.DeviceId,
+        IsExpired: message.IsExpired,
+        IsSuccessful: message.IsSuccessful,
+        ResultId: message.ResultId,
+      });
+    }
+
+    if(message.EventId === 'HardwareLeaseGrantedEvent') {
+      this.deviceLeaseGrantedSubject.next({
+        DeviceId: message.DeviceId,
+        RequestId: message.RequestId,
+      })
+    }
+
+    if(message.EventId === 'HardwareLeaseDeniedEvent'){
+      this.deviceLeaseDeniedSubject.next({
+        DeviceId: message.DeviceId,
+        RequestId: message.RequestId,
+      })
     }
   }
 }
