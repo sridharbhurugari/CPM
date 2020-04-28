@@ -40,6 +40,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   disabledButtons = true;
   systemConfig: IConfigurationValue[];
   hwTimeout = 10000;
+  popupTimeout = 10000;
   timeoutPending: any;
 
   failureOutcome =  [ DeviceOperationOutcome.DeviceOperationOutcome_DeviceInactive,
@@ -47,12 +48,6 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
      DeviceOperationOutcome.DeviceOperationOutcome_DeviceOfflineOrNotFound,
      DeviceOperationOutcome.DeviceOperationOutcome_ItemsAssignedToDevice,
      DeviceOperationOutcome.DeviceOperationOutcome_PendingLeaseRequestExistsForDevice ];
-
-  private hardwareLeaseServiceSubscription: Subscription;
-  private systemConfigurationServiceSubscription: Subscription;
-  private hardwareLeaseServiceRequestDeviceLeaseSubscription: Subscription;
-  private hardwareLeaseEventConnectionServicehardwareLeaseGrantedSubjectSubscription: Subscription;
-  private hardwareLeaseEventConnectionServicehardwareLeaseDeniedSubjectSubscription: Subscription;
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -79,37 +74,26 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
     this.routeToPath  = this.activatedRoute.snapshot.queryParamMap.get('routeToPath');
 
-    this.hardwareLeaseServiceSubscription = this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
+    this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
       console.log(res);
       this.displayDeviceConfigurationList.push(res);
       this.disabledButtons = false;
     });
 
-    this.systemConfigurationServiceSubscription =
-      this.systemConfigurationService.GetConfigurationValues('HARDWARE', 'LEASE_REQUEST_TIMEOUT').subscribe(result => {
+    this.systemConfigurationService.GetConfigurationValues('HARDWARE', 'LEASE_REQUEST_TIMEOUT').subscribe(result => {
       console.log('hw timeout : ' + result);
       console.log(result);
       this.hwTimeout = (Number(result.Value) * 1000) + 2000;
     });
+
+    this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
+      console.log('popup message timeout : ' + result);
+      console.log(result);
+      this.popupTimeout = (Number(result.Value) * 1000);
+    });
   }
 
   ngOnDestroy() {
-    // if (this.hardwareLeaseServiceSubscription.closed === false) {
-    //   this.hardwareLeaseServiceSubscription.unsubscribe();
-    // }
-    // if (this.systemConfigurationServiceSubscription.closed === false) {
-    //   this.systemConfigurationServiceSubscription.unsubscribe();
-    // }
-    // if (this.hardwareLeaseServiceRequestDeviceLeaseSubscription.closed === false) {
-    //   this.hardwareLeaseServiceRequestDeviceLeaseSubscription.unsubscribe();
-    // }
-    // if (this.hardwareLeaseEventConnectionServicehardwareLeaseDeniedSubjectSubscription.closed === false) {
-    //   this.hardwareLeaseEventConnectionServicehardwareLeaseDeniedSubjectSubscription.unsubscribe();
-    // }
-    // if (this.hardwareLeaseEventConnectionServicehardwareLeaseGrantedSubjectSubscription.closed === false) {
-    //   this.hardwareLeaseEventConnectionServicehardwareLeaseGrantedSubjectSubscription.unsubscribe();
-    // }
-
     this.hardwareLeaseEventConnectionService.closeEventConnection();
   }
 
@@ -121,13 +105,15 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     this.disabledButtons = true;
     this.spinIcon = 'spin';
 
-    this.hardwareLeaseServiceRequestDeviceLeaseSubscription =
     this.hardwareLeaseService.RequestDeviceLease(this.deviceId).subscribe(results => {
       console.log(results);
+      console.log('a');
+      console.log(DeviceOperationOutcome[0]);
+      console.log(DeviceOperationOutcome[Number(results.DeviceOperationOutcome)]);
       if (results.IsSuccessful === false || this.failureOutcome.includes(results.DeviceOperationOutcome)) {
-        clearTimeout(this.timeoutPending);
-        this.displayRequestLeaseDialog(results.DeviceOperationOutcome.toString());
         this.resetPageAfterResults();
+        clearTimeout(this.timeoutPending);
+        this.displayRequestLeaseDialog2(results.OutcomeText);
       } else if ( results.DeviceOperationOutcome === DeviceOperationOutcome.DeviceOperationOutcome_DeviceLeaseNotRequired ) {
         this.navigateNext();
       }
@@ -144,10 +130,6 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   }
 
   private resetPageAfterResults() {
-    if (this.hardwareLeaseServiceRequestDeviceLeaseSubscription !== undefined &&
-        this.hardwareLeaseServiceRequestDeviceLeaseSubscription.closed === false) {
-      this.hardwareLeaseServiceRequestDeviceLeaseSubscription.unsubscribe();
-    }
     this.spinIcon = 'clear';
     this.disabledButtons = false;
   }
@@ -168,7 +150,19 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeout;
+    this.dialogService.showOnce(properties);
+  }
+
+  private displayRequestLeaseDialog2(outcomeText: string): void {
+    const properties = new PopupDialogProperties('Request-Device-Lease');
+    this.translateService.get('DeviceConfiguration_MessageBoxTitle').subscribe(result => { properties.titleElementText = result; });
+    properties.messageElementText = outcomeText;
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'OK';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = this.popupTimeout;
     this.dialogService.showOnce(properties);
   }
 
@@ -182,23 +176,21 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.hardwareLeaseEventConnectionServicehardwareLeaseGrantedSubjectSubscription =
-      this.hardwareLeaseEventConnectionService.hardwareLeaseGrantedSubject
-        .subscribe(message => {
-          clearTimeout(this.timeoutPending);
-          console.log('Received Granted Event');
-          console.log(message);
-          this.navigateNext();
-        });
+    this.hardwareLeaseEventConnectionService.hardwareLeaseGrantedSubject
+      .subscribe(message => {
+        clearTimeout(this.timeoutPending);
+        console.log('Received Granted Event');
+        console.log(message);
+        this.navigateNext();
+      });
 
-    this.hardwareLeaseEventConnectionServicehardwareLeaseDeniedSubjectSubscription =
-      this.hardwareLeaseEventConnectionService.hardwareLeaseDeniedSubject
-        .subscribe(message => {
-          clearTimeout(this.timeoutPending);
-          this.resetPageAfterResults();
-          console.log('Received Denied Event');
-          console.log(message);
-          this.displayRequestLeaseDialog('HardwareLease_Access_Denied');
-        });
+    this.hardwareLeaseEventConnectionService.hardwareLeaseDeniedSubject
+      .subscribe(message => {
+        clearTimeout(this.timeoutPending);
+        this.resetPageAfterResults();
+        console.log('Received Denied Event');
+        console.log(message);
+        this.displayRequestLeaseDialog('HardwareLease_Access_Denied');
+      });
   }
 }

@@ -1,7 +1,7 @@
 export enum DeviceOperationOutcome {
 /// The device operation succeeded.
 /// </summary>
-DeviceOperationOutcome_Successful,
+DeviceOperationOutcome_Successful =  0,
 /// <summary>
 /// The device is not leased to client.
 /// </summary>
