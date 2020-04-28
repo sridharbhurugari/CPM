@@ -4,7 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectDropdownModule, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';

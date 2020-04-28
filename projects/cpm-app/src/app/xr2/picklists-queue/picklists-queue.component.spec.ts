@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PicklistsQueueComponent } from './picklists-queue.component';
-import { GridModule, ButtonActionModule, PopupWindowModule, PopupDialogService, PopupDialogModule,
+import { GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogService, PopupDialogModule,
   FooterModule,
   LayoutModule} from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
@@ -36,7 +36,7 @@ describe('PicklistsQueueComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
-      imports: [GridModule, ButtonActionModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule, CoreModule],
+      imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule, CoreModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
