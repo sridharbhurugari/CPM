@@ -1,6 +1,6 @@
 <oc-action-layout>
     <ng-container class="ocactionheader">
-        <div class="cpmactiontitle">{{ 'Request Device Access' }}</div>
+        <div class="cpmactiontitle">{{ 'REQUEST_DEVICE_ACCESS' | translate}}</div>
         <div class="dateTime">
             {{time | date:'M/d/yyyy h:mm a'}}</div>
     </ng-container>
@@ -29,10 +29,10 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [buttonText]="'Cancel' | translate" [disabled]="disabledButtons" (click)="navigateBack()">}</oc-button-action>
+                <oc-button-action [buttonText]="'CANCEL' | translate" [disabled]="disabledButtons" (click)="navigateBack()">}</oc-button-action>
             </div>
             <div class="ocrightalign">
-                <oc-button-action [buttonText]="'Go' | translate" [disabled]="disabledButtons" [buttonIcon]="spinIcon" (click)="requestAccessClick()" >}</oc-button-action>
+                <oc-button-action [buttonText]="'GO' | translate" [disabled]="disabledButtons" [buttonIcon]="spinIcon" (click)="requestAccessClick()" >}</oc-button-action>
             </div>
         </oc-footer>
     </ng-container>
