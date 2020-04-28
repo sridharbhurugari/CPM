@@ -125,3 +125,48 @@ a:visited {
 #Duplicate-Description-Error{
     font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+// OcWebCoreComponents - Override CSS for Popup Dialog title and text
+.dialog-title {
+  display: flex;
+  flex-direction: row;
+  height: 54px;
+  color: #fff;
+  .dialogIcon {
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+  .dialog-title-text {
+    flex: 1;
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 20px;
+    font-weight: true;
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+  .closeIcon {
+    float: right;
+    margin-top:10px;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+}
+.dialog-text {
+  text-align: left;
+  margin: 0 40px;
+  min-height: 200px;
+  max-height: 30vh;//70vh;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 18px;
+  background: rgba(0, 0, 0, 0);
+  overflow-y: auto;
+  &.tall {
+    margin: 0;
+    padding-right: 0;
+    max-height: 65vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  // OcWebCoreComponents - Override CSS for Popup Dialog title and text
+}
