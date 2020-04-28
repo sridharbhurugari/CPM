@@ -50,7 +50,7 @@ describe('HardwareLeasePageComponent', () => {
   const devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
   const deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
   const displayDeviceConfigurationList: DeviceConfigurationList[] = [];
-  let deviceOperationResult: DeviceOperationResult = { OutcomeText: '', DeviceOperationOutcome: 5, IsSuccessful: false };
+  let deviceOperationResult: DeviceOperationResult = { OutcomeText: '', Outcome: 5, IsSuccessful: false };
   let router: Partial<Router>;
 
   beforeEach(async(() => {
@@ -112,7 +112,7 @@ describe('HardwareLeasePageComponent', () => {
 
   describe('Request Device Lease', () => {
     it('Fails and Displays failure Dialog', () => {
-      deviceOperationResult = { OutcomeText: '', DeviceOperationOutcome: 5, IsSuccessful: false };
+      deviceOperationResult = { OutcomeText: '', Outcome: 5, IsSuccessful: false };
       component.requestAccessClick();
       expect(popupDialogService.showOnce).toHaveBeenCalled();
     });
@@ -121,7 +121,7 @@ describe('HardwareLeasePageComponent', () => {
       component.deviceId = 1;
       component.routeToPath = 'guidedinvmgmt/cyclecount';
       deviceOperationResult = { OutcomeText: '',
-        DeviceOperationOutcome: DeviceOperationOutcome.DeviceOperationOutcome_DeviceLeaseNotRequired,
+        Outcome: DeviceOperationOutcome.DeviceOperationOutcome_DeviceLeaseNotRequired,
         IsSuccessful: true };
       component.requestAccessClick();
       expect(router.navigate).toHaveBeenCalledTimes(1);
@@ -129,7 +129,7 @@ describe('HardwareLeasePageComponent', () => {
 
     it('Timeout Is setup when waiting for a lease.', () => {
       deviceOperationResult = { OutcomeText: '',
-        DeviceOperationOutcome: DeviceOperationOutcome.DeviceOperationOutcome_Successful,
+        Outcome: DeviceOperationOutcome.DeviceOperationOutcome_Successful,
         IsSuccessful: true };
       const spy = spyOn(component, 'SetupRequestDeviceLeaseTimeout');
       component.requestAccessClick();
