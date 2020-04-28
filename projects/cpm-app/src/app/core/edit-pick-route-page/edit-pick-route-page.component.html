@@ -55,6 +55,11 @@
                     [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged"
                     [buttonText]="'SAVE' | translate"
                     (click)="save()"></oc-button-action>
+                <oc-button-action *ngIf="!isDefaultRoute"
+                    [buttonIcon]="requestStatus == 'saveAs' ? 'spin' : 'clear'"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged"
+                    [buttonText]="'SAVE_AS' | translate"
+                    (click)="saveAs()"></oc-button-action>
             </div>
         </oc-footer>
     </ng-container>
