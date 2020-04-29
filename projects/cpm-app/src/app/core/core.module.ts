@@ -20,6 +20,7 @@ import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount
 
 import { EditPickRoutePageComponent } from './edit-pick-route-page/edit-pick-route-page.component';
 import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-sequence.component';
+import { HardwareLeasePageComponent } from './hardware-lease-page/hardware-lease-page.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-
     EditPickRoutePageComponent,
     EditDeviceSequenceComponent,
     GuidedInvMgmtCycleCountPageComponent,
+    HardwareLeasePageComponent,
   ],
   imports: [
     CommonModule,
