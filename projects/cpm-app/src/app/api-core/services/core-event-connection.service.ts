@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, of, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { EventConnectionService } from '../../xr2/services/event-connection.service';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
@@ -7,6 +7,8 @@ import { HubConfigurationService } from '../../xr2/services/hub-configuration.se
 import { IDeviceOperationResultEvent } from '../events/i-device-operation-result-event';
 import { IDeviceLeaseDeniedEvent } from '../events/i-device-lease-denied-event';
 import { IDeviceLeaseGrantedEvent } from '../events/i-device-lease-granted-event';
+import { ICarouselFaultedEvent } from '../events/i-carousel.faulted-event';
+import { ICarouselReadyEvent } from '../events/i-carousel-ready-event';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +18,8 @@ export class CoreEventConnectionService extends EventConnectionService {
   public deviceOperationResultEventSubject = new Subject<IDeviceOperationResultEvent>();
   public deviceLeaseGrantedSubject = new Subject<IDeviceLeaseGrantedEvent>();
   public deviceLeaseDeniedSubject = new Subject<IDeviceLeaseDeniedEvent>();
+  public carouselFaultedSubject = new Subject<ICarouselFaultedEvent>();
+  public carouselReadySubject = new Subject<ICarouselReadyEvent>();
 
   constructor(
     hubConfigurationService: HubConfigurationService,
@@ -70,6 +74,14 @@ export class CoreEventConnectionService extends EventConnectionService {
         DeviceId: message.DeviceId,
         RequestId: message.RequestId,
       })
+    }
+
+    if(message.EventId === 'CarouselIsReadyEvent'){
+      this.carouselReadySubject.next({ DeviceId: message.DeviceId });
+    }
+
+    if(message.EventId === 'CarouselFaultedEvent'){
+      this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
     }
   }
 }

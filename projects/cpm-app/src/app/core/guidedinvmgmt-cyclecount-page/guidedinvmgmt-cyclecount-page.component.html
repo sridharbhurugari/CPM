@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="devicelocationaccess">
-                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
+                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem" [disabled]="carouselFaulted"
                             (isAccessBusy)="deviceLocationAccessBusy = $event" (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
                     </div>
                 </div>
@@ -98,11 +98,11 @@
             </div>
             <div class="buttonadjust">
             <div class="ocrightalign" >
-                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" [disabled]="deviceLocationAccessBusy"></oc-button-action>
+                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" [disabled]="deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
                 <oc-button-action id="nextbutton" [buttonText]="'NEXT' | translate" 
-                        (click)="navigateContinue()" *ngIf="!isLastItem" [disabled]="nextButtonDisable || deviceLocationAccessBusy" ></oc-button-action>
-                    <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" 
-                        (click)="navigateContinue()" *ngIf="isLastItem" [disabled]="doneButtonDisable || deviceLocationAccessBusy" ></oc-button-action>
+                    (click)="navigateContinue()" *ngIf="!isLastItem" [disabled]="nextButtonDisable || deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
+                <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" 
+                    (click)="navigateContinue()" *ngIf="isLastItem" [disabled]="doneButtonDisable || deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
             </div>
         </div>
         </oc-footer>

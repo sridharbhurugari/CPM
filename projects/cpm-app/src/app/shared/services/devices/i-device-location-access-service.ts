@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 
 export interface IDeviceLocationAccessService {
+
   deviceLocationTypeId: string;
 
   accessLocation(deviceLocation: IDeviceLocationAccessData, displayData: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult>;

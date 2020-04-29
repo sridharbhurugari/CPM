@@ -1,1 +1,1 @@
-<oc-button-action class="accessbutton" *ngIf="displayButton" mode="secondary" (click)="accessLocation()" [disabled]="deviceLocationAccessBusy" [buttonIcon]="deviceLocationAccessBusy ? 'spin' : 'grid'"></oc-button-action>
+<oc-button-action class="accessbutton" *ngIf="displayButton" mode="secondary" (click)="accessLocation()" [disabled]="disabled || deviceLocationAccessBusy" [buttonIcon]="deviceLocationAccessBusy ? 'spin' : 'grid'"></oc-button-action>

@@ -42,6 +42,9 @@ export class DeviceLocationAccessComponent {
   displayButton: boolean;
 
   @Input()
+  disabled: boolean;
+
+  @Input()
   set deviceLocationAccessData(value: IDeviceLocationAccessComponentData){
     this._deviceLocationAccessData = value;
     this.accessLocation();

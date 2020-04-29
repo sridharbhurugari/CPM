@@ -51,7 +51,7 @@ export class CarouselLocationAccessService implements IDeviceLocationAccessServi
     return this.moveToShelf(deviceLocation.deviceId, deviceLocation.shelfNumber);
   }
 
-  private  moveToShelfConnected(deviceId: number, shelfNumber: number): Observable<DeviceLocationAccessResult> {
+  private moveToShelfConnected(deviceId: number, shelfNumber: number): Observable<DeviceLocationAccessResult> {
     let requestCorrelationId = Guid.create();
     let resultSubject = new ReplaySubject<DeviceLocationAccessResult>(1);
     this._deviceOperationResultSubjects[requestCorrelationId.toString()] = resultSubject;

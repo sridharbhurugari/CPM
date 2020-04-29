@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA, ElementRef } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ActivatedRoute } from '@angular/router';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -7,18 +7,22 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
-import { of } from 'rxjs';
-import { NumericComponent, DatepickerComponent, OcEventService } from '@omnicell/webcorecomponents';
-import { EventManager } from '@angular/platform-browser';
+import { of, Subject } from 'rxjs';
+import { NumericComponent, DatepickerComponent } from '@omnicell/webcorecomponents';
+import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
+
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
+  let carouselLocationAccessService: Partial<CarouselLocationAccessService>;
   beforeEach(() => {
     const activatedRouteStub = () => ({
       snapshot: { queryParamMap: { get: () => ({}) } }
     });
     const guidedCycleCountServiceStub = () => ({
-      get: deviceID => {
+      get: () => {
         const obj = {
           DeviceLocationId: 1,
           temId: '1',
@@ -38,11 +42,18 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         return of([obj]);
 
       },
-      post: (deviceId, update) => ({ subscribe: f => f({}) })
+      post: () => ({ subscribe: f => f({}) })
     });
     const wpfActionControllerServiceStub = () => ({
       ExecuteBackAction: () => ({})
     });
+    const coreEventConnectionService = {
+      carouselReadySubject: new Subject(),
+      carouselFaultedSubject: new Subject(),
+    };
+    carouselLocationAccessService = { 
+      clearLightbar: jasmine.createSpy('clearLightbar').and.returnValue(of({}))
+    };
     TestBed.configureTestingModule({
       imports: [FormsModule],
       schemas: [NO_ERRORS_SCHEMA],
@@ -56,7 +67,9 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         {
           provide: WpfActionControllerService,
           useFactory: wpfActionControllerServiceStub
-        }
+        },
+        { provide: CarouselLocationAccessService, useValue: carouselLocationAccessService },
+        { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
       ]
     });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
@@ -65,8 +78,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-  describe('navigateBack to guided cycle count page', () => {
-    it('navigateBack to guided cycle count page', () => {
+
+  describe('navigateBack', () => {
+    it('calls ExecuteBackAction', () => {
+      const item: any = { };
+      component.displayCycleCountItem = item;
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
       );
@@ -79,7 +95,34 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         wpfActionControllerServiceStub.ExecuteBackAction
       ).toHaveBeenCalled();
     });
+
+    describe('given carousel location', () => {
+      let item: any = { };
+      beforeEach(() => {
+        item.DeviceLocationTypeId = DeviceLocationTypeId.Carousel;
+        component.displayCycleCountItem = item;
+      })
+
+      it('should clear lightbar', () => {
+        component.navigateBack();
+        expect(carouselLocationAccessService.clearLightbar).toHaveBeenCalled();
+      })
+    });
+
+    describe('given open storage location', () => {
+      let item: any = { };
+      beforeEach(() => {
+        item.DeviceLocationTypeId = DeviceLocationTypeId.OpenStorage;
+        component.displayCycleCountItem = item;
+      })
+
+      it('should not clear lightbar', () => {
+        component.navigateBack();
+        expect(carouselLocationAccessService.clearLightbar).not.toHaveBeenCalled();
+      })
+    });
   });
+
   describe('navigateContinue to the next item', () => {
     it('navigateContinue to the next item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
@@ -158,7 +201,6 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   });
   describe('cycle count data retrieval',()=>{
     it('cycle count data retrieval',() => {
-      var deviceID = "1";
       fixture.detectChanges();
     });
  });
