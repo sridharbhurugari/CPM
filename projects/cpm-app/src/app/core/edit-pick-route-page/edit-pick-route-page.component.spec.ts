@@ -47,7 +47,8 @@ describe('EditPickRoutePageComponent', () => {
 
     const saveAsSpy = jasmine.createSpy('saveAs').and.returnValue(of({}));
     const saveSpy = jasmine.createSpy('save').and.returnValue(of({}));
-    pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy };
+    const deleteSpy = jasmine.createSpy('delete').and.returnValue(of({}));
+    pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy, delete: deleteSpy };
     popupDialogService = { showOnce: jasmine.createSpy('showOnce') };
     TestBed.configureTestingModule({
       declarations: [ EditPickRoutePageComponent, MockTranslatePipe, EditDeviceSequenceComponent ],
@@ -187,6 +188,30 @@ describe('EditPickRoutePageComponent', () => {
       it('should not call pickRoutesService.save', () => {
         popupDismissedSubject.next(false);
         expect(pickRoutesService.save).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('delete', () => {
+    beforeEach(() => {
+      component.delete();
+    });
+
+    it('should show popul for confirm delete', () => {
+      expect(popupWindowService.show).toHaveBeenCalled();
+    });
+
+    describe('given confirm delete popup dismissed with ok', () => {
+      it('should call pickRoutesService.delete', () => {
+        popupDismissedSubject.next(true);
+        expect(pickRoutesService.delete).toHaveBeenCalled();
+      });
+    });
+
+    describe('given confirm delete popup dismissed with cancel', () => {
+      it('should not call pickRoutesService.delete', () => {
+        popupDismissedSubject.next(false);
+        expect(pickRoutesService.delete).not.toHaveBeenCalled();
       });
     });
   });
