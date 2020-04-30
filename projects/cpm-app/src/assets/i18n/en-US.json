@@ -58,6 +58,7 @@
   "ORDER_ID": "ID",
   "PAR_LEVEL": "Par Level",
   "PATIENTS": "Patients",
+  "PHARMACY_QOH": " Pharmacy QOH",
   "RELEASE": "Release",
   "PRINT": "Print",
   "QTY_FILLED_REQUESTED": "Filled / Req",

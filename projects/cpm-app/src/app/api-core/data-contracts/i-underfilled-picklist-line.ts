@@ -14,4 +14,5 @@ export interface IUnderfilledPicklistLine{
   FillQuantity: number;
   OrderQuantity: number;
   PickItemLocationDescription: string;
+  PharmacyQOH: number;
 }
