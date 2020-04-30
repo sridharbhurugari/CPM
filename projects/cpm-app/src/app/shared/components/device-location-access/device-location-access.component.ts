@@ -5,7 +5,7 @@ import { DeviceLocationTypeId } from '../../constants/device-location-type-id';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { TranslateService } from '@ngx-translate/core';
 import { DeviceLeaseService } from '../../services/devices/device-lease.service';
-import { PopupDialogService, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
+import { PopupDialogService, PopupDialogProperties, PopupDialogType, PopupDialogComponent } from '@omnicell/webcorecomponents';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 
@@ -47,8 +47,8 @@ export class DeviceLocationAccessComponent {
   @Input()
   set deviceLocationAccessData(value: IDeviceLocationAccessComponentData){
     this._deviceLocationAccessData = value;
-    this.accessLocation();
     this.displayButton = this._deviceLocationAccessData.DeviceLocationTypeId == DeviceLocationTypeId.Carousel;
+    this.accessLocation();
   }
 
   get deviceLocationAccessData(): IDeviceLocationAccessComponentData {
@@ -70,7 +70,7 @@ export class DeviceLocationAccessComponent {
     private dialogService: PopupDialogService,
     translateService: TranslateService,
   ) {
-    this._requestLeaseTitle$ = translateService.get('REQUEST_LEASE_TITLE');
+    this._requestLeaseTitle$ = translateService.get('DEVICE_ACCESS');
     this._requestLeaseMessage$ = translateService.get('REQUEST_LEASE_MESSAGE');
     this._errorDialogTitle$ = translateService.get('DEVICE_LOC_ACCESS_ERROR_TITLE');
     this._deviceOfflineMessage$ = translateService.get('DEVICE_OFFLINE_MESSAGE');
@@ -99,7 +99,7 @@ export class DeviceLocationAccessComponent {
     }
     else {
       if (result === DeviceLocationAccessResult.DeviceNotOnline) {
-        forkJoin(this._errorDialogTitle$, this._deviceOfflineMessage$).subscribe(r => this.displayError('DEVICE-OFFLINE', r[0], r[1]));
+        forkJoin(this._errorDialogTitle$, this._deviceOfflineMessage$).subscribe(r => this.displayError('Device-Offline', r[0], r[1]));
       }
 
       this.deviceLocationAccessBusy = false;
@@ -110,25 +110,25 @@ export class DeviceLocationAccessComponent {
   private handleLeaseNotAvailable(deviceId: number) {
     this.promptRequestLease().subscribe(confirmed => {
       if (confirmed) {
-        this._deviceLeaseBusy = true;
+        this.deviceLeaseBusy = true;
         let lease$ = this.deviceLeaseService.requestLease(deviceId);
         lease$.subscribe(leaseSucceeded => {
           if (leaseSucceeded) {
             this.accessLocation();
+          } else {
+            this.accessResult.next(DeviceLocationAccessResult.LeaseNotAvailable)
           }
-          else {
-            this.accessResult.next(DeviceLocationAccessResult.LeaseNotAvailable);
-          }
-          this._deviceLeaseBusy = false;
+
+          this.deviceLeaseBusy = false;
         });
       }
       else {
-        this.accessResult.next(DeviceLocationAccessResult.LeaseNotAvailable);
+        this.accessResult.next(DeviceLocationAccessResult.LeaseNotRequested);
       }
     });
   }
 
-  private displayError(uniqueId, title, message) {
+  private displayError(uniqueId, title, message): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
     properties.titleElementText = title;
     properties.messageElementText = message;
@@ -137,7 +137,7 @@ export class DeviceLocationAccessComponent {
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
-    this.dialogService.showOnce(properties);
+    return this.dialogService.showOnce(properties);
   }
 
   private promptRequestLease(): Observable<boolean> {
@@ -145,13 +145,14 @@ export class DeviceLocationAccessComponent {
   }
 
   private displayRequestLeaseDialog(title: string, message: string): Observable<boolean> {
-    const properties = new PopupDialogProperties('REQUEST-LEASE');
+    const properties = new PopupDialogProperties('Request-Lease');
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Ok';
+    properties.primaryButtonText = 'Yes';
     properties.showSecondaryButton = true;
-    properties.secondaryButtonText = 'Cancel';
+    properties.secondaryButtonText = 'No';
+    properties.primaryOnRight = false;
     properties.showCloseIcon = false;
     properties.dialogDisplayType = PopupDialogType.Info;
     properties.timeoutLength = 0;

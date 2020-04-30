@@ -4,6 +4,7 @@ export interface IGuidedCycleCount {
   ShelfNumber: number;
   DeviceLocationTypeId: string;
   DeviceId: number;    
+  DeviceDescription: string;
   DeviceLocationId: number,
   ItemId: string,
   GenericNameFormatted: string,

@@ -8,10 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { of, Subject } from 'rxjs';
-import { NumericComponent, DatepickerComponent } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, PopupDialogService } from '@omnicell/webcorecomponents';
 import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
@@ -70,6 +71,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         },
         { provide: CarouselLocationAccessService, useValue: carouselLocationAccessService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
+        { provide: PopupDialogService, useValue: { } },
+        { provide: TranslateService, useValue: { get: (x: string) => of(`{x}_TRANSLATED`) } },
       ]
     });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
@@ -127,6 +130,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('navigateContinue to the next item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -165,6 +169,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('navigateContinue with month item granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -238,6 +243,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('return proper valid component', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -270,6 +276,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('return proper valid component', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -314,6 +321,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.cycleCountItemsCopy = [];
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -337,6 +345,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -370,6 +379,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.cycleCountItemsCopy = [];
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -393,6 +403,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -426,6 +437,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -455,6 +467,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -544,6 +557,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -583,6 +597,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,
@@ -661,6 +676,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
         DeviceId: 5,
+        DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
         ShelfNumber: 3,
         BinNumber: 2,

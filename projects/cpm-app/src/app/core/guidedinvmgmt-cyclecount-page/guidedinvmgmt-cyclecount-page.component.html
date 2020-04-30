@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="devicelocationaccess">
-                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem" [disabled]="carouselFaulted"
+                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem" [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
                             (isAccessBusy)="deviceLocationAccessBusy = $event" (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
                     </div>
                 </div>

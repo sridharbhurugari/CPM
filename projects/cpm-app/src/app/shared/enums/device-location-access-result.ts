@@ -7,4 +7,5 @@ export enum DeviceLocationAccessResult {
     Failed,
     Expired,
     TimedOut,
+    LeaseNotRequested,
 }

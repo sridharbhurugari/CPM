@@ -21,6 +21,7 @@ export class GuidedCycleCount implements IGuidedCycleCount, IDeviceLocationAcces
   ShelfNumber: number;
   DeviceLocationTypeId: string;
   DeviceId: number;
+  DeviceDescription: string;
   DeviceLocationId: number;  
   ItemId: string;
   BrandNameFormatted: string;

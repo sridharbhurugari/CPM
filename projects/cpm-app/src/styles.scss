@@ -128,3 +128,20 @@ a:visited {
 #Duplicate-Description-Error{
     font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+#Request-Lease{
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#Lease-Busy{
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#Lease-Busy .dialog-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#Device-Offline {
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#Lease-Denied {
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
