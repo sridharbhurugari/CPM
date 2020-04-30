@@ -4,7 +4,6 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { IGuidedDeviceList } from '../data-contracts/i-guided-device-list';
-import { GuidedDeviceList } from '../../core/model/guided-device-list';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +20,5 @@ export class GuidedDeviceListService {
     return this.httpClient.get<IGuidedDeviceList[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
-  }  
+  }
 }
