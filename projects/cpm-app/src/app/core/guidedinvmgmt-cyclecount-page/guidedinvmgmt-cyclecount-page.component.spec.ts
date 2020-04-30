@@ -594,4 +594,9 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
+  describe('tab button click on skip button', () => {
+    it('control should take me to the numeric control when tab click on skip button', () => {
+
+    });
+  });
  });
