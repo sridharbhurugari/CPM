@@ -56,8 +56,7 @@ export class EventConnectionService {
   public async startUp(): Promise<void> {
     this.initialize();
     await this.createHubProxy();
-    this.configureEventHandlers();
-    this._hubConnection
+    await this._hubConnection
     .start(() => {this.onConnectionStart(); })
     .done(() => { this.onConnectionStartSucceeded(); })
     .fail((error) => { this.onConnectionStartFailed(error); });
@@ -72,7 +71,11 @@ export class EventConnectionService {
   }
 
   protected onReceived(message: any): void {
-    this.receivedSubject.next(message);
+    const eventArgsAsAny = message as any;
+    const serializedObject = eventArgsAsAny.A[0];
+    const deserializedObject = JSON.parse(serializedObject);
+
+    this.receivedSubject.next(deserializedObject);
     return;
   }
 
@@ -87,7 +90,8 @@ export class EventConnectionService {
   }
 
   private async createHubProxy(): Promise<void> {
-    this._hubProxy = this._hubConnection.createHubProxy(this._hubName);
+    this._hubProxy = await this._hubConnection.createHubProxy(this.hubName);
+    this.hookupProxyEventHandlers();
   }
 
   private onConnectionStart(): void {
@@ -98,6 +102,7 @@ export class EventConnectionService {
     console.log('SignalR Hub connection has been established');
     console.log('Connection ID: ' + this.connectionId);
     console.log('Hub Name: ' + this.hubName);
+    this.hookupHubEventHandlers();
     this.startedSubject.next();
   }
 
@@ -105,18 +110,118 @@ export class EventConnectionService {
     console.log('Failed to establish a SignalR Hub connection at: ' + this.url + '. Error: ' + error);
   }
 
-  private configureEventHandlers(): void {
-    this._hubProxy.on('serverMessageSent', message => { this.onReceived(message); });
-  }
-
   private disposeHubConnection() {
     if (this._hubConnection === null) {
       return;
     }
 
+    this.unhookHubEventHandlers();
+    this.unhookProxyEventHandlers();
     this._hubConnection.stop();
     this._hubConnection = null;
   }
+
+  private hookupHubEventHandlers(): void {
+    if (this.isInvalid(this._hubConnection)) {
+        return;
+    }
+
+    this._hubConnection.disconnected(() => {
+        this.onConnectionClosed();
+    });
+    this._hubConnection.connectionSlow(() => {
+        this.onConnectionSlow();
+    });
+    this._hubConnection.error(error => {
+        this.onError(error);
+    });
+    this._hubConnection.received(dataReceived => {
+        this.onReceived(dataReceived);
+    });
+    this._hubConnection.reconnected(() => {
+        this.onReconnected();
+    });
+    this._hubConnection.reconnecting(() => {
+        this.onReconnecting();
+    });
+    this._hubConnection.stateChanged(stateChange => {
+        this.onConnectionStateChanged(stateChange);
+    });
+  }
+
+  private unhookHubEventHandlers(): void {
+    if (this.isInvalid(this._hubConnection)) {
+        return;
+    }
+
+    this._hubConnection.disconnected(() => {});
+    this._hubConnection.connectionSlow(() => {});
+    this._hubConnection.error(error => {});
+    this._hubConnection.received(dataReceived => {});
+    this._hubConnection.reconnected(() => {});
+    this._hubConnection.reconnecting(() => {});
+    this._hubConnection.stateChanged(stateChange => {});
+}
+
+  protected hookupProxyEventHandlers(): void {
+    this._hubProxy.on('ServerConnected', () => {
+        this.onProxyEventServerConnected();
+    });
+
+    this._hubProxy.on('ServerReconnected', canResume => {
+        this.onProxyEventServerReconnected(canResume);
+    });
+  }
+
+  protected unhookProxyEventHandlers(): void {
+    this._hubProxy.off('ServerConnected', () => {
+        this.onProxyEventServerConnected();
+    });
+
+    this._hubProxy.off('ServerReconnected', canResume => {
+        this.onProxyEventServerReconnected(canResume);
+    });
+  }
+
+  private onConnectionClosed(): void {
+      console.log('SignalR Disconnected');
+  }
+
+  private onConnectionSlow(): void {
+    console.log('SignalR Connection Slow');
+  }
+
+  private onError(error: Error): void {
+    console.log('SignalR Error' + error);
+  }
+
+  private onProxyEventServerConnected(): void {
+    console.log('SignalR Proxy Event Connected');
+  }
+
+  private onProxyEventServerReconnected(canResume: boolean): void {
+    console.log('SignalR Proxy Event Reconnected');
+  }
+
+  private onReconnected(): void {
+    console.log('SignalR Reconnected');
+  }
+
+  private onReconnecting(): void {
+    console.log('SignalR Reconnecting');
+  }
+
+  private onConnectionStateChanged(stateChange): void {
+    console.log('SignalR Connection State Changed ' + stateChange);
+  }
+
+  protected isValid(variable: any): boolean {
+    return variable !== undefined && variable !== null;
+}
+
+protected isInvalid(variable: any): boolean {
+    return !this.isValid(variable);
+}
 
   private getQueryString(): string {
 
@@ -125,9 +230,9 @@ export class EventConnectionService {
     const apiKey = ocapClientDetails.apiKey;
     const machineName =  ocapClientDetails.machineName;
     const clientId =  ocapClientDetails.clientId;
+    const clientName = ocapClientDetails.clientName;
 
-    const queryString = `x-clientid=${clientId}&x-apikey=${apiKey}&x-machinename=${machineName}`;
-
+    const queryString = `x-clientid=${clientId}&x-apikey=${apiKey}&x-machinename=${machineName}&x-clientname=${clientName}`;
     return queryString;
   }
 }

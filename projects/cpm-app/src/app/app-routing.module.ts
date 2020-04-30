@@ -10,6 +10,7 @@ import { GuidedInvMgmtDevicelistPageComponent } from './core/guidedinvmgmt-devic
 import { EditPickRoutePageComponent } from './core/edit-pick-route-page/edit-pick-route-page.component';
 /*import { CpmSignalRResolverService } from './xr2/services/cpm-signal-rresolver.service';*/
 import { GuidedInvMgmtCycleCountPageComponent } from './core/guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component';
+import { HardwareLeasePageComponent } from './core/hardware-lease-page/hardware-lease-page.component';
 
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },
   { path: 'pickRoutes/:pickRouteId', component: EditPickRoutePageComponent },
   { path: 'guidedinvmgmt/cyclecount', component: GuidedInvMgmtCycleCountPageComponent },
+  { path: 'hardwareLease/requestLease', component: HardwareLeasePageComponent }
 ];
 
 @NgModule({

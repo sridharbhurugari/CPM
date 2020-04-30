@@ -1,0 +1,21 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host{
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+}
+
+.dateTime{
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color:white;
+  position: relative;
+  margin-top: 20px;
+ margin-right: 375px;
+}
+
+.description{
+  font-size: 18px;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding-left: 15px;
+}
