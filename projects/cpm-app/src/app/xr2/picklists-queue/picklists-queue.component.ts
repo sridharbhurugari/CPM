@@ -27,7 +27,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   private _picklistQueueItems: PicklistQueueItem[];
 
   // Temporary until device configuration
-  // Needs to be translated too
   _outputDeviceDisplayList = [
     new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
     new SingleselectRowItem('Cart', 'CART'),
@@ -136,10 +135,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.TrackById = Guid.create();
-  }
-
-  skip(picklistQueueItem: PicklistQueueItem)
-  {
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
