@@ -38,14 +38,13 @@
             *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">{{picklistQueueItem.FilledBoxCount}}
             {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
-            <div class="device-selection">
-              <oc-singleselect
-              [disabled] = "picklistQueueItem.Status > 1"
-              [tableData] = "this._outputDeviceDisplayList"
-              [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
-              (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
-              </oc-singleselect>
-            </div>
+            <span>{{picklistQueueItem.DeviceDescription}}</span>
+            <oc-singleselect
+            [disabled] = "picklistQueueItem.Status > 1"
+            [tableData] = "this._outputDeviceDisplayList"
+            [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
+            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
+            </oc-singleselect>
           </div>
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
