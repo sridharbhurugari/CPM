@@ -259,6 +259,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
 
   navigateSkip() {
     if (this.isLastItem || this.currentItemCount == this.itemCount) {
+      if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+        this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+      }
+
       this.wpfActionController.ExecuteBackAction();
     }
     else {

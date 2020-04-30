@@ -631,28 +631,58 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.DisableActionButtons(true);
     });
   });
-  describe('skip the item for last item', () => {
-    it('skip the item ', () => {
-      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
-        WpfActionControllerService
-      );
-      spyOn(
-        wpfActionControllerServiceStub,
-        'ExecuteBackAction'
-      ).and.callThrough();
-      component.isLastItem = false;
-      component.navigateSkip();
-      expect(
-        wpfActionControllerServiceStub.ExecuteBackAction
-      ).toHaveBeenCalled();
+
+  describe('navigateSkip', () => {
+    describe('given last item', () => {
+      beforeEach(() => {
+        component.isLastItem = true;
+      });
+
+      it('calls ExecuteBackAction', () => {
+        const item: any = {};
+        component.displayCycleCountItem = item;
+        const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
+          WpfActionControllerService
+        );
+        spyOn(
+          wpfActionControllerServiceStub,
+          'ExecuteBackAction'
+        ).and.callThrough();
+        component.isLastItem = false;
+        component.navigateSkip();
+        expect(
+          wpfActionControllerServiceStub.ExecuteBackAction
+        ).toHaveBeenCalled();
+      });
+
+      describe('and given carousel location', () => {
+        let item: any = {};
+        beforeEach(() => {
+          item.DeviceLocationTypeId = DeviceLocationTypeId.Carousel;
+          component.displayCycleCountItem = item;
+        });
+
+        it('should clear lightbar', () => {
+          component.navigateSkip();
+          expect(carouselLocationAccessService.clearLightbar).toHaveBeenCalled();
+        })
+      });
+
+      describe('and given open storage location', () => {
+        let item: any = {};
+        beforeEach(() => {
+          item.DeviceLocationTypeId = DeviceLocationTypeId.OpenStorage;
+          component.displayCycleCountItem = item;
+        });
+
+        it('should clear lightbar', () => {
+          component.navigateSkip();
+          expect(carouselLocationAccessService.clearLightbar).not.toHaveBeenCalled();
+        });
+      });
     });
   });
-  describe('skip the item for last item false', () => {
-    it('skip the item ', () => {
-      component.isLastItem = false;
-      component.navigateSkip();
-    });
-  });
+
   describe('toggle red border line for calendar control', () => {
     it('toggle red border line for calendar control', () => {
       var dummyElement = document.createElement('datepicker');

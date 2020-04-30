@@ -117,6 +117,8 @@ export class CarouselLocationAccessService implements IDeviceLocationAccessServi
     if(outcome === DeviceOperationOutcome.DeviceNotLeasedToClient){
       return DeviceLocationAccessResult.LeaseNotAvailable;
     }
+
+    return DeviceLocationAccessResult.Failed;
   }
 
   private popRequestSubject(requestId: string): Subject<DeviceLocationAccessResult> {
