@@ -82,7 +82,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-
+        if (this.displayCycleCountItem.ExpirationDateFormatted === "")
+        this.DisableActionButtons(true);
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -240,7 +241,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
     else {
       this.nextRecord();
-     // Util.setByTabIndex(this.numericindexes[1]);
     }
   }
 
