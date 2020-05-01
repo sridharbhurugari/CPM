@@ -99,7 +99,7 @@
             <div class="buttonadjust">
             <div class="ocrightalign" >
                 <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6"></oc-button-action>
-                <oc-button-action id="nextbutton" buttonText="{{ (isLastItem ? 'DONE' : 'NEXT') | translate }}"
+                <oc-button-action id="nextdonebtn" buttonText="{{ (isLastItem ? 'DONE' : 'NEXT') | translate }}"
                         (click)="navigateContinue()" [disabled]="nextButtonDisable" tabindex="5"></oc-button-action>
             </div> 
         </div>
