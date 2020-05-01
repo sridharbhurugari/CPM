@@ -8,6 +8,8 @@ import { LeaseVerificationResult } from '../data-contracts/lease-verification-re
 import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
 import { RequestHardwareLeaseRequest } from '../data-contracts/request-hardware-lease-request';
 import { DeviceOperationResult } from '../data-contracts/device-operation-result';
+import { IDeviceOperationResult } from '../data-contracts/i-device-operation-result';
+import { Guid } from 'guid-typescript';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +22,6 @@ export class HardwareLeaseService {
   ) { }
 
   public HasDeviceLease(deviceId: number): Observable<LeaseVerificationResult> {
-    console.log(deviceId);
     const leaseVerificationReq = new LeaseVerificationRequest();
     leaseVerificationReq.DeviceId = deviceId;
     const url = this.ocapUrlBuilderService.buildUrl(`/api/hardwareLease/VerifyLease`);
@@ -35,6 +36,17 @@ export class HardwareLeaseService {
     requestHardwareLeaseRequest.DeviceId = deviceId;
     const url = this.ocapUrlBuilderService.buildUrl(`/api/hardwareLease/requestLease`);
     return this.httpClient.post<DeviceOperationResult>(url, requestHardwareLeaseRequest, {
+        headers: this.ocapHttpHeadersService.getHeaders(),
+    });
+  }
+
+    public RequestDeviceLeaseCorrelate(requestCorrelationId: Guid, deviceId: number): Observable<IDeviceOperationResult> {
+      const url = this.ocapUrlBuilderService.buildUrl(`/api/hardwareLease/requestLease`);
+      const request = {
+        RequestId: requestCorrelationId.toString(),
+        DeviceId: deviceId,
+      }
+      return this.httpClient.post<IDeviceOperationResult>(url, request, {
         headers: this.ocapHttpHeadersService.getHeaders(),
       });
     }

@@ -1,0 +1,10 @@
+:host{
+    display: block;
+}
+:host::ng-deep button{
+    border-radius: 5px !important;
+    min-width: 100px !important;
+}
+:host::ng-deep oc-svgicon{
+    left: auto !important;
+}

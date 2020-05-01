@@ -15,8 +15,8 @@ import { PopupDialogService, PopupDialogProperties, PopupDialogType,
    PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
-import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -61,7 +61,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
-    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
+    private coreEventConnectionService: CoreEventConnectionService,
     private ocsStatusService: OcsStatusService
   ) { }
 
@@ -166,20 +166,15 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.dialogService.showOnce(properties);
   }
 
-  private async connectToEvents(): Promise<void> {
-    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
+  private connectToEvents() {
+    this.configureEventHandlers();
+    this.coreEventConnectionService.startedSubject.subscribe(() => {
       this.ocsStatusService.requestStatus().subscribe();
     });
-    this.configureEventHandlers();
-    await this.ocsStatusEventConnectionService.openEventConnection();
   }
 
   private configureEventHandlers(): void {
-    if (!this.ocsStatusEventConnectionService) {
-      return;
-    }
-
-    this.ocsStatusEventConnectionService.ocsIsHealthySubject
+    this.coreEventConnectionService.ocsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 
