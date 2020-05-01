@@ -24,7 +24,7 @@ describe('DeviceLeaseService', () => {
       deviceLeaseDeniedSubject: new Subject<IDeviceLeaseDeniedEvent>(),
     };
     hardwareLeaseService = {
-      RequestDeviceLease: (x) => {
+      RequestDeviceLeaseCorrelate: (x) => {
         requestCorrelationId = x;
         return of(commandResult);
       }
