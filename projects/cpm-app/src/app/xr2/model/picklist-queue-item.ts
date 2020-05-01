@@ -27,5 +27,4 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   OutputDevice: string;
   Saving: boolean;
   TrackById: Guid;
-  rightHandDeviceToggleSelected: boolean;
 }
