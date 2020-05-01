@@ -40,6 +40,45 @@ export class CoreEventConnectionService extends EventConnectionService {
     }
 
     if (message.EventId === undefined) {
+      if (message.$type.includes('DeviceOperationResultEvent')) {
+        this.deviceOperationResultEventSubject.next({
+          DeviceId: message.DeviceId,
+          IsExpired: message.IsExpired,
+          IsSuccessful: message.IsSuccessful,
+          ResultId: message.ResultId,
+        });
+      }
+
+      if (message.$type.includes('HardwareLeaseGrantedEvent')) {
+        this.deviceLeaseGrantedSubject.next({
+          DeviceId: message.DeviceId,
+          RequestId: message.RequestId,
+        })
+      }
+
+      if (message.$type.includes('HardwareLeaseDeniedEvent')) {
+        this.deviceLeaseDeniedSubject.next({
+          DeviceId: message.DeviceId,
+          RequestId: message.RequestId,
+        })
+      }
+
+      if (message.$type.includes('CarouselIsReadyEvent')) {
+        this.carouselReadySubject.next({ DeviceId: message.DeviceId });
+      }
+
+      if (message.$type.includes('CarouselFaultedEvent')) {
+        this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
+      }
+
+      if (message.$type.includes('OcsAvailableEvent')) {
+        this.ocsIsHealthySubject.next(true);
+      }
+
+      if (message.$type.includes('OcsUnavailableEvent')) {
+        this.ocsIsHealthySubject.next(false);
+      }
+
       return;
     }
 
@@ -53,7 +92,7 @@ export class CoreEventConnectionService extends EventConnectionService {
       return;
     }
 
-    if(message.EventId === 'DeviceOperationResultEvent') {
+    if (message.EventId === 'DeviceOperationResultEvent') {
       this.deviceOperationResultEventSubject.next({
         DeviceId: message.DeviceId,
         IsExpired: message.IsExpired,
@@ -62,25 +101,25 @@ export class CoreEventConnectionService extends EventConnectionService {
       });
     }
 
-    if(message.EventId === 'HardwareLeaseGrantedEvent') {
+    if (message.EventId === 'HardwareLeaseGrantedEvent') {
       this.deviceLeaseGrantedSubject.next({
         DeviceId: message.DeviceId,
         RequestId: message.RequestId,
       })
     }
 
-    if(message.EventId === 'HardwareLeaseDeniedEvent'){
+    if (message.EventId === 'HardwareLeaseDeniedEvent') {
       this.deviceLeaseDeniedSubject.next({
         DeviceId: message.DeviceId,
         RequestId: message.RequestId,
       })
     }
 
-    if(message.EventId === 'CarouselIsReadyEvent'){
+    if (message.EventId === 'CarouselIsReadyEvent') {
       this.carouselReadySubject.next({ DeviceId: message.DeviceId });
     }
 
-    if(message.EventId === 'CarouselFaultedEvent'){
+    if (message.EventId === 'CarouselFaultedEvent') {
       this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
     }
   }

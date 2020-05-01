@@ -20,8 +20,6 @@ export class EventConnectionService {
 
   public startedSubject = new ReplaySubject(1);
 
-  public started: boolean = false;
-
   public get connectionState(): signalR.connectionState {
     if (this._hubConnection === null) {
         return signalR.connectionState.disconnected;
@@ -105,7 +103,6 @@ export class EventConnectionService {
     console.log('Connection ID: ' + this.connectionId);
     console.log('Hub Name: ' + this.hubName);
     this.hookupHubEventHandlers();
-    this.started = true;
     this.startedSubject.next();
   }
 

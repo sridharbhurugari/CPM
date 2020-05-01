@@ -168,13 +168,9 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   private connectToEvents() {
     this.configureEventHandlers();
-    if(this.coreEventConnectionService.started){
+    this.coreEventConnectionService.startedSubject.subscribe(() => {
       this.ocsStatusService.requestStatus().subscribe();
-    } else {
-      this.coreEventConnectionService.startedSubject.subscribe(() => {
-        this.ocsStatusService.requestStatus().subscribe();
-      });
-    }
+    });
   }
 
   private configureEventHandlers(): void {
