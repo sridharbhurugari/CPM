@@ -6,7 +6,7 @@
         <div class="cpmheaderrow">
            <div *ngIf="!isDefaultRoute">
               <app-header-title-bottom-margin-container [title]="'NAME' | translate" >
-                 <input ocTextbox [disabled]="requestStatus != 'none'" [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" />
+                 <input ocTextbox [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" />
               </app-header-title-bottom-margin-container>
             </div>
             <div *ngIf="isDefaultRoute">
@@ -29,7 +29,7 @@
                 </oc-grid>
             </div>
             <div class="rightPanel">
-                <app-edit-device-sequence [disabled]="requestStatus != 'none'" [enabledDevices]="enabledDevices$ | async" [disabledDevices]="disabledDevices$ | async" (deviceSequenceChanged)="onDeviceSequenceChanged($event)">
+                <app-edit-device-sequence [enabledDevices]="enabledDevices$ | async" [disabledDevices]="disabledDevices$ | async" (deviceSequenceChanged)="onDeviceSequenceChanged($event)">
                 </app-edit-device-sequence>
             </div>
         </div>
@@ -40,13 +40,20 @@
                 <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
             <div class="ocrightalign">
-                <oc-button-action [disabled]="requestStatus != 'none' || !newDeviceSequence || newDeviceSequence.length == 0 || !ocsIsHealthy"
+                <oc-button-action *ngIf="!isDefaultRoute"
+                    [disabled]="!canDelete || isDefaultRoute || !ocsIsHealthy"
+                    [buttonText]="'DELETE' | translate"
+                    (click)="delete()"></oc-button-action>
+                <oc-button-action *ngIf="!isDefaultRoute"
+                    [buttonIcon]="requestStatus == 'save' ? 'spin' : 'clear'"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy"
+                    [buttonText]="'SAVE' | translate"
+                    (click)="save()"></oc-button-action>
+                <oc-button-action
                     [buttonIcon]="requestStatus == 'saveAs' ? 'spin' : 'clear'"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy"
                     [buttonText]="'SAVE_AS' | translate"
                     (click)="saveAs()"></oc-button-action>
-                <oc-button-action *ngIf="!isDefaultRoute" [buttonIcon]="requestStatus == 'save' ? 'spin' : 'clear'"
-                    [disabled]="((!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged) || requestStatus != 'none' || !ocsIsHealthy"
-                    [buttonText]="'SAVE' | translate" (click)="save()"></oc-button-action>
             </div>
         </oc-footer>
     </ng-container>

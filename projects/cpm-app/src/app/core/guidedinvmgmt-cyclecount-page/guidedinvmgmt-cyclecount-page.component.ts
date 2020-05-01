@@ -1,16 +1,20 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, AfterViewChecked } from '@angular/core';
-import { map, shareReplay, filter, single, pluck, count } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
+import { map, shareReplay, filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of, forkJoin } from 'rxjs';
-import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat , Util} from '@omnicell/webcorecomponents';
+import { Observable, forkJoin, merge } from 'rxjs';
+import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat , Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
-import { Button } from 'protractor';
-import { CompileTemplateMetadata } from '@angular/compiler';
+import { DeviceLocationAccessResult } from '../../shared/enums/device-location-access-result';
+import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
+import { TranslateService } from '@ngx-translate/core';
+import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spinner-popup.component';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -19,11 +23,18 @@ import { CompileTemplateMetadata } from '@angular/compiler';
 })
 
 export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewChecked {
+  private _leaseDeniedTitle$: Observable<string>;
+
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
+
+  leaseBusyTitle$: Observable<any>;
+  leaseBusyMessage$: Observable<any>;
+  carouselFaulted: boolean = false;
+  deviceLocationAccessBusy: boolean;
   displayCycleCountItem: IGuidedCycleCount;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
   cycleCountItemsCopy: IGuidedCycleCount[];
@@ -39,12 +50,16 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   numericindexes = ['', 1, ''];
   datepickerindexes = [2, 3, 4, ''];
   public time: Date = new Date();
-  titleHeader = '\'GUIDED_CYCLE_COUNT\' | translate';
   route: any;
+  leaseBusyPopup$: Observable<PopupDialogComponent>;
   constructor(
     private activatedRoute: ActivatedRoute,
     private guidedCycleCountService: GuidedCycleCountService,
-    private wpfActionController: WpfActionControllerService
+    private wpfActionController: WpfActionControllerService,
+    private carouselLocationAccessService: CarouselLocationAccessService,
+    private coreEventConnectionService: CoreEventConnectionService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService,
   ) {
     setInterval(() => {
       this.time = new Date();
@@ -57,10 +72,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.disablethedate = false;
     this.numericfocus = false;
     this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
+    this.leaseBusyTitle$ = translateService.get('LEASE_BUSY_TITLE');
+    this.leaseBusyMessage$ = translateService.get('LEASE_BUSY_MESSAGE');
+    this._leaseDeniedTitle$ = translateService.get('DEVICE_ACCESS');
   }
 
   ngOnInit() {
     var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
+    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = true);
     this.getCycleCountData(deviceId);
   }
 
@@ -91,7 +111,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.IsLastItem();
       this.currentItemCount++;
     },
-      (response) => { this.toggleredborderforfirstitem();Util.setByTabIndex(this.numericindexes[1]);},
+      () => { this.toggleredborderforfirstitem();Util.setByTabIndex(this.numericindexes[1]);},
       () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]);}
     )
   }
@@ -117,6 +137,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   navigateBack() {
+    if(this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel){
+      this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+    }
+
     this.wpfActionController.ExecuteBackAction();
   }
 
@@ -146,6 +170,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       );
     }
     if (this.isLastItem || this.currentItemCount == this.itemCount) {
+      if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+        this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+      }
+
       this.wpfActionController.ExecuteBackAction();
     } else {
       this.nextRecord();
@@ -198,7 +226,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   onDateChange($event) {
-    var valueQuanity = this.numericElement && this.numericElement.displayValue;
     if ($event === '' || $event === null) {
       this.daterequired = true;
     } else {
@@ -237,6 +264,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   navigateSkip() {
     if (this.isLastItem || this.currentItemCount == this.itemCount) {
+      if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+        this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+      }
+
       this.wpfActionController.ExecuteBackAction();
     }
     else {
@@ -283,5 +314,58 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
     }
+  }
+
+  handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult){
+    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable){
+      let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.displayCycleCountItem.DeviceDescription });
+      forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
+        let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
+        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.navigateBack());
+      });
+    }
+
+    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested){
+      this.navigateBack();
+    }
+
+    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed){
+      this.carouselFaulted = true;
+    }else{
+      this.carouselFaulted = false;
+    }
+  }
+
+  handleLeaseBusyChanged(isBusy: boolean){
+    if (isBusy) {
+      this.leaseBusyPopup$ = this.leaseBusyTitle$.pipe(map(x => this.showLeaseDialog(x)), shareReplay(1));
+      this.leaseBusyPopup$.subscribe();
+    } else {
+      this.leaseBusyPopup$.subscribe(x => x.onCloseClicked());
+    }
+  }
+
+  private showLeaseDialog(title: string): PopupDialogComponent {
+    const properties = new PopupDialogProperties('Lease-Busy');
+    properties.titleElementText = title;
+    properties.showPrimaryButton = false;
+    properties.showSecondaryButton = false;
+    properties.showCloseIcon = false;
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = 0;
+    properties.component = SpinnerPopupComponent;
+    return this.dialogService.showOnce(properties);
+  }
+
+  private displayError(uniqueId, title, message): PopupDialogComponent {
+    const properties = new PopupDialogProperties(uniqueId);
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.primaryButtonText = 'Ok';
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 0;
+    return this.dialogService.showOnce(properties);
   }
 }

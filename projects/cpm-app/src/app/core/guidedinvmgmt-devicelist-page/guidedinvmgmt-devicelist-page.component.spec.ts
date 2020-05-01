@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GuidedInvMgmtDevicelistPageComponent } from './guidedinvmgmt-devicelist-page.component';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
-import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule, PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { SharedModule } from '../../shared/shared.module';
 import { GuidedDeviceListService } from '../../api-core/services/guided-device-list-service';
 import { of } from 'rxjs';
@@ -10,29 +9,30 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
-import { TranslateService } from '@ngx-translate/core';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { NavigationEnd } from '@angular/router';
 
 describe('GuidedinvmgmtDevicelistPageComponent', () => {
   let component: GuidedInvMgmtDevicelistPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtDevicelistPageComponent>;
-  let popupDialogService: Partial<PopupDialogService>;
   let hardwareLeaseService: Partial<HardwareLeaseService>;
-  let leaseVerificationResult: LeaseVerificationResult = 1;
-  
+  let wpfActionControllerService: Partial<WpfActionControllerService>;
+
+  let leaseVerificationResult: LeaseVerificationResult;
+
   beforeEach(async(() => {
-    popupDialogService = { showOnce: jasmine.createSpy('showOnce') };
     hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult) };
+    wpfActionControllerService = { ExecuteWpfContinueNavigationAction: jasmine.createSpy('ExecuteWpfContinueNavigationAction'),
+      ExecuteContinueNavigationAction: jasmine.createSpy('ExecuteContinueNavigationAction')};
 
     TestBed.configureTestingModule({
-      declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe, MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe ],
+      declarations: [ GuidedInvMgmtDevicelistPageComponent, MockTranslatePipe,
+        MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe ],
       imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, ButtonActionModule],
       providers: [
         { provide: GuidedDeviceListService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useValue: { } },
-        { provide: PopupDialogService, useValue: popupDialogService },
-        { provide: TranslateService, useValue: { get: () => of('') }},
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: HardwareLeaseService, useValue: hardwareLeaseService }
       ]
     })
@@ -49,14 +49,20 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('navigate', () => {
-    beforeEach(() => {
-      component.navigate(1);
+  describe('navigation on page', () => {
+    it('navigates to manual cycle count page', () => {
+       component.navigateManualCycleCount();
+       expect(wpfActionControllerService.ExecuteWpfContinueNavigationAction).toHaveBeenCalled();
     });
-
-    it('should show popup for failure', () => {
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
+    it('navigates if it has device lease', () => {
+      leaseVerificationResult = 0;
+      component.navigate(1);
+      expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
+    });
+    it('navigates to hardware lease page without lease', () => {
+      leaseVerificationResult = 1;
+      component.navigate(1);
+      expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
     });
   });
-
 });

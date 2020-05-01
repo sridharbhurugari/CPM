@@ -9,4 +9,5 @@ export class GlobalDispenseSyncRequest {
   PickListIdentifier: string;
   DestinationType: string;
   PickListLineDetails: Array<PickListLineDetail>;
+  OutputDevice: number;
 }

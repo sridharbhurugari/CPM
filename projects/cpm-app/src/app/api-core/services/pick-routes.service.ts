@@ -51,4 +51,10 @@ export class PickRoutesService {
     const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
     return this.httpClient.post(url, body, { headers: serviceHeaders });
   }
+
+  delete(pickRouteGuid: string) {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes/${pickRouteGuid}`);
+    var headers = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.delete(url, { headers: headers });
+  }
 }

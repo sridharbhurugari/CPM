@@ -16,7 +16,7 @@ import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
-import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -42,6 +42,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
+  canDelete: boolean;
   requestStatus: 'none' | 'save' | 'saveAs' = 'none';
   ocsIsHealthy = false;
 
@@ -53,8 +54,8 @@ export class EditPickRoutePageComponent implements OnInit {
     private popupWindowService: PopupWindowService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private ocsStatusEventConnectionService: OcsStatusEventConnectionService,
-    private ocsStatusService: OcsStatusService
+    private coreEventConnectionService: CoreEventConnectionService,
+    private ocsStatusService: OcsStatusService,
   ) { }
 
   ngOnInit() {
@@ -67,6 +68,8 @@ export class EditPickRoutePageComponent implements OnInit {
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+
+    this.pickRoute$.subscribe(x => this.canDelete = x.AssignedPriorities.length == 0);
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
       const pickRouteDetail = results[0];
@@ -178,6 +181,24 @@ export class EditPickRoutePageComponent implements OnInit {
     });
   }
 
+  delete(){
+    const properties = new PopupWindowProperties();
+    const data: IConfirmPopupData = {
+      headerResourceKey: 'ROUTE_DELETE',
+      confirmTextboxResourceKey: 'ROUTE_DELETE_AFTER'
+    };
+
+    properties.data = data;
+
+    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.subscribe(selectedConfirm => {
+      if (selectedConfirm) {
+        this.pickRoutesService.delete(this.routeGuid)
+          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+      }
+    });
+  }
+
   onDeviceSequenceChanged(newDeviceSequence: IDeviceSequenceOrder[]) {
     for (let i = 0; i < newDeviceSequence.length; i++) {
       const device = newDeviceSequence[i];
@@ -230,20 +251,15 @@ export class EditPickRoutePageComponent implements OnInit {
     this.dialogService.showOnce(properties);
   }
 
-  private async connectToEvents(): Promise<void> {
-    this.ocsStatusEventConnectionService.startedSubject.subscribe(() => {
+  private connectToEvents() {
+    this.configureEventHandlers();
+    this.coreEventConnectionService.startedSubject.subscribe(() => {
       this.ocsStatusService.requestStatus().subscribe();
     });
-    this.configureEventHandlers();
-    await this.ocsStatusEventConnectionService.openEventConnection();
   }
 
   private configureEventHandlers(): void {
-    if (!this.ocsStatusEventConnectionService) {
-      return;
-    }
-
-    this.ocsStatusEventConnectionService.ocsIsHealthySubject
+    this.coreEventConnectionService.ocsIsHealthySubject
       .subscribe(message => this.setOcsStatus(message));
   }
 

@@ -3,6 +3,12 @@ import { GuidedCycleCount } from './guided-cycle-count';
 describe('GuidedCycleCount', () => {
   it('should create an instance', () => {
     expect(new GuidedCycleCount({
+      DeviceId: 5,
+      DeviceDescription: 'carousel 2',
+      DeviceLocationTypeId: '2023',
+      ShelfNumber: 3,
+      BinNumber: 2,
+      SlotNumber: 1,
       BrandNameFormatted: "Brand",
       GenericNameFormatted: "Generic",
       DeviceLocationId: 123,

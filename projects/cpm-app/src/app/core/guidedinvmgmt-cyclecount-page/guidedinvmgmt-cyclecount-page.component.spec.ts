@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA, ElementRef } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ActivatedRoute } from '@angular/router';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -7,42 +7,54 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
-import { of } from 'rxjs';
-import { NumericComponent, DatepickerComponent, OcEventService } from '@omnicell/webcorecomponents';
-import { EventManager } from '@angular/platform-browser';
+import { of, Subject } from 'rxjs';
+import { NumericComponent, DatepickerComponent, PopupDialogService } from '@omnicell/webcorecomponents';
+import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
+import { TranslateService } from '@ngx-translate/core';
+
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
+  let carouselLocationAccessService: Partial<CarouselLocationAccessService>;
   beforeEach(() => {
     const activatedRouteStub = () => ({
       snapshot: { queryParamMap: { get: () => ({}) } }
     });
     const guidedCycleCountServiceStub = () => ({
-      get: deviceID => {
+      get: () => {
         const obj = {
           DeviceLocationId: 1,
-    ItemId: '1',
-    BrandNameFormatted: '',
-    GenericNameFormatted: '',
-    ParLevel: 0,
-    ReorderLevel: 0,
-    ExpirationDate: null,
-    ExpirationDateFormatted: '',
-    LocationDescription: '',
-    QuantityOnHand: 0,
-    ReorderSource: '',
-    ItmExpDateGranularity: "Month",
-    QuantityMin: 10,
-    InStockQuantity: 10
+          temId: '1',
+          BrandNameFormatted: '',
+          GenericNameFormatted: '',
+          ParLevel: 0,
+          ReorderLevel: 0,
+          ExpirationDate: null,
+          ExpirationDateFormatted: '',
+          LocationDescription: '',
+          QuantityOnHand: 0,
+          ReorderSource: '',
+          ItmExpDateGranularity: "Month",
+          QuantityMin: 10,
+          InStockQuantity: 10
         };
         return of([obj]);
 
       },
-      post: (deviceId, update) => ({ subscribe: f => f({}) })
+      post: () => ({ subscribe: f => f({}) })
     });
     const wpfActionControllerServiceStub = () => ({
       ExecuteBackAction: () => ({})
     });
+    const coreEventConnectionService = {
+      carouselReadySubject: new Subject(),
+      carouselFaultedSubject: new Subject(),
+    };
+    carouselLocationAccessService = { 
+      clearLightbar: jasmine.createSpy('clearLightbar').and.returnValue(of({}))
+    };
     TestBed.configureTestingModule({
       imports: [FormsModule],
       schemas: [NO_ERRORS_SCHEMA],
@@ -56,7 +68,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         {
           provide: WpfActionControllerService,
           useFactory: wpfActionControllerServiceStub
-        }
+        },
+        { provide: CarouselLocationAccessService, useValue: carouselLocationAccessService },
+        { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
+        { provide: PopupDialogService, useValue: { } },
+        { provide: TranslateService, useValue: { get: (x: string) => of(`{x}_TRANSLATED`) } },
       ]
     });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
@@ -65,8 +81,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   it('can load instance', () => {
     expect(component).toBeTruthy();
   });
-  describe('navigateBack to guided cycle count page', () => {
-    it('navigateBack to guided cycle count page', () => {
+
+  describe('navigateBack', () => {
+    it('calls ExecuteBackAction', () => {
+      const item: any = { };
+      component.displayCycleCountItem = item;
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
       );
@@ -79,10 +98,43 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         wpfActionControllerServiceStub.ExecuteBackAction
       ).toHaveBeenCalled();
     });
+
+    describe('given carousel location', () => {
+      let item: any = { };
+      beforeEach(() => {
+        item.DeviceLocationTypeId = DeviceLocationTypeId.Carousel;
+        component.displayCycleCountItem = item;
+      })
+
+      it('should clear lightbar', () => {
+        component.navigateBack();
+        expect(carouselLocationAccessService.clearLightbar).toHaveBeenCalled();
+      })
+    });
+
+    describe('given open storage location', () => {
+      let item: any = { };
+      beforeEach(() => {
+        item.DeviceLocationTypeId = DeviceLocationTypeId.OpenStorage;
+        component.displayCycleCountItem = item;
+      })
+
+      it('should not clear lightbar', () => {
+        component.navigateBack();
+        expect(carouselLocationAccessService.clearLightbar).not.toHaveBeenCalled();
+      })
+    });
   });
+
   describe('navigateContinue to the next item', () => {
     it('navigateContinue to the next item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -116,6 +168,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('navigateContinue with month item granularity', () => {
     it('navigateContinue with month item granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -148,7 +206,6 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   });
   describe('cycle count data retrieval',()=>{
     it('cycle count data retrieval',() => {
-      var deviceID = "1";
       fixture.detectChanges();
     });
  });
@@ -185,6 +242,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('returning false component data', () => {
     it('return proper valid component', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -212,6 +275,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('returning true component data', () => {
     it('return proper valid component', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -251,6 +320,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.currentItemCount = 2;
       component.cycleCountItemsCopy = [];
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -269,6 +344,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 87,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -297,6 +378,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.currentItemCount = 1;
       component.cycleCountItemsCopy = [];
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 86,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -315,6 +402,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         DeviceLocationId: 87,  
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
@@ -343,6 +436,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('returns item expiredate granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -367,6 +466,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('returns item expiredate granularity', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -451,6 +556,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('quantity changes validation', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -485,6 +596,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('quantity changes validation', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
@@ -514,28 +631,58 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.DisableActionButtons(true);
     });
   });
-  describe('skip the item for last item', () => {
-    it('skip the item ', () => {
-      const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
-        WpfActionControllerService
-      );
-      spyOn(
-        wpfActionControllerServiceStub,
-        'ExecuteBackAction'
-      ).and.callThrough();
-      component.isLastItem = false;
-      component.navigateSkip();
-      expect(
-        wpfActionControllerServiceStub.ExecuteBackAction
-      ).toHaveBeenCalled();
+
+  describe('navigateSkip', () => {
+    describe('given last item', () => {
+      beforeEach(() => {
+        component.isLastItem = true;
+      });
+
+      it('calls ExecuteBackAction', () => {
+        const item: any = {};
+        component.displayCycleCountItem = item;
+        const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
+          WpfActionControllerService
+        );
+        spyOn(
+          wpfActionControllerServiceStub,
+          'ExecuteBackAction'
+        ).and.callThrough();
+        component.isLastItem = false;
+        component.navigateSkip();
+        expect(
+          wpfActionControllerServiceStub.ExecuteBackAction
+        ).toHaveBeenCalled();
+      });
+
+      describe('and given carousel location', () => {
+        let item: any = {};
+        beforeEach(() => {
+          item.DeviceLocationTypeId = DeviceLocationTypeId.Carousel;
+          component.displayCycleCountItem = item;
+        });
+
+        it('should clear lightbar', () => {
+          component.navigateSkip();
+          expect(carouselLocationAccessService.clearLightbar).toHaveBeenCalled();
+        })
+      });
+
+      describe('and given open storage location', () => {
+        let item: any = {};
+        beforeEach(() => {
+          item.DeviceLocationTypeId = DeviceLocationTypeId.OpenStorage;
+          component.displayCycleCountItem = item;
+        });
+
+        it('should clear lightbar', () => {
+          component.navigateSkip();
+          expect(carouselLocationAccessService.clearLightbar).not.toHaveBeenCalled();
+        });
+      });
     });
   });
-  describe('skip the item for last item false', () => {
-    it('skip the item ', () => {
-      component.isLastItem = false;
-      component.navigateSkip();
-    });
-  });
+
   describe('toggle red border line for calendar control', () => {
     it('toggle red border line for calendar control', () => {
       var dummyElement = document.createElement('datepicker');
@@ -558,6 +705,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('toggle calendar border with red color for first item', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",

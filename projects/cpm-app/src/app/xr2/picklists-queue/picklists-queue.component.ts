@@ -4,7 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
@@ -25,6 +25,13 @@ import { WindowService } from '../../shared/services/window-service';
 export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   private _picklistQueueItems: PicklistQueueItem[];
+
+  // Temporary until device configuration
+  outputDeviceDisplayList = [
+    new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
+    new SingleselectRowItem('Cart', 'CART'),
+    new SingleselectRowItem('Auto Packager', 'AUTOPACKAGER')];
+  outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'AUTOPACKAGER': 300};
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -133,8 +140,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   sendToRobot(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
-    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;    
+    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
+    globalDispenseSyncRequest.OutputDevice = this.outputDeviceMap[picklistQueueItem.OutputDevice];
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
@@ -196,5 +204,13 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return null;
     }
     return picklistQueueItem.TrackById;
+  }
+
+  getActiveDeviceRow(picklistQueueItem: PicklistQueueItem) {
+    return this.outputDeviceDisplayList.find(x => x.value === picklistQueueItem.OutputDevice);
+  }
+
+  onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.OutputDevice = $event.value;
   }
 }

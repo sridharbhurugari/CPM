@@ -10,7 +10,7 @@ import { EditDeviceSequenceComponent } from '../edit-device-sequence/edit-device
 import { ActivatedRoute } from '@angular/router';
 import { PickRoutesService } from '../../api-core/services/pick-routes.service';
 import { DevicesService } from '../../api-core/services/devices.service';
-import { of, Subject } from 'rxjs';
+import { of, Subject, ReplaySubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { IPickRouteDetail } from '../../api-core/data-contracts/i-pickroute-detail';
 import { IDevice } from '../../api-core/data-contracts/i-device';
@@ -18,8 +18,8 @@ import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-seq
 import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { OcsStatusEventConnectionService } from '../../api-core/services/ocs-status-event-connection.service';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 describe('EditPickRoutePageComponent', () => {
   let component: EditPickRoutePageComponent;
@@ -47,7 +47,8 @@ describe('EditPickRoutePageComponent', () => {
 
     const saveAsSpy = jasmine.createSpy('saveAs').and.returnValue(of({}));
     const saveSpy = jasmine.createSpy('save').and.returnValue(of({}));
-    pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy };
+    const deleteSpy = jasmine.createSpy('delete').and.returnValue(of({}));
+    pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy, delete: deleteSpy };
     popupDialogService = { showOnce: jasmine.createSpy('showOnce') };
     TestBed.configureTestingModule({
       declarations: [ EditPickRoutePageComponent, MockTranslatePipe, EditDeviceSequenceComponent ],
@@ -67,11 +68,11 @@ describe('EditPickRoutePageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: OcsStatusEventConnectionService, useValue:
+        { provide: CoreEventConnectionService, useValue:
           { 
             openEventConnection: () => {},
             ocsIsHealthySubject: new Subject(),
-            startedSubject: new Subject(),
+            startedSubject: new ReplaySubject(),
           }},
         { provide: OcsStatusService, useValue: { requestStatus: () => '' } },
       ],
@@ -187,6 +188,30 @@ describe('EditPickRoutePageComponent', () => {
       it('should not call pickRoutesService.save', () => {
         popupDismissedSubject.next(false);
         expect(pickRoutesService.save).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('delete', () => {
+    beforeEach(() => {
+      component.delete();
+    });
+
+    it('should show popul for confirm delete', () => {
+      expect(popupWindowService.show).toHaveBeenCalled();
+    });
+
+    describe('given confirm delete popup dismissed with ok', () => {
+      it('should call pickRoutesService.delete', () => {
+        popupDismissedSubject.next(true);
+        expect(pickRoutesService.delete).toHaveBeenCalled();
+      });
+    });
+
+    describe('given confirm delete popup dismissed with cancel', () => {
+      it('should not call pickRoutesService.delete', () => {
+        popupDismissedSubject.next(false);
+        expect(pickRoutesService.delete).not.toHaveBeenCalled();
       });
     });
   });

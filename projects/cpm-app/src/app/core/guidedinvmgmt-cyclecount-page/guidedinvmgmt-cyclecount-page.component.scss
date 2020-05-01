@@ -41,6 +41,20 @@
     color:$text-color;
     bottom: 16px;
     left: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .locationdescription{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .devicelocationaccess{
+    margin-top:5px;
+    margin-left: auto;
+    margin-right: 15px;
   }
 
   .DeviceLocation{
@@ -50,6 +64,10 @@
     margin-top: 8px;
     margin-bottom:8px;  
     margin-left: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
   .panelContainer1 {
     display: flex;

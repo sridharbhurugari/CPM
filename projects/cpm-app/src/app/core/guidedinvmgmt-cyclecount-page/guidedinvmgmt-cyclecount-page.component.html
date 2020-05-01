@@ -29,17 +29,23 @@
                 </div>
             </div>
             <div class="DeviceLocation">
+                <div>
                 <div class="itemIdHeader">
                     <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
                 </div>
                 <div class="location">
-                    <span>
-                        {{ displayCycleCountItem.LocationDescription }}
-                    </span>
+                    <div class="locationdescription">
+                        <div>
+                            {{ displayCycleCountItem.LocationDescription }}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
+                    <div class="devicelocationaccess">
+                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem" [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
+                            (isAccessBusy)="deviceLocationAccessBusy = $event" (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+                    </div>
+            </div>
         </div>
     </ng-container>
 
@@ -98,9 +104,9 @@
             </div>
             <div class="buttonadjust">
             <div class="ocrightalign" >
-                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6"></oc-button-action>
+                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6" [disabled]="deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
                 <oc-button-action id="nextdonebtn" buttonText="{{ (isLastItem ? 'DONE' : 'NEXT') | translate }}"
-                        (click)="navigateContinue()" [disabled]="nextButtonDisable" tabindex="5"></oc-button-action>
+                        (click)="navigateContinue()" [disabled]="nextButtonDisable || deviceLocationAccessBusy || carouselFaulted" tabindex="5"></oc-button-action>
             </div> 
         </div>
         </oc-footer>
