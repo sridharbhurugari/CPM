@@ -31,10 +31,10 @@ export class CoreEventConnectionService extends EventConnectionService {
 
   public async openEventConnection(): Promise<void> {
     this.startUp();
-    this.receivedSubject.subscribe(message => this.ocsStatusEventHandlers(message));
+    this.receivedSubject.subscribe(message => this.eventHandlers(message));
   }
 
-  private ocsStatusEventHandlers(message: any): void {
+  private eventHandlers(message: any): void {
     if (message === undefined) {
       return;
     }

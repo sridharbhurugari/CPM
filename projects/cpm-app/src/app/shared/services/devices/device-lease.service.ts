@@ -26,7 +26,7 @@ export class DeviceLeaseService {
     return this.coreEventConnectionService.startedSubject.pipe(flatMap(x => this.requestLeaseConnected(deviceId)));
   }
 
-  requestLeaseConnected(deviceId: number): Observable<boolean> {
+  private requestLeaseConnected(deviceId: number): Observable<boolean> {
     let requestCorrelationId = Guid.create();
     let resultSubject = new ReplaySubject<boolean>(1);
     this._deviceLeaseRequestSubjects[requestCorrelationId.toString()] = resultSubject;

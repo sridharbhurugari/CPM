@@ -6,12 +6,12 @@ import { CarouselCommandsService } from '../../../api-core/services/carousel-com
 import { Guid } from 'guid-typescript';
 import { IDeviceLocationAccessDisplayData } from '../../model/i-device-location-access-display-data';
 import { IDeviceOperationResult } from '../../../api-core/data-contracts/i-device-operation-result';
-import { DeviceOperationOutcome } from '../../enums/device-operation-outcome';
 import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { IDeviceOperationResultEvent } from '../../../api-core/events/i-device-operation-result-event';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { CoreEventConnectionService } from '../../../api-core/services/core-event-connection.service';
 import { flatMap } from 'rxjs/operators';
+import { DeviceOperationOutcomeMapperService } from './device-operation-outcome-mapper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,7 @@ export class CarouselLocationAccessService implements IDeviceLocationAccessServi
   constructor(
     private carouselCommandsService: CarouselCommandsService,
     private coreEventConnectionService: CoreEventConnectionService,
+    private deviceOperationOutcomeMapperService: DeviceOperationOutcomeMapperService,
   ) {
     this.coreEventConnectionService.deviceOperationResultEventSubject.subscribe(x => this.handleDeviceOperationResultEvent(x));
   }
@@ -80,7 +81,7 @@ export class CarouselLocationAccessService implements IDeviceLocationAccessServi
 
   private checkDeviceOperationResult(deviceOperationResult: IDeviceOperationResult, requestCorrelationId: Guid) {
     if (!deviceOperationResult.IsSuccessful) {
-      let result = this.mapOutcomeToAccessResult(deviceOperationResult.Outcome);
+      let result = this.deviceOperationOutcomeMapperService.mapOutcomeToAccessResult(deviceOperationResult.Outcome);
       let subject = this.popRequestSubject(requestCorrelationId.toString());
       subject.next(result);
     }
@@ -103,22 +104,6 @@ export class CarouselLocationAccessService implements IDeviceLocationAccessServi
     }
 
     subject.next(DeviceLocationAccessResult.Failed);
-  }
-
-  private mapOutcomeToAccessResult(outcome: DeviceOperationOutcome): DeviceLocationAccessResult {
-    if(outcome === DeviceOperationOutcome.DeviceOfflineOrNotFound){
-      return DeviceLocationAccessResult.DeviceNotOnline;
-    }
-
-    if(outcome === DeviceOperationOutcome.DeviceInactive){
-      return DeviceLocationAccessResult.DeviceInactive;
-    }
-
-    if(outcome === DeviceOperationOutcome.DeviceNotLeasedToClient){
-      return DeviceLocationAccessResult.LeaseNotAvailable;
-    }
-
-    return DeviceLocationAccessResult.Failed;
   }
 
   private popRequestSubject(requestId: string): Subject<DeviceLocationAccessResult> {
