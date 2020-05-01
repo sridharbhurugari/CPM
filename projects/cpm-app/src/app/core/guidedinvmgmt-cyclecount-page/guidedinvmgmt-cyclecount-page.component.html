@@ -70,7 +70,7 @@
                         {{"EXPIRATION_DATE" | translate}}
                         <div class="expiration">
                             <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat" [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" 
-                                [isRequired]="daterequired" [autocorrect]="false"  [disabled]="disablethedate" 
+                                [isRequired]="daterequired" [autocorrect]="false"  [isDisabled]="disablethedate" 
                                 popupDirection="UP" (ngModelChange)=onDateChange($event) [minDate]="todaydate" [tabIndexes]="datepickerindexes"> 
                             </oc-datepicker>
 
@@ -85,7 +85,7 @@
                 <div class="demo">
                     <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand"
                         [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true" 
-                        (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes" id="numericElement" (blur)="tabclickedonquantity($event)">
+                        (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes" id="numericElement">
                     </oc-numeric>
                 </div>
             </div>
@@ -94,11 +94,11 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()" ></oc-button-action>
+                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()" tabindex="-1"></oc-button-action>
             </div>
             <div class="buttonadjust">
             <div class="ocrightalign" >
-                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6" ></oc-button-action>
+                <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6"></oc-button-action>
                 <oc-button-action id="nextbutton" buttonText="{{ (isLastItem ? 'DONE' : 'NEXT') | translate }}"
                         (click)="navigateContinue()" [disabled]="nextButtonDisable" tabindex="5"></oc-button-action>
             </div> 

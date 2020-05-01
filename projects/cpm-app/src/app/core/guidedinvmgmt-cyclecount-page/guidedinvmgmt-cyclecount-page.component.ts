@@ -243,18 +243,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
   }
 
-  tabclickedonquantity($event : Event)
-  {
-    $event.preventDefault();
-    Util.setByTabIndex(this.datepickerindexes[2]);
-  }
-
-  tabclickedonskip($event : Event)
-  {
-    $event.preventDefault();
-    Util.setByTabIndex(this.numericindexes[1]);
-  }
-
   toggleredborderfornonfirstitem(nextrecordonly: boolean) {
     var element = document.getElementById("datepicker");
     if (element) {
