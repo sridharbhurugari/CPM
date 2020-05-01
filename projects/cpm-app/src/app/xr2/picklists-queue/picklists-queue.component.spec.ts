@@ -109,6 +109,4 @@ describe('PicklistsQueueComponent', () => {
       expect(component.outputDeviceMap[activeRow.value]).toBe(expectedAutoPackagerDeviceID);
     });
   });
-
-
 });
