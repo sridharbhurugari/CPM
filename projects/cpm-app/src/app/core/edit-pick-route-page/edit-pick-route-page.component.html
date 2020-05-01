@@ -40,24 +40,18 @@
                 <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
             <div class="ocrightalign">
-                <oc-button-action *ngIf="isDefaultRoute"
-                    [buttonIcon]="requestStatus == 'saveAs' ? 'spin' : 'clear'"
-                    [disabled]="requestStatus != 'none' || !newDeviceSequence || newDeviceSequence.length == 0 || !ocsIsHealthy"
-                    [buttonText]="'SAVE_AS' | translate"
-                    (click)="saveAs()"></oc-button-action>
-              <div class="buttonSpacer"></div>
                 <oc-button-action *ngIf="!isDefaultRoute"
-                    [disabled]="!canDelete || isDefaultRoute"
+                    [disabled]="!canDelete || isDefaultRoute || !ocsIsHealthy"
                     [buttonText]="'DELETE' | translate"
                     (click)="delete()"></oc-button-action>
                 <oc-button-action *ngIf="!isDefaultRoute"
                     [buttonIcon]="requestStatus == 'save' ? 'spin' : 'clear'"
-                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy"
                     [buttonText]="'SAVE' | translate"
                     (click)="save()"></oc-button-action>
-                <oc-button-action *ngIf="!isDefaultRoute"
+                <oc-button-action
                     [buttonIcon]="requestStatus == 'saveAs' ? 'spin' : 'clear'"
-                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy"
                     [buttonText]="'SAVE_AS' | translate"
                     (click)="saveAs()"></oc-button-action>
             </div>

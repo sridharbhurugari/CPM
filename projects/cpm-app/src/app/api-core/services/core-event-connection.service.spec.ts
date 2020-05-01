@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OcsStatusEventConnectionService } from './ocs-status-event-connection.service';
 import { EventConnectionService } from '../../xr2/services/event-connection.service';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { CoreEventConnectionService } from './core-event-connection.service';
 
-describe('OcsStatusService', () => {
+describe('CoreEventConnectionService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
     { provide: EventConnectionService, useValue: {} },
@@ -15,7 +15,7 @@ describe('OcsStatusService', () => {
 }));
 
   it('should be created', () => {
-    const service: OcsStatusEventConnectionService = TestBed.get(OcsStatusEventConnectionService);
+    const service: CoreEventConnectionService = TestBed.get(CoreEventConnectionService);
     expect(service).toBeTruthy();
   });
 });

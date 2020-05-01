@@ -173,3 +173,20 @@ a:visited {
   }
   // OcWebCoreComponents - Override CSS for Popup Dialog title and text
 }
+#Request-Lease{
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#Lease-Busy{
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#Lease-Busy .dialog-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#Device-Offline {
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#Lease-Denied {
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
