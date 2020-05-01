@@ -10,7 +10,7 @@ import { PicklistsQueueEventConnectionService } from '../services/picklists-queu
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { Input, Component } from '@angular/core';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-import { ButtonActionModule, GridModule, PopupDialogService, PopupDialogModule,
+import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
   FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -34,7 +34,7 @@ describe('PicklistsQueuePageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox , MockSearchPipe, MockAppHeaderContainer ],
-      imports: [ GridModule, ButtonActionModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
+      imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: { get: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },

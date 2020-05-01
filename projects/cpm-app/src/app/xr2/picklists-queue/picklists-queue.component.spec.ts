@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PicklistsQueueComponent } from './picklists-queue.component';
-import { GridModule, ButtonActionModule, PopupWindowModule, PopupDialogService, PopupDialogModule,
+import { GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogService, PopupDialogModule,
   FooterModule,
   LayoutModule} from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
@@ -18,6 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { CoreModule } from '../../core/core.module';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
@@ -46,7 +47,7 @@ describe('PicklistsQueueComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
-      imports: [GridModule, ButtonActionModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule, CoreModule],
+      imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule, CoreModule],
       providers: [
         { provide: WpfActionControllerService, useValue: jasmine.createSpyObj('WpfActionControllerService', ['ExecuteContinueAction']) },
         { provide: TranslateService, useValue: { get: () => of([]) } },
@@ -80,4 +81,32 @@ describe('PicklistsQueueComponent', () => {
     });
   });
 
+  describe('Output Device Selection', () => {
+    it('should return quick pick device ID', () => {
+      const expectedQuickPickDeviceID = 100;
+      const mockPicklistQueueItem = new PicklistQueueItem(null);
+      mockPicklistQueueItem.OutputDevice = 'QUICKPICK';
+
+      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
+      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedQuickPickDeviceID);
+    });
+
+    it('should return cart device ID', () => {
+      const expectedCartDeviceID = 200;
+      const mockPicklistQueueItem = new PicklistQueueItem(null);
+      mockPicklistQueueItem.OutputDevice = 'CART';
+
+      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
+      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedCartDeviceID);
+    });
+
+    it('should return auto packager device ID', () => {
+      const expectedAutoPackagerDeviceID = 300;
+      const mockPicklistQueueItem = new PicklistQueueItem(null);
+      mockPicklistQueueItem.OutputDevice = 'AUTOPACKAGER';
+
+      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
+      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedAutoPackagerDeviceID);
+    });
+  });
 });

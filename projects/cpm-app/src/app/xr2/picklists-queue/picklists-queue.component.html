@@ -39,7 +39,12 @@
             {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
             <span>{{picklistQueueItem.DeviceDescription}}</span>
-            <span>{{picklistQueueItem.OutputDevice}}</span>
+            <oc-singleselect
+            [disabled] = "picklistQueueItem.Status > 1"
+            [tableData] = "this.outputDeviceDisplayList"
+            [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
+            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
+            </oc-singleselect>
           </div>
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
