@@ -169,6 +169,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       }
     }
     this.toggleredborderfornonfirstitem(true);
+    Util.setByTabIndex(this.numericindexes[1]);
   }
 
   onQuantityChange($event) {
