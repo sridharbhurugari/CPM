@@ -18,6 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { CoreModule } from '../../core/core.module';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'oc-search-box',
@@ -76,5 +77,35 @@ describe('PicklistsQueueComponent', () => {
       expect(picklistsQueueEventConnectionService.openEventConnection).toHaveBeenCalled();
     });
   });
+
+  describe('Output Device Selection', () => {
+    it('should return quick pick device ID', () => {
+      const expectedQuickPickDeviceID = 100;
+      const mockPicklistQueueItem = new PicklistQueueItem(null);
+      mockPicklistQueueItem.OutputDevice = 'QUICKPICK';
+
+      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
+      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedQuickPickDeviceID);
+    });
+
+    it('should return cart device ID', () => {
+      const expectedCartDeviceID = 200;
+      const mockPicklistQueueItem = new PicklistQueueItem(null);
+      mockPicklistQueueItem.OutputDevice = 'CART';
+
+      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
+      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedCartDeviceID);
+    });
+
+    it('should return auto packager device ID', () => {
+      const expectedAutoPackagerDeviceID = 300;
+      const mockPicklistQueueItem = new PicklistQueueItem(null);
+      mockPicklistQueueItem.OutputDevice = 'AUTOPACKAGER';
+
+      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
+      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedAutoPackagerDeviceID);
+    });
+  });
+
 
 });
