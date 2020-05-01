@@ -1,3 +1,3 @@
 export class HubConfigurationConstants {
-  public static hubName: string = 'Eventhub';
+  public static hubName: string = 'PubService';
 }

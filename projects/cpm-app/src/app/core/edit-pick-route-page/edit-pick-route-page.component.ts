@@ -42,6 +42,7 @@ export class EditPickRoutePageComponent implements OnInit {
 
   isDefaultRoute: boolean;
   routeNameChanged: boolean;
+  canDelete: boolean;
   requestStatus: 'none' | 'save' | 'saveAs' = 'none';
   ocsIsHealthy = false;
 
@@ -67,6 +68,8 @@ export class EditPickRoutePageComponent implements OnInit {
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+
+    this.pickRoute$.subscribe(x => this.canDelete = x.AssignedPriorities.length == 0);
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
       const pickRouteDetail = results[0];
@@ -173,6 +176,24 @@ export class EditPickRoutePageComponent implements OnInit {
       if (selectedConfirm) {
         this.requestStatus = 'save';
         this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
+          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+      }
+    });
+  }
+
+  delete(){
+    const properties = new PopupWindowProperties();
+    const data: IConfirmPopupData = {
+      headerResourceKey: 'ROUTE_DELETE',
+      confirmTextboxResourceKey: 'ROUTE_DELETE_AFTER'
+    };
+
+    properties.data = data;
+
+    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.subscribe(selectedConfirm => {
+      if (selectedConfirm) {
+        this.pickRoutesService.delete(this.routeGuid)
           .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
       }
     });

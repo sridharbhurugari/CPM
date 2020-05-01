@@ -28,6 +28,8 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
   }
 
   private configurePicklistEventHandlers(message: any): void {
+    const messageTypeName: string = message.$type;
+
     if (message === undefined) {
       return;
     }
@@ -37,13 +39,16 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     }
 
     if (message.EventId === 'AddOrUpdatePicklistQueueItemMessage') {
+      console.log(message);
       this.addOrUpdatePicklistQueueItemSubject.next(message);
       return;
     }
 
     if (message.EventId === 'RemovePicklistQueueItemMessage') {
+      console.log(message);
       this.removePicklistQueueItemSubject.next(message);
       return;
     }
   }
 }
+

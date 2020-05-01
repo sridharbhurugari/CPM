@@ -34,8 +34,16 @@ class MockSearchBox {
 describe('PicklistsQueueComponent', () => {
   let component: PicklistsQueueComponent;
   let fixture: ComponentFixture<PicklistsQueueComponent>;
+  let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
 
   beforeEach(async(() => {
+
+    picklistsQueueEventConnectionService = {
+      openEventConnection: jasmine.createSpy('openEventConnection'),
+      addOrUpdatePicklistQueueItemSubject: new Subject(),
+      removePicklistQueueItemSubject: new Subject()
+    };
+
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
       imports: [GridModule, ButtonActionModule, PopupWindowModule, PopupDialogModule, HttpClientModule, FooterModule, LayoutModule, CoreModule],
@@ -46,11 +54,7 @@ describe('PicklistsQueueComponent', () => {
         { provide: HttpClient, useValue: { get: () => {}} },
         { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
         { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
-        { provide: PicklistsQueueEventConnectionService, useValue:
-          { openEventConnection: () => {},
-            addOrUpdatePicklistQueueItemSubject: new Subject(),
-            removePicklistQueueItemSubject: new Subject()
-          }},
+        { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: ActivatedRoute, useValue: { actr: () => { }} },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
@@ -68,5 +72,12 @@ describe('PicklistsQueueComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});
 
+  describe('Connect to Events', () => {
+    it('Connects to events on creation', () => {
+      expect(component).toBeTruthy();
+      expect(picklistsQueueEventConnectionService.openEventConnection).toHaveBeenCalled();
+    });
+  });
+
+});

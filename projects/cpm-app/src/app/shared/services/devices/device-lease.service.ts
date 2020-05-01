@@ -30,7 +30,7 @@ export class DeviceLeaseService {
     let requestCorrelationId = Guid.create();
     let resultSubject = new ReplaySubject<boolean>(1);
     this._deviceLeaseRequestSubjects[requestCorrelationId.toString()] = resultSubject;
-    this.hardwareLeaseService.RequestDeviceLease(requestCorrelationId, deviceId).subscribe(x => this.checkDeviceOperationResult(x, requestCorrelationId));
+    this.hardwareLeaseService.RequestDeviceLeaseCorrelate(requestCorrelationId, deviceId).subscribe(x => this.checkDeviceOperationResult(x, requestCorrelationId));
     return resultSubject;
   }
 

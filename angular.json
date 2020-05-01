@@ -98,8 +98,10 @@
             "scripts": [],
             "codeCoverage": true,
             "codeCoverageExclude": [
+			  "projects/cpm-app/src/app/app.*",
               "projects/cpm-app/src/app/api-core/services/**/*",
-              "projects/cpm-app/src/app/api-xr2/services/**/*"
+              "projects/cpm-app/src/app/api-xr2/services/**/*",
+			  "projects/cpm-app/src/app/xr2/services/**/*"
             ]
           }
         },
