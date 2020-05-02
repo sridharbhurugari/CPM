@@ -310,7 +310,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.disabledatecomponent(true);
       this.toggleredborderfornonfirstitem(true);
     }
-    else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)) {
+    else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
+    || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
     }
