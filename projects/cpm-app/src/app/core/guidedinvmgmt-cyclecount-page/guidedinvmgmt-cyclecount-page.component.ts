@@ -3,7 +3,7 @@ import { map, shareReplay, filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge } from 'rxjs';
-import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat , Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
@@ -86,9 +86,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
-    
+
   }
-  
+
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -102,8 +102,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand  !== 0)
-        this.DisableActionButtons(true);
+        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+          this.DisableActionButtons(true);
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -111,8 +111,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.IsLastItem();
       this.currentItemCount++;
     },
-      () => { this.toggleredborderforfirstitem();Util.setByTabIndex(this.numericindexes[1]);},
-      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]);}
+      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); },
+      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); }
     )
   }
 
@@ -137,7 +137,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   navigateBack() {
-    if(this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel){
+    if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
       this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
     }
 
@@ -190,8 +190,16 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       if (this.displayCycleCountItem.QuantityOnHand === 0) {
         this.disabledatecomponent(true);
       }
+      else
+      {
+        this.disabledatecomponent(false);
+      }
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+        this.DisableActionButtons(true);
+      else
+        this.DisableActionButtons(false);
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;
@@ -215,10 +223,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
       }
-      else if (this.isdateexpired(this.datepicker.selectedDate)) {
+      else if (this.isdateexpired(this.datepicker && this.datepicker.selectedDate)) {
         this.toggleredborderfornonfirstitem(false);
       }
-      else if (isNaN(eventdate.getTime())) {
+      else if (isNaN(eventdate.getTime()) && this.displayCycleCountItem.ItmExpDateGranularity !== 'None') {
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
       }
@@ -311,14 +319,14 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.toggleredborderfornonfirstitem(true);
     }
     else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
-    || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
+      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
     }
   }
 
-  handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult){
-    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable){
+  handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult) {
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable) {
       let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.displayCycleCountItem.DeviceDescription });
       forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
         let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
@@ -326,18 +334,18 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       });
     }
 
-    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested){
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested) {
       this.navigateBack();
     }
 
-    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed){
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed) {
       this.carouselFaulted = true;
-    }else{
+    } else {
       this.carouselFaulted = false;
     }
   }
 
-  handleLeaseBusyChanged(isBusy: boolean){
+  handleLeaseBusyChanged(isBusy: boolean) {
     if (isBusy) {
       this.leaseBusyPopup$ = this.leaseBusyTitle$.pipe(map(x => this.showLeaseDialog(x)), shareReplay(1));
       this.leaseBusyPopup$.subscribe();
