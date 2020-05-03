@@ -52,8 +52,9 @@
     justify-content: center;
   }
   .devicelocationaccess{
+    margin-top:5px;
     margin-left: auto;
-    margin-right: 8.5px;
+    margin-right: 15px;
   }
 
   .DeviceLocation{
@@ -64,6 +65,9 @@
     margin-bottom:8px;  
     margin-left: 20px;
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
   .panelContainer1 {
     display: flex;
@@ -86,11 +90,11 @@
 
   .itemIdBox{     
     height: 75px;
-    width: 335px;  
+    width: 478px;  
     border-left: solid white 24px;
     border-right: solid  #c8c8c8 1px; 
-    margin-top: 6px;
-    margin-bottom: 6px;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
 
   .locationOfCycleCount {
@@ -242,7 +246,7 @@
   }
 }
 .expiration{
-  margin-top: 6px!important;
+  margin-top: 22px!important;
     ::ng-deep{
       div{
         &.first-Child{
@@ -350,4 +354,21 @@
 }
 .buttonadjust{
   margin-left: 24px!important;
+}
+.expirationwhiteline{
+  height: 1px;
+  background-color: #FFFFFF;
+  vertical-align: center!important;
+  glyph-orientation-horizontal: center!important;
+  margin-left: 16px;
+  margin-top: 25px;
+}
+.expwhiteline{
+  height: 1px;
+  background-color: #ffffff;
+  vertical-align: center!important;
+  glyph-orientation-horizontal: center!important;
+  margin-left: 16px;
+  margin-top: 135px;
+  position: relative!important;
 }

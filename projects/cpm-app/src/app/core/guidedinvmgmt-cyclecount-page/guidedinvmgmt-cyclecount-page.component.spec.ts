@@ -747,4 +747,17 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
- });
+  describe('wrong format date changes validation', () => {
+    it('date changes validation', () => {
+      component.onDateChange("20/10/2021");
+      var dummy,dummy1;
+      component.numericElement = new NumericComponent(dummy,dummy1);
+      component.numericElement.displayValue = "10";
+      component.DisableActionButtons(true); 
+      var val = component.daterequired;
+      expect(val).toBeFalsy();
+      expect(component.nextButtonDisable).toBeTruthy();
+      expect(component.doneButtonDisable).toBeFalsy();
+    });
+  });
+});

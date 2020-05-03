@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, AfterViewChecked } from '@angular/core';
-import { map, filter, shareReplay } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
+import { map, shareReplay, filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge } from 'rxjs';
-import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, PopupDialogProperties, PopupDialogType, PopupDialogService, PopupDialogComponent } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
@@ -22,7 +22,7 @@ import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spi
   styleUrls: ['./guidedinvmgmt-cyclecount-page.component.scss']
 })
 
-export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewChecked {
   private _leaseDeniedTitle$: Observable<string>;
 
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
@@ -46,6 +46,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   daterequired: boolean;
   disablethedate: boolean;
   todaydate: string;
+  numericfocus: boolean;
+  numericindexes = ['', 1, ''];
+  datepickerindexes = [2, 3, 4, ''];
   public time: Date = new Date();
   route: any;
   leaseBusyPopup$: Observable<PopupDialogComponent>;
@@ -67,6 +70,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.doneButtonDisable = false;
     this.daterequired = false;
     this.disablethedate = false;
+    this.numericfocus = false;
     this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
     this.leaseBusyTitle$ = translateService.get('LEASE_BUSY_TITLE');
     this.leaseBusyMessage$ = translateService.get('LEASE_BUSY_MESSAGE');
@@ -79,12 +83,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = true);
     this.getCycleCountData(deviceId);
   }
-  ngAfterViewInit(): void {
-  }
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
+
   }
+
   getCycleCountData(deviceID) {
     this.cycleCountItems = this.guidedCycleCountService.get(deviceID).pipe(map(guidedCycleCountItems => {
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
@@ -98,7 +102,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-
+        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+          this.DisableActionButtons(true);
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -106,8 +111,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.IsLastItem();
       this.currentItemCount++;
     },
-      (response) => { this.toggleredborderforfirstitem() },
-      () => { this.toggleredborderforfirstitem() }
+      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); },
+      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); }
     )
   }
 
@@ -132,7 +137,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
 
   navigateBack() {
-    if(this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel){
+    if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
       this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
     }
 
@@ -185,14 +190,23 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       if (this.displayCycleCountItem.QuantityOnHand === 0) {
         this.disabledatecomponent(true);
       }
+      else
+      {
+        this.disabledatecomponent(false);
+      }
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+        this.DisableActionButtons(true);
+      else
+        this.DisableActionButtons(false);
       this.currentItemCount++;
       if (this.currentItemCount == this.itemCount) {
         this.isLastItem = true;
       }
     }
     this.toggleredborderfornonfirstitem(true);
+    Util.setByTabIndex(this.numericindexes[1]);
   }
 
   onQuantityChange($event) {
@@ -204,15 +218,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
     }
     else {
       this.disabledatecomponent(false);
-      var eventdate = new Date( this.datepicker && this.datepicker.selectedDate);
+      var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
       if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
       }
-      else if (this.isdateexpired(this.datepicker.selectedDate)) {
+      else if (this.isdateexpired(this.datepicker && this.datepicker.selectedDate)) {
         this.toggleredborderfornonfirstitem(false);
       }
-      else if (isNaN(eventdate.getTime())) {
+      else if (isNaN(eventdate.getTime()) && this.displayCycleCountItem.ItmExpDateGranularity !== 'None') {
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
       }
@@ -220,7 +234,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
   }
 
   onDateChange($event) {
-    var valueQuanity = this.numericElement && this.numericElement.displayValue;
     if ($event === '' || $event === null) {
       this.daterequired = true;
     } else {
@@ -305,33 +318,34 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewIn
       this.disabledatecomponent(true);
       this.toggleredborderfornonfirstitem(true);
     }
-    else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)) {
+    else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
+      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
     }
   }
 
-  handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult){
-    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable){
+  handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult) {
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable) {
       let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.displayCycleCountItem.DeviceDescription });
       forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
         let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
-        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(x => this.navigateBack());
+        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.navigateBack());
       });
     }
 
-    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested){
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested) {
       this.navigateBack();
     }
 
-    if(deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed){
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed) {
       this.carouselFaulted = true;
-    }else{
+    } else {
       this.carouselFaulted = false;
     }
   }
 
-  handleLeaseBusyChanged(isBusy: boolean){
+  handleLeaseBusyChanged(isBusy: boolean) {
     if (isBusy) {
       this.leaseBusyPopup$ = this.leaseBusyTitle$.pipe(map(x => this.showLeaseDialog(x)), shareReplay(1));
       this.leaseBusyPopup$.subscribe();
