@@ -58,6 +58,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   devicePrinterName: string;
   deviceId: any;
   printResult: boolean;
+  popupTimeoutSeconds: number;
   leaseBusyPopup$: Observable<PopupDialogComponent>;
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -100,6 +101,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.systemConfigurationService.GetConfigurationValues('PRINTING', 'LABEL_PRINTER').subscribe(result => {
       console.log('label printer name : ' + result);
       this.labelPrinterName = result.Value;
+    });
+
+    this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
+      console.log('popup message timeout : ' + result);
+      console.log(result);
+      this.popupTimeoutSeconds = (Number(result.Value));
     });
 
     this.getCycleCountData(this.deviceId);
@@ -411,7 +418,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   PrintLabel(){
     let binData = new GuidedCycleCountPrintLabel({
       ItemId: this.displayCycleCountItem.ItemId,
-      DosageForm: this.displayCycleCountItem.Units,
+      DosageForm: this.displayCycleCountItem.DosageForm,
       DeviceId: this.displayCycleCountItem.DeviceId,
       DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
       DeviceLocationDescription: this.displayCycleCountItem.LocationDescription,
@@ -440,9 +447,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.translateService.get('PRINTSUCCESSFUL_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
+    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Info;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
 
@@ -453,9 +460,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.translateService.get('PRINTFAILED_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
+    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
 

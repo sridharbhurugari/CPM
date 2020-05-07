@@ -185,6 +185,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
@@ -224,6 +225,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
@@ -311,6 +313,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var localcopy = [];
@@ -344,6 +347,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var localcopy = [];
@@ -389,6 +393,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
@@ -413,6 +418,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.itemCount = 2;
@@ -447,6 +453,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
@@ -471,6 +478,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.itemCount = 2;
@@ -504,6 +512,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -534,6 +543,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"None",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -658,6 +668,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -698,6 +709,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -807,6 +819,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:12,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       component.toggleredborderforfirstitem();
