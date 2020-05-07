@@ -14,7 +14,10 @@ import { CarouselLocationAccessService } from '../../shared/services/devices/car
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
 import { TranslateService } from '@ngx-translate/core';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spinner-popup.component';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -51,6 +54,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   datepickerindexes = [2, 3, 4, ''];
   public time: Date = new Date();
   route: any;
+  labelPrinterName : string;
+  devicePrinterName: string;
+  deviceId: any;
+  printResult: boolean;
   leaseBusyPopup$: Observable<PopupDialogComponent>;
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -60,6 +67,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     private coreEventConnectionService: CoreEventConnectionService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
+    private hardwareLeaseService: HardwareLeaseService,
+    private systemConfigurationService: SystemConfigurationService,
   ) {
     setInterval(() => {
       this.time = new Date();
@@ -69,6 +78,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.nextButtonDisable = false;
     this.doneButtonDisable = false;
     this.daterequired = false;
+    this.printResult = false;
     this.disablethedate = false;
     this.numericfocus = false;
     this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
@@ -78,10 +88,21 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   ngOnInit() {
-    var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
-    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = false);
-    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = true);
-    this.getCycleCountData(deviceId);
+    this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
+    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = true);
+
+    this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
+      console.log(res);
+       this.devicePrinterName = res.PrinterName;
+    });
+
+    this.systemConfigurationService.GetConfigurationValues('PRINTING', 'LABEL_PRINTER').subscribe(result => {
+      console.log('label printer name : ' + result);
+      this.labelPrinterName = result.Value;
+    });
+
+    this.getCycleCountData(this.deviceId);
   }
 
   ngAfterViewChecked() {
@@ -377,4 +398,65 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     properties.timeoutLength = 0;
     return this.dialogService.showOnce(properties);
   }
+
+  HasLabelPrinterConfigured(): boolean {
+    if((this.devicePrinterName != undefined && this.devicePrinterName.length > 0)|| this.labelPrinterName !=undefined && this.labelPrinterName.length > 0 ) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  PrintLabel(){
+    let binData = new GuidedCycleCountPrintLabel({
+      ItemId: this.displayCycleCountItem.ItemId,
+      DosageForm: this.displayCycleCountItem.Units,
+      DeviceId: this.displayCycleCountItem.DeviceId,
+      DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
+      DeviceLocationDescription: this.displayCycleCountItem.LocationDescription,
+      TradeName: this.displayCycleCountItem.BrandNameFormatted,
+      GenericName: this.displayCycleCountItem.GenericNameFormatted,
+      UnitOfIssue: this.displayCycleCountItem.Units
+    });
+    
+    this.guidedCycleCountService.PrintLabel(this.deviceId, binData).subscribe(res =>{
+      console.log(res);
+      if(res)
+      {
+        this.printResult = true;
+        this.displaySuccessToSaveDialog();
+      }
+      else{
+        this.printResult = false;
+        this.displayFailedToSaveDialog();
+      }
+    });
+  }
+  displaySuccessToSaveDialog(): void {
+
+    const properties = new PopupDialogProperties('Role-Status-Info');
+    this.translateService.get('PRINTSUCCESSFUL_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('PRINTSUCCESSFUL_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
+
+  displayFailedToSaveDialog(): void {
+
+    const properties = new PopupDialogProperties('Role-Status-Error');
+    this.translateService.get('PRINTFAILED_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('PRINTFAILED_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
+
 }

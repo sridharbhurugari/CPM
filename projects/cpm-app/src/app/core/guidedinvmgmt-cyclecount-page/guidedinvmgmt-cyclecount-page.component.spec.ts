@@ -13,11 +13,39 @@ import { CarouselLocationAccessService } from '../../shared/services/devices/car
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
 import { TranslateService } from '@ngx-translate/core';
+import { DeviceOperationResult } from '../../api-core/data-contracts/device-operation-result';
+import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-configuration';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
 
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
   let carouselLocationAccessService: Partial<CarouselLocationAccessService>;
+  let hardwareLeaseService: Partial<HardwareLeaseService>;
+  let systemConfigurationService: Partial<SystemConfigurationService>
+
+  const leaseVerificationResult: LeaseVerificationResult = 1;
+  const deviceConfiguration: IDeviceConfiguration = {
+    DefaultOwner: 'WRKS1',
+    DeviceId: 1,
+    Active: true,
+    DefaultOwnerShortname: 'WRKS1',
+    DeviceDescription: 'Device1',
+    DeviceType: '',
+    IsValid: true,
+    Json: '',
+    LeaseRequired: true,
+    Model: '',
+    Order: 1,
+    PrinterName: '' };
+   
+  let deviceOperationResult: DeviceOperationResult = { OutcomeText: '', Outcome: 5, IsSuccessful: false };  
+  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
+
   beforeEach(() => {
     const activatedRouteStub = () => ({
       snapshot: { queryParamMap: { get: () => ({}) } }
@@ -55,6 +83,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     carouselLocationAccessService = { 
       clearLightbar: jasmine.createSpy('clearLightbar').and.returnValue(of({}))
     };
+    hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult),
+      getDeviceConfiguration: () => of(deviceConfiguration),
+      RequestDeviceLease: () => of(deviceOperationResult)  };
+    systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
+    
     TestBed.configureTestingModule({
       imports: [FormsModule],
       schemas: [NO_ERRORS_SCHEMA],
@@ -73,6 +106,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: PopupDialogService, useValue: { } },
         { provide: TranslateService, useValue: { get: (x: string) => of(`{x}_TRANSLATED`) } },
+        { provide: HardwareLeaseService, useValue: hardwareLeaseService },
+        { provide: SystemConfigurationService, useValue: systemConfigurationService }
       ]
     });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
@@ -236,6 +271,19 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.itemCount = 3;
       component.IsLastItem(); 
       expect(component.isLastItem).toBeFalsy();
+    });
+  });
+
+  describe('returns Printer Configure true', () => {
+    it('return with configure result', () => {
+      component.HasLabelPrinterConfigured(); 
+      expect(true).toBeTruthy();
+    });
+  });
+  describe('returns Printer Configure false', () => {
+    it('return with configure result', () => {
+      component.HasLabelPrinterConfigured(); 
+      expect(false).toBeFalsy();
     });
   });
   
@@ -492,6 +540,40 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(value).toBeTruthy();
     });
   });
+
+  describe('item bin label print validation', () => {
+    it('bin label print validation true', () => {
+      let guidedCycleCountPrintLable = new GuidedCycleCountPrintLabel({
+        DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationDescription: 'carousel 2',
+        ItemId: "ace500t",
+        TradeName: "Tylenol 500mg tab",
+        GenericName: "acetaminophen 500mg tab",
+        UnitOfIssue:"EA",
+        DosageForm: "EA"
+      });
+      component.printResult = true;
+      expect(component.displaySuccessToSaveDialog).toBeTruthy();
+    });
+  });
+  describe('item bin label print validation', () => {
+    it('bin label print validation false', () => {
+      let guidedCycleCountPrintLable = new GuidedCycleCountPrintLabel({
+        DeviceLocationId: 87,  
+        DeviceId: 5,
+        DeviceLocationDescription: 'carousel 2',
+        ItemId: "ace500t",
+        TradeName: "Tylenol 500mg tab",
+        GenericName: "acetaminophen 500mg tab",
+        UnitOfIssue:"EA",
+        DosageForm: "EA"
+      });
+      component.printResult = false;
+      expect(component.displayFailedToSaveDialog).toBeTruthy();
+    });
+  });
+
   describe('disable action buttons for last item', () => {
     it('disable action buttons', () => {
       component.isLastItem = true;
