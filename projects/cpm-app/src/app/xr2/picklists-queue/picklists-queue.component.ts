@@ -26,13 +26,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   private _picklistQueueItems: PicklistQueueItem[];
 
-  // Temporary until device configuration
-  // outputDeviceDisplayList = [
-  //   new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
-  //   new SingleselectRowItem('Cart', 'CART'),
-  //   new SingleselectRowItem('Auto Packager', 'AUTOPACKAGER')];
-  // outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'AUTOPACKAGER': 300};
-
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
     this._picklistQueueItems = value;
@@ -218,9 +211,14 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return outputDeviceDisplayList;
   }
 
-  getActiveDeviceRow(picklistQueueItem: PicklistQueueItem) {
-    const activeDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId)
-    return new SingleselectRowItem(activeDevice.Label, activeDevice.DeviceId);
+  getSelectedDeviceRow(picklistQueueItem: PicklistQueueItem) {
+
+    const selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
+    if (!selectedDevice || !selectedDevice.IsActive) {
+      return null;
+    }
+
+    return new SingleselectRowItem(selectedDevice.Label, selectedDevice.DeviceId);
   }
 
   onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {

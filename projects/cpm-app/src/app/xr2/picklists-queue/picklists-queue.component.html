@@ -42,7 +42,7 @@
             <oc-singleselect
             [disabled] = "picklistQueueItem.Status > 1"
             [tableData] = "getActiveDeviceDisplayList(picklistQueueItem)"
-            [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
+            [selectedItem] = "getSelectedDeviceRow(picklistQueueItem)"
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
             </oc-singleselect>
           </div>
@@ -51,10 +51,10 @@
               <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
-                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
+                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving || !getSelectedDeviceRow(picklistQueueItem)"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3"
                 [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
-                [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2"></oc-button-action>
+                [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2 || picklistQueueItem.OutputDeviceId !== '200'"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===4" [buttonText]="'REPRINT' | translate"
                 (click)="printLabels(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
             </div>
