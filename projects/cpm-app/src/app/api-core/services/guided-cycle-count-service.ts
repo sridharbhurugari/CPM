@@ -40,12 +40,5 @@ import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
-
-    public getDeviceConfiguration(deviceId: number): Observable<IDeviceConfiguration> {
-      const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/configuration`);
-      return this.httpClient.get<IDeviceConfiguration>(url, {
-        headers: this.ocapHttpHeadersService.getHeaders()
-      });
-    }
-
+    
   } 
