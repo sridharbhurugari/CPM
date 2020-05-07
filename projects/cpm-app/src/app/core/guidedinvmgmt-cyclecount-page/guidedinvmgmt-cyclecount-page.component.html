@@ -5,7 +5,7 @@
             {{time| date:'M/d/yyyy h:mm a'}}</div>
             <div class="printlable"
         *ngIf="HasLabelPrinterConfigured()">
-            <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel(displayCycleCountItem)"></oc-svgicon>
+            <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
         </div>
         <div class="totalItemCount">
             <span>{{currentItemCount}} / {{itemCount}}</span></div>
