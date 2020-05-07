@@ -27,11 +27,11 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   private _picklistQueueItems: PicklistQueueItem[];
 
   // Temporary until device configuration
-  outputDeviceDisplayList = [
-    new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
-    new SingleselectRowItem('Cart', 'CART'),
-    new SingleselectRowItem('Auto Packager', 'AUTOPACKAGER')];
-  outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'AUTOPACKAGER': 300};
+  // outputDeviceDisplayList = [
+  //   new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
+  //   new SingleselectRowItem('Cart', 'CART'),
+  //   new SingleselectRowItem('Auto Packager', 'AUTOPACKAGER')];
+  // outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'AUTOPACKAGER': 300};
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -64,7 +64,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   searchTextFilter: string;
 
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
-    , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
+    , nameof<PicklistQueueItem>('DeviceDescription')];
 
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
@@ -142,7 +142,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
-    globalDispenseSyncRequest.OutputDevice = this.outputDeviceMap[picklistQueueItem.OutputDevice];
+    globalDispenseSyncRequest.OutputDeviceId = picklistQueueItem.OutputDeviceId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
@@ -206,11 +206,24 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return picklistQueueItem.TrackById;
   }
 
+  getActiveDeviceDisplayList(picklistQueueItem: PicklistQueueItem) {
+    const outputDeviceDisplayList = [];
+
+    _.forEach(picklistQueueItem.AvailableOutputDeviceList, (outputDevice) => {
+      if (outputDevice.IsActive) {
+        outputDeviceDisplayList.push(new SingleselectRowItem(outputDevice.Label, outputDevice.DeviceId));
+      }
+    });
+
+    return outputDeviceDisplayList;
+  }
+
   getActiveDeviceRow(picklistQueueItem: PicklistQueueItem) {
-    return this.outputDeviceDisplayList.find(x => x.value === picklistQueueItem.OutputDevice);
+    const activeDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId)
+    return new SingleselectRowItem(activeDevice.Label, activeDevice.DeviceId);
   }
 
   onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.OutputDevice = $event.value;
+    picklistQueueItem.OutputDeviceId = $event.value;
   }
 }

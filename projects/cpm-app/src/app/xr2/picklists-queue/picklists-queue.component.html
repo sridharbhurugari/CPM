@@ -41,7 +41,7 @@
             <span>{{picklistQueueItem.DeviceDescription}}</span>
             <oc-singleselect
             [disabled] = "picklistQueueItem.Status > 1"
-            [tableData] = "this.outputDeviceDisplayList"
+            [tableData] = "getActiveDeviceDisplayList(picklistQueueItem)"
             [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
             </oc-singleselect>

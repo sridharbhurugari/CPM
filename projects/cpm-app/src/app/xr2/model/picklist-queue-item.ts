@@ -1,6 +1,7 @@
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
 import { Guid } from 'guid-typescript';
+import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 
 export class PicklistQueueItem implements IPicklistQueueItem {
 
@@ -24,7 +25,8 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   StatusDisplay: string;
   DeviceDescription: string;
   DeviceId: number;
-  OutputDevice: string;
+  OutputDeviceId: string;
+  AvailableOutputDeviceList: Array<OutputDevice>;
   Saving: boolean;
   TrackById: Guid;
 }
