@@ -105,10 +105,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
     this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
       console.log('popup message timeout : ' + result);
-      console.log(result);
       this.popupTimeoutSeconds = (Number(result.Value));
     });
-
+    
     this.getCycleCountData(this.deviceId);
   }
 
@@ -416,30 +415,35 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   PrintLabel(){
-    let binData = new GuidedCycleCountPrintLabel({
-      ItemId: this.displayCycleCountItem.ItemId,
-      DosageForm: this.displayCycleCountItem.DosageForm,
-      DeviceId: this.displayCycleCountItem.DeviceId,
-      DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
-      DeviceLocationDescription: this.displayCycleCountItem.LocationDescription,
-      TradeName: this.displayCycleCountItem.BrandNameFormatted,
-      GenericName: this.displayCycleCountItem.GenericNameFormatted,
-      UnitOfIssue: this.displayCycleCountItem.Units
-    });
-    
-    this.guidedCycleCountService.PrintLabel(this.deviceId, binData).subscribe(res =>{
-      console.log(res);
-      if(res)
-      {
-        this.printResult = true;
-        this.displaySuccessToSaveDialog();
-      }
-      else{
-        this.printResult = false;
-        this.displayFailedToSaveDialog();
-      }
-    });
+      let binData = new GuidedCycleCountPrintLabel({
+        ItemId: this.displayCycleCountItem.ItemId,
+        DosageForm: this.displayCycleCountItem.DosageForm,
+        DeviceId: this.displayCycleCountItem.DeviceId,
+        DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
+        DeviceLocationDescription: this.displayCycleCountItem.LocationDescription,
+        TradeName: this.displayCycleCountItem.BrandNameFormatted,
+        GenericName: this.displayCycleCountItem.GenericNameFormatted,
+        UnitOfIssue: this.displayCycleCountItem.Units
+      });
+    try{
+      this.guidedCycleCountService.PrintLabel(this.deviceId, binData).subscribe(res =>{
+        console.log(res);
+        if(res)
+        {
+          this.printResult = true;
+          this.displaySuccessToSaveDialog();
+        }
+        else{
+          this.printResult = false;
+          this.displayFailedToSaveDialog();
+        }
+      });
+    }
+    catch(Error){
+      console.log(Error.message);
+    } 
   }
+  
   displaySuccessToSaveDialog(): void {
 
     const properties = new PopupDialogProperties('Role-Status-Info');
