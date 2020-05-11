@@ -213,8 +213,16 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   getSelectedDeviceRow(picklistQueueItem: PicklistQueueItem) {
 
-    const selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
-    if (!selectedDevice || !selectedDevice.IsActive) {
+    let selectedDevice = null;
+
+    if (picklistQueueItem.Status === 1) {
+      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
+         && x.IsActive);
+    } else {
+      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
+    }
+
+    if (!selectedDevice) {
       return null;
     }
 
