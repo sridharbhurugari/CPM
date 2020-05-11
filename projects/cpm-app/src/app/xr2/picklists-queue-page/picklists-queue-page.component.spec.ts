@@ -33,6 +33,13 @@ describe('PicklistsQueuePageComponent', () => {
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
 
   beforeEach(async(() => {
+    picklistsQueueEventConnectionService = {
+      openEventConnection: jasmine.createSpy('openEventConnection'),
+      addOrUpdatePicklistQueueItemSubject: new Subject(),
+      removePicklistQueueItemSubject: new Subject(),
+      reloadPicklistQueueItemsSubject: new Subject()
+    };
+
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox , MockSearchPipe, MockAppHeaderContainer ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
