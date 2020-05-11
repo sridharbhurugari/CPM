@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+//import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GuidedinvmgmtManualcyclecountPageComponent } from './guidedinvmgmt-manualcyclecount-page.component';
+//import { GuidedinvmgmtManualcyclecountPageComponent } from './guidedinvmgmt-manualcyclecount-page.component';
 
-describe('GuidedinvmgmtManualcyclecountPageComponent', () => {
-  let component: GuidedinvmgmtManualcyclecountPageComponent;
-  let fixture: ComponentFixture<GuidedinvmgmtManualcyclecountPageComponent>;
+//describe('GuidedinvmgmtManualcyclecountPageComponent', () => {
+  //let component: GuidedinvmgmtManualcyclecountPageComponent;
+  //let fixture: ComponentFixture<GuidedinvmgmtManualcyclecountPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GuidedinvmgmtManualcyclecountPageComponent ]
-    })
-    .compileComponents();
-  }));
+  //beforeEach(async(() => {
+    //TestBed.configureTestingModule({
+      //declarations: [ GuidedinvmgmtManualcyclecountPageComponent ]
+    //})
+   // .compileComponents();
+ // }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GuidedinvmgmtManualcyclecountPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  //beforeEach(() => {
+   // fixture = TestBed.createComponent(GuidedinvmgmtManualcyclecountPageComponent);
+    //component = fixture.componentInstance;
+   // fixture.detectChanges();
+  //});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  //it('should create', () => {
+   // expect(component).toBeTruthy();
+  //});
+//});

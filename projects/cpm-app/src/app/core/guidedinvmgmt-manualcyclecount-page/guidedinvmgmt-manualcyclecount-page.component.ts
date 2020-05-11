@@ -120,7 +120,7 @@ searchRequestorText =  '';
   itemSelected(item: any) {
     console.log(item);
     this.selectedItem = JSON.stringify(item); 
-    this.getCycleCountData(this.selectedItem.itemid);
+    this.getCycleCountData("8939");
   }
   private getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
 
