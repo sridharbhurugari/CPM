@@ -1,6 +1,6 @@
 <ng-container class="ocactiondetails">
     <div class="cpmheaderrow">          
-      <oc-button-action [buttonText]="'MANUAL_CYCLE_COUNT' | translate" (click)="navigateManualCycleCount()"></oc-button-action>      
+      <a routerLink="/guidedinvmgmt/manualcyclecount"><oc-button-action [buttonText]="'MANUAL_CYCLE_COUNT' | translate" ></oc-button-action></a>      
       <app-header-container></app-header-container>           
       <oc-search-box class="searchbox" #searchBox placeHolderText="Search"></oc-search-box>
     </div>

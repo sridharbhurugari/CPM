@@ -98,10 +98,10 @@
             "scripts": [],
             "codeCoverage": true,
             "codeCoverageExclude": [
-			  "projects/cpm-app/src/app/app.*",
+              "projects/cpm-app/src/app/app.*",
               "projects/cpm-app/src/app/api-core/services/**/*",
               "projects/cpm-app/src/app/api-xr2/services/**/*",
-			  "projects/cpm-app/src/app/xr2/services/**/*"
+              "projects/cpm-app/src/app/xr2/services/**/*"
             ]
           }
         },
@@ -168,6 +168,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "cpm-app"
+    }
+  },
+  "defaultProject": "cpm-app",
+  "cli": {
+    "analytics": "bbc79b97-4002-4376-99f8-eb4448ef31de"
+  }
 }

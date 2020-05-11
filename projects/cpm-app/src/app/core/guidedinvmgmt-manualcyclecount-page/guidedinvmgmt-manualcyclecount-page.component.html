@@ -1,0 +1,126 @@
+<oc-action-layout >
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{ 'GUIDED_CYCLE_COUNT' | translate }}</div>
+        <div class="dateTime">
+            {{time| date:'M/d/yyyy h:mm a'}} 
+        </div>
+    </ng-container>
+
+    <ng-container class="ocactiondetails">
+        <div class="displayGuidedCycleCount">
+            <div>
+                <oc-search-dropdown id="requestorSearch" #dropdownSearchUser 
+      [placeHolderText]='searchRequestorText' [columnTemplate]='columnTemplate.THREECOLUMN' [loadingText]=''
+      [noResultsFoundText]='noResultsFoundText' [gridHeight]="'400px'" [gridWidth]="'800px'" [columnsConfig]='columnsConfig' [searchBoxAlign]='searchBoxAlign.RIGHT'
+      [clearSearch]="false"
+      (itemSelected)='itemSelected($event)'></oc-search-dropdown> 
+               
+            </div>
+            <div class="BrandName">
+            <!-- <div>{{ displayCycleCountItem.GenericNameFormatted }}</div>  -->
+            Manoj CHalla
+            </div>
+            <div class="GenericName">
+                <!-- <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>  -->
+                manoj challa
+            </div>
+        </div>
+        <div class="panelContainer1">
+            <div class="itemIdBox">
+
+                <div class="itemIdHeader">
+                    <span>{{'ITEM_ID' | translate}}</span>
+                </div>
+                <div class="ItemId">
+                    <!-- <span>{{ displayCycleCountItem.ItemId }}
+
+                    </span> -->
+                    100
+                </div>
+            </div>
+            <div class="DeviceLocation">
+                <div>
+                    <div class="itemIdHeader">
+                        <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                    </div>
+                    <div class="location">
+                        <div class="locationdescription">
+                            <!-- <div>
+                                {{ displayCycleCountItem.LocationDescription }}
+                            </div> -->
+                            anything
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="devicelocationaccess">
+                    <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
+                        [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
+                        (isAccessBusy)="deviceLocationAccessBusy = $event"
+                        (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+                </div> -->
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container class="ocactiondetails">
+        <div class="panelContainer">
+
+            <div class="leftCycleCountPanel">
+                <div class="leftPanelRow"> {{"IN_STOCK" | translate}}
+                    <!-- <div class="textContent">{{displayCycleCountItem.InStockQuantity}}
+                    </div> -->
+                    53
+                </div>
+                <div class="whiteline"></div>
+                <div class="leftPanelRow"> {{"PAR_LEVEL" | translate}}
+                    <!-- <div class="textContent">{{displayCycleCountItem.ParLevel}}
+                    </div> -->
+                    75
+                </div>
+                <!-- <div class="whiteline"></div>
+                <div class="leftPanelRow">
+                    {{(displayCycleCountItem.ReorderSource == 'B' ? "RESTOCK_LEVEL" : "REORDER_LEVEL") | translate}}
+                    <div class="textContent">
+                        {{displayCycleCountItem.ReorderSource == 'B' ? displayCycleCountItem.ReorderLevel:displayCycleCountItem.QuantityMin}}
+                    </div>
+                </div>
+                <div class="whiteline"></div> -->
+
+                <!-- <div class="leftPanelRow" *ngIf="!CheckItemExpGranularity()">
+                    {{"EXPIRATION_DATE" | translate}}
+                    <div class="expiration">
+                        <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat"
+                            [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
+                            [autocorrect]="false" [isDisabled]="disablethedate" popupDirection="UP"
+                            (ngModelChange)=onDateChange($event) [minDate]="todaydate" [tabIndexes]="datepickerindexes">
+                        </oc-datepicker>
+
+                    </div>
+
+                </div> -->
+
+                <!-- <div class="expirationwhiteline" *ngIf="!CheckItemExpGranularity()"></div>
+                <div class=expwhiteline *ngIf="CheckItemExpGranularity()"></div>-->
+            </div> 
+           <div class="rightCycleCountPanel">
+                <div class="demo">
+                    <oc-numeric [title]="'ITEM_QUANTITY' | translate" >
+                    </oc-numeric>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+             <div class="ocleftalign">
+                <oc-button-action [buttonText]="'CANCEL' | translate">
+                </oc-button-action>
+            </div>
+            <div class="buttonadjust">
+                <div class="ocrightalign">
+                    <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" ></oc-button-action>
+                </div>
+            </div> 
+        </oc-footer>
+    </ng-container>
+</oc-action-layout>
