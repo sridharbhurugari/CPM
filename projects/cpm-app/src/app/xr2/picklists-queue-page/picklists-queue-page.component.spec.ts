@@ -30,6 +30,7 @@ class MockSearchBox {
 describe('PicklistsQueuePageComponent', () => {
   let component: PicklistsQueuePageComponent;
   let fixture: ComponentFixture<PicklistsQueuePageComponent>;
+  let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -39,11 +40,7 @@ describe('PicklistsQueuePageComponent', () => {
         { provide: PicklistsQueueService, useValue: { get: () => of([]) } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
-        { provide: PicklistsQueueEventConnectionService, useValue:
-          { openEventConnection: () => {},
-            addOrUpdatePicklistQueueItemSubject: new Subject(),
-            removePicklistQueueItemSubject: new Subject()
-          }},
+        { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
       ]
