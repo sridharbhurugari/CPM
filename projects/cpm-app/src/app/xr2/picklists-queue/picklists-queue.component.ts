@@ -105,7 +105,8 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
-    const picklistQueueItem = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem;
+    const picklistQueueItem = new PicklistQueueItem(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
+    picklistQueueItem.ItemPicklistLines = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem.ItemPicklistLines.$values;
     const matchingPicklistQueueItem = _.find(this.picklistQueueItems, (x) => {
       return x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
       x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
@@ -117,9 +118,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    matchingPicklistQueueItem.ItemCount = picklistQueueItem.ItemCount;
     matchingPicklistQueueItem.Status = picklistQueueItem.Status;
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+    matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
+
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }

@@ -18,4 +18,5 @@ export interface IPicklistQueueItem {
   DeviceDescription: string;
   DeviceId: number;
   OutputDevice: string;
+  ItemCount: number;
 }
