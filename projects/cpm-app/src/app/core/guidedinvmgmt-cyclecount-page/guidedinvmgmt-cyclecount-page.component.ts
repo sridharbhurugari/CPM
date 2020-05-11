@@ -18,6 +18,7 @@ import { HardwareLeaseService } from '../../api-core/services/hardware-lease-ser
 import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spinner-popup.component';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -425,9 +426,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         GenericName: this.displayCycleCountItem.GenericNameFormatted,
         UnitOfIssue: this.displayCycleCountItem.Units
       });
-    try{
+    
       this.guidedCycleCountService.PrintLabel(this.deviceId, binData).subscribe(res =>{
-        console.log(res);
+        console.log(HttpResponse, res);
         if(res)
         {
           this.printResult = true;
@@ -437,11 +438,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.printResult = false;
           this.displayFailedToSaveDialog();
         }
+      },err=>{
+        console.log(HttpErrorResponse, err);
       });
-    }
-    catch(Error){
-      console.log(Error.message);
-    } 
   }
   
   displaySuccessToSaveDialog(): void {

@@ -71,6 +71,20 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         return of([obj]);
 
       },
+      print: ()=>{
+        const obj = {
+          ItemId: '1',
+          DosageForm: '',
+          DeviceId: 1,
+          DeviceLocationId: 1,
+          DeviceLocationDescription: '',
+          TradeName: '',
+          GenericName: '',
+          UnitOfIssue: ''
+        };
+        return of([obj]);
+
+      },
       post: () => ({ subscribe: f => f({}) })
     });
     const wpfActionControllerServiceStub = () => ({
@@ -278,14 +292,15 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
 
   describe('returns Printer Configure true', () => {
     it('return with configure result', () => {
-      component.HasLabelPrinterConfigured(); 
-      expect(true).toBeTruthy();
+      component.devicePrinterName = "printer";
+      var config = component.HasLabelPrinterConfigured(); 
+      expect(config).toBeTruthy();
     });
   });
   describe('returns Printer Configure false', () => {
     it('return with configure result', () => {
-      component.HasLabelPrinterConfigured(); 
-      expect(false).toBeFalsy();
+      var config = component.HasLabelPrinterConfigured(); 
+      expect(config).toBeFalsy();
     });
   });
   
