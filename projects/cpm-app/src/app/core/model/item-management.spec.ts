@@ -2,6 +2,14 @@ import { ItemManagement } from './item-management';
 
 describe('ItemManagement', () => {
   it('should create an instance', () => {
-    expect(new ItemManagement()).toBeTruthy();
+    expect(new ItemManagement({
+      ItemId: 'test',
+      ItemDescription: 'test',
+      TotalQtyOnHand: 1,
+      UnitDoseQtyOnHand: 2,
+      BulkQtyOnHand: 3,
+      UnitDoseLocationCount: 4,
+      BulkLocationCount: 5,
+      UnitOfMeasure: 'test' }).toBeTruthy();
   });
 });
