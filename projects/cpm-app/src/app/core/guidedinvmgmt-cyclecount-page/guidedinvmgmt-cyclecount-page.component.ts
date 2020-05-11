@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
-import { map, shareReplay, filter } from 'rxjs/operators';
+import { map, shareReplay, filter, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge } from 'rxjs';
+import { Observable, forkJoin, merge, throwError } from 'rxjs';
 import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -427,7 +427,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         UnitOfIssue: this.displayCycleCountItem.Units
       });
     
-      this.guidedCycleCountService.PrintLabel(this.deviceId, binData).subscribe(res =>{
+      this.guidedCycleCountService.PrintLabel(this.deviceId, binData).pipe(
+        
+        catchError(err => {
+          console.log('Handling error locally and rethrowing it...', err);
+            return throwError(err);
+
+        })
+
+        ).subscribe(res =>{
         console.log(HttpResponse, res);
         if(res)
         {
