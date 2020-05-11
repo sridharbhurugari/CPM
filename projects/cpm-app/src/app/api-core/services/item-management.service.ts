@@ -16,11 +16,13 @@ export class ItemManagementService {
     private ocapHttpHeadersService: OcapHttpHeadersService
   ) { }
 
-  get(): Observable<IItemManagement[]> {
+  public get(): Observable<IItemManagement[]> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/ItemManagement`);
     const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.get<IItemManagement[]>(url, {
+    const result = this.httpClient.get<IItemManagement[]>(url, {
       headers: serviceHeaders
     });
+
+    return result;
   }
 }

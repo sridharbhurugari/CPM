@@ -90,6 +90,10 @@
   "UNDERFILLED": "Underfilled",
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
-  "ROBOT_QUEUE": "Robot Queue"
- 
+  "ROBOT_QUEUE": "Robot Queue",
+  "UNIT_DOSE_QOH": "Unit Dose QOH",
+  "BULK_QOH": "Bulk QOH",
+  "TOTAL_QOH": "Total QOH",
+  "BIN_LOCATIONS": "Bin Location(s)"
+
 }

@@ -12,6 +12,5 @@ export class ItemManagement implements IItemManagement {
   UnitDoseQtyOnHand: number;
   BulkQtyOnHand: number;
   UnitDoseLocationCount: number;
-  BulkLocationCount: number;
   UnitOfMeasure: string;
 }

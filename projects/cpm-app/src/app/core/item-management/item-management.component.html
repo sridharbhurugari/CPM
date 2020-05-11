@@ -1,1 +1,34 @@
-<p>item-management works!</p>
+<ng-container class="ocactiondetails">
+  <div class="cpmheaderrow">
+    <app-header-container></app-header-container>
+    <oc-search-box class="searchbox" #searchBox placeHolderText="Search"></oc-search-box>
+  </div>
+  <ng-container>
+    <oc-grid #ocgrid ocgridfilter="false">
+      <ng-container class="ocgridheader">
+        <div class="first" data-colwrap="true"></div>
+        <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESCRIPTION_ID' | translate}}</div>
+        <div class="col width-type" data-width="200" data-colwrap="true">{{'UNIT_DOSE_QOH' | translate}}</div>
+        <div class="col width-type" data-width="200" data-colwrap="true">{{'BULK_QOH' | translate}}</div>
+        <div class="col width-type" data-width="200" data-colwrap="true">{{'TOTAL_QOH' | translate}}</div>
+      </ng-container>
+      <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let itemManagement of itemManagements">
+          <div class="first" style="align-items: center;"></div>
+          <div class="col width-type" [attr.data-title]="'DESCRIPTION_ID' | translate">
+            <span>{{itemManagement.ItemId}}</span>
+            <span>{{itemManagement.ItemDescription}}</span>
+          </div>
+          <div class="col width-type" [attr.data-title]="'UNIT_DOSE_QOH' | translate">
+            <span>{{itemManagement.UnitDoseQtyOnHand}}</span>
+            <span>{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATIONS' | translate}}</span>
+          </div>
+          <div class="col width-type" [attr.data-title]="'BULK_QOH' | translate">
+            <span>{{itemManagement.BulkQtyOnHand}}</span>
+          </div>
+          <div class="col width-type" [attr.data-title]="'TOTAL_QOH' | translate">{{itemManagement.TotalQtyOnHand}}</div>
+        </div>
+      </ng-container>
+    </oc-grid>
+  </ng-container>
+</ng-container>
