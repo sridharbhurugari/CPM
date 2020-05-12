@@ -6,8 +6,10 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { SearchModule, GridModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ItemManagementService } from '../../api-core/services/item-management.service';
+import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 
 describe('ItemManagementComponent', () => {
   let component: ItemManagementComponent;
@@ -15,7 +17,7 @@ describe('ItemManagementComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemManagementComponent, MockAppHeaderContainer, MockSearchPipe, MockTranslatePipe ],
+      declarations: [ ItemManagementComponent, MockAppHeaderContainer, MockSearchPipe, MockTranslatePipe, MockColHeaderSortable],
       imports: [SearchModule, GridModule],
       providers: [
         { provide: ItemManagementService, useValue: { get: () => of([]) } }
