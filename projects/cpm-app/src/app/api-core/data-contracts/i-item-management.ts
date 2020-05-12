@@ -5,5 +5,5 @@ export interface IItemManagement {
   UnitDoseQtyOnHand: number;
   BulkQtyOnHand: number;
   UnitDoseLocationCount: number;
-  UnitOfMeasure: string;
+  UnitsOfIssue: string;
 }

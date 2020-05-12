@@ -9,6 +9,6 @@ describe('ItemManagement', () => {
       UnitDoseQtyOnHand: 2,
       BulkQtyOnHand: 3,
       UnitDoseLocationCount: 4,
-      UnitOfMeasure: 'test' })).toBeTruthy();
+      UnitsOfIssue: 'test' })).toBeTruthy();
   });
 });

@@ -3,57 +3,52 @@
     <app-header-container></app-header-container>
     <oc-search-box class="searchbox" #searchBox placeHolderText="Search"></oc-search-box>
   </div>
-<ng-container>
-  <oc-grid #ocgrid ocgridfilter="false">
-    <ng-container class="ocgridheader">
+  <ng-container>
+    <oc-grid #ocgrid ocgridfilter="false">
+      <ng-container class="ocgridheader">
         <div class="first" data-colwrap="true"></div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
-                             [columnPropertyName]="itemIdPropertyName"
-                             headerResourceKey="DESCRIPTION_ID"
-                             [currentSortPropertyName]="currentSortPropertyName"
-                             (columnSelected)="columnSelected($event)">
+          [columnPropertyName]="itemIdPropertyName" headerResourceKey="DESCRIPTION_ID"
+          [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
-                             [columnPropertyName]="unitDoseQtyOnHandPropertyName"
-                             headerResourceKey="UNIT_DOSE_QOH"
-                             [currentSortPropertyName]="currentSortPropertyName"
-                             (columnSelected)="columnSelected($event)">
+          [columnPropertyName]="unitDoseQtyOnHandPropertyName" headerResourceKey="UNIT_DOSE_QOH"
+          [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
-                             [columnPropertyName]="bulkQtyOnHandPropertyName"
-                             headerResourceKey="BULK_QOH"
-                             [currentSortPropertyName]="currentSortPropertyName"
-                             (columnSelected)="columnSelected($event)">
+          [columnPropertyName]="bulkQtyOnHandPropertyName" headerResourceKey="BULK_QOH"
+          [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
         </div>
         <div app-col-header-sortable class="last" ocGridColResize data-width="200" data-colwrap="true"
-                            [columnPropertyName]="totalQtyOnHandPropertyName"
-                            headerResourceKey="TOTAL_QOH"
-                            [currentSortPropertyName]="currentSortPropertyName"
-                            (columnSelected)="columnSelected($event)">
+          [columnPropertyName]="totalQtyOnHandPropertyName" headerResourceKey="TOTAL_QOH"
+          [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
         </div>
-    </ng-container>
-    <ng-container class="ocgridbody">
-      <div class="row" *ngFor="let itemManagement of (ItemManagements$ | async) | searchPipe:searchTextFilter:searchFields">
+      </ng-container>
+      <ng-container class="ocgridbody">
+        <div class="row"
+          *ngFor="let itemManagement of (ItemManagements$ | async) | searchPipe:searchTextFilter:searchFields">
           <div class="first" style="align-items: center;"></div>
           <div class="col width-type" [attr.data-title]="'DESCRIPTION_ID' | translate">
             <span>{{itemManagement.ItemId}}</span>
             <span>{{itemManagement.ItemDescription}}</span>
           </div>
           <div class="col width-type" [attr.data-title]="'UNIT_DOSE_QOH' | translate">
-            <span>{{itemManagement.UnitDoseQtyOnHand}}</span>
+            <span>{{itemManagement.UnitDoseQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
             <div [ngPlural]="itemManagement.UnitDoseLocationCount">
-                <ng-template ngPluralCase="=1">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATION' | translate}}</ng-template>
-                <ng-template ngPluralCase="other">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATIONS' | translate}}</ng-template>
+              <ng-template ngPluralCase="=1">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATION' | translate}}
+              </ng-template>
+              <ng-template ngPluralCase="other">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATIONS' | translate}}
+              </ng-template>
             </div>
           </div>
           <div class="col width-type" [attr.data-title]="'BULK_QOH' | translate">
-            <span>{{itemManagement.BulkQtyOnHand}}</span>
+            <span>{{itemManagement.BulkQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
           </div>
           <div class="last width-type" [attr.data-title]="'TOTAL_QOH' | translate">
             <span>{{itemManagement.TotalQtyOnHand}}</span>
           </div>
         </div>
-    </ng-container>
-  </oc-grid>
-</ng-container>
+      </ng-container>
+    </oc-grid>
+  </ng-container>
 </ng-container>
