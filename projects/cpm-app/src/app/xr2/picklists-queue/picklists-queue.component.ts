@@ -199,19 +199,24 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return picklistQueueItem.TrackById;
   }
 
-  getActiveDeviceDisplayList(picklistQueueItem: PicklistQueueItem) {
+  getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
+
     const outputDeviceDisplayList = [];
 
     _.forEach(picklistQueueItem.AvailableOutputDeviceList, (outputDevice) => {
       if (outputDevice.IsActive) {
-        outputDeviceDisplayList.push(new SingleselectRowItem(outputDevice.Label, outputDevice.DeviceId));
+        let translatedLabel = '';
+        this.translateService.get(outputDevice.Label).subscribe((res: string) => {
+        translatedLabel = res;
+      });
+        outputDeviceDisplayList.push(new SingleselectRowItem(translatedLabel, outputDevice.DeviceId));
       }
     });
 
     return outputDeviceDisplayList;
   }
 
-  getSelectedDeviceRow(picklistQueueItem: PicklistQueueItem) {
+  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
 
     let selectedDevice = null;
 
@@ -226,7 +231,11 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return null;
     }
 
-    return new SingleselectRowItem(selectedDevice.Label, selectedDevice.DeviceId);
+    let translatedLabel = '';
+    this.translateService.get(selectedDevice.Label).subscribe((res: string) => {
+      translatedLabel = res;
+    });
+    return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
   onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
