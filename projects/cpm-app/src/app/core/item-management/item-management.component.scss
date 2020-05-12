@@ -1,0 +1,47 @@
+oc-grid{
+  height: 90%;
+}
+
+:host{
+  height: 100%;
+}
+
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+
+.searchbox{
+  width: 400px;
+  align-self: right;
+}
+
+.badge {
+  position: relative;
+  bottom: 10px;
+  right: -100px;
+}
+
+.cpmwarningtext{
+  font-size: 14px;
+  color: maroon;
+}
+
+.downarrow{
+  transform: rotate(45deg);
+  background-color: pink;
+}
+
+.uparrow{
+  transform: rotate(0deg);
+}
+
+.headertext{
+  float: left;
+}
+
+.headericon{
+  position: relative;
+  left: 15px;
+  top: 3px;
+  float: left;
+}

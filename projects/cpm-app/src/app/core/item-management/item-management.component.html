@@ -7,13 +7,13 @@
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
         <div class="first" data-colwrap="true"></div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="400" data-colwrap="true"
+        <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
                              [columnPropertyName]="itemIdPropertyName"
                              headerResourceKey="DESCRIPTION_ID"
                              [currentSortPropertyName]="currentSortPropertyName"
                              (columnSelected)="columnSelected($event)">
         </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+        <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
                              [columnPropertyName]="unitDoseQtyOnHandPropertyName"
                              headerResourceKey="UNIT_DOSE_QOH"
                              [currentSortPropertyName]="currentSortPropertyName"
