@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { Many } from 'lodash';
 import * as _ from 'lodash';
+import { SortDirection } from '../../shared/constants/sort-direction';
 
 @Component({
   selector: 'app-item-management',
@@ -18,21 +19,20 @@ import * as _ from 'lodash';
 
 export class ItemManagementComponent implements OnInit, AfterViewInit  {
 
-  readonly itemIdPropertyName = nameof<ItemManagement>('ItemId');
+  readonly itemDescriptionPropertyName = nameof<ItemManagement>('ItemDescription');
   readonly unitDoseQtyOnHandPropertyName = nameof<ItemManagement>('UnitDoseQtyOnHand');
   readonly bulkQtyOnHandPropertyName = nameof<ItemManagement>('BulkQtyOnHand');
   readonly totalQtyOnHandPropertyName = nameof<ItemManagement>('TotalQtyOnHand');
-  currentSortPropertyName: string = this.itemIdPropertyName;
+  currentSortPropertyName: string = this.itemDescriptionPropertyName;
   ItemManagements$: Observable<ItemManagement[]>;
 
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
   searchTextFilter: string;
-  searchFields = [ this.itemIdPropertyName ];
+  searchFields = [ this.itemDescriptionPropertyName ];
 
   ngOnInit() {
     this.ItemManagements$ = this.itemManagementService.get().pipe(map(x => {
-      const displayObjects = x.map(itemManagement => new ItemManagement(itemManagement));
-      return displayObjects;
+      return this.sort(x.map(p => new ItemManagement(p)), SortDirection.ascending);
     }), shareReplay(1));
   }
 

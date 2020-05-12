@@ -8,7 +8,7 @@
       <ng-container class="ocgridheader">
         <div class="first" data-colwrap="true"></div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
-          [columnPropertyName]="itemIdPropertyName" headerResourceKey="DESCRIPTION_ID"
+          [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="DESCRIPTION_ID"
           [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
@@ -29,8 +29,8 @@
           *ngFor="let itemManagement of (ItemManagements$ | async) | searchPipe:searchTextFilter:searchFields">
           <div class="first" style="align-items: center;"></div>
           <div class="col width-type" [attr.data-title]="'DESCRIPTION_ID' | translate">
-            <span>{{itemManagement.ItemId}}</span>
             <span>{{itemManagement.ItemDescription}}</span>
+            <span>{{itemManagement.ItemId}}</span>
           </div>
           <div class="col width-type" [attr.data-title]="'UNIT_DOSE_QOH' | translate">
             <span>{{itemManagement.UnitDoseQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
@@ -44,7 +44,7 @@
           <div class="col width-type" [attr.data-title]="'BULK_QOH' | translate">
             <span>{{itemManagement.BulkQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
           </div>
-          <div class="last width-type" [attr.data-title]="'TOTAL_QOH' | translate">
+          <div class="last width-type" [attr.data-title]="'TOTAL_QOH' | translate" style="text-align: center;">
             <span>{{itemManagement.TotalQtyOnHand}}</span>
           </div>
         </div>
