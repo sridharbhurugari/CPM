@@ -32,7 +32,7 @@
             <span>{{itemManagement.ItemDescription}}</span>
             <span>{{itemManagement.ItemId}}</span>
           </div>
-          <div class="col width-type" [attr.data-title]="'UNIT_DOSE_QOH' | translate">
+          <div class="col width-type" [attr.data-title]="'UNIT_DOSE_QOH' | translate" style="text-align: center;">
             <span>{{itemManagement.UnitDoseQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
             <div [ngPlural]="itemManagement.UnitDoseLocationCount">
               <ng-template ngPluralCase="=1">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATION' | translate}}
@@ -41,11 +41,13 @@
               </ng-template>
             </div>
           </div>
-          <div class="col width-type" [attr.data-title]="'BULK_QOH' | translate">
-            <span>{{itemManagement.BulkQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
+          <div class="col width-type" [attr.data-title]="'BULK_QOH' | translate" style="text-align: center;">
+            <span>{{itemManagement.BulkQtyOnHand}}</span>
+            <span>{{itemManagement.UnitsOfIssue}}</span>
           </div>
           <div class="last width-type" [attr.data-title]="'TOTAL_QOH' | translate" style="text-align: center;">
             <span>{{itemManagement.TotalQtyOnHand}}</span>
+            <span>{{itemManagement.UnitsOfIssue}}</span>
           </div>
         </div>
       </ng-container>
