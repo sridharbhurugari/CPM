@@ -19,6 +19,7 @@ import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spi
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { IGuidedCycleCountPrintLabel } from '../../api-core/data-contracts/i-guided-cycle-count-print-label';
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -40,8 +41,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   carouselFaulted: boolean = false;
   deviceLocationAccessBusy: boolean;
   displayCycleCountItem: IGuidedCycleCount;
+  displayPrintLabel : IGuidedCycleCountPrintLabel;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
   cycleCountItemsCopy: IGuidedCycleCount[];
+  popupDialogProperties: PopupDialogProperties;
   itemCount: number;
   isLastItem: boolean;
   currentItemCount: number;
@@ -416,7 +419,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   PrintLabel(){
-      let binData = new GuidedCycleCountPrintLabel({
+        this.displayPrintLabel = new GuidedCycleCountPrintLabel({
         ItemId: this.displayCycleCountItem.ItemId,
         DosageForm: this.displayCycleCountItem.DosageForm,
         DeviceId: this.displayCycleCountItem.DeviceId,
@@ -426,16 +429,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         GenericName: this.displayCycleCountItem.GenericNameFormatted,
         UnitOfIssue: this.displayCycleCountItem.Units
       });
-    
-      this.guidedCycleCountService.PrintLabel(this.deviceId, binData).pipe(
-        
-        catchError(err => {
-          console.log('Handling error locally and rethrowing it...', err);
-            return throwError(err);
-
-        })
-
-        ).subscribe(res =>{
+      
+      this.guidedCycleCountService.PrintLabel(this.deviceId, this.displayPrintLabel).subscribe(res =>{
         console.log(HttpResponse, res);
         if(res)
         {
@@ -447,12 +442,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.displayFailedToSaveDialog();
         }
       },err=>{
-        console.log(HttpErrorResponse, err);
+        console.error(HttpErrorResponse, err);
       });
   }
   
   displaySuccessToSaveDialog(): void {
-
     const properties = new PopupDialogProperties('Role-Status-Info');
     this.translateService.get('PRINTSUCCESSFUL_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('PRINTSUCCESSFUL_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
@@ -465,7 +459,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   displayFailedToSaveDialog(): void {
-
     const properties = new PopupDialogProperties('Role-Status-Error');
     this.translateService.get('PRINTFAILED_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('PRINTFAILED_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });

@@ -26,7 +26,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
   let carouselLocationAccessService: Partial<CarouselLocationAccessService>;
   let hardwareLeaseService: Partial<HardwareLeaseService>;
-  let systemConfigurationService: Partial<SystemConfigurationService>
+  let systemConfigurationService: Partial<SystemConfigurationService>;
+  let printPopupDialogService: Partial<PopupDialogService>;
 
   const leaseVerificationResult: LeaseVerificationResult = 1;
   const deviceConfiguration: IDeviceConfiguration = {
@@ -71,7 +72,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         return of([obj]);
 
       },
-      print: ()=>{
+      PrintLabel: ()=>{
         const obj = {
           ItemId: '1',
           DosageForm: '',
@@ -90,6 +91,9 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     const wpfActionControllerServiceStub = () => ({
       ExecuteBackAction: () => ({})
     });
+
+    printPopupDialogService = { showOnce: jasmine.createSpy('showOnce') };
+
     const coreEventConnectionService = {
       carouselReadySubject: new Subject(),
       carouselFaultedSubject: new Subject(),
@@ -118,7 +122,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         },
         { provide: CarouselLocationAccessService, useValue: carouselLocationAccessService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
-        { provide: PopupDialogService, useValue: { } },
+        { provide: PopupDialogService, useValue: printPopupDialogService },
         { provide: TranslateService, useValue: { get: (x: string) => of(`{x}_TRANSLATED`) } },
         { provide: HardwareLeaseService, useValue: hardwareLeaseService },
         { provide: SystemConfigurationService, useValue: systemConfigurationService }
@@ -566,39 +570,6 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     });
   });
 
-  describe('item bin label print validation', () => {
-    it('bin label print validation true', () => {
-      let guidedCycleCountPrintLable = new GuidedCycleCountPrintLabel({
-        DeviceLocationId: 87,  
-        DeviceId: 5,
-        DeviceLocationDescription: 'carousel 2',
-        ItemId: "ace500t",
-        TradeName: "Tylenol 500mg tab",
-        GenericName: "acetaminophen 500mg tab",
-        UnitOfIssue:"EA",
-        DosageForm: "EA"
-      });
-      component.printResult = true;
-      expect(component.displaySuccessToSaveDialog).toBeTruthy();
-    });
-  });
-  describe('item bin label print validation', () => {
-    it('bin label print validation false', () => {
-      let guidedCycleCountPrintLable = new GuidedCycleCountPrintLabel({
-        DeviceLocationId: 87,  
-        DeviceId: 5,
-        DeviceLocationDescription: 'carousel 2',
-        ItemId: "ace500t",
-        TradeName: "Tylenol 500mg tab",
-        GenericName: "acetaminophen 500mg tab",
-        UnitOfIssue:"EA",
-        DosageForm: "EA"
-      });
-      component.printResult = false;
-      expect(component.displayFailedToSaveDialog).toBeTruthy();
-    });
-  });
-
   describe('disable action buttons for last item', () => {
     it('disable action buttons', () => {
       component.isLastItem = true;
@@ -870,4 +841,49 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
+
+  // describe('PrintLabel', () => {
+  //   it('calls PrintLabel', () => {
+  //     const printData: any = {}
+  //     component.displayPrintLabel = printData;
+  //     const guidedCycleCountServiceStub: GuidedCycleCountService = fixture.debugElement.injector.get(
+  //       GuidedCycleCountService
+  //     );
+  //     spyOn(
+  //       guidedCycleCountServiceStub,
+  //       'PrintLabel'
+  //     ).and.callThrough();
+  //     component.PrintLabel();
+  //     expect(
+  //       guidedCycleCountServiceStub.PrintLabel
+  //     ).toHaveBeenCalled();
+  //   });
+  // });
+
+  describe('displaySuccessToSaveDialog', () => {
+      let item: any = { };
+      beforeEach(() => {
+        component.printResult = true;
+        component.popupDialogProperties = item;
+      });
+
+      it('should display print success popup', () => {
+        component.displaySuccessToSaveDialog();
+        expect(printPopupDialogService.showOnce).toHaveBeenCalled();
+      });
+  });
+
+  describe('displayFailedToSaveDialog', () => {
+    let item: any = { };
+    beforeEach(() => {
+      component.printResult = false;
+      component.popupDialogProperties = item;
+    });
+
+    it('should display print Failed popup', () => {
+      component.displayFailedToSaveDialog();
+      expect(printPopupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
 });
