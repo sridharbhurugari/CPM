@@ -21,7 +21,6 @@ import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount
 import { EditPickRoutePageComponent } from './edit-pick-route-page/edit-pick-route-page.component';
 import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-sequence.component';
 import { HardwareLeasePageComponent } from './hardware-lease-page/hardware-lease-page.component';
-import { ItemManagementPageComponent } from './item-management-page/item-management-page.component';
 import { ItemManagementComponent } from './item-management/item-management.component';
 
 @NgModule({
@@ -41,7 +40,6 @@ import { ItemManagementComponent } from './item-management/item-management.compo
     EditDeviceSequenceComponent,
     GuidedInvMgmtCycleCountPageComponent,
     HardwareLeasePageComponent,
-    ItemManagementPageComponent,
     ItemManagementComponent,
   ],
   imports: [

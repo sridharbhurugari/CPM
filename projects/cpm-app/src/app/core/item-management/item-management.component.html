@@ -13,7 +13,7 @@
         <div class="col width-type" data-width="200" data-colwrap="true">{{'TOTAL_QOH' | translate}}</div>
       </ng-container>
       <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let itemManagement of itemManagements">
+        <div class="row" *ngFor="let itemManagement of (ItemManagements$ | async)">
           <div class="first" style="align-items: center;"></div>
           <div class="col width-type" [attr.data-title]="'DESCRIPTION_ID' | translate">
             <span>{{itemManagement.ItemId}}</span>
