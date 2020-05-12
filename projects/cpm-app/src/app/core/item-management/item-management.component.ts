@@ -19,6 +19,7 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 
 export class ItemManagementComponent implements OnInit, AfterViewInit  {
 
+  readonly itemIdPropertyName = nameof<ItemManagement>('ItemId');
   readonly itemDescriptionPropertyName = nameof<ItemManagement>('ItemDescription');
   readonly unitDoseQtyOnHandPropertyName = nameof<ItemManagement>('UnitDoseQtyOnHand');
   readonly bulkQtyOnHandPropertyName = nameof<ItemManagement>('BulkQtyOnHand');
@@ -28,7 +29,7 @@ export class ItemManagementComponent implements OnInit, AfterViewInit  {
 
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
   searchTextFilter: string;
-  searchFields = [ this.itemDescriptionPropertyName ];
+  searchFields = [ this.itemDescriptionPropertyName, this.itemIdPropertyName ];
 
   ngOnInit() {
     this.ItemManagements$ = this.itemManagementService.get().pipe(map(x => {
