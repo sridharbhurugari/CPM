@@ -13,11 +13,40 @@ import { CarouselLocationAccessService } from '../../shared/services/devices/car
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
 import { TranslateService } from '@ngx-translate/core';
+import { DeviceOperationResult } from '../../api-core/data-contracts/device-operation-result';
+import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-configuration';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
 
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
   let carouselLocationAccessService: Partial<CarouselLocationAccessService>;
+  let hardwareLeaseService: Partial<HardwareLeaseService>;
+  let systemConfigurationService: Partial<SystemConfigurationService>;
+  let printPopupDialogService: Partial<PopupDialogService>;
+
+  const leaseVerificationResult: LeaseVerificationResult = 1;
+  const deviceConfiguration: IDeviceConfiguration = {
+    DefaultOwner: 'WRKS1',
+    DeviceId: 1,
+    Active: true,
+    DefaultOwnerShortname: 'WRKS1',
+    DeviceDescription: 'Device1',
+    DeviceType: '',
+    IsValid: true,
+    Json: '',
+    LeaseRequired: true,
+    Model: '',
+    Order: 1,
+    PrinterName: '' };
+   
+  let deviceOperationResult: DeviceOperationResult = { OutcomeText: '', Outcome: 5, IsSuccessful: false };  
+  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
+
   beforeEach(() => {
     const activatedRouteStub = () => ({
       snapshot: { queryParamMap: { get: () => ({}) } }
@@ -43,11 +72,28 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         return of([obj]);
 
       },
+      PrintLabel: ()=>{
+        const obj = {
+          ItemId: '1',
+          DosageForm: '',
+          DeviceId: 1,
+          DeviceLocationId: 1,
+          DeviceLocationDescription: '',
+          TradeName: '',
+          GenericName: '',
+          UnitOfIssue: ''
+        };
+        return of([obj]);
+
+      },
       post: () => ({ subscribe: f => f({}) })
     });
     const wpfActionControllerServiceStub = () => ({
       ExecuteBackAction: () => ({})
     });
+
+    printPopupDialogService = { showOnce: jasmine.createSpy('showOnce') };
+
     const coreEventConnectionService = {
       carouselReadySubject: new Subject(),
       carouselFaultedSubject: new Subject(),
@@ -55,6 +101,11 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     carouselLocationAccessService = { 
       clearLightbar: jasmine.createSpy('clearLightbar').and.returnValue(of({}))
     };
+    hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult),
+      getDeviceConfiguration: () => of(deviceConfiguration),
+      RequestDeviceLease: () => of(deviceOperationResult)  };
+    systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
+    
     TestBed.configureTestingModule({
       imports: [FormsModule],
       schemas: [NO_ERRORS_SCHEMA],
@@ -71,8 +122,10 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         },
         { provide: CarouselLocationAccessService, useValue: carouselLocationAccessService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
-        { provide: PopupDialogService, useValue: { } },
+        { provide: PopupDialogService, useValue: printPopupDialogService },
         { provide: TranslateService, useValue: { get: (x: string) => of(`{x}_TRANSLATED`) } },
+        { provide: HardwareLeaseService, useValue: hardwareLeaseService },
+        { provide: SystemConfigurationService, useValue: systemConfigurationService }
       ]
     });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
@@ -150,6 +203,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
@@ -189,6 +243,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
@@ -238,6 +293,20 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.isLastItem).toBeFalsy();
     });
   });
+
+  describe('returns Printer Configure true', () => {
+    it('return with configure result', () => {
+      component.devicePrinterName = "printer";
+      var config = component.HasLabelPrinterConfigured(); 
+      expect(config).toBeTruthy();
+    });
+  });
+  describe('returns Printer Configure false', () => {
+    it('return with configure result', () => {
+      var config = component.HasLabelPrinterConfigured(); 
+      expect(config).toBeFalsy();
+    });
+  });
   
   describe('returning false component data', () => {
     it('return proper valid component', () => {
@@ -263,6 +332,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var localcopy = [];
@@ -296,6 +366,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var localcopy = [];
@@ -341,6 +412,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
@@ -365,6 +437,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.itemCount = 2;
@@ -399,6 +472,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
@@ -423,6 +497,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Day",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       }));
       component.itemCount = 2;
@@ -456,6 +531,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -486,12 +562,14 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"None",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeTruthy();
     });
   });
+
   describe('disable action buttons for last item', () => {
     it('disable action buttons', () => {
       component.isLastItem = true;
@@ -576,6 +654,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -616,6 +695,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:10,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       var value = component.CheckItemExpGranularity(); 
@@ -725,6 +805,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItmExpDateGranularity:"Month",
         QuantityMin:10,
         InStockQuantity:12,
+        DosageForm:"EA",
         ItemDateFormat: "MM/DD/YYYY"
       });
       component.toggleredborderforfirstitem();
@@ -760,4 +841,49 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
+
+  // describe('PrintLabel', () => {
+  //   it('calls PrintLabel', () => {
+  //     const printData: any = {}
+  //     component.displayPrintLabel = printData;
+  //     const guidedCycleCountServiceStub: GuidedCycleCountService = fixture.debugElement.injector.get(
+  //       GuidedCycleCountService
+  //     );
+  //     spyOn(
+  //       guidedCycleCountServiceStub,
+  //       'PrintLabel'
+  //     ).and.callThrough();
+  //     component.PrintLabel();
+  //     expect(
+  //       guidedCycleCountServiceStub.PrintLabel
+  //     ).toHaveBeenCalled();
+  //   });
+  // });
+
+  describe('displaySuccessToSaveDialog', () => {
+      let item: any = { };
+      beforeEach(() => {
+        component.printResult = true;
+        component.popupDialogProperties = item;
+      });
+
+      it('should display print success popup', () => {
+        component.displaySuccessToSaveDialog();
+        expect(printPopupDialogService.showOnce).toHaveBeenCalled();
+      });
+  });
+
+  describe('displayFailedToSaveDialog', () => {
+    let item: any = { };
+    beforeEach(() => {
+      component.printResult = false;
+      component.popupDialogProperties = item;
+    });
+
+    it('should display print Failed popup', () => {
+      component.displayFailedToSaveDialog();
+      expect(printPopupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
 });

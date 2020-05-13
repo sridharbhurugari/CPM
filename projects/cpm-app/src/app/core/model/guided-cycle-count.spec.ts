@@ -24,6 +24,7 @@ describe('GuidedCycleCount', () => {
       ItmExpDateGranularity:"Month",
       QuantityMin:10,
       InStockQuantity:10,
+      DosageForm:"EA",
       ItemDateFormat: "MM/DD/YYYY",
     })).toBeTruthy()
   });

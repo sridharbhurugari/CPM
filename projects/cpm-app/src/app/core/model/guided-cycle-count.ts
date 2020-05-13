@@ -38,4 +38,5 @@ export class GuidedCycleCount implements IGuidedCycleCount, IDeviceLocationAcces
   QuantityMin: number;
   InStockQuantity: number;
   ItemDateFormat: string;
+  DosageForm: string;
 }
