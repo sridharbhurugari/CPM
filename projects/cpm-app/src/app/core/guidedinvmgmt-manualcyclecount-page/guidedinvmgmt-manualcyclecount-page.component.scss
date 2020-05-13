@@ -3,9 +3,17 @@
     height: 100%;
 }
 
-  .searchbox{
-  width: 100%; 
+.searchBar{
+  ::ng-deep{
+    div{
+      &:first-child{
+      margin-top: 6px;
+      margin-left: 6px;
+      margin-right: 6px;
+      }
+    }
   }
+}
   
   .BrandName{
     font-size: 38px;

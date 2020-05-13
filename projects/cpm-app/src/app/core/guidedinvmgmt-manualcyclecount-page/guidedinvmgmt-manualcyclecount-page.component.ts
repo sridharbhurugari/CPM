@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild,AfterViewChecked } from '@angular/core';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, from } from 'rxjs';
@@ -17,13 +17,14 @@ import { DeviceLocationTypeId } from '../../shared/constants/device-location-typ
 import { TranslateService } from '@ngx-translate/core';
 import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spinner-popup.component';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-guidedinvmgmt-manualcyclecount-page',
   templateUrl: './guidedinvmgmt-manualcyclecount-page.component.html',
   styleUrls: ['./guidedinvmgmt-manualcyclecount-page.component.scss']
 })
-export class GuidedinvmgmtManualcyclecountPageComponent implements OnInit,AfterViewInit {
+export class GuidedinvmgmtManualcyclecountPageComponent implements OnInit,AfterViewInit,AfterViewChecked {
   private _leaseDeniedTitle$: Observable<string>;
 
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
@@ -69,6 +70,7 @@ searchRequestorText =  '';
   searchBoxAlign = SearchBoxAlign;
 
   constructor(
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private guidedManualCycleCountServiceService : GuidedManualCycleCountServiceService,
     private carouselLocationAccessService: CarouselLocationAccessService,
@@ -92,6 +94,9 @@ searchRequestorText =  '';
   }
 
   ngOnInit() {
+    var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
+    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == deviceId)).subscribe(x => this.carouselFaulted = true);
     this.noResultsFoundText = 'No results found';
     this.placeHolderText = 'localized search text';
     this.gridHeight = '500px';
@@ -120,7 +125,7 @@ searchRequestorText =  '';
   itemSelected(item: any) {
     console.log(item);
     this.selectedItem = JSON.stringify(item); 
-    this.getCycleCountData("8939");
+    this.getCycleCountData(item.item.ID);
   }
   private getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
 
@@ -185,8 +190,10 @@ searchRequestorText =  '';
       )
     }
 
+
+
     DisableActionButtons(value: boolean) {
-      if (this.isLastItem === true) this.doneButtonDisable = value;
+     this.doneButtonDisable = value;
     }
 
     toggleredborderfornonfirstitem(nextrecordonly: boolean) {
@@ -230,7 +237,171 @@ searchRequestorText =  '';
           this.toggleredborderfornonfirstitem(false);
       }
     }
+    FormatExpireDate(date: Date) {
+      if (date) {
+        var date = new Date(date);
+        return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+      }
+    }
+    CheckItemExpGranularity() {
+      return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity != "None" ? false : true;
+    }
+    onQuantityChange($event) {
+      if ($event == "0") {
+        this.daterequired = false;
+        this.disabledatecomponent(true);
+        this.toggleredborderfornonfirstitem(true);
+        this.DisableActionButtons(false);
+      }
+      else {
+        this.disabledatecomponent(false);
+        var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
+        if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
+          this.DisableActionButtons(true);
+          this.toggleredborderfornonfirstitem(false);
+        }
+        else if (this.isdateexpired(this.datepicker && this.datepicker.selectedDate)) {
+          this.toggleredborderfornonfirstitem(false);
+        }
+        else if (isNaN(eventdate.getTime()) && this.displayCycleCountItem.ItmExpDateGranularity !== 'None') {
+          this.DisableActionButtons(true);
+          this.toggleredborderfornonfirstitem(false);
+        }
+      }
+    }
 
-    
+    onDateChange($event) {
+      if ($event === '' || $event === null) {
+        this.daterequired = true;
+      } else {
+        var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
+        if ($event.match(dateReg)) {
+          var eventdate = new Date($event);
+          if (this.isdateexpired($event)) {
+            this.daterequired = true;
+            this.toggleredborderfornonfirstitem(false);
+            this.DisableActionButtons(false);
+          }
+          else if (isNaN(eventdate.getTime())) {
+            this.DisableActionButtons(true);
+          }
+          else {
+            this.daterequired = false;
+            this.DisableActionButtons(false);
+            this.toggleredborderfornonfirstitem(true);
+          }
+        }
+        else {
+          this.daterequired = true;
+          this.DisableActionButtons(true);
+        }
+      }
+    }
+
+  
+     navigateContinue() {
+    if (this.displayCycleCountItem != null) {
+      var expireddate = null, actualexpiradationdate = null;
+      expireddate = new Date(this.displayCycleCountItem.ExpirationDateFormatted);
+      if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
+        actualexpiradationdate = this.displayCycleCountItem.QuantityOnHand !== 0 ? new Date(expireddate.getFullYear(), expireddate.getMonth() + 1, 0) : null;
+      }
+      else {
+        actualexpiradationdate = this.displayCycleCountItem.QuantityOnHand !== 0 ? new Date(expireddate) : null;
+      }
+      let update = new deviceCycleCountItemUpdate({
+        DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
+        ItemId: this.displayCycleCountItem.ItemId,
+        ExpirationDate: actualexpiradationdate,
+        QuantityOnHand: this.displayCycleCountItem.QuantityOnHand
+      });
+
+      var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
+
+      this.guidedManualCycleCountServiceService.post(deviceId, update).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+    }
+    // if (this.isLastItem || this.currentItemCount == this.itemCount) {
+    //   if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+    //     this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+    //   }
+
+    //   this.wpfActionController.ExecuteBackAction();
+    // } else {
+    //   this.nextRecord();
+    // }
+    this.navigateBack();
+
+
+
+  }
+
+  navigateBack() {
+    if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+      this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+    }
+    this.router.navigateByUrl('/guidedinvmgmt/devicelist');
+    //this.wpfActionController.ExecuteBackAction();
+  }
+
+   handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult) {
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable) {
+      let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.displayCycleCountItem.DeviceDescription });
+      forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
+        let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
+        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.navigateBack());
+      });
+    }
+
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested) {
+      this.navigateBack();
+    }
+
+    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed) {
+      this.carouselFaulted = true;
+    } else {
+      this.carouselFaulted = false;
+    }
+  }
+
+  handleLeaseBusyChanged(isBusy: boolean) {
+    if (isBusy) {
+      this.leaseBusyPopup$ = this.leaseBusyTitle$.pipe(map(x => this.showLeaseDialog(x)), shareReplay(1));
+      this.leaseBusyPopup$.subscribe();
+    } else {
+      this.leaseBusyPopup$.subscribe(x => x.onCloseClicked());
+    }
+  }
+
+  private showLeaseDialog(title: string): PopupDialogComponent {
+    const properties = new PopupDialogProperties('Lease-Busy');
+    properties.titleElementText = title;
+    properties.showPrimaryButton = false;
+    properties.showSecondaryButton = false;
+    properties.showCloseIcon = false;
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = 0;
+    properties.component = SpinnerPopupComponent;
+    return this.dialogService.showOnce(properties);
+  }
+
+  private displayError(uniqueId, title, message): PopupDialogComponent {
+    const properties = new PopupDialogProperties(uniqueId);
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.primaryButtonText = 'Ok';
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 0;
+    return this.dialogService.showOnce(properties);
+  } 
+  
+  showValidComponent() {
+    return this.displayCycleCountItem;
+  }
   
 }
