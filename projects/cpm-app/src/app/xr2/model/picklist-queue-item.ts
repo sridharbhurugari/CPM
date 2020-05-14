@@ -29,4 +29,5 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   AvailableOutputDeviceList: Array<OutputDevice>;
   Saving: boolean;
   TrackById: Guid;
+  ItemCount: number;
 }

@@ -93,6 +93,9 @@
   "UNDERFILLED": "Underfilled",
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
-  "ROBOT_QUEUE": "Robot Queue"
-
+  "ROBOT_QUEUE": "Robot Queue",
+  "PRINTSUCCESSFUL_HEADER_TEXT": "Print Successful",
+  "PRINTSUCCESSFUL_BODY_TEXT": "Bin label has printed.",
+  "PRINTFAILED_HEADER_TEXT": "Error",
+  "PRINTFAILED_BODY_TEXT": "Failed to print bin label. Please contact your system administrator."
 }
