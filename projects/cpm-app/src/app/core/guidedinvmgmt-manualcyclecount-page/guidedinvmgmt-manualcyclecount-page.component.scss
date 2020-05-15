@@ -2,18 +2,23 @@
 :host{
     height: 100%;
 }
-
-.searchBar{
-  ::ng-deep{
-    div{
-      &:first-child{
-      margin-top: 6px;
-      margin-left: 6px;
-      margin-right: 6px;
-      }
-    }
-  }
+oc-search-dropdown
+{
+  position: sticky;
+  z-index: 5;
 }
+ .searchBar{
+//   ::ng-deep{
+//     div{
+//       &:first-child{
+     margin-top: 6px;
+       margin-left: 9px;
+       margin-right: 9px;
+       
+       }
+//     }
+//   }
+// }
   
   .BrandName{
     font-size: 38px;
@@ -73,7 +78,7 @@
     font-size: 22px;
     height: 50px;
     box-sizing: border-box;  
-    margin-top: 8px;
+    margin-top: 2px;
     margin-bottom:8px;  
     margin-left: 20px;
     width: 100%;
@@ -162,7 +167,7 @@
   font-weight: normal;
   color:$text-color;
   left: 16px;
-  top: 16px;
+  top: 6px;
   bottom: 10px;
 }
   
