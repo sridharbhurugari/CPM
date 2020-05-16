@@ -4,7 +4,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, from } from 'rxjs';
 import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
-import { SearchBoxComponent,SearchDropdownInputData,SearchDropdownOutputData,SearchBoxAlign,SearchDropdownComponent,SearchDropDownColumnTemplate } from '@omnicell/webcorecomponents';
+import { SearchDropdownInputData,SearchDropdownOutputData,SearchBoxAlign,SearchDropdownComponent,SearchDropDownColumnTemplate } from '@omnicell/webcorecomponents';
 import { IGuidedManualCycleCountItems } from '../../api-core/data-contracts/i-guided-manual-cycle-count-items';
 import { GuidedManualCycleCountItems } from '../../api-core/data-contracts/guided-manual-cycle-count-items';
 import { IGuidedManualCycleCountItemid } from '../../api-core/data-contracts/i-guided-manual-cycle-count-itemid';
@@ -18,7 +18,6 @@ import { DeviceLocationTypeId } from '../../shared/constants/device-location-typ
 import { TranslateService } from '@ngx-translate/core';
 import { SpinnerPopupComponent } from '../../shared/components/spinner-popup/spinner-popup.component';
 import { deviceCycleCountItemUpdate } from '../../api-core/data-contracts/guided-cycle-count-update';
-import { Router } from '@angular/router';
 import { SingleselectRowItem } from '../model/SingleselectRowItem';
 
 
@@ -42,9 +41,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent implements OnInit,AfterV
   displayCycleCountItem: IGuidedManualCycleCountItemid;
   cycleCountItems: Observable<IGuidedManualCycleCountItemid[]>;
 
-  multiLocations: SingleselectRowItem[] = [];
-  selectedItemLocattion: SingleselectRowItem;
-  isLastItem: boolean;
+ 
+  //isLastItem: boolean;
   doneButtonDisable: boolean;
   daterequired: boolean;
   disablethedate: boolean;
@@ -53,11 +51,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent implements OnInit,AfterV
   isMultiLocation :boolean;
   isSingleSelectEnable:boolean;
   locationCount :number;
-
+  unassignedItem:boolean;
   numericindexes = ['', 1, ''];
   datepickerindexes = [2, 3, 4, ''];
   public time: Date = new Date();
-  route: any;
   leaseBusyPopup$: Observable<PopupDialogComponent>;
   
 
@@ -79,7 +76,6 @@ searchRequestorText =  '';
   searchBoxAlign = SearchBoxAlign;
 
   constructor(
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private guidedManualCycleCountServiceService : GuidedManualCycleCountServiceService,
     private carouselLocationAccessService: CarouselLocationAccessService,
@@ -91,8 +87,6 @@ searchRequestorText =  '';
     setInterval(() => {
       this.time = new Date();
     }, 1);
-
-    this.doneButtonDisable = false;
     this.daterequired = false;
     this.disablethedate = false;
     this.numericfocus = false;
@@ -125,16 +119,24 @@ searchRequestorText =  '';
       },
      ];
   this.guidedManualCycleCountServiceService.getSearchItems("");
+
+
+  this.doneButtonDisable=true;
   }
+  multiLocations: SingleselectRowItem[];
+  selectedItemLocattion: SingleselectRowItem;
+  
+
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
 
   }
   // Output from the Dropdown Search Item Click
   itemSelected(item: any) {
-    console.log(item);
     this.selectedItem = JSON.stringify(item); 
+    this.isSingleSelectEnable = false;
     this.getCycleCountData(item.item.ID);
+    
   }
   private getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
 
@@ -182,31 +184,38 @@ searchRequestorText =  '';
           var date = new Date(x[0].ExpirationDate);
           this.displayCycleCountItem.InStockQuantity = x[0].QuantityOnHand;
            this.locationCount=0;
+           
           if(x.length > 1){
             this.displayCycleCountItem.QuantityOnHand = 0;
             this.isSingleSelectEnable = true;
             this.isMultiLocation = true;
+            this.multiLocations = [];
+
+            for(let i=0; i<x.length; i++){
+              this.locationCount++;
+              let location = new SingleselectRowItem();
+              location.text = x[i].LocationDescription +'                     '+x[i].PackageFormName;
+              location.value = x[i].LocationDescription;
+              location.Visible = true;
+              this.multiLocations.push(location);
+            }
           }
           else{
             this.isSingleSelectEnable = false;
             this.isMultiLocation = false;
           }
-          for(let i=0; i<x.length; i++){
-            this.locationCount++;
-            let location = new SingleselectRowItem();
-            location.text = x[i].LocationDescription +'   '+"QOH:" + x[i].QuantityOnHand + '    '+x[i].PackageFormName;
-            location.value = x[i].LocationDescription;
-            location.Visible = true;
-            this.multiLocations.push(location);
-          }
-  
+       
           this.toggleredborderfornonfirstitem(true);
           this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
           this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
           if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-            this.DisableActionButtons(true);
+            this.DisableActionButtons(false);
 
         }
+        else{
+           this.unassignedItem = true;
+            this.displayUnknownItemDialog();
+         }
  
       },
         () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); },
@@ -323,8 +332,8 @@ searchRequestorText =  '';
     }
 
   
-     navigateContinue() {
-    if (this.displayCycleCountItem != null) {
+    navigateContinue() {
+      if (this.displayCycleCountItem != null) {
       var expireddate = null, actualexpiradationdate = null;
       expireddate = new Date(this.displayCycleCountItem.ExpirationDateFormatted);
       if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
@@ -345,11 +354,12 @@ searchRequestorText =  '';
       this.guidedManualCycleCountServiceService.post(deviceId, update).subscribe(
         res => {
           console.log(res);
+        },err =>{
+          console.error(err);
         }
       );
     }
        this.wpfActionController.ExecuteBackAction();
-       this.navigateBack();
   }
 
   navigateBack() {
@@ -415,9 +425,9 @@ searchRequestorText =  '';
     return this.dialogService.showOnce(properties);
   } 
   
-  showValidComponent() {
-    return this.displayCycleCountItem;
-  }
+  // showValidComponent() {
+  //   return this.displayCycleCountItem;
+  // }
 
   onSelectionChanged($event){
     if($event != '' && $event != null){
@@ -435,7 +445,7 @@ searchRequestorText =  '';
               this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
               this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
               if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-                this.DisableActionButtons(true);
+                this.DisableActionButtons(false);
             }
           }
         }
@@ -446,5 +456,16 @@ searchRequestorText =  '';
     }
   }
 }  
+private displayUnknownItemDialog(): void {
+  const properties = new PopupDialogProperties('Role-Status-Warning');
+  this.translateService.get('UNKNOWNITEM_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+  this.translateService.get('UNKNOWNITEM_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+  properties.showPrimaryButton = true;
+  properties.showSecondaryButton = false;
+  properties.primaryButtonText = 'Ok';
+  properties.dialogDisplayType = PopupDialogType.Error;
+  properties.timeoutLength = 60;
+  this.dialogService.showOnce(properties);
+}
   
 }

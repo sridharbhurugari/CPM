@@ -57,7 +57,6 @@
   "NEW_ROUTE_NAME": "New Route Name",
   "NOTSENT": "Not Sent",
   "GUIDED_CYCLE_COUNT": "Guided Cycle Count",
-  "CYCLE_COUNT":"Cycle Count",
   "NEXT": "Next",
   "OF": "of",
   "OK": "OK",
@@ -91,6 +90,9 @@
   "UNDERFILLED": "Underfilled",
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
-  "ROBOT_QUEUE": "Robot Queue"
+  "ROBOT_QUEUE": "Robot Queue",
+  "CYCLE_COUNT":"Cycle Count",
+  "UNKNOWNITEM_HEADER_TEXT" : "Unassigned",
+  "UNKNOWNITEM_BODY_TEXT": "Item is Currently not assigned at CPM. Please Scan or Select another item."
  
 }

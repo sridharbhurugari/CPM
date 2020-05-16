@@ -40,7 +40,7 @@
                 <div>
                     <div class="itemIdHeader">
                         <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
-                    <span *ngIf="isMultiLocation">-{{locationCount}}</span>
+                    <span *ngIf="isSingleSelectEnable">-{{locationCount}}</span>
                     </div>
                     <div class="location">
                         <div class="locationdescription" *ngIf="displayCycleCountItem">
@@ -48,7 +48,7 @@
                                 #selection3
                                 [tableData]="multiLocations"
                                 selectedItem="{}"
-                                componentWidth="600"
+                                componentWidth="750"
                                 dropdownRowsVisible="6"
                                 (selectionChanged)="onSelectionChanged($event)"
                                 searchPlaceholderText="Find item"
@@ -94,6 +94,9 @@
 
                 <div class="whiteline"></div>
                 <div class="leftPanelRow">
+                    <div *ngIf="!displayCycleCountItem">
+                    {{"REORDER_LEVEL" | translate}}
+                    </div>
                     <div *ngIf="!isMultiLocation">
                     <div  *ngIf="displayCycleCountItem">
                     {{(displayCycleCountItem.ReorderSource == 'B' ? "RESTOCK_LEVEL" : "REORDER_LEVEL") | translate}}
@@ -109,8 +112,13 @@
                     <div >
                     {{"EXPIRATION_DATE" | translate}}
                     <div class="expiration" >
-                        <div *ngIf="!isMultiLocation">
-                        <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat" *ngIf="displayCycleCountItem"
+                        <div *ngIf="!displayCycleCountItem">
+                            <oc-datepicker id="datepicker" 
+                            [autocorrect]="false" [isDisabled]="disablethedate">
+                        </oc-datepicker>  
+                        </div>
+                        <div *ngIf="displayCycleCountItem">
+                        <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat" 
                             [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
                             [autocorrect]="false" [isDisabled]="disablethedate" popupDirection="UP"
                             (ngModelChange)=onDateChange($event) [minDate]="todaydate" [tabIndexes]="datepickerindexes">
@@ -125,8 +133,12 @@
             </div> 
            <div class="rightCycleCountPanel">
                 <div class="demo" >
-                    <div *ngIf="!isMultiLocation">
-                    <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand" *ngIf="displayCycleCountItem"
+                    <div *ngIf="!displayCycleCountItem">
+                        <oc-numeric [title]="'ITEM_QUANTITY' | translate" >
+                    </oc-numeric>
+                    </div>
+                    <div *ngIf="displayCycleCountItem">
+                    <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand" 
                         [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true"
                         (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes" id="numericElement">
                     </oc-numeric>
