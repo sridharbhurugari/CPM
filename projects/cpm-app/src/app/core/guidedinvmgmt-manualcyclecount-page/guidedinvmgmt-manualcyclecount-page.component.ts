@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild,AfterViewChecked } from '@angular/core';
 import * as _ from 'lodash';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin, merge, from } from 'rxjs';
 import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { SearchDropdownInputData,SearchDropdownOutputData,SearchBoxAlign,SearchDropdownComponent,SearchDropDownColumnTemplate } from '@omnicell/webcorecomponents';
@@ -76,6 +76,7 @@ searchRequestorText =  '';
   searchBoxAlign = SearchBoxAlign;
 
   constructor(
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private guidedManualCycleCountServiceService : GuidedManualCycleCountServiceService,
     private carouselLocationAccessService: CarouselLocationAccessService,
@@ -139,7 +140,9 @@ searchRequestorText =  '';
     
   }
   private getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
-
+    if(this.displayCycleCountItem != undefined){
+      this.displayCycleCountItem = null;
+    }
     // Make api call to get data as an observable
     return this.guidedManualCycleCountServiceService.getSearchItems(searchKey);
     //return this.searchData ;
@@ -189,6 +192,7 @@ searchRequestorText =  '';
             this.displayCycleCountItem.QuantityOnHand = 0;
             this.isSingleSelectEnable = true;
             this.isMultiLocation = true;
+            this.DisableActionButtons(true);
             this.multiLocations = [];
 
             for(let i=0; i<x.length; i++){
@@ -203,17 +207,16 @@ searchRequestorText =  '';
           else{
             this.isSingleSelectEnable = false;
             this.isMultiLocation = false;
-          }
-       
-          this.toggleredborderfornonfirstitem(true);
-          this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
-          this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-          if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+            this.toggleredborderfornonfirstitem(true);
             this.DisableActionButtons(false);
+            this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
+            this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+            if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+              this.DisableActionButtons(false);
+          }
 
         }
         else{
-           this.unassignedItem = true;
             this.displayUnknownItemDialog();
          }
  
@@ -222,8 +225,6 @@ searchRequestorText =  '';
         () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); }
       )
     }
-
-
 
     DisableActionButtons(value: boolean) {
      this.doneButtonDisable = value;
@@ -280,12 +281,13 @@ searchRequestorText =  '';
       return this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity != "None" ? false : true;
     }
     onQuantityChange($event) {
-      if ($event == "0") {
-        this.daterequired = false;
-        this.disabledatecomponent(true);
-        this.toggleredborderfornonfirstitem(true);
-        this.DisableActionButtons(false);
-      }
+        if ($event == "0") {
+          this.daterequired = false;
+          this.disabledatecomponent(true);
+          this.toggleredborderfornonfirstitem(true);
+          if(!this.isMultiLocation)
+          this.DisableActionButtons(false);
+        }
       else {
         this.disabledatecomponent(false);
         var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
@@ -354,8 +356,6 @@ searchRequestorText =  '';
       this.guidedManualCycleCountServiceService.post(deviceId, update).subscribe(
         res => {
           console.log(res);
-        },err =>{
-          console.error(err);
         }
       );
     }
@@ -369,7 +369,20 @@ searchRequestorText =  '';
       this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
     }
   }
-    this.wpfActionController.ExecuteBackAction();
+   this.wpfActionController.ExecuteBackAction();
+  }
+
+  navigateSamePage() {
+    if(this.displayCycleCountItem!=undefined)
+    {
+    if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+      this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+    }
+  }
+  if(this.displayCycleCountItem != undefined){
+    this.displayCycleCountItem = null;
+  }
+  this.DisableActionButtons(true);
   }
 
    handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult) {
@@ -377,12 +390,12 @@ searchRequestorText =  '';
       let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.displayCycleCountItem.DeviceDescription });
       forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
         let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
-        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.navigateBack());
+        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.navigateSamePage());
       });
     }
 
     if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested) {
-      this.navigateBack();
+      this.navigateSamePage();
     }
 
     if (deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed) {
@@ -425,36 +438,35 @@ searchRequestorText =  '';
     return this.dialogService.showOnce(properties);
   } 
   
-  // showValidComponent() {
-  //   return this.displayCycleCountItem;
-  // }
-
   onSelectionChanged($event){
     if($event != '' && $event != null){
-    var eventData = $event.value;
-    if(this.cycleCountItems != undefined){
-      this.cycleCountItems.subscribe(x =>{
-        if(x.length >0){
-          for(let i= 0 ; i< x.length ; i++){
-            if(x[i].LocationDescription === eventData){
-              this.isMultiLocation = false;
-              this.displayCycleCountItem = x[i];
-              var date = new Date(x[i].ExpirationDate);
-              this.displayCycleCountItem.InStockQuantity = x[i].QuantityOnHand;
-              this.toggleredborderfornonfirstitem(true);
-              this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
-              this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-              if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+      var eventData = $event.value;
+      if(this.cycleCountItems != undefined){
+        this.displayCycleCountItem.ExpirationDateFormatted = '';
+        this.cycleCountItems.subscribe(x =>{
+          if(x.length >0){
+            for(let i= 0 ; i< x.length ; i++){
+              if(x[i].LocationDescription === eventData){
+                this.disablethedate = false;
+                this.isMultiLocation = false;
+                this.displayCycleCountItem = x[i];
+                var date = new Date(x[i].ExpirationDate);
+                this.displayCycleCountItem.InStockQuantity = x[i].QuantityOnHand;
+                this.toggleredborderfornonfirstitem(true);
                 this.DisableActionButtons(false);
+                this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
+                this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+                if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+                  this.DisableActionButtons(false);
+              }
             }
           }
-        }
-      },
-      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); },
-      () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); }
-      );
+        },
+        () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); },
+        () => { this.toggleredborderforfirstitem(); Util.setByTabIndex(this.numericindexes[1]); }
+        );
+      }
     }
-  }
 }  
 private displayUnknownItemDialog(): void {
   const properties = new PopupDialogProperties('Role-Status-Warning');

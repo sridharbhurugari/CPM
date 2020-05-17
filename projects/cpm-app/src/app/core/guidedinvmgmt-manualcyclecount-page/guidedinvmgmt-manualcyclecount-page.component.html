@@ -62,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="devicelocationaccess">
+                <div class="devicelocationaccess" *ngIf= displayCycleCountItem>
                     <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
                         [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
                         (isAccessBusy)="deviceLocationAccessBusy = $event"
@@ -97,26 +97,26 @@
                     <div *ngIf="!displayCycleCountItem">
                     {{"REORDER_LEVEL" | translate}}
                     </div>
-                    <div *ngIf="!isMultiLocation">
-                    <div  *ngIf="displayCycleCountItem">
+                    <div *ngIf="displayCycleCountItem">
+                    <div  *ngIf="!isMultiLocation">
                     {{(displayCycleCountItem.ReorderSource == 'B' ? "RESTOCK_LEVEL" : "REORDER_LEVEL") | translate}}
                     <div class="textContent">
                         {{displayCycleCountItem.ReorderSource == 'B' ? displayCycleCountItem.ReorderLevel:displayCycleCountItem.QuantityMin}}
                     </div>
-                </div>
+                    </div>
+                    <div *ngIf="isMultiLocation">
+                        {{"REORDER_LEVEL" | translate}}
+                    </div>
+                    
                 </div>
                 </div>
                 <div class="whiteline"></div>
 
                 <div class="leftPanelRow" *ngIf="!CheckItemExpGranularity()">
-                    <div >
+                    <div  *ngIf="!isMultiLocation">
                     {{"EXPIRATION_DATE" | translate}}
-                    <div class="expiration" >
-                        <div *ngIf="!displayCycleCountItem">
-                            <oc-datepicker id="datepicker" 
-                            [autocorrect]="false" [isDisabled]="disablethedate">
-                        </oc-datepicker>  
-                        </div>
+                    </div>
+                    <div class="expiration" *ngIf="!isMultiLocation">
                         <div *ngIf="displayCycleCountItem">
                         <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat" 
                             [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
@@ -125,7 +125,6 @@
                         </oc-datepicker>
                     </div>
                     </div>
-                </div>
                 </div>
 
                 <div class="expirationwhiteline" *ngIf="!CheckItemExpGranularity()"></div>
@@ -138,10 +137,16 @@
                     </oc-numeric>
                     </div>
                     <div *ngIf="displayCycleCountItem">
-                    <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand" 
-                        [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true"
-                        (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes" id="numericElement">
-                    </oc-numeric>
+                    <div *ngIf="!isMultiLocation">
+                        <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="displayCycleCountItem.QuantityOnHand" 
+                            [minValue]="0" [maxValue]="999999" [units]="displayCycleCountItem.Units" [autoCorrect]="true"
+                            (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes" id="numericElement">
+                        </oc-numeric>
+                    </div>
+                    <div *ngIf="isMultiLocation">
+                        <oc-numeric [title]="'ITEM_QUANTITY' | translate" >
+                        </oc-numeric>
+                    </div>
                 </div>
                 </div>
             </div>
