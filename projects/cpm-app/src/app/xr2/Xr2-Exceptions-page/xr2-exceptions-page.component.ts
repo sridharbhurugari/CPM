@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
-import { Observable, of } from 'rxjs';
+import { Observable, of,Subscription } from 'rxjs';
 import { map, switchMap, shareReplay } from 'rxjs/operators';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -22,13 +22,14 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   readonly exceptionPocketsPropertyName = nameof<Xr2ExceptionsItem>("ExceptionPockets");
   readonly deviceNamePropertyName = nameof<Xr2ExceptionsItem>("DeviceName");
   readonly completedDatePropertyName = nameof<Xr2ExceptionsItem>("CompletedDateTime");
+  searchSub: Subscription;
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
 
   displayExceptionsList$: Observable<Xr2ExceptionsItem[]>;
   currentSortPropertyName: string = this.trayIDPropertyName;
 
   searchTextFilter: string;
-  searchFields = [ this.trayIDPropertyName ];
+  searchFields = [ this.trayIDPropertyName,this.trayDescriptionPropertyName, this.deviceNamePropertyName];
 
   constructor(
     private exceptionsListService: Xr2ExceptionsService,
@@ -43,7 +44,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.searchElement.searchOutput$
+    this.searchSub = this.searchElement.searchOutput$
       .pipe(
         switchMap((searchData: string) => {
           return of(searchData);
@@ -63,5 +64,9 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
   sort(devices: Xr2ExceptionsItem[], sortDirection: Many<boolean|"asc"|"desc">): Xr2ExceptionsItem[]{
       return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSub) { this.searchSub.unsubscribe(); }
   }
 }
