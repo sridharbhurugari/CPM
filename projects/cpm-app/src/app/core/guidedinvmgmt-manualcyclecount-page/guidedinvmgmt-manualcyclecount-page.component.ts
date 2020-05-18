@@ -76,7 +76,7 @@ searchRequestorText =  '';
   searchBoxAlign = SearchBoxAlign;
 
   constructor(
-    private router: Router,
+    //private router: Router,
     private activatedRoute: ActivatedRoute,
     private guidedManualCycleCountServiceService : GuidedManualCycleCountServiceService,
     private carouselLocationAccessService: CarouselLocationAccessService,
@@ -198,7 +198,7 @@ searchRequestorText =  '';
             for(let i=0; i<x.length; i++){
               this.locationCount++;
               let location = new SingleselectRowItem();
-              location.text = x[i].LocationDescription +'                     '+x[i].PackageFormName;
+              location.text = x[i].LocationDescription +' '+x[i].PackageFormName;
               location.value = x[i].LocationDescription;
               location.Visible = true;
               this.multiLocations.push(location);
@@ -212,7 +212,7 @@ searchRequestorText =  '';
             this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
             this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
             if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-              this.DisableActionButtons(false);
+              this.DisableActionButtons(true);
           }
 
         }
@@ -457,7 +457,7 @@ searchRequestorText =  '';
                 this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
                 this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
                 if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-                  this.DisableActionButtons(false);
+                  this.DisableActionButtons(true);
               }
             }
           }
