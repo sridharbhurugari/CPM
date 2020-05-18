@@ -97,5 +97,10 @@
   "PRINTSUCCESSFUL_HEADER_TEXT": "Print Successful",
   "PRINTSUCCESSFUL_BODY_TEXT": "Bin label has printed.",
   "PRINTFAILED_HEADER_TEXT": "Error",
-  "PRINTFAILED_BODY_TEXT": "Failed to print bin label. Please contact your system administrator."
+  "PRINTFAILED_BODY_TEXT": "Failed to print bin label. Please contact your system administrator.",
+  "XR2_EXCEPTIONS_TRAY_ID" : "Tray ID",
+  "XR2_EXCEPTIONS_TRAY_DESCRIPTION": "Tray Description",
+  "XR2_EXCEPTIONS_POCKETS" : "# Exception Pockets",
+  "XR2_EXCEPTIONS_DEVICE_NAME": "Device Name",
+  "XR2_EXCEPTIONS_COMPLETED_DATE": "Completed Date"
 }
