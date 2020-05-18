@@ -211,10 +211,15 @@ searchRequestorText =  '';
             this.DisableActionButtons(false);
             this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
             this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-            if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-              this.DisableActionButtons(true);
+            
+                  if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+                  this.DisableActionButtons(false);
+              if(this.displayCycleCountItem.ItmExpDateGranularity !="None")
+                 {
+                  if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+                     this.DisableActionButtons(true);   
+                }
           }
-
         }
         else{
             this.displayUnknownItemDialog();
@@ -457,7 +462,12 @@ searchRequestorText =  '';
                 this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
                 this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
                 if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-                  this.DisableActionButtons(true);
+                  this.DisableActionButtons(false);
+                  if(this.displayCycleCountItem.ItmExpDateGranularity !="None")
+                 {
+                   if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+                    this.DisableActionButtons(true);   
+                }
               }
             }
           }
