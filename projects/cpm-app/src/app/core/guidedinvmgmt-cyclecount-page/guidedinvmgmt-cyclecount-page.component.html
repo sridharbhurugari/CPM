@@ -3,6 +3,10 @@
         <div class="cpmactiontitle">{{ 'GUIDED_CYCLE_COUNT' | translate }}</div>
         <div class="dateTime">
             {{time| date:'M/d/yyyy h:mm a'}}</div>
+            <div class="printlable"
+        *ngIf="HasLabelPrinterConfigured()">
+            <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
+        </div>
         <div class="totalItemCount">
             <span>{{currentItemCount}} / {{itemCount}}</span></div>
     </ng-container>

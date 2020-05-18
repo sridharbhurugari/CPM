@@ -1,10 +1,12 @@
 {
   "ACTIONS": "Actions",
+  "AUTOPACKAGER": "Auto Packager",
   "BACK": "Back",
   "BIN": "Bin",
   "BINS": "Bins",
   "CABINETS": "Cabinets",
   "CANCEL": "Cancel",
+  "CARTMODULE": "Cart Module",
   "COMMA_SEPARATOR": ",",
   "CONFIRM": "Confirm",
   "DATE": "Date",
@@ -67,6 +69,7 @@
   "RELEASE": "Release",
   "PRINT": "Print",
   "QTY_FILLED_REQUESTED": "Filled / Req",
+  "QUICKPICK": "Quick Pick",
   "REORDER_LEVEL": "Reorder Level",
   "REQUEST_DEVICE_ACCESS": "Request Device Access",
   "RESTOCK_LEVEL": "Restock Level",
@@ -91,8 +94,11 @@
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
   "ROBOT_QUEUE": "Robot Queue",
-  "CYCLE_COUNT":"Cycle Count",
-  "UNKNOWNITEM_HEADER_TEXT" : "Unassigned",
+  "PRINTSUCCESSFUL_HEADER_TEXT": "Print Successful",
+  "PRINTSUCCESSFUL_BODY_TEXT": "Bin label has printed.",
+  "PRINTFAILED_HEADER_TEXT": "Error",
+  "PRINTFAILED_BODY_TEXT": "Failed to print bin label. Please contact your system administrator.",
+  "CYCLE_COUNT": "Cycle Count",
+  "UNKNOWNITEM_HEADER_TEXT": "Unassigned",
   "UNKNOWNITEM_BODY_TEXT": "Item is Currently not assigned at CPM. Please Scan or Select another item."
- 
 }

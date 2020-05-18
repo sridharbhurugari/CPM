@@ -5,6 +5,8 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { Observable } from 'rxjs';
 import { IGuidedCycleCount } from '../data-contracts/i-guided-cycle-count';
 import { deviceCycleCountItemUpdate } from '../data-contracts/guided-cycle-count-update';
+import { GuidedCycleCountPrintLabel } from '../data-contracts/guided-cycle-count-print-label';
+import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
 
 
 @Injectable({
@@ -31,4 +33,12 @@ import { deviceCycleCountItemUpdate } from '../data-contracts/guided-cycle-count
         headers: this.ocapHttpHeadersService.getHeaders(),
       });
     }
+
+    public PrintLabel(deviceId: string, binData: GuidedCycleCountPrintLabel): Observable<boolean> {
+      const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/PrintLabel`);
+      return this.httpClient.post<boolean>(url, binData, {
+        headers: this.ocapHttpHeadersService.getHeaders()
+      });
+    }
+    
   } 
