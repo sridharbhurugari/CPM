@@ -18,7 +18,7 @@ import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.serv
 
 export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   readonly trayIDPropertyName = nameof<Xr2ExceptionsItem>("TrayID");
-  readonly trayDescriptionPropertyName = nameof<Xr2ExceptionsItem>("TrayDescription");
+  readonly trayTypePropertyName = nameof<Xr2ExceptionsItem>("TrayDescription");
   readonly exceptionPocketsPropertyName = nameof<Xr2ExceptionsItem>("ExceptionPockets");
   readonly deviceNamePropertyName = nameof<Xr2ExceptionsItem>("DeviceName");
   readonly completedDatePropertyName = nameof<Xr2ExceptionsItem>("CompletedDateTime");
@@ -29,7 +29,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   currentSortPropertyName: string = this.completedDatePropertyName;
 
   searchTextFilter: string;
-  searchFields = [ this.trayIDPropertyName,this.trayDescriptionPropertyName, this.deviceNamePropertyName];
+  searchFields = [ this.trayIDPropertyName,this.trayTypePropertyName, this.deviceNamePropertyName];
 
   constructor(
     private exceptionsListService: Xr2ExceptionsService,
@@ -38,7 +38,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.displayExceptionsList$ = this.exceptionsListService.get().pipe(map(guidedDeviceListItems => {
-       return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionsItem(p)), SortDirection.ascending);
+       return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionsItem(p)), SortDirection.descending);
     }), shareReplay(1));
   }
 
@@ -62,7 +62,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     }));
   }
 
-  sort(devices: Xr2ExceptionsItem[], sortDirection: Many<boolean|"asc"|"desc">): Xr2ExceptionsItem[]{
+  sort(devices: Xr2ExceptionsItem[], sortDirection: Many<boolean|"desc"|"asc">): Xr2ExceptionsItem[]{
       return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
   }
 
