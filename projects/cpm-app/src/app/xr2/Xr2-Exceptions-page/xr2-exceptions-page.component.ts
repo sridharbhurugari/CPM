@@ -26,7 +26,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
 
   displayExceptionsList$: Observable<Xr2ExceptionsItem[]>;
-  currentSortPropertyName: string = this.trayIDPropertyName;
+  currentSortPropertyName: string = this.completedDatePropertyName;
 
   searchTextFilter: string;
   searchFields = [ this.trayIDPropertyName,this.trayDescriptionPropertyName, this.deviceNamePropertyName];

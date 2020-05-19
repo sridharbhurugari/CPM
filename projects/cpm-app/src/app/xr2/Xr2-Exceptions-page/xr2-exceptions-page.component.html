@@ -43,10 +43,10 @@
             <div class="first" style="align-items: center;"></div>
             <div class="col width-device" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate">{{exceptions.TrayID}}</div>
             <div class="col width-device" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_DESCRIPTION' | translate">{{exceptions.TrayDescription}}</div>
-            <div class="col width-device" [attr.data-title]="'XR2_EXCEPTIONS_POCKETS' | translate">{{exceptions.ExceptionPockets}}</div>
+            <div class="col width-device" [attr.data-title]="'XR2_EXCEPTIONS_POCKETS' | translate">{{exceptions.ExceptionPockets}} Pockets</div>
             <div class="col width-lastcount" [attr.data-title]="'XR2_EXCEPTIONS_DEVICE_NAME' | translate"> {{exceptions.DeviceName}}
             </div>
-            <div class="last width-exp" [attr.data-title]="'XR2_EXCEPTIONS_COMPLETED_DATE' | translate">{{exceptions.CompletedDateTime}}
+            <div class="last width-exp" [attr.data-title]="'XR2_EXCEPTIONS_COMPLETED_DATE' | translate">{{exceptions.CompletedDateTime | date:'M/d/yyyy h:mm:ss a'}}
             </div>
           </div>
       </ng-container>

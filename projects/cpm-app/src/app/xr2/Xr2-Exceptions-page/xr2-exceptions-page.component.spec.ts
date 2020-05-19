@@ -33,4 +33,8 @@ describe('Xr2ExceptionsPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('column selected ', () => {
+   
+  });
 });
