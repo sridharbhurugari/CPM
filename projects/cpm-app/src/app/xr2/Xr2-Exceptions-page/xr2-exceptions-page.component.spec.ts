@@ -9,25 +9,33 @@ import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
+//import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { map } from 'rxjs/operators';
+import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+
 describe('Xr2ExceptionsPageComponent', () => {
   let component: Xr2ExceptionsPageComponent;
   let fixture: ComponentFixture<Xr2ExceptionsPageComponent>;
-
+  let event: IColHeaderSortChanged = {ColumnPropertyName:"TrayID",SortDirection:"asc"};
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ Xr2ExceptionsPageComponent, MockTranslatePipe,
-        MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe ],
-      imports: [GridModule, FooterModule, LayoutModule, SearchModule, SvgIconModule, ButtonActionModule],
+        MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe],
+      imports: [GridModule, FooterModule, LayoutModule, SearchModule,  ButtonActionModule],
       providers: [
         { provide: Xr2ExceptionsService, useValue: { get: () => of([]) } },
        ]
     })
     .compileComponents();
+
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2ExceptionsPageComponent);
     component = fixture.componentInstance;
+    //component.sortOrder = "desc";
+    event.ColumnPropertyName = "TrayID";
+    event.SortDirection="asc";
     fixture.detectChanges();
   });
 
@@ -36,6 +44,11 @@ describe('Xr2ExceptionsPageComponent', () => {
   });
 
   it('column selected ', () => {
-    component.currentSortPropertyName = "Tray Description";
+    //component. = SortDirection.descending;
+    component.displayExceptionsList$.source;
+    component.displayExceptionsList$ = component.displayExceptionsList$.pipe(map(exceptions => {
+      return this.sort(exceptions, "desc");
+    }));
+    expect(component.columnSelected(event));
   });
 });
