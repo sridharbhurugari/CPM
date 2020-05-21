@@ -190,7 +190,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       reroutePickListLine.PickListLineIds.push(itemPicklistLine.PicklistLineId);
-      reroutePickListLine.ItemIds.push(itemPicklistLine.ItemId);
     });
     this.picklistsQueueService.reroute(reroutePickListLine).subscribe(
       result => {

@@ -4,8 +4,8 @@ import { Guid } from 'guid-typescript';
 export class ReroutePickListLine {
 
   constructor() {
+    this.PickListLineIds = new Array();
   }
   
-  ItemIds: Array<String>;
   PickListLineIds: Array<String>;
 }
