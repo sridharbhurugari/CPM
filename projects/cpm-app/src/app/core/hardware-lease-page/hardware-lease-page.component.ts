@@ -152,7 +152,6 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   }
 
   private async connectToEvents(): Promise<void> {
-    await this.hardwareLeaseEventConnectionService.openEventConnection();
     this.configureEventHandlers();
   }
 

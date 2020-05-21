@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 import { EventConnectionService } from '../../xr2/services/event-connection.service';
-import { ConfigurationService } from 'oal-core';
+import { ConfigurationService, DeferredUtility, LoggerService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { HubConfigurationService } from '../../xr2/services/hub-configuration.service';
 import { IDeviceOperationResultEvent } from '../events/i-device-operation-result-event';
@@ -13,7 +13,7 @@ import { ICarouselReadyEvent } from '../events/i-carousel-ready-event';
 @Injectable({
   providedIn: 'root'
 })
-export class CoreEventConnectionService extends EventConnectionService {
+export class CoreEventConnectionService {
   public ocsIsHealthySubject = new Subject<boolean>();
   public deviceOperationResultEventSubject = new Subject<IDeviceOperationResultEvent>();
   public deviceLeaseGrantedSubject = new Subject<IDeviceLeaseGrantedEvent>();
@@ -21,18 +21,14 @@ export class CoreEventConnectionService extends EventConnectionService {
   public carouselFaultedSubject = new Subject<ICarouselFaultedEvent>();
   public carouselReadySubject = new Subject<ICarouselReadyEvent>();
 
-  constructor(
-    hubConfigurationService: HubConfigurationService,
-    configurationService: ConfigurationService,
-    ocapUrlBuilderService: OcapUrlBuilderService
-    ) {
-    super(hubConfigurationService, configurationService, ocapUrlBuilderService);
-   }
+  public startedSubject = new ReplaySubject(1);
 
-  public async openEventConnection(): Promise<void> {
-    this.startUp();
-    this.receivedSubject.subscribe(message => this.eventHandlers(message));
-  }
+  constructor(
+    private eventConnectionService: EventConnectionService
+    ) {
+    this.eventConnectionService.receivedSubject.subscribe(message => this.eventHandlers(message));
+    this.eventConnectionService.startedSubject.subscribe(() => this.startedSubject.next());
+   }
 
   private eventHandlers(message: any): void {
     if (message === undefined) {

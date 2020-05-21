@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
 import { EventConnectionService } from './event-connection.service';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
-import { ConfigurationService } from 'oal-core';
+import { ConfigurationService, LoggerService, DeferredUtility } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { HubConfigurationService } from './hub-configuration.service';
@@ -10,20 +10,18 @@ import { HubConfigurationService } from './hub-configuration.service';
 @Injectable({
   providedIn: 'root'
 })
-export class HardwareLeaseEventConnectionService extends EventConnectionService {
+export class HardwareLeaseEventConnectionService {
 
   public hardwareLeaseDeniedSubject = new Subject();
   public hardwareLeaseGrantedSubject = new Subject();
   clientId: string;
 
   constructor(
-    hubConfigurationService: HubConfigurationService,
-    configurationService: ConfigurationService,
-    ocapUrlBuilderService: OcapUrlBuilderService,
+    private eventConnectionService: EventConnectionService,
     private ocapConfigurationService: OcapHttpConfigurationService
     ) {
-    super(hubConfigurationService, configurationService, ocapUrlBuilderService);
-    this.setClientId();
+      this.setClientId();
+      this.eventConnectionService.receivedSubject.subscribe(message => this.configureHardwareLeaseHandlers(message));
    }
 
    private setClientId() {
@@ -32,14 +30,8 @@ export class HardwareLeaseEventConnectionService extends EventConnectionService 
     this.clientId = configuration.clientId;
    }
 
-  public async openEventConnection(): Promise<void> {
-    this.startUp();
-    this.receivedSubject.subscribe(message => this.configureHardwareLeaseHandlers(message));
-  }
-
   public closeEventConnection() {
-    this.stop();
-    this.receivedSubject.unsubscribe();
+    this.eventConnectionService.receivedSubject.unsubscribe();
   }
 
   private configureHardwareLeaseHandlers(message: any): void {
