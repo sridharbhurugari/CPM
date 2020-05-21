@@ -1,3 +1,4 @@
+import { Guid } from 'guid-typescript';
 import { IItemPicklistLine } from './i-item-picklist-line';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 
@@ -21,5 +22,5 @@ export interface IPicklistQueueItem {
   AvailableOutputDeviceList: Array<OutputDevice>;
   OutputDeviceId: string;
   ItemCount: number;
-  PickListLineId: string;
+  PickListLineId: Guid;
 }
