@@ -188,15 +188,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     picklistQueueItem.Saving = true;
     const reroutePickListLine = new ReroutePickListLine();
 
-    reroutePickListLine.PickListLineId = picklistQueueItem.PickListLineId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
-      const pickListLineDetail = new PickListLineDetail();
-      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
-      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
-      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
-      pickListLineDetail.Quantity = itemPicklistLine.Qty;
-      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
-      reroutePickListLine.PickListLineDetails.push(pickListLineDetail);
+      reroutePickListLine.PickListLineIds.push(itemPicklistLine.PicklistLineId);
+      reroutePickListLine.ItemIds.push(itemPicklistLine.ItemId);
     });
     this.picklistsQueueService.reroute(reroutePickListLine).subscribe(
       result => {
