@@ -16,6 +16,7 @@ import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.se
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
+import { ReroutePickListLine } from '../../api-xr2/data-contracts/reroute-pick-list-line';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -180,6 +181,26 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       }, result => {
         picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
+      });
+  }
+
+  reroute(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.Saving = true;
+    const reroutePickListLine = new ReroutePickListLine();
+
+    reroutePickListLine.PickListLineId = picklistQueueItem.PickListLineId;
+    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
+      const pickListLineDetail = new PickListLineDetail();
+      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
+      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
+      pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
+      reroutePickListLine.PickListLineDetails.push(pickListLineDetail);
+    });
+    this.picklistsQueueService.reroute(reroutePickListLine).subscribe(
+      result => {
+        picklistQueueItem.Saving = false;
       });
   }
 

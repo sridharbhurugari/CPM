@@ -21,4 +21,5 @@ export interface IPicklistQueueItem {
   AvailableOutputDeviceList: Array<OutputDevice>;
   OutputDeviceId: string;
   ItemCount: number;
+  PickListLineId: string;
 }
