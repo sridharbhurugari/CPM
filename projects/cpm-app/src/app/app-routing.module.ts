@@ -11,6 +11,8 @@ import { EditPickRoutePageComponent } from './core/edit-pick-route-page/edit-pic
 /*import { CpmSignalRResolverService } from './xr2/services/cpm-signal-rresolver.service';*/
 import { GuidedInvMgmtCycleCountPageComponent } from './core/guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component';
 import { HardwareLeasePageComponent } from './core/hardware-lease-page/hardware-lease-page.component';
+import { Xr2ExceptionsItem } from './xr2/model/xr2-exceptions-item';
+import { Xr2ExceptionsPageComponent } from './xr2/Xr2-Exceptions-page/xr2-exceptions-page.component';
 
 
 const routes: Routes = [
@@ -25,7 +27,8 @@ const routes: Routes = [
   { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },
   { path: 'pickRoutes/:pickRouteId', component: EditPickRoutePageComponent },
   { path: 'guidedinvmgmt/cyclecount', component: GuidedInvMgmtCycleCountPageComponent },
-  { path: 'hardwareLease/requestLease', component: HardwareLeasePageComponent }
+  { path: 'hardwareLease/requestLease', component: HardwareLeasePageComponent },
+  { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent},
 ];
 
 @NgModule({
