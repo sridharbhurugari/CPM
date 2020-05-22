@@ -46,6 +46,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private actr: ActivatedRoute,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
     private wpfActionController: WpfActionControllerService) {
+      this.configureEventHandlers();
   }
 
   @ViewChild('searchBox', {

@@ -26,7 +26,9 @@ describe('PicklistsQueueEventConnectionService', () => {
   }));
 
   it('should be created', () => {
+    spyOn(eventConnectionService.receivedSubject, 'subscribe');
     const service: HardwareLeaseEventConnectionService = TestBed.get(HardwareLeaseEventConnectionService);
     expect(service).toBeTruthy();
+    expect(eventConnectionService.receivedSubject.subscribe).toHaveBeenCalled();
   });
 });

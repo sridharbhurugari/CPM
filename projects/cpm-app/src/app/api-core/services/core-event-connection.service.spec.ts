@@ -23,7 +23,11 @@ describe('CoreEventConnectionService', () => {
 }));
 
   it('should be created', () => {
+    spyOn(eventConnectionService.receivedSubject, 'subscribe');
+    spyOn(eventConnectionService.startedSubject, 'subscribe');
     const service: CoreEventConnectionService = TestBed.get(CoreEventConnectionService);
     expect(service).toBeTruthy();
+    expect(eventConnectionService.receivedSubject.subscribe).toHaveBeenCalled();
+    expect(eventConnectionService.startedSubject.subscribe).toHaveBeenCalled();
   });
 });

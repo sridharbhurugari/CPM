@@ -32,10 +32,10 @@ export class PicklistsQueuePageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .subscribe(message => this.onReloadPicklistQueueItems(message));
+      .subscribe(() => this.onReloadPicklistQueueItems());
   }
 
-  private onReloadPicklistQueueItems(message): void {
+  private onReloadPicklistQueueItems(): void {
     this.loadPicklistsQueueItems();
   }
 

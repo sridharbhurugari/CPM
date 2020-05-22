@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { PicklistsQueuePageComponent } from './picklists-queue-page.component';
 import { PicklistsQueueComponent } from './../picklists-queue/picklists-queue.component';
@@ -32,7 +32,7 @@ describe('PicklistsQueuePageComponent', () => {
   let component: PicklistsQueuePageComponent;
   let fixture: ComponentFixture<PicklistsQueuePageComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
-  let eventConnectionService: Partial<EventConnectionService>;
+  let picklistQueueService: Partial<PicklistsQueueService>;
 
   beforeEach(async(() => {
     picklistsQueueEventConnectionService = {
@@ -41,12 +41,13 @@ describe('PicklistsQueuePageComponent', () => {
       reloadPicklistQueueItemsSubject: new Subject()
     };
 
-    eventConnectionService = {
-      receivedSubject: new Subject()
+    picklistQueueService = {
+      get: () => of([])
     };
 
     TestBed.configureTestingModule({
-      declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox , MockSearchPipe, MockAppHeaderContainer ],
+      declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox,
+         MockSearchPipe, MockAppHeaderContainer ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: { get: () => of([]) } },
@@ -55,13 +56,14 @@ describe('PicklistsQueuePageComponent', () => {
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
-        { provide: EventConnectionService, useValue: eventConnectionService }
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
+    spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe');
+    spyOn(picklistQueueService, 'get');
     fixture = TestBed.createComponent(PicklistsQueuePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -69,5 +71,32 @@ describe('PicklistsQueuePageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call picklistQueueService', () => {
+    expect(component).toBeTruthy();
+    fakeAsync((component) => {
+      component.ngOnInit();
+      tick();
+      expect(picklistQueueService.get).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should subscribe to events', () => {
+    expect(component).toBeTruthy();
+    expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
+  });
+
+  it('should reload on reloadPicklistQueueItemsSubject event', () => {
+    expect(component).toBeTruthy();
+    expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
+    fakeAsync((component) => {
+      component.ngOnInit();
+      tick();
+      expect(picklistQueueService.get).toHaveBeenCalledTimes(1);
+      picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
+      tick();
+      expect(picklistQueueService.get).toHaveBeenCalledTimes(2);
+    });
   });
 });

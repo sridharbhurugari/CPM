@@ -25,7 +25,9 @@ describe('PicklistsQueueEventConnectionService', () => {
   }));
 
   it('should be created', () => {
+    spyOn(eventConnectionService.receivedSubject, 'subscribe');
     const service: PicklistsQueueEventConnectionService = TestBed.get(PicklistsQueueEventConnectionService);
     expect(service).toBeTruthy();
+    expect(eventConnectionService.receivedSubject.subscribe).toHaveBeenCalled();
   });
 });

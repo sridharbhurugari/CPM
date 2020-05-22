@@ -47,10 +47,6 @@ describe('PicklistsQueueComponent', () => {
       removePicklistQueueItemSubject: new Subject()
     };
 
-    eventConnectionService = {
-      receivedSubject: new Subject()
-    };
-
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
       imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
@@ -66,13 +62,14 @@ describe('PicklistsQueueComponent', () => {
         { provide: ActivatedRoute, useValue: { actr: () => { }} },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
-        { provide: EventConnectionService, useValue: eventConnectionService}
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
+    spyOn(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject, 'subscribe');
+    spyOn(picklistsQueueEventConnectionService.removePicklistQueueItemSubject, 'subscribe');
     fixture = TestBed.createComponent(PicklistsQueueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -85,7 +82,8 @@ describe('PicklistsQueueComponent', () => {
   describe('Connect to Events', () => {
     it('Connects to events on creation', () => {
       expect(component).toBeTruthy();
-      // expect(eventConnectionService.receivedSubject.subscribe()).toHaveBeenCalled();
+      expect(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
+      expect(picklistsQueueEventConnectionService.removePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
     });
   });
 });
