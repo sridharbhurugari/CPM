@@ -7,23 +7,34 @@ import { ReplaySubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class EventConnectionService extends HubConnectionBase {
+  private isConnectedStarted: boolean;
 
   public startedSubject = new ReplaySubject(1);
+
+  public get isConnected(): boolean {
+    return this.isConnectedStarted;
+  }
 
   constructor(private loggerService: LoggerService, deferredUtility: DeferredUtility, configurationService: ConfigurationService,
               private hubConfigurationService: HubConfigurationService, private ocapUrlBuilderService: OcapUrlBuilderService) {
       super(loggerService, deferredUtility, configurationService);
-      this.connectionStartedSubject.subscribe(() => this.startedSubject.next());
+
+      this.connectionStartedSubject.subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
+      this.disconnectedSubject.subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
   }
 
   public async startUp(): Promise<void> {
     console.log('EventConnectionService.Startup called, current connection alive: ' + this.isConnectionAlive().toString());
 
-    if (!this.isConnectionAlive()) {
+    if (this.isConnectedStarted) {
+      // Connection is already started - it will handle reconnections on it's own until disconnected.
+      return;
+    }
+
     await this.start(this.ocapUrlBuilderService.buildUrl(''), this.hubConfigurationService.hubName);
     console.log('EventConnectionService.Startup complete, current connection alive: ' + this.isConnectionAlive().toString());
-    }
   }
 
   protected onReceived(message: string): void {
@@ -31,6 +42,8 @@ export class EventConnectionService extends HubConnectionBase {
     const eventArgsAsAny = message as any;
 
     if (eventArgsAsAny.M === 'RegisterClientInfo') {
+      // This is a registration message we will get when connecting, not always on each connection.
+      // Instead of treating it like an event, stop it here, log it for tracking.
       console.log(message);
       return;
     }

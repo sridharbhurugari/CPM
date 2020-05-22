@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { WpfActionControllerService } from './wpf-action-controller.service';
 import { WindowService } from '../window-service';
-import { CoreEventConnectionService } from '../../../api-core/services/core-event-connection.service';
+import { EventConnectionService } from '../../../xr2/services/event-connection.service';
 
 describe('WpfActionControllerService', () => {
   var router, location, actionController, windowService;
@@ -36,7 +36,7 @@ describe('WpfActionControllerService', () => {
           { provide: Location, useValue: location },
           { provide: Router, useValue: router },
           { provide: WindowService, useValue: windowService },
-          { provide: CoreEventConnectionService, useValue: { stop: () => {} } },
+          { provide: EventConnectionService, useValue: { stop: () => {} } },
         ]
       });
       service = TestBed.get(WpfActionControllerService);
@@ -90,7 +90,7 @@ describe('WpfActionControllerService', () => {
           { provide: Location, useValue: location },
           { provide: Router, useValue: router },
           { provide: WindowService, useValue: windowService },
-          { provide: CoreEventConnectionService, useValue: { stop: () => {} } },
+          { provide: EventConnectionService, useValue: { stop: () => {} } },
         ]
       });
       service = TestBed.get(WpfActionControllerService);

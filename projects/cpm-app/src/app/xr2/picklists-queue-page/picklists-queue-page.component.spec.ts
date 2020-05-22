@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { CoreModule } from '../../core/core.module';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { EventConnectionService } from '../services/event-connection.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -31,13 +32,17 @@ describe('PicklistsQueuePageComponent', () => {
   let component: PicklistsQueuePageComponent;
   let fixture: ComponentFixture<PicklistsQueuePageComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
+  let eventConnectionService: Partial<EventConnectionService>;
 
   beforeEach(async(() => {
     picklistsQueueEventConnectionService = {
-      openEventConnection: jasmine.createSpy('openEventConnection'),
       addOrUpdatePicklistQueueItemSubject: new Subject(),
       removePicklistQueueItemSubject: new Subject(),
       reloadPicklistQueueItemsSubject: new Subject()
+    };
+
+    eventConnectionService = {
+      receivedSubject: new Subject()
     };
 
     TestBed.configureTestingModule({
@@ -50,6 +55,7 @@ describe('PicklistsQueuePageComponent', () => {
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: EventConnectionService, useValue: eventConnectionService }
       ]
     })
     .compileComponents();

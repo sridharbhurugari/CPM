@@ -20,6 +20,7 @@ import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-con
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 import { DeviceOperationResult } from '../../api-core/data-contracts/device-operation-result';
 import { DeviceOperationOutcome } from '../../api-core/data-contracts/device-operation-outcome';
+import { EventConnectionService } from '../../xr2/services/event-connection.service';
 
 describe('HardwareLeasePageComponent', () => {
   let component: HardwareLeasePageComponent;
@@ -29,6 +30,7 @@ describe('HardwareLeasePageComponent', () => {
   let systemConfigurationService: Partial<SystemConfigurationService>;
   let popupDialogService: Partial<PopupDialogService>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
+  let eventConnectionService: Partial<EventConnectionService>;
 
   const leaseVerificationResult: LeaseVerificationResult = 1;
   const deviceConfiguration: IDeviceConfiguration = {
@@ -58,13 +60,17 @@ describe('HardwareLeasePageComponent', () => {
     hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult),
       getDeviceConfiguration: () => of(deviceConfiguration),
       RequestDeviceLease: () => of(deviceOperationResult)  };
-    hardwareLeaseEventConnectionService = { openEventConnection: jasmine.createSpy('openEventConnection'),
-      closeEventConnection: jasmine.createSpy('closeEventConnection'),
+    hardwareLeaseEventConnectionService = {
       hardwareLeaseDeniedSubject: new Subject(),
-      hardwareLeaseGrantedSubject: new Subject() };
+      hardwareLeaseGrantedSubject: new Subject(),
+      closeEventConnection: jasmine.createSpy('closeEventConnection') };
     systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
     wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
     router = {navigate: jasmine.createSpy('navigate') };
+
+    eventConnectionService = {
+      receivedSubject: new Subject()
+    };
 
     TestBed.configureTestingModule({
       declarations: [ HardwareLeasePageComponent, MockTranslatePipe ],
@@ -76,7 +82,8 @@ describe('HardwareLeasePageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: Router, useValue: router },
         { provide: HardwareLeaseEventConnectionService, useValue: hardwareLeaseEventConnectionService },
-        { provide: SystemConfigurationService, useValue: systemConfigurationService }
+        { provide: SystemConfigurationService, useValue: systemConfigurationService },
+        { provide: EventConnectionService, useValue: eventConnectionService}
       ],
       imports: [
         SharedModule, FooterModule, LayoutModule, ButtonActionModule, GridModule, RouterModule

@@ -18,7 +18,7 @@ export class OcapHttpConfigurationService {
     return this.ocapHttpConfiguration;
   }
 
-  private setConfiguration(){
+  private setConfiguration() {
     const clientId = this.configurationService.getItem('clientid');
     const apiKey = this.configurationService.getItem('apiKey');
     const machineName = this.configurationService.getItem('machinename');
