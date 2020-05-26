@@ -46,3 +46,5 @@ testem.log
 Thumbs.db
 *.orig
 
+/.vs/slnx.sqlite-journal
+/.vs/slnx.sqlite
