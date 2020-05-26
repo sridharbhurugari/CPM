@@ -21,5 +21,6 @@ export interface IGuidedCycleCount {
   QuantityMin: number,
   InStockQuantity: number,
   ItemDateFormat: string,
-  DosageForm: string
+  DosageForm: string,
+  SafetyStockRestockScan: string
 }
