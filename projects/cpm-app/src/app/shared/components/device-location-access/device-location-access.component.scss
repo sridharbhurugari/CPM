@@ -1,3 +1,4 @@
+@import "./node_modules/@omnicell/webcorecomponents/lib/styles/styles";
 :host{
     display: block;
 }
@@ -7,4 +8,66 @@
 }
 :host::ng-deep oc-svgicon{
     left: auto !important;
+}
+.st0 {
+    fill: #FFFFFF;
+}
+.st1 {
+    fill: #6699CC;
+}
+.ocbtn:disabled {
+    pointer-events: none;
+}
+.ocbtn {
+    line-height: 1.5;
+    position: relative;
+    cursor: pointer;
+    box-sizing: border-box;
+    pointer-events: auto;
+    outline: none;
+    color: #fff;
+    border: none;
+    overflow: hidden;
+    min-width: 160px;
+    margin: 0;
+    height: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 25px;
+    padding-right: 25px;
+    display: inline-flex;
+    justify-content: center;
+    font-weight: $semi-bold;
+    font-family: $font-family-sans-serif;
+    font-size: $button-font-size;
+    text-align: center;
+    white-space: nowrap;
+    align-items: center;
+    oc-svgicon {
+      display: inline-block;
+      position: absolute;
+      top: 13px;
+      line-height:1;
+    }
+    -webkit-appearance: none;
+}
+.ocbtn:disabled {
+    cursor: default;
+    opacity: 0.4;
+    color: #cccccc;
+}
+.secondary {
+  border-radius: 5px;
+  background-color: $brand-secondary;
+  &.iconOnly {
+      border-radius: 25px;
+      min-width: 50px;
+  }
+  oc-svgicon {
+      left: 10px;
+  }
+}
+.repositionicon {
+    height:40px;
+    width:40px;
 }
