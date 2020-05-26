@@ -36,8 +36,12 @@ export class WpfActionControllerService {
     if (this.wpfActionController != null) {
       this.coreEventConnectionService.stop();
       this.wpfActionController.executeContinueAction();
-    } 
+    }
   }
+
+  ExecuteContinueNavigationWithDataAction(data: any) {
+    this.wpfActionController.executeContinueNavigationWithDataAction(data);
+  };
 
   ExecuteContinueNavigationAction(newRoute: string, queryParams?: Params) {
     if (this.wpfActionController != null) {
@@ -59,6 +63,6 @@ export class WpfActionControllerService {
     if (this.wpfActionController != null) {
       this.coreEventConnectionService.stop();
       this.wpfActionController.executeWpfContinueNavigationAction(action);
-    } 
+    }
   }
 }

@@ -26,7 +26,8 @@
       </ng-container>
       <ng-container class="ocgridbody">
         <div class="row"
-          *ngFor="let itemManagement of (ItemManagements$ | async) | searchPipe:searchTextFilter:searchFields">
+          *ngFor="let itemManagement of (ItemManagements$ | async) | searchPipe:searchTextFilter:searchFields"
+          (click)="navigate(itemManagement.ItemId)">
           <div class="first" style="align-items: center;"></div>
           <div class="col width-type" [attr.data-title]="'DESCRIPTION_ID' | translate">
             <span>{{itemManagement.ItemDescription}}</span>

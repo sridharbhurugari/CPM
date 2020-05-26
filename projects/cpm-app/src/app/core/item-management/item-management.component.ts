@@ -10,6 +10,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { Many } from 'lodash';
 import * as _ from 'lodash';
 import { SortDirection } from '../../shared/constants/sort-direction';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
   selector: 'app-item-management',
@@ -49,6 +50,10 @@ export class ItemManagementComponent implements OnInit, AfterViewInit  {
       });
   }
 
+  navigate(itemId: string) {
+      this.wpfActionControllerService.ExecuteContinueNavigationWithDataAction({ ItemId: itemId });
+  }
+
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.ItemManagements$ = this.ItemManagements$.pipe(map(itemManagements => {
@@ -60,6 +65,8 @@ export class ItemManagementComponent implements OnInit, AfterViewInit  {
     return _.orderBy(itemManagements, x => x[this.currentSortPropertyName], sortDirection);
 }
 
-  constructor(private windowService: WindowService, private itemManagementService: ItemManagementService) { }
+  constructor(private windowService: WindowService,
+              private itemManagementService: ItemManagementService,
+              private wpfActionControllerService: WpfActionControllerService) { }
 
 }
