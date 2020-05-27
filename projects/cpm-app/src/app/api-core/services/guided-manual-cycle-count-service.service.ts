@@ -18,20 +18,20 @@ export class GuidedManualCycleCountServiceService {
     ) { }
 
     public get(itemid: string): Observable<GuidedManualCycleCountItemid[]>{
-      var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/cycleCount/${itemid}`);
+      let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/cycleCount/${itemid}`);
       return this.httpClient.get<GuidedManualCycleCountItemid[]>(url, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
 
     public post(deviceId: string,item: deviceCycleCountItemUpdate): Observable<boolean>{
-      var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
+      let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
         return this.httpClient.post<boolean>(url, item, {
           headers: this.ocapHttpHeadersService.getHeaders(),
         });
       }
       public getSearchItems(searchString: string): Observable<IGuidedManualCycleCountItems[]>{
-        var url = this.ocapUrlBuilderService.buildUrl('/api/devices/itemLocations/cycleCountSearchItems');
+        let url = this.ocapUrlBuilderService.buildUrl('/api/devices/itemLocations/cycleCountSearchItems');
         const params = {searchString: searchString };
         return this.httpClient.get<IGuidedManualCycleCountItems[]>(url, {
           headers: this.ocapHttpHeadersService.getHeaders(),params
