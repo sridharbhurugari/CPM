@@ -35,7 +35,7 @@
           </div>
           <div class="col width-type" [attr.data-title]="'UNIT_DOSE_QOH' | translate" style="text-align: center;">
             <span>{{itemManagement.UnitDoseQtyOnHand}} {{itemManagement.UnitsOfIssue}}</span>
-            <div [ngPlural]="itemManagement.UnitDoseLocationCount">
+            <div [ngPlural]="itemManagement.UnitDoseLocationCount" class="umFont">
               <ng-template ngPluralCase="=1">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATION' | translate}}
               </ng-template>
               <ng-template ngPluralCase="other">{{itemManagement.UnitDoseLocationCount}} {{'BIN_LOCATIONS' | translate}}

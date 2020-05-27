@@ -48,6 +48,10 @@ export class ItemManagementComponent implements OnInit, AfterViewInit  {
       .subscribe(data => {
         this.searchTextFilter = data;
       });
+
+    if (this.windowService.nativeWindow) {
+       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    }
   }
 
   navigate(itemId: string) {
