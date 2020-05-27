@@ -62,8 +62,7 @@ describe('HardwareLeasePageComponent', () => {
       RequestDeviceLease: () => of(deviceOperationResult)  };
     hardwareLeaseEventConnectionService = {
       hardwareLeaseDeniedSubject: new Subject(),
-      hardwareLeaseGrantedSubject: new Subject(),
-      closeEventConnection: jasmine.createSpy('closeEventConnection') };
+      hardwareLeaseGrantedSubject: new Subject() };
     systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
     wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
     router = {navigate: jasmine.createSpy('navigate') };

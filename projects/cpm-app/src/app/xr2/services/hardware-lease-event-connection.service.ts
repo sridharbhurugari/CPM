@@ -30,10 +30,6 @@ export class HardwareLeaseEventConnectionService {
     this.clientId = configuration.clientId;
    }
 
-  public closeEventConnection() {
-    this.eventConnectionService.receivedSubject.unsubscribe();
-  }
-
   private configureHardwareLeaseHandlers(message: any): void {
     console.log(message);
 

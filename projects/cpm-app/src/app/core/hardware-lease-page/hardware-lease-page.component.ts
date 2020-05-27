@@ -94,7 +94,6 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.hardwareLeaseEventConnectionService.closeEventConnection();
   }
 
   navigateBack() {
