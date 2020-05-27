@@ -3,6 +3,7 @@ import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
 import { Observable, of,Subscription } from 'rxjs';
 import { map, switchMap, shareReplay } from 'rxjs/operators';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import * as _ from 'lodash';
 import { nameof } from '../../shared/functions/nameof';
@@ -12,8 +13,8 @@ import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.serv
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 @Component({
   selector: 'app-xr2-exceptions-page',
-  templateUrl: './Xr2-Exceptions-page.component.html',
-  styleUrls: ['./Xr2-Exceptions-page.component.scss']
+  templateUrl: './xr2-exceptions-page.component.html',
+  styleUrls: ['./xr2-exceptions-page.component.scss']
 })
 
 export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
@@ -33,6 +34,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
   constructor(
     private exceptionsListService: Xr2ExceptionsService,
+    private wpfActionControllerService: WpfActionControllerService,
 
     ) { }
 
@@ -71,5 +73,10 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     if (this.searchSub) { this.searchSub.unsubscribe(); }
+  }
+
+  navigatedetailspage()
+  {
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`);
   }
 }

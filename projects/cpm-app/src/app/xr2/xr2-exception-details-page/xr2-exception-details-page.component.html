@@ -1,0 +1,70 @@
+<ng-container class="ocactiondetails">
+  <div class="cpmheaderrow">
+    <app-header-container>
+    <div class="ocheaderarea">
+      <tr>
+        <th><h5 class="trayid">{{trayIDHeader$}} </h5></th>
+        <th><h5 class="traytype">{{trayTypeHeader$}} </h5></th>
+        <th><h5 class="devicename">{{deviceNameHeader$}} </h5></th>
+        <th><h5 class="completeddate">{{completedDateHeader$}} </h5></th>
+      </tr>
+      <tr>
+        <td><h3 class="trayid">{{trayID}}</h3></td>
+        <td><h3 class="traytype">{{trayType}}</h3></td>
+        <td><h3 class="devicename">{{deviceName}}</h3></td>
+        <td><h3 class="completeddate">{{completedDate}}</h3></td>
+    </tr>
+    </div>
+  </app-header-container>
+  </div>
+  <ng-container>
+    <oc-grid #ocgrid ocgridfilter="false">
+      <ng-container class="ocgridheader">
+        <div class="first" data-colwrap="true"></div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+          [columnPropertyName]="reasonPropertyName" headerResourceKey="XR2_EXCEPTIONS_DETAILS_REASON"
+          [currentSortPropertyName]="currentSortPropertyName" 
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
+          [columnPropertyName]="columnPropertyName" headerResourceKey="XR2_EXCEPTIONS_DETAILS_COLUMN"
+          [currentSortPropertyName]="currentSortPropertyName" 
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="260" data-colwrap="true"
+          [columnPropertyName]="rowProperyName" headerResourceKey="XR2_EXCEPTIONS_DETAILS_ROW"
+          [currentSortPropertyName]="currentSortPropertyName" 
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="230" data-colwrap="true"
+          [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="XR2_EXCEPTIONS_DETAILS_ITEMDESCRIPTION"
+          [currentSortPropertyName]="currentSortPropertyName" 
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="last" ocGridColResize data-width="230" data-colwrap="true"
+          [columnPropertyName]="barcodeNDCPropertyName" headerResourceKey="XR2_EXCEPTIONS_DETAILS_BARCODE_NDC"
+          [currentSortPropertyName]="currentSortPropertyName" 
+          (columnSelected)="columnSelected($event)">
+        </div>
+      </ng-container>
+      <ng-container class="ocgridbody">
+        <div class="row"
+          *ngFor="let exceptions of (displayExceptionDetailsList )">
+          <div class="first" style="align-items: center;"></div>
+          <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_DETAILS_REASON' | translate">{{exceptions.Reason}}
+          </div>
+          <div class="col col-traytype" [attr.data-title]="'XR2_EXCEPTIONS_DETAILS_COLUMN' | translate">
+            {{exceptions.Column}}</div>
+          <div class="col col-pockets" [attr.data-title]="'XR2_EXCEPTIONS_DETAILS_ROW' | translate">
+            {{exceptions.Row}}</div>
+          <div class="col col-device-name" [attr.data-title]="'XR2_EXCEPTIONS_DETAILS_ITEMDESCRIPTION' | translate">
+            {{exceptions.ItemDescription}}
+          </div>
+          <div class="last width-completed-date" [attr.data-title]="'XR2_EXCEPTIONS_DETAILS_BARCODE_NDC' | translate">
+            {{exceptions.BarCodeNDC }}
+          </div>
+        </div>
+      </ng-container>
+    </oc-grid>
+  </ng-container>
+</ng-container>
