@@ -19,16 +19,24 @@ export class ColHeaderSortableComponent implements OnInit {
   @Input()
   columnPropertyName: string;
 
+  @Input()
+  customColumnSortOrder: 'asc' | 'desc';
+
+
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   sortDirection: 'asc' | 'desc' = SortDirection.ascending;
 
+sample: string = this.currentSortPropertyName ;
+
   get IsSortAscending(){
+    this.sortDirection = this.customColumnSortOrder && this.customColumnSortOrder === SortDirection.descending ? this.customColumnSortOrder : this.sortDirection;
     return this.sortDirection == SortDirection.ascending;
   }
 
   get IsSortDescending(){
+    this.sortDirection = this.customColumnSortOrder && this.customColumnSortOrder === SortDirection.descending  ? this.customColumnSortOrder : this.sortDirection;
     return this.sortDirection == SortDirection.descending;
   }
 
@@ -38,15 +46,15 @@ export class ColHeaderSortableComponent implements OnInit {
   }
 
   @HostListener("click", ['$event'])
-  headerClicked($event){
+  headerClicked($event) {
     var targetClasses = $event.target.classList as DOMTokenList;
-    if(targetClasses.contains('resize')){
+    if (targetClasses.contains('resize')) {
       return;
     }
 
-    if(this.currentSortPropertyName == this.columnPropertyName){
+    if (this.currentSortPropertyName == this.columnPropertyName) {
       this.sortDirection = this.sortDirection == SortDirection.ascending ? SortDirection.descending : SortDirection.ascending;
-    }else{
+    } else {
       this.sortDirection = SortDirection.ascending;
     }
 
