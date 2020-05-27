@@ -170,8 +170,5 @@
       }
     }
   },
-  "defaultProject": "cpm-app",
-  "cli": {
-    "analytics": "bbc79b97-4002-4376-99f8-eb4448ef31de"
-  }
+  "defaultProject": "cpm-app"
 }
