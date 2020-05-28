@@ -12,6 +12,10 @@ export class MockColHeaderSortable {
   headerResourceKey: string;
   @Input()
   columnPropertyName: string;
+
+  @Input()
+  customColumnSortOrder: 'asc' | 'desc';
+
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 }

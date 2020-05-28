@@ -1,7 +1,3 @@
-<oc-action-layout>
-  <ng-container class="ocactionheader">
-    <div class="cpmactiontitle">{{"ROBOT_QUEUE" | translate}}</div>
-  </ng-container>
   <ng-container class="ocactiondetails">
     <div class="cpmheaderrow">
       <app-header-container></app-header-container>
@@ -41,8 +37,8 @@
             <span>{{picklistQueueItem.DeviceDescription}}</span>
             <oc-singleselect
             [disabled] = "picklistQueueItem.Status > 1"
-            [tableData] = "this.outputDeviceDisplayList"
-            [selectedItem] = "getActiveDeviceRow(picklistQueueItem)"
+            [tableData] = "getActiveOutputDeviceList(picklistQueueItem)"
+            [selectedItem] = "getSelectedOutputDeviceRow(picklistQueueItem)"
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
             </oc-singleselect>
           </div>
@@ -51,10 +47,10 @@
               <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
-                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
+                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving || !getSelectedOutputDeviceRow(picklistQueueItem)"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3"
                 [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
-                [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2"></oc-button-action>
+                [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2 || picklistQueueItem.OutputDeviceId !== '200'"></oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===4" [buttonText]="'REPRINT' | translate"
                 (click)="printLabels(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
             </div>
@@ -63,11 +59,4 @@
       </ng-container>
     </oc-grid>
   </ng-container>
-  <ng-container class="ocactionfooter">
-    <oc-footer>
-      <div class="ocleftalign">
-        <oc-button-action [buttonText]="'BACK' | translate" (click)="back()">}</oc-button-action>
-      </div>
-    </oc-footer>
-  </ng-container>
-</oc-action-layout>
+ 

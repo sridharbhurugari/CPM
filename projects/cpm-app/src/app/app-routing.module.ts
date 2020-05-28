@@ -12,6 +12,9 @@ import { EditPickRoutePageComponent } from './core/edit-pick-route-page/edit-pic
 import { GuidedInvMgmtCycleCountPageComponent } from './core/guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component';
 import { HardwareLeasePageComponent } from './core/hardware-lease-page/hardware-lease-page.component';
 import { ItemManagementComponent } from './core/item-management/item-management.component';
+import { Xr2ExceptionsItem } from './xr2/model/xr2-exceptions-item';
+import { Xr2ExceptionsPageComponent } from './xr2/Xr2-Exceptions-page/xr2-exceptions-page.component';
+
 
 
 const routes: Routes = [
@@ -27,7 +30,8 @@ const routes: Routes = [
   { path: 'pickRoutes/:pickRouteId', component: EditPickRoutePageComponent },
   { path: 'guidedinvmgmt/cyclecount', component: GuidedInvMgmtCycleCountPageComponent },
   { path: 'hardwareLease/requestLease', component: HardwareLeasePageComponent },
-  { path: 'itemmanagement', component: ItemManagementComponent }
+  { path: 'itemmanagement', component: ItemManagementComponent },
+  { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent},
 ];
 
 @NgModule({

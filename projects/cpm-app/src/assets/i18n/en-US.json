@@ -1,10 +1,12 @@
 {
   "ACTIONS": "Actions",
+  "AUTOPACKAGER": "Auto Packager",
   "BACK": "Back",
   "BIN": "Bin",
   "BINS": "Bins",
   "CABINETS": "Cabinets",
   "CANCEL": "Cancel",
+  "CARTMODULE" : "Cart Module",
   "COMMA_SEPARATOR": ",",
   "CONFIRM": "Confirm",
   "DATE": "Date",
@@ -67,6 +69,7 @@
   "RELEASE": "Release",
   "PRINT": "Print",
   "QTY_FILLED_REQUESTED": "Filled / Req",
+  "QUICKPICK": "Quick Pick",
   "REORDER_LEVEL": "Reorder Level",
   "REQUEST_DEVICE_ACCESS": "Request Device Access",
   "RESTOCK_LEVEL": "Restock Level",
@@ -95,6 +98,15 @@
   "BULK_QOH": "Bulk QOH",
   "TOTAL_QOH": "Total QOH",
   "BIN_LOCATION": "Bin Location",
-  "BIN_LOCATIONS": "Bin Locations"
-
+  "BIN_LOCATIONS": "Bin Locations",
+  "PRINTSUCCESSFUL_HEADER_TEXT": "Print Successful",
+  "PRINTSUCCESSFUL_BODY_TEXT": "Bin label has printed.",
+  "PRINTFAILED_HEADER_TEXT": "Error",
+  "PRINTFAILED_BODY_TEXT": "Failed to print bin label. Please contact your system administrator.",
+  "XR2_EXCEPTIONS_TRAY_ID" : "Tray ID",
+  "XR2_EXCEPTIONS_TRAY_TYPE": "Tray Type",
+  "XR2_EXCEPTIONS_POCKETS" : "# Exception Pockets",
+  "XR2_EXCEPTIONS_DEVICE_NAME": "Device Name",
+  "XR2_EXCEPTIONS_COMPLETED_DATE": "Completed Date",
+  "SEARCH_TEXT_DISPLAY": "Scan Tray Bar Code or Enter Text"
 }

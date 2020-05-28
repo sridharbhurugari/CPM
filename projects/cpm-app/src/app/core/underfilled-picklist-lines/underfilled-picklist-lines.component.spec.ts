@@ -4,11 +4,13 @@ import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines.
 import { GridModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
 describe('UnderfilledPicklistLinesComponent', () => {
   let component: UnderfilledPicklistLinesComponent;
   let fixture: ComponentFixture<UnderfilledPicklistLinesComponent>;
-
+  let event: IColHeaderSortChanged = {ColumnPropertyName:"DescriptionSortValue",SortDirection:"asc"};
+  
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ 
@@ -29,5 +31,11 @@ describe('UnderfilledPicklistLinesComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+  it('column selected ', () => {
+    expect(component.columnSelected(event));
+    component.picklistLines = component.picklistLines.map(exceptions => {
+      return this.sort(exceptions, "ASC");
+    });
   });
 });
