@@ -12,13 +12,14 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 import { NavigationEnd } from '@angular/router';
-
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { map } from 'rxjs/operators';
 describe('GuidedinvmgmtDevicelistPageComponent', () => {
   let component: GuidedInvMgmtDevicelistPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtDevicelistPageComponent>;
   let hardwareLeaseService: Partial<HardwareLeaseService>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
-
+  let event: IColHeaderSortChanged = {ColumnPropertyName:"DeviceDescription",SortDirection:"asc"};
   let leaseVerificationResult: LeaseVerificationResult;
 
   beforeEach(async(() => {
@@ -64,5 +65,12 @@ describe('GuidedinvmgmtDevicelistPageComponent', () => {
       component.navigate(1);
       expect(wpfActionControllerService.ExecuteContinueNavigationAction).toHaveBeenCalled();
     });
+  });
+  it('column selected ', () => {
+    expect(component.columnSelected(event));
+    component.displayGuidedDeviceList$.source;
+    component.displayGuidedDeviceList$ = component.displayGuidedDeviceList$.pipe(map(exceptions => {
+      return this.sort(exceptions, "ASC");
+    }));
   });
 });

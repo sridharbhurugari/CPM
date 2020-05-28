@@ -1,0 +1,65 @@
+<ng-container class="ocactiondetails">
+  <div class="cpmheaderrow">          
+    <app-header-container></app-header-container>           
+    <oc-search-box class="searchbox" #searchBox [placeHolderText]=" 'SEARCH_TEXT_DISPLAY' | translate "></oc-search-box>
+  </div>
+  <ng-container>
+    <oc-grid #ocgrid ocgridfilter="false">
+      <ng-container class="ocgridheader">
+          <div class="first" data-colwrap="true"></div>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+                               [columnPropertyName]="trayIDPropertyName"
+                               headerResourceKey="XR2_EXCEPTIONS_TRAY_ID"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)"
+                                >
+          </div>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
+                               [columnPropertyName]="trayTypePropertyName"
+                               headerResourceKey="XR2_EXCEPTIONS_TRAY_TYPE"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder" 
+                               (columnSelected)="columnSelected($event)"
+                               >
+          </div>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="260" data-colwrap="true"
+                               [columnPropertyName]="exceptionPocketsPropertyName"
+                               headerResourceKey="XR2_EXCEPTIONS_POCKETS"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)"
+                                >
+          </div>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="230" data-colwrap="true"
+                               [columnPropertyName]="deviceNamePropertyName"
+                               headerResourceKey="XR2_EXCEPTIONS_DEVICE_NAME"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)" 
+                                >
+          </div>
+          <div app-col-header-sortable class="last" ocGridColResize data-width="230" data-colwrap="true"
+                               [columnPropertyName]="completedDatePropertyName"
+                               headerResourceKey="XR2_EXCEPTIONS_COMPLETED_DATE"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)"
+                               >
+          </div>
+      </ng-container>
+      <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let exceptions of (displayExceptionsList$ | async) | searchPipe:searchTextFilter:searchFields">
+            <div class="first" style="align-items: center;"></div>
+            <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate">{{exceptions.TrayID}}</div>
+            <div class="col col-traytype" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_DESCRIPTION' | translate">{{exceptions.TrayDescription}}</div>
+            <div class="col col-pockets" [attr.data-title]="'XR2_EXCEPTIONS_POCKETS' | translate">{{exceptions.ExceptionPockets}} Pockets</div>
+            <div class="col col-device-name" [attr.data-title]="'XR2_EXCEPTIONS_DEVICE_NAME' | translate"> {{exceptions.DeviceName}}
+            </div>
+            <div class="last width-completed-date" [attr.data-title]="'XR2_EXCEPTIONS_COMPLETED_DATE' | translate">{{exceptions.CompletedDateTime | date:'M/d/yyyy h:mm:ss a'}}
+            </div>
+          </div>
+      </ng-container>
+    </oc-grid>
+  </ng-container>
+</ng-container>
