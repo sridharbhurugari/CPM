@@ -11,6 +11,7 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
 import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.service';
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
 @Component({
   selector: 'app-xr2-exceptions-page',
   templateUrl: './xr2-exceptions-page.component.html',
@@ -75,8 +76,8 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     if (this.searchSub) { this.searchSub.unsubscribe(); }
   }
 
-  navigatedetailspage()
+  navigatedetailspage(exceptions: IXr2ExceptionsItem)
   {
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`);
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`,{TrayID:exceptions.TrayID.toString(),DeviceID: exceptions.DeviceID,CompletedDateTime:exceptions.CompletedDateTime, DeviceName:exceptions.DeviceName, TrayDescription: exceptions.TrayDescription});
   }
 }

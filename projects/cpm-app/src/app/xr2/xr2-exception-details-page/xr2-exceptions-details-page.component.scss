@@ -10,11 +10,6 @@ oc-grid{
   font-size: 22px;
 }
 
-.searchbox{
-  width: 410px; 
-  align-self: right;
-}
-
 .badge {
   position: relative;
   bottom: 10px;
@@ -26,6 +21,10 @@ oc-grid{
   color: maroon;
 }
 
+.cpmheaderrow
+{
+  height: 180px;
+}
 .downarrow{
   transform: rotate(45deg);
   background-color: pink;
@@ -46,22 +45,26 @@ oc-grid{
   float: left;
 }
 .trayid{
-  font-size: 18px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  padding-left: 15px;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
 }
 .traytype{
-  font-size: 18px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  padding-left: 15px;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
 }
 .devicename{
-  font-size: 18px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  padding-left: 15px;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
 }
-.completedate{
-  font-size: 18px;
+.completeddate{
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  padding-left: 15px;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
 }

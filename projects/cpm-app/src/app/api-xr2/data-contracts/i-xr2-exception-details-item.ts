@@ -4,9 +4,9 @@ export interface IXr2ExceptionDetailsItem {
   DeviceName: string;
   CompletedDateTime: string;
   Reason: string;
-  Column: string;
-  Row: string;
+  PocketColumn: string;
+  PocketRow: string;
   ItemDescription:string;
   ItemID: string;
-  BarCodeNDC: string;
+  BarCode: string;
 }

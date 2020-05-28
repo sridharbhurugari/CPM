@@ -10,4 +10,5 @@ export class Xr2ExceptionsItem implements IXr2ExceptionsItem {
   ExceptionPockets: string;
   DeviceName: string;
   CompletedDateTime: string;
+  DeviceID: string;
 }
