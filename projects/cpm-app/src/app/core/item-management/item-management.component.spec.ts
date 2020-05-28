@@ -10,17 +10,26 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 describe('ItemManagementComponent', () => {
   let component: ItemManagementComponent;
   let fixture: ComponentFixture<ItemManagementComponent>;
+  const wpfActionControllerServiceStub = () => ({
+    ExecuteBackAction: () => ({})
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ItemManagementComponent, MockAppHeaderContainer, MockSearchPipe, MockTranslatePipe, MockColHeaderSortable],
       imports: [SearchModule, GridModule],
       providers: [
-        { provide: ItemManagementService, useValue: { get: () => of([]) } }
+        { provide: ItemManagementService, useValue: { get: () => of([]) } },
+        { provide: Location, useValue: location },
+        {
+          provide: WpfActionControllerService,
+          useFactory: wpfActionControllerServiceStub
+        }
       ]
     })
     .compileComponents();
