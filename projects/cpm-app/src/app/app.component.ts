@@ -7,7 +7,7 @@ import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
 import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
 import { ConfigurationService, OcapHttpClientService } from 'oal-core';
-import { EventConnectionService } from './xr2/services/event-connection.service';
+import { EventConnectionService } from './shared/services/event-connection.service';
 
 @Component({
   selector: 'app-root',

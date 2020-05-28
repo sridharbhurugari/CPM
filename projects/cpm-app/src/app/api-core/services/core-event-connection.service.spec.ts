@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EventConnectionService } from '../../xr2/services/event-connection.service';
+import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { CoreEventConnectionService } from './core-event-connection.service';

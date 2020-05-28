@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { Router, Params } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 import { WindowService } from '../window-service';
-import { EventConnectionService } from '../../../xr2/services/event-connection.service';
+import { EventConnectionService } from '../../../shared/services/event-connection.service';
 
 @Injectable({
   providedIn: 'root'

@@ -20,7 +20,7 @@ import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-con
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 import { DeviceOperationResult } from '../../api-core/data-contracts/device-operation-result';
 import { DeviceOperationOutcome } from '../../api-core/data-contracts/device-operation-outcome';
-import { EventConnectionService } from '../../xr2/services/event-connection.service';
+import { EventConnectionService } from '../../shared/services/event-connection.service';
 
 describe('HardwareLeasePageComponent', () => {
   let component: HardwareLeasePageComponent;

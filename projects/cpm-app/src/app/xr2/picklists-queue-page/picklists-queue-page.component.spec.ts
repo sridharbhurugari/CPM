@@ -16,7 +16,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { CoreModule } from '../../core/core.module';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
-import { EventConnectionService } from '../services/event-connection.service';
 
 @Component({
   selector: 'oc-search-box',

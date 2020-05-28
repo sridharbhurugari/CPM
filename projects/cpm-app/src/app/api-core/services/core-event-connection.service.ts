@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
-import { EventConnectionService } from '../../xr2/services/event-connection.service';
-import { ConfigurationService, DeferredUtility, LoggerService } from 'oal-core';
-import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
-import { HubConfigurationService } from '../../xr2/services/hub-configuration.service';
+import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IDeviceOperationResultEvent } from '../events/i-device-operation-result-event';
 import { IDeviceLeaseDeniedEvent } from '../events/i-device-lease-denied-event';
 import { IDeviceLeaseGrantedEvent } from '../events/i-device-lease-granted-event';

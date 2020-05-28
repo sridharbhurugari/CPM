@@ -22,7 +22,7 @@ import { CoreModule } from '../../core/core.module';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { EventConnectionService } from '../services/event-connection.service';
+import { EventConnectionService } from '../../shared/services/event-connection.service';
 
 @Component({
   selector: 'oc-search-box',

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { WpfActionControllerService } from './wpf-action-controller.service';
 import { WindowService } from '../window-service';
-import { EventConnectionService } from '../../../xr2/services/event-connection.service';
+import { EventConnectionService } from '../event-connection.service';
 
 describe('WpfActionControllerService', () => {
   var router, location, actionController, windowService;

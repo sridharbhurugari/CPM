@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
-import { EventConnectionService } from './event-connection.service';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
-import { ConfigurationService, LoggerService, DeferredUtility } from 'oal-core';
-import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
-import { HubConfigurationService } from './hub-configuration.service';
+import { EventConnectionService } from '../../shared/services/event-connection.service';
+
 
 @Injectable({
   providedIn: 'root'

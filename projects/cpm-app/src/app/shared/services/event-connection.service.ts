@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ConfigurationService, HubConnectionBase, LoggerService, DeferredUtility, LogVerbosity } from 'oal-core';
-import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapUrlBuilderService } from './ocap-url-builder.service';
 import { HubConfigurationService } from './hub-configuration.service';
 import { ReplaySubject } from 'rxjs';
 

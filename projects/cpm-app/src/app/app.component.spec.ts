@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
-import { EventConnectionService } from './xr2/services/event-connection.service';
+import { EventConnectionService } from './shared/services/event-connection.service';
 import { ConfigurationService, OcapHttpClientService } from 'oal-core';
 
 describe('AppComponent', () => {

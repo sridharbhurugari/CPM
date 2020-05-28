@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HardwareLeaseEventConnectionService } from './hardware-lease-event-connection.service';
-import { EventConnectionService } from './event-connection.service';
 import { ConfigurationService } from 'oal-core';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
-import { HubConfigurationService } from './hub-configuration.service';
 import { Subject } from 'rxjs';
+import { EventConnectionService } from '../../shared/services/event-connection.service';
 
 
 describe('PicklistsQueueEventConnectionService', () => {
@@ -17,10 +16,8 @@ describe('PicklistsQueueEventConnectionService', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      { provide: EventConnectionService, useValue: {} },
       { provide: ConfigurationService, useValue: { getItem: () => {} } },
       { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
-      { provide: HubConfigurationService, useValue: {} },
       { provide: EventConnectionService, useValue: eventConnectionService}
     ]
   }));
