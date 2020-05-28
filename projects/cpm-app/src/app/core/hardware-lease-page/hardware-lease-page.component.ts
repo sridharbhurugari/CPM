@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogType,
   PopupDialogService, PopupDialogComponent } from '@omnicell/webcorecomponents';
-import { HardwareLeaseEventConnectionService } from '../../xr2/services/hardware-lease-event-connection.service';
+import { HardwareLeaseEventConnectionService } from '../../api-core/services/hardware-lease-event-connection.service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { IConfigurationService } from 'oal-core';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';

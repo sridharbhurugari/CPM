@@ -13,7 +13,7 @@ import { nameof } from '../../shared/functions/nameof';
 import { SharedModule } from '../../shared/shared.module';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ActivatedRoute, Router, Params, NavigationExtras, RouterModule } from '@angular/router';
-import { HardwareLeaseEventConnectionService } from '../../xr2/services/hardware-lease-event-connection.service';
+import { HardwareLeaseEventConnectionService } from '../../api-core/services/hardware-lease-event-connection.service';
 import { SubjectSubscriber, Subject } from 'rxjs/internal/Subject';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-configuration';
