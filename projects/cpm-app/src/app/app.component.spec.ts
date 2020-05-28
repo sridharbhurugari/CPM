@@ -36,7 +36,7 @@ describe('AppComponent', () => {
       ],
       providers: [
         { provide: TranslateService, useValue: translateService },
-        { provide: WindowService, useValue: { } },
+        { provide: WindowService, useValue: { nativeWindow: {} } },
         { provide: LocalStorageService, useValue: localStorageService },
         { provide: ProgressbarService, useValue: { progressSubject: of([1, 2]) } },
         { provide: 'env', useValue: { } },

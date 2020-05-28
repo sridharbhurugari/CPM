@@ -33,19 +33,22 @@ export class AppComponent implements AfterViewInit {
   ){
     this.loading = true;
     var ocap : Partial<IOcapHttpConfiguration> = {};
-    if(windowService.nativeWindow){
+    if(windowService.nativeWindow) {
       var win = windowService.nativeWindow as Window;
-      var url = new URL(win.location.href);
-      var searchParams = new URLSearchParams(url.search.split('?')[1]);
-      searchParams.forEach((v, k) => {
-        ocap[k] = v == "True" ? 'true' : v == "False" ? 'false' : v || '';
-      })
+      if (win.location) {
+        var url = new URL(win.location.href);
+        var searchParams = new URLSearchParams(url.search.split('?')[1]);
+        searchParams.forEach((v, k) => {
+          ocap[k] = v == "True" ? 'true' : v == "False" ? 'false' : v || '';
+        });
+      }
+
+      localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
+      configurationService.init(httpClient);
+      eventConnectionService.startUp();
     }
 
-    localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
-    configurationService.init(httpClient);
     translate.setDefaultLang(ocap.userLocale || 'en-US');
-    eventConnectionService.startUp();
   }
 
   ngAfterViewInit(): void {
