@@ -13,6 +13,7 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
 
   public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
   public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
+  public reloadPicklistQueueItemsSubject = new Subject<any>();
 
   constructor(
     hubConfigurationService: HubConfigurationService,
@@ -47,6 +48,12 @@ export class PicklistsQueueEventConnectionService extends EventConnectionService
     if (message.EventId === 'RemovePicklistQueueItemMessage') {
       console.log(message);
       this.removePicklistQueueItemSubject.next(message);
+      return;
+    }
+
+    if (message.EventId === 'ReloadPicklistQueueItemsMessage') {
+      console.log(message);
+      this.reloadPicklistQueueItemsSubject.next(message);
       return;
     }
   }

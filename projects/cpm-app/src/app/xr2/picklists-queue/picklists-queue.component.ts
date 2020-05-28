@@ -26,13 +26,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   private _picklistQueueItems: PicklistQueueItem[];
 
-  // Temporary until device configuration
-  outputDeviceDisplayList = [
-    new SingleselectRowItem('Quick Pick', 'QUICKPICK'),
-    new SingleselectRowItem('Cart', 'CART'),
-    new SingleselectRowItem('Auto Packager', 'AUTOPACKAGER')];
-  outputDeviceMap = {'QUICKPICK' : 100, 'CART': 200, 'AUTOPACKAGER': 300};
-
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
     this._picklistQueueItems = value;
@@ -64,7 +57,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   searchTextFilter: string;
 
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
-    , nameof<PicklistQueueItem>('DeviceDescription'), , nameof<PicklistQueueItem>('OutputDevice')]
+    , nameof<PicklistQueueItem>('DeviceDescription')];
 
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
@@ -105,7 +98,8 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
-    const picklistQueueItem = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem;
+    const picklistQueueItem = new PicklistQueueItem(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
+    picklistQueueItem.ItemPicklistLines = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem.ItemPicklistLines.$values;
     const matchingPicklistQueueItem = _.find(this.picklistQueueItems, (x) => {
       return x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
       x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
@@ -117,9 +111,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    matchingPicklistQueueItem.ItemCount = picklistQueueItem.ItemCount;
     matchingPicklistQueueItem.Status = picklistQueueItem.Status;
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+    matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
+
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
@@ -142,7 +139,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
-    globalDispenseSyncRequest.OutputDevice = this.outputDeviceMap[picklistQueueItem.OutputDevice];
+    globalDispenseSyncRequest.OutputDeviceId = picklistQueueItem.OutputDeviceId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
@@ -206,11 +203,46 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return picklistQueueItem.TrackById;
   }
 
-  getActiveDeviceRow(picklistQueueItem: PicklistQueueItem) {
-    return this.outputDeviceDisplayList.find(x => x.value === picklistQueueItem.OutputDevice);
+  getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
+
+    const outputDeviceDisplayList = [];
+
+    _.forEach(picklistQueueItem.AvailableOutputDeviceList, (outputDevice) => {
+      if (outputDevice.IsActive) {
+        let translatedLabel = '';
+        this.translateService.get(outputDevice.Label).subscribe((res: string) => {
+        translatedLabel = res;
+      });
+        outputDeviceDisplayList.push(new SingleselectRowItem(translatedLabel, outputDevice.DeviceId));
+      }
+    });
+
+    return outputDeviceDisplayList;
+  }
+
+  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
+
+    let selectedDevice = null;
+
+    if (picklistQueueItem.Status === 1) {
+      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
+         && x.IsActive);
+    } else {
+      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
+    }
+
+    if (!selectedDevice) {
+      return null;
+    }
+
+    let translatedLabel = '';
+    this.translateService.get(selectedDevice.Label).subscribe((res: string) => {
+      translatedLabel = res;
+    });
+    return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
   onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.OutputDevice = $event.value;
+    picklistQueueItem.OutputDeviceId = $event.value;
   }
 }

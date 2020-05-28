@@ -71,10 +71,20 @@ export class EventConnectionService {
   }
 
   protected onReceived(message: any): void {
+    const refMap = {};
     const eventArgsAsAny = message as any;
     const serializedObject = eventArgsAsAny.A[0];
-    const deserializedObject = JSON.parse(serializedObject);
-
+    // The function below resolves circular dependencies in JSON when using JSON.NET
+    // PreserveReferencesHandling settings.  Angular JSON won't resolve these for you.
+    const deserializedObject = JSON.parse(serializedObject, function(key, value) {
+      if (key === '$id') {
+        // Since we are in a separate function 'this' is local
+        refMap[value] = this;
+        return value;
+      }
+      if (value && value.$ref) { return refMap[value.$ref]; }
+      return value;
+    });
     this.receivedSubject.next(deserializedObject);
     return;
   }

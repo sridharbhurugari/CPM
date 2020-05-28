@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PicklistsQueueComponent } from './picklists-queue.component';
-import { GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogService, PopupDialogModule,
+import { GridModule, ButtonActionModule,  SingleselectDropdownModule, SingleselectRowItem, PopupWindowModule, PopupDialogService,
+  PopupDialogModule,
   FooterModule,
   LayoutModule} from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
@@ -78,35 +79,6 @@ describe('PicklistsQueueComponent', () => {
     it('Connects to events on creation', () => {
       expect(component).toBeTruthy();
       expect(picklistsQueueEventConnectionService.openEventConnection).toHaveBeenCalled();
-    });
-  });
-
-  describe('Output Device Selection', () => {
-    it('should return quick pick device ID', () => {
-      const expectedQuickPickDeviceID = 100;
-      const mockPicklistQueueItem = new PicklistQueueItem(null);
-      mockPicklistQueueItem.OutputDevice = 'QUICKPICK';
-
-      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
-      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedQuickPickDeviceID);
-    });
-
-    it('should return cart device ID', () => {
-      const expectedCartDeviceID = 200;
-      const mockPicklistQueueItem = new PicklistQueueItem(null);
-      mockPicklistQueueItem.OutputDevice = 'CART';
-
-      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
-      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedCartDeviceID);
-    });
-
-    it('should return auto packager device ID', () => {
-      const expectedAutoPackagerDeviceID = 300;
-      const mockPicklistQueueItem = new PicklistQueueItem(null);
-      mockPicklistQueueItem.OutputDevice = 'AUTOPACKAGER';
-
-      const activeRow = component.getActiveDeviceRow(mockPicklistQueueItem);
-      expect(component.outputDeviceMap[activeRow.value]).toBe(expectedAutoPackagerDeviceID);
     });
   });
 });

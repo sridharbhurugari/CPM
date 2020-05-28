@@ -19,6 +19,7 @@ export interface IGuidedCycleCount {
   ReorderSource: string,
   ItmExpDateGranularity:string,
   QuantityMin: number,
-  InStockQuantity: number;
-  ItemDateFormat: string;
+  InStockQuantity: number,
+  ItemDateFormat: string,
+  DosageForm: string
 }

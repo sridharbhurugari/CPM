@@ -1,4 +1,5 @@
-import { IItemPicklistLine } from "./i-item-picklist-line";
+import { IItemPicklistLine } from './i-item-picklist-line';
+import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 
 export interface IPicklistQueueItem {
   PicklistId: string;
@@ -17,5 +18,7 @@ export interface IPicklistQueueItem {
   StatusDisplay: string;
   DeviceDescription: string;
   DeviceId: number;
-  OutputDevice: string;
+  AvailableOutputDeviceList: Array<OutputDevice>;
+  OutputDeviceId: string;
+  ItemCount: number;
 }
