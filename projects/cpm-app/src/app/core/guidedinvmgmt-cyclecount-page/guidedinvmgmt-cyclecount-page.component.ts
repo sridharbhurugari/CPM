@@ -62,6 +62,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   devicePrinterName: string;
   deviceId: any;
   printResult: boolean;
+  safetyScanConfirmation: string;
   popupTimeoutSeconds: number;
   leaseBusyPopup$: Observable<PopupDialogComponent>;
   constructor(
@@ -111,6 +112,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       console.log('popup message timeout : ' + result);
       this.popupTimeoutSeconds = (Number(result.Value));
     });
+
+    this.systemConfigurationService.GetConfigurationValues('ITEM', 'GUIDEDCYCLECOUNT_SAFETYSTOCK').subscribe(result => {
+      console.log('Guided Cycle Count : ' + result);
+      this.safetyScanConfirmation = result.Value;
+    });
+
     
     this.getCycleCountData(this.deviceId);
   }
@@ -414,6 +421,17 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       return true;
     }
     else{
+      return false;
+    }
+  }
+
+  CheckSafetyScanConfiguration():boolean{
+    if(this.safetyScanConfirmation === "Yes" && this.displayCycleCountItem.SafetyStockRestockScan != 'N'){
+      this.DisableActionButtons(true);
+      return true;
+    }
+    else{
+      this.DisableActionButtons(false);
       return false;
     }
   }
