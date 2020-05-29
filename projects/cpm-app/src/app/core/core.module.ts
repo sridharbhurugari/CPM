@@ -21,8 +21,8 @@ import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount
 import { EditPickRoutePageComponent } from './edit-pick-route-page/edit-pick-route-page.component';
 import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-sequence.component';
 import { HardwareLeasePageComponent } from './hardware-lease-page/hardware-lease-page.component';
+import { ItemManagementComponent } from './item-management/item-management.component';
 import { GuidedinvmgmtManualcyclecountPageComponent } from './guidedinvmgmt-manualcyclecount-page/guidedinvmgmt-manualcyclecount-page.component';
-
 @NgModule({
   declarations: [
     UnderfilledPicklistsPageComponent,
@@ -40,6 +40,7 @@ import { GuidedinvmgmtManualcyclecountPageComponent } from './guidedinvmgmt-manu
     EditDeviceSequenceComponent,
     GuidedInvMgmtCycleCountPageComponent,
     HardwareLeasePageComponent,
+        ItemManagementComponent,
     GuidedinvmgmtManualcyclecountPageComponent,
   ],
   imports: [

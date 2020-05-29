@@ -25,6 +25,7 @@
             "aot": false,
             "assets": [
               "projects/cpm-app/src/favicon.ico",
+              "projects/cpm-app/src/Scan.svg",
               "projects/cpm-app/src/assets"
             ],
             "styles": [
