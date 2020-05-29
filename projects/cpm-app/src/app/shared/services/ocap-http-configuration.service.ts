@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from './local-storage.service';
-import { OcapConfigurationConstants } from '../constants/ocap-configuration-constants';
 import { IOcapHttpConfiguration } from '../interfaces/i-ocap-http-configuration';
+import { ConfigurationService } from 'oal-core';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +8,7 @@ import { IOcapHttpConfiguration } from '../interfaces/i-ocap-http-configuration'
 export class OcapHttpConfigurationService {
   ocapHttpConfiguration: IOcapHttpConfiguration;
 
-  constructor(private localStorageService: LocalStorageService) { }
+  constructor(private configurationService: ConfigurationService) { }
 
   get(): IOcapHttpConfiguration{
     if(!this.ocapHttpConfiguration){
@@ -19,13 +18,22 @@ export class OcapHttpConfigurationService {
     return this.ocapHttpConfiguration;
   }
 
-  private setConfiguration(){
-    var ocapConfigurationString = this.localStorageService.getItem(OcapConfigurationConstants.storageKey);
-    if(!ocapConfigurationString){
-      this.ocapHttpConfiguration = { apiKey: '', machineName: '', clientId: '', ocapServerIP: '', port: '', useSecured: 'true', userLocale: 'en-US' };
+  private setConfiguration() {
+    const clientId = this.configurationService.getItem('clientid');
+    const apiKey = this.configurationService.getItem('apiKey');
+    const machineName = this.configurationService.getItem('machinename');
+    const ocapclientName = this.configurationService.getItem('clientname');
+    const ocapserverip = this.configurationService.getItem('ocapserverip');
+    const ocapport = this.configurationService.getItem('port');
+    const ocapsecured = this.configurationService.getItem('usesecured');
+    const ocaplocale = this.configurationService.getItem('userlocale');
+    if(!ocapserverip){
+      this.ocapHttpConfiguration = { apiKey: '', machineName: '', clientId: '', ocapServerIP: '', port: '',
+       useSecured: 'true', userLocale: 'en-US', clientName: 'CpmAngular' };
       return;
     }
-
-    this.ocapHttpConfiguration = JSON.parse(ocapConfigurationString);
+    this.ocapHttpConfiguration = { apiKey: apiKey, machineName: machineName, clientId: clientId, ocapServerIP: ocapserverip,
+       port: ocapport, useSecured: ocapsecured, userLocale: ocaplocale,
+       clientName: ocapclientName == null ? 'CpmAngular' : ocapclientName };
   }
 }
