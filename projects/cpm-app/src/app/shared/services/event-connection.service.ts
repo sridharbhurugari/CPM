@@ -21,8 +21,8 @@ export class EventConnectionService extends HubConnectionBase {
               private hubConfigurationService: HubConfigurationService, private ocapUrlBuilderService: OcapUrlBuilderService) {
       super(loggerService, deferredUtility, configurationService);
 
-      this.connectionStartedSubject.subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
-      this.disconnectedSubject.subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
+      this.isConnectedStarted = false;
+      this.SubscribeToConnectionEvents();
   }
 
   public async startUp(): Promise<void> {
@@ -62,5 +62,10 @@ export class EventConnectionService extends HubConnectionBase {
     });
     this.receivedSubject.next(deserializedObject);
     return;
+  }
+
+  SubscribeToConnectionEvents() {
+    this.connectionStartedSubject.subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
+    this.disconnectedSubject.subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
   }
 }
