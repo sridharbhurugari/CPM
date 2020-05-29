@@ -1,7 +1,7 @@
-import { PicklistQueueItem } from './picklist-queue-item';
+import { Xr2ExceptionsItem } from './xr2-exceptions-item';
 
-describe('PicklistQueueItem', () => {
+describe('Xr2ExceptionsItem', () => {
   it('should create an instance', () => {
-    expect(new PicklistQueueItem(null)).toBeTruthy();
+    expect(new Xr2ExceptionsItem(null)).toBeTruthy();
   });
 });
