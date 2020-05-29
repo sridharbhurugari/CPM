@@ -10,7 +10,7 @@ import { OcAnimationSize } from '@omnicell/webcorecomponents';
 export class AppShellComponent implements AfterViewInit {
   loading: boolean;
   loadingData = {
-    supportingText: '', 
+    supportingText: '',
     size: OcAnimationSize.large
   };
 
@@ -20,6 +20,7 @@ export class AppShellComponent implements AfterViewInit {
     this.loading = true;
   }
 
+  /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.router.events.subscribe(e => {
       if(e instanceof NavigationStart){

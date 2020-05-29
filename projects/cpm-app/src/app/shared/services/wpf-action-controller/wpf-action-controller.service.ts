@@ -32,6 +32,7 @@ export class WpfActionControllerService {
     }
   }
 
+  /* istanbul ignore next */
   ExecuteContinueAction() {
     if (this.wpfActionController != null) {
       this.eventConnectionService.stop();
@@ -55,6 +56,7 @@ export class WpfActionControllerService {
     }
   }
 
+  /* istanbul ignore next */
   ExecuteWpfContinueNavigationAction(action: string) {
     if (this.wpfActionController != null) {
       this.eventConnectionService.stop();

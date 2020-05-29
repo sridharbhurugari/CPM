@@ -37,6 +37,7 @@ export class EventConnectionService extends HubConnectionBase {
     console.log('EventConnectionService.Startup complete, current connection alive: ' + this.isConnectionAlive().toString());
   }
 
+  /* istanbul ignore next */
   protected onReceived(message: string): void {
     const refMap = {};
     const eventArgsAsAny = message as any;
