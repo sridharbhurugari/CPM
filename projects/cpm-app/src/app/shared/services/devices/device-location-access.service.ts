@@ -6,7 +6,6 @@ import { IDeviceLocationAccessData } from '../../model/i-device-location-access-
 import { IDeviceLocationAccessDisplayData } from '../../model/i-device-location-access-display-data';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { Observable } from 'rxjs';
-import { PackagerStorageLocationAccessService } from './packager-storage-location-access.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +16,9 @@ export class DeviceLocationAccessService {
   constructor(
     carouselLocationAccessService: CarouselLocationAccessService,
     openStorageLocationAccessService: OpenStorageLocationAccessService,
-    packagerStorageLocationAccessService:PackagerStorageLocationAccessService,
   ) {
     this._services.push(carouselLocationAccessService);
     this._services.push(openStorageLocationAccessService);
-    this._services.push(packagerStorageLocationAccessService);
   }
 
   accessLocation(deviceLocation: IDeviceLocationAccessData, displayData: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {
