@@ -7,6 +7,7 @@ import { IDeviceLocationAccessDisplayData } from '../../model/i-device-location-
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { Observable } from 'rxjs';
 
+
 @Injectable({
   providedIn: 'root'
 })
