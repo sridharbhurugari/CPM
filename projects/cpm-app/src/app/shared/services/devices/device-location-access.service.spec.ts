@@ -6,12 +6,10 @@ import { OpenStorageLocationAccessService } from './open-storage-location-access
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { of } from 'rxjs';
 import { DeviceLocationTypeId } from '../../constants/device-location-type-id';
-import { PackagerStorageLocationAccessService } from './packager-storage-location-access.service';
 
 describe('DeviceLocationAccessService', () => {
   let service: DeviceLocationAccessService;
   let carouselService: Partial<CarouselLocationAccessService>;
-  let packageService:PackagerStorageLocationAccessService;
 
   beforeEach(() => {
     let carouselServiceMock: Partial<CarouselLocationAccessService> = {
@@ -22,12 +20,10 @@ describe('DeviceLocationAccessService', () => {
       providers: [
         { provide: CarouselLocationAccessService, useValue: carouselServiceMock },
         { provide: OpenStorageLocationAccessService, useValue: {} },
-        {provide:PackagerStorageLocationAccessService, useValue: {} },
       ]
     })
     service = TestBed.get(DeviceLocationAccessService);
     carouselService = TestBed.get(CarouselLocationAccessService);
-    packageService = TestBed.get(PackagerStorageLocationAccessService);
   });
 
   it('should be created', () => {
