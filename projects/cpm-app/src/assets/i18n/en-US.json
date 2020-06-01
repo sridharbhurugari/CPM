@@ -111,5 +111,5 @@
   "SEARCH_TEXT_DISPLAY": "Scan Tray Bar Code or Enter Text",
   "CYCLE_COUNT": "Cycle Count",
   "UNKNOWNITEM_HEADER_TEXT": "Unassigned",
-  "UNKNOWNITEM_BODY_TEXT": "Item is Currently not assigned at CPM. Please Scan or Select another item."
+  "UNKNOWNITEM_BODY_TEXT": "Item is currently not assigned at CPM. Please scan or select another item."
 }
