@@ -642,9 +642,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.translateService.get("UNKNOWNITEM_HEADER_TEXT").subscribe((result) => {
       properties.titleElementText = result;
     });
-    this.translateService.get("UNKNOWNITEM_BODY_TEXT").subscribe((result) => {
+    this.translateService.get('UNKNOWNITEM_BODY_TEXT' , { itemId: itemId}).subscribe((result) => {
       properties.messageElementText = result;
-      properties.messageElementText = [properties.messageElementText.slice(0, 5),itemId , properties.messageElementText.slice(4)].join('');
     });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
