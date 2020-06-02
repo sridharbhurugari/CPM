@@ -13,24 +13,28 @@ import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
 import { ActivatedRoute, Router, Params, NavigationExtras, RouterModule } from '@angular/router';
 //import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { map } from 'rxjs/operators';
+import {Location} from '@angular/common';
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
 
 describe('Xr2ExceptionsPageComponent', () => {
   let component: Xr2ExceptionsPageComponent;
   let fixture: ComponentFixture<Xr2ExceptionsPageComponent>;
   let event: IColHeaderSortChanged = {ColumnPropertyName:"TrayID",SortDirection:"asc"};
+  let eventSelected: IXr2ExceptionsItem = {TrayID:"c00004", DeviceID:"5",CompletedDateTime:"2020-06-01 07:41:19.763",TrayDescription:"",ExceptionPockets:"",DeviceName:""};
   let router: Partial<Router>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   beforeEach(async(() => {
-    wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
-    router = {navigate: jasmine.createSpy('navigate') };
+    wpfActionControllerService = { ExecuteWpfContinueNavigationAction: jasmine.createSpy('ExecuteWpfContinueNavigationAction'),
+      ExecuteContinueNavigationAction: jasmine.createSpy('ExecuteContinueNavigationAction')};
+
     TestBed.configureTestingModule({
       declarations: [ Xr2ExceptionsPageComponent, MockTranslatePipe,
         MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe],
       imports: [GridModule, FooterModule, LayoutModule, SearchModule,  ButtonActionModule],
       providers: [
         { provide: Xr2ExceptionsService, useValue: { get: () => of([]) } },
-        { provide: Router, useValue: router },
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
        ]
     })
     .compileComponents();
@@ -57,5 +61,11 @@ describe('Xr2ExceptionsPageComponent', () => {
       return this.sort(exceptions, "desc");
     }));
     expect(component.columnSelected(event));
+  });
+  describe('navigation on page', () => {
+    it('navigates to manual cycle count page', () => {
+       component.navigatedetailspage(eventSelected);
+       //expect(wpfActionControllerService.ExecuteWpfContinueNavigationAction).toHaveBeenCalled();
+    });
   });
 });

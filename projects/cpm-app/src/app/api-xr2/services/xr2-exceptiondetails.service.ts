@@ -5,7 +5,7 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { HttpClient } from '@angular/common/http';
 import { IXr2ExceptionDetailsItem } from '../data-contracts/i-xr2-exception-details-item';
 import { IXr2ExceptionsItem } from '../data-contracts/i-xr2-exception-item';
-import {Parameter} from '../../shared/model/parameter.model';
+
 @Injectable({
   providedIn: 'root'
 })

@@ -3,6 +3,7 @@ import { Xr2ExceptionDetailsPageComponent } from './xr2-exceptions-details-page.
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { of, never } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -25,12 +26,16 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   beforeEach(async(() => {
     wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
+    router = {navigate: jasmine.createSpy('navigate') };
     TestBed.configureTestingModule({
       declarations: [ Xr2ExceptionDetailsPageComponent, MockTranslatePipe,
-        MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe],
+        MockColHeaderSortable, MockAppHeaderContainer],
       imports: [GridModule, FooterModule, LayoutModule, SearchModule,  ButtonActionModule],
       providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: Xr2ExceptionDetailsService, useValue: { get: (item:IXr2ExceptionsItem) => of([]) } },
+        { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: Router, useValue: router }
        ]
     })
     .compileComponents();
@@ -40,8 +45,6 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2ExceptionDetailsPageComponent);
     component = fixture.componentInstance;
-    event.ColumnPropertyName = "Reason";
-    event.SortDirection="asc";
     fixture.detectChanges();
   });
 
