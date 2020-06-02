@@ -64,7 +64,7 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
         }
       });
   }
-
+ 
   ngAfterViewInit() {
     this.searchElement.searchOutput$
       .pipe(
@@ -86,5 +86,8 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
 
   sort(devices: GuidedDeviceList[], sortDirection: Many<boolean|"asc"|"desc">): GuidedDeviceList[]{
       return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
+  }
+  navigatemanualcyclecount(){
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`/guidedinvmgmt/manualcyclecount`);
   }
 }

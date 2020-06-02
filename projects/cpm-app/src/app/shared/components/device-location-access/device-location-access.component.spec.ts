@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeviceLocationAccessComponent } from './device-location-access.component';
-import { ButtonActionModule, PopupDialogService } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, PopupDialogService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { DeviceLocationAccessService } from '../../services/devices/device-location-access.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DeviceLeaseService } from '../../services/devices/device-lease.service';
@@ -24,7 +24,7 @@ describe('DeviceLocationAccessComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DeviceLocationAccessComponent ],
       imports: [
-        ButtonActionModule,
+        ButtonActionModule, SvgIconModule
       ],
       providers: [
         { provide: DeviceLocationAccessService, useValue: { } },

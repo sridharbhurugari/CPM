@@ -25,6 +25,7 @@
             "aot": false,
             "assets": [
               "projects/cpm-app/src/favicon.ico",
+              "projects/cpm-app/src/Scan.svg",
               "projects/cpm-app/src/assets"
             ],
             "styles": [
@@ -98,10 +99,10 @@
             "scripts": [],
             "codeCoverage": true,
             "codeCoverageExclude": [
-			  "projects/cpm-app/src/app/app.*",
+              "projects/cpm-app/src/app/app.*",
               "projects/cpm-app/src/app/api-core/services/**/*",
               "projects/cpm-app/src/app/api-xr2/services/**/*",
-			  "projects/cpm-app/src/app/xr2/services/**/*"
+              "projects/cpm-app/src/app/xr2/services/**/*"
             ]
           }
         },
@@ -168,6 +169,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "cpm-app"
 }

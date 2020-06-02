@@ -26,6 +26,7 @@ describe('GuidedCycleCount', () => {
       InStockQuantity:10,
       DosageForm:"EA",
       ItemDateFormat: "MM/DD/YYYY",
+      SafetyStockRestockScan:'R',
     })).toBeTruthy()
   });
 });

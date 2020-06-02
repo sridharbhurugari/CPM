@@ -13,8 +13,9 @@
 
     <ng-container class="ocactiondetails">
         <div class="displayGuidedCycleCount">
+
             <div class="BrandName">
-                <div>{{ displayCycleCountItem.GenericNameFormatted }}</div>
+                <div>{{ displayCycleCountItem.GenericNameFormatted }}<span *ngIf="CheckSafetyScanConfiguration()"><img src="Scan.svg"></span></div>
             </div>
             <div class="GenericName">
                 <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
@@ -41,6 +42,9 @@
                         <div class="locationdescription">
                             <div>
                                 {{ displayCycleCountItem.LocationDescription }}
+                            </div>
+                            <div>
+                            <span *ngIf="CheckSafetyScanConfiguration()"><img src="Scan.svg"></span>
                             </div>
                         </div>
                     </div>

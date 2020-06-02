@@ -1,23 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OcapHttpConfigurationService } from './ocap-http-configuration.service';
-import { LocalStorageService } from './local-storage.service';
-import { IOcapHttpConfiguration } from '../interfaces/i-ocap-http-configuration';
+import { ConfigurationService } from 'oal-core';
 
 describe('OcapHttpConfigurationService', () => {
-  var localStorageService;
+  var configService;
   var service: OcapHttpConfigurationService;
   beforeEach(() => {
   });
-  
+
   describe('given ocap config is set', () => {
-    const ocapConfig = { configKey: 'configValue' };
+    const ocapConfig =  { apiKey: 'itemVal', machineName: 'itemVal', clientId: 'itemVal', ocapServerIP: 'itemVal',
+      port: 'itemVal', useSecured: 'itemVal', userLocale: 'itemVal',
+      clientName: 'itemVal' };
     beforeEach(() => {
-      localStorageService = { getItem: (s: string) => JSON.stringify(ocapConfig) };
-      spyOn(localStorageService, 'getItem').and.callThrough();
+
+      configService = { getItem: (s: string) => 'itemVal' };
+      spyOn(configService, 'getItem').and.callThrough();
       TestBed.configureTestingModule({
         providers: [
-          { provide: LocalStorageService, useValue: localStorageService }
+          { provide: ConfigurationService, useValue: configService }
         ]
       })
       service = TestBed.get(OcapHttpConfigurationService);
@@ -38,24 +40,24 @@ describe('OcapHttpConfigurationService', () => {
       });
 
       it('should have called localStorageService.get', () => {
-          expect(localStorageService.getItem).toHaveBeenCalledTimes(1);
+          expect(configService.getItem).toHaveBeenCalledTimes(8);
       });
 
-      describe('then calling get again', () =>{
+      describe('then calling get again', () => {
         it('should not call local storage twice', () => {
           service.get();
-          expect(localStorageService.getItem).toHaveBeenCalledTimes(1);
+          expect(configService.getItem).toHaveBeenCalledTimes(8);
         })
       });
     })
   });
-  
+
   describe('given no ocap config is set', () => {
     beforeEach(() => {
-      localStorageService = { getItem: (s: string) => undefined };
+      configService = { getItem: (s: string) => undefined };
       TestBed.configureTestingModule({
         providers: [
-          { provide: LocalStorageService, useValue: localStorageService }
+          { provide: ConfigurationService, useValue: configService }
         ]
       })
       service = TestBed.get(OcapHttpConfigurationService);

@@ -6,7 +6,8 @@ import { OcapConfigurationConstants } from './shared/constants/ocap-configuratio
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
 import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
-import { CoreEventConnectionService } from './api-core/services/core-event-connection.service';
+import { ConfigurationService, OcapHttpClientService } from 'oal-core';
+import { EventConnectionService } from './shared/services/event-connection.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ import { CoreEventConnectionService } from './api-core/services/core-event-conne
 export class AppComponent implements AfterViewInit {
   title = 'cpm-app';
   loadingData = {
-    supportingText:'',
+    supportingText: '',
     size: OcAnimationSize.large
   };
   loading: boolean;
@@ -26,22 +27,28 @@ export class AppComponent implements AfterViewInit {
     translate: TranslateService,
     windowService: WindowService,
     localStorageService: LocalStorageService,
-    private coreEventConnectionService: CoreEventConnectionService,
+    configurationService: ConfigurationService,
+    httpClient: OcapHttpClientService,
+    eventConnectionService: EventConnectionService,
   ){
     this.loading = true;
-    if(windowService.nativeWindow){
-      var ocap : Partial<IOcapHttpConfiguration> = {};
+    var ocap : Partial<IOcapHttpConfiguration> = {};
+    if(windowService.nativeWindow) {
       var win = windowService.nativeWindow as Window;
-      var url = new URL(win.location.href);
-      var searchParams = new URLSearchParams(url.search.split('?')[1]);
-      searchParams.forEach((v, k) => {
-        ocap[k] = v == "True" ? 'true' : v == "False" ? 'false' : v || '';
-      })
+      if (win.location) {
+        var url = new URL(win.location.href);
+        var searchParams = new URLSearchParams(url.search.split('?')[1]);
+        searchParams.forEach((v, k) => {
+          ocap[k] = v == "True" ? 'true' : v == "False" ? 'false' : v || '';
+        });
+      }
 
       localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
-      translate.setDefaultLang(ocap.userLocale || 'en-US');
-      this.coreEventConnectionService.openEventConnection();
+      configurationService.init(httpClient);
+      eventConnectionService.startUp();
     }
+
+    translate.setDefaultLang(ocap.userLocale || 'en-US');
   }
 
   ngAfterViewInit(): void {
