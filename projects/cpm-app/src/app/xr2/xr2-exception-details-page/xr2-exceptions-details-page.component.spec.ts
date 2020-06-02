@@ -3,27 +3,34 @@ import { Xr2ExceptionDetailsPageComponent } from './xr2-exceptions-details-page.
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { of, never } from 'rxjs';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
+import { ActivatedRoute, Router, Params, NavigationExtras, RouterModule } from '@angular/router';
 //import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { map } from 'rxjs/operators';
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { Xr2ExceptionDetailsService } from '../../api-xr2/services/xr2-exceptiondetails.service';
+import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
 
 describe('Xr2ExceptionDetailsPageComponent', () => {
   let component: Xr2ExceptionDetailsPageComponent;
   let fixture: ComponentFixture<Xr2ExceptionDetailsPageComponent>;
-  let event: IColHeaderSortChanged = {ColumnPropertyName:"TrayID",SortDirection:"asc"};
+  let event: IColHeaderSortChanged = {ColumnPropertyName:"Reason",SortDirection:"asc"};
+  let router: Partial<Router>;
+  let wpfActionControllerService: Partial<WpfActionControllerService>;
   beforeEach(async(() => {
+    wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
     TestBed.configureTestingModule({
       declarations: [ Xr2ExceptionDetailsPageComponent, MockTranslatePipe,
         MockColHeaderSortable, MockAppHeaderContainer, MockSearchPipe],
       imports: [GridModule, FooterModule, LayoutModule, SearchModule,  ButtonActionModule],
       providers: [
-        { provide: Xr2ExceptionsService, useValue: { get: () => of([]) } },
+        { provide: Xr2ExceptionDetailsService, useValue: { get: (item:IXr2ExceptionsItem) => of([]) } },
        ]
     })
     .compileComponents();
@@ -33,8 +40,7 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2ExceptionDetailsPageComponent);
     component = fixture.componentInstance;
-    //component.sortOrder = "desc";
-    event.ColumnPropertyName = "TrayID";
+    event.ColumnPropertyName = "Reason";
     event.SortDirection="asc";
     fixture.detectChanges();
   });
@@ -44,11 +50,17 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
   });
 
   it('column selected ', () => {
-    //component. = SortDirection.descending;
-    // component.displayExceptionDetailsList.source;
-    // component.displayExceptionDetailsList = component.displayExceptionDetailsList.pipe(map(exceptions => {
-    //   return this.sort(exceptions, "desc");
-    // }));
-    // expect(component.columnSelected(event));
+    component.displayExceptionDetailList$.source;
+    component.displayExceptionDetailList$ = component.displayExceptionDetailList$.pipe(map(exceptions => {
+        return this.sort(exceptions, "desc");
+    }));
+    expect(component.columnSelected(event));
+  });
+
+  describe('navigateBack', () => {
+    it('makes expected calls', () => {
+      component.navigateBack();
+      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalled();
+    });
   });
 });

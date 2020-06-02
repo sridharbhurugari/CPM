@@ -15,6 +15,8 @@ import { ColHeaderSortableComponent } from '../../shared/components/col-header-s
 import { Xr2ExceptionDetailsService } from '../../api-xr2/services/xr2-exceptiondetails.service';
 import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item'
 import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
+import { ValidationBadgeModule } from '@omnicell/webcorecomponents';
+import { SystemMessageModule } from '@omnicell/webcorecomponents';
 @Component({
   selector: 'app-xr2-exception-details-page',
   templateUrl: './Xr2-Exception-details-page.component.html',
@@ -40,7 +42,6 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
   trayType: string;
   deviceName: string;
   completedDate: string;
-  // displayExceptionDetailsList$: Observable<Xr2ExceptionDetailsItem[]>;
 
   currentSortPropertyName: string = this.reasonPropertyName;
   sortOrder: SortDirection = SortDirection.ascending;
@@ -75,7 +76,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
     this.deviceName = this.activatedRoute.snapshot.queryParamMap.get('DeviceName');
     this.completedDate = this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime');
     this.displayExceptionDetailList$ = this.exceptionDetailsListService.get(this.selectedItem).pipe(map(guidedDeviceListItems => {
-      return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionDetailsItem(p)), SortDirection.descending);
+      return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionDetailsItem(p)), SortDirection.ascending);
     }), shareReplay(1));
 
   }
@@ -92,7 +93,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
 
   }
 
-  sort(devices: Xr2ExceptionDetailsItem[], sortDirection: Many<boolean | "desc" | "asc">): Xr2ExceptionDetailsItem[] {
+  sort(devices: Xr2ExceptionDetailsItem[], sortDirection: Many<boolean|"asc"|"desc">): Xr2ExceptionDetailsItem[] {
     this.parseRowsData(devices);
     return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
   }
@@ -175,6 +176,16 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
         case "13":
           {
             item.PocketRow = "M";
+            break;
+          }
+          case "14":
+          {
+            item.PocketRow = "N";
+            break;
+          }
+          case "15":
+          {
+            item.PocketRow = "O";
             break;
           }
       }
