@@ -720,7 +720,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
   describe("displayUnknownItemDialog", () => {
     it("displayUnknownItemDialog should display unknown item dialog", () => {
       spyOn(mockPopupDialogService, "showOnce").and.callThrough();
-      component.displayUnknownItemDialog();
+      component.displayUnknownItemDialog('8939');
 
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
       var title: string = "display";

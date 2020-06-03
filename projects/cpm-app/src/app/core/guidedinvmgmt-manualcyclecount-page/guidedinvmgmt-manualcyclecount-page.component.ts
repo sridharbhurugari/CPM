@@ -276,7 +276,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             this.CycleCountValidation();
           }
         } else {
-          this.displayUnknownItemDialog();
+          this.displayUnknownItemDialog(itemid);
         }
       },
       () => {
@@ -637,17 +637,17 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     }
   }
 
-  displayUnknownItemDialog(): void {
+  displayUnknownItemDialog(itemId: string): void {
     const properties = new PopupDialogProperties("Role-Status-Warning");
     this.translateService.get("UNKNOWNITEM_HEADER_TEXT").subscribe((result) => {
       properties.titleElementText = result;
     });
-    this.translateService.get("UNKNOWNITEM_BODY_TEXT").subscribe((result) => {
+    this.translateService.get('UNKNOWNITEM_BODY_TEXT' , { itemId: itemId}).subscribe((result) => {
       properties.messageElementText = result;
     });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = "Ok";
+    properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
