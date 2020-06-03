@@ -6,18 +6,24 @@
   <div class="cpmheaderrow">
     <app-header-container>
     <div class="ocheaderarea">
-      <tr>
+      <table>
+        <thead>
+       <tr>
         <th class="trayidheader">{{trayIDHeader$}}</th>
         <th class="traytypeheader">{{trayTypeHeader$}}</th>
         <th class="devicenameheader">{{deviceNameHeader$}}</th>
         <th class="completeddateheader">{{completedDateHeader$}}</th>
       </tr>
+    </thead>
+    <tbody>
       <tr>
         <td class="trayidtext">{{trayID}}</td>
         <td class="traytypetext">{{trayType}}</td>
         <td class="devicenametext">{{deviceName}}</td>
         <td class="completeddatetext">{{completedDate | date:'M/d/yyyy h:mm:ss a'}}</td>
     </tr>
+  </tbody>
+  </table>
     </div>
   </app-header-container>
   </div>

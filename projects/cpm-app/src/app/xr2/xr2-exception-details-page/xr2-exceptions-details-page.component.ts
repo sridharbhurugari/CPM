@@ -23,7 +23,7 @@ import { SystemMessageModule } from '@omnicell/webcorecomponents';
   styleUrls: ['./Xr2-Exceptions-details-page.component.scss']
 })
 
-export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
+export class Xr2ExceptionDetailsPageComponent implements OnInit {
   readonly PropertyName = nameof<Xr2ExceptionDetailsItem>("TrayID");
   readonly trayTypePropertyName = nameof<Xr2ExceptionDetailsItem>("TrayDescription");
   readonly deviceNamePropertyName = nameof<Xr2ExceptionDetailsItem>("DeviceName");
@@ -48,6 +48,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
   myObj: any;
   displayExceptionDetailList$: Observable<Xr2ExceptionDetailsItem[]>;
   selectedItem: Xr2ExceptionsItem;
+  mapRows: Map<number,string>;
   constructor(
     private activatedRoute: ActivatedRoute,
     private wpfActionController: WpfActionControllerService,
@@ -62,7 +63,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit() {
-    let selectedItem: IXr2ExceptionsItem = {
+      let selectedItem: IXr2ExceptionsItem = {
       TrayID: this.activatedRoute.snapshot.queryParamMap.get('TrayID'),
       DeviceID: this.activatedRoute.snapshot.queryParamMap.get('DeviceID'),
       CompletedDateTime: this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime'),
@@ -70,6 +71,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
       ExceptionPockets: "",
       TrayDescription: ""
     };
+    this.fillTheMapWithData();
     this.selectedItem = new Xr2ExceptionsItem(selectedItem);
     this.trayID = this.activatedRoute.snapshot.queryParamMap.get('TrayID');
     this.trayType = this.activatedRoute.snapshot.queryParamMap.get('TrayDescription');
@@ -79,10 +81,6 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
       return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionDetailsItem(p)), SortDirection.ascending);
     }), shareReplay(1));
 
-  }
-
-
-  ngAfterViewInit() {
   }
 
   ngOnDestroy(): void {
@@ -109,86 +107,40 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit, AfterViewInit {
     this.wpfActionController.ExecuteBackAction();
   }
 
+  fillTheMapWithData()
+  {
+    this.mapRows = new Map<number,string>();
+    this.mapRows.set(1, "A");
+    this.mapRows.set(2, "B");
+    this.mapRows.set(3, "C");
+    this.mapRows.set(4, "D");
+    this.mapRows.set(5, "E");
+    this.mapRows.set(6, "F");
+    this.mapRows.set(7, "G");
+    this.mapRows.set(8, "H");
+    this.mapRows.set(9, "I");
+    this.mapRows.set(10, "J");
+    this.mapRows.set(11, "K");
+    this.mapRows.set(12, "L");
+    this.mapRows.set(13, "M");
+    this.mapRows.set(14, "N");
+    this.mapRows.set(15, "O");
+    this.mapRows.set(16, "P");
+    this.mapRows.set(17, "Q");
+    this.mapRows.set(18, "R");
+    this.mapRows.set(19, "S");
+    this.mapRows.set(20, "T");
+    this.mapRows.set(21, "U");
+    this.mapRows.set(22, "V");
+    this.mapRows.set(23, "W");
+    this.mapRows.set(24, "X");
+    this.mapRows.set(25, "Y");
+    this.mapRows.set(26, "Z");
+  }
   parseRowsData(items: Xr2ExceptionDetailsItem[]) {
-    for (let item of items) {
-      switch (item.PocketRow) {
-        case "1":
-          {
-            item.PocketRow = "A";
-            break;
-          }
-        case "2":
-          {
-            item.PocketRow = "B";
-            break;
-          }
-        case "3":
-          {
-            item.PocketRow = "C";
-            break;
-          }
-        case "4":
-          {
-            item.PocketRow = "D";
-            break;
-          }
-        case "5":
-          {
-            item.PocketRow = "E";
-            break;
-          }
-        case "6":
-          {
-            item.PocketRow = "F";
-            break;
-          }
-        case "7":
-          {
-            item.PocketRow = "G";
-            break;
-          }
-        case "8":
-          {
-            item.PocketRow = "H";
-            break;
-          }
-        case "9":
-          {
-            item.PocketRow = "I";
-            break;
-          }
-
-        case "10":
-          {
-            item.PocketRow = "J";
-            break;
-          }
-        case "11":
-          {
-            item.PocketRow = "K";
-            break;
-          }
-        case "12":
-          {
-            item.PocketRow = "L";
-            break;
-          }
-        case "13":
-          {
-            item.PocketRow = "M";
-            break;
-          }
-          case "14":
-          {
-            item.PocketRow = "N";
-            break;
-          }
-          case "15":
-          {
-            item.PocketRow = "O";
-            break;
-          }
-      }
+    for(let item of items)
+    {
+      item.PocketRow = this.mapRows.get(Number(item.PocketRow));
     }
   }
 }

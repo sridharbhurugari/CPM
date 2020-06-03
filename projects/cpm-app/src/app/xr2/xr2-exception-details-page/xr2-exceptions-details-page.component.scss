@@ -1,3 +1,4 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
 oc-grid{
   height: 90%;
 }
@@ -45,7 +46,7 @@ oc-grid{
   float: left;
 }
 .trayidheader{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: $font-family-sans-serif;
   font-size: 14px;
   font-weight: normal;
   margin-left: 20px;

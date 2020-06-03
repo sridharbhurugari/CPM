@@ -12,8 +12,8 @@ import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.serv
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
 import { ActivatedRoute, Router, Params, NavigationExtras, RouterModule } from '@angular/router';
-//import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { map } from 'rxjs/operators';
+import {Location} from '@angular/common';
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { Xr2ExceptionDetailsService } from '../../api-xr2/services/xr2-exceptiondetails.service';
 import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
@@ -24,8 +24,21 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
   let event: IColHeaderSortChanged = {ColumnPropertyName:"Reason",SortDirection:"asc"};
   let router: Partial<Router>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
+  let selectedItem: IXr2ExceptionsItem = {
+    TrayID: 'c00003',
+    DeviceID: '7',
+    CompletedDateTime: '2020-06-01 07:41:19.763',
+    DeviceName: '',
+    ExceptionPockets: '',
+    TrayDescription: ''
+  };
   beforeEach(async(() => {
     wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
+    // component.selectedItem = new Xr2ExceptionsItem(selectedItem);
+    // component.trayID = 'c00003';
+    // component.trayType = 'Oral Solid';
+    // component.deviceName = 'XR2 dev1';
+    // component.completedDate = '2020-06-01 07:41:19.763';
     router = {navigate: jasmine.createSpy('navigate') };
     TestBed.configureTestingModule({
       declarations: [ Xr2ExceptionDetailsPageComponent, MockTranslatePipe,
@@ -35,7 +48,8 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: Xr2ExceptionDetailsService, useValue: { get: (item:IXr2ExceptionsItem) => of([]) } },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: Router, useValue: router }
+        { provide: Router, useValue: router },
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
        ]
     })
     .compileComponents();
