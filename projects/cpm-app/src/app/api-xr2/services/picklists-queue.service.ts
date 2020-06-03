@@ -33,6 +33,13 @@ export class PicklistsQueueService {
     });
   }
 
+  skip(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/Skip');
+    return this.httpClient.post(url, globalDispenseSyncRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
   printLabels(deviceId: number, robotPrintRequest: RobotPrintRequest) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
     return this.httpClient.post(url, robotPrintRequest, {
