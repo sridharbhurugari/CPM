@@ -45,10 +45,11 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
 
   currentSortPropertyName: string = this.reasonPropertyName;
   sortOrder: SortDirection = SortDirection.ascending;
-  myObj: any;
   displayExceptionDetailList$: Observable<Xr2ExceptionDetailsItem[]>;
   selectedItem: Xr2ExceptionsItem;
   mapRows: Map<number,string>;
+  alphaValues: Array<string> = ["","A","B","C","D","E","F","G","H","I","J","K","L","M",
+                                "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
   constructor(
     private activatedRoute: ActivatedRoute,
     private wpfActionController: WpfActionControllerService,
@@ -71,7 +72,6 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
       ExceptionPockets: "",
       TrayDescription: ""
     };
-    this.fillTheMapWithData();
     this.selectedItem = new Xr2ExceptionsItem(selectedItem);
     this.trayID = this.activatedRoute.snapshot.queryParamMap.get('TrayID');
     this.trayType = this.activatedRoute.snapshot.queryParamMap.get('TrayDescription');
@@ -84,10 +84,6 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-
-  }
-
-  returnAlphaRowValue(currentRow: string) {
 
   }
 
@@ -107,40 +103,10 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
     this.wpfActionController.ExecuteBackAction();
   }
 
-  fillTheMapWithData()
-  {
-    this.mapRows = new Map<number,string>();
-    this.mapRows.set(1, "A");
-    this.mapRows.set(2, "B");
-    this.mapRows.set(3, "C");
-    this.mapRows.set(4, "D");
-    this.mapRows.set(5, "E");
-    this.mapRows.set(6, "F");
-    this.mapRows.set(7, "G");
-    this.mapRows.set(8, "H");
-    this.mapRows.set(9, "I");
-    this.mapRows.set(10, "J");
-    this.mapRows.set(11, "K");
-    this.mapRows.set(12, "L");
-    this.mapRows.set(13, "M");
-    this.mapRows.set(14, "N");
-    this.mapRows.set(15, "O");
-    this.mapRows.set(16, "P");
-    this.mapRows.set(17, "Q");
-    this.mapRows.set(18, "R");
-    this.mapRows.set(19, "S");
-    this.mapRows.set(20, "T");
-    this.mapRows.set(21, "U");
-    this.mapRows.set(22, "V");
-    this.mapRows.set(23, "W");
-    this.mapRows.set(24, "X");
-    this.mapRows.set(25, "Y");
-    this.mapRows.set(26, "Z");
-  }
   parseRowsData(items: Xr2ExceptionDetailsItem[]) {
     for(let item of items)
     {
-      item.PocketRow = this.mapRows.get(Number(item.PocketRow));
+      item.PocketRow = this.alphaValues[Number(item.PocketRow)];
     }
   }
 }

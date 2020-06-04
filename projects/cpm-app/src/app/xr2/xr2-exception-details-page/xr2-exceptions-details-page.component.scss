@@ -8,7 +8,7 @@ oc-grid{
 }
 
 :host ::ng-deep oc-grid{
-  font-size: 22px;
+  font-size: $font-size-large;
 }
 
 .badge {
@@ -18,7 +18,7 @@ oc-grid{
 }
 
 .cpmwarningtext{
-  font-size: 14px;
+  font-size: $font-size-xsmall;
   color: maroon;
 }
 
@@ -47,8 +47,8 @@ oc-grid{
 }
 .trayidheader{
   font-family: $font-family-sans-serif;
-  font-size: 14px;
-  font-weight: normal;
+  font-size: $font-size-xsmall;
+  font-weight: $regular;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
@@ -56,60 +56,60 @@ oc-grid{
 
 }
 .traytypeheader{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-weight: normal;
-  font-size: 14px;
+  font-family: $font-family-sans-serif;
+  font-weight: $regular;
+  font-size: $font-size-xsmall;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
   padding-right: 300px;
 }
 .devicenameheader{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 14px;
-  font-weight: normal;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-xsmall;
+  font-weight: $regular;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
   padding-right: 180px;
 }
 .completeddateheader{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 14px;
-  font-weight: normal;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-xsmall;
+  font-weight: $regular;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
   padding-right: 180px;
 }
 .trayidtext{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 22px;
-  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
 }
 .traytypetext{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 22px;
-  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
 }
 .devicenametext{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 22px;
-  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
 }
 .completeddatetext{
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 22px;
-  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
   margin-left: 20px;
   margin-right: 30px;
   text-align: left;
