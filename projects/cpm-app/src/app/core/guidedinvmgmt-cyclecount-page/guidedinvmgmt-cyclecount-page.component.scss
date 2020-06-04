@@ -4,14 +4,21 @@
 }
   
   .BrandName{
-    font-size: 38px;
+    font-size: 37px;
     font-weight: bold;
     font-family: $font-family-sans-serif;
     position: relative;
     color:$text-color;
-    margin-top: 60px;
+    margin-top: 40px;
     margin-left: 16px;
-    
+    ::ng-deep{
+      img{
+        &:first-child{
+          width: 50px!important;
+          margin-bottom: 20px!important;
+        }
+      }
+    }
   }
 
   .GenericName{
@@ -48,8 +55,22 @@
   }
   .locationdescription{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
+    ::ng-deep{
+      div{
+        &:last-child{
+          margin-top: -25px!important;
+        }
+      }
+    }
+    ::ng-deep{
+      img{
+        &:first-child{
+          width: 50px!important;
+        }
+      }
+    }
   }
   .devicelocationaccess{
     margin-top:5px;
@@ -103,7 +124,6 @@
     margin-left: 330px; 
     border-left: solid white 24px;
     border-right: solid  #c8c8c8 1px; 
-
   }
 
   .leftCycleCountPanel {   
@@ -375,4 +395,8 @@
   margin-left: 16px;
   margin-top: 135px;
   position: relative!important;
+}
+.barcode{
+  margin-top: 2px;
+  margin-bottom: 2px;
 }

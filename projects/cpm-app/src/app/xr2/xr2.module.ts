@@ -8,9 +8,10 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-queue-page.component';
 import { environment } from '../../environments/environment';
-import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component'
+import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component';
+import {Xr2ExceptionDetailsPageComponent} from './xr2-exception-details-page/xr2-exceptions-details-page.component';
 @NgModule({
-  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent,Xr2ExceptionsPageComponent],
+  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent,Xr2ExceptionsPageComponent,Xr2ExceptionDetailsPageComponent],
   imports: [
     CommonModule,
     GridModule,

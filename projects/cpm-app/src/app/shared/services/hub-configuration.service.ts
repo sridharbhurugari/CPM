@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HubConfigurationConstants} from '../../shared/constants/hub-configuration-constants';
+import {HubConfigurationConstants} from '../constants/hub-configuration-constants';
 
 @Injectable({
   providedIn: 'root'

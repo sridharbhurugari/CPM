@@ -15,7 +15,8 @@ describe('OcapUrlBuilderService', () => {
       ocapServerIP: '127.0.0.1',
       port: '3928',
       useSecured: 'true',
-      userLocale: 'en-US'
+      userLocale: 'en-US',
+      clientName: 'client1'
     };
 
     TestBed.configureTestingModule({

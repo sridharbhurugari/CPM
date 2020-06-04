@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { Router, Params } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 import { WindowService } from '../window-service';
-import { CoreEventConnectionService } from '../../../api-core/services/core-event-connection.service';
+import { EventConnectionService } from '../../../shared/services/event-connection.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class WpfActionControllerService {
     windowService: WindowService,
     private location: Location,
     private router: Router,
-    private coreEventConnectionService: CoreEventConnectionService,
+    private eventConnectionService: EventConnectionService
   ) {
     if(windowService.nativeWindow){
       this.wpfActionController = windowService.nativeWindow['actionController'];
@@ -25,16 +25,17 @@ export class WpfActionControllerService {
 
   ExecuteBackAction() {
     if (this.wpfActionController != null) {
-      this.coreEventConnectionService.stop();
+      this.eventConnectionService.stop();
       this.wpfActionController.executeBackAction();
     } else {
       this.location.back();
     }
   }
 
+  /* istanbul ignore next */
   ExecuteContinueAction() {
     if (this.wpfActionController != null) {
-      this.coreEventConnectionService.stop();
+      this.eventConnectionService.stop();
       this.wpfActionController.executeContinueAction();
     }
   }
@@ -52,16 +53,17 @@ export class WpfActionControllerService {
 
       var qs = httpParamsObj.toString();
       var fragment = queryParams ? `${newRoute}?${qs}` : newRoute;
-      this.coreEventConnectionService.stop();
+      this.eventConnectionService.stop();
       this.wpfActionController.executeContinueNavigationAction(fragment);
     } else {
       this.router.navigate([newRoute], { queryParams: queryParams, preserveQueryParams: false });
     }
   }
 
+  /* istanbul ignore next */
   ExecuteWpfContinueNavigationAction(action: string) {
     if (this.wpfActionController != null) {
-      this.coreEventConnectionService.stop();
+      this.eventConnectionService.stop();
       this.wpfActionController.executeWpfContinueNavigationAction(action);
     }
   }
