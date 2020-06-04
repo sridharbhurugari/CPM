@@ -40,6 +40,10 @@ export class WpfActionControllerService {
     }
   }
 
+  ExecuteContinueNavigationWithDataAction(data: any) {
+    this.wpfActionController.executeContinueNavigationWithDataAction(data);
+  };
+
   ExecuteContinueNavigationAction(newRoute: string, queryParams?: Params) {
     if (this.wpfActionController != null) {
       var httpParamsObj = new HttpParams();
