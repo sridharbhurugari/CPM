@@ -1,0 +1,28 @@
+<ng-container class="ocactiondetails">
+  <div class="cpmheaderrow">
+    <app-header-container></app-header-container>
+    <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  </div>
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" data-colwrap="true"></div>
+      <div class="col width-type" ocGridColResize data-width="200" data-colwrap="true">{{'TYPE' | translate}}
+      </div>
+      <div class="col width-type" data-width="650" data-colwrap="true">{{'DESTINATION' | translate}}</div>
+      <div class="col width-type" data-width="230" data-colwrap="true">{{'DATE' | translate}}
+      </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row"
+        *ngFor="let quickpickOrderItem of quickpickOrderItems | searchPipe:searchTextFilter:searchFields">
+        <div class="first" style="align-items: center;">
+          <div class="firstcolumncolorblock" [style.background-color]="quickpickOrderItem.PriorityCodeColor"></div>
+        </div>
+        <div class="col width-type" [attr.data-title]="'TYPE' | translate">{{quickpickOrderItem.type}}</div>
+        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickpickOrderItem.destination}}</div>
+        <div class="col width-type" [attr.data-title]="'DATE' | translate">{{quickpickOrderItem.date}}</div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>
+

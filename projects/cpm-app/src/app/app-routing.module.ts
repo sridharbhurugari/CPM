@@ -15,6 +15,7 @@ import { ItemManagementComponent } from './core/item-management/item-management.
 import { Xr2ExceptionsItem } from './xr2/model/xr2-exceptions-item';
 import { Xr2ExceptionsPageComponent } from './xr2/Xr2-Exceptions-page/xr2-exceptions-page.component';
 import { GuidedinvmgmtManualcyclecountPageComponent } from './core/guidedinvmgmt-manualcyclecount-page/guidedinvmgmt-manualcyclecount-page.component';
+import { QuickPickPageComponent } from './xr2/quick-pick-page/quick-pick-page.component';
 
 
 const routes: Routes = [
@@ -31,8 +32,9 @@ const routes: Routes = [
   { path: 'guidedinvmgmt/cyclecount', component: GuidedInvMgmtCycleCountPageComponent },
   { path: 'hardwareLease/requestLease', component: HardwareLeasePageComponent },
   { path: 'itemmanagement', component: ItemManagementComponent },
-    { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
-    { path: 'guidedinvmgmt/manualcyclecount', component: GuidedinvmgmtManualcyclecountPageComponent }
+  { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
+  { path: 'guidedinvmgmt/manualcyclecount', component: GuidedinvmgmtManualcyclecountPageComponent },
+  { path: 'quickpick', component: QuickPickPageComponent}
 ];
 
 @NgModule({
