@@ -42,14 +42,13 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   trayType: string;
   deviceName: string;
   completedDate: string;
-
+  firstTime: boolean = true;
   currentSortPropertyName: string = this.reasonPropertyName;
   sortOrder: SortDirection = SortDirection.ascending;
   displayExceptionDetailList$: Observable<Xr2ExceptionDetailsItem[]>;
   selectedItem: Xr2ExceptionsItem;
-  mapRows: Map<number,string>;
-  alphaValues: Array<string> = ["","A","B","C","D","E","F","G","H","I","J","K","L","M",
-                                "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+  alphaValues: Array<string> = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
   constructor(
     private activatedRoute: ActivatedRoute,
     private wpfActionController: WpfActionControllerService,
@@ -64,7 +63,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
 
 
   ngOnInit() {
-      let selectedItem: IXr2ExceptionsItem = {
+    let selectedItem: IXr2ExceptionsItem = {
       TrayID: this.activatedRoute.snapshot.queryParamMap.get('TrayID'),
       DeviceID: this.activatedRoute.snapshot.queryParamMap.get('DeviceID'),
       CompletedDateTime: this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime'),
@@ -87,7 +86,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
 
   }
 
-  sort(devices: Xr2ExceptionDetailsItem[], sortDirection: Many<boolean|"asc"|"desc">): Xr2ExceptionDetailsItem[] {
+  sort(devices: Xr2ExceptionDetailsItem[], sortDirection: Many<boolean | "asc" | "desc">): Xr2ExceptionDetailsItem[] {
     this.parseRowsData(devices);
     return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
   }
@@ -104,9 +103,11 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   }
 
   parseRowsData(items: Xr2ExceptionDetailsItem[]) {
-    for(let item of items)
-    {
-      item.PocketRow = this.alphaValues[Number(item.PocketRow)];
+    if (this.firstTime) {
+      for (let item of items) {
+        item.PocketRow = this.alphaValues[Number(item.PocketRow)];
+      }
+      this.firstTime = false;
     }
   }
 }
