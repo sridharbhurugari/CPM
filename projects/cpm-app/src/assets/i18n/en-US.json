@@ -111,11 +111,5 @@
   "SEARCH_TEXT_DISPLAY": "Scan Tray Bar Code or Enter Text",
   "CYCLE_COUNT": "Cycle Count",
   "UNKNOWNITEM_HEADER_TEXT": "Unassigned",
-  "XR2_EXCEPTIONS_DETAILS_REASON": "Reason",
-  "XR2_EXCEPTIONS_DETAILS_COLUMN": "Column",
-  "XR2_EXCEPTIONS_DETAILS_ROW": "Row",
-  "XR2_EXCEPTIONS_DETAILS_ITEMDESCRIPTION": "Item Description / ID",
-  "XR2_EXCEPTIONS_DETAILS_BARCODE_NDC": "Bar Code / NDC",
-  "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review",
-  "UNKNOWNITEM_BODY_TEXT": "Item {{itemId}} is currently not assigned at CPM. Please scan or select another item.",
+  "UNKNOWNITEM_BODY_TEXT": "Item {{itemId}} is currently not assigned at CPM. Please scan or select another item."
 }
