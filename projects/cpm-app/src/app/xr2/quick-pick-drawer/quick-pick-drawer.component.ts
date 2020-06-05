@@ -7,6 +7,42 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QuickPickDrawerComponent implements OnInit {
 
+  dashboardCardData = [
+    {
+      headerText: 'Door 1 | Ready',
+      cardItems: [{ cardValue: '', cardText: '[Print Label]' ,
+      cardMessage: 'Error occurred while loading the widget. Please try again later' }]
+    },
+    {
+      headerText: 'Door 2 | Ready',
+      cardItems: [{ cardValue: '', cardText: '[Print Label]' ,
+      cardMessage: 'Error occurred while loading the widget. Please try again later' }]
+    },
+    {
+      headerText: 'Door 3 | Ready',
+      cardItems: [{ cardValue: '', cardText: '[Print Label]' ,
+      cardMessage: 'Error occurred while loading the widget. Please try again later' }]
+    },
+    {
+      headerText: 'Door 4 | Ready',
+      cardItems: [{ cardValue: '', cardText: '[Print Label]' ,
+      cardMessage: 'Error occurred while loading the widget. Please try again later' }]
+    },
+    {
+      headerText: 'Door 5 | Ready',
+      cardItems: [{ cardValue: '', cardText: '[Print Label]' ,
+      cardMessage: 'Error occurred while loading the widget. Please try again later' }]
+    },
+    {
+      headerText: 'Door 6 | Ready',
+      cardItems: [{ cardValue: '', cardText: '[Print Label]' ,
+      cardMessage: 'Error occurred while loading the widget. Please try again later' }]
+    }
+  ];
+
+  maxHeaderText = "Text";
+  maxCardText = "Text";
+
   constructor() { }
 
   ngOnInit() {

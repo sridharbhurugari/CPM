@@ -1,0 +1,52 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 50vh;
+}
+
+:host ::ng-deep oc-dashboard-card .container[_ngcontent-serverApp-c10] {
+    margin: 10px !important;
+    width: 380px;
+    height: 200px;
+
+    .header[_ngcontent-serverApp-c10] {
+      font-size: 15px;
+      width: 100%;
+      padding: 1px 10px;
+      background-color: rgb(145, 207, 80);
+      color: white
+    }
+    .maxHeader[_ngcontent-serverApp-c10] {
+      min-height: 20px;
+      padding: 1px 10px;
+    }
+
+    .body[_ngcontent-serverApp-c10] {
+      .cardValue[_ngcontent-serverApp-c10] {
+        height: 80%;
+        width: 95%;
+        font-size: 12px;
+        color: black;
+      }
+    }
+}
+
+.cardContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  flex: 1;
+}
+
+ .flex {
+  display: flex;
+  flex-direction: column;
+}

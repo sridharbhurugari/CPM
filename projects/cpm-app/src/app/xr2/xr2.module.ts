@@ -1,7 +1,7 @@
 import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PicklistsQueueComponent } from './picklists-queue/picklists-queue.component';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, LayoutModule, FooterModule, SearchModule, InputsModule,
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, CardContainerModule, DashboardCardModule, LayoutModule, FooterModule, SearchModule, InputsModule,
   PopupDialogModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -22,6 +22,8 @@ import { QuickPickDrawerComponent } from './quick-pick-drawer/quick-pick-drawer.
     RouterModule,
     ButtonActionModule,
     SingleselectDropdownModule,
+    CardContainerModule,
+    DashboardCardModule,
     LayoutModule,
     FooterModule,
     SharedModule,

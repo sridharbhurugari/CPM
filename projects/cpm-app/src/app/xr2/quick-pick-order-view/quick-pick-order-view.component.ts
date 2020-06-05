@@ -36,33 +36,107 @@ export class QuickPickOrderViewComponent implements OnInit {
     private translateService: TranslateService,
     private actr: ActivatedRoute,
     private wpfActionController: WpfActionControllerService) {
+      const mockList = [{
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'red',
+        Destination: "Nursing Area 33",
+        DestinationId: '',
+        DestinationType: "First Dose",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      },
+      {
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'orange',
+        Destination: "Room 4657, South White, Skylar",
+        DestinationId: '',
+        DestinationType: "Stat",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      },
+      {
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'red',
+        Destination: "Nursing Area 33",
+        DestinationId: '',
+        DestinationType: "First Dose",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      },
+      {
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'orange',
+        Destination: "Room 4657, South White, Skylar",
+        DestinationId: '',
+        DestinationType: "Stat",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      },
+      {
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'red',
+        Destination: "Nursing Area 33",
+        DestinationId: '',
+        DestinationType: "First Dose",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      },
+      {
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'orange',
+        Destination: "Room 4657, South White, Skylar",
+        DestinationId: '',
+        DestinationType: "Stat",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      },
+      {
+        OrderId: '',
+        PriorityCode: '',
+        PriorityCodeColor: 'red',
+        Destination: "Nursing Area 33",
+        DestinationId: '',
+        DestinationType: "First Dose",
+        PriorityCodeDescription: '',
+        Date: "5/3/2020 10:15 AM",
+      }
+    ];
+
+      this.quickpickOrderItems = mockList;
   }
 
-  @ViewChild('searchBox', {
-    static: true
-  })
-  searchElement: SearchBoxComponent;
+  // @ViewChild('searchBox', {
+  //   static: true
+  // })
+  // searchElement: SearchBoxComponent;
 
-  searchTextFilter: string;
+  // searchTextFilter: string;
 
-  searchFields = [nameof<QuickPickOrderItem>('Destination'), nameof<QuickPickOrderItem>('PriorityCodeDescription')];
+  // searchFields = [nameof<QuickPickOrderItem>('Destination'), nameof<QuickPickOrderItem>('PriorityCodeDescription')];
 
   ngOnInit() {
+
   }
 
   ngAfterViewInit(): void {
-    this.searchElement.searchOutput$
-      .pipe(
-        switchMap((searchData: string) => {
-          return of(searchData);
-        })
-      )
-      .subscribe(data => {
-        this.searchTextFilter = data;
-        if (this.windowService.nativeWindow) {
-          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-        }
-      });
+    // this.searchElement.searchOutput$
+    //   .pipe(
+    //     switchMap((searchData: string) => {
+    //       return of(searchData);
+    //     })
+    //   )
+    //   .subscribe(data => {
+    //     this.searchTextFilter = data;
+    //     if (this.windowService.nativeWindow) {
+    //       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    //     }
+    //   });
   }
 
   ngOnDestroy(): void {
