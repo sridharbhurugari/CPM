@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-
-import { QuickPickDrawerViewComponent } from './../quick-pick-drawer-view/quick-pick-drawer-view.component';
 import { from } from 'rxjs';
 import { Observable } from 'rxjs';
+import { QuickPickDrawer } from '../model/quick-pick-drawer';
+import { QuickPickOrderItem } from '../model/quick-pick-order-item';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -11,10 +11,16 @@ import { Observable } from 'rxjs';
 })
 export class QuickPickPageComponent implements OnInit {
 
-  quickpickDrawers: Observable<any>;
+  quickpickDrawers: Observable<QuickPickDrawer>;
+  quickpickOrderItems: Observable<QuickPickOrderItem>;
 
 
-  constructor() { }
+  constructor() {
+
+    // Mock List - Query will be run here for Drawers
+
+    // Mock List - Query will be run here for Orders
+   }
 
   ngOnInit() {
   }

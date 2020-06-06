@@ -9,6 +9,8 @@ import { WindowService } from '../../shared/services/window-service';
   styleUrls: ['./quick-pick-drawer-view.component.scss']
 })
 export class QuickPickDrawerViewComponent implements OnInit {
+
+  showDetailedView = false;
   _quickpickDrawers: QuickPickDrawer[];
 
   get quickpickDrawers(): QuickPickDrawer[] {
@@ -31,6 +33,14 @@ export class QuickPickDrawerViewComponent implements OnInit {
    }
 
   ngOnInit() {
+  }
+
+  openDetailedView(event) {
+    this.showDetailedView = true;
+  }
+
+  closeDetailedView() {
+    this.showDetailedView = false;
   }
 
 }

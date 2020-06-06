@@ -1,12 +1,18 @@
 <ng-container class="ocactiondetails">
-  <oc-grid #ocgrid ocgridfilter="false">
+  <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="true">
     <ng-container class="ocgridheader">
       <div class="first" data-colwrap="true"></div>
       <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">{{'TYPE' | translate}}
       </div>
-      <div class="col width-type" data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}</div>
-      <div class="col width-type" data-width="340" data-colwrap="true">{{'DATE' | translate}}
+      <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}</div>
+      <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'DATE' | translate}}
       </div>
+    </ng-container>
+    <ng-container class="ocgridheadersearch">
+      <div ocGridSearchCol></div>
+      <div ocGridSearchCol="DestinationType"><input ocTextbox></div>
+      <div ocGridSearchCol="Destination"><input ocTextbox></div>
+      <div ocGridSearchCol="Date"><input ocTextbox></div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"

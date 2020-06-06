@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuickPickDrawerComponent } from './quick-pick-drawer.component';
+import { DashboardCardComponent } from './dashboard-card.component';
 
-describe('QuickPickDrawerComponent', () => {
-  let component: QuickPickDrawerComponent;
-  let fixture: ComponentFixture<QuickPickDrawerComponent>;
+describe('DashboardCardComponent', () => {
+  let component: DashboardCardComponent;
+  let fixture: ComponentFixture<DashboardCardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuickPickDrawerComponent ]
+      declarations: [ DashboardCardComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickPickDrawerComponent);
+    fixture = TestBed.createComponent(DashboardCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

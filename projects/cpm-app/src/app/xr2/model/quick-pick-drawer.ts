@@ -3,7 +3,7 @@ export class QuickPickDrawer {
   constructor() {
   }
 
-  DrawerId: string;
+  Id: string;
   PriorityCode: string;
   PriorityCodeColor: string;
   Status: string;
