@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-sync-request';
 import { catchError } from 'rxjs/operators';
 import { RobotPrintRequest } from '../data-contracts/robot-print-request';
+import { ReroutePickListLine } from '../data-contracts/reroute-pick-list-line';
 
 @Injectable({
   providedIn: 'root'
@@ -40,4 +41,10 @@ export class PicklistsQueueService {
     });
   }
 
+  reroute(reroutePickListLine: ReroutePickListLine) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/Reroute');
+    return this.httpClient.post(url, reroutePickListLine, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
 }
