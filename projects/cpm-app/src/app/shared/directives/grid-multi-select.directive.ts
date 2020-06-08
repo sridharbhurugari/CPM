@@ -1,5 +1,5 @@
 import { Directive, Output, EventEmitter, ViewChildren, QueryList, ContentChildren, ElementRef } from '@angular/core';
-import { ɵbj as CheckboxComponent } from '@omnicell/webcorecomponents';
+import { CheckboxComponent } from '@omnicell/webcorecomponents';
 import { IGridSelectionChanged } from '../events/i-grid-selection-changed';
 import { SelectionChangeType } from '../constants/selection-change-type';
 import { Subscription } from 'rxjs';
@@ -39,7 +39,7 @@ export class GridMultiSelectDirective {
       this._selectedValues = this._selectedValues.filter(x => x != value);
     }
 
-    this.selectionChanged.emit({ 
+    this.selectionChanged.emit({
       changeType: checked ? SelectionChangeType.selected : SelectionChangeType.unselected,
       changedValue: value,
       selectedValues: this._selectedValues,
