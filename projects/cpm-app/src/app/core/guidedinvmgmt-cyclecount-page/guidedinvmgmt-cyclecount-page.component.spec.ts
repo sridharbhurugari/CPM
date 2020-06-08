@@ -204,7 +204,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
@@ -244,7 +245,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       });
       const wpfActionControllerServiceStub: WpfActionControllerService = fixture.debugElement.injector.get(
         WpfActionControllerService
@@ -297,6 +299,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('returns Printer Configure true', () => {
     it('return with configure result', () => {
       component.devicePrinterName = "printer";
+      component.labelPrinterName = "printer"
       var config = component.HasLabelPrinterConfigured(); 
       expect(config).toBeTruthy();
     });
@@ -333,7 +336,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'N'
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -367,7 +371,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       });
       var localcopy = [];
       component.cycleCountItemsCopy = localcopy;
@@ -413,7 +418,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceId: 5,
@@ -438,7 +444,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       }));
       component.itemCount = 2;
       component.nextRecord();
@@ -473,7 +480,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       }));
       component.cycleCountItemsCopy.push(new GuidedCycleCount({
         DeviceId: 5,
@@ -498,7 +506,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
       }));
       component.itemCount = 2;
       component.currentItemCount = 1;
@@ -532,7 +541,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'R'
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeFalsy();
@@ -563,7 +573,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'R'
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeTruthy();
@@ -655,7 +666,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'R'
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeFalsy();
@@ -696,7 +708,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:10,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'R'
       });
       var value = component.CheckItemExpGranularity(); 
       expect(value).toBeFalsy();
@@ -806,7 +819,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         QuantityMin:10,
         InStockQuantity:12,
         DosageForm:"EA",
-        ItemDateFormat: "MM/DD/YYYY"
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'R'
       });
       component.toggleredborderforfirstitem();
       var dummy,dummy1;
@@ -883,6 +897,27 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     it('should display print Failed popup', () => {
       component.displayFailedToSaveDialog();
       expect(printPopupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
+  describe('returns SafetyStock Configure true', () => {
+    let item: any = {};
+    beforeEach(() => {
+      component.displayCycleCountItem = item;
+    });
+    it('return with configure result', () => {
+      component.safetyScanConfirmation = "Yes";
+      component.displayCycleCountItem.SafetyStockRestockScan = "I";
+      component.DisableActionButtons(true);
+      var config = component.CheckSafetyScanConfiguration(); 
+      expect(config).toBeTruthy;
+    });
+  });
+  describe('returns SafetyStock Configure false', () => {
+    it('return with configure result', () => {
+      component.DisableActionButtons(false);
+      var config = component.CheckSafetyScanConfiguration(); 
+      expect(config).toBeFalsy();
     });
   });
 

@@ -1,8 +1,9 @@
 import { Directive, Output, EventEmitter, ViewChildren, QueryList, ContentChildren, ElementRef } from '@angular/core';
-import { ɵbi as CheckboxComponent } from '@omnicell/webcorecomponents';
+import { ɵbj as CheckboxComponent } from '@omnicell/webcorecomponents';
 import { IGridSelectionChanged } from '../events/i-grid-selection-changed';
 import { SelectionChangeType } from '../constants/selection-change-type';
 import { Subscription } from 'rxjs';
+
 
 @Directive({
   selector: '[appGridMultiSelect]'

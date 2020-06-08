@@ -47,7 +47,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private actr: ActivatedRoute,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
     private wpfActionController: WpfActionControllerService) {
-      this.connectToEvents();
+      this.configureEventHandlers();
   }
 
   @ViewChild('searchBox', {
@@ -80,11 +80,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   back() {
     this.wpfActionController.ExecuteContinueAction();
-  }
-
-  private async connectToEvents(): Promise<void> {
-    await this.picklistQueueEventConnectionService.openEventConnection();
-    this.configureEventHandlers();
   }
 
   private configureEventHandlers(): void {

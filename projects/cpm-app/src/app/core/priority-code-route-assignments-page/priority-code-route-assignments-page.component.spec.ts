@@ -65,7 +65,6 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     const requestStatusSpy = jasmine.createSpy('requestStatus').and.returnValue(of());
     ocsStatusService = { requestStatus: requestStatusSpy };
     eventConnectionService = {
-      openEventConnection: () => Promise.resolve(),
       ocsIsHealthySubject: new Subject(),
       startedSubject: new ReplaySubject(),
     };
