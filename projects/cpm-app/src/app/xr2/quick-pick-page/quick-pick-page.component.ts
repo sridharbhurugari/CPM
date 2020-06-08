@@ -107,7 +107,7 @@ export class QuickPickPageComponent implements OnInit {
     const drawerMockList = [
       {
         Id: '1',
-        Status: 'Ready',
+        Status: 'Available', // 'Ready',
         QuickPickOrderItem: null // orderMockList[1]
       },
       {
@@ -117,7 +117,7 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         Id: '3',
-        Status: 'Not Available',
+        Status: 'Available', // 'Not Available',
         QuickPickOrderItem: null // orderMockList[3]
       },
       {
@@ -127,12 +127,12 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         Id: '5',
-        Status: 'Pending',
+        Status: 'Available', // 'Pending',
         QuickPickOrderItem: null // orderMockList[5]
       },
       {
         Id: '6',
-        Status: 'Ready',
+        Status: 'Available', // 'Ready',
         QuickPickOrderItem: null // orderMockList[4]
       }
     ];
