@@ -1,12 +1,7 @@
 import { Component, OnInit, Input, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { GridComponent as OCGridComp, PersistService } from '@omnicell/webcorecomponents';
 
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { nameof } from '../../shared/functions/nameof';
-import { switchMap } from 'rxjs/operators';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { QuickPickOrderItem } from '../model/quick-pick-order-item';
-import { TranslateService } from '@ngx-translate/core';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 
@@ -18,6 +13,14 @@ import { WindowService } from '../../shared/services/window-service';
 export class QuickPickOrderViewComponent implements OnInit {
 
   private _quickpickOrderItems: QuickPickOrderItem[];
+
+  gridoneKey = "gridone";
+  restoreWidths = Array(6).fill(0);
+  hasPersistedData = false;
+
+  searchMap = {};
+
+  @ViewChild('ocgrid', { static: false }) ocgrid: OCGridComp;
 
   @Input()
   set quickpickOrderItems(value: QuickPickOrderItem[]) {
@@ -33,113 +36,34 @@ export class QuickPickOrderViewComponent implements OnInit {
 
   constructor(
     private windowService: WindowService,
-    private translateService: TranslateService,
-    private actr: ActivatedRoute,
-    private wpfActionController: WpfActionControllerService) {
-      const mockList = [{
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        Destination: "Nursing Area 33",
-        DestinationId: '',
-        DestinationType: "First Dose",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      },
-      {
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'orange',
-        Destination: "Room 4657, South White, Skylar",
-        DestinationId: '',
-        DestinationType: "Stat",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      },
-      {
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        Destination: "Nursing Area 33",
-        DestinationId: '',
-        DestinationType: "First Dose",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      },
-      {
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'orange',
-        Destination: "Room 4657, South White, Skylar",
-        DestinationId: '',
-        DestinationType: "Stat",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      },
-      {
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        Destination: "Nursing Area 33",
-        DestinationId: '',
-        DestinationType: "First Dose",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      },
-      {
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'orange',
-        Destination: "Room 4657, South White, Skylar",
-        DestinationId: '',
-        DestinationType: "Stat",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      },
-      {
-        OrderId: '',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        Destination: "Nursing Area 33",
-        DestinationId: '',
-        DestinationType: "First Dose",
-        PriorityCodeDescription: '',
-        Date: "5/3/2020 10:15 AM",
-      }
-    ];
-
-      this.quickpickOrderItems = mockList;
+    private wpfActionController: WpfActionControllerService,
+    private persistService: PersistService) {
   }
-
-  // @ViewChild('searchBox', {
-  //   static: true
-  // })
-  // searchElement: SearchBoxComponent;
-
-  // searchTextFilter: string;
-
-  // searchFields = [nameof<QuickPickOrderItem>('Destination'), nameof<QuickPickOrderItem>('PriorityCodeDescription')];
 
   ngOnInit() {
 
   }
 
-  ngAfterViewInit(): void {
-    // this.searchElement.searchOutput$
-    //   .pipe(
-    //     switchMap((searchData: string) => {
-    //       return of(searchData);
-    //     })
-    //   )
-    //   .subscribe(data => {
-    //     this.searchTextFilter = data;
-    //     if (this.windowService.nativeWindow) {
-    //       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-    //     }
-    //   });
+  onWidthsChange(data: number[]) {
+    this.persistService.browserSave(this.gridoneKey, data);
+    if (!this.hasPersistedData) {
+      this.hasPersistedData = true;
+    }
   }
 
-  ngOnDestroy(): void {
+  onColSearchChange(data: any) {
+    this.searchMap = data;
+  }
+
+  trackByFunction(index, item) {
+    if (!item) {
+      return null;
+    }
+    return item.id;
+  }
+
+  ngOnDestroy() {
+    this.searchMap = null;
   }
 
   back() {

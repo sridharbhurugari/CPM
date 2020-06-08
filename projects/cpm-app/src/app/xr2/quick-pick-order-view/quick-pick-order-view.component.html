@@ -1,30 +1,33 @@
 <ng-container class="ocactiondetails">
-  <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="true">
+  <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="true" (onColWidthsChange)="onWidthsChange($event)"
+    (onColSearchChange)="onColSearchChange($event)">
     <ng-container class="ocgridheader">
       <div class="first" data-colwrap="true"></div>
       <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">{{'TYPE' | translate}}
       </div>
-      <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}</div>
+      <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}
+      </div>
       <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'DATE' | translate}}
       </div>
     </ng-container>
     <ng-container class="ocgridheadersearch">
       <div ocGridSearchCol></div>
-      <div ocGridSearchCol="DestinationType"><input ocTextbox></div>
+      <div ocGridSearchCol="PriorityCodeDescription"><input ocTextbox></div>
       <div ocGridSearchCol="Destination"><input ocTextbox></div>
       <div ocGridSearchCol="Date"><input ocTextbox></div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-        *ngFor="let quickpickOrderItem of quickpickOrderItems">
-        <div class="first" style="align-items: center;">
+        *ngFor="let quickpickOrderItem of quickpickOrderItems | gridDatasearch: searchMap; trackBy: trackByFunction">
+        <div class="first">
           <div class="firstcolumncolorblock" [style.background-color]="quickpickOrderItem.PriorityCodeColor"></div>
         </div>
-        <div class="col width-type" [attr.data-title]="'TYPE' | translate">{{quickpickOrderItem.DestinationType}}</div>
-        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickpickOrderItem.Destination}}</div>
+        <div class="col width-type" [attr.data-title]="'TYPE' | translate">
+          {{quickpickOrderItem.PriorityCodeDescription}}</div>
+        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickpickOrderItem.Destination}}
+        </div>
         <div class="col width-type" [attr.data-title]="'DATE' | translate">{{quickpickOrderItem.Date}}</div>
       </div>
     </ng-container>
   </oc-grid>
 </ng-container>
-

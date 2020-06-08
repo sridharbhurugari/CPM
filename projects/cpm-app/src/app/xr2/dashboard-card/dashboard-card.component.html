@@ -1,50 +1,51 @@
 <div class="card">
-  <div class = "header">
-    <div class = "description">
-      Door 1<!-- {{ drawer.id}} -->
+  <div class="header">
+    <div class="description">
+      {{ drawer.Id }}
     </div>
-    <div class = "title">
-       <!-- {{ drawer.Status}} -->
-      Available
+    <div class="title">
+      {{ drawer.Status }}
     </div>
-    <div class = "index">
-      <!-- {{ drawer.CurrentBox}} / <!-- {{ drawer.TotalBox}} -->
-      1 / 3
+    <div class="index">
+      <div *ngIf="drawer.QuickPickOrderItem && drawer.QuickPickOrderItem.BoxCount">
+        {{ drawer.QuickPickOrderItem.FilledBoxCount }} / {{ drawer.QuickPickOrderItem.BoxCount }}
+      </div>
     </div>
   </div>
-  <div class = "body">
+  <div *ngIf="drawer.QuickPickOrderItem" style="height: 100%; width: 100%;">
+    <div class="body">
       <div class="row">
         <div class="label">
           <!-- TRANSLATION -->
           Priority
         </div>
         <div class="data">
-           <!-- {{ drawer.PriorityType}} -->
-          Stat Order
+          <div *ngIf="drawer.QuickPickOrderItem">
+            {{ drawer.QuickPickOrderItem.PriorityCodeDescription}}
+          </div>
         </div>
       </div>
       <div class="row">
         <div class="label">
-           <!-- TRANSLATION -->
+          <!-- TRANSLATION -->
           Destination
         </div>
         <div class="data">
-            <!-- {{ drawer.Destination}} -->
-          RM 467 White, Skylar
+          <div *ngIf="drawer.QuickPickOrderItem">
+            {{ drawer.QuickPickOrderItem.Destination }}
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="label">
-           <!-- TRANSLATION -->
-          Med Amount
-        </div>
-        <div class="data">
-           <!-- {{ drawer.MedicationAmount}} -->
-          3
-        </div>
+    </div>
+    <div class="footer">
+      <div *ngIf="drawer.QuickPickOrderItem">
+        <oc-button-action mode="secondary" [buttonIcon]="'print'" (click)="onPrintClick()"></oc-button-action>
       </div>
+    </div>
   </div>
-  <div class = "footer">
-    <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'Print Label'" (click)="onPrintClick()"></oc-button-action>
+  <div *ngIf="!drawer.QuickPickOrderItem" class="empty">
+    <div class="empty-content">
+      Empty
+    </div>
   </div>
 </div>

@@ -1,2 +1,13 @@
-<app-quick-pick-drawer-view></app-quick-pick-drawer-view>
-<app-quick-pick-order-view></app-quick-pick-order-view>
+<oc-action-layout>
+  <ng-container class="ocactionheader">
+    <div class="action-button-container">
+    </div>
+    <div class="selection-button-container">
+      <oc-singleselect></oc-singleselect>
+    </div>
+  </ng-container>
+  <ng-container class="ocactiondetails">
+    <app-quick-pick-drawer-view [quickpickDrawers]="quickpickDrawers"></app-quick-pick-drawer-view>
+    <app-quick-pick-order-view [quickpickOrderItems]="quickpickOrderItems"></app-quick-pick-order-view>
+  </ng-container>
+</oc-action-layout>

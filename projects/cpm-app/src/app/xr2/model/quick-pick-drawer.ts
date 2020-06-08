@@ -1,14 +1,9 @@
-export class QuickPickDrawer {
+import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-drawer';
+import { QuickPickOrderItem } from '../model/quick-pick-order-item';
 
-  constructor() {
-  }
+export class QuickPickDrawer implements IQuickPickDrawer {
 
   Id: string;
-  PriorityCode: string;
-  PriorityCodeColor: string;
   Status: string;
-  Destination: string;
-  DestinationId: string;
-  DestinationType: string;
-  PriorityCodeDescription: string;
+  QuickPickOrderItem: QuickPickOrderItem;
 }

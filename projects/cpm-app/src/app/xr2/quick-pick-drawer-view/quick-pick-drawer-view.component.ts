@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { QuickPickDrawer} from './../model/quick-pick-drawer';
-import { WindowService } from '../../shared/services/window-service';
+import { QuickPickDrawer } from './../model/quick-pick-drawer';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -10,8 +9,8 @@ import { WindowService } from '../../shared/services/window-service';
 })
 export class QuickPickDrawerViewComponent implements OnInit {
 
-  showDetailedView = false;
   _quickpickDrawers: QuickPickDrawer[];
+  detailedDrawer: QuickPickDrawer;
 
   get quickpickDrawers(): QuickPickDrawer[] {
     return this._quickpickDrawers;
@@ -20,27 +19,20 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set quickpickDrawers(value: QuickPickDrawer[]) {
     this._quickpickDrawers = value;
-    if (this.windowService.nativeWindow) {
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-    }
   }
 
-  constructor(private windowService: WindowService) {
-    const mockList = [
-      new QuickPickDrawer];
-
-    this.quickpickDrawers = mockList;
-   }
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
   openDetailedView(event) {
-    this.showDetailedView = true;
+    this.detailedDrawer = event;
   }
 
   closeDetailedView() {
-    this.showDetailedView = false;
+    this.detailedDrawer = null;
   }
 
 }

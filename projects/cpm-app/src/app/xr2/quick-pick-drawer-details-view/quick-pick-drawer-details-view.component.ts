@@ -1,4 +1,5 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
+import { QuickPickDrawer } from '../model/quick-pick-drawer';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -6,6 +7,8 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./quick-pick-drawer-details-view.component.scss']
 })
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
+
+  @Input() detailedDrawer: QuickPickDrawer;
 
   @Output() backClicked: EventEmitter<void> = new EventEmitter();
 
