@@ -1,13 +1,12 @@
 <div class="drawer-container">
-  <div *ngIf="detailedDrawer" class="detail-card-view">
-    <app-quick-pick-drawer-details-view class="detail-card-container" [detailedDrawer]="detailedDrawer"
-      (backClicked)="closeDetailedView()">
+  <div *ngIf="getDetailedViewDrawer()" class="detail-card-view">
+    <app-quick-pick-drawer-details-view class="detail-card-container" [detailedDrawer]="getDetailedViewDrawer()">
     </app-quick-pick-drawer-details-view>
   </div>
-  <div *ngIf="!detailedDrawer" class="cards-view">
+  <div *ngIf="!getDetailedViewDrawer()" class="cards-view">
     <div class="content">
       <div *ngFor="let quickpickDrawer of quickpickDrawers; index as i" class="card-container">
-        <app-dashboard-card [drawer]="quickpickDrawers[i]" (printClicked)="openDetailedView($event)">
+        <app-dashboard-card [drawer]="quickpickDrawers[i]">
         </app-dashboard-card>
       </div>
     </div>

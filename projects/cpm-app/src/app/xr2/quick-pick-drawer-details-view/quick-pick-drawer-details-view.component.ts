@@ -10,15 +10,13 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   @Input() detailedDrawer: QuickPickDrawer;
 
-  @Output() backClicked: EventEmitter<void> = new EventEmitter();
-
   constructor() { }
 
   ngOnInit() {
   }
 
   onBackClick() {
-    this.backClicked.emit();
+    this.detailedDrawer.DetailedView = false;
   }
 
 }

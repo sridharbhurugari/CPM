@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 import { QuickPickDrawer } from './../model/quick-pick-drawer';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -25,6 +26,10 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  getDetailedViewDrawer() {
+    return this._quickpickDrawers.find(item => item.DetailedView);
   }
 
   openDetailedView(event) {

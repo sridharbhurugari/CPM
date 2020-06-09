@@ -6,4 +6,5 @@ export class QuickPickDrawer implements IQuickPickDrawer {
   Id: string;
   Status: string;
   QuickPickOrderItem: QuickPickOrderItem;
+  DetailedView: boolean;
 }

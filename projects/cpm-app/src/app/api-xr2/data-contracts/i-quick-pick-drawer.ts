@@ -4,4 +4,5 @@ export interface IQuickPickDrawer {
   Id: string;
   Status: string;
   QuickPickOrderItem: QuickPickOrderItem;
+  DetailedView: boolean;
 }

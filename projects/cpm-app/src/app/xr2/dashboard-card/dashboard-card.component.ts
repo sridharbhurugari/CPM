@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { QuickPickDrawer } from '../model/quick-pick-drawer';
 
 @Component({
@@ -10,15 +10,13 @@ export class DashboardCardComponent implements OnInit {
 
   @Input() drawer: QuickPickDrawer;
 
-  @Output() printClicked: EventEmitter<QuickPickDrawer> = new EventEmitter<QuickPickDrawer>();
-
   constructor() { }
 
   ngOnInit() {
   }
 
   onPrintClick() {
-    this.printClicked.emit(this.drawer);
+    this.drawer.DetailedView = true;
   }
 
 }

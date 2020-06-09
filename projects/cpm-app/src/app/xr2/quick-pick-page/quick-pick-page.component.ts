@@ -108,32 +108,38 @@ export class QuickPickPageComponent implements OnInit {
       {
         Id: '1',
         Status: 'Available', // 'Ready',
-        QuickPickOrderItem: null // orderMockList[1]
+        QuickPickOrderItem: null, // orderMockList[1],
+        DetailedView: false
       },
       {
         Id: '2',
         Status: 'Available',
-        QuickPickOrderItem: null
+        QuickPickOrderItem: null,
+        DetailedView: false
       },
       {
         Id: '3',
         Status: 'Available', // 'Not Available',
-        QuickPickOrderItem: null // orderMockList[3]
+        QuickPickOrderItem: null, // orderMockList[3],
+        DetailedView: false
       },
       {
         Id: '4',
         Status: 'Available',
-        QuickPickOrderItem: null
+        QuickPickOrderItem: null,
+        DetailedView: false
       },
       {
         Id: '5',
         Status: 'Available', // 'Pending',
-        QuickPickOrderItem: null // orderMockList[5]
+        QuickPickOrderItem: null, // orderMockList[5],
+        DetailedView: false
       },
       {
         Id: '6',
         Status: 'Available', // 'Ready',
-        QuickPickOrderItem: null // orderMockList[4]
+        QuickPickOrderItem: null, // orderMockList[4],
+        DetailedView: false
       }
     ];
 
