@@ -48,7 +48,7 @@ describe('PicklistsQueueComponent', () => {
       removePicklistQueueItemSubject: new Subject()
     };
     picklistsQueueService = {
-      reroute: jasmine.createSpy('reroute').and.returnValue(of(picklistsQueueService))
+      skip: jasmine.createSpy('skip').and.returnValue(of(picklistsQueueService))
     };
 
     TestBed.configureTestingModule({
@@ -113,8 +113,8 @@ describe('PicklistsQueueComponent', () => {
         Status: 5,
         StatusDisplay: ''
             });
-      component.reroute(picklistQueueItem);
-      expect(picklistsQueueService.reroute).toHaveBeenCalled();
+      component.skip(picklistQueueItem);
+      expect(picklistsQueueService.skip).toHaveBeenCalled();
       })
     });
 
