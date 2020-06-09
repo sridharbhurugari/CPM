@@ -1,5 +1,5 @@
 import { GridMultiSelectDirective } from './grid-multi-select.directive';
-import { ɵbj as CheckboxComponent } from '@omnicell/webcorecomponents';
+import { CheckboxComponent } from '@omnicell/webcorecomponents';
 import { EventEmitter } from '@angular/core';
 import { EMPTY_PARSE_LOCATION } from '@angular/compiler';
 
@@ -47,7 +47,7 @@ describe('GridMultiSelectDirective', () => {
       it('should emit event with newly selected row in selectedValues', () => {
         spyOn(directive.selectionChanged, 'emit');
         directive.onRowCheckChanged({ selectedState: true, selectedValue: unselectedCheckbox.valueField });
-        expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({ 
+        expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({
           selectedValues: jasmine.arrayContaining([unselectedCheckbox.valueField])
         }));
       });
@@ -57,7 +57,7 @@ describe('GridMultiSelectDirective', () => {
       it('should emit event with newly un-selected row in unselectedValues', () => {
         spyOn(directive.selectionChanged, 'emit');
         directive.onRowCheckChanged({ selectedState: false, selectedValue: selectedCheckbox.valueField });
-        expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({ 
+        expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({
           unselectedValues: jasmine.arrayContaining([selectedCheckbox.valueField])
         }));
       });

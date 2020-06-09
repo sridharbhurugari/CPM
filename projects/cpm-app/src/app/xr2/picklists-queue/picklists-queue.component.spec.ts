@@ -23,6 +23,7 @@ import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
+import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -39,12 +40,15 @@ describe('PicklistsQueueComponent', () => {
   let fixture: ComponentFixture<PicklistsQueueComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let eventConnectionService: Partial<EventConnectionService>;
+  let picklistsQueueService: Partial<PicklistsQueueService>;
 
   beforeEach(async(() => {
-
     picklistsQueueEventConnectionService = {
       addOrUpdatePicklistQueueItemSubject: new Subject(),
       removePicklistQueueItemSubject: new Subject()
+    };
+    picklistsQueueService = {
+      reroute: jasmine.createSpy('reroute').and.returnValue(of(picklistsQueueService))
     };
 
     TestBed.configureTestingModule({
@@ -62,6 +66,7 @@ describe('PicklistsQueueComponent', () => {
         { provide: ActivatedRoute, useValue: { actr: () => { }} },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
+        { provide: PicklistsQueueService, useValue: picklistsQueueService},
       ]
     })
     .compileComponents();
@@ -78,6 +83,40 @@ describe('PicklistsQueueComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('reroute', () => {
+    it('should call picklistsQueueService.reroute', () => {
+      var picklistQueueItem = new PicklistQueueItem({
+        AvailableOutputDeviceList: [],
+        BoxCount: 0,
+        Destination: '',
+        DestinationId: '',
+        DestinationType: '',
+        DeviceDescription: '',
+        DeviceId: 1,
+        DeviceLocationId: 2,
+        FilledBoxCount: 3,
+        ItemCount: 4,
+        ItemPicklistLines: [{
+          DestinationId: '',
+          ItemId: '',
+          PickLocationDescription: '',
+          PickLocationDeviceLocationId: 6,
+          Qty: 7,
+          PicklistLineId:'0E15A44C-49CB-4676-8774-007D2FBC4791'}],
+        OrderId: '',
+        OutputDeviceId: '',
+        PicklistId: '',
+        PriorityCode: '',
+        PriorityCodeColor: '',
+        PriorityCodeDescription: '',
+        Status: 5,
+        StatusDisplay: ''
+            });
+      component.reroute(picklistQueueItem);
+      expect(picklistsQueueService.reroute).toHaveBeenCalled();
+      })
+    });
 
   describe('Connect to Events', () => {
     it('Connects to events on creation', () => {

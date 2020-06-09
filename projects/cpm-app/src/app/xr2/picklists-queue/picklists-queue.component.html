@@ -36,6 +36,7 @@
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
             <span>{{picklistQueueItem.DeviceDescription}}</span>
             <oc-singleselect
+            popupDirection="AUTO"
             [disabled] = "picklistQueueItem.Status > 1"
             [tableData] = "getActiveOutputDeviceList(picklistQueueItem)"
             [selectedItem] = "getSelectedOutputDeviceRow(picklistQueueItem)"
