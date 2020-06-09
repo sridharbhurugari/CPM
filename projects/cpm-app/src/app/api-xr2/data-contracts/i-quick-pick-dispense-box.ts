@@ -9,6 +9,5 @@ export class IQuickPickDispenseBox {
   DestinationType: string;
   PriorityCodeDescription: string;
   ItemPicklistLines: Array<IItemPicklistLine>;
-  Index: number;
   Date: string;
 }

@@ -5,4 +5,5 @@ export interface IQuickPickDrawer {
   Status: string;
   QuickPickDispenseBoxes: QuickPickDispenseBox[];
   DetailedView: boolean;
+  CurrentBoxIndex: number;
 }

@@ -27,7 +27,6 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'First Dose',
       //   ItemPicklistLines: [],
-      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -40,7 +39,6 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'Stat Order',
       //   ItemPicklistLines: [],
-      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -53,7 +51,6 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'First Dose',
       //   ItemPicklistLines: [],
-      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -66,7 +63,6 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'Stat Order',
       //   ItemPicklistLines: [],
-      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -79,7 +75,6 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'First Dose',
       //   ItemPicklistLines: [],
-      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -92,7 +87,6 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'Stat Order',
       //   ItemPicklistLines: [],
-      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // }
     ];
@@ -103,37 +97,43 @@ export class QuickPickPageComponent implements OnInit {
         Id: '1',
         Status: 'Available', // 'Ready',
         QuickPickDispenseBoxes: null, // [boxMockList[1]],
-        DetailedView: false
+        DetailedView: false,
+        CurrentBoxIndex: 0
       },
       {
         Id: '2',
         Status: 'Available',
         QuickPickDispenseBoxes: null,
-        DetailedView: false
+        DetailedView: false,
+        CurrentBoxIndex: 0
       },
       {
         Id: '3',
         Status: 'Available', // 'Not Available',
         QuickPickDispenseBoxes: null, // [boxMockList[3]],
-        DetailedView: false
+        DetailedView: false,
+        CurrentBoxIndex: 0
       },
       {
         Id: '4',
         Status: 'Available',
         QuickPickDispenseBoxes: null,
-        DetailedView: false
+        DetailedView: false,
+        CurrentBoxIndex: 0
       },
       {
         Id: '5',
         Status: 'Available', // 'Pending',
         QuickPickDispenseBoxes: null, // [boxMockList[5]],
-        DetailedView: false
+        DetailedView: false,
+        CurrentBoxIndex: 0
       },
       {
         Id: '6',
         Status: 'Available', // 'Ready',
         QuickPickDispenseBoxes: null, // [boxMockList[4]],
-        DetailedView: false
+        DetailedView: false,
+        CurrentBoxIndex: 0
       }
     ];
 

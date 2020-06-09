@@ -8,7 +8,7 @@
     </div>
     <div class="index">
       <div *ngIf="drawer.QuickPickDispenseBoxes && drawer.QuickPickDispenseBoxes.length > 0">
-        {{ drawer.QuickPickDispenseBoxes[0].Index }} / {{ drawer.QuickPickDispenseBoxes.length }}
+        {{ drawer.CurrentBoxIndex + 1 }} / {{ drawer.QuickPickDispenseBoxes.length }}
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
         </div>
         <div class="data">
           <div *ngIf="drawer.QuickPickDispenseBoxes">
-            {{ drawer.QuickPickDispenseBoxes[0].PriorityCodeDescription}}
+            {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].PriorityCodeDescription}}
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
         </div>
         <div class="data">
           <div *ngIf="drawer.QuickPickDispenseBoxes">
-            {{ drawer.QuickPickDispenseBoxes[0].Destination }}
+            {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].Destination }}
           </div>
         </div>
       </div>

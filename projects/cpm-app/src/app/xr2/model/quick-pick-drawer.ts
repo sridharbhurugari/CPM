@@ -7,4 +7,5 @@ export class QuickPickDrawer implements IQuickPickDrawer {
   Status: string;
   QuickPickDispenseBoxes: QuickPickDispenseBox[];
   DetailedView: boolean;
+  CurrentBoxIndex: number;
 }
