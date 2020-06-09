@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { GridComponent as OCGridComp, PersistService } from '@omnicell/webcorecomponents';
 
 import { QuickPickOrderItem } from '../model/quick-pick-order-item';
@@ -68,6 +68,9 @@ export class QuickPickOrderViewComponent implements OnInit {
 
   back() {
     this.wpfActionController.ExecuteContinueAction();
+  }
+
+  onSkipClick() {
   }
 
 }

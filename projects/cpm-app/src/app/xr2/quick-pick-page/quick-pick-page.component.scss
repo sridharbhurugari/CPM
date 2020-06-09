@@ -2,12 +2,12 @@
   height: 100%;
 }
 
-.action-button-container {
+.quick-pick-page {
+  display: flex;
+  flex-flow: column;
   height: 100%;
-  width: 80%;
-}
 
-.selection-button-container {
-  height: 100%;
-  width: 20%;
+  .quick-pick-content {
+    flex-grow: 1;
+  }
 }
