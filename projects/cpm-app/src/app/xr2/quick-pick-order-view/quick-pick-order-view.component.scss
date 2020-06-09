@@ -1,5 +1,4 @@
 :host{
-  height: 50%;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -10,4 +9,9 @@
 :host ::ng-deep oc-search-box{
   width: 358px !important;
   margin-right: 10px;
+}
+
+.col-content-container {
+  display: flex;
+  justify-content: space-between;
 }

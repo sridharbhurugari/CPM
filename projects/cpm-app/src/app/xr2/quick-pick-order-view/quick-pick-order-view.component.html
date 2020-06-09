@@ -3,11 +3,11 @@
     (onColSearchChange)="onColSearchChange($event)">
     <ng-container class="ocgridheader">
       <div class="first" data-colwrap="true"></div>
-      <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">{{'TYPE' | translate}}
+      <div class="col width-type" ocGridColResize data-width="200" data-colwrap="true">{{'TYPE' | translate}}
       </div>
       <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}
       </div>
-      <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'DATE' | translate}}
+      <div class="col width-type" ocGridColResize data-width="440" data-colwrap="true">{{'DATE' | translate}}
       </div>
     </ng-container>
     <ng-container class="ocgridheadersearch">
@@ -26,7 +26,13 @@
           {{quickpickOrderItem.PriorityCodeDescription}}</div>
         <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickpickOrderItem.Destination}}
         </div>
-        <div class="col width-type" [attr.data-title]="'DATE' | translate">{{quickpickOrderItem.Date}}</div>
+        <div class="col width-type" [attr.data-title]="'DATE' | translate">
+          <div class="col-content-container">
+            {{quickpickOrderItem.Date}}
+            <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button">
+            </oc-button-action>
+          </div>
+        </div>
       </div>
     </ng-container>
   </oc-grid>
