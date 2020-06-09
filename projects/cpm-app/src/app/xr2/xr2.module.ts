@@ -10,12 +10,12 @@ import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-qu
 import { QuickPickPageComponent } from './quick-pick-page/quick-pick-page.component';
 import { environment } from '../../environments/environment';
 import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component';
-import { QuickPickOrderViewComponent } from './quick-pick-order-view/quick-pick-order-view.component';
+import { QuickPickQueueViewComponent } from './quick-pick-queue-view/quick-pick-queue-view.component';
 import { QuickPickDrawerViewComponent } from './quick-pick-drawer-view/quick-pick-drawer-view.component';
 import { DashboardCardComponent } from './dashboard-card/dashboard-card.component';
 import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
 @NgModule({
-  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent, Xr2ExceptionsPageComponent, QuickPickPageComponent, QuickPickOrderViewComponent, QuickPickDrawerViewComponent, DashboardCardComponent, QuickPickDrawerDetailsViewComponent],
+  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent, Xr2ExceptionsPageComponent, QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, DashboardCardComponent, QuickPickDrawerDetailsViewComponent],
   imports: [
     CommonModule,
     GridModule,

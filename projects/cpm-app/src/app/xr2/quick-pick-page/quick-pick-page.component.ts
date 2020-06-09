@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-drawer';
-import { IQuickPickOrderItem } from '../../api-xr2/data-contracts/i-quick-pick-order-item';
+import { IQuickPickDispenseBox } from '../../api-xr2/data-contracts/i-quick-pick-dispense-box';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -10,13 +10,13 @@ import { IQuickPickOrderItem } from '../../api-xr2/data-contracts/i-quick-pick-o
 export class QuickPickPageComponent implements OnInit {
 
   quickpickDrawers: IQuickPickDrawer[];
-  quickpickOrderItems: IQuickPickOrderItem[];
+  quickPickDispenseBoxes: IQuickPickDispenseBox[];
 
 
   constructor() {
 
     // Order mock list
-    const orderMockList = [
+    const boxMockList = [
       // {
       //   OrderId: '',
       //   DrawerId: '',
@@ -27,8 +27,7 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'First Dose',
       //   ItemPicklistLines: [],
-      //   BoxCount: 3,
-      //   FilledBoxCount: 1,
+      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -41,8 +40,7 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'Stat Order',
       //   ItemPicklistLines: [],
-      //   BoxCount: 3,
-      //   FilledBoxCount: 1,
+      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -55,8 +53,7 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'First Dose',
       //   ItemPicklistLines: [],
-      //   BoxCount: 3,
-      //   FilledBoxCount: 3,
+      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -69,8 +66,7 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'Stat Order',
       //   ItemPicklistLines: [],
-      //   BoxCount: 3,
-      //   FilledBoxCount: 3,
+      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -83,8 +79,7 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'First Dose',
       //   ItemPicklistLines: [],
-      //   BoxCount: null,
-      //   FilledBoxCount: null,
+      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // },
       // {
@@ -97,8 +92,7 @@ export class QuickPickPageComponent implements OnInit {
       //   DestinationType: '',
       //   PriorityCodeDescription: 'Stat Order',
       //   ItemPicklistLines: [],
-      //   BoxCount: 3,
-      //   FilledBoxCount: 2,
+      //   Index: 1,
       //   Date: "5/3/2020 10:15 AM",
       // }
     ];
@@ -108,43 +102,43 @@ export class QuickPickPageComponent implements OnInit {
       {
         Id: '1',
         Status: 'Available', // 'Ready',
-        QuickPickOrderItem: null, // orderMockList[1],
+        QuickPickDispenseBoxes: null, // [boxMockList[1]],
         DetailedView: false
       },
       {
         Id: '2',
         Status: 'Available',
-        QuickPickOrderItem: null,
+        QuickPickDispenseBoxes: null,
         DetailedView: false
       },
       {
         Id: '3',
         Status: 'Available', // 'Not Available',
-        QuickPickOrderItem: null, // orderMockList[3],
+        QuickPickDispenseBoxes: null, // [boxMockList[3]],
         DetailedView: false
       },
       {
         Id: '4',
         Status: 'Available',
-        QuickPickOrderItem: null,
+        QuickPickDispenseBoxes: null,
         DetailedView: false
       },
       {
         Id: '5',
         Status: 'Available', // 'Pending',
-        QuickPickOrderItem: null, // orderMockList[5],
+        QuickPickDispenseBoxes: null, // [boxMockList[5]],
         DetailedView: false
       },
       {
         Id: '6',
         Status: 'Available', // 'Ready',
-        QuickPickOrderItem: null, // orderMockList[4],
+        QuickPickDispenseBoxes: null, // [boxMockList[4]],
         DetailedView: false
       }
     ];
 
     this.quickpickDrawers = drawerMockList;
-    this.quickpickOrderItems = orderMockList;
+    this.quickPickDispenseBoxes = boxMockList;
   }
 
   ngOnInit() {

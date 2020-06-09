@@ -1,8 +1,8 @@
-import { QuickPickOrderItem } from './../../xr2/model/quick-pick-order-item';
+import { QuickPickDispenseBox } from '../../xr2/model/quick-pick-dispense-box';
 
 export interface IQuickPickDrawer {
   Id: string;
   Status: string;
-  QuickPickOrderItem: QuickPickOrderItem;
+  QuickPickDispenseBoxes: QuickPickDispenseBox[];
   DetailedView: boolean;
 }

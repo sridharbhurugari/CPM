@@ -8,11 +8,11 @@
     </div>
     <div class="index">
       <div *ngIf="
-          detailedDrawer.QuickPickOrderItem &&
-          detailedDrawer.QuickPickOrderItem.FilledBoxCount
+          detailedDrawer.QuickPickDispenseBoxes &&
+          detailedDrawer.QuickPickDispenseBoxes.length > 0
         ">
-        {{ detailedDrawer.QuickPickOrderItem.FilledBoxCount }} /
-        {{ detailedDrawer.QuickPickOrderItem.BoxCount }}
+        {{ 1 }} /
+        {{ detailedDrawer.QuickPickDispenseBoxes.length }}
       </div>
     </div>
   </div>
@@ -23,8 +23,8 @@
         Priority
       </div>
       <div class="data">
-        <div *ngIf="detailedDrawer.QuickPickOrderItem">
-          {{ detailedDrawer.QuickPickOrderItem.PriorityCodeDescription }}
+        <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
+          {{ detailedDrawer.QuickPickDispenseBoxes[0].PriorityCodeDescription }}
         </div>
       </div>
     </div>
@@ -34,8 +34,8 @@
         Destination
       </div>
       <div class="data">
-        <div *ngIf="detailedDrawer.QuickPickOrderItem">
-          {{ detailedDrawer.QuickPickOrderItem.Destination }}
+        <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
+          {{ detailedDrawer.QuickPickDispenseBoxes[0].Destination }}
         </div>
       </div>
     </div>

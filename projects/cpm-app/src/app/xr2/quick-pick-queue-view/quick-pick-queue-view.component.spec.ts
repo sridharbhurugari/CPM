@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuickPickOrderViewComponent } from './quick-pick-order-view.component';
+import { QuickPickQueueViewComponent } from './quick-pick-queue-view.component';
 
-describe('QuickPickOrderViewComponent', () => {
-  let component: QuickPickOrderViewComponent;
-  let fixture: ComponentFixture<QuickPickOrderViewComponent>;
+describe('QuickPickQueueViewComponent', () => {
+  let component: QuickPickQueueViewComponent;
+  let fixture: ComponentFixture<QuickPickQueueViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuickPickOrderViewComponent ]
+      declarations: [ QuickPickQueueViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickPickOrderViewComponent);
+    fixture = TestBed.createComponent(QuickPickQueueViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -7,12 +7,12 @@
       {{ drawer.Status }}
     </div>
     <div class="index">
-      <div *ngIf="drawer.QuickPickOrderItem && drawer.QuickPickOrderItem.BoxCount">
-        {{ drawer.QuickPickOrderItem.FilledBoxCount }} / {{ drawer.QuickPickOrderItem.BoxCount }}
+      <div *ngIf="drawer.QuickPickDispenseBoxes && drawer.QuickPickDispenseBoxes.length > 0">
+        {{ drawer.QuickPickDispenseBoxes[0].Index }} / {{ drawer.QuickPickDispenseBoxes.length }}
       </div>
     </div>
   </div>
-  <div *ngIf="drawer.QuickPickOrderItem" style="height: 100%; width: 100%;">
+  <div *ngIf="drawer.QuickPickDispenseBoxes" style="height: 100%; width: 100%;">
     <div class="body">
       <div class="row">
         <div class="label">
@@ -20,8 +20,8 @@
           Priority
         </div>
         <div class="data">
-          <div *ngIf="drawer.QuickPickOrderItem">
-            {{ drawer.QuickPickOrderItem.PriorityCodeDescription}}
+          <div *ngIf="drawer.QuickPickDispenseBoxes">
+            {{ drawer.QuickPickDispenseBoxes[0].PriorityCodeDescription}}
           </div>
         </div>
       </div>
@@ -31,19 +31,19 @@
           Destination
         </div>
         <div class="data">
-          <div *ngIf="drawer.QuickPickOrderItem">
-            {{ drawer.QuickPickOrderItem.Destination }}
+          <div *ngIf="drawer.QuickPickDispenseBoxes">
+            {{ drawer.QuickPickDispenseBoxes[0].Destination }}
           </div>
         </div>
       </div>
     </div>
     <div class="footer">
-      <div *ngIf="drawer.QuickPickOrderItem">
+      <div *ngIf="drawer.QuickPickDispenseBoxes">
         <oc-button-action mode="secondary" [buttonIcon]="'print'" (click)="onPrintClick()"></oc-button-action>
       </div>
     </div>
   </div>
-  <div *ngIf="!drawer.QuickPickOrderItem" class="empty">
+  <div *ngIf="!drawer.QuickPickDispenseBoxes" class="empty">
     <div class="empty-content">
       Empty
     </div>

@@ -1,18 +1,18 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { GridComponent as OCGridComp, PersistService } from '@omnicell/webcorecomponents';
 
-import { QuickPickOrderItem } from '../model/quick-pick-order-item';
+import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 
 @Component({
-  selector: 'app-quick-pick-order-view',
-  templateUrl: './quick-pick-order-view.component.html',
-  styleUrls: ['./quick-pick-order-view.component.scss']
+  selector: 'app-quick-pick-queue-view',
+  templateUrl: './quick-pick-queue-view.component.html',
+  styleUrls: ['./quick-pick-queue-view.component.scss']
 })
-export class QuickPickOrderViewComponent implements OnInit {
+export class QuickPickQueueViewComponent implements OnInit {
 
-  private _quickpickOrderItems: QuickPickOrderItem[];
+  private _quickPickDispenseBoxes: QuickPickDispenseBox[];
 
   gridoneKey = "gridone";
   restoreWidths = Array(6).fill(0);
@@ -23,15 +23,15 @@ export class QuickPickOrderViewComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocgrid: OCGridComp;
 
   @Input()
-  set quickpickOrderItems(value: QuickPickOrderItem[]) {
-    this._quickpickOrderItems = value;
+  set quickPickDispenseBoxes(value: QuickPickDispenseBox[]) {
+    this._quickPickDispenseBoxes = value;
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
 
-  get quickpickOrderItems(): QuickPickOrderItem[] {
-    return this._quickpickOrderItems;
+  get quickPickDispenseBoxes(): QuickPickDispenseBox[] {
+    return this._quickPickDispenseBoxes;
   }
 
   constructor(

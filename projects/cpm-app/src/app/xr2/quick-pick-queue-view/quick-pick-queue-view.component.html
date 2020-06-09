@@ -18,17 +18,17 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-        *ngFor="let quickpickOrderItem of quickpickOrderItems | gridDatasearch: searchMap; trackBy: trackByFunction">
+        *ngFor="let quickPickDispenseBox of quickPickDispenseBoxes | gridDatasearch: searchMap; trackBy: trackByFunction">
         <div class="first">
-          <div class="firstcolumncolorblock" [style.background-color]="quickpickOrderItem.PriorityCodeColor"></div>
+          <div class="firstcolumncolorblock" [style.background-color]="quickPickDispenseBox.PriorityCodeColor"></div>
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
-          {{quickpickOrderItem.PriorityCodeDescription}}</div>
-        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickpickOrderItem.Destination}}
+          {{quickPickDispenseBox.PriorityCodeDescription}}</div>
+        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickPickDispenseBox.Destination}}
         </div>
         <div class="col width-type" [attr.data-title]="'DATE' | translate">
           <div class="col-content-container">
-            {{quickpickOrderItem.Date}}
+            {{quickPickDispenseBox.Date}}
             <oc-button-action class="skip-button" mode="secondary" [buttonIcon]="'forward'" (click)="onSkipClick()">
             </oc-button-action>
           </div>

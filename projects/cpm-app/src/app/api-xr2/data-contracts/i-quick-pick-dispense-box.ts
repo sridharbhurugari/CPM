@@ -1,5 +1,5 @@
-import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
-export class IQuickPickOrderItem {
+import { IItemPicklistLine } from './i-item-picklist-line';
+export class IQuickPickDispenseBox {
   OrderId: string;
   DrawerId: string;
   PriorityCode: string;
@@ -9,7 +9,6 @@ export class IQuickPickOrderItem {
   DestinationType: string;
   PriorityCodeDescription: string;
   ItemPicklistLines: Array<IItemPicklistLine>;
-  BoxCount: number;
-  FilledBoxCount: number;
+  Index: number;
   Date: string;
 }

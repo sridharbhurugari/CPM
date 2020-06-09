@@ -1,10 +1,10 @@
 import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-drawer';
-import { QuickPickOrderItem } from '../model/quick-pick-order-item';
+import { QuickPickDispenseBox } from './quick-pick-dispense-box';
 
 export class QuickPickDrawer implements IQuickPickDrawer {
 
   Id: string;
   Status: string;
-  QuickPickOrderItem: QuickPickOrderItem;
+  QuickPickDispenseBoxes: QuickPickDispenseBox[];
   DetailedView: boolean;
 }
