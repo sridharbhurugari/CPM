@@ -7,28 +7,28 @@
       </div>
       <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}
       </div>
-      <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'DATE' | translate}}
+      <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'DETAIL' | translate}}
       </div>
     </ng-container>
     <ng-container class="ocgridheadersearch">
       <div ocGridSearchCol></div>
       <div ocGridSearchCol="PriorityCodeDescription"><input ocTextbox></div>
       <div ocGridSearchCol="Destination"><input ocTextbox></div>
-      <div ocGridSearchCol="Date"><input ocTextbox></div>
+      <div ocGridSearchCol="Detail"><input ocTextbox></div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-        *ngFor="let quickPickDispenseBox of quickPickDispenseBoxes | gridDatasearch: searchMap; trackBy: trackByFunction">
+        *ngFor="let quickPickQueueItem of quickPickQueueItems | gridDatasearch: searchMap; trackBy: trackByFunction">
         <div class="first">
-          <div class="firstcolumncolorblock" [style.background-color]="quickPickDispenseBox.PriorityCodeColor"></div>
+          <div class="firstcolumncolorblock" [style.background-color]="quickPickQueueItem.PriorityColor"></div>
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
-          {{quickPickDispenseBox.PriorityCodeDescription}}</div>
-        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickPickDispenseBox.Destination}}
+          {{quickPickQueueItem.PriorityDescription}}</div>
+        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickPickQueueItem.DestinationDescription}}
         </div>
-        <div class="col width-type" [attr.data-title]="'DATE' | translate">
+        <div class="col width-type" [attr.data-title]="'DETAIL' | translate">
           <div class="col-content-container">
-            {{quickPickDispenseBox.Date}}
+            {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}}
             <oc-button-action class="skip-button" mode="secondary" [buttonIcon]="'forward'" (click)="onSkipClick()">
             </oc-button-action>
           </div>

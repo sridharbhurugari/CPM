@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-drawer';
 import { IQuickPickDispenseBox } from '../../api-xr2/data-contracts/i-quick-pick-dispense-box';
+import { Observable } from 'rxjs';
+import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
+import { map, shareReplay } from 'rxjs/operators';
+import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -11,86 +15,9 @@ export class QuickPickPageComponent implements OnInit {
 
   quickpickDrawers: IQuickPickDrawer[];
   quickPickDispenseBoxes: IQuickPickDispenseBox[];
+  quickPickQueueItems: Observable<QuickPickQueueItem[]>;
 
-
-  constructor() {
-
-    // Order mock list
-    const boxMockList = [
-      // {
-      //   OrderId: '',
-      //   DrawerId: '',
-      //   PriorityCode: '',
-      //   PriorityCodeColor: 'orange',
-      //   Destination: "Nursing Area 33",
-      //   DestinationId: '',
-      //   DestinationType: '',
-      //   PriorityCodeDescription: 'First Dose',
-      //   ItemPicklistLines: [],
-      //   Date: "5/3/2020 10:15 AM",
-      // },
-      // {
-      //   OrderId: '',
-      //   DrawerId: '',
-      //   PriorityCode: '',
-      //   PriorityCodeColor: 'red',
-      //   Destination: "Room 4657, South White, Skylar",
-      //   DestinationId: '',
-      //   DestinationType: '',
-      //   PriorityCodeDescription: 'Stat Order',
-      //   ItemPicklistLines: [],
-      //   Date: "5/3/2020 10:15 AM",
-      // },
-      // {
-      //   OrderId: '',
-      //   DrawerId: '',
-      //   PriorityCode: '',
-      //   PriorityCodeColor: 'orange',
-      //   Destination: "Nursing Area 33",
-      //   DestinationId: '',
-      //   DestinationType: '',
-      //   PriorityCodeDescription: 'First Dose',
-      //   ItemPicklistLines: [],
-      //   Date: "5/3/2020 10:15 AM",
-      // },
-      // {
-      //   OrderId: '',
-      //   DrawerId: '',
-      //   PriorityCode: '',
-      //   PriorityCodeColor: 'red',
-      //   Destination: "Room 4657, South White, Skylar",
-      //   DestinationId: '',
-      //   DestinationType: '',
-      //   PriorityCodeDescription: 'Stat Order',
-      //   ItemPicklistLines: [],
-      //   Date: "5/3/2020 10:15 AM",
-      // },
-      // {
-      //   OrderId: '',
-      //   DrawerId: '',
-      //   PriorityCode: '',
-      //   PriorityCodeColor: 'orange',
-      //   Destination: "Nursing Area 33",
-      //   DestinationId: '',
-      //   DestinationType: '',
-      //   PriorityCodeDescription: 'First Dose',
-      //   ItemPicklistLines: [],
-      //   Date: "5/3/2020 10:15 AM",
-      // },
-      // {
-      //   OrderId: '',
-      //   DrawerId: '',
-      //   PriorityCode: '',
-      //   PriorityCodeColor: 'red',
-      //   Destination: "Room 4657, South White, Skylar",
-      //   DestinationId: '',
-      //   DestinationType: '',
-      //   PriorityCodeDescription: 'Stat Order',
-      //   ItemPicklistLines: [],
-      //   Date: "5/3/2020 10:15 AM",
-      // }
-    ];
-
+  constructor(private quickPickQueueService: Xr2QuickPickQueueService) {
     // Drawer mock list
     const drawerMockList = [
       {
@@ -138,10 +65,17 @@ export class QuickPickPageComponent implements OnInit {
     ];
 
     this.quickpickDrawers = drawerMockList;
-    this.quickPickDispenseBoxes = boxMockList;
   }
 
   ngOnInit() {
+    this.loadPicklistsQueueItems();
+  }
+
+  private loadPicklistsQueueItems(): void {
+    this.quickPickQueueItems = this.quickPickQueueService.get(6).pipe(map(x => {
+      const displayObjects = x.map(queueItem => new QuickPickQueueItem(queueItem));
+      return displayObjects;
+    }), shareReplay(1));
   }
 
 }

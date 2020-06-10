@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { GridComponent as OCGridComp, PersistService } from '@omnicell/webcorecomponents';
-
-import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
+import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
+import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
+import { shareReplay, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-quick-pick-queue-view',
@@ -12,7 +14,7 @@ import { WindowService } from '../../shared/services/window-service';
 })
 export class QuickPickQueueViewComponent implements OnInit {
 
-  private _quickPickDispenseBoxes: QuickPickDispenseBox[];
+  private _quickPickDispenseBoxes: QuickPickQueueItem[];
 
   gridoneKey = "gridone";
   restoreWidths = Array(6).fill(0);
@@ -23,25 +25,25 @@ export class QuickPickQueueViewComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocgrid: OCGridComp;
 
   @Input()
-  set quickPickDispenseBoxes(value: QuickPickDispenseBox[]) {
+  set quickPickQueueItems(value: QuickPickQueueItem[]) {
     this._quickPickDispenseBoxes = value;
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
 
-  get quickPickDispenseBoxes(): QuickPickDispenseBox[] {
+  get quickPickQueueItems(): QuickPickQueueItem[] {
     return this._quickPickDispenseBoxes;
   }
 
   constructor(
     private windowService: WindowService,
     private wpfActionController: WpfActionControllerService,
-    private persistService: PersistService) {
+    private persistService: PersistService,
+    private quickPickQueueService: Xr2QuickPickQueueService,) {
   }
 
   ngOnInit() {
-
   }
 
   onWidthsChange(data: number[]) {

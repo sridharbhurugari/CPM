@@ -18,6 +18,7 @@
   "DESCRIPTION_ID": "Description / ID",
   "DESTINATION": "Destination",
   "DEVICE": "Device",
+  "DETAIL": "Detail",
   "DEVICE_ACCESS": "Device Access",
   "DEVICE_LOC_ACCESS_ERROR_TITLE": "Carousel Configuration",
   "DEVICE_OFFLINE_MESSAGE": "The device where the item is located is either offline or does not exist.",
