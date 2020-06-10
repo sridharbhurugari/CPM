@@ -1,0 +1,116 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+oc-grid{
+  height: 90%;
+}
+
+:host{
+  height: 100%;
+}
+
+:host ::ng-deep oc-grid{
+  font-size: $font-size-large;
+}
+
+.badge {
+  position: relative;
+  bottom: 10px;
+  right: -100px;
+}
+
+.cpmwarningtext{
+  font-size: $font-size-xsmall;
+  color: maroon;
+}
+
+.cpmheaderrow
+{
+  height: 70px;
+}
+.downarrow{
+  transform: rotate(45deg);
+  background-color: pink;
+}
+
+.uparrow{
+  transform: rotate(0deg);
+}
+
+.headertext{
+  float: left;
+}
+
+.headericon{
+  position: relative;
+  left: 15px;
+  top: 3px;
+  float: left;
+}
+.trayidheader{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-xsmall;
+  font-weight: $regular;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+  padding-right: 180px;
+
+}
+.traytypeheader{
+  font-family: $font-family-sans-serif;
+  font-weight: $regular;
+  font-size: $font-size-xsmall;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+  padding-right: 300px;
+}
+.devicenameheader{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-xsmall;
+  font-weight: $regular;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+  padding-right: 180px;
+}
+.completeddateheader{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-xsmall;
+  font-weight: $regular;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+  padding-right: 180px;
+}
+.trayidtext{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+}
+.traytypetext{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+}
+.devicenametext{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+}
+.completeddatetext{
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-large;
+  font-weight: $bold;
+  margin-left: 20px;
+  margin-right: 30px;
+  text-align: left;
+}
