@@ -31,7 +31,8 @@ div.button-div:hover {
   cursor: pointer;
   opacity: .9;
 }
-div.button-div.div.button-label {
+
+div.button-div div.button-label {
   font-size: 14px;
   text-align: center;
 }

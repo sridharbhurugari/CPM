@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-drawer';
 import { IQuickPickDispenseBox } from '../../api-xr2/data-contracts/i-quick-pick-dispense-box';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
+import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { WindowService } from '../../shared/services/window-service';
+import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -16,8 +21,20 @@ export class QuickPickPageComponent implements OnInit {
   quickpickDrawers: IQuickPickDrawer[];
   quickPickDispenseBoxes: IQuickPickDispenseBox[];
   quickPickQueueItems: Observable<QuickPickQueueItem[]>;
+  searchTextFilter: Observable<string>;
+  outputDeviceDisplayList: SingleselectRowItem[] = [];
+  defaultDeviceDisplyItem: SingleselectRowItem;
+  selectedDeviceId: string;
 
-  constructor(private quickPickQueueService: Xr2QuickPickQueueService) {
+  @ViewChild('searchBox', {
+    static: true
+  })
+  searchElement: SearchBoxComponent;
+
+  constructor(private quickPickQueueService: Xr2QuickPickQueueService,
+              private quickPickDeviceService: Xr2QuickPickQueueDeviceService,
+              private windowService: WindowService,
+              private ocapHttpConfigurationService: OcapHttpConfigurationService) {
     // Drawer mock list
     const drawerMockList = [
       {
@@ -68,11 +85,61 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadPicklistsQueueItems();
+    this.getActiveXr2Devices();
+  }
+
+  ngAfterViewInit(): void {
+    this.searchElement.searchOutput$
+      .pipe(
+        switchMap((searchData: string) => {
+          return of(searchData);
+        })
+      )
+      .subscribe(data => {
+        this.searchTextFilter = of(data);
+        if (this.windowService.nativeWindow) {
+          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+        }
+      });
+  }
+
+  async getActiveXr2Devices() {
+    const results = await this.quickPickDeviceService.get().toPromise();
+    const newList: SingleselectRowItem[] = [];
+
+    const currentClientId = this.ocapHttpConfigurationService.get().clientId;
+    let defaultFound: SingleselectRowItem;
+    results.forEach(selectableDeviceInfo => {
+      const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description, selectableDeviceInfo.DeviceId.toString());
+      newList.push(selectRow);
+
+      if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
+        defaultFound = selectRow;
+      }
+    });
+
+    this.outputDeviceDisplayList = newList;
+
+    if (defaultFound) {
+      this.selectedDeviceId = defaultFound.value;
+      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === this.selectedDeviceId);
+      this.loadPicklistsQueueItems();
+    }
+  }
+
+  onDeviceSelectionChanged($event) {
+    if (this.selectedDeviceId !== $event.value) {
+      this.selectedDeviceId = $event.value;
+      this.loadPicklistsQueueItems();
+    }
   }
 
   private loadPicklistsQueueItems(): void {
-    this.quickPickQueueItems = this.quickPickQueueService.get(6).pipe(map(x => {
+    if (!this.selectedDeviceId) {
+      return;
+    }
+
+    this.quickPickQueueItems = this.quickPickQueueService.get(this.selectedDeviceId).pipe(map(x => {
       const displayObjects = x.map(queueItem => new QuickPickQueueItem(queueItem));
       return displayObjects;
     }), shareReplay(1));

@@ -11,3 +11,12 @@
     flex-grow: 1;
   }
 }
+
+.robotSelection {
+  float: left;
+}
+
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}

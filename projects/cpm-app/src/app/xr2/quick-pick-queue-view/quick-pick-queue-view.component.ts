@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, ViewChild, ɵCodegenComponentFactoryResolver } from '@angular/core';
-import { GridComponent as OCGridComp, PersistService, SvgIconModule } from '@omnicell/webcorecomponents';
+import { Component, OnInit, Input, ViewChild, ɵCodegenComponentFactoryResolver, EventEmitter } from '@angular/core';
+import { GridComponent as OCGridComp, PersistService, SvgIconModule, SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
-import { shareReplay, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { shareReplay, map, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { nameof } from '../../shared/functions/nameof';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'app-quick-pick-queue-view',
@@ -16,13 +18,28 @@ export class QuickPickQueueViewComponent implements OnInit {
 
   private _quickPickDispenseBoxes: QuickPickQueueItem[];
 
+  _searchTextFilter: string;
+
   gridoneKey = "gridone";
   restoreWidths = Array(6).fill(0);
   hasPersistedData = false;
 
   searchMap = {};
 
-  @ViewChild('ocgrid', { static: false }) ocgrid: OCGridComp;
+  @ViewChild('ocgrid', { static: false })
+    ocgrid: OCGridComp;
+
+  @Input()
+  set searchTextFilter(value: string) {
+    this._searchTextFilter = value;
+  }
+
+  get searchTextFilter(): string {
+    return this._searchTextFilter;
+  }
+
+  searchFields = [nameof<QuickPickQueueItem>('PriorityDescription'), nameof<QuickPickQueueItem>('DestinationLine1'),
+  , nameof<QuickPickQueueItem>('DestinationLine2')];
 
   @Input()
   set quickPickQueueItems(value: QuickPickQueueItem[]) {
@@ -40,7 +57,7 @@ export class QuickPickQueueViewComponent implements OnInit {
     private windowService: WindowService,
     private wpfActionController: WpfActionControllerService,
     private persistService: PersistService,
-    private quickPickQueueService: Xr2QuickPickQueueService,) {
+    private quickPickQueueService: Xr2QuickPickQueueService) {
   }
 
   ngOnInit() {
