@@ -8,7 +8,6 @@ import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-
 import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
-import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 
 @Component({
