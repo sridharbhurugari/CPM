@@ -1,0 +1,89 @@
+<div class="card">
+  <div class="header" [ngStyle]="getHeaderStyle()">
+    <div class="header-content">
+      <div class="description">
+        {{ detailedDrawer.Id }}
+      </div>
+      <div class="title">
+        {{ detailedDrawer.QuickPickDispenseBoxes[detailedDrawer.CurrentBoxIndex].PriorityCodeDescription }}
+      </div>
+      <div class="index">
+        <div *ngIf="
+            detailedDrawer.QuickPickDispenseBoxes &&
+            detailedDrawer.QuickPickDispenseBoxes.length > 0
+          ">
+          {{ detailedDrawer.CurrentBoxIndex + 1 }} /
+          {{ detailedDrawer.QuickPickDispenseBoxes.length }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="body-content">
+      <div class="state">
+        <app-traffic-lights></app-traffic-lights>
+      </div>
+      <div class="fields">
+        <div class="fields-content">
+          <div class="row">
+            <div class="label">
+              <!-- TRANSLATION -->
+              Destination
+            </div>
+            <div class="data">
+              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
+                {{ detailedDrawer.QuickPickDispenseBoxes[detailedDrawer.CurrentBoxIndex].Destination }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">
+              <!-- TRANSLATION -->
+              Id
+            </div>
+            <div class="data">
+              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
+                12345678910
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">
+              <!-- TRANSLATION -->
+              Items Filled
+            </div>
+            <div class="data">
+              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
+                1
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">
+              <!-- TRANSLATION -->
+              Drawer Qty
+            </div>
+            <div class="data">
+              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
+                10
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-view">
+        <div class="scroll-view-content">
+          <app-quick-pick-scroll-view></app-quick-pick-scroll-view>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-content">
+      <div class="action-buttons">
+        <oc-button-action [buttonText]="'Back'" (click)="onBackClick()"></oc-button-action>
+        <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'Print'" (click)="onPrintClick()"></oc-button-action>
+      </div>
+    </div>
+  </div>
+</div>

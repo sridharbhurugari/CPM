@@ -19,4 +19,18 @@ export class DashboardCardComponent implements OnInit {
     this.drawer.DetailedView = true;
   }
 
+  getHeaderStyle() {
+    let headerStyle = {};
+
+    if (this.drawer.QuickPickDispenseBoxes) {
+      const currentBox = this.drawer.QuickPickDispenseBoxes[this.drawer.CurrentBoxIndex];
+      headerStyle = {
+        'background-color': currentBox.PriorityCodeColor,
+        'color': 'white',
+      };
+    }
+
+    return headerStyle;
+  }
+
 }

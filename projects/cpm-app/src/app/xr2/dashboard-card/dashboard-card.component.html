@@ -1,47 +1,69 @@
 <div class="card">
   <div class="header">
-    <div class="description">
-      {{ drawer.Id }}
-    </div>
-    <div class="title">
-      {{ drawer.Status }}
-    </div>
-    <div class="index">
-      <div *ngIf="drawer.QuickPickDispenseBoxes && drawer.QuickPickDispenseBoxes.length > 0">
-        {{ drawer.CurrentBoxIndex + 1 }} / {{ drawer.QuickPickDispenseBoxes.length }}
+    <div class="header-content" [ngStyle]="getHeaderStyle()">
+      <div class="description">
+        {{ drawer.Id }}
+      </div>
+      <div class="title" [ngStyle] = "drawer.QuickPickDispenseBoxes ? {'border-color': 'white'} : null">
+        <div *ngIf="drawer.QuickPickDispenseBoxes">
+          {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].PriorityCodeDescription }}
+        </div>
+      </div>
+      <div class="index">
+        <div *ngIf="drawer.QuickPickDispenseBoxes && drawer.QuickPickDispenseBoxes.length > 0">
+          {{ drawer.CurrentBoxIndex + 1 }} / {{ drawer.QuickPickDispenseBoxes.length }}
+        </div>
       </div>
     </div>
   </div>
-  <div *ngIf="drawer.QuickPickDispenseBoxes" style="height: 100%; width: 100%;">
+  <div *ngIf="drawer.QuickPickDispenseBoxes" style="height: 85%; width: 100%;">
     <div class="body">
-      <div class="row">
-        <div class="label">
-          <!-- TRANSLATION -->
-          Priority
-        </div>
-        <div class="data">
-          <div *ngIf="drawer.QuickPickDispenseBoxes">
-            {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].PriorityCodeDescription}}
+      <div class="body-content">
+        <div class="row">
+          <div class="label">
+            <!-- TRANSLATION -->
+            Destination
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="label">
-          <!-- TRANSLATION -->
-          Destination
-        </div>
-        <div class="data">
-          <div *ngIf="drawer.QuickPickDispenseBoxes">
+          <div class="data">
             {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].Destination }}
           </div>
         </div>
+        <div class="row">
+          <div class="label">
+            <!-- TRANSLATION -->
+            Id
+          </div>
+          <div class="data">
+            12345678910
+            <!-- {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].OrderId }} -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">
+            <!-- TRANSLATION -->
+            Filled Qty
+          </div>
+          <div class="data">
+            1
+            <!-- {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex]. }} -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">
+            <!-- TRANSLATION -->
+            Items Filled
+          </div>
+          <div class="data">
+            1
+            <!-- {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].Destination }} -->
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="footer">
-      <div *ngIf="drawer.QuickPickDispenseBoxes">
+      <div class="button-content">
         <oc-button-action mode="secondary" [buttonIcon]="'print'" (click)="onPrintClick()"></oc-button-action>
       </div>
     </div>
+    <div class="footer"></div>
   </div>
   <div *ngIf="!drawer.QuickPickDispenseBoxes" class="empty">
     <div class="empty-content">
