@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { GridComponent as OCGridComp, PersistService } from '@omnicell/webcorecomponents';
+import { Component, OnInit, Input, ViewChild, ɵCodegenComponentFactoryResolver } from '@angular/core';
+import { GridComponent as OCGridComp, PersistService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
@@ -73,6 +73,7 @@ export class QuickPickQueueViewComponent implements OnInit {
   }
 
   onSkipClick() {
+    console.log("Skip Clicked!")
   }
 
 }

@@ -4,7 +4,8 @@ export class IQuickPickQueueItem {
   BoxIdentifier: Guid;
   PriorityColor: string;
   PriorityDescription: string;
-  DestinationDescription: string;
+  DestinationLine1: string;
+  DestinationLine2: string;
   PriorityCodeDescription: string;
   BoxNumber: number;
   BoxCount: number;

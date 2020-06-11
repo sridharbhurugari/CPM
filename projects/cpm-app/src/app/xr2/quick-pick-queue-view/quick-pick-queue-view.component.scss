@@ -18,3 +18,20 @@
   display: flex;
   justify-content: space-between;
 }
+
+div.button-div {
+  position: relative;
+  width: auto;
+  height: auto;
+  text-align: center;
+}
+
+div.button-div:hover {
+  cursor: hand;
+  cursor: pointer;
+  opacity: .9;
+}
+div.button-div.div.button-label {
+  font-size: 14px;
+  text-align: center;
+}

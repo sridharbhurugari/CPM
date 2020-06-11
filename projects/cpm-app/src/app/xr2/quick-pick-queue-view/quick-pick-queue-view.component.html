@@ -1,3 +1,4 @@
+<oc-action-layout>
 <ng-container class="ocactiondetails">
   <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="true" (onColWidthsChange)="onWidthsChange($event)"
     (onColSearchChange)="onColSearchChange($event)">
@@ -12,9 +13,8 @@
     </ng-container>
     <ng-container class="ocgridheadersearch">
       <div ocGridSearchCol></div>
-      <div ocGridSearchCol="PriorityCodeDescription"><input ocTextbox></div>
+      <div ocGridSearchCol="PriorityDescription"><input ocTextbox></div>
       <div ocGridSearchCol="Destination"><input ocTextbox></div>
-      <div ocGridSearchCol="Detail"><input ocTextbox></div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
@@ -24,16 +24,20 @@
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
           {{quickPickQueueItem.PriorityDescription}}</div>
-        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">{{quickPickQueueItem.DestinationDescription}}
+        <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
+          <div>{{quickPickQueueItem.DestinationLine1}}</div>
+          <div>{{quickPickQueueItem.DestinationLine2}}</div>
         </div>
         <div class="col width-type" [attr.data-title]="'DETAIL' | translate">
           <div class="col-content-container">
-            {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}}
-            <oc-button-action class="skip-button" mode="secondary" [buttonIcon]="'forward'" (click)="onSkipClick()">
-            </oc-button-action>
+              {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}}
+            <div (click)="onSkipClick()" class="button-div">
+              <oc-svgicon icon="openv1-right" theme="dark" height="30" width="30"></oc-svgicon>
+              <div class="button-label">Reroute</div></div>
           </div>
         </div>
       </div>
     </ng-container>
   </oc-grid>
 </ng-container>
+</oc-action-layout>
