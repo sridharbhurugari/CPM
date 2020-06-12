@@ -4,7 +4,7 @@
       <div class="description">
         {{ drawer.Id }}
       </div>
-      <div class="title" [ngStyle] = "drawer.QuickPickDispenseBoxes ? {'border-color': 'white'} : null">
+      <div class="title">
         <div *ngIf="drawer.QuickPickDispenseBoxes">
           {{ drawer.QuickPickDispenseBoxes[drawer.CurrentBoxIndex].PriorityCodeDescription }}
         </div>

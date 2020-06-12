@@ -18,71 +18,30 @@
       </div>
     </div>
   </div>
-  <div class="body">
-    <div class="body-content">
-      <div class="state">
-        <app-traffic-lights></app-traffic-lights>
-      </div>
-      <div class="fields">
-        <div class="fields-content">
-          <div class="row">
-            <div class="label">
-              <!-- TRANSLATION -->
-              Destination
-            </div>
-            <div class="data">
-              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
-                {{ detailedDrawer.QuickPickDispenseBoxes[detailedDrawer.CurrentBoxIndex].Destination }}
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="label">
-              <!-- TRANSLATION -->
-              Id
-            </div>
-            <div class="data">
-              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
-                12345678910
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="label">
-              <!-- TRANSLATION -->
-              Items Filled
-            </div>
-            <div class="data">
-              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
-                1
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="label">
-              <!-- TRANSLATION -->
-              Drawer Qty
-            </div>
-            <div class="data">
-              <div *ngIf="detailedDrawer.QuickPickDispenseBoxes">
-                10
-              </div>
-            </div>
+  <div class="view-container">
+    <div class="card-details-view">
+      <div class="body">
+        <div class="body-content">
+          <div class="grid-container">
+            <div class="grid-label"><app-traffic-lights></app-traffic-lights></div> <div class="grid-data" [ngStyle]="{'color': 'red'}">Return Bin To Drawer</div>
+            <div class="grid-label">Destination</div> <div class="grid-data">Room 4657, South</div>
+            <div class="grid-label">Id</div> <div class="grid-data">12345678910</div>
+            <div class="grid-label">Qty</div> <div class="grid-data">Destination</div>
           </div>
         </div>
       </div>
-      <div class="scroll-view">
-        <div class="scroll-view-content">
-          <app-quick-pick-scroll-view></app-quick-pick-scroll-view>
+      <div class="footer">
+        <div class="footer-content">
+          <div class="action-buttons">
+            <oc-button-action [buttonText]="'Back'" (click)="onBackClick()"></oc-button-action>
+            <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'Print'" (click)="onPrintClick()"></oc-button-action>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="footer">
-    <div class="footer-content">
-      <div class="action-buttons">
-        <oc-button-action [buttonText]="'Back'" (click)="onBackClick()"></oc-button-action>
-        <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'Print'" (click)="onPrintClick()"></oc-button-action>
+    <div class="scroll-view">
+      <div class="scroll-view-content">
+        <app-quick-pick-scroll-view></app-quick-pick-scroll-view>
       </div>
     </div>
   </div>
