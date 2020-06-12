@@ -3,59 +3,82 @@
         <div class="cpmactiontitle">{{ 'GUIDED_CYCLE_COUNT' | translate }}</div>
         <div class="dateTime">
             {{time| date:'M/d/yyyy h:mm a'}}</div>
-            <div class="printlable"
-        *ngIf="HasLabelPrinterConfigured()">
+        <div class="printlable" *ngIf="HasLabelPrinterConfigured()">
             <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
         </div>
         <div class="totalItemCount">
             <span>{{currentItemCount}} / {{itemCount}}</span></div>
+        <oc-toast></oc-toast>
     </ng-container>
 
     <ng-container class="ocactiondetails">
         <div class="displayGuidedCycleCount">
-
-            <div class="BrandName">
-                <div>{{ displayCycleCountItem.GenericNameFormatted }}<span *ngIf="CheckSafetyScanConfiguration()"><img src="Scan.svg"></span></div>
+            <div #contain>
+                <div class="BrandName" 
+                    *ngIf="itemDescriptionWidthScroll == itemDescriptionWidth && ItemDescriptionText && displayCycleCountItem">
+                    <!-- *ngIf="itemDescriptionLength &lt; 45 || itemDescriptionLength == 45" *ngIf="ItemDescriptionText"-->
+                    <div>{{ displayCycleCountItem.GenericNameFormatted }}
+                        <!--<oc-svgicon [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}" *ngIf="CheckSafetyScanConfiguration() && productBarCodeDisplay" icon="scan" theme="dark" height="70" width="30" 
+                    (focus)="onBarcodeExcludedInputFocus($event)" (blur)="onBarcodeExcludedInputBlur($event)" (click)='productScanInfo()'></oc-svgicon>-->
+                        <span *ngIf="CheckSafetyScanConfiguration() && productBarCodeDisplay" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}"><img src="Scan.svg" (click)='productScanInfo()'></span>
+                    </div>
+                </div>
+                <div class="BrandNamesmall"
+                    *ngIf="itemDescriptionWidthScroll > itemDescriptionWidth && !ItemDescriptionText && displayCycleCountItem">
+                    <div>{{ displayCycleCountItem.GenericNameFormatted }}
+                        <!--<oc-svgicon [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}" *ngIf="CheckSafetyScanConfiguration() && productBarCodeDisplay" icon="scan" theme="dark" height="70" width="30" 
+                    (focus)="onBarcodeExcludedInputFocus($event)" (blur)="onBarcodeExcludedInputBlur($event)" (click)='productScanInfo()'></oc-svgicon>-->
+                        <span *ngIf="CheckSafetyScanConfiguration() && productBarCodeDisplay" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}"><img src="Scan.svg" (click)='productScanInfo()'></span>
+                    </div>
+                </div>
             </div>
-            <div class="GenericName">
-                <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+            <div #Generic>
+                <div class="GenericName"  *ngIf="itemGenericWidthScroll == itemGenericWidth">
+                    <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+                </div>
+                <div class="GenericNameSmall"  *ngIf="itemGenericWidthScroll > itemGenericWidth">
+                    <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+                </div>
             </div>
         </div>
-        <div class="panelContainer1">
-            <div class="itemIdBox">
+            <div class="panelContainer1">
+                <div class="itemIdBox">
 
-                <div class="itemIdHeader">
-                    <span>{{'ITEM_ID' | translate}}</span>
-                </div>
-                <div class="ItemId">
-                    <span>{{ displayCycleCountItem.ItemId }}
-
-                    </span>
-                </div>
-            </div>
-            <div class="DeviceLocation">
-                <div>
                     <div class="itemIdHeader">
-                        <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                        <span>{{'ITEM_ID' | translate}}</span>
                     </div>
-                    <div class="location">
-                        <div class="locationdescription">
-                            <div>
-                                {{ displayCycleCountItem.LocationDescription }}
-                            </div>
-                            <div>
-                            <span *ngIf="CheckSafetyScanConfiguration()"><img src="Scan.svg"></span>
+                    <div class="ItemId" *ngIf="itemIdLength &lt; 11 || itemIdLength == 11">
+                        <span>{{ displayCycleCountItem.ItemId }}</span>
+                    </div>
+                    <div class="ItemIdsmall" *ngIf="itemIdLength>11">
+                        <span>{{ displayCycleCountItem.ItemId }}</span>
+                    </div>
+                </div>
+                <div class="DeviceLocation">
+                    <div>
+                        <div class="itemIdHeader">
+                            <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                        </div>
+                        <div class="location">
+                            <div class="locationdescription">
+                                <div>
+                                    {{ displayCycleCountItem.LocationDescription }}
+                                </div>
+                                <div>
+                                   <span *ngIf="CheckSafetyScanConfiguration() && binBarCodeDisplay" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}"><img src="Scan.svg" (click)='binbarScanInfo()'></span>
+                                   <!--<oc-svgicon [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}" *ngIf="CheckSafetyScanConfiguration() && binBarCodeDisplay" icon="scan" theme="dark" height="70" width="30" 
+                                   (focus)="onBarcodeExcludedInputFocus($event)" (blur)="onBarcodeExcludedInputBlur($event)" (click)='binbarScanInfo()'></oc-svgicon>-->
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="devicelocationaccess">
+                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
+                            [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
+                            (isAccessBusy)="deviceLocationAccessBusy = $event"
+                            (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+                    </div>
                 </div>
-                <div class="devicelocationaccess">
-                    <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
-                        [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
-                        (isAccessBusy)="deviceLocationAccessBusy = $event"
-                        (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
-                </div>
-            </div>
         </div>
     </ng-container>
 
@@ -117,11 +140,14 @@
                 <div class="ocrightalign">
                     <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6"
                         [disabled]="deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
-                    <oc-button-action id="nextbutton" *ngIf="!isLastItem" [buttonText]=" 'NEXT' | translate " (click)="navigateContinue()"
-                        [disabled]="nextButtonDisable || deviceLocationAccessBusy || carouselFaulted" tabindex="5">
+                    <oc-button-action id="nextbutton" *ngIf="!isLastItem" [buttonText]=" 'NEXT' | translate "
+                        (click)="navigateContinue()"
+                        [disabled]="(nextButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay)"
+                        tabindex="5">
                     </oc-button-action>
                     <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" (click)="navigateContinue()"
-                        *ngIf="isLastItem" [disabled]="doneButtonDisable" [disabled]="doneButtonDisable || deviceLocationAccessBusy || carouselFaulted"
+                        *ngIf="isLastItem"
+                        [disabled]="(doneButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay)"
                         tabindex="5"></oc-button-action>
                 </div>
             </div>

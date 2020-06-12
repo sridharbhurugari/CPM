@@ -117,5 +117,8 @@
   "XR2_EXCEPTIONS_DETAILS_ROW": "Row",
   "XR2_EXCEPTIONS_DETAILS_ITEMDESCRIPTION": "Item Description / ID",
   "XR2_EXCEPTIONS_DETAILS_BARCODE_NDC": "Bar Code / NDC",
-  "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review"
+  "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review",
+  "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
+  "SCAN_BIN_BARCODE":"The correct bin bar code must be scanned.",
+  "INVALID_SCAN_BARCODE":"The bar code scanned is not associated with the item requested.\n\nScan the correct bar code or confirm bar code override by entering the override code."
 }

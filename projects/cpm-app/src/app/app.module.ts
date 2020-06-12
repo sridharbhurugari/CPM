@@ -22,7 +22,9 @@ import { ProgressAnimationModule,
          ProgressbarInterceptor,
          PopupDialogService,
          PopupWindowModule,
-         PopupWindowService
+         PopupWindowService,
+         ToastService,
+         ToastModule
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
 import { RouterModule } from '@angular/router';
@@ -57,6 +59,7 @@ import { RouterModule } from '@angular/router';
     SharedModule,
     RouterModule,
     PopupWindowModule,
+    ToastModule
   ],
   providers: [
     ProgressbarService,
@@ -67,6 +70,7 @@ import { RouterModule } from '@angular/router';
     },
     PopupDialogService,
     PopupWindowService,
+    ToastService,
   ],
   bootstrap: [AppComponent]
 })

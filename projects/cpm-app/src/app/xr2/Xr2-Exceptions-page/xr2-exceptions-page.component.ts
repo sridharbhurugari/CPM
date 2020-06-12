@@ -12,6 +12,7 @@ import { Many } from 'lodash';
 import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.service';
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
+import { BarcodeScanService } from 'oal-core';
 @Component({
   selector: 'app-xr2-exceptions-page',
   templateUrl: './xr2-exceptions-page.component.html',
@@ -28,14 +29,19 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBox', null) searchElement: SearchBoxComponent;
 
   displayExceptionsList$: Observable<Xr2ExceptionsItem[]>;
+  traytypesList$: Observable<string[]>;
   currentSortPropertyName: string = this.completedDatePropertyName;
   sortOrder: SortDirection = SortDirection.descending;
   searchTextFilter: string;
+  nonBarCodekeyboardInput: string = '';
+  nonBarcodeInputFocus: boolean = false;
+  rawBarcodeMessage: string = '';
   searchFields = [ this.trayIDPropertyName,this.exceptionPocketsPropertyName,this.trayTypePropertyName, this.deviceNamePropertyName];
 
   constructor(
     private exceptionsListService: Xr2ExceptionsService,
     private wpfActionControllerService: WpfActionControllerService,
+    private _barcodeScanService: BarcodeScanService
 
     ) { }
 
@@ -44,7 +50,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
        return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionsItem(p)), SortDirection.descending);
     }), shareReplay(1));
 
-    
+    this.traytypesList$ = this.exceptionsListService.gettraytypes();
   }
 
 
@@ -80,4 +86,30 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   {
     this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`,{TrayID:exceptions.TrayID.toString(),DeviceID: exceptions.DeviceID,CompletedDateTime:exceptions.CompletedDateTime, DeviceName:exceptions.DeviceName, TrayDescription: exceptions.TrayDescription});
   }
+
+  onBarcodeScanExcludedKeyPressEvent(event: KeyboardEvent) {
+    var isInputComplete = this._barcodeScanService.handleKeyInput(event);
+    var isScannerInput = this._barcodeScanService.isScannerInput();
+   // check if the character is a barcode scan
+    if (isScannerInput) {
+        //Since the first character always returns true, ignore it.
+       if (this._barcodeScanService.BarcodeInputCharacters.length != 1) {
+            //ignore if it is a barcodescan
+           event.preventDefault();
+        }
+    } else {
+       this._barcodeScanService.reset();
+    }
+    if (isInputComplete) {
+        //remove the last character.
+        this.nonBarCodekeyboardInput = this.nonBarCodekeyboardInput.slice(0, -1);
+        this.rawBarcodeMessage = this._barcodeScanService.BarcodeInputCharacters;
+        console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this._barcodeScanService.BarcodeInputCharacters}`);
+        this._barcodeScanService.reset();
+        var value = this.traytypesList$;
+        var exceptionData: IXr2ExceptionsItem;
+        this.displayExceptionsList$.subscribe((exceptions : IXr2ExceptionsItem[])  => exceptionData = exceptions.find(p => p.TrayID === this.rawBarcodeMessage));  
+        this.navigatedetailspage(exceptionData);
+      }
+}
 }

@@ -479,6 +479,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         ItemId: this.displayCycleCountItem.ItemId,
         ExpirationDate: actualexpiradationdate,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
+        BarCodeFormat:"UN",
+        ProductID:"0090192121"
       });
 
       let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");

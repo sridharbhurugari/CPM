@@ -18,14 +18,14 @@ export class GridMultiSelectDirective {
 
   @ContentChildren(CheckboxComponent)
   set rows(values: QueryList<CheckboxComponent>) {
-    this._possibleValues = values.map(x => x.valueField);
-    this._selectedValues = values.filter(x => x.selected).map(x => x.valueField);
+    this._possibleValues = values.map(x => x.value);
+    this._selectedValues = values.filter(x => x.value).map(x => x.value);
 
     if(this._subscriptions.length){
       this._subscriptions.forEach(x => x.unsubscribe());
     }
 
-    values && values.forEach(x => this._subscriptions.push(x.selection && x.selection.subscribe(x => this.onRowCheckChanged(x))));
+    values && values.forEach(x => this._subscriptions.push(x.value && x.value.subscribe(x => this.onRowCheckChanged(x))));
   }
 
   constructor() { }

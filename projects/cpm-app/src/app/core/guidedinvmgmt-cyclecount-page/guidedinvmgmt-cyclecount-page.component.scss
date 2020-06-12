@@ -14,11 +14,38 @@
     ::ng-deep{
       img{
         &:first-child{
-          width: 50px!important;
+          width: 40px!important;
           margin-bottom: 20px!important;
         }
       }
     }
+  }
+
+  .BrandNamesmall{
+    font-size: 25px;
+    font-weight: bold;
+    font-family: $font-family-sans-serif;
+    position: relative;
+    color:$text-color;
+    margin-top: 40px;
+    margin-left: 16px;
+    ::ng-deep{
+      img{
+        &:first-child{
+          width: 40px!important;
+          margin-bottom: 20px!important;
+        }
+      }
+    }
+  }
+
+  .ItemIdsmall{
+    font-size: 20px;
+    font-weight: bold;
+    font-family: $font-family-sans-serif;
+    color:$text-color;
+    bottom: 16px;
+    left: 16px;
   }
 
   .GenericName{
@@ -67,7 +94,7 @@
     ::ng-deep{
       img{
         &:first-child{
-          width: 50px!important;
+          width: 40px!important;
         }
       }
     }
@@ -93,7 +120,7 @@
   .panelContainer1 {
     display: flex;
     flex-direction: row;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .panelContainer {
@@ -399,4 +426,15 @@
 .barcode{
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.GenericNameSmall{
+  font-size: 25px;
+  font-family: $font-family-sans-serif;
+  position:relative;
+  font-weight: normal;
+  color:$text-color;
+  margin-top: 6px;
+  margin-bottom: 8px!important;
+  margin-left: 16px;
 }
