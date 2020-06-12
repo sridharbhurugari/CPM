@@ -1,12 +1,22 @@
 <div class="quick-pick-page">
   <div class="cpmheaderrow">
+    <oc-singleselect
+      [tableData] = "outputDeviceDisplayList"
+      [selectedItem] = "defaultDeviceDisplyItem"
+      componentWidth="300"
+      dropdownRowsVisible="6"
+      popupDirection="AUTO"
+      searchPlaceholderText="Find device"
+      selectText="Select device"
+      noItemsText="No devices"
+      (selectionChanged)="onDeviceSelectionChanged($event)"></oc-singleselect>
     <app-header-container></app-header-container>
-    <oc-singleselect></oc-singleselect>
+    <oc-search-box #searchBox [placeHolderText]="'SEARCH_QUEUE' | translate"></oc-search-box>
   </div>
   <div class="quick-pick-content">
     <ng-container class="ocactiondetails">
       <app-quick-pick-drawer-view [quickpickDrawers]="quickpickDrawers"></app-quick-pick-drawer-view>
-      <app-quick-pick-queue-view [quickPickDispenseBoxes]="quickPickDispenseBoxes"></app-quick-pick-queue-view>
+      <app-quick-pick-queue-view [quickPickQueueItems]="quickPickQueueItems | async" [searchTextFilter]="searchTextFilter | async"></app-quick-pick-queue-view>
     </ng-container>
   </div>
 </div>

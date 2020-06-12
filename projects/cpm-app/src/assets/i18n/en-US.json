@@ -18,6 +18,7 @@
   "DESCRIPTION_ID": "Description / ID",
   "DESTINATION": "Destination",
   "DEVICE": "Device",
+  "DETAIL": "Detail",
   "DEVICE_ACCESS": "Device Access",
   "DEVICE_LOC_ACCESS_ERROR_TITLE": "Carousel Configuration",
   "DEVICE_OFFLINE_MESSAGE": "The device where the item is located is either offline or does not exist.",
@@ -109,6 +110,7 @@
   "XR2_EXCEPTIONS_DEVICE_NAME": "Device Name",
   "XR2_EXCEPTIONS_COMPLETED_DATE": "Completed Date",
   "SEARCH_TEXT_DISPLAY": "Scan Tray Bar Code or Enter Text",
+  "SEARCH_QUEUE": "Search Queue",
   "CYCLE_COUNT": "Cycle Count",
   "UNKNOWNITEM_HEADER_TEXT": "Unassigned",
   "UNKNOWNITEM_BODY_TEXT": "Item {{itemId}} is currently not assigned at CPM. Please scan or select another item."

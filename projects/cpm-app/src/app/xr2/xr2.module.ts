@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PicklistsQueueComponent } from './picklists-queue/picklists-queue.component';
 import { GridModule, ButtonActionModule, SingleselectDropdownModule, CardContainerModule, DashboardCardModule, LayoutModule, FooterModule, SearchModule, InputsModule,
-  PopupDialogModule } from '@omnicell/webcorecomponents';
+  PopupDialogModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
@@ -33,7 +33,8 @@ import { TrafficLightsComponent } from './traffic-lights/traffic-lights.componen
     SharedModule,
     InputsModule,
     SearchModule,
-    PopupDialogModule
+    PopupDialogModule,
+    SvgIconModule
   ]
 })
 export class Xr2Module {}
