@@ -87,6 +87,7 @@ export class QuickPickPageComponent implements OnInit {
     this.getActiveXr2Devices();
   }
 
+  /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
       .pipe(
@@ -126,6 +127,7 @@ export class QuickPickPageComponent implements OnInit {
     }
   }
 
+  /* istanbul ignore next */
   onDeviceSelectionChanged($event) {
     if (this.selectedDeviceId !== $event.value) {
       this.selectedDeviceId = $event.value;
