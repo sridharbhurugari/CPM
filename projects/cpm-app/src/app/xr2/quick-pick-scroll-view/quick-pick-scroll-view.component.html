@@ -7,7 +7,7 @@
             Medication
           </div>
           <div class="data-title">
-            Req Qty / Filled Qty
+            Filled ({{ dispenseBox.FilledQty}}) / Req ({{ dispenseBox.ReqQty }})
           </div>
         </div>
         <div class="index">
@@ -16,120 +16,18 @@
     </div>
     <div class="body">
       <div class="body-content">
-        <div class="row">
+        <div class="row" *ngFor="let picklistItem of picklistItems"
+        [ngStyle]= "picklistItem.ReqQty !== picklistItem.FilledQty ? {'background': 'yellow'} : null">
           <div class="label">
-            Docusate Sodium 100 MG Tablet
+            {{picklistItem.Label}}
           </div>
           <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-             3 / 10
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            Data
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            Data
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            Data
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">
-            Docusate Sodium 100 MG Tablet
-          </div>
-          <div class="data">
-            Data
+            {{picklistItem.FilledQty}} / {{picklistItem.ReqQty}}
           </div>
         </div>
       </div>
     </div>
     <div class="footer">
-      <div class="footer-content">
-        <div class="footer-labels">
-          <div class="label">Line Items: 1</div>
-          <div class="data">Partial Fill</div>
-        </div>
-        <div class="index"></div>
-      </div>
     </div>
   </div>
 </div>

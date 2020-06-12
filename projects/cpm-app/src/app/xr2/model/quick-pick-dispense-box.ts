@@ -3,7 +3,6 @@ import { IQuickPickDispenseBox } from '../../api-xr2/data-contracts/i-quick-pick
 
 export class QuickPickDispenseBox implements IQuickPickDispenseBox {
   OrderId: string;
-  DrawerId: string;
   PriorityCode: string;
   PriorityCodeColor: string;
   Destination: string;
@@ -12,4 +11,7 @@ export class QuickPickDispenseBox implements IQuickPickDispenseBox {
   PriorityCodeDescription: string;
   ItemPicklistLines: Array<IItemPicklistLine>;
   Date: string;
+  FilledQty: number;
+  ReqQty: number;
+  ItemsFilled: number;
 }

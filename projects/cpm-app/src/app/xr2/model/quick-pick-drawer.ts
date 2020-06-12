@@ -2,10 +2,11 @@ import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-draw
 import { QuickPickDispenseBox } from './quick-pick-dispense-box';
 
 export class QuickPickDrawer implements IQuickPickDrawer {
-
   Id: string;
   Status: string;
-  QuickPickDispenseBoxes: QuickPickDispenseBox[];
+  QuickPickDispenseBox: QuickPickDispenseBox;
   DetailedView: boolean;
   CurrentBoxIndex: number;
+  TotalBoxCount: number;
+  State: number;
 }

@@ -18,7 +18,7 @@ export class QuickPickPageComponent implements OnInit {
     // Order mock list
     const boxMockList = [
       {
-        OrderId: '',
+        OrderId: '4322343',
         DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'orange',
@@ -28,9 +28,12 @@ export class QuickPickPageComponent implements OnInit {
         PriorityCodeDescription: 'First Dose',
         ItemPicklistLines: [],
         Date: "5/3/2020 10:15 AM",
+        FilledQty: 31,
+        ReqQty: 35,
+        ItemsFilled: 5
       },
       {
-        OrderId: '',
+        OrderId: '43243242',
         DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'red',
@@ -40,9 +43,12 @@ export class QuickPickPageComponent implements OnInit {
         PriorityCodeDescription: 'Stat Order',
         ItemPicklistLines: [],
         Date: "5/3/2020 10:15 AM",
+        FilledQty: 31,
+        ReqQty: 35,
+        ItemsFilled: 5
       },
       {
-        OrderId: '',
+        OrderId: '312343',
         DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'orange',
@@ -52,9 +58,12 @@ export class QuickPickPageComponent implements OnInit {
         PriorityCodeDescription: 'First Dose',
         ItemPicklistLines: [],
         Date: "5/3/2020 10:15 AM",
+        FilledQty: 31,
+        ReqQty: 35,
+        ItemsFilled: 5
       },
       {
-        OrderId: '',
+        OrderId: '321345437',
         DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'red',
@@ -64,9 +73,12 @@ export class QuickPickPageComponent implements OnInit {
         PriorityCodeDescription: 'Stat Order',
         ItemPicklistLines: [],
         Date: "5/3/2020 10:15 AM",
+        FilledQty: 31,
+        ReqQty: 35,
+        ItemsFilled: 5
       },
       {
-        OrderId: '',
+        OrderId: '21324456',
         DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'orange',
@@ -76,9 +88,12 @@ export class QuickPickPageComponent implements OnInit {
         PriorityCodeDescription: 'First Dose',
         ItemPicklistLines: [],
         Date: "5/3/2020 10:15 AM",
+        FilledQty: 31,
+        ReqQty: 35,
+        ItemsFilled: 5
       },
       {
-        OrderId: '',
+        OrderId: '23453367',
         DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'red',
@@ -88,6 +103,9 @@ export class QuickPickPageComponent implements OnInit {
         PriorityCodeDescription: 'Stat Order',
         ItemPicklistLines: [],
         Date: "5/3/2020 10:15 AM",
+        FilledQty: 31,
+        ReqQty: 35,
+        ItemsFilled: 5
       }
     ];
 
@@ -96,44 +114,56 @@ export class QuickPickPageComponent implements OnInit {
       {
         Id: '1',
         Status: 'Available', // 'Ready',
-        QuickPickDispenseBoxes: [boxMockList[1]],
+        QuickPickDispenseBox: boxMockList[1],
         DetailedView: false,
-        CurrentBoxIndex: 0
+        CurrentBoxIndex: 0,
+        TotalBoxCount: 2,
+        State: 1
       },
       {
         Id: '2',
         Status: 'Available',
-        QuickPickDispenseBoxes: null,
+        QuickPickDispenseBox: null,
         DetailedView: false,
-        CurrentBoxIndex: 0
+        CurrentBoxIndex: null,
+        TotalBoxCount: null,
+        State: 1
       },
       {
         Id: '3',
         Status: 'Available', // 'Not Available',
-        QuickPickDispenseBoxes: [boxMockList[3]],
+        QuickPickDispenseBox: boxMockList[3],
         DetailedView: false,
-        CurrentBoxIndex: 0
+        CurrentBoxIndex: 0,
+        TotalBoxCount: 3,
+        State: 3
       },
       {
         Id: '4',
         Status: 'Available',
-        QuickPickDispenseBoxes: null,
+        QuickPickDispenseBox: null,
         DetailedView: false,
-        CurrentBoxIndex: 0
+        CurrentBoxIndex: null,
+        TotalBoxCount: null,
+        State: 1
       },
       {
         Id: '5',
         Status: 'Available', // 'Pending',
-        QuickPickDispenseBoxes: [boxMockList[5]],
+        QuickPickDispenseBox: boxMockList[5],
         DetailedView: false,
-        CurrentBoxIndex: 0
+        CurrentBoxIndex: 0,
+        TotalBoxCount: 4,
+        State: 2
       },
       {
         Id: '6',
         Status: 'Available', // 'Ready',
-        QuickPickDispenseBoxes: [boxMockList[4]],
+        QuickPickDispenseBox: boxMockList[4],
         DetailedView: false,
-        CurrentBoxIndex: 0
+        CurrentBoxIndex: 0,
+        TotalBoxCount: 3,
+        State: 1
       }
     ];
 

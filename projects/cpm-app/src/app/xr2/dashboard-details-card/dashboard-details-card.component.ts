@@ -29,8 +29,8 @@ export class DashboardDetailsCardComponent implements OnInit {
   getHeaderStyle() {
     let headerStyle = {};
 
-    if (this.detailedDrawer.QuickPickDispenseBoxes) {
-      const currentBox = this.detailedDrawer.QuickPickDispenseBoxes[this.detailedDrawer.CurrentBoxIndex];
+    if (this.detailedDrawer.QuickPickDispenseBox) {
+      const currentBox = this.detailedDrawer.QuickPickDispenseBox;
       headerStyle = {
         'background-color': currentBox.PriorityCodeColor,
         'color': 'white',

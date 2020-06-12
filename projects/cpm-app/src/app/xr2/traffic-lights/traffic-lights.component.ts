@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Lights } from './models/lights';
 @Component({
   selector: 'app-traffic-lights',
@@ -6,14 +6,25 @@ import { Lights } from './models/lights';
   styleUrls: ['./traffic-lights.component.scss']
 })
 export class TrafficLightsComponent implements OnInit {
+
+  @Input() color: string;
+
   public lights: Lights = {
-    isRed: true,
+    isRed: false,
     isYellow: false,
     isGreen: false
   };
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
+    if (this.color === 'red') {
+      this.lights.isRed = true;
+    } else if (this.color === 'yellow') {
+      this.lights.isYellow = true;
+    } else if (this.color === 'green') {
+      this.lights.isGreen = true;
+    }
   }
 
 }

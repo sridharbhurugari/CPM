@@ -26,30 +26,45 @@
       border-color: grey;
       border-width: 2px;
 
-      .description {
+      .details {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 50%;
         height: 100%;
-        width: 8.6%;
-      }
 
-      .title {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        width: 86.4%;
-        border-left: solid;
-        border-width: 2px;
-        border-color: grey;
-        padding-left: 10px;
+        .description {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          width: 17%;
+        }
+
+        .title {
+          display: flex;
+          align-items: center;
+          height: 100%;
+          width: 83%;
+          border-left: solid;
+          border-width: 2px;
+          border-color: grey;
+
+          .title-content {
+            padding-left: 20px;
+          }
+        }
       }
 
       .index {
         display: flex;
-        align-items: center;
         height: 100%;
-        width: 5%;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .index-content {
+          padding-right: 20px;
+        }
       }
     }
   }
@@ -85,12 +100,18 @@
             width: 100%;
             grid-template-columns: 17% auto;
             grid-template-rows: auto;
-            grid-template-areas: "grid-label grid-data"
-                                 "grid-label grid-data"
-                                 "grid-label grid-data"
-                                 "grid-label grid-data"
+            grid-template-areas:
+              "grid-label grid-data"
+          }
 
-
+          .grid-status {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            color: grey;
+            margin-left: 0px;
+            justify-content: center;
           }
 
           .grid-label {
@@ -98,12 +119,9 @@
             width: 100%;
             height: 100%;
             align-items: center;
-            border-right: solid;
-            border-width: 2px;
-            border-color: grey;
             color: grey;
             margin-left: 0px;
-            justify-content: center;
+            justify-content: flex-end;
           }
 
           .grid-data {
@@ -113,7 +131,6 @@
             align-items: center;
             margin-left: 20px;
           }
-
         }
       }
     }
