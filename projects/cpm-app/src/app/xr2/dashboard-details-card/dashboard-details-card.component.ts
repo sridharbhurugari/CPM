@@ -9,7 +9,16 @@ import { QuickPickDrawer } from '../model/quick-pick-drawer';
 })
 export class DashboardDetailsCardComponent implements OnInit {
 
-  @Input() detailedDrawer: QuickPickDrawer;
+  private _detailedDrawer: QuickPickDrawer;
+
+  @Input()
+  set detailedDrawer(value: QuickPickDrawer) {
+    this._detailedDrawer = value;
+  }
+
+  get detailedDrawer(): QuickPickDrawer {
+    return this._detailedDrawer;
+  }
 
   constructor() { }
 

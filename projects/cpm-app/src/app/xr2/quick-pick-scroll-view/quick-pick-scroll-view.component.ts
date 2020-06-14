@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QuickPickDispenseBox } from './../model/quick-pick-dispense-box';
+import { QuickPickPicklistItem } from '../model/quick-pick-picklist-item';
 
 @Component({
   selector: 'app-quick-pick-scroll-view',
@@ -8,8 +9,18 @@ import { QuickPickDispenseBox } from './../model/quick-pick-dispense-box';
 })
 export class QuickPickScrollViewComponent implements OnInit {
 
-  @Input() dispenseBox: QuickPickDispenseBox;
-  picklistItems: any[]; // Mock list
+  _dispenseBox: QuickPickDispenseBox;
+
+  @Input()
+  set dispenseBox(value: QuickPickDispenseBox) {
+    this._dispenseBox = value;
+  }
+
+  get dispenseBox(): QuickPickDispenseBox {
+    return this._dispenseBox;
+  }
+
+  picklistItems: QuickPickPicklistItem[]; // Mock list
 
   constructor() {
     // Mock list

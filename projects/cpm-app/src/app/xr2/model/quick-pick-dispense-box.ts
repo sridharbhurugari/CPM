@@ -2,6 +2,9 @@ import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-
 import { IQuickPickDispenseBox } from '../../api-xr2/data-contracts/i-quick-pick-dispense-box';
 
 export class QuickPickDispenseBox implements IQuickPickDispenseBox {
+  constructor(quickPickDispenseBox: IQuickPickDispenseBox) {
+    Object.assign(this, quickPickDispenseBox);
+  }
   OrderId: string;
   PriorityCode: string;
   PriorityCodeColor: string;

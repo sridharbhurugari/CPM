@@ -37,7 +37,6 @@ export class QuickPickPageComponent implements OnInit {
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
 
     // Box Mock List
-    // Order mock list
     const boxMockList = [
       {
         OrderId: '4322343',

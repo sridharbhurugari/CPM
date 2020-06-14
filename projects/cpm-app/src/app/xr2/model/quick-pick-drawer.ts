@@ -2,6 +2,9 @@ import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-draw
 import { QuickPickDispenseBox } from './quick-pick-dispense-box';
 
 export class QuickPickDrawer implements IQuickPickDrawer {
+  constructor(quickPickDrawer: IQuickPickDrawer) {
+    Object.assign(this, quickPickDrawer);
+  }
   Id: string;
   Status: string;
   QuickPickDispenseBox: QuickPickDispenseBox;

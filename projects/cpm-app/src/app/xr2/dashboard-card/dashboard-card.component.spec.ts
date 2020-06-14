@@ -15,21 +15,21 @@ describe('DashboardCardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DashboardCardComponent, MockTranslatePipe,
-        MockSearchPipe, MockAppHeaderContainer, QuickPickDrawer],
-      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule ],
+        MockSearchPipe, MockAppHeaderContainer],
+      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule],
     })
     .compileComponents();
   }));
 
-  /*
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardCardComponent);
     component = fixture.componentInstance;
+    component.drawer = new QuickPickDrawer(null);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  */
+
 });

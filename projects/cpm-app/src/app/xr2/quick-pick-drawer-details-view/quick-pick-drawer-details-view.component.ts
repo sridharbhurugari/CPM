@@ -8,7 +8,16 @@ import { QuickPickDrawer } from '../model/quick-pick-drawer';
 })
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
-  @Input() detailedDrawer: QuickPickDrawer;
+ private _detailedDrawer: QuickPickDrawer;
+
+ @Input()
+ set detailedDrawer(value: QuickPickDrawer) {
+   this._detailedDrawer = value;
+ }
+
+ get detailedDrawer() {
+   return this._detailedDrawer;
+ }
 
   constructor() { }
 
