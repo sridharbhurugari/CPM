@@ -32,15 +32,14 @@ describe('QuickPickDrawerViewComponent', () => {
     .compileComponents();
   }));
 
-  /*
   beforeEach(() => {
     fixture = TestBed.createComponent(QuickPickDrawerViewComponent);
     component = fixture.componentInstance;
+    component._quickpickDrawers = [];
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  */
 });

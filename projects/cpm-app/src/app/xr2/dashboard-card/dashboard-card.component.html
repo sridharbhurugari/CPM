@@ -12,41 +12,31 @@
         </div>
       </div>
       <div class="index">
-        <div *ngIf="drawer.QuickPickDispenseBox && drawer.TotalBoxCount > 0">
-          {{ drawer.CurrentBoxIndex + 1 }} / {{ drawer.TotalBoxCount }}
+        <div *ngIf="drawer.QuickPickDispenseBox">
+          {{ drawer.BoxNumber }} / {{ drawer.BoxCount }}
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="drawer.QuickPickDispenseBox" style="height: 85%; width: 100%;">
+  <div *ngIf="drawer.QuickPickDispenseBox" class="active">
     <div class="body">
       <div class="body-content">
         <div class="grid-container">
-          <div class="grid-label">
-             <!-- TRANSLATION -->
-             Destination:
-          </div>
+          <div class="grid-label">{{'DESTINATION' | translate}}:</div>
           <div class="grid-data">
-            {{ drawer.QuickPickDispenseBox.Destination }}
+            {{ drawer.QuickPickDispenseBox.DestinationLine1 }}
+            <br />
+            {{ drawer.QuickPickDispenseBox.DestinationLine2 }}
           </div>
-          <div class="grid-label">
-            <!-- TRANSLATION -->
-            Id:
-          </div>
+          <div class="grid-label">{{'ID' | translate}}:</div>
           <div class="grid-data">
             {{ drawer.QuickPickDispenseBox.OrderId }}
           </div>
-          <div class="grid-label">
-            <!-- TRANSLATION -->
-            Filled Qty:
-          </div>
+          <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
           <div class="grid-data">
             {{ drawer.QuickPickDispenseBox.FilledQty }}
           </div>
-          <div class="grid-label">
-            <!-- TRANSLATION -->
-            Items Filled:
-          </div>
+          <div class="grid-label">{{'ITEMSFILLED' | translate}}:</div>
           <div class="grid-data">
             {{ drawer.QuickPickDispenseBox.ItemsFilled }}
           </div>
@@ -58,9 +48,7 @@
     </div>
     <div class="footer"></div>
   </div>
-  <div *ngIf="!drawer.QuickPickDispenseBox" class="empty">
-    <div class="empty-content">
-      Empty
-    </div>
+  <div *ngIf="!drawer.QuickPickDispenseBox" class="inactive">
+    <div class="empty-content">{{'EMPTY' | translate}}:</div>
   </div>
 </div>

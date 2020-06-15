@@ -1,61 +1,67 @@
 <div class="card">
-  <div class="header" [ngStyle]="getHeaderStyle()">
-    <div class="header-content">
-      <div class="details">
-        <div class="description">
-          {{ detailedDrawer.Id }}
-        </div>
-        <div class="title">
-          <div class="title-content">
-            {{ detailedDrawer.QuickPickDispenseBox.PriorityCodeDescription }}
+  <div class="card-content">
+    <div class="header">
+      <div class="header-content" [ngStyle]="getHeaderStyle()">
+        <div class="details">
+          <div class="description">
+            {{ detailedDrawer.Id }}
           </div>
-        </div>
-      </div>
-      <div class="index">
-        <div class="index-content">
-          {{ detailedDrawer.CurrentBoxIndex + 1 }} /
-          {{ detailedDrawer.TotalBoxCount }}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="view-container">
-    <div class="card-details-view">
-      <div class="body">
-        <div class="body-content">
-          <div class="grid-container">
-            <div class="grid-status">
-              <app-traffic-lights color="red"></app-traffic-lights>
-            </div>
-            <div class="grid-data" [ngStyle]="{'color': 'red'}">Return Bin To Drawer</div>
-            <div class="grid-label">Destination:</div>
-            <div class="grid-data">{{ detailedDrawer.QuickPickDispenseBox.Destination }}</div>
-            <div class="grid-label">Id:</div>
-            <div class="grid-data">{{detailedDrawer.QuickPickDispenseBox.OrderId}}</div>
-            <div class="grid-label">Qty:</div>
-            <div class="grid-data">
-              Filled: {{ detailedDrawer.QuickPickDispenseBox.FilledQty }}
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              Requested: {{ detailedDrawer.QuickPickDispenseBox.ReqQty }}
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              Partial Fill Items: 2
+          <div class="title">
+            <div class="title-content">
+              {{ detailedDrawer.QuickPickDispenseBox.PriorityCodeDescription }}
             </div>
           </div>
         </div>
-      </div>
-      <div class="footer">
-        <div class="footer-content">
-          <div class="action-buttons">
-            <oc-button-action [buttonText]="'Back'" (click)="onBackClick()"></oc-button-action>
-            <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'Print'" (click)="onPrintClick()">
-            </oc-button-action>
+        <div class="index">
+          <div class="index-content">
+            {{ detailedDrawer.BoxNumber }} / {{ detailedDrawer.BoxCount }}
           </div>
         </div>
       </div>
     </div>
-    <div class="scroll-view">
-      <div class="scroll-view-content">
-        <app-quick-pick-scroll-view [dispenseBox]="detailedDrawer.QuickPickDispenseBox"></app-quick-pick-scroll-view>
+    <div class="view-container">
+      <div class="card-details-view">
+        <div class="body">
+          <div class="body-content">
+            <div class="grid-container">
+              <div class="status-label">
+                <app-traffic-lights color={{detailedDrawer.StateColor}}></app-traffic-lights>
+              </div>
+              <div class="status-data" [ngStyle]="{'color': detailedDrawer.StateColor}">{{ detailedDrawer.StateText }}
+              </div>
+              <div class="dest-label">{{'DESTINATION' | translate}}:</div>
+              <div class="dest-data">
+                {{ detailedDrawer.QuickPickDispenseBox.DestinationLine1 }}
+                <br />
+                {{ detailedDrawer.QuickPickDispenseBox.DestinationLine2 }}
+              </div>
+              <div class="id-label">{{ 'ID' | translate }}:</div>
+              <div class="id-data">{{ detailedDrawer.QuickPickDispenseBox.OrderId }}</div>
+              <div class="qty-label">{{ 'QTY' | translate }}:</div>
+              <div class="qty-filled-data">{{ 'FILLED' | translate }}:
+                {{ detailedDrawer.QuickPickDispenseBox.FilledQty }}</div>
+              <div class="qty-req-data">{{ 'REQUESTED' | translate }}: {{ detailedDrawer.QuickPickDispenseBox.ReqQty }}
+              </div>
+              <div class="qty-items-data">{{ 'LINEITEMS' | translate }}:
+                {{ detailedDrawer.QuickPickDispenseBox.PicklistItems.length }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="footer-content">
+            <div class="action-buttons">
+              <oc-button-action [buttonText]="'BACK' | translate" (click)="onBackClick()"></oc-button-action>
+              <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'PRINT' | translate" (click)="onPrintClick()">
+              </oc-button-action>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-view">
+        <div class="scroll-view-content">
+          <app-quick-pick-scroll-view [dispenseBox]="detailedDrawer.QuickPickDispenseBox"></app-quick-pick-scroll-view>
+        </div>
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ import { QuickPickScrollViewComponent} from './../quick-pick-scroll-view/quick-p
 
 import { QuickPickDrawer } from '../model/quick-pick-drawer';
 import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
+import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 
 describe('DashboardDetailsCardComponent', () => {
   let component: DashboardDetailsCardComponent;
@@ -14,7 +15,7 @@ describe('DashboardDetailsCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardDetailsCardComponent, TrafficLightsComponent, QuickPickScrollViewComponent],
+      declarations: [ DashboardDetailsCardComponent, TrafficLightsComponent, QuickPickScrollViewComponent, MockTranslatePipe],
       imports: [ButtonActionModule]
     })
     .compileComponents();
@@ -25,6 +26,7 @@ describe('DashboardDetailsCardComponent', () => {
     component = fixture.componentInstance;
     component.detailedDrawer = new QuickPickDrawer(null);
     component.detailedDrawer.QuickPickDispenseBox = new QuickPickDispenseBox(null);
+    component.detailedDrawer.QuickPickDispenseBox.PicklistItems = [];
     fixture.detectChanges();
   });
 

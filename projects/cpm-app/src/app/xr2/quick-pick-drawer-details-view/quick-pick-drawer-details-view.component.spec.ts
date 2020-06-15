@@ -4,7 +4,7 @@ import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
-import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, LayoutModule, ComponentTypes } from '@omnicell/webcorecomponents';
 import { CoreModule } from '../../core/core.module';
 import { DashboardDetailsCardComponent } from '../dashboard-details-card/dashboard-details-card.component';
 import { TrafficLightsComponent } from './../traffic-lights/traffic-lights.component';
@@ -36,6 +36,7 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
     component = fixture.componentInstance;
     component.detailedDrawer = new QuickPickDrawer(null);
     component.detailedDrawer.QuickPickDispenseBox = new QuickPickDispenseBox(null);
+    component.detailedDrawer.QuickPickDispenseBox.PicklistItems = [];
     fixture.detectChanges();
   });
 

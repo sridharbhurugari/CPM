@@ -36,18 +36,59 @@ export class QuickPickPageComponent implements OnInit {
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
 
+    // Mock lists for testing UI
+    /*---------------------------------------------------*/
+    // Item Mock List
+    const itemMockList = [
+      {
+        Label: 'Docusate Sodium 100 MG Tablet',
+        FilledQty: 3,
+        ReqQty: 5
+      },
+      {
+        Label: 'Acarbose 25mg Tablet',
+        FilledQty: 3,
+        ReqQty: 5
+      },
+      {
+        Label: 'Bacitracin 0.9gm packet',
+        FilledQty: 5,
+        ReqQty: 5
+      },
+      {
+        Label: 'Melatonin 3mg tablet',
+        FilledQty: 5,
+        ReqQty: 5
+      },
+      {
+        Label: 'Sertraline 50mg TAB',
+        FilledQty: 5,
+        ReqQty: 5
+      },
+      {
+        Label: 'Ritodrine 50mg inj',
+        FilledQty: 5,
+        ReqQty: 5
+      },
+      {
+        Label: 'Dacriose 15ml sol',
+        FilledQty: 5,
+        ReqQty: 5
+      }
+    ];
     // Box Mock List
     const boxMockList = [
       {
         OrderId: '4322343',
-        DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'orange',
-        Destination: "Nursing Area 33",
+        DestinationLine1: "Nursing Area 33",
+        DestinationLine2: null,
         DestinationId: '',
         DestinationType: '',
         PriorityCodeDescription: 'First Dose',
         ItemPicklistLines: [],
+        PicklistItems: itemMockList,
         Date: "5/3/2020 10:15 AM",
         FilledQty: 31,
         ReqQty: 35,
@@ -55,14 +96,15 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         OrderId: '43243242',
-        DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'red',
-        Destination: "Room 4657, South White, Skylar",
+        DestinationLine1: "Room 4657 South",
+        DestinationLine2: "White, Skylar",
         DestinationId: '',
         DestinationType: '',
         PriorityCodeDescription: 'Stat Order',
         ItemPicklistLines: [],
+        PicklistItems: itemMockList,
         Date: "5/3/2020 10:15 AM",
         FilledQty: 31,
         ReqQty: 35,
@@ -70,14 +112,15 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         OrderId: '312343',
-        DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'orange',
-        Destination: "Nursing Area 33",
+        DestinationLine1: "Nursing Area 33",
+        DestinationLine2: null,
         DestinationId: '',
         DestinationType: '',
         PriorityCodeDescription: 'First Dose',
         ItemPicklistLines: [],
+        PicklistItems: itemMockList,
         Date: "5/3/2020 10:15 AM",
         FilledQty: 31,
         ReqQty: 35,
@@ -85,14 +128,15 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         OrderId: '321345437',
-        DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'red',
-        Destination: "Room 4657, South White, Skylar",
+        DestinationLine1: "Room 4657 South",
+        DestinationLine2: "White, Skylar",
         DestinationId: '',
         DestinationType: '',
         PriorityCodeDescription: 'Stat Order',
         ItemPicklistLines: [],
+        PicklistItems: itemMockList,
         Date: "5/3/2020 10:15 AM",
         FilledQty: 31,
         ReqQty: 35,
@@ -100,14 +144,15 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         OrderId: '21324456',
-        DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'orange',
-        Destination: "Nursing Area 33",
+        DestinationLine1: "Nursing Area 33",
+        DestinationLine2: null,
         DestinationId: '',
         DestinationType: '',
         PriorityCodeDescription: 'First Dose',
         ItemPicklistLines: [],
+        PicklistItems: itemMockList,
         Date: "5/3/2020 10:15 AM",
         FilledQty: 31,
         ReqQty: 35,
@@ -115,14 +160,15 @@ export class QuickPickPageComponent implements OnInit {
       },
       {
         OrderId: '23453367',
-        DrawerId: '',
         PriorityCode: '',
         PriorityCodeColor: 'red',
-        Destination: "Room 4657, South White, Skylar",
+        DestinationLine1: "Room 4657 South ",
+        DestinationLine2: "White, Skylar",
         DestinationId: '',
         DestinationType: '',
         PriorityCodeDescription: 'Stat Order',
         ItemPicklistLines: [],
+        PicklistItems: itemMockList,
         Date: "5/3/2020 10:15 AM",
         FilledQty: 31,
         ReqQty: 35,
@@ -134,62 +180,76 @@ export class QuickPickPageComponent implements OnInit {
     const drawerMockList = [
       {
         Id: '1',
-        Status: 'Available', // 'Ready',
+        Status: 'Available',
         QuickPickDispenseBox: boxMockList[1],
         DetailedView: false,
-        CurrentBoxIndex: 0,
-        TotalBoxCount: 2,
-        State: 1
+        BoxNumber: 1,
+        BoxCount: 2,
+        State: 3,
+        StateText: 'Ready',
+        StateColor: 'green'
       },
       {
         Id: '2',
         Status: 'Available',
         QuickPickDispenseBox: null,
         DetailedView: false,
-        CurrentBoxIndex: null,
-        TotalBoxCount: null,
-        State: 1
+        BoxNumber: null,
+        BoxCount: null,
+        State: null,
+        StateText: null,
+        StateColor: null
       },
       {
         Id: '3',
-        Status: 'Available', // 'Not Available',
+        Status: 'Available',
         QuickPickDispenseBox: boxMockList[3],
         DetailedView: false,
-        CurrentBoxIndex: 0,
-        TotalBoxCount: 3,
-        State: 3
+        BoxNumber: 1,
+        BoxCount: 3,
+        State: 3,
+        StateText: 'Ready',
+        StateColor: 'green'
       },
       {
         Id: '4',
         Status: 'Available',
         QuickPickDispenseBox: null,
         DetailedView: false,
-        CurrentBoxIndex: null,
-        TotalBoxCount: null,
-        State: 1
+        BoxNumber: null,
+        BoxCount: null,
+        State: null,
+        StateText: null,
+        StateColor: null
       },
       {
         Id: '5',
-        Status: 'Available', // 'Pending',
+        Status: 'Available',
         QuickPickDispenseBox: boxMockList[5],
         DetailedView: false,
-        CurrentBoxIndex: 0,
-        TotalBoxCount: 4,
-        State: 2
+        BoxNumber: 1,
+        BoxCount: 4,
+        State: 1,
+        StateText: 'Return Bin To Drawer',
+        StateColor: 'red'
       },
       {
         Id: '6',
-        Status: 'Available', // 'Ready',
+        Status: 'Available',
         QuickPickDispenseBox: boxMockList[4],
         DetailedView: false,
-        CurrentBoxIndex: 0,
-        TotalBoxCount: 3,
-        State: 1
+        BoxNumber: 1,
+        BoxCount: 3,
+        State: 1,
+        StateText: 'Return Bin To Drawer',
+        StateColor: 'red'
       }
     ];
 
     this.quickpickDrawers = drawerMockList;
   }
+  // End of Mock lists
+  /*---------------------------------------------------*/
 
   ngOnInit() {
     this.getActiveXr2Devices();

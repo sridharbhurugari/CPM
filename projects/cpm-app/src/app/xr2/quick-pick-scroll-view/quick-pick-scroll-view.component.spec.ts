@@ -4,6 +4,7 @@ import { QuickPickScrollViewComponent } from './quick-pick-scroll-view.component
 
 import { QuickPickDispenseBox } from './../model/quick-pick-dispense-box';
 import { QuickPickPicklistItem } from '../model/quick-pick-picklist-item';
+import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 
 describe('QuickPickScrollViewComponent', () => {
   let component: QuickPickScrollViewComponent;
@@ -11,8 +12,8 @@ describe('QuickPickScrollViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuickPickScrollViewComponent ],
-      providers: []
+      declarations: [ QuickPickScrollViewComponent, MockTranslatePipe ],
+      providers: [ ]
     })
     .compileComponents();
   }));

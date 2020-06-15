@@ -6,6 +6,7 @@
   .cards-view {
     height: 100%;
     width: 100%;
+    overflow-y: auto;
 
     .content {
       display: flex;
@@ -20,7 +21,7 @@
       .card-container {
         width: 33%;
         height: 48%;
-        padding: 2px;
+        margin: 2px;
       }
     }
   }
@@ -29,11 +30,7 @@
     display: flex;
     height: 100%;
     width: 100%;
-
-    .detail-card-container {
-      height: 98%;
-      width: 100%;
-      padding: 3px;
-    }
+    align-items: center;
+    justify-content: center;
   }
 }

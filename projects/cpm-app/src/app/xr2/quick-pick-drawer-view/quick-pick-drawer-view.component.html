@@ -1,6 +1,6 @@
 <div class="drawer-container">
   <div *ngIf="getDetailedViewDrawer()" class="detail-card-view">
-    <app-quick-pick-drawer-details-view class="detail-card-container" [detailedDrawer]="getDetailedViewDrawer()">
+    <app-quick-pick-drawer-details-view  [detailedDrawer]="getDetailedViewDrawer()">
     </app-quick-pick-drawer-details-view>
   </div>
   <div *ngIf="!getDetailedViewDrawer()" class="cards-view">
