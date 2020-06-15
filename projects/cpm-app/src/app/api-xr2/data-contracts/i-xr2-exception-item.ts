@@ -4,4 +4,5 @@ export interface IXr2ExceptionsItem {
   ExceptionPockets: string;
   DeviceName: string;
   CompletedDateTime: string;
+  DeviceID: string;
 }

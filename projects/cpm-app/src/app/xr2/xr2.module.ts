@@ -11,7 +11,8 @@ import { SharedModule } from '../shared/shared.module';
 import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-queue-page.component';
 import { QuickPickPageComponent } from './quick-pick-page/quick-pick-page.component';
 import { environment } from '../../environments/environment';
-import { Xr2ExceptionsPageComponent } from './Xr2-Exceptions-page/xr2-exceptions-page.component';
+import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component';
+import {Xr2ExceptionDetailsPageComponent} from './xr2-exception-details-page/xr2-exceptions-details-page.component';
 import { QuickPickQueueViewComponent } from './quick-pick-queue-view/quick-pick-queue-view.component';
 import { QuickPickDrawerViewComponent } from './quick-pick-drawer-view/quick-pick-drawer-view.component';
 import { DashboardCardComponent } from './dashboard-card/dashboard-card.component';
@@ -20,7 +21,20 @@ import { DashboardDetailsCardComponent } from './dashboard-details-card/dashboar
 import { QuickPickBoxItemsView } from './quick-pick-box-items-view/quick-pick-box-items-view.component';
 import { TrafficLightsComponent } from './traffic-lights/traffic-lights.component';
 @NgModule({
-  declarations: [PicklistsQueueComponent, PicklistsQueuePageComponent, Xr2ExceptionsPageComponent, QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, DashboardCardComponent, QuickPickDrawerDetailsViewComponent, DashboardDetailsCardComponent, QuickPickBoxItemsView, TrafficLightsComponent],
+  declarations: [
+    PicklistsQueueComponent,
+    PicklistsQueuePageComponent,
+    Xr2ExceptionsPageComponent,
+    Xr2ExceptionDetailsPageComponent,
+    QuickPickPageComponent,
+    QuickPickQueueViewComponent,
+    QuickPickDrawerViewComponent,
+    DashboardCardComponent,
+    QuickPickDrawerDetailsViewComponent,
+    DashboardDetailsCardComponent,
+    QuickPickBoxItemsView,
+    TrafficLightsComponent
+  ],
   imports: [
     CommonModule,
     GridModule,
