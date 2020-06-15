@@ -10,8 +10,8 @@ $color3: #00ff00; //green
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 53px;
+  height: 53px;
   background-color: #333;
   border-radius: 8px;
 
@@ -20,7 +20,6 @@ $color3: #00ff00; //green
     width: 75%;
     height: 75%;
     border-radius: 50%;
-    z-index: 10;
     &:last-child {
       margin-bottom: 0;
     }

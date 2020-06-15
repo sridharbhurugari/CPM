@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QuickPickDispenseBox } from './../model/quick-pick-dispense-box';
+import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
 
 @Component({
-  selector: 'app-quick-pick-scroll-view',
-  templateUrl: './quick-pick-scroll-view.component.html',
-  styleUrls: ['./quick-pick-scroll-view.component.scss']
+  selector: 'app-quick-pick-box-items-view',
+  templateUrl: './quick-pick-box-items-view.component.html',
+  styleUrls: ['./quick-pick-box-items-view.component.scss']
 })
-export class QuickPickScrollViewComponent implements OnInit {
+export class QuickPickBoxItemsView implements OnInit {
 
   _dispenseBox: QuickPickDispenseBox;
 

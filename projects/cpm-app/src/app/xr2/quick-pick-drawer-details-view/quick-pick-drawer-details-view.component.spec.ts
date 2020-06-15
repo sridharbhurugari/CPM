@@ -8,7 +8,7 @@ import { ButtonActionModule, FooterModule, LayoutModule, ComponentTypes } from '
 import { CoreModule } from '../../core/core.module';
 import { DashboardDetailsCardComponent } from '../dashboard-details-card/dashboard-details-card.component';
 import { TrafficLightsComponent } from './../traffic-lights/traffic-lights.component';
-import { QuickPickScrollViewComponent } from './../quick-pick-scroll-view/quick-pick-scroll-view.component';
+import { QuickPickBoxItemsView } from './../quick-pick-box-items-view/quick-pick-box-items-view.component';
 import { QuickPickDrawer } from '../model/quick-pick-drawer';
 import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
 
@@ -21,7 +21,7 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
       declarations:
       [ QuickPickDrawerDetailsViewComponent,
         DashboardDetailsCardComponent,
-        QuickPickScrollViewComponent,
+        QuickPickBoxItemsView,
         TrafficLightsComponent,
         MockTranslatePipe,
         MockSearchPipe,
