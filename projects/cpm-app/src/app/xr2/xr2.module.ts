@@ -33,7 +33,7 @@ import { TrafficLightsComponent } from './traffic-lights/traffic-lights.componen
     QuickPickDrawerDetailsViewComponent,
     DashboardDetailsCardComponent,
     QuickPickBoxItemsView,
-    TrafficLightsComponent
+    TrafficLightsComponent,
   ],
   imports: [
     CommonModule,

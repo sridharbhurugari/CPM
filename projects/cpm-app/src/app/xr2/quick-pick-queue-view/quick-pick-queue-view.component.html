@@ -25,9 +25,8 @@
         <div class="col width-type" [attr.data-title]="'DESCRIPTION' | translate">
           <div class="col-content-container">
               {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}} {{'BINS' | translate}}
-            <div (click)="onSkipClick()" class="button-div">
-              <oc-svgicon icon="openv1-right" theme="dark" height="30" width="30"></oc-svgicon>
-              <div class="button-label">Reroute</div></div>
+             <app-cp-reroute-button (clickEvent) = "onRerouteClick()">
+              </app-cp-reroute-button>
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ import { nameof } from '../../shared/functions/nameof';
 })
 export class QuickPickQueueViewComponent implements OnInit {
 
-  private _quickPickDispenseBoxes: QuickPickQueueItem[];
+  private _quickPickQueueItems: QuickPickQueueItem[];
 
   _searchTextFilter: string;
 
@@ -36,14 +36,14 @@ export class QuickPickQueueViewComponent implements OnInit {
 
   @Input()
   set quickPickQueueItems(value: QuickPickQueueItem[]) {
-    this._quickPickDispenseBoxes = value;
+    this._quickPickQueueItems = value;
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
 
   get quickPickQueueItems(): QuickPickQueueItem[] {
-    return this._quickPickDispenseBoxes;
+    return this._quickPickQueueItems;
   }
 
   constructor(
@@ -62,8 +62,8 @@ export class QuickPickQueueViewComponent implements OnInit {
     }
   }
 
-  onSkipClick() {
-    console.log("Skip Clicked!")
+  onRerouteClick() {
+    console.log("Reroute Clicked!")
   }
 
 }

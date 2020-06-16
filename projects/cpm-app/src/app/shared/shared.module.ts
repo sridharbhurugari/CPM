@@ -14,6 +14,7 @@ import { ConfirmPopupComponent } from './components/confirm-popup/confirm-popup.
 import { HeaderTitleBottomMarginContainerComponent } from './components/header-title-bottom-margin-container/header-title-bottom-margin-container.component';
 import { DeviceLocationAccessComponent } from './components/device-location-access/device-location-access.component';
 import { SpinnerPopupComponent } from './components/spinner-popup/spinner-popup.component';
+import { CpRerouteButtonComponent } from './components/cp-reroute-button/cp-reroute-button.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { SpinnerPopupComponent } from './components/spinner-popup/spinner-popup.
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
     SpinnerPopupComponent,
+    CpRerouteButtonComponent,
   ],
   imports: [
     CommonModule,
@@ -52,6 +54,7 @@ import { SpinnerPopupComponent } from './components/spinner-popup/spinner-popup.
     ConfirmPopupComponent,
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
+    CpRerouteButtonComponent
   ],
   entryComponents: [
     TextResultPopupComponent,
