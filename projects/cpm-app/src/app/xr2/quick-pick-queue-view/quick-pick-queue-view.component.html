@@ -25,8 +25,12 @@
         <div class="col width-type" [attr.data-title]="'DESCRIPTION' | translate">
           <div class="col-content-container">
               {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}} {{'BINS' | translate}}
-             <app-cp-reroute-button (clickEvent) = "onRerouteClick()">
-              </app-cp-reroute-button>
+             <app-cp-icon-button
+             [width] = "30"
+             [height] = "30"
+             [icon] = "'openv1-right'"
+             (clickEvent) = "onRerouteClick()">
+              </app-cp-icon-button>
           </div>
         </div>
       </div>

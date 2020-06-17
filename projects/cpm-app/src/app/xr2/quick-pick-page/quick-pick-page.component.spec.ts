@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PersistService, NavComponent } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PersistService, NavComponent, SharedModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -36,7 +36,7 @@ describe('QuickPickPageComponent', () => {
       declarations: [ QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
         MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
       imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
-        FooterModule, LayoutModule, CoreModule],
+        FooterModule, LayoutModule, CoreModule, SharedModule],
       providers: [
         { provide: Xr2QuickPickQueueService, useValue: { get: () => of([]) }},
         { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) }},
