@@ -10,6 +10,7 @@ export class CpIconButtonComponent implements OnInit {
   @Input() width: number = 30;
   @Input() height: number = 30;
   @Input() icon: string;
+  @Input() theme: string;
   @Input() label: string;
 
   @Output() clickEvent: EventEmitter<any> = new EventEmitter();
@@ -19,7 +20,7 @@ export class CpIconButtonComponent implements OnInit {
   ngOnInit() {
   }
 
-  click() {
+  onClick() {
     this.clickEvent.emit(null);
   }
 
