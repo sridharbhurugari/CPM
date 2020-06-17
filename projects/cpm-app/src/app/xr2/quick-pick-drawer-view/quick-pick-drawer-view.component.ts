@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 import { QuickPickDrawer } from './../model/quick-pick-drawer';
 
@@ -8,6 +8,8 @@ import { QuickPickDrawer } from './../model/quick-pick-drawer';
   styleUrls: ['./quick-pick-drawer-view.component.scss']
 })
 export class QuickPickDrawerViewComponent implements OnInit {
+
+  @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   _quickpickDrawers: QuickPickDrawer[];
   detailedDrawer: QuickPickDrawer;
@@ -31,12 +33,20 @@ export class QuickPickDrawerViewComponent implements OnInit {
     return this._quickpickDrawers.find(item => item.DetailedView);
   }
 
-  openDetailedView(event) {
-    this.detailedDrawer = event;
+  onShowQuickPickDrawerDetails(drawerIndex: number) {
+    this.detailedDrawer = this.quickpickDrawers[drawerIndex];
+    this.printDrawerLabel();
+    this.quickPickActive.emit(true);
   }
 
-  closeDetailedView() {
-    this.detailedDrawer = null;
+  onCloseQuickPickDrawerDetails(value?: any) {
+    this.detailedDrawer = undefined;
+    this.quickPickActive.emit(false);
+  }
+
+  printDrawerLabel() {
+    // PRINT THE DRAWER LABELS for this.detailedDrawer
+    console.log('Print clicked for drawer: ' + this.detailedDrawer.Id.toString());
   }
 
 }

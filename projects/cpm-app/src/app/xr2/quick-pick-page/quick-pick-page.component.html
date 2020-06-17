@@ -9,13 +9,14 @@
       searchPlaceholderText="Find device"
       selectText="Select device"
       noItemsText="No devices"
+      [disabled]="robotSelectionDisabled"
       (selectionChanged)="onDeviceSelectionChanged($event)"></oc-singleselect>
     <app-header-container></app-header-container>
     <oc-search-box #searchBox [placeHolderText]="'SEARCH_QUEUE' | translate"></oc-search-box>
   </div>
   <div class="quick-pick-content">
     <ng-container class="ocactiondetails">
-      <app-quick-pick-drawer-view [quickpickDrawers]="quickpickDrawers"></app-quick-pick-drawer-view>
+      <app-quick-pick-drawer-view [quickpickDrawers]="quickpickDrawers" (quickPickActive)='onQuickPickActive($event)'></app-quick-pick-drawer-view>
       <app-quick-pick-queue-view [quickPickQueueItems]="quickPickQueueItems | async" [searchTextFilter]="searchTextFilter | async"></app-quick-pick-queue-view>
     </ng-container>
   </div>

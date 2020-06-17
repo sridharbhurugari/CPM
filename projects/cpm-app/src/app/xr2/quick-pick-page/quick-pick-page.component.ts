@@ -21,6 +21,8 @@ export class QuickPickPageComponent implements OnInit {
   quickPickDispenseBoxes: IQuickPickDispenseBox[];
   quickPickQueueItems: Observable<QuickPickQueueItem[]>;
   searchTextFilter: Observable<string>;
+
+  robotSelectionDisabled = false;
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
@@ -295,9 +297,14 @@ export class QuickPickPageComponent implements OnInit {
     }
   }
 
+  onQuickPickActive(isActive: boolean) {
+    this.robotSelectionDisabled = isActive;
+  }
+
   /* istanbul ignore next */
   onDeviceSelectionChanged($event) {
     if (this.selectedDeviceId !== $event.value) {
+      this.searchElement.clearSearch(null);
       this.selectedDeviceId = $event.value;
       this.loadPicklistsQueueItems();
     }
