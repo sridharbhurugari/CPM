@@ -14,7 +14,7 @@ import { ConfirmPopupComponent } from './components/confirm-popup/confirm-popup.
 import { HeaderTitleBottomMarginContainerComponent } from './components/header-title-bottom-margin-container/header-title-bottom-margin-container.component';
 import { DeviceLocationAccessComponent } from './components/device-location-access/device-location-access.component';
 import { SpinnerPopupComponent } from './components/spinner-popup/spinner-popup.component';
-import { CpIconButtonComponent } from './components/cp-icon-button/cp-icon-button.component';
+import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clickable-icon.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +29,7 @@ import { CpIconButtonComponent } from './components/cp-icon-button/cp-icon-butto
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
     SpinnerPopupComponent,
-    CpIconButtonComponent,
+    CPClickableIconComponent,
   ],
   imports: [
     CommonModule,
@@ -54,7 +54,7 @@ import { CpIconButtonComponent } from './components/cp-icon-button/cp-icon-butto
     ConfirmPopupComponent,
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
-    CpIconButtonComponent
+    CPClickableIconComponent
   ],
   entryComponents: [
     TextResultPopupComponent,

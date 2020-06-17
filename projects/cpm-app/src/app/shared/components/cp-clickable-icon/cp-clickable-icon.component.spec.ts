@@ -1,22 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SvgIconModule } from '@omnicell/webcorecomponents';
-import { CpIconButtonComponent } from './cp-icon-button.component';
+import { CPClickableIconComponent } from './cp-clickable-icon.component';
 
-describe('CpIconButtonComponent', () => {
-  let component: CpIconButtonComponent;
-  let fixture: ComponentFixture<CpIconButtonComponent>;
+describe('CPClickableIconComponent', () => {
+  let component: CPClickableIconComponent;
+  let fixture: ComponentFixture<CPClickableIconComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CpIconButtonComponent],
+      declarations: [CPClickableIconComponent],
       imports: [SvgIconModule]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CpIconButtonComponent);
+    fixture = TestBed.createComponent(CPClickableIconComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
