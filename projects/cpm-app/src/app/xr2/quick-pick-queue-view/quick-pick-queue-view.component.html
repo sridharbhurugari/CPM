@@ -1,6 +1,6 @@
 <oc-action-layout>
   <ng-container class="ocactiondetails">
-    <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="false" (onColWidthsChange)="onWidthsChange($event)">
+    <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="false" ocgridallowhover="false" (onColWidthsChange)="onWidthsChange($event)">
       <ng-container class="ocgridheader">
         <div class="first" data-colwrap="true"></div>
         <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">{{'TYPE' | translate}}
