@@ -17,12 +17,7 @@
         <div
           class="row"
           *ngFor="let picklistItem of dispenseBox.PicklistItems"
-          [ngStyle]="
-            picklistItem.ReqQty !== picklistItem.FilledQty
-              ? { background: 'yellow' }
-              : null
-          "
-        >
+          [ngStyle]="getItemStyle(picklistItem)">
           <div class="label">
             {{ picklistItem.Label }}
           </div>

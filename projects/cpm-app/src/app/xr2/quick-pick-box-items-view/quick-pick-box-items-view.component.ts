@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
+import { IQuickPickPicklistItem } from '../../api-xr2/data-contracts/i-quick-pick-picklist-item';
 
 @Component({
   selector: 'app-quick-pick-box-items-view',
@@ -23,6 +24,11 @@ export class QuickPickBoxItemsView implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  getItemStyle(picklistItem: IQuickPickPicklistItem) {
+    return picklistItem.ReqQty !== picklistItem.FilledQty
+    ? { background: 'yellow' } : null;
   }
 
 }
