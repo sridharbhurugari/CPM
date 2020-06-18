@@ -6,9 +6,9 @@
       componentWidth="300"
       dropdownRowsVisible="6"
       popupDirection="AUTO"
-      searchPlaceholderText="Find device"
-      selectText="Select device"
-      noItemsText="No devices"
+      [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
+      [selectText]="'DEVICE_SELECTION_TEXT' | translate"
+      [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
       [disabled]="robotSelectionDisabled"
       (selectionChanged)="onDeviceSelectionChanged($event)"></oc-singleselect>
     <app-header-container></app-header-container>

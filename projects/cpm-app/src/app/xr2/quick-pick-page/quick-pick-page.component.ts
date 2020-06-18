@@ -9,6 +9,8 @@ import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecompon
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { result } from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -27,13 +29,15 @@ export class QuickPickPageComponent implements OnInit {
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
 
+
   @ViewChild('searchBox', {
     static: true
   })
   searchElement: SearchBoxComponent;
 
 
-  constructor(private quickPickQueueService: Xr2QuickPickQueueService,
+  constructor(
+    private quickPickQueueService: Xr2QuickPickQueueService,
     private quickPickDeviceService: Xr2QuickPickQueueDeviceService,
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
