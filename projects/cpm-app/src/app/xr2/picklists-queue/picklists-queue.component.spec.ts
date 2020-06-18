@@ -86,33 +86,7 @@ describe('PicklistsQueueComponent', () => {
 
   describe('reroute', () => {
     it('should call picklistsQueueService.reroute', () => {
-      var picklistQueueItem = new PicklistQueueItem({
-        AvailableOutputDeviceList: [],
-        BoxCount: 0,
-        Destination: '',
-        DestinationId: '',
-        DestinationType: '',
-        DeviceDescription: '',
-        DeviceId: 1,
-        DeviceLocationId: 2,
-        FilledBoxCount: 3,
-        ItemCount: 4,
-        ItemPicklistLines: [{
-          DestinationId: '',
-          ItemId: '',
-          PickLocationDescription: '',
-          PickLocationDeviceLocationId: 6,
-          Qty: 7,
-          PicklistLineId:'0E15A44C-49CB-4676-8774-007D2FBC4791'}],
-        OrderId: '',
-        OutputDeviceId: '',
-        PicklistId: '',
-        PriorityCode: '',
-        PriorityCodeColor: '',
-        PriorityCodeDescription: '',
-        Status: 5,
-        StatusDisplay: ''
-            });
+      const picklistQueueItem = new PicklistQueueItem(null);
       component.reroute(picklistQueueItem);
       expect(picklistsQueueService.reroute).toHaveBeenCalled();
       })

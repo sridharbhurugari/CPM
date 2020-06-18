@@ -30,4 +30,5 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   Saving: boolean;
   TrackById: Guid;
   ItemCount: number;
+  IsPrintable: boolean;
 }

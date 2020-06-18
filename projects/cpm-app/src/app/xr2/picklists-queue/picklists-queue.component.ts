@@ -229,6 +229,20 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return outputDeviceDisplayList;
   }
 
+  getPrintDisabledState(picklistQueueItem: PicklistQueueItem) {
+    if (picklistQueueItem.Saving || !picklistQueueItem.IsPrintable) {
+      return true;
+    }
+
+    switch (picklistQueueItem.Status) {
+      case 1: return !this.getSelectedOutputDeviceRow(picklistQueueItem);
+      case 2: return true;
+      case 3: return false;
+      case 4: return false;
+      default: return true;
+    }
+  }
+
   getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
 
     let selectedDevice = null;
