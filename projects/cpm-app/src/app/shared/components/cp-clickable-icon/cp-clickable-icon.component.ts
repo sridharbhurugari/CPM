@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-cp-icon-button',
-  templateUrl: './cp-icon-button.component.html',
-  styleUrls: ['./cp-icon-button.component.scss']
+  selector: 'app-cp-clickable-icon',
+  templateUrl: './cp-clickable-icon.component.html',
+  styleUrls: ['./cp-clickable-icon.component.scss']
 })
-export class CpIconButtonComponent implements OnInit {
+export class CPClickableIconComponent implements OnInit {
 
   @Input() width: number = 30;
   @Input() height: number = 30;

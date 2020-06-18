@@ -25,9 +25,9 @@
           <div class="col width-type" [attr.data-title]="'DESCRIPTION' | translate">
             <div class="col-content-container">
               {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}} {{'BINS' | translate}}
-              <app-cp-icon-button [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'"
+              <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'"
                 [label]="'Reroute'" (clickEvent)="onRerouteClick()">
-              </app-cp-icon-button>
+              </app-cp-clickable-icon>
             </div>
           </div>
         </div>
