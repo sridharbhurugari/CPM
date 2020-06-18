@@ -1,16 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view.component';
-import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
-import { ButtonActionModule, FooterModule, LayoutModule, ComponentTypes } from '@omnicell/webcorecomponents';
-import { CoreModule } from '../../core/core.module';
-import { DashboardDetailsCardComponent } from '../dashboard-details-card/dashboard-details-card.component';
+import { ButtonActionModule, ComponentTypes } from '@omnicell/webcorecomponents';
 import { TrafficLightsComponent } from './../traffic-lights/traffic-lights.component';
-import { QuickPickBoxItemsView } from './../quick-pick-box-items-view/quick-pick-box-items-view.component';
+import { QuickPickBoxItemsView} from './../quick-pick-box-items-view/quick-pick-box-items-view.component';
+
 import { QuickPickDrawer } from '../model/quick-pick-drawer';
 import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
+import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
+import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view.component';
 
 describe('QuickPickDrawerDetailsViewComponent', () => {
   let component: QuickPickDrawerDetailsViewComponent;
@@ -18,15 +15,8 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations:
-      [ QuickPickDrawerDetailsViewComponent,
-        DashboardDetailsCardComponent,
-        QuickPickBoxItemsView,
-        TrafficLightsComponent,
-        MockTranslatePipe,
-        MockSearchPipe,
-        MockAppHeaderContainer ],
-      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule ],
+      declarations: [ QuickPickDrawerDetailsViewComponent, TrafficLightsComponent, QuickPickBoxItemsView, MockTranslatePipe],
+      imports: [ButtonActionModule]
     })
     .compileComponents();
   }));

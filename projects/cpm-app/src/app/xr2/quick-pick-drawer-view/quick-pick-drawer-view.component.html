@@ -1,7 +1,7 @@
 <div class="drawer-container">
   <div *ngIf="detailedDrawer" class="detail-card-view">
-    <app-dashboard-details-card  [detailedDrawer]="detailedDrawer" (closeQuickPickDetailsCard)="onCloseQuickPickDrawerDetails()" (printQuickPickDrawerLabel)="printDrawerLabel()">
-    </app-dashboard-details-card>
+    <app-quick-pick-drawer-details-view  [detailedDrawer]="detailedDrawer" (closeQuickPickDetailsCard)="onCloseQuickPickDrawerDetails()" (printQuickPickDrawerLabel)="printDrawerLabel()">
+    </app-quick-pick-drawer-details-view>
   </div>
   <div *ngIf="!detailedDrawer" class="cards-view">
     <div class="content">
