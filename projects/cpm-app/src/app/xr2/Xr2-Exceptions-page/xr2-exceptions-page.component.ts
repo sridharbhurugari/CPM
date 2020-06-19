@@ -46,11 +46,19 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     ) { }
 
   ngOnInit() {
+    //this.traytypesList$ = this.exceptionsListService.gettraytypes().pipe(map(obj => obj, shareReplay(1)));
+
+    this.traytypesList$ = this.exceptionsListService.gettraytypes().pipe(map(guidedDeviceListItems => {
+      return guidedDeviceListItems.map(p => p.toString());
+   }), shareReplay(1));
+
     this.displayExceptionsList$ = this.exceptionsListService.get().pipe(map(guidedDeviceListItems => {
        return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionsItem(p)), SortDirection.descending);
     }), shareReplay(1));
 
-    this.traytypesList$ = this.exceptionsListService.gettraytypes();
+    
+
+    //this.traytypesList$ = this.exceptionsListService.gettraytypes();
   }
 
 
