@@ -112,6 +112,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
+    matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
 
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));

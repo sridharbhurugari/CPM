@@ -16,7 +16,8 @@
       <div class="last width-type" data-width="350" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
+      <div class="row"
+       *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
         <div class="first" style="align-items: center;">
           <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
         </div>
@@ -34,7 +35,9 @@
           {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
         <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
           <span>{{picklistQueueItem.DeviceDescription}}</span>
-          <oc-singleselect popupDirection="AUTO" [disabled]="picklistQueueItem.Status > 1"
+          <oc-singleselect
+            popupDirection="AUTO"
+            [disabled]="picklistQueueItem.Status > 1"
             [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
             [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
