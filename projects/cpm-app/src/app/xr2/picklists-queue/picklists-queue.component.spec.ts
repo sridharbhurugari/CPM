@@ -99,4 +99,31 @@ describe('PicklistsQueueComponent', () => {
       expect(picklistsQueueEventConnectionService.removePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
     });
   });
+
+  describe('Print Disable Button State', () => {
+    it('should disable on non-printable devices', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = false;
+
+      expect(component.getPrintDisabledState(component.picklistQueueItems[0])).toBeTruthy();
+    });
+    it('should enable on printable devices with valid state', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+        new PicklistQueueItem(null)
+      ];
+      component.picklistQueueItems[0].IsPrintable = true;
+      component.picklistQueueItems[0].Saving = false;
+      component.picklistQueueItems[0].Status = 2;
+
+      component.picklistQueueItems[1].IsPrintable = true;
+      component.picklistQueueItems[1].Saving = false;
+      component.picklistQueueItems[1].Status = 3;
+
+      expect(component.getPrintDisabledState(component.picklistQueueItems[0])).toBeTruthy();
+      expect(component.getPrintDisabledState(component.picklistQueueItems[1])).toBeFalsy();
+    });
+  });
 });
