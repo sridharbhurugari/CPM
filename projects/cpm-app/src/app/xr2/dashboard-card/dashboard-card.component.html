@@ -1,0 +1,54 @@
+<div class="card">
+  <div class="header">
+    <div class="header-content" [ngStyle]="getHeaderStyle()">
+      <div class="description">
+        {{ drawer.Id }}
+      </div>
+      <div class="title">
+        <div class="title-content">
+          <div *ngIf="drawer.QuickPickDispenseBox">
+            {{ drawer.QuickPickDispenseBox.PriorityCodeDescription }}
+          </div>
+        </div>
+      </div>
+      <div class="index">
+        <div *ngIf="drawer.QuickPickDispenseBox">
+          {{ drawer.BoxNumber }} / {{ drawer.BoxCount }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="drawer.QuickPickDispenseBox" class="active">
+    <div class="body">
+      <div class="body-content">
+        <div class="grid-container">
+          <div class="grid-label">{{'DESTINATION' | translate}}:</div>
+          <div class="grid-data">
+            {{ drawer.QuickPickDispenseBox.DestinationLine1 }}
+            <br />
+            {{ drawer.QuickPickDispenseBox.DestinationLine2 }}
+          </div>
+          <div class="grid-label">{{'ID' | translate}}:</div>
+          <div class="grid-data">
+            {{ drawer.QuickPickDispenseBox.OrderId }}
+          </div>
+          <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
+          <div class="grid-data">
+            {{ drawer.QuickPickDispenseBox.FilledQty }}
+          </div>
+          <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
+          <div class="grid-data">
+            {{ drawer.QuickPickDispenseBox.ItemsFilled }}
+          </div>
+        </div>
+      </div>
+      <div class="button-content">
+        <oc-button-action mode="secondary" [buttonIcon]="'print'" (click)="onPrintClick()"></oc-button-action>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+  <div *ngIf="!drawer.QuickPickDispenseBox" class="inactive">
+    <div class="empty-content">{{'EMPTY' | translate}}</div>
+  </div>
+</div>
