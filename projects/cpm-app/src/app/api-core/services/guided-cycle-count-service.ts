@@ -49,4 +49,10 @@ import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
     });
    }
     
+   public canoverridebarcode() : Observable<boolean> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/CanOverrideBarcode`);
+    return this.httpClient.get<boolean>(url ,{
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+   }
   } 

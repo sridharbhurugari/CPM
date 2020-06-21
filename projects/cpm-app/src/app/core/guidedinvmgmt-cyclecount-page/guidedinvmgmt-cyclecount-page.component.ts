@@ -584,7 +584,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   itemBinBarCode(): boolean {
-    var numberRet;
+    var numberRet,overrideRet;
     if (this.displayCycleCountItem.ItemId.toUpperCase() == this.pagelevelInput.substring(1, this.pagelevelInput.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
       return true;
@@ -595,19 +595,23 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
     else {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.pagelevelInput).subscribe(res => {
-        console.log(res);
         numberRet = res;
         if (numberRet == 0) {
-          this.displayWrongBarCodeDialog();
-        }
-        
+          this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
+            overrideRet= val;
+            this.displayWrongBarCodeDialog(overrideRet);
+          });
+       }
       });
     }
   }
 
-  displayWrongBarCodeDialog():void{
+  displayWrongBarCodeDialog(override):void{
     const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
-    this.translateService.get('PRINTFAILED_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
+    if(override)
+      this.translateService.get('INVALID_SCAN_BARCODE_OVERRIDE').subscribe(result => { properties.messageElementText = result; });
+    else
     this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;

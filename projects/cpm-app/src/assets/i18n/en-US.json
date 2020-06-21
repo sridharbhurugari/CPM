@@ -120,5 +120,7 @@
   "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review",
   "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
   "SCAN_BIN_BARCODE":"The correct bin bar code must be scanned.",
-  "INVALID_SCAN_BARCODE":"The bar code scanned is not associated with the item requested.\n\nScan the correct bar code or confirm bar code override by entering the override code."
+  "INVALID_SCAN_BARCODE":"The bar code scanned is not recognized. Please scan a correct bar code.",
+  "INVALID_SCAN_BARCODE_OVERRIDE":"The bar code scanned is not associated with the item requested.\n\nScan the correct bar code or confirm bar code override by entering the override code.",
+  "INVALID_SCAN_BARCODE_HEADER": "Bar Code Not Recognized"
 }
