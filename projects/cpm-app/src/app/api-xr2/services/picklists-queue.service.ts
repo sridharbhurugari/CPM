@@ -34,16 +34,16 @@ export class PicklistsQueueService {
     });
   }
 
-  printLabels(deviceId: number, robotPrintRequest: RobotPrintRequest) {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
-    return this.httpClient.post(url, robotPrintRequest, {
+  skip(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/Skip');
+    return this.httpClient.post(url, globalDispenseSyncRequest, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
 
-  reroute(reroutePickListLine: ReroutePickListLine) {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/Reroute');
-    return this.httpClient.post(url, reroutePickListLine, {
+  printLabels(deviceId: number, robotPrintRequest: RobotPrintRequest) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
+    return this.httpClient.post(url, robotPrintRequest, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
