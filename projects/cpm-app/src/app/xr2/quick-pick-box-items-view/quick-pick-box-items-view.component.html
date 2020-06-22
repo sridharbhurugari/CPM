@@ -1,0 +1,32 @@
+<div class="scroll-container">
+  <div class="scroll-container-content">
+    <div class="header">
+      <div class="header-content">
+        <div class="table-labels">
+          <div class="label-title">{{ "MEDICATION" | translate }}</div>
+          <div class="data-title">
+            {{ "FILLED" | translate }} ({{ dispenseBox.FilledQty }}) /
+            {{ "REQ" | translate }} ({{ dispenseBox.ReqQty }})
+          </div>
+        </div>
+        <div class="index"></div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="body-content">
+        <div
+          class="row"
+          *ngFor="let picklistItem of dispenseBox.PicklistItems"
+          [ngStyle]="getItemStyle(picklistItem)">
+          <div class="label">
+            {{ picklistItem.Label }}
+          </div>
+          <div class="data">
+            {{ picklistItem.FilledQty }} / {{ picklistItem.ReqQty }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </div>
+</div>
