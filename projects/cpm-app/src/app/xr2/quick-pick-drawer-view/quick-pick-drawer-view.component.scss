@@ -1,0 +1,36 @@
+.drawer-container {
+  display: flex;
+  height: 50%;
+  width: 100%;
+
+  .cards-view {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+
+    .content {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      width: 100%;
+      flex: 1;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: center;
+
+      .card-container {
+        width: 33%;
+        height: 48%;
+        margin: 2px;
+      }
+    }
+  }
+
+  .detail-card-view {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+}
