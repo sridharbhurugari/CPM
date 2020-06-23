@@ -56,7 +56,7 @@
             <oc-button-action
               *ngIf="picklistQueueItem.Status!==1"
               [buttonText]="getPrintButtonProperties(picklistQueueItem).text"
-              [disabled]=getPrintButtonProperties(picklistQueueItem).disabled
+              [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
               (click)="printLabels(picklistQueueItem)">
           </oc-button-action>
           </div>
