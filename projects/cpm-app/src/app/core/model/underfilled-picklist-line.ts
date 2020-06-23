@@ -36,6 +36,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     DisplayOmniName: boolean;
     DisplayPatientNameSecondLine: boolean;
     PharmacyQOH: number;
+    UnfilledReason: string;
 
     get DestinationSortValue(): string{
         if(this.DestinationType == 'P'){

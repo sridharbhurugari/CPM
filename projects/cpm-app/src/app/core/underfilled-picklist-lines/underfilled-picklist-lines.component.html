@@ -53,7 +53,8 @@
         </div>
       </div>
       <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
-        {{picklistLine.FillQuantity}} / {{picklistLine.OrderQuantity}}
+        <span>{{picklistLine.FillQuantity}} / {{picklistLine.OrderQuantity}}</span>
+        <span>{{picklistLine.UnfilledReason}}</span>
       </div>
       <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">
         <div>{{picklistLine.FillDate | date: 'shortDate'}}</div>

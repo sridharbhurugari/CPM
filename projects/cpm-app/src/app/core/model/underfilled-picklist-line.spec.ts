@@ -19,7 +19,8 @@ describe('UnderfilledPicklistLine', () => {
       PickItemLocationDescription: '',
       PicklistTypeDb: '',
       PriorityCode: '',
-      PharmacyQOH: 0
+      PharmacyQOH: 0,
+      UnfilledReason: '',
     });
   });
 
