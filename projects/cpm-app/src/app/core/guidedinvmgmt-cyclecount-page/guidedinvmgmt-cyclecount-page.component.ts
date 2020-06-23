@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewChecked, HostListener, ElementRe
 import { map, shareReplay, filter, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge, throwError } from 'rxjs';
+import { Observable, forkJoin, merge, throwError, Subscription } from 'rxjs';
 import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType, ToastModule, ToastService } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -40,7 +40,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
   @ViewChild('contain', null) elementView: ElementRef;
   @ViewChild('Generic', null)GenericView:ElementRef;
-  
+
   leaseBusyTitle$: Observable<any>;
   leaseBusyMessage$: Observable<any>;
   productBarCodeInfo$: Observable<any>;
@@ -89,6 +89,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   scanbarCodeValue: Observable<number>;
   itemGenericWidth:any;
   itemGenericWidthScroll:any;
+  private barcodeScannedSubscription: Subscription;
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -100,7 +101,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     private translateService: TranslateService,
     private hardwareLeaseService: HardwareLeaseService,
     private systemConfigurationService: SystemConfigurationService,
-    private _barcodeScanService: BarcodeScanService
+    private barcodeScanService: BarcodeScanService
   ) {
     setInterval(() => {
       this.time = new Date();
@@ -146,6 +147,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
 
     this.getCycleCountData(this.deviceId);
+    this.hookupEventHandlers();
   }
 
   ngAfterViewChecked() {
@@ -539,33 +541,104 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.dialogService.showOnce(properties);
   }
 
-  @HostListener("document:keypress", ['$event']) onKeypressHandler(event: KeyboardEvent) {
-    console.log(event);
-    if (!this.nonBarcodeInputFocus && this.CheckSafetyScanConfiguration()) {
-      var isInputComplete = this._barcodeScanService.handleKeyInput(event);
-      //If not from barcode scanner ignore the character
-      if (!this._barcodeScanService.isScannerInput()) {
-        this._barcodeScanService.reset();
+    // Scanned barcode event listener for use in Cef
+    private processScannedBarcode(scannedBarcode: string): void {
+      this.barcodeScanService.reset();
+      this.rawBarcodeMessage = scannedBarcode;
+  }
+    // Page Level Listener for barcode scanner
+    @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
+      if (this.nonBarcodeInputFocus) {
+          return;
       }
+
+      const isInputComplete = this.barcodeScanService.handleKeyInput(event);
+
+      // If not from barcode scanner ignore the character
+      if (!this.barcodeScanService.isScannerInput()) {
+          this.barcodeScanService.reset();
+      }
+
       if (isInputComplete) {
-        //populating the page level input into text box.
-        this.pagelevelInput = this._barcodeScanService.BarcodeInputCharacters;
-        this.rawBarcodeMessage = this._barcodeScanService.BarcodeInputCharacters;
-        if (this.pagelevelInput.search('$') != -1 || this.pagelevelInput == "0000")
-          this.itemBinBarCode();
-        this._barcodeScanService.reset();
+          console.log('Listening to key inputs for page level');
+
+          // modify the value with event target value here
+          console.log(`Page level Scan:  ${this.barcodeScanService.BarcodeInputCharacters}`);
+
+          // populating the page level input into text box.
+          this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+          this.barcodeScanService.reset();
       }
-    }
   }
 
+  onBarcodeScanExcludedKeyPressEvent(event: KeyboardEvent) {
+    const isInputComplete = this.barcodeScanService.handleKeyInput(event);
+    const isScannerInput = this.barcodeScanService.isScannerInput();
+
+    // check if the character is a barcode scan
+    if (isScannerInput) {
+        // Since the first character always returns true, ignore it.
+        if (this.barcodeScanService.BarcodeInputCharacters.length !== 1) {
+            // ignore if it is a barcodescan
+            event.preventDefault();
+        }
+    } else {
+        this.barcodeScanService.reset();
+    }
+
+    if (isInputComplete) {
+        // remove the last character.
+        this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+        console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this.barcodeScanService.BarcodeInputCharacters}`);
+        this.barcodeScanService.reset();
+    }
+}
   onBarcodeExcludedInputFocus(event) {
     this.nonBarcodeInputFocus = true;
   }
 
   onBarcodeExcludedInputBlur(event) {
     this.nonBarcodeInputFocus = false;
-    this._barcodeScanService.reset();
+    this.barcodeScanService.reset();
   }
+
+reset() {
+    this.rawBarcodeMessage = '';
+ }
+
+ private hookupEventHandlers(): void {
+  if (this.isInvalid(this.barcodeScanService)) {
+      return;
+  }
+
+  this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+  this.processScannedBarcode(scannedBarcode)
+  );
+}
+
+private unhookEventHandlers(): void {
+  if (this.isInvalid(this.barcodeScanService)) {
+      return;
+  }
+
+  this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
+}
+
+private unsubscribeIfValidSubscription(subscription: Subscription): void {
+  if (this.isValid(subscription)) {
+      subscription.unsubscribe();
+  }
+}
+
+private isValid(variable: any): boolean {
+  return variable !== undefined && variable !== null;
+}
+
+private isInvalid(variable: any): boolean {
+  return !this.isValid(variable);
+}
+
+
   productScanInfo() {
     var productBarCode;
     this.translateService.get('SCAN_PRODUCT_BARCODE').subscribe(result => { productBarCode = result; });
@@ -574,6 +647,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       pauseOnHover: false
     });
   }
+
   binbarScanInfo() {
     var binBarCode;
     this.translateService.get('SCAN_BIN_BARCODE').subscribe(result => { binBarCode = result; });

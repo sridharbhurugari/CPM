@@ -1,0 +1,22 @@
+:host {
+  height: 100%;
+}
+
+.quick-pick-page {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  .quick-pick-content {
+    flex-grow: 1;
+  }
+}
+
+.robotSelection {
+  float: left;
+}
+
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}

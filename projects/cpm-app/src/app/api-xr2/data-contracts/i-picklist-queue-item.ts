@@ -1,3 +1,4 @@
+import { Guid } from 'guid-typescript';
 import { IItemPicklistLine } from './i-item-picklist-line';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 

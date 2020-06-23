@@ -36,6 +36,7 @@
           <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
             <span>{{picklistQueueItem.DeviceDescription}}</span>
             <oc-singleselect
+            popupDirection="AUTO"
             [disabled] = "picklistQueueItem.Status > 1"
             [tableData] = "getActiveOutputDeviceList(picklistQueueItem)"
             [selectedItem] = "getSelectedOutputDeviceRow(picklistQueueItem)"
@@ -44,7 +45,7 @@
           </div>
           <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
             <div class="btn-group">
-              <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button">
+              <oc-button-action [buttonText]="'SKIP' | translate" class="skip-button"  (click)="skip(picklistQueueItem)">
               </oc-button-action>
               <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
                 (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving || !getSelectedOutputDeviceRow(picklistQueueItem)"></oc-button-action>
@@ -59,4 +60,4 @@
       </ng-container>
     </oc-grid>
   </ng-container>
- 
+
