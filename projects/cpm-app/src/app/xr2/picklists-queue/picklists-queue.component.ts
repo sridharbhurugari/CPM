@@ -254,7 +254,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.translateService.get(printTranslatable).subscribe((res: string) => {
       printTranslated = res;
     });
-    this.translateService.get(printTranslatable).subscribe((res: string) => {
+    this.translateService.get(reprintTranslatable).subscribe((res: string) => {
       reprintTranslated = res;
     });
 

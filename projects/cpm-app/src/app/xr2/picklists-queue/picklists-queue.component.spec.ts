@@ -147,7 +147,7 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
     });
-    it('Reprint button should display on PRINTED status', () => {
+    it('Reprint button should display on printed status', () => {
       component.picklistQueueItems = [
         new PicklistQueueItem(null),
       ];
