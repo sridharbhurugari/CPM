@@ -49,7 +49,7 @@ describe('PicklistsQueueComponent', () => {
       removePicklistQueueItemSubject: new Subject()
     };
     picklistsQueueService = {
-      reroute: jasmine.createSpy('reroute').and.returnValue(of(picklistsQueueService))
+      skip: jasmine.createSpy('skip').and.returnValue(of(picklistsQueueService))
     };
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
@@ -91,8 +91,8 @@ describe('PicklistsQueueComponent', () => {
   describe('reroute', () => {
     it('should call picklistsQueueService.reroute', () => {
       const picklistQueueItem = new PicklistQueueItem(null);
-      component.reroute(picklistQueueItem);
-      expect(picklistsQueueService.reroute).toHaveBeenCalled();
+      component.skip(picklistQueueItem);
+      expect(picklistsQueueService.skip).toHaveBeenCalled();
       })
     });
 

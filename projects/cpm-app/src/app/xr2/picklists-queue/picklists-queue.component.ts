@@ -156,6 +156,31 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
+  skip(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.Saving = true;
+    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
+    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
+    globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
+    globalDispenseSyncRequest.OutputDeviceId = picklistQueueItem.OutputDeviceId;
+    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
+      const pickListLineDetail = new PickListLineDetail();
+      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
+      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
+      pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
+      globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
+    });
+    this.picklistsQueueService.skip(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+      result => {
+        picklistQueueItem.Saving = false;
+      }, result => {
+        picklistQueueItem.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
   printLabels(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const robotPrintRequest = new RobotPrintRequest();
@@ -177,19 +202,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       }, result => {
         picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
-      });
-  }
-
-  reroute(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.Saving = true;
-    const reroutePickListLine = new ReroutePickListLine();
-
-    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
-      reroutePickListLine.PickListLineIds.push(itemPicklistLine.PicklistLineId);
-    });
-    this.picklistsQueueService.reroute(reroutePickListLine).subscribe(
-      result => {
-        picklistQueueItem.Saving = false;
       });
   }
 
