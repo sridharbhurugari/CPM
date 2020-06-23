@@ -41,7 +41,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   rawBarcodeMessage: string = '';
   popupTimeoutSeconds: number;
   searchFields = [this.trayIDPropertyName, this.exceptionPocketsPropertyName, this.trayTypePropertyName, this.deviceNamePropertyName];
-
+  private barcodeScannedSubscription: Subscription;
   constructor(
     private translateService: TranslateService,
     private systemConfigurationService: SystemConfigurationService,
@@ -64,6 +64,8 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
       console.log('popup message timeout : ' + result);
       this.popupTimeoutSeconds = (Number(result.Value));
     });
+
+    this.hookupEventHandlers();
   }
 
 
@@ -151,7 +153,52 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  reset() {
+    this.rawBarcodeMessage = '';
+ }
 
+  private hookupEventHandlers(): void {
+    if (this.isInvalid(this._barcodeScanService)) {
+        return;
+    }
+   this.barcodeScannedSubscription = this._barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+  this.processScannedBarcode(scannedBarcode)
+  );
+}
+
+private unhookEventHandlers(): void {
+  if (this.isInvalid(this._barcodeScanService)) {
+      return;
+  }
+
+  this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
+}
+
+private unsubscribeIfValidSubscription(subscription: Subscription): void {
+  if (this.isValid(subscription)) {
+      subscription.unsubscribe();
+  }
+}
+
+private isValid(variable: any): boolean {
+  return variable !== undefined && variable !== null;
+}
+
+private isInvalid(variable: any): boolean {
+  return !this.isValid(variable);
+}
+  private processScannedBarcode(scannedBarcode: string): void {
+    this._barcodeScanService.reset();
+    this.rawBarcodeMessage = scannedBarcode;
+    var exceptionData: IXr2ExceptionsItem;
+        this.displayExceptionsList$.subscribe((exceptions: IXr2ExceptionsItem[]) =>
+          exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
+        );
+        if (exceptionData)
+          this.navigatedetailspage(exceptionData);
+        else
+          this.displayWrongBarCodeDialog();
+}
   navigatedetailspage(exceptions: IXr2ExceptionsItem) {
     if (this.traytypesList$.forEach(
       val => val.toString().toUpperCase() === exceptions.TrayID.toString().substring(1, 2).toUpperCase())) {

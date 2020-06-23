@@ -545,6 +545,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     private processScannedBarcode(scannedBarcode: string): void {
       this.barcodeScanService.reset();
       this.rawBarcodeMessage = scannedBarcode;
+      if (this.rawBarcodeMessage.search('$') != -1 || this.rawBarcodeMessage == "0000")
+          this.itemBinBarCode();
   }
     // Page Level Listener for barcode scanner
     @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
@@ -671,8 +673,15 @@ private isInvalid(variable: any): boolean {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
         numberRet = res;
         if (numberRet == 0) {
-          this.displayWrongBarCodeDialog();
-        }
+          this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
+            overrideRet= val;
+            this.displayWrongBarCodeDialog(overrideRet);
+          });
+       }
+       else
+       {
+        this.productBarCodeDisplay = false;
+       }
 
       });
     }
