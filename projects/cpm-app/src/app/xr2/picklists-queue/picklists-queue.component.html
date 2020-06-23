@@ -36,7 +36,7 @@
         <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
           <span>{{picklistQueueItem.DeviceDescription}}</span>
           <oc-singleselect
-            popupDirection="AUTO"
+            [popupDirection]="'AUTO'"
             [disabled]="picklistQueueItem.Status > 1"
             [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
             [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
@@ -48,15 +48,17 @@
             <oc-button-action [buttonText]="'SKIP' | translate" (click)="reroute(picklistQueueItem)"
               [disabled]="picklistQueueItem.Saving" class="skip-button">
             </oc-button-action>
-            <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
-              (click)="sendToRobot(picklistQueueItem)" [disabled]="getPrintDisabledState(picklistQueueItem)"></oc-button-action>
+            <oc-button-action *ngIf="picklistQueueItem.Status===1"
+              [buttonText]="getReleaseButtonProperties(picklistQueueItem).text"
+              [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
+              (click)="sendToRobot(picklistQueueItem)">
+            </oc-button-action>
             <oc-button-action
-              *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3 || (picklistQueueItem.Status===4 && !picklistQueueItem.IsPrintable)"
-              [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
-              [disabled]=getPrintDisabledState(picklistQueueItem)></oc-button-action>
-            <oc-button-action *ngIf="(picklistQueueItem.Status===4 && picklistQueueItem.IsPrintable)"
-              [buttonText]="'REPRINT' | translate" (click)="printLabels(picklistQueueItem)"
-              [disabled]="getPrintDisabledState(picklistQueueItem)"></oc-button-action>
+              *ngIf="picklistQueueItem.Status!==1"
+              [buttonText]="getPrintButtonProperties(picklistQueueItem).text"
+              [disabled]=getPrintButtonProperties(picklistQueueItem).disabled
+              (click)="printLabels(picklistQueueItem)">
+          </oc-button-action>
           </div>
         </div>
       </div>

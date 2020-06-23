@@ -230,18 +230,44 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return outputDeviceDisplayList;
   }
 
-  getPrintDisabledState(picklistQueueItem: PicklistQueueItem) {
-    if (picklistQueueItem.Saving || !picklistQueueItem.IsPrintable) {
-      return true;
+  getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    const releaseTranslatable = 'RELEASE';
+    let text = '';
+
+    this.translateService.get(releaseTranslatable).subscribe((res: string) => {
+      text = res;
+    });
+
+    return {
+      disabled : picklistQueueItem.Saving,
+      text
+    };
+  }
+
+  getPrintButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    const printTranslatable = 'PRINT';
+    const reprintTranslatable = 'REPRINT';
+    let printTranslated = '';
+    let reprintTranslated = '';
+    let text = '';
+
+    this.translateService.get(printTranslatable).subscribe((res: string) => {
+      printTranslated = res;
+    });
+    this.translateService.get(printTranslatable).subscribe((res: string) => {
+      reprintTranslated = res;
+    });
+
+    if (picklistQueueItem.Status === 2 || picklistQueueItem.Status === 3) {
+      text = printTranslated;
+    } else if (picklistQueueItem.Status === 4) {
+      text = picklistQueueItem.IsPrintable ? reprintTranslated : printTranslated;
     }
 
-    switch (picklistQueueItem.Status) {
-      case 1: return !this.getSelectedOutputDeviceRow(picklistQueueItem);
-      case 2: return true;
-      case 3: return false;
-      case 4: return false;
-      default: return true;
-    }
+    return {
+      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      text
+    };
   }
 
   getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
