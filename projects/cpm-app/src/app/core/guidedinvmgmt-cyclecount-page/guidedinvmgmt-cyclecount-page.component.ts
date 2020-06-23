@@ -545,8 +545,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     private processScannedBarcode(scannedBarcode: string): void {
       this.barcodeScanService.reset();
       this.rawBarcodeMessage = scannedBarcode;
-      if (scannedBarcode.search('$') != -1 || scannedBarcode == "0000")
-          this.itemBinBarCode();
   }
     // Page Level Listener for barcode scanner
     @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
@@ -569,8 +567,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
           // populating the page level input into text box.
           this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
-          if (this.pagelevelInput.search('$') != -1 || this.pagelevelInput == "0000")
-          this.itemBinBarCode();
           this.barcodeScanService.reset();
       }
   }
@@ -594,8 +590,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         // remove the last character.
         this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
         console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this.barcodeScanService.BarcodeInputCharacters}`);
-        if (this.pagelevelInput.search('$') != -1 || this.pagelevelInput == "0000")
-          this.itemBinBarCode();
         this.barcodeScanService.reset();
     }
 }
@@ -679,7 +673,7 @@ private isInvalid(variable: any): boolean {
         if (numberRet == 0) {
           this.displayWrongBarCodeDialog();
         }
-        
+
       });
     }
   }
