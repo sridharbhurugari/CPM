@@ -247,7 +247,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         ExpirationDate: actualexpiradationdate,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
         BarCodeFormat: "UN",
-        ProductID:"000030"
+        ProductID: this.rawBarcodeMessage  && this.rawBarcodeMessage
       });
 
       var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
@@ -545,6 +545,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     private processScannedBarcode(scannedBarcode: string): void {
       this.barcodeScanService.reset();
       this.rawBarcodeMessage = scannedBarcode;
+      if (this.rawBarcodeMessage.search('$') != -1 || this.rawBarcodeMessage == "0000")
+          this.itemBinBarCode();
   }
     // Page Level Listener for barcode scanner
     @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
@@ -658,30 +660,39 @@ private isInvalid(variable: any): boolean {
   }
 
   itemBinBarCode(): boolean {
-    var numberRet;
-    if (this.displayCycleCountItem.ItemId.toUpperCase() == this.pagelevelInput.substring(1, this.pagelevelInput.length).toUpperCase()) {
+    var numberRet,overrideRet;
+    if (this.displayCycleCountItem.ItemId.toUpperCase() == this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
       return true;
     }
-    else if (this.pagelevelInput == "0000") {
+    else if (this.rawBarcodeMessage == "0000") {
       this.binBarCodeDisplay = false;
       this.productBarCodeDisplay = false;
     }
     else {
-      this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.pagelevelInput).subscribe(res => {
-        console.log(res);
+      this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
         numberRet = res;
         if (numberRet == 0) {
-          this.displayWrongBarCodeDialog();
-        }
+          this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
+            overrideRet= val;
+            this.displayWrongBarCodeDialog(overrideRet);
+          });
+       }
+       else
+       {
+        this.productBarCodeDisplay = false;
+       }
 
       });
     }
   }
 
-  displayWrongBarCodeDialog():void{
+  displayWrongBarCodeDialog(override):void{
     const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
-    this.translateService.get('PRINTFAILED_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
+    if(override)
+      this.translateService.get('INVALID_SCAN_BARCODE_OVERRIDE').subscribe(result => { properties.messageElementText = result; });
+    else
     this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
