@@ -677,11 +677,9 @@ private isInvalid(variable: any): boolean {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
         numberRet = res;
         if (numberRet == 0) {
-          this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
-            overrideRet= val;
-            this.displayWrongBarCodeDialog(overrideRet);
-          });
-       }
+          this.displayWrongBarCodeDialog();
+        }
+        
       });
     }
   }
