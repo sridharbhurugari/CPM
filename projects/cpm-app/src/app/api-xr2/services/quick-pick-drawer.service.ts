@@ -16,15 +16,15 @@ export class Xr2QuickPickDrawerService {
     private ocapHttpHeadersService: OcapHttpHeadersService
     ) { }
 
-  getDrawers(deviceId: string): Observable<QuickPickDrawerData[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpickdrawers/drawers/` + deviceId);
+  getAllDrawers(deviceId: string): Observable<QuickPickDrawerData[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/alldrawers/` + deviceId);
     return this.httpClient.get<QuickPickDrawerData[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
 
   getDrawer(deviceId: string): Observable<QuickPickDrawerData> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpickdrawers/drawer/` + deviceId);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/drawer/` + deviceId);
     return this.httpClient.get<QuickPickDrawerData>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });

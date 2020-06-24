@@ -118,7 +118,7 @@ export class QuickPickPageComponent implements OnInit {
       return;
     }
 
-    this.quickpickDrawers = this.quickPickDrawerService.getDrawers(this.selectedDeviceId).pipe(map(x => {
+    this.quickpickDrawers = this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).pipe(map(x => {
       const data = x.map(drawerData => new QuickPickDrawerData(drawerData));
       return data;
     }), shareReplay(1));

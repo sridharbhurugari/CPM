@@ -42,7 +42,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   printDrawerLabel() {
     // PRINT THE DRAWER LABELS for this.detailedDrawer
-    console.log('Print clicked for drawer: ' + this.detailedDrawer.Id.toString());
+    console.log('Print clicked for drawer: ' + this.detailedDrawer.Id);
   }
 
 }
