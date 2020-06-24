@@ -41,6 +41,7 @@ describe('PicklistsQueueComponent', () => {
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let eventConnectionService: Partial<EventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
+  let translateService: Partial<TranslateService>;
 
   beforeEach(async(() => {
     picklistsQueueEventConnectionService = {
@@ -48,7 +49,10 @@ describe('PicklistsQueueComponent', () => {
       removePicklistQueueItemSubject: new Subject()
     };
     picklistsQueueService = {
-      reroute: jasmine.createSpy('reroute').and.returnValue(of(picklistsQueueService))
+      skip: jasmine.createSpy('skip').and.returnValue(of(picklistsQueueService))
+    };
+    translateService = {
+      get: jasmine.createSpy('get').and.returnValue(of(translateService))
     };
 
     TestBed.configureTestingModule({
@@ -57,7 +61,7 @@ describe('PicklistsQueueComponent', () => {
         FooterModule, LayoutModule, CoreModule],
       providers: [
         { provide: WpfActionControllerService, useValue: jasmine.createSpyObj('WpfActionControllerService', ['ExecuteContinueAction']) },
-        { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: TranslateService, useValue: translateService },
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: HttpClient, useValue: { get: () => {}} },
         { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
@@ -86,35 +90,9 @@ describe('PicklistsQueueComponent', () => {
 
   describe('reroute', () => {
     it('should call picklistsQueueService.reroute', () => {
-      var picklistQueueItem = new PicklistQueueItem({
-        AvailableOutputDeviceList: [],
-        BoxCount: 0,
-        Destination: '',
-        DestinationId: '',
-        DestinationType: '',
-        DeviceDescription: '',
-        DeviceId: 1,
-        DeviceLocationId: 2,
-        FilledBoxCount: 3,
-        ItemCount: 4,
-        ItemPicklistLines: [{
-          DestinationId: '',
-          ItemId: '',
-          PickLocationDescription: '',
-          PickLocationDeviceLocationId: 6,
-          Qty: 7,
-          PicklistLineId:'0E15A44C-49CB-4676-8774-007D2FBC4791'}],
-        OrderId: '',
-        OutputDeviceId: '',
-        PicklistId: '',
-        PriorityCode: '',
-        PriorityCodeColor: '',
-        PriorityCodeDescription: '',
-        Status: 5,
-        StatusDisplay: ''
-            });
-      component.reroute(picklistQueueItem);
-      expect(picklistsQueueService.reroute).toHaveBeenCalled();
+      const picklistQueueItem = new PicklistQueueItem(null);
+      component.skip(picklistQueueItem);
+      expect(picklistsQueueService.skip).toHaveBeenCalled();
       })
     });
 
@@ -123,6 +101,103 @@ describe('PicklistsQueueComponent', () => {
       expect(component).toBeTruthy();
       expect(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
       expect(picklistsQueueEventConnectionService.removePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('Button State Diplay Texts', () => {
+    it('Release button should display on new status', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = true;
+      component.picklistQueueItems[0].Status = 1;
+
+      let validText = '';
+      translateService.get('RELEASE').subscribe((res: string) => {
+        validText = res;
+      });
+
+      expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
+    });
+    it('Print button should display on sent status', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = true;
+      component.picklistQueueItems[0].Status = 2;
+
+      let validText = '';
+      translateService.get('PRINT').subscribe((res: string) => {
+        validText = res;
+      });
+
+      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
+    });
+    it('Print button should display on boxsplitreceived status', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = true;
+      component.picklistQueueItems[0].Status = 2;
+
+      let validText = '';
+      translateService.get('PRINT').subscribe((res: string) => {
+        validText = res;
+      });
+
+      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
+    });
+    it('Reprint button should display on printed status', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = true;
+      component.picklistQueueItems[0].Status = 4;
+
+      let validText = '';
+      translateService.get('REPRINT').subscribe((res: string) => {
+        validText = res;
+      });
+
+      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
+    });
+  });
+
+  describe('Action Button Disable States', () => {
+    it('Release should be enabled on new status', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = false;
+      component.picklistQueueItems[0].Status = 1;
+
+      expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
+    });
+    it('Print should disable on non-printable devices', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+      ];
+      component.picklistQueueItems[0].IsPrintable = false;
+      component.picklistQueueItems[0].Status = 3;
+
+
+      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).disabled).toBeTruthy();
+    });
+    it('Print should enable on printable devices with valid state', () => {
+      component.picklistQueueItems = [
+        new PicklistQueueItem(null),
+        new PicklistQueueItem(null)
+      ];
+      component.picklistQueueItems[0].IsPrintable = true;
+      component.picklistQueueItems[0].Saving = false;
+      component.picklistQueueItems[0].Status = 3;
+
+      component.picklistQueueItems[1].IsPrintable = true;
+      component.picklistQueueItems[1].Saving = false;
+      component.picklistQueueItems[1].Status = 4;
+
+      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
+      expect(component.getPrintButtonProperties(component.picklistQueueItems[1]).disabled).toBeFalsy();
     });
   });
 });

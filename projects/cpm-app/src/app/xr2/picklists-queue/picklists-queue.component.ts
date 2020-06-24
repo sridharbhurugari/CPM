@@ -112,6 +112,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
+    matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
 
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
@@ -155,6 +156,31 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
+  skip(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.Saving = true;
+    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
+    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
+    globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
+    globalDispenseSyncRequest.OutputDeviceId = picklistQueueItem.OutputDeviceId;
+    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
+      const pickListLineDetail = new PickListLineDetail();
+      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
+      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
+      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
+      pickListLineDetail.Quantity = itemPicklistLine.Qty;
+      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
+      globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
+    });
+    this.picklistsQueueService.skip(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+      result => {
+        picklistQueueItem.Saving = false;
+      }, result => {
+        picklistQueueItem.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
   printLabels(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const robotPrintRequest = new RobotPrintRequest();
@@ -176,19 +202,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       }, result => {
         picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
-      });
-  }
-
-  reroute(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.Saving = true;
-    const reroutePickListLine = new ReroutePickListLine();
-
-    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
-      reroutePickListLine.PickListLineIds.push(itemPicklistLine.PicklistLineId);
-    });
-    this.picklistsQueueService.reroute(reroutePickListLine).subscribe(
-      result => {
-        picklistQueueItem.Saving = false;
       });
   }
 
@@ -227,6 +240,46 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
 
     return outputDeviceDisplayList;
+  }
+
+  getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    const releaseTranslatable = 'RELEASE';
+    let text = '';
+
+    this.translateService.get(releaseTranslatable).subscribe((res: string) => {
+      text = res;
+    });
+
+    return {
+      disabled : picklistQueueItem.Saving,
+      text
+    };
+  }
+
+  getPrintButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    const printTranslatable = 'PRINT';
+    const reprintTranslatable = 'REPRINT';
+    let printTranslated = '';
+    let reprintTranslated = '';
+    let text = '';
+
+    this.translateService.get(printTranslatable).subscribe((res: string) => {
+      printTranslated = res;
+    });
+    this.translateService.get(reprintTranslatable).subscribe((res: string) => {
+      reprintTranslated = res;
+    });
+
+    if (picklistQueueItem.Status === 2 || picklistQueueItem.Status === 3) {
+      text = printTranslated;
+    } else if (picklistQueueItem.Status === 4) {
+      text = picklistQueueItem.IsPrintable ? reprintTranslated : printTranslated;
+    }
+
+    return {
+      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      text
+    };
   }
 
   getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {

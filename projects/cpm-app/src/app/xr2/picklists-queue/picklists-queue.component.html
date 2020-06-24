@@ -1,64 +1,67 @@
-  <ng-container class="ocactiondetails">
-    <div class="cpmheaderrow">
-      <app-header-container></app-header-container>
-      <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
-    </div>
-    <oc-grid #ocgrid ocgridfilter="false">
-      <ng-container class="ocgridheader">
-        <div class="first" data-colwrap="true"></div>
-        <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}
+<ng-container class="ocactiondetails">
+  <div class="cpmheaderrow">
+    <app-header-container></app-header-container>
+    <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  </div>
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" data-colwrap="true"></div>
+      <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}
+      </div>
+      <div class="col width-type" data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div>
+      <div class="col width-type" data-width="160" data-colwrap="true">{{'STATUS' | translate}}
+      </div>
+      <div class="col width-destination" data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
+      </div>
+      <div class="last width-type" data-width="350" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row"
+       *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
+        <div class="first" style="align-items: center;">
+          <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
         </div>
-        <div class="col width-type" data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div>
-        <div class="col width-type" data-width="160" data-colwrap="true">{{'STATUS' | translate}}
+        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">
+          <span>{{picklistQueueItem.Destination}}</span>
+          <span>{{picklistQueueItem.PriorityCode}}</span>
         </div>
-        <div class="col width-destination" data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
-        </div>
-        <div class="last width-type" data-width="350" data-colwrap="true">{{'ACTIONS' | translate}}</div>
-      </ng-container>
-      <ng-container class="ocgridbody">
-        <div class="row"
-          *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
-          <div class="first" style="align-items: center;">
-            <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
-          </div>
-          <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">
-            <span>{{picklistQueueItem.Destination}}</span>
-            <span>{{picklistQueueItem.PriorityCode}}</span>
-          </div>
-          <div class="col width-type" [attr.data-title]="'ITEMS' | translate">{{picklistQueueItem.ItemCount}}</div>
-          <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">
-            {{'NOTSENT' | translate}}</div>
-          <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===2">
-            {{'PROCESSING' | translate}}</div>
-          <div class="col width-type" [attr.data-title]="'STATUS' | translate"
-            *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">{{picklistQueueItem.FilledBoxCount}}
-            {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
-          <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
-            <span>{{picklistQueueItem.DeviceDescription}}</span>
-            <oc-singleselect
-            popupDirection="AUTO"
-            [disabled] = "picklistQueueItem.Status > 1"
-            [tableData] = "getActiveOutputDeviceList(picklistQueueItem)"
-            [selectedItem] = "getSelectedOutputDeviceRow(picklistQueueItem)"
+        <div class="col width-type" [attr.data-title]="'ITEMS' | translate">{{picklistQueueItem.ItemCount}}</div>
+        <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">
+          {{'NOTSENT' | translate}}</div>
+        <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===2">
+          {{'PROCESSING' | translate}}</div>
+        <div class="col width-type" [attr.data-title]="'STATUS' | translate"
+          *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">{{picklistQueueItem.FilledBoxCount}}
+          {{'OF' | translate}} {{picklistQueueItem.BoxCount}}</div>
+        <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
+          <span>{{picklistQueueItem.DeviceDescription}}</span>
+          <oc-singleselect
+            [popupDirection]="'AUTO'"
+            [disabled]="picklistQueueItem.Status > 1"
+            [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
+            [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
-            </oc-singleselect>
-          </div>
-          <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
-            <div class="btn-group">
-              <oc-button-action [buttonText]="'SKIP' | translate" (click)="reroute(picklistQueueItem)"
+          </oc-singleselect>
+        </div>
+        <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
+          <div class="btn-group">
+            <oc-button-action [buttonText]="'SKIP' | translate" (click)="skip(picklistQueueItem)"
               [disabled]="picklistQueueItem.Saving" class="skip-button">
-              </oc-button-action>
-              <oc-button-action *ngIf="picklistQueueItem.Status===1" [buttonText]="'RELEASE' | translate"
-                (click)="sendToRobot(picklistQueueItem)" [disabled]="picklistQueueItem.Saving || !getSelectedOutputDeviceRow(picklistQueueItem)"></oc-button-action>
-              <oc-button-action *ngIf="picklistQueueItem.Status===2 || picklistQueueItem.Status===3"
-                [buttonText]="'PRINT' | translate" (click)="printLabels(picklistQueueItem)"
-                [disabled]="picklistQueueItem.Saving || picklistQueueItem.Status===2 || picklistQueueItem.OutputDeviceId !== '200'"></oc-button-action>
-              <oc-button-action *ngIf="picklistQueueItem.Status===4" [buttonText]="'REPRINT' | translate"
-                (click)="printLabels(picklistQueueItem)" [disabled]="picklistQueueItem.Saving"></oc-button-action>
-            </div>
+            </oc-button-action>
+            <oc-button-action *ngIf="picklistQueueItem.Status===1"
+              [buttonText]="getReleaseButtonProperties(picklistQueueItem).text"
+              [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
+              (click)="sendToRobot(picklistQueueItem)">
+            </oc-button-action>
+            <oc-button-action
+              *ngIf="picklistQueueItem.Status!==1"
+              [buttonText]="getPrintButtonProperties(picklistQueueItem).text"
+              [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
+              (click)="printLabels(picklistQueueItem)">
+          </oc-button-action>
           </div>
         </div>
-      </ng-container>
-    </oc-grid>
-  </ng-container>
-
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>
