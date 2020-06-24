@@ -52,12 +52,14 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
+    quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
     console.log(quickPickDrawerData);
     let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
       return x.Id === quickPickDrawerData.Id;
     });
 
     this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
+
     if (this.detailedDrawer !== undefined) {
       if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
         if (quickPickDrawerData.Status < 2) {
