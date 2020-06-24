@@ -4,10 +4,10 @@ import { ButtonActionModule, ComponentTypes } from '@omnicell/webcorecomponents'
 import { TrafficLightsComponent } from './../traffic-lights/traffic-lights.component';
 import { QuickPickBoxItemsView} from './../quick-pick-box-items-view/quick-pick-box-items-view.component';
 
-import { QuickPickRobotDispenseBoxItem } from './../model/quick-pick-robot-dispense-box-item';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view.component';
+import { QuickPickErrorInformation } from '../model/quick-pick-error-information';
 
 describe('QuickPickDrawerDetailsViewComponent', () => {
   let component: QuickPickDrawerDetailsViewComponent;
@@ -24,9 +24,9 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QuickPickDrawerDetailsViewComponent);
     component = fixture.componentInstance;
-    component.detailedDrawer = new QuickPickDrawerData(null);
-    component.dispenseBox = new QuickPickRobotDispenseBoxItem(null);
-    component.detailedDrawer.MedsWithCounts = [];
+    component.detailedDrawerData = new QuickPickDrawerData(null);
+    component.detailedDrawerData.MedsWithCounts = [];
+    component.detailedDrawerData.ErrorInfo = new QuickPickErrorInformation(null);
     fixture.detectChanges();
   });
 

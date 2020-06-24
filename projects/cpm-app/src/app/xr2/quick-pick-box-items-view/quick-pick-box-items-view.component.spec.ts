@@ -2,9 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuickPickBoxItemsView } from './quick-pick-box-items-view.component';
 
-import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { IQuickPickPicklistItem } from '../../api-xr2/data-contracts/i-quick-pick-picklist-item';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
 describe('QuickPickBoxItemsView', () => {
   let component: QuickPickBoxItemsView;
@@ -21,7 +20,8 @@ describe('QuickPickBoxItemsView', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QuickPickBoxItemsView);
     component = fixture.componentInstance;
-    component.dispenseBox = new QuickPickRobotDispenseBoxItem(null);
+    component.drawerData = new QuickPickDrawerData(null);
+    component.drawerData.MedsWithCounts = [];
     fixture.detectChanges();
   });
 

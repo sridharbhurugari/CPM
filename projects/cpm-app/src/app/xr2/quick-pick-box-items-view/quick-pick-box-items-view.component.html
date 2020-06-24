@@ -5,8 +5,8 @@
         <div class="table-labels">
           <div class="label-title">{{ "MEDICATION" | translate }}</div>
           <div class="data-title">
-            {{ "FILLED" | translate }} ({{ dispenseBox.FillQuantity }}) /
-            {{ "REQ" | translate }} ({{ dispenseBox.RequestQuantity }})
+            {{ "FILLED" | translate }} ({{ drawerData.TotalFillQty }}) /
+            {{ "REQ" | translate }} ({{ drawerData.TotalRequestQty }})
           </div>
         </div>
         <div class="index"></div>
@@ -16,7 +16,7 @@
       <div class="body-content">
         <div
           class="row"
-          *ngFor="let medication of drawer.MedsWithCounts"
+          *ngFor="let medication of drawerData.MedsWithCounts"
           [ngStyle]="getItemStyle(medication)">
           <div class="label">
             {{ medication.MedicationName }}

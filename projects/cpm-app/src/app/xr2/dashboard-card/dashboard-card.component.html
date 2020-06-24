@@ -2,43 +2,43 @@
   <div class="header">
     <div class="header-content" [ngStyle]="getHeaderStyle()">
       <div class="description">
-        {{ drawer.Id }}
+        {{ drawerData.Id }}
       </div>
       <div class="title">
         <div class="title-content">
-          <div *ngIf="drawer.Status!==controlDataStatus.Empty">
-            {{ drawer.PriorityDescription }}
+          <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+            {{ drawerData.PriorityDescription }}
           </div>
         </div>
       </div>
       <div class="index">
-        <div *ngIf="drawer.Status!==controlDataStatus.Empty">
-          {{ dispenseBox.BoxNumber }} / {{ dispenseBox.BoxCount }}
+        <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+          {{ drawerData.BoxNumber }} / {{ drawerData.BoxCount }}
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="drawer.Status!==controlDataStatus.Empty" class="active">
+  <div *ngIf="drawerData.Status!==controlDataStatus.Empty" class="active">
     <div class="body">
       <div class="body-content">
         <div class="grid-container">
           <div class="grid-label">{{'DESTINATION' | translate}}:</div>
           <div class="grid-data">
-            {{ dispenseBox.PatientName }}
+            {{ drawerData.PatientName }}
             <br />
-            {{ dispenseBox.Area }}
+            {{ drawerData.Area }}
           </div>
           <div class="grid-label">{{'ID' | translate}}:</div>
           <div class="grid-data">
-            {{ dispenseBox.OrderId }}
+            {{ drawerData.OrderId }}
           </div>
           <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
           <div class="grid-data">
-            {{ dispenseBox.FillQuantity }}
+            {{ drawerData.TotalFillQty }}
           </div>
           <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
           <div class="grid-data">
-            {{ drawer.LineItems }}
+            {{ drawerData.LineItems }}
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
     </div>
     <div class="footer"></div>
   </div>
-  <div *ngIf="drawer.Status===controlDataStatus.Empty" class="inactive">
+  <div *ngIf="drawerData.Status===controlDataStatus.Empty" class="inactive">
     <div class="empty-content">{{'EMPTY' | translate}}</div>
   </div>
 </div>

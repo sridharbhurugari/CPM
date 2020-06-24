@@ -1,6 +1,9 @@
+import { Guid } from 'guid-typescript';
+
 import { IQuickPickDrawerData } from '../../api-xr2/data-contracts/i-quick-pick-drawer-data';
-import { QuickPickRobotDispenseBoxItem } from './quick-pick-robot-dispense-box-item';
 import { QuickPickControlDataStatus } from './quick-pick-control-data-status';
+import { MedsWithCount } from './meds-with-count';
+import { QuickPickErrorInformation } from './quick-pick-error-information';
 
 export class QuickPickDrawerData implements IQuickPickDrawerData {
   constructor(quickPickDrawerData: IQuickPickDrawerData) {
@@ -8,7 +11,10 @@ export class QuickPickDrawerData implements IQuickPickDrawerData {
   }
 
   Id: number;
-  QuickPickDispenseBoxItems: Array<QuickPickRobotDispenseBoxItem>;
+  OrderId: string;
+  PicklistLineId: Guid;
+  RobotPicklistLineId: Guid;
+  RobotDispenseBoxId: Guid;
   PriorityCode: string;
   PriorityDescription: string;
   ColorCode: string;
@@ -21,8 +27,12 @@ export class QuickPickDrawerData implements IQuickPickDrawerData {
   LineItems: number;
   Xr2ServiceBarcode: string;
   Status: QuickPickControlDataStatus;
-  MedsWithCounts: Array<any>;
-  ErrorInfo: any;
+  MedsWithCounts: Array<MedsWithCount>;
+  ErrorInfo: QuickPickErrorInformation;
   IsPartOfMultipleBoxOrder: boolean;
   DestinationHasOrdersAtOtherProcess: boolean;
+  BoxNumber: number;
+  BoxCount: number;
+  TotalRequestQty: number;
+  TotalFillQty: number;
 }

@@ -4,17 +4,17 @@
       <div class="header-content" [ngStyle]="getHeaderStyle()">
         <div class="details">
           <div class="description">
-            {{ detailedDrawer.Id }}
+            {{ detailedDrawerData.Id }}
           </div>
           <div class="title">
             <div class="title-content">
-              {{ detailedDrawer.PriorityDescription }}
+              {{ detailedDrawerData.PriorityDescription }}
             </div>
           </div>
         </div>
         <div class="index">
           <div class="index-content">
-            {{ dispenseBox.BoxNumber }} / {{ dispenseBox.BoxCount }}
+            {{ detailedDrawerData.BoxNumber }} / {{ detailedDrawerData.BoxCount }}
           </div>
         </div>
       </div>
@@ -25,24 +25,25 @@
           <div class="body-content">
             <div class="grid-container">
               <div class="status-label">
-                <app-traffic-lights color={{detailedDrawer.ColorCode}}></app-traffic-lights>
+                <!--TODO: add ngif here for light colors-->
+                <app-traffic-lights color="green"></app-traffic-lights>
               </div>
-              <div class="status-data" [ngStyle]="{'color': detailedDrawer.ColorCode}">{{ detailedDrawer.ErrorInfo.ErrorDescription }}
+              <div class="status-data" [ngStyle]="{'color': detailedDrawerData.ColorCode}">{{ detailedDrawerData.ErrorInfo.ErrorDescription }}
               </div>
               <div class="dest-label">{{'DESTINATION' | translate}}:</div>
               <div class="dest-data">
-                {{ dispenseBox.PatientName }}
+                {{ detailedDrawerData.PatientName }}
                 <br />
-                {{ dispenseBox.Area }}
+                {{ detailedDrawerData.Area }}
               </div>
               <div class="id-label">{{ 'ID' | translate }}:</div>
-              <div class="id-data">{{ dispenseBox.OrderId }}</div>
+              <div class="id-data">{{ detailedDrawerData.OrderId }}</div>
               <div class="qty-filled-data">{{ 'FILLED' | translate }}:
-                {{ dispenseBox.FillQuantity }}</div>
-              <div class="qty-req-data">{{ 'REQUESTED' | translate }}: {{ dispenseBox.RequestQuantity }}
+                {{ detailedDrawerData.TotalFillQty }}</div>
+              <div class="qty-req-data">{{ 'REQUESTED' | translate }}: {{ detailedDrawerData.TotalRequestQty }}
               </div>
               <div class="qty-items-data">{{ 'LINEITEMS' | translate }}:
-                {{ detailedDrawer.MedsWithCounts.length }}
+                {{ detailedDrawerData.MedsWithCounts.length }}
               </div>
             </div>
           </div>
@@ -59,7 +60,7 @@
       </div>
       <div class="box-items-view">
         <div class="box-items-view-content">
-          <app-quick-pick-box-items-view [dispenseBox]="dispenseBox"></app-quick-pick-box-items-view>
+          <app-quick-pick-box-items-view [drawerData]="detailedDrawerData"></app-quick-pick-box-items-view>
         </div>
       </div>
     </div>

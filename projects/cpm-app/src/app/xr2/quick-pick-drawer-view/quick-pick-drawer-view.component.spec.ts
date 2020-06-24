@@ -9,7 +9,6 @@ import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcor
 import { CoreModule } from '../../core/core.module';
 import { QuickPickDrawerDetailsViewComponent } from '../quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
-import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;

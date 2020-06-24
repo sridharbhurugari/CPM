@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status'
-import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 
 @Component({
   selector: 'app-dashboard-card',
@@ -11,27 +10,17 @@ import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispens
 export class DashboardCardComponent implements OnInit {
 
   controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
-  _dispenseBox: QuickPickRobotDispenseBoxItem;
-  _drawer: QuickPickDrawerData;
+  _drawerData: QuickPickDrawerData;
 
   @Input() drawerIndex: number;
 
   @Input()
-  set dispenseBox(value: QuickPickRobotDispenseBoxItem) {
-    this._dispenseBox = value;
+  set drawerData(value: QuickPickDrawerData) {
+    this._drawerData = value;
   }
 
-  get dispenseBox(): QuickPickRobotDispenseBoxItem {
-    return this._dispenseBox;
-  }
-
-  @Input()
-  set drawer(value: QuickPickDrawerData) {
-    this._drawer = value;
-  }
-
-  get drawer(): QuickPickDrawerData {
-    return this._drawer;
+  get drawerData(): QuickPickDrawerData {
+    return this._drawerData;
   }
 
   @Output() showQuickPickDrawerDetails: EventEmitter<number> = new EventEmitter<number>();
@@ -48,9 +37,9 @@ export class DashboardCardComponent implements OnInit {
   getHeaderStyle() {
     let headerStyle = {};
 
-    if (this.drawer.Status !== QuickPickControlDataStatus.Empty) {
+    if (this.drawerData.Status !== QuickPickControlDataStatus.Empty) {
       headerStyle = {
-        'background-color': this.drawer.ColorCode,
+        'background-color': this.drawerData.ColorCode,
         'color': 'white',
       };
     }

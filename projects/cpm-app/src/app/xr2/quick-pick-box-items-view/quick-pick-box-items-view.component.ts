@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
 @Component({
@@ -9,25 +8,15 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 })
 export class QuickPickBoxItemsView implements OnInit {
 
-  _dispenseBox: QuickPickRobotDispenseBoxItem;
-  _drawer: QuickPickDrawerData;
+  _drawerData: QuickPickDrawerData;
 
   @Input()
-  set dispenseBox(value: QuickPickRobotDispenseBoxItem) {
-    this._dispenseBox = value;
+  set drawerData(value: QuickPickDrawerData) {
+    this._drawerData = value;
   }
 
-  get dispenseBox(): QuickPickRobotDispenseBoxItem {
-    return this._dispenseBox;
-  }
-
-  @Input()
-  set drawer(value: QuickPickDrawerData) {
-    this._drawer = value;
-  }
-
-  get drawer(): QuickPickDrawerData {
-    return this._drawer;
+  get drawerData(): QuickPickDrawerData {
+    return this._drawerData;
   }
 
   constructor() {

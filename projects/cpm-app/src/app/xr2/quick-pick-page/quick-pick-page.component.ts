@@ -42,7 +42,7 @@ export class QuickPickPageComponent implements OnInit {
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
 
-    }
+  }
 
   ngOnInit() {
     this.getActiveXr2Devices();

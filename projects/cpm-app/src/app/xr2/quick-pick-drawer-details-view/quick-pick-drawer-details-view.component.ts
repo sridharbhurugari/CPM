@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
-import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -10,8 +9,7 @@ import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispens
 })
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
-  private _detailedDrawer: QuickPickDrawerData;
-  private _dispenseBox: QuickPickRobotDispenseBoxItem;
+  private _detailedDrawerData: QuickPickDrawerData;
 
   controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
 
@@ -19,21 +17,12 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   @Output() printQuickPickDrawerLabel: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
-  set detailedDrawer(value: QuickPickDrawerData) {
-    this._detailedDrawer = value;
+  set detailedDrawerData(value: QuickPickDrawerData) {
+    this._detailedDrawerData = value;
   }
 
-  get detailedDrawer(): QuickPickDrawerData {
-    return this._detailedDrawer;
-  }
-
-  @Input()
-  set dispenseBox(value: QuickPickRobotDispenseBoxItem) {
-    this._dispenseBox = value;
-  }
-
-  get dispenseBox(): QuickPickRobotDispenseBoxItem {
-    return this._dispenseBox;
+  get detailedDrawerData(): QuickPickDrawerData {
+    return this._detailedDrawerData;
   }
 
   constructor() { }
@@ -55,9 +44,9 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   getHeaderStyle() {
     let headerStyle = {};
 
-    if (this.detailedDrawer.Status !== this.controlDataStatus.Empty) {
+    if (this.detailedDrawerData.Status !== this.controlDataStatus.Empty) {
       headerStyle = {
-        'background-color': this.detailedDrawer.ColorCode,
+        'background-color': this.detailedDrawerData.ColorCode,
         'color': 'white',  // TODO this needs to be based on the background...
         // White text on white, yellow or other light priority will not be good.
         // CPM has a determiner for this, we probably need to match that in Angular

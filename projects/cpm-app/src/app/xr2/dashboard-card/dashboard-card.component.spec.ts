@@ -24,7 +24,7 @@ describe('DashboardCardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardCardComponent);
     component = fixture.componentInstance;
-    component.drawer = new QuickPickDrawerData(null);
+    component.drawerData = new QuickPickDrawerData(null);
     fixture.detectChanges();
   });
 
