@@ -112,6 +112,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
+    matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
 
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
@@ -239,6 +240,46 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
 
     return outputDeviceDisplayList;
+  }
+
+  getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    const releaseTranslatable = 'RELEASE';
+    let text = '';
+
+    this.translateService.get(releaseTranslatable).subscribe((res: string) => {
+      text = res;
+    });
+
+    return {
+      disabled : picklistQueueItem.Saving,
+      text
+    };
+  }
+
+  getPrintButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    const printTranslatable = 'PRINT';
+    const reprintTranslatable = 'REPRINT';
+    let printTranslated = '';
+    let reprintTranslated = '';
+    let text = '';
+
+    this.translateService.get(printTranslatable).subscribe((res: string) => {
+      printTranslated = res;
+    });
+    this.translateService.get(reprintTranslatable).subscribe((res: string) => {
+      reprintTranslated = res;
+    });
+
+    if (picklistQueueItem.Status === 2 || picklistQueueItem.Status === 3) {
+      text = printTranslated;
+    } else if (picklistQueueItem.Status === 4) {
+      text = picklistQueueItem.IsPrintable ? reprintTranslated : printTranslated;
+    }
+
+    return {
+      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      text
+    };
   }
 
   getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
