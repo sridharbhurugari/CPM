@@ -209,12 +209,12 @@ private isInvalid(variable: any): boolean {
     }
   }
   displayWrongBarCodeDialog(): void {
-    const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
-    this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
+    const properties = new PopupDialogProperties('INVALID_TRAY_SCAN_DESC');
+    this.translateService.get('INVALID_TRAY_SCAN').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('INVALID_TRAY_SCAN_DESC').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'CANCEL';
+    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);

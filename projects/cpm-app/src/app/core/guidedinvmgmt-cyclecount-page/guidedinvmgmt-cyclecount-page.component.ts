@@ -39,7 +39,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
   @ViewChild('contain', null) elementView: ElementRef;
-  @ViewChild('Generic', null)GenericView:ElementRef;
+  @ViewChild('Generic', null) GenericView: ElementRef;
 
   leaseBusyTitle$: Observable<any>;
   leaseBusyMessage$: Observable<any>;
@@ -87,9 +87,17 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   ItemDescriptionText: boolean = false;
   scanBarCodeReturn: Observable<number>;
   scanbarCodeValue: Observable<number>;
-  itemGenericWidth:any;
-  itemGenericWidthScroll:any;
+  itemGenericWidth: any;
+  itemGenericWidthScroll: any;
+  barcodeOverride: boolean = false;
+  popupDialog: PopupDialogComponent;
+  barcodeFormat: string = "";
+  private popupDialogClose$: Subscription;
+  private popupDialogPrimaryClick$: Subscription;
+  private popupDialogTimeoutDialog$: Subscription;
   private barcodeScannedSubscription: Subscription;
+  ItemDescriptionOverlap: boolean;
+  ItemBrandNameOverlap: boolean;
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -114,6 +122,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.printResult = false;
     this.disablethedate = false;
     this.numericfocus = false;
+    this.ItemDescriptionOverlap = false;
+    this.ItemBrandNameOverlap = false;
     this.todaydate = this.time.getMonth() + "/" + this.time.getDate() + "/" + this.time.getFullYear();
     this.leaseBusyTitle$ = translateService.get('LEASE_BUSY_TITLE');
     this.leaseBusyMessage$ = translateService.get('LEASE_BUSY_MESSAGE');
@@ -152,21 +162,31 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
-    setTimeout(() => { if (this.elementView) {
-      this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
-      this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
-      if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
-        this.ItemDescriptionText = false;
+    setTimeout(() => {
+      if (this.elementView) {
+        this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
+        this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
+        if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
+          this.ItemDescriptionOverlap = true;
+          // console.log("26px");
+          //console.log(this.elementView.nativeElement.scrollWidth);
+        }
+        else {
+          //this.ItemDescriptionOverlap = true;
+        }
+        //console.log(this.itemDescriptionWidth);
+        //console.log(this.elementView.nativeElement.scrollWidth + "px");
       }
-      else {
-        this.ItemDescriptionText = true;
+      if (this.GenericView) {
+        this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
+        this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
+        if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
+          this.ItemBrandNameOverlap = true;
+          // console.log("26px");
+          //console.log(this.elementView.nativeElement.scrollWidth);
+        }
       }
-      if(this.GenericView){
-        this.itemGenericWidth = this.elementView.nativeElement.offsetWidth;
-        this.itemGenericWidthScroll = this.elementView.nativeElement.scrollWidth;
-      }
-    }
-  });
+    });
   }
 
   getCycleCountData(deviceID) {
@@ -232,6 +252,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   navigateContinue() {
+    if (this.ItemDescriptionOverlap) {
+      this.ItemDescriptionOverlap = false;
+    }
     if (this.displayCycleCountItem != null) {
       var expireddate = null, actualexpiradationdate = null;
       expireddate = new Date(this.displayCycleCountItem.ExpirationDateFormatted);
@@ -246,8 +269,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         ItemId: this.displayCycleCountItem.ItemId,
         ExpirationDate: actualexpiradationdate,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
-        BarCodeFormat: "UN",
-        ProductID: this.rawBarcodeMessage  && this.rawBarcodeMessage
+        BarCodeFormat: this.barcodeFormat,
+        ProductID: this.rawBarcodeMessage && this.rawBarcodeMessage
       });
 
       var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
@@ -270,6 +293,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   nextRecord() {
+    if (this.ItemDescriptionOverlap) {
+      this.ItemDescriptionOverlap = false;
+    }
     if (this.itemCount == 0) {
       this.isLastItem = true;
     }
@@ -541,36 +567,36 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.dialogService.showOnce(properties);
   }
 
-    // Scanned barcode event listener for use in Cef
-    private processScannedBarcode(scannedBarcode: string): void {
-      this.barcodeScanService.reset();
-      this.rawBarcodeMessage = scannedBarcode;
-      if (this.rawBarcodeMessage.search('$') != -1 || this.rawBarcodeMessage == "0000")
-          this.itemBinBarCode();
+  // Scanned barcode event listener for use in Cef
+  private processScannedBarcode(scannedBarcode: string): void {
+    this.barcodeScanService.reset();
+    this.rawBarcodeMessage = scannedBarcode;
+    if (this.rawBarcodeMessage.search('$') != -1 || this.rawBarcodeMessage == "0000")
+      this.itemBinBarCode();
   }
-    // Page Level Listener for barcode scanner
-    @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
-      if (this.nonBarcodeInputFocus) {
-          return;
-      }
+  // Page Level Listener for barcode scanner
+  @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
+    if (this.nonBarcodeInputFocus) {
+      return;
+    }
 
-      const isInputComplete = this.barcodeScanService.handleKeyInput(event);
+    const isInputComplete = this.barcodeScanService.handleKeyInput(event);
 
-      // If not from barcode scanner ignore the character
-      if (!this.barcodeScanService.isScannerInput()) {
-          this.barcodeScanService.reset();
-      }
+    // If not from barcode scanner ignore the character
+    if (!this.barcodeScanService.isScannerInput()) {
+      this.barcodeScanService.reset();
+    }
 
-      if (isInputComplete) {
-          console.log('Listening to key inputs for page level');
+    if (isInputComplete) {
+      console.log('Listening to key inputs for page level');
 
-          // modify the value with event target value here
-          console.log(`Page level Scan:  ${this.barcodeScanService.BarcodeInputCharacters}`);
+      // modify the value with event target value here
+      console.log(`Page level Scan:  ${this.barcodeScanService.BarcodeInputCharacters}`);
 
-          // populating the page level input into text box.
-          this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
-          this.barcodeScanService.reset();
-      }
+      // populating the page level input into text box.
+      this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+      this.barcodeScanService.reset();
+    }
   }
 
   onBarcodeScanExcludedKeyPressEvent(event: KeyboardEvent) {
@@ -579,22 +605,22 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
     // check if the character is a barcode scan
     if (isScannerInput) {
-        // Since the first character always returns true, ignore it.
-        if (this.barcodeScanService.BarcodeInputCharacters.length !== 1) {
-            // ignore if it is a barcodescan
-            event.preventDefault();
-        }
+      // Since the first character always returns true, ignore it.
+      if (this.barcodeScanService.BarcodeInputCharacters.length !== 1) {
+        // ignore if it is a barcodescan
+        event.preventDefault();
+      }
     } else {
-        this.barcodeScanService.reset();
+      this.barcodeScanService.reset();
     }
 
     if (isInputComplete) {
-        // remove the last character.
-        this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
-        console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this.barcodeScanService.BarcodeInputCharacters}`);
-        this.barcodeScanService.reset();
+      // remove the last character.
+      this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+      console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this.barcodeScanService.BarcodeInputCharacters}`);
+      this.barcodeScanService.reset();
     }
-}
+  }
   onBarcodeExcludedInputFocus(event) {
     this.nonBarcodeInputFocus = true;
   }
@@ -604,41 +630,41 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.barcodeScanService.reset();
   }
 
-reset() {
+  reset() {
     this.rawBarcodeMessage = '';
- }
-
- private hookupEventHandlers(): void {
-  if (this.isInvalid(this.barcodeScanService)) {
-      return;
   }
 
-  this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
-  this.processScannedBarcode(scannedBarcode)
-  );
-}
-
-private unhookEventHandlers(): void {
-  if (this.isInvalid(this.barcodeScanService)) {
+  private hookupEventHandlers(): void {
+    if (this.isInvalid(this.barcodeScanService)) {
       return;
+    }
+
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+      this.processScannedBarcode(scannedBarcode)
+    );
   }
 
-  this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
-}
+  private unhookEventHandlers(): void {
+    if (this.isInvalid(this.barcodeScanService)) {
+      return;
+    }
 
-private unsubscribeIfValidSubscription(subscription: Subscription): void {
-  if (this.isValid(subscription)) {
+    this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
+  }
+
+  private unsubscribeIfValidSubscription(subscription: Subscription): void {
+    if (this.isValid(subscription)) {
       subscription.unsubscribe();
+    }
   }
-}
 
-private isValid(variable: any): boolean {
-  return variable !== undefined && variable !== null;
-}
+  private isValid(variable: any): boolean {
+    return variable !== undefined && variable !== null;
+  }
 
-private isInvalid(variable: any): boolean {
-  return !this.isValid(variable);
-}
+  private isInvalid(variable: any): boolean {
+    return !this.isValid(variable);
+  }
 
 
   productScanInfo() {
@@ -660,45 +686,66 @@ private isInvalid(variable: any): boolean {
   }
 
   itemBinBarCode(): boolean {
-    var numberRet,overrideRet;
-    if (this.displayCycleCountItem.ItemId.toUpperCase() == this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
+    var formatRet, overrideRet;
+    if (this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
       return true;
     }
-    else if (this.rawBarcodeMessage == "0000") {
+    else if (this.barcodeOverride && this.rawBarcodeMessage == "0000") {
       this.binBarCodeDisplay = false;
       this.productBarCodeDisplay = false;
+      this.closePopup();
     }
     else {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
-        numberRet = res;
-        if (numberRet == 0) {
+        formatRet = res;
+        if (formatRet === "") {
           this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
-            overrideRet= val;
+            overrideRet = val;
             this.displayWrongBarCodeDialog(overrideRet);
           });
-       }
-       else
-       {
-        this.productBarCodeDisplay = false;
-       }
+        }
+        else {
+          this.barcodeFormat = formatRet;
+          this.productBarCodeDisplay = false;
+        }
 
       });
+      setInterval(() => {
+        if (this.barcodeOverride)
+          this.barcodeOverride = true;
+      }, this.popupTimeoutSeconds);
     }
   }
 
-  displayWrongBarCodeDialog(override):void{
+  displayWrongBarCodeDialog(override): void {
     const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
     this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
-    if(override)
+    if (override) {
       this.translateService.get('INVALID_SCAN_BARCODE_OVERRIDE').subscribe(result => { properties.messageElementText = result; });
+      this.barcodeOverride = true;
+    }
     else
-    this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
+      this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'CANCEL';
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+    this.popupDialog = this.dialogService.showOnce(properties);
+
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
+      this.barcodeOverride = false;
+    });
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
+      this.barcodeOverride = false;
+    });
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
+      this.barcodeOverride = false;
+    });
+  }
+  closePopup() {
+    this.barcodeOverride = false;
+    this.popupDialog.onCloseClicked();
   }
 }

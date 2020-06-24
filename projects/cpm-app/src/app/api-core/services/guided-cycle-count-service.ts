@@ -41,10 +41,10 @@ import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
       });
     }
 
-    public validscan(itemID: string,barcode: string): Observable<number> {
+    public validscan(itemID: string,barcode: string): Observable<string> {
       const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/ValidScanBarCode`);
     const params = {itemID: itemID, barCode: barcode};
-    return this.httpClient.get<number>(url ,{
+    return this.httpClient.get<string>(url ,{
       headers: this.ocapHttpHeadersService.getHeaders(),params
     });
    }
