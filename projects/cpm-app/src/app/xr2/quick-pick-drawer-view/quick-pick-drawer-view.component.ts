@@ -52,11 +52,20 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
-    let matchingQuickPickDrawerData = _.find(this.quickpickDrawers, (x) => {
+    console.log(quickPickDrawerData);
+    let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
       return x.Id === quickPickDrawerData.Id;
     });
 
-    matchingQuickPickDrawerData = quickPickDrawerData;
+    this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
+    if (this.detailedDrawer !== undefined) {
+      if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
+        if (quickPickDrawerData.Status < 2) {
+          this.detailedDrawer = undefined;
+          this.quickPickActive.emit(false);
+        }
+      }
+    }
   }
 
   private configureEventHandlers(): void {
