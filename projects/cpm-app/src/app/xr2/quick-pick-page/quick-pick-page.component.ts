@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IQuickPickDrawer } from '../../api-xr2/data-contracts/i-quick-pick-drawer';
-import { IQuickPickDispenseBox } from '../../api-xr2/data-contracts/i-quick-pick-dispense-box';
+import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { Observable, of } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
+import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
@@ -19,8 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class QuickPickPageComponent implements OnInit {
 
-  quickpickDrawers: IQuickPickDrawer[];
-  quickPickDispenseBoxes: IQuickPickDispenseBox[];
+  quickpickDrawers: Observable<QuickPickDrawerData[]>;
   quickPickQueueItems: Observable<QuickPickQueueItem[]>;
   searchTextFilter: Observable<string>;
 
@@ -39,223 +38,11 @@ export class QuickPickPageComponent implements OnInit {
   constructor(
     private quickPickQueueService: Xr2QuickPickQueueService,
     private quickPickDeviceService: Xr2QuickPickQueueDeviceService,
+    private quickPickDrawerService: Xr2QuickPickDrawerService,
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
 
-    // Mock lists for testing UI
-    /*---------------------------------------------------*/
-    // Item Mock List
-    const itemMockList = [
-      {
-        Label: 'Docusate Sodium 100 MG Tablet',
-        FilledQty: 3,
-        ReqQty: 5
-      },
-      {
-        Label: 'Acarbose 25mg Tablet',
-        FilledQty: 3,
-        ReqQty: 5
-      },
-      {
-        Label: 'Bacitracin 0.9gm packet',
-        FilledQty: 5,
-        ReqQty: 5
-      },
-      {
-        Label: 'Melatonin 3mg tablet',
-        FilledQty: 5,
-        ReqQty: 5
-      },
-      {
-        Label: 'Sertraline 50mg TAB',
-        FilledQty: 5,
-        ReqQty: 5
-      },
-      {
-        Label: 'Ritodrine 50mg inj',
-        FilledQty: 5,
-        ReqQty: 5
-      },
-      {
-        Label: 'Dacriose 15ml sol',
-        FilledQty: 5,
-        ReqQty: 5
-      }
-    ];
-    // Box Mock List
-    const boxMockList = [
-      {
-        OrderId: '4322343',
-        PriorityCode: '',
-        PriorityCodeColor: 'orange',
-        DestinationLine1: "Nursing Area 33",
-        DestinationLine2: null,
-        DestinationId: '',
-        DestinationType: '',
-        PriorityCodeDescription: 'First Dose',
-        ItemPicklistLines: [],
-        PicklistItems: itemMockList,
-        Date: "5/3/2020 10:15 AM",
-        FilledQty: 31,
-        ReqQty: 35,
-        ItemsFilled: 5
-      },
-      {
-        OrderId: '43243242',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        DestinationLine1: "Room 4657 South",
-        DestinationLine2: "White, Skylar",
-        DestinationId: '',
-        DestinationType: '',
-        PriorityCodeDescription: 'Stat Order',
-        ItemPicklistLines: [],
-        PicklistItems: itemMockList,
-        Date: "5/3/2020 10:15 AM",
-        FilledQty: 31,
-        ReqQty: 35,
-        ItemsFilled: 5
-      },
-      {
-        OrderId: '312343',
-        PriorityCode: '',
-        PriorityCodeColor: 'orange',
-        DestinationLine1: "Nursing Area 33",
-        DestinationLine2: null,
-        DestinationId: '',
-        DestinationType: '',
-        PriorityCodeDescription: 'First Dose',
-        ItemPicklistLines: [],
-        PicklistItems: itemMockList,
-        Date: "5/3/2020 10:15 AM",
-        FilledQty: 31,
-        ReqQty: 35,
-        ItemsFilled: 5
-      },
-      {
-        OrderId: '321345437',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        DestinationLine1: "Room 4657 South",
-        DestinationLine2: "White, Skylar",
-        DestinationId: '',
-        DestinationType: '',
-        PriorityCodeDescription: 'Stat Order',
-        ItemPicklistLines: [],
-        PicklistItems: itemMockList,
-        Date: "5/3/2020 10:15 AM",
-        FilledQty: 31,
-        ReqQty: 35,
-        ItemsFilled: 5
-      },
-      {
-        OrderId: '21324456',
-        PriorityCode: '',
-        PriorityCodeColor: 'orange',
-        DestinationLine1: "Nursing Area 33",
-        DestinationLine2: null,
-        DestinationId: '',
-        DestinationType: '',
-        PriorityCodeDescription: 'First Dose',
-        ItemPicklistLines: [],
-        PicklistItems: itemMockList,
-        Date: "5/3/2020 10:15 AM",
-        FilledQty: 31,
-        ReqQty: 35,
-        ItemsFilled: 5
-      },
-      {
-        OrderId: '23453367',
-        PriorityCode: '',
-        PriorityCodeColor: 'red',
-        DestinationLine1: "Room 4657 South ",
-        DestinationLine2: "White, Skylar",
-        DestinationId: '',
-        DestinationType: '',
-        PriorityCodeDescription: 'Stat Order',
-        ItemPicklistLines: [],
-        PicklistItems: itemMockList,
-        Date: "5/3/2020 10:15 AM",
-        FilledQty: 31,
-        ReqQty: 35,
-        ItemsFilled: 5
-      }
-    ];
-
-    // Drawer mock list
-    const drawerMockList = [
-      {
-        Id: '1',
-        Status: 'Available',
-        QuickPickDispenseBox: boxMockList[1],
-        DetailedView: false,
-        BoxNumber: 1,
-        BoxCount: 2,
-        State: 3,
-        StateText: 'Ready',
-        StateColor: 'green'
-      },
-      {
-        Id: '2',
-        Status: 'Available',
-        QuickPickDispenseBox: null,
-        DetailedView: false,
-        BoxNumber: null,
-        BoxCount: null,
-        State: null,
-        StateText: null,
-        StateColor: null
-      },
-      {
-        Id: '3',
-        Status: 'Available',
-        QuickPickDispenseBox: boxMockList[3],
-        DetailedView: false,
-        BoxNumber: 1,
-        BoxCount: 3,
-        State: 3,
-        StateText: 'Ready',
-        StateColor: 'green'
-      },
-      {
-        Id: '4',
-        Status: 'Available',
-        QuickPickDispenseBox: null,
-        DetailedView: false,
-        BoxNumber: null,
-        BoxCount: null,
-        State: null,
-        StateText: null,
-        StateColor: null
-      },
-      {
-        Id: '5',
-        Status: 'Available',
-        QuickPickDispenseBox: boxMockList[5],
-        DetailedView: false,
-        BoxNumber: 1,
-        BoxCount: 4,
-        State: 1,
-        StateText: 'Return Bin To Drawer',
-        StateColor: 'red'
-      },
-      {
-        Id: '6',
-        Status: 'Available',
-        QuickPickDispenseBox: boxMockList[4],
-        DetailedView: false,
-        BoxNumber: 1,
-        BoxCount: 3,
-        State: 1,
-        StateText: 'Return Bin To Drawer',
-        StateColor: 'red'
-      }
-    ];
-
-    this.quickpickDrawers = drawerMockList;
-  }
-  // End of Mock lists
-  /*---------------------------------------------------*/
+    }
 
   ngOnInit() {
     this.getActiveXr2Devices();
@@ -297,6 +84,7 @@ export class QuickPickPageComponent implements OnInit {
     if (defaultFound) {
       this.selectedDeviceId = defaultFound.value;
       this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === this.selectedDeviceId);
+      this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
   }
@@ -322,6 +110,17 @@ export class QuickPickPageComponent implements OnInit {
     this.quickPickQueueItems = this.quickPickQueueService.get(this.selectedDeviceId).pipe(map(x => {
       const displayObjects = x.map(queueItem => new QuickPickQueueItem(queueItem));
       return displayObjects;
+    }), shareReplay(1));
+  }
+
+  private loadDrawersData() {
+    if (!this.selectedDeviceId) {
+      return;
+    }
+
+    this.quickpickDrawers = this.quickPickDrawerService.getDrawers(this.selectedDeviceId).pipe(map(x => {
+      const data = x.map(drawerData => new QuickPickDrawerData(drawerData));
+      return data;
     }), shareReplay(1));
   }
 

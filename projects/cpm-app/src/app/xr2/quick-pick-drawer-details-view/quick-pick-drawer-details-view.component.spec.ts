@@ -4,8 +4,8 @@ import { ButtonActionModule, ComponentTypes } from '@omnicell/webcorecomponents'
 import { TrafficLightsComponent } from './../traffic-lights/traffic-lights.component';
 import { QuickPickBoxItemsView} from './../quick-pick-box-items-view/quick-pick-box-items-view.component';
 
-import { QuickPickDrawer } from '../model/quick-pick-drawer';
-import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
+import { QuickPickRobotDispenseBoxItem } from './../model/quick-pick-robot-dispense-box-item';
+import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view.component';
 
@@ -24,9 +24,9 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QuickPickDrawerDetailsViewComponent);
     component = fixture.componentInstance;
-    component.detailedDrawer = new QuickPickDrawer(null);
-    component.detailedDrawer.QuickPickDispenseBox = new QuickPickDispenseBox(null);
-    component.detailedDrawer.QuickPickDispenseBox.PicklistItems = [];
+    component.detailedDrawer = new QuickPickDrawerData(null);
+    component.dispenseBox = new QuickPickRobotDispenseBoxItem(null);
+    component.detailedDrawer.MedsWithCounts = [];
     fixture.detectChanges();
   });
 

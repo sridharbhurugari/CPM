@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
-import { QuickPickDrawer } from './../model/quick-pick-drawer';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -11,15 +11,15 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  _quickpickDrawers: QuickPickDrawer[];
-  detailedDrawer: QuickPickDrawer;
+  _quickpickDrawers: QuickPickDrawerData[];
+  detailedDrawer: QuickPickDrawerData;
 
-  get quickpickDrawers(): QuickPickDrawer[] {
+  get quickpickDrawers(): QuickPickDrawerData[] {
     return this._quickpickDrawers;
   }
 
   @Input()
-  set quickpickDrawers(value: QuickPickDrawer[]) {
+  set quickpickDrawers(value: QuickPickDrawerData[]) {
     this._quickpickDrawers = value;
   }
 

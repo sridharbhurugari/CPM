@@ -8,13 +8,13 @@ import { DashboardCardComponent } from '../dashboard-card/dashboard-card.compone
 import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { CoreModule } from '../../core/core.module';
 import { QuickPickDrawerDetailsViewComponent } from '../quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
-import { QuickPickDrawer } from '../model/quick-pick-drawer';
-import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
   let fixture: ComponentFixture<QuickPickDrawerViewComponent>;
-  let qpDrawers: QuickPickDrawer[];
+  let qpDrawers: QuickPickDrawerData[];
 
   beforeEach(async(() => {
 
@@ -40,9 +40,7 @@ describe('QuickPickDrawerViewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QuickPickDrawerViewComponent);
     component = fixture.componentInstance;
-    const qpDrawer1: QuickPickDrawer = {Id: '1', Status: '',
-    QuickPickDispenseBox: new QuickPickDispenseBox(null),
-    DetailedView: false, BoxNumber: 1, BoxCount: 1, State: 1, StateText: '', StateColor: ''};
+    const qpDrawer1: QuickPickDrawerData = new QuickPickDrawerData(null);
     qpDrawers = [qpDrawer1];
     component.quickpickDrawers = qpDrawers;
     fixture.detectChanges();

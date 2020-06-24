@@ -8,13 +8,13 @@
           </div>
           <div class="title">
             <div class="title-content">
-              {{ detailedDrawer.QuickPickDispenseBox.PriorityCodeDescription }}
+              {{ detailedDrawer.PriorityDescription }}
             </div>
           </div>
         </div>
         <div class="index">
           <div class="index-content">
-            {{ detailedDrawer.BoxNumber }} / {{ detailedDrawer.BoxCount }}
+            {{ dispenseBox.BoxNumber }} / {{ dispenseBox.BoxCount }}
           </div>
         </div>
       </div>
@@ -25,24 +25,24 @@
           <div class="body-content">
             <div class="grid-container">
               <div class="status-label">
-                <app-traffic-lights color={{detailedDrawer.StateColor}}></app-traffic-lights>
+                <app-traffic-lights color={{detailedDrawer.ColorCode}}></app-traffic-lights>
               </div>
-              <div class="status-data" [ngStyle]="{'color': detailedDrawer.StateColor}">{{ detailedDrawer.StateText }}
+              <div class="status-data" [ngStyle]="{'color': detailedDrawer.ColorCode}">{{ detailedDrawer.ErrorInfo.ErrorDescription }}
               </div>
               <div class="dest-label">{{'DESTINATION' | translate}}:</div>
               <div class="dest-data">
-                {{ detailedDrawer.QuickPickDispenseBox.DestinationLine1 }}
+                {{ dispenseBox.PatientName }}
                 <br />
-                {{ detailedDrawer.QuickPickDispenseBox.DestinationLine2 }}
+                {{ dispenseBox.Area }}
               </div>
               <div class="id-label">{{ 'ID' | translate }}:</div>
-              <div class="id-data">{{ detailedDrawer.QuickPickDispenseBox.OrderId }}</div>
+              <div class="id-data">{{ dispenseBox.OrderId }}</div>
               <div class="qty-filled-data">{{ 'FILLED' | translate }}:
-                {{ detailedDrawer.QuickPickDispenseBox.FilledQty }}</div>
-              <div class="qty-req-data">{{ 'REQUESTED' | translate }}: {{ detailedDrawer.QuickPickDispenseBox.ReqQty }}
+                {{ dispenseBox.FillQuantity }}</div>
+              <div class="qty-req-data">{{ 'REQUESTED' | translate }}: {{ dispenseBox.RequestQuantity }}
               </div>
               <div class="qty-items-data">{{ 'LINEITEMS' | translate }}:
-                {{ detailedDrawer.QuickPickDispenseBox.PicklistItems.length }}
+                {{ detailedDrawer.MedsWithCounts.length }}
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@
       </div>
       <div class="box-items-view">
         <div class="box-items-view-content">
-          <app-quick-pick-box-items-view [dispenseBox]="detailedDrawer.QuickPickDispenseBox"></app-quick-pick-box-items-view>
+          <app-quick-pick-box-items-view [dispenseBox]="dispenseBox"></app-quick-pick-box-items-view>
         </div>
       </div>
     </div>

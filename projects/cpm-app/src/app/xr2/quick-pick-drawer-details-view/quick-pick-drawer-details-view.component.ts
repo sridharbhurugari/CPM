@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { QuickPickDrawer } from '../model/quick-pick-drawer';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
+import { QuickPickRobotDispenseBoxItem } from '../model/quick-pick-robot-dispense-box-item';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -8,18 +10,30 @@ import { QuickPickDrawer } from '../model/quick-pick-drawer';
 })
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
-  private _detailedDrawer: QuickPickDrawer;
+  private _detailedDrawer: QuickPickDrawerData;
+  private _dispenseBox: QuickPickRobotDispenseBoxItem;
+
+  controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
 
   @Output() closeQuickPickDetailsCard: EventEmitter<any> = new EventEmitter<any>();
   @Output() printQuickPickDrawerLabel: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
-  set detailedDrawer(value: QuickPickDrawer) {
+  set detailedDrawer(value: QuickPickDrawerData) {
     this._detailedDrawer = value;
   }
 
-  get detailedDrawer(): QuickPickDrawer {
+  get detailedDrawer(): QuickPickDrawerData {
     return this._detailedDrawer;
+  }
+
+  @Input()
+  set dispenseBox(value: QuickPickRobotDispenseBoxItem) {
+    this._dispenseBox = value;
+  }
+
+  get dispenseBox(): QuickPickRobotDispenseBoxItem {
+    return this._dispenseBox;
   }
 
   constructor() { }
@@ -36,16 +50,14 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   onBackClick() {
     this.closeQuickPickDetailsCard.emit();
-    this.detailedDrawer.DetailedView = false;
   }
 
   getHeaderStyle() {
     let headerStyle = {};
 
-    if (this.detailedDrawer.QuickPickDispenseBox) {
-      const currentBox = this.detailedDrawer.QuickPickDispenseBox;
+    if (this.detailedDrawer.Status !== this.controlDataStatus.Empty) {
       headerStyle = {
-        'background-color': currentBox.PriorityCodeColor,
+        'background-color': this.detailedDrawer.ColorCode,
         'color': 'white',  // TODO this needs to be based on the background...
         // White text on white, yellow or other light priority will not be good.
         // CPM has a determiner for this, we probably need to match that in Angular
