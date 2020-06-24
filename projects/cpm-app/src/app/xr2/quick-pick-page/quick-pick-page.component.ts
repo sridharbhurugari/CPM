@@ -9,6 +9,7 @@ import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecompon
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-event-connection.service';
 import { result } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -39,9 +40,10 @@ export class QuickPickPageComponent implements OnInit {
     private quickPickQueueService: Xr2QuickPickQueueService,
     private quickPickDeviceService: Xr2QuickPickQueueDeviceService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
+    private quickPickEventConnectionService: QuickPickEventConnectionService,
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
-
+      this.configureEventHandlers();
   }
 
   ngOnInit() {
@@ -100,6 +102,19 @@ export class QuickPickPageComponent implements OnInit {
       this.selectedDeviceId = $event.value;
       this.loadPicklistsQueueItems();
     }
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.quickPickEventConnectionService) {
+      return;
+    }
+
+    this.quickPickEventConnectionService.QuickPickReloadDrawersSubject
+      .subscribe(() => this.onReloadDrawers());
+  }
+
+  private onReloadDrawers(): void {
+    this.loadDrawersData();
   }
 
   private loadPicklistsQueueItems(): void {

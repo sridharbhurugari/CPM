@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import * as _ from 'lodash';
 
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -23,11 +25,14 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this._quickpickDrawers = value;
   }
 
-  constructor() {
+  constructor(private quickPickEventConnectionService: QuickPickEventConnectionService) {
+    this.configureEventHandlers();
   }
 
   ngOnInit() {
   }
+
+
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
     this.detailedDrawer = this._quickpickDrawers[drawerIndex];
@@ -43,6 +48,24 @@ export class QuickPickDrawerViewComponent implements OnInit {
   printDrawerLabel() {
     // PRINT THE DRAWER LABELS for this.detailedDrawer
     console.log('Print clicked for drawer: ' + this.detailedDrawer.Id);
+  }
+
+  private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
+    const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
+    let matchingQuickPickDrawerData = _.find(this.quickpickDrawers, (x) => {
+      return x.Id === quickPickDrawerData.Id;
+    });
+
+    matchingQuickPickDrawerData = quickPickDrawerData;
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.quickPickEventConnectionService) {
+      return;
+    }
+
+    this.quickPickEventConnectionService.QuickPickDrawerUpdateSubject
+      .subscribe(message => this.onUpdateQuickPickDrawer(message));
   }
 
 }
