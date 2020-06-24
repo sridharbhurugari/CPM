@@ -28,12 +28,12 @@ export class QuickPickEventConnectionService {
       return;
     }
 
-    if (message.EventId === 'QuickPickReloadDrawersMessage') {
+    if (message.EventId === 'QuickPickReloadDrawersEvent') {
       console.log(message);
       this.QuickPickReloadDrawersSubject.next(message);
       return;
     }
-    if (message.EventId === 'QuickPickDrawerUpdateMessage') {
+    if (message.EventId === 'QuickPickDrawerUpdateEvent') {
       console.log(message);
       this.QuickPickDrawerUpdateSubject.next(message);
       return;
