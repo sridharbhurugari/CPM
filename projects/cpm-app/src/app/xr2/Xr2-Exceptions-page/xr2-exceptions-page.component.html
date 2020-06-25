@@ -1,7 +1,7 @@
 <ng-container class="ocactiondetails">
   <div class="cpmheaderrow">          
     <app-header-container></app-header-container>           
-    <oc-search-box class="searchbox" #searchBox [placeHolderText]=" 'SEARCH_TEXT_DISPLAY' | translate " (keypress)="onBarcodeScanExcludedKeyPressEvent($event)"></oc-search-box>
+    <oc-search-box class="searchbox" #searchBox [placeHolderText]=" 'SEARCH_TEXT_DISPLAY' | translate "></oc-search-box>
   </div>
   <ng-container>
     <oc-grid #ocgrid ocgridfilter="false">

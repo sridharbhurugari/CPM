@@ -22,10 +22,4 @@ export class Xr2ExceptionsService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
-  gettraytypes(): Observable<string[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/trays/traytypes`);
-    return this.httpClient.get<string[]>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
 }
