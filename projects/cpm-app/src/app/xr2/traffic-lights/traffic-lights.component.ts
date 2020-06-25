@@ -7,31 +7,36 @@ import { Lights } from './models/lights';
 })
 export class TrafficLightsComponent implements OnInit {
 
-  private _color: string;
-  @Input()
-  set color(value: string) {
-    this._color = value;
-  }
-  get color(): string {
-    return this._color;
-  }
+  @Input() color: string;
 
-  public lights: Lights = {
-    isRed: false,
-    isYellow: false,
-    isGreen: false
-  };
+  isRed: boolean;
+  isYellow: boolean;
+  isGreen: boolean;
+
   constructor() {
   }
 
   ngOnInit() {
-    if (this.color === 'red') {
-      this.lights.isRed = true;
-    } else if (this.color === 'yellow') {
-      this.lights.isYellow = true;
-    } else if (this.color === 'green') {
-      this.lights.isGreen = true;
-    }
+
   }
 
+  ngOnChanges() {
+    this.setLightColor();
+  }
+
+  private setLightColor() {
+    if (this.color === 'red') {
+      this.isRed = true;
+      this.isYellow = false;
+      this.isGreen = false;
+    } else if (this.color === 'yellow') {
+      this.isYellow = true;
+      this.isGreen = false;
+      this.isRed = false;
+    } else if (this.color === 'green') {
+      this.isGreen = true;
+      this.isYellow = false;
+      this.isRed = false;
+    }
+  }
 }
