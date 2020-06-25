@@ -4,6 +4,7 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
 import { QuickPickDrawerData } from '../../xr2/model/quick-pick-drawer-data';
+import { QuickPickPrintRequest } from '../../xr2/model/quick-pick-print-request';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,9 @@ export class Xr2QuickPickDrawerService {
     });
   }
 
-  getDrawer(deviceId: string): Observable<QuickPickDrawerData> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/drawer/` + deviceId);
-    return this.httpClient.get<QuickPickDrawerData>(url, {
+  printLabel(deviceId: string, printRequest: QuickPickPrintRequest): void {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/printdrawer/` + deviceId);
+    this.httpClient.post(url, printRequest, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

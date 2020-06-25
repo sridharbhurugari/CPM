@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
+import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
+import { QuickPickPrintRequest } from '../model/quick-pick-print-request';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -13,19 +15,32 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  _quickpickDrawers: QuickPickDrawerData[];
+  private _selectedDeviceId: string;
+  private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
-
-  get quickpickDrawers(): QuickPickDrawerData[] {
-    return this._quickpickDrawers;
-  }
 
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
     this._quickpickDrawers = value;
   }
 
-  constructor(private quickPickEventConnectionService: QuickPickEventConnectionService) {
+  get quickpickDrawers(): QuickPickDrawerData[] {
+    return this._quickpickDrawers;
+  }
+
+  @Input()
+  set selectedDeviceId(value: string) {
+    this._selectedDeviceId = value;
+  }
+
+  get selectedDeviceId(): string {
+    return this._selectedDeviceId;
+  }
+
+  constructor(
+    private quickPickEventConnectionService: QuickPickEventConnectionService,
+    private quickPickDrawerService: Xr2QuickPickDrawerService
+  ) {
     this.configureEventHandlers();
   }
 
@@ -46,7 +61,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   printDrawerLabel() {
-    // PRINT THE DRAWER LABELS for this.detailedDrawer
+    const printRequest = new QuickPickPrintRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest);
     console.log('Print clicked for drawer: ' + this.detailedDrawer.Id);
   }
 

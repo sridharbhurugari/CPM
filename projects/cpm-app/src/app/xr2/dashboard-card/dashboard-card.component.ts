@@ -9,8 +9,9 @@ import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-sta
 })
 export class DashboardCardComponent implements OnInit {
 
+  private _drawerData: QuickPickDrawerData;
+
   controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
-  _drawerData: QuickPickDrawerData;
 
   @Input() drawerIndex: number;
 
