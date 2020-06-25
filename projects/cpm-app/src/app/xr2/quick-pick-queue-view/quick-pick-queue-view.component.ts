@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { GridComponent as OCGridComp, PersistService } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { nameof } from '../../shared/functions/nameof';
+import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 
 @Component({
   selector: 'app-quick-pick-queue-view',
@@ -12,6 +13,8 @@ import { nameof } from '../../shared/functions/nameof';
 export class QuickPickQueueViewComponent implements OnInit {
 
   private _quickPickQueueItems: QuickPickQueueItem[];
+
+  @Output() rerouteQuickPick: EventEmitter<QuickPickQueueItem> = new EventEmitter<QuickPickQueueItem>();
 
   _searchTextFilter: string;
 
@@ -62,8 +65,8 @@ export class QuickPickQueueViewComponent implements OnInit {
     }
   }
 
-  onRerouteClick() {
-    console.log("Reroute Clicked!")
+  onRerouteClick(quickPickQueueItem: IQuickPickQueueItem) {
+    this.rerouteQuickPick.emit(quickPickQueueItem);
   }
 
 }

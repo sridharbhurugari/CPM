@@ -1,3 +1,5 @@
+import { Guid } from "guid-typescript";
+
 export class IQuickPickQueueItem {
   PriorityColor: string;
   PriorityDescription: string;
@@ -6,4 +8,8 @@ export class IQuickPickQueueItem {
   PriorityCodeDescription: string;
   IncompleteBoxCount: number;
   TotalBoxCount: number;
+  RobotDispenseBoxIds: Guid[];
+  PicklistId: Guid;
+  DeviceId: number;
+
 }

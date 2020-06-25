@@ -13,4 +13,7 @@ export class QuickPickQueueItem implements IQuickPickQueueItem {
   PriorityCodeDescription: string;
   IncompleteBoxCount: number;
   TotalBoxCount: number;
+  RobotDispenseBoxIds: Guid[];
+  PicklistId: Guid;
+  DeviceId: number;
 }

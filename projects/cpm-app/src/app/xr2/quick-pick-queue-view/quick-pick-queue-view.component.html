@@ -26,7 +26,7 @@
             <div class="col-content-container">
               {{quickPickQueueItem.IncompleteBoxCount}} / {{quickPickQueueItem.TotalBoxCount}}
               <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'"
-                [label]="'Reroute'" (clickEvent)="onRerouteClick()">
+                [label]="'Reroute'" (clickEvent)="onRerouteClick(quickPickQueueItem)">
               </app-cp-clickable-icon>
             </div>
           </div>
