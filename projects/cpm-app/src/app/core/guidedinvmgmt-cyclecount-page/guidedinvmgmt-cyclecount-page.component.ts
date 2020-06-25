@@ -128,7 +128,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.leaseBusyTitle$ = translateService.get('LEASE_BUSY_TITLE');
     this.leaseBusyMessage$ = translateService.get('LEASE_BUSY_MESSAGE');
     this._leaseDeniedTitle$ = translateService.get('DEVICE_ACCESS');
-    //this.toasterService = toasterService;
   }
 
   ngOnInit() {
@@ -168,22 +167,13 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
         if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
           this.ItemDescriptionOverlap = true;
-          // console.log("26px");
-          //console.log(this.elementView.nativeElement.scrollWidth);
         }
-        else {
-          //this.ItemDescriptionOverlap = true;
-        }
-        //console.log(this.itemDescriptionWidth);
-        //console.log(this.elementView.nativeElement.scrollWidth + "px");
       }
       if (this.GenericView) {
         this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
         this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
         if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
           this.ItemBrandNameOverlap = true;
-          // console.log("26px");
-          //console.log(this.elementView.nativeElement.scrollWidth);
         }
       }
     });
@@ -326,6 +316,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.toggleredborderfornonfirstitem(true);
     this.binBarCodeDisplay = true;
     this.productBarCodeDisplay = true;
+    this.reset();
     Util.setByTabIndex(this.numericindexes[1]);
   }
 
@@ -335,6 +326,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.disabledatecomponent(true);
       this.toggleredborderfornonfirstitem(true);
       this.DisableActionButtons(false);
+      if (this.binBarCodeDisplay === false && this.productBarCodeDisplay === false) {
+        this.navigateContinue();
+      }
     }
     else {
       this.disabledatecomponent(false);
@@ -372,6 +366,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.daterequired = false;
           this.DisableActionButtons(false);
           this.toggleredborderfornonfirstitem(true);
+          if (this.binBarCodeDisplay == false && this.productBarCodeDisplay == false) {
+            this.navigateContinue();
+          }
         }
       }
       else {
@@ -397,6 +394,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       }
       this.binBarCodeDisplay = true;
       this.productBarCodeDisplay = true;
+      this.reset();
       this.wpfActionController.ExecuteBackAction();
     }
     else {
@@ -692,12 +690,16 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     var formatRet, overrideRet;
     if (this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
+      if (!this.productBarCodeDisplay) {
+        this.ScanValidation();
+      }
       return true;
     }
     else if (this.barcodeOverride && this.rawBarcodeMessage == "0000") {
       this.binBarCodeDisplay = false;
       this.productBarCodeDisplay = false;
       this.closePopup();
+      this.ScanValidation();
     }
     else {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
@@ -711,13 +713,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         else {
           this.barcodeFormat = formatRet;
           this.productBarCodeDisplay = false;
-       }
-
+          if (!this.binBarCodeDisplay) {
+            this.ScanValidation();
+          }
+        }
       });
-      setInterval(() => {
-        if (this.barcodeOverride)
-          this.barcodeOverride = true;
-      }, this.popupTimeoutSeconds);
     }
   }
 
@@ -732,9 +732,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'CANCEL';
+    properties.primaryButtonText = 'Cancel';
     properties.dialogDisplayType = PopupDialogType.Warning;
-    //properties.timeoutLength = this.popupTimeoutSeconds;
+    properties.timeoutLength = 0;
     this.popupDialog = this.dialogService.showOnce(properties);
 
     this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
@@ -750,5 +750,33 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   closePopup() {
     this.barcodeOverride = false;
     this.popupDialog.onCloseClicked();
+  }
+  ScanValidation() {
+    var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
+    if (this.binBarCodeDisplay == false && this.productBarCodeDisplay == false) {
+      if (this.displayCycleCountItem.QuantityOnHand == 0) {
+        this.navigateContinue();
+      }
+      else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
+        this.navigateContinue();
+      }
+      else {
+        var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
+        if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
+          this.DisableActionButtons(true);
+          this.toggleredborderfornonfirstitem(false);
+        }
+        else if (!this.datepicker.selectedDate.match(dateReg)) {
+          this.DisableActionButtons(true);
+        }
+        else if (isNaN(eventdate.getTime())) {
+          this.DisableActionButtons(true);
+        }
+
+        else {
+          this.navigateContinue();
+        }
+      }
+    }
   }
 }
