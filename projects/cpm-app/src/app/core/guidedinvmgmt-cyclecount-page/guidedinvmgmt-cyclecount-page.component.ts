@@ -324,6 +324,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.dynamicGenericFormatetdNameStyle = "-" + (2 * (this.displayCycleCountItem.GenericNameFormatted.length)) + "px";
     this.dynamicLocationDescriptionStyle = "-" + (3 * (this.displayCycleCountItem.LocationDescription.length)) + "px";
     this.toggleredborderfornonfirstitem(true);
+    this.binBarCodeDisplay = true;
+    this.productBarCodeDisplay = true;
     Util.setByTabIndex(this.numericindexes[1]);
   }
 
@@ -393,7 +395,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
         this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
       }
-
+      this.binBarCodeDisplay = true;
+      this.productBarCodeDisplay = true;
       this.wpfActionController.ExecuteBackAction();
     }
     else {
@@ -639,7 +642,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       return;
     }
 
-    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject && this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
       this.processScannedBarcode(scannedBarcode)
     );
   }
@@ -708,7 +711,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         else {
           this.barcodeFormat = formatRet;
           this.productBarCodeDisplay = false;
-        }
+       }
 
       });
       setInterval(() => {
@@ -731,7 +734,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'CANCEL';
     properties.dialogDisplayType = PopupDialogType.Warning;
-    properties.timeoutLength = this.popupTimeoutSeconds;
+    //properties.timeoutLength = this.popupTimeoutSeconds;
     this.popupDialog = this.dialogService.showOnce(properties);
 
     this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
