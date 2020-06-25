@@ -326,7 +326,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.disabledatecomponent(true);
       this.toggleredborderfornonfirstitem(true);
       this.DisableActionButtons(false);
-      if (this.binBarCodeDisplay === false && this.productBarCodeDisplay === false) {
+      if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
         this.navigateContinue();
       }
     }
@@ -366,7 +366,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.daterequired = false;
           this.DisableActionButtons(false);
           this.toggleredborderfornonfirstitem(true);
-          if (this.binBarCodeDisplay == false && this.productBarCodeDisplay == false) {
+          if (!(this.binBarCodeDisplay)&& !(this.productBarCodeDisplay)) {
             this.navigateContinue();
           }
         }
@@ -498,7 +498,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   HasLabelPrinterConfigured(): boolean {
-    if ((this.devicePrinterName != undefined && this.devicePrinterName.length > 0) || this.labelPrinterName != undefined && this.labelPrinterName.length > 0) {
+    if ((this.devicePrinterName !== undefined && this.devicePrinterName.length > 0) || this.labelPrinterName !== undefined && this.labelPrinterName.length > 0) {
       return true;
     }
     else {
@@ -507,7 +507,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   CheckSafetyScanConfiguration(): boolean {
-    if (this.safetyScanConfirmation === "Yes" && this.displayCycleCountItem.SafetyStockRestockScan != 'N') {
+    if (this.safetyScanConfirmation === "Yes" && this.displayCycleCountItem.SafetyStockRestockScan !== 'N') {
       this.DisableActionButtons(true);
       return true;
     }
@@ -572,7 +572,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   private processScannedBarcode(scannedBarcode: string): void {
     this.barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
-    if (this.rawBarcodeMessage.search('$') != -1 || this.rawBarcodeMessage == "0000")
+    if (this.rawBarcodeMessage.search('$') !== -1 || this.rawBarcodeMessage === "0000")
       this.itemBinBarCode();
   }
   // Page Level Listener for barcode scanner
@@ -695,7 +695,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       }
       return true;
     }
-    else if (this.barcodeOverride && this.rawBarcodeMessage == "0000") {
+    else if (this.barcodeOverride && this.rawBarcodeMessage === "0000") {
       this.binBarCodeDisplay = false;
       this.productBarCodeDisplay = false;
       this.closePopup();
@@ -754,7 +754,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   ScanValidation() {
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
     if (this.binBarCodeDisplay == false && this.productBarCodeDisplay == false) {
-      if (this.displayCycleCountItem.QuantityOnHand == 0) {
+      if (this.displayCycleCountItem.QuantityOnHand === 0) {
         this.navigateContinue();
       }
       else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
