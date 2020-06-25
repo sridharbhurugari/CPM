@@ -7,7 +7,14 @@ import { Lights } from './models/lights';
 })
 export class TrafficLightsComponent implements OnInit {
 
-  @Input() color: string;
+  private _color: string;
+  @Input()
+  set color(value: string) {
+    this._color = value;
+  }
+  get color(): string {
+    return this._color;
+  }
 
   public lights: Lights = {
     isRed: false,
