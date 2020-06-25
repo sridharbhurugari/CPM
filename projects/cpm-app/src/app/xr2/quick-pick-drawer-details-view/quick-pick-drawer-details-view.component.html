@@ -26,9 +26,9 @@
             <div class="grid-container">
               <div class="status-label">
                 <!--TODO: add ngif here for light colors-->
-                <app-traffic-lights color="green"></app-traffic-lights>
+                <app-traffic-lights color="getTrafficLightProperties(detailedDrawerData).color"></app-traffic-lights>
               </div>
-              <div class="status-data" [ngStyle]="{'color': detailedDrawerData.ColorCode}">{{ detailedDrawerData.ErrorInfo.ErrorDescription }}
+              <div class="status-data">{{ getTrafficLightProperties(detailedDrawerData).text }}
               </div>
               <div class="dest-label">{{'DESTINATION' | translate}}:</div>
               <div class="dest-data">

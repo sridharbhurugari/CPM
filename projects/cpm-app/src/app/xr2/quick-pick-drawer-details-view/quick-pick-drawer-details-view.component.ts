@@ -55,4 +55,26 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
     return headerStyle;
   }
+
+  getTrafficLightProperties(detailedDrawerData: QuickPickDrawerData) {
+
+    let color = '';
+    let text = '';
+
+    if (detailedDrawerData.Status === 2) {
+      color = 'yellow';
+      text = 'Pending Unlock';
+    } else if (detailedDrawerData.Status === 3) {
+      color = 'green';
+      text = 'In Progress';
+    } else if (detailedDrawerData.Status === 4) {
+      color = 'red';
+      text = detailedDrawerData.ErrorInfo.ErrorDescription;
+    }
+
+    return {
+      color,
+      text
+    };
+  }
 }

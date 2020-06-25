@@ -24,9 +24,9 @@ export class Xr2QuickPickDrawerService {
     });
   }
 
-  printLabel(deviceId: string, printRequest: QuickPickPrintRequest): void {
+  printLabel(deviceId: string, printRequest: QuickPickPrintRequest) {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/printdrawer/` + deviceId);
-    this.httpClient.post(url, printRequest, {
+    return this.httpClient.post(url, printRequest, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
