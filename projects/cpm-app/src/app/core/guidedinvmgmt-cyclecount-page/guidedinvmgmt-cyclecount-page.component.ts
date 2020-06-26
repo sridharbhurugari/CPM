@@ -141,19 +141,16 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     });
 
     this.systemConfigurationService.GetConfigurationValues('PRINTING', 'LABEL_PRINTER').subscribe(result => {
-      console.log('label printer name : ' + result);
       this.labelPrinterName = result.Value;
     });
 
     this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
-      console.log('popup message timeout : ' + result);
       this.popupTimeoutSeconds = (Number(result.Value));
     });
 
     this.systemConfigurationService.GetConfigurationValues('ITEM', 'GUIDEDCYCLECOUNT_SAFETYSTOCK').subscribe(result => {
       this.safetyScanConfirmation = result.Value;
     });
-
 
     this.getCycleCountData(this.deviceId);
     this.hookupEventHandlers();
@@ -191,9 +188,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
-        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
         if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-          this.DisableActionButtons(true);
+        { 
+        this.DisableActionButtons(true);
+        }
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -245,7 +244,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     if (this.ItemDescriptionOverlap) {
       this.ItemDescriptionOverlap = false;
     }
-    if (this.displayCycleCountItem != null) {
+    if (this.displayCycleCountItem !== null) {
       var expireddate = null, actualexpiradationdate = null;
       expireddate = new Date(this.displayCycleCountItem.ExpirationDateFormatted);
       if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
@@ -271,7 +270,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         }
       );
     }
-    if (this.isLastItem || this.currentItemCount == this.itemCount) {
+    if (this.isLastItem || this.currentItemCount === this.itemCount) {
       if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
         this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
       }
@@ -286,7 +285,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     if (this.ItemDescriptionOverlap) {
       this.ItemDescriptionOverlap = false;
     }
-    if (this.itemCount == 0) {
+    if (this.itemCount === 0) {
       this.isLastItem = true;
     }
     else {
@@ -305,7 +304,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       else
         this.DisableActionButtons(false);
       this.currentItemCount++;
-      if (this.currentItemCount == this.itemCount) {
+      if (this.currentItemCount === this.itemCount) {
         this.isLastItem = true;
       }
     }
@@ -379,8 +378,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   DisableActionButtons(value: boolean) {
-    if (this.isLastItem !== true) this.nextButtonDisable = value;
-    if (this.isLastItem === true) this.doneButtonDisable = value;
+    if (this.isLastItem !== true) { this.nextButtonDisable = value };
+    if (this.isLastItem === true) { this.doneButtonDisable = value };
   }
 
   CheckItemExpGranularity() {
@@ -445,7 +444,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   handleDeviceLocationAccessResult(deviceLocaitonAccessResult: DeviceLocationAccessResult) {
-    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotAvailable) {
+    if (deviceLocaitonAccessResult === DeviceLocationAccessResult.LeaseNotAvailable) {
       let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.displayCycleCountItem.DeviceDescription });
       forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
         let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
@@ -453,11 +452,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       });
     }
 
-    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.LeaseNotRequested) {
+    if (deviceLocaitonAccessResult === DeviceLocationAccessResult.LeaseNotRequested) {
       this.navigateBack();
     }
 
-    if (deviceLocaitonAccessResult == DeviceLocationAccessResult.Failed) {
+    if (deviceLocaitonAccessResult === DeviceLocationAccessResult.Failed) {
       this.carouselFaulted = true;
     } else {
       this.carouselFaulted = false;
@@ -530,7 +529,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     });
 
     this.guidedCycleCountService.PrintLabel(this.deviceId, this.displayPrintLabel).subscribe(res => {
-      console.log(HttpResponse, res);
       if (res) {
         this.printResult = true;
         this.displaySuccessToSaveDialog();
@@ -589,11 +587,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
 
     if (isInputComplete) {
-      console.log('Listening to key inputs for page level');
-
-      // modify the value with event target value here
-      console.log(`Page level Scan:  ${this.barcodeScanService.BarcodeInputCharacters}`);
-
       // populating the page level input into text box.
       this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
       this.barcodeScanService.reset();
@@ -618,7 +611,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     if (isInputComplete) {
       // remove the last character.
       this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
-      console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this.barcodeScanService.BarcodeInputCharacters}`);
       this.barcodeScanService.reset();
     }
   }
@@ -729,7 +721,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.barcodeOverride = true;
     }
     else
+    {
       this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
+    }
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Cancel';
@@ -753,7 +747,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
   ScanValidation() {
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
-    if (this.binBarCodeDisplay == false && this.productBarCodeDisplay == false) {
+    if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
       if (this.displayCycleCountItem.QuantityOnHand === 0) {
         this.navigateContinue();
       }
