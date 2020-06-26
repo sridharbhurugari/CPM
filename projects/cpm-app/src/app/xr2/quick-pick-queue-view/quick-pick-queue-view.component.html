@@ -7,7 +7,7 @@
         </div>
         <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'DESTINATION' | translate}}
         </div>
-        <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'DESCRIPTION' | translate}}
+        <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'QUICK_PICK_QUEUE_BINS_HEADER' | translate}}
         </div>
       </ng-container>
       <ng-container class="ocgridbody">
@@ -22,11 +22,11 @@
             <div>{{quickPickQueueItem.DestinationLine1}}</div>
             <div>{{quickPickQueueItem.DestinationLine2}}</div>
           </div>
-          <div class="col width-type" [attr.data-title]="'DESCRIPTION' | translate">
+          <div class="col width-type" [attr.data-title]="'QUICK_PICK_QUEUE_BINS_HEADER' | translate">
             <div class="col-content-container">
-              {{quickPickQueueItem.BoxNumber}} / {{quickPickQueueItem.BoxCount}} {{'BINS' | translate}}
+              {{quickPickQueueItem.IncompleteBoxCount}} / {{quickPickQueueItem.TotalBoxCount}}
               <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'"
-                [label]="'Reroute'" (clickEvent)="onRerouteClick()">
+                [label]="'Reroute'" (clickEvent)="onRerouteClick(quickPickQueueItem)">
               </app-cp-clickable-icon>
             </div>
           </div>
