@@ -16,17 +16,16 @@
             <div #contain>
                 <div class="BrandName"
                     *ngIf="!ItemDescriptionOverlap">
-                    <!-- *ngIf="itemDescriptionLength &lt; 45 || itemDescriptionLength == 45" *ngIf="ItemDescriptionText"-->
                     <div>{{ displayCycleCountItem.GenericNameFormatted }}
-                        <!--class="ScanIcon" <span *ngIf="CheckSafetyScanConfiguration()" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}"><img src="Scan.svg"></span> -->
-                        <span  [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}" *ngIf="CheckSafetyScanConfiguration() && productBarCodeDisplay" 
-                        (focus)="onBarcodeExcludedInputFocus($event)" (blur)="onBarcodeExcludedInputBlur($event)" (click)='productScanInfo()' ><img src="Scan.svg"></span>
+                        <span  *ngIf="(CheckSafetyScanConfiguration()) && (productBarCodeDisplay)" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}">
+                        <oc-svgicon height="50" width="50" icon="scan" theme="dark" (click)='productScanInfo()'></oc-svgicon></span>
                     </div>
                 </div>
                 <div class="BrandNamesmall"
                     *ngIf="ItemDescriptionOverlap">
-                    <div>{{ displayCycleCountItem.GenericNameFormatted }}<span *ngIf="CheckSafetyScanConfiguration()" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}"><img src="Scan.svg"></span>
-                    </div>
+                    <div>{{ displayCycleCountItem.GenericNameFormatted }}<span  *ngIf="(CheckSafetyScanConfiguration()) && (productBarCodeDisplay)" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}">
+                        <oc-svgicon   height="50" width="50" icon="scan" theme="dark" (click)='productScanInfo()'></oc-svgicon></span>
+                        </div>
                 </div>
             </div>
             <div #Generic>
@@ -62,10 +61,9 @@
                                     {{ displayCycleCountItem.LocationDescription }}
                                 </div>
                                 <div>
-                                   <span *ngIf="CheckSafetyScanConfiguration() && binBarCodeDisplay" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}"><img src="Scan.svg" (click)='binbarScanInfo()'></span>
-                                   <!--<oc-svgicon [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}" *ngIf="CheckSafetyScanConfiguration() && binBarCodeDisplay" icon="scan" theme="dark" height="70" width="30"
-                                   (focus)="onBarcodeExcludedInputFocus($event)" (blur)="onBarcodeExcludedInputBlur($event)" (click)='binbarScanInfo()'></oc-svgicon>-->
-                                </div>
+                                    <span  *ngIf="(CheckSafetyScanConfiguration()) && (binBarCodeDisplay)" [ngStyle]="{'margin-left': dynamicLocationDescriptionStyle}">
+                                    <oc-svgicon  height="50" width="50" icon="scan" theme="dark" (click)='binbarScanInfo()' ></oc-svgicon></span>
+                                   </div>
                             </div>
                         </div>
                     </div>
