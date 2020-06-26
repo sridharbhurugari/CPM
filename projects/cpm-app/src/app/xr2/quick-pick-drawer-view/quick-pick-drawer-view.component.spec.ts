@@ -5,22 +5,38 @@ import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { DashboardCardComponent } from '../dashboard-card/dashboard-card.component';
-import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService } from '@omnicell/webcorecomponents';
 import { CoreModule } from '../../core/core.module';
+import { Subject, Observable, of } from 'rxjs';
 import { QuickPickDrawerDetailsViewComponent } from '../quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
+import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
   let fixture: ComponentFixture<QuickPickDrawerViewComponent>;
   let qpDrawers: QuickPickDrawerData[];
+  let quickPickEventConnectionService: Partial<QuickPickEventConnectionService>;
 
   beforeEach(async(() => {
+    quickPickEventConnectionService = {
+      QuickPickDrawerUpdateSubject: new Subject(),
+      QuickPickReloadDrawersSubject: new Subject()
+    };
 
     TestBed.configureTestingModule({
       declarations: [ QuickPickDrawerViewComponent, QuickPickDrawerDetailsViewComponent, DashboardCardComponent
         , MockTranslatePipe, MockSearchPipe, MockAppHeaderContainer ],
       imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule ],
+      providers: [
+        { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
+        { provide: Xr2QuickPickDrawerService, useValue: { getDrawers: () => of([]), printLabel: () => of([])} },
+        { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService},
+        { provide: Location, useValue: { go: () => {}} },
+      ]
     }).overrideComponent(DashboardCardComponent, {
       set: {
         template: ''
