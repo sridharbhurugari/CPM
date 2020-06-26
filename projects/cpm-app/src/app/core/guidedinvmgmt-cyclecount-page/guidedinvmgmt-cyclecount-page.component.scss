@@ -9,7 +9,7 @@
   font-family: $font-family-sans-serif;
   position: relative;
   color:$text-color;
-  margin-top: 40px;
+  margin-top: 45px;
   margin-left: 16px;
   ::ng-deep{
     span{
@@ -27,13 +27,13 @@
   font-family: $font-family-sans-serif;
   position: relative;
   color:$text-color;
-  margin-top: 40px;
+  margin-top: 45px;
   margin-left: 16px;
   ::ng-deep{
     span{
       &:first-child{
         position: absolute!important;
-        bottom: 30px!important;
+        bottom: 20px!important;
       }
     }
   }
