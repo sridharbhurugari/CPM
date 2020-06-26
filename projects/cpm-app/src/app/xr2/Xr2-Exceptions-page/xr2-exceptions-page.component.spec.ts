@@ -70,10 +70,6 @@ describe('Xr2ExceptionsPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2ExceptionsPageComponent);
     component = fixture.componentInstance;
-
-    //component.sortOrder = "desc";
-    //event.ColumnPropertyName = "TrayID";
-    //event.SortDirection="asc";
     fixture.detectChanges();
   });
 
@@ -82,7 +78,6 @@ describe('Xr2ExceptionsPageComponent', () => {
   });
 
   it('column selected ', () => {
-    //component. = SortDirection.descending;
     component.displayExceptionsList$.source;
     component.displayExceptionsList$ = component.displayExceptionsList$.pipe(map(exceptions => {
       return this.sort(exceptions, "desc");
@@ -92,13 +87,6 @@ describe('Xr2ExceptionsPageComponent', () => {
   describe('navigation on page', () => {
     it('navigates details page', () => {
        component.navigatedetailspage(eventSelected);
-       //expect(wpfActionControllerService.ExecuteWpfContinueNavigationAction).toHaveBeenCalled();
     });
   });
-  // describe('hook up event handler calling', () => {
-  //   it('should invoke the method of hook up event handler', () => {
-  //      spyOn(barcodeScanService,)
-  //      //expect(wpfActionControllerService.ExecuteWpfContinueNavigationAction).toHaveBeenCalled();
-  //   });
-  // });
-});
+ });

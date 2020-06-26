@@ -106,8 +106,8 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   }
 
   onBarcodeScanExcludedKeyPressEvent(event: KeyboardEvent) {
-    var isInputComplete = this._barcodeScanService.handleKeyInput(event);
-    var isScannerInput = this._barcodeScanService.isScannerInput();
+    let isInputComplete = this._barcodeScanService.handleKeyInput(event);
+    let isScannerInput = this._barcodeScanService.isScannerInput();
     // check if the character is a barcode scan
     if (isScannerInput) {
       //Since the first character always returns true, ignore it.
@@ -130,7 +130,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   @HostListener("document:keypress", ['$event']) onKeypressHandler(event: KeyboardEvent) {
     console.log(event);
     if (!this.nonBarcodeInputFocus) {
-      var isInputComplete = this._barcodeScanService.handleKeyInput(event);
+      let isInputComplete = this._barcodeScanService.handleKeyInput(event);
       //If not from barcode scanner ignore the character
       if (!this._barcodeScanService.isScannerInput()) {
         this._barcodeScanService.reset();
