@@ -64,8 +64,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     }), shareReplay(1));
 
     this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
-      console.log('popup message timeout : ' + result);
-      this.popupTimeoutSeconds = (Number(result.Value));
+      this.popupTimeoutSeconds = Number(result.Value);
     });
 
     this.traytypesList$ && this.traytypesList$.subscribe(x => {
@@ -123,37 +122,8 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
       //remove the last character.
       this.nonBarCodekeyboardInput = this.nonBarCodekeyboardInput.slice(0, -1);
       this.rawBarcodeMessage = this._barcodeScanService.BarcodeInputCharacters;
-      console.log(`Barcode Scan from NonBarcode Enabled Text box:  ${this._barcodeScanService.BarcodeInputCharacters}`);
       this._barcodeScanService.reset();
-      var value = this.traytypesList$;
-      var exceptionData: IXr2ExceptionsItem;
-      this.traytypesList.forEach(function (value) {
-        if (value.toString().toUpperCase() === this.rawBarcodeMessage.toString().substring(1, 2).toUpperCase()) {
-          this.displayExceptionsList$.subscribe((exceptions: IXr2ExceptionsItem[]) =>
-            exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
-          );
-          if (exceptionData)
-            this.navigatedetailspage(exceptionData);
-          else
-            this.displayWrongBarCodeDialog(true);
-        }
-        else {
-          this.displayWrongBarCodeDialog(false);
-        }
-      });
-      if (this.traytypesList$.forEach(
-        val => val.toString().toUpperCase() === this.rawBarcodeMessage.toString().substring(1, 2).toUpperCase())) {
-        this.displayExceptionsList$.subscribe((exceptions: IXr2ExceptionsItem[]) =>
-          exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
-        );
-        if (exceptionData)
-          this.navigatedetailspage(exceptionData);
-        else
-          this.displayWrongBarCodeDialog(true);
-      }
-      else {
-        this.displayWrongBarCodeDialog(false);
-      }
+      this.showthedetailspageordialog();
     }
   }
 
@@ -170,21 +140,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
         this.pagelevelInput = this._barcodeScanService.BarcodeInputCharacters;
         this.rawBarcodeMessage = this._barcodeScanService.BarcodeInputCharacters;
         this._barcodeScanService.reset();
-        var value = this.traytypesList$;
-        var exceptionData: IXr2ExceptionsItem;
-        if (this.traytypesList$.forEach(
-          val => val.toString().toUpperCase() === this.rawBarcodeMessage.toString().substring(1, 2).toUpperCase())) {
-          this.displayExceptionsList$.subscribe((exceptions: IXr2ExceptionsItem[]) =>
-            exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
-          );
-          if (exceptionData)
-            this.navigatedetailspage(exceptionData);
-          else
-            this.displayWrongBarCodeDialog(true);
-        }
-        else {
-          this.displayWrongBarCodeDialog(false);
-        }
+        this.showthedetailspageordialog();
       }
     }
   }
@@ -225,10 +181,17 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   private processScannedBarcode(scannedBarcode: string): void {
     this._barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
-    var exceptionData: IXr2ExceptionsItem;
-    var traytypeFound = false;
-    for (var i = 0; i < this.traytypesList.length; i++) {
-      var value = this.traytypesList[i];
+    this.showthedetailspageordialog();
+  }
+  navigatedetailspage(exceptions: IXr2ExceptionsItem) {
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`, { TrayID: exceptions.TrayID.toString(), DeviceID: exceptions.DeviceID, CompletedDateTime: exceptions.CompletedDateTime, DeviceName: exceptions.DeviceName, TrayDescription: exceptions.TrayDescription });
+  }
+  showthedetailspageordialog()
+  {
+    let exceptionData: IXr2ExceptionsItem;
+    let traytypeFound = false;
+    for (let i = 0; i < this.traytypesList.length; i++) {
+      let value = this.traytypesList[i];
       if (value.toString().toUpperCase() === this.rawBarcodeMessage.toString().substring(0, 2).toUpperCase()) {
         traytypeFound = true;
         break;
@@ -243,16 +206,17 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
         exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
       );
       if (exceptionData)
+      {
         this.navigatedetailspage(exceptionData);
+      }
       else
+      {
         this.displayWrongBarCodeDialog(true);
+      }
     }
     else {
       this.displayWrongBarCodeDialog(false);
     }
-  }
-  navigatedetailspage(exceptions: IXr2ExceptionsItem) {
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`, { TrayID: exceptions.TrayID.toString(), DeviceID: exceptions.DeviceID, CompletedDateTime: exceptions.CompletedDateTime, DeviceName: exceptions.DeviceName, TrayDescription: exceptions.TrayDescription });
   }
   displayWrongBarCodeDialog(trays: boolean): void {
     const properties = new PopupDialogProperties('INVALID_TRAY_SCAN_DESC');

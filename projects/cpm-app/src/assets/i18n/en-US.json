@@ -133,6 +133,7 @@
   "DEVICE_SELECTION_TEXT": "Select device",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "No devices",
   "DEVICE_SELECTION_SEARCH_DEVICES": "Find device",
+  "INVALID_SCAN_BARCODE_HEADER": "Bar Code Not Recognized",
   "INVALID_TRAY_SCAN": "Invalid Tray",
   "INVALID_TRAY_SCAN_DESC":"The bar code scanned does not match a restock tray. Please scan a Tray.",
   "INVALID_NOEXCEPTIONS_SCAN_DESC":"Tray Scanned has no exceptions."
