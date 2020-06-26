@@ -40,5 +40,19 @@ import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
+
+    public validscan(itemID: string,barcode: string): Observable<string> {
+      const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/ValidScanBarCode`);
+    const params = {itemID: itemID, barCode: barcode};
+    return this.httpClient.get<string>(url ,{
+      headers: this.ocapHttpHeadersService.getHeaders(),params
+    });
+   }
     
+   public canoverridebarcode() : Observable<boolean> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/CanOverrideBarcode`);
+    return this.httpClient.get<boolean>(url ,{
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+   }
   } 
