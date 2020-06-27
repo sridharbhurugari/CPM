@@ -19,11 +19,16 @@ describe('QuickPickDrawerViewComponent', () => {
   let fixture: ComponentFixture<QuickPickDrawerViewComponent>;
   let qpDrawers: QuickPickDrawerData[];
   let quickPickEventConnectionService: Partial<QuickPickEventConnectionService>;
+  let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
 
   beforeEach(async(() => {
     quickPickEventConnectionService = {
       QuickPickDrawerUpdateSubject: new Subject(),
       QuickPickReloadDrawersSubject: new Subject()
+    };
+
+    quickPickDrawerService = {
+      printLabel: jasmine.createSpy('printLabel').and.returnValue(of())
     };
 
     TestBed.configureTestingModule({
@@ -33,7 +38,7 @@ describe('QuickPickDrawerViewComponent', () => {
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
-        { provide: Xr2QuickPickDrawerService, useValue: { getDrawers: () => of([]), printLabel: () => of([])} },
+        { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService},
         { provide: Location, useValue: { go: () => {}} },
       ]
@@ -53,6 +58,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
 
   beforeEach(() => {
+    spyOn(quickPickEventConnectionService.QuickPickDrawerUpdateSubject, 'subscribe');
     fixture = TestBed.createComponent(QuickPickDrawerViewComponent);
     component = fixture.componentInstance;
     const qpDrawer1: QuickPickDrawerData = new QuickPickDrawerData(null);
@@ -87,5 +93,21 @@ describe('QuickPickDrawerViewComponent', () => {
     expect(component.detailedDrawer).toBeUndefined();
     expect(quickPickActiveSpy).toHaveBeenCalledWith(false);
 
+  });
+
+  it('should call QuickPickDrawerService on print', () => {
+    expect(component).toBeTruthy();
+    fakeAsync((component) => {
+      component.printDrawerLabel();
+      tick();
+      expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Connect to Events', () => {
+    it('Connects to events on creation', () => {
+      expect(component).toBeTruthy();
+      expect(quickPickEventConnectionService.QuickPickDrawerUpdateSubject.subscribe).toHaveBeenCalled();
+    });
   });
 });

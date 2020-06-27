@@ -43,11 +43,11 @@ export class QuickPickPageComponent implements OnInit {
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService) {
-      this.configureEventHandlers();
-  }
+    }
 
-  ngOnInit() {
-    this.getActiveXr2Devices();
+    ngOnInit() {
+      this.configureEventHandlers();
+      this.getActiveXr2Devices();
   }
 
   /* istanbul ignore next */
@@ -67,7 +67,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   async getActiveXr2Devices() {
-    const results = await this.quickPickDeviceService.get().toPromise();
+    var results = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;

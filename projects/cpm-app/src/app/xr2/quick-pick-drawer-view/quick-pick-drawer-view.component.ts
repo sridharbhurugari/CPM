@@ -47,10 +47,10 @@ export class QuickPickDrawerViewComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService
   ) {
-    this.configureEventHandlers();
   }
 
   ngOnInit() {
+    this.configureEventHandlers();
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
@@ -70,7 +70,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
       result => {}, result => {
         this.displayFailedToSaveDialog();
       });
-    console.log('Print clicked for drawer: ' + this.detailedDrawer.Id);
   }
 
 
