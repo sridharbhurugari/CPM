@@ -66,14 +66,12 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   printDrawerLabel() {
     const printRequest = new QuickPickPrintRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
-      res => {}, err => {});
+    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe();
   }
 
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
     quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
-    console.log(quickPickDrawerData);
     let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
       return x.Id === quickPickDrawerData.Id;
     });

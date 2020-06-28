@@ -150,11 +150,4 @@ describe('QuickPickPageComponent', () => {
       expect(quickPickDrawerService.getAllDrawers).toHaveBeenCalledTimes(1);
     });
   });
-
-  describe('Connect to Events', () => {
-    it('Connects to events on creation', () => {
-      expect(component).toBeTruthy();
-      expect(quickPickEventConnectionService.QuickPickReloadDrawersSubject.subscribe).toHaveBeenCalled();
-    });
-  });
 });

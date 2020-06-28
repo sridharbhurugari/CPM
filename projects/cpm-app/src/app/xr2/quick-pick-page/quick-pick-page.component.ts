@@ -46,11 +46,9 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     ngOnInit() {
-      this.configureEventHandlers();
       this.getActiveXr2Devices();
   }
 
-  /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
       .pipe(
@@ -102,19 +100,6 @@ export class QuickPickPageComponent implements OnInit {
       this.selectedDeviceId = $event.value;
       this.loadPicklistsQueueItems();
     }
-  }
-
-  private configureEventHandlers(): void {
-    if (!this.quickPickEventConnectionService) {
-      return;
-    }
-
-    this.quickPickEventConnectionService.QuickPickReloadDrawersSubject
-      .subscribe(() => this.onReloadDrawers());
-  }
-
-  private onReloadDrawers(): void {
-    this.loadDrawersData();
   }
 
   private loadPicklistsQueueItems(): void {

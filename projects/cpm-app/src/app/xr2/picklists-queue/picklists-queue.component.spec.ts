@@ -24,6 +24,7 @@ import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
+import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 
 @Component({
   selector: 'oc-search-box',
@@ -101,6 +102,77 @@ describe('PicklistsQueueComponent', () => {
       expect(component).toBeTruthy();
       expect(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
       expect(picklistsQueueEventConnectionService.removePicklistQueueItemSubject.subscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('Output Device Selection', () => {
+    it('should return null given no devices', () => {
+
+      const picklistQueueItem = new PicklistQueueItem(null);
+      picklistQueueItem.Status = 2;
+      picklistQueueItem.OutputDeviceId = '1';
+      picklistQueueItem.AvailableOutputDeviceList = [];
+
+      expect(component.getSelectedOutputDeviceRow(picklistQueueItem)).toBeNull();
+    });
+
+    it('should return active selection device row on status 1', () => {
+      let translatedLabel = '';
+      translateService.get('QUICKPICK').subscribe((res: string) => {
+        translatedLabel = res;
+      });
+      const device: OutputDevice = {
+        DeviceId: '1',
+        Label: translatedLabel,
+        IsActive: true,
+      };
+      const expectedRow = new SingleselectRowItem(translatedLabel, '1');
+      const picklistQueueItem = new PicklistQueueItem(null);
+      picklistQueueItem.Status = 1;
+      picklistQueueItem.OutputDeviceId = '1';
+      picklistQueueItem.AvailableOutputDeviceList = [device];
+
+      expect(component.getSelectedOutputDeviceRow(picklistQueueItem).text).toEqual(expectedRow.text);
+      expect(component.getSelectedOutputDeviceRow(picklistQueueItem).value).toEqual(expectedRow.value);
+    });
+
+    it('should return chosen selection device row on other status', () => {
+      let translatedLabel = '';
+      translateService.get('QUICKPICK').subscribe((res: string) => {
+        translatedLabel = res;
+      });
+      const device: OutputDevice = {
+        DeviceId: '100',
+        Label: translatedLabel,
+        IsActive: false,
+      };
+      const expectedRow = new SingleselectRowItem(translatedLabel, '100');
+      const picklistQueueItem = new PicklistQueueItem(null);
+      picklistQueueItem.Status = 2;
+      picklistQueueItem.OutputDeviceId = '100';
+      picklistQueueItem.AvailableOutputDeviceList = [device];
+
+      expect(component.getSelectedOutputDeviceRow(picklistQueueItem).text).toEqual(expectedRow.text);
+      expect(component.getSelectedOutputDeviceRow(picklistQueueItem).value).toEqual(expectedRow.value);
+    });
+
+    it('should return output device display list ', () => {
+      let translatedLabel = '';
+      translateService.get('QUICKPICK').subscribe((res: string) => {
+        translatedLabel = res;
+      });
+      const device: OutputDevice = {
+        DeviceId: '100',
+        Label: translatedLabel,
+        IsActive: true,
+      };
+      const expectedRow = new SingleselectRowItem(translatedLabel, '100');
+      const picklistQueueItem = new PicklistQueueItem(null);
+      picklistQueueItem.Status = 2;
+      picklistQueueItem.OutputDeviceId = '1';
+      picklistQueueItem.AvailableOutputDeviceList = [device];
+
+      expect(component.getActiveOutputDeviceList(picklistQueueItem)).toEqual([expectedRow]);
     });
   });
 

@@ -218,6 +218,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     this.dialogService.showOnce(properties);
   }
 
+  /* istanbul ignore next */
   trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
     if (!picklistQueueItem) {
       return null;
@@ -304,6 +305,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
+  /* istanbul ignore next */
   onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.OutputDeviceId = $event.value;
   }

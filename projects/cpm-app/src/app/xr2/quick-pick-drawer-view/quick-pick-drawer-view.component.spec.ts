@@ -109,20 +109,12 @@ describe('QuickPickDrawerViewComponent', () => {
         expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
       });
     });
-
-    it('should display failed dialog on failed print', () => {
-      expect(component).toBeTruthy();
-      fakeAsync((component) => {
-        component.printDrawerLabel();
-        tick();
-        expect(dialogService).toHaveBeenCalledTimes(1);
-      });
-    });
   });
 
   describe('Connect to Events', () => {
     it('Connects to events on creation', () => {
       expect(component).toBeTruthy();
+      component.ngOnInit();
       expect(quickPickEventConnectionService.QuickPickDrawerUpdateSubject.subscribe).toHaveBeenCalled();
     });
   });

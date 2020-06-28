@@ -30,9 +30,6 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   ngOnInit() {
   }
 
-  onPrintMedicationsClick() {
-  }
-
   onPrintClick() {
     this.printQuickPickDrawerLabel.emit();
   }
