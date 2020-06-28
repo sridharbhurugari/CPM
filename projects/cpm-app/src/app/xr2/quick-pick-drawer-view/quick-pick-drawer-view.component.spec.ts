@@ -7,7 +7,7 @@ import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec'
 import { DashboardCardComponent } from '../dashboard-card/dashboard-card.component';
 import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService } from '@omnicell/webcorecomponents';
 import { CoreModule } from '../../core/core.module';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, throwError } from 'rxjs';
 import { QuickPickDrawerDetailsViewComponent } from '../quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
@@ -20,6 +20,7 @@ describe('QuickPickDrawerViewComponent', () => {
   let qpDrawers: QuickPickDrawerData[];
   let quickPickEventConnectionService: Partial<QuickPickEventConnectionService>;
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
+  let dialogService: Partial<PopupDialogService>;
 
   beforeEach(async(() => {
     quickPickEventConnectionService = {
@@ -28,31 +29,35 @@ describe('QuickPickDrawerViewComponent', () => {
     };
 
     quickPickDrawerService = {
-      printLabel: jasmine.createSpy('printLabel').and.returnValue(of())
+      printLabel: jasmine.createSpy('printLabel').and.returnValues(of([]))
+    };
+
+    dialogService = {
+      showOnce: jasmine.createSpy('showOnce').and.returnValue(of([]))
     };
 
     TestBed.configureTestingModule({
-      declarations: [ QuickPickDrawerViewComponent, QuickPickDrawerDetailsViewComponent, DashboardCardComponent
-        , MockTranslatePipe, MockSearchPipe, MockAppHeaderContainer ],
-      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule ],
+      declarations: [QuickPickDrawerViewComponent, QuickPickDrawerDetailsViewComponent, DashboardCardComponent
+        , MockTranslatePipe, MockSearchPipe, MockAppHeaderContainer],
+      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
-        { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
+        { provide: PopupDialogService, useValue: dialogService },
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
-        { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService},
-        { provide: Location, useValue: { go: () => {}} },
+        { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
+        { provide: Location, useValue: { go: () => { } } },
       ]
     }).overrideComponent(DashboardCardComponent, {
       set: {
         template: ''
       }
     })
-    .overrideComponent(QuickPickDrawerDetailsViewComponent, {
-      set: {
-        template: ''
-      }
-    })
-    .compileComponents();
+      .overrideComponent(QuickPickDrawerDetailsViewComponent, {
+        set: {
+          template: ''
+        }
+      })
+      .compileComponents();
   }));
 
 
@@ -95,12 +100,23 @@ describe('QuickPickDrawerViewComponent', () => {
 
   });
 
-  it('should call QuickPickDrawerService on print', () => {
-    expect(component).toBeTruthy();
-    fakeAsync((component) => {
-      component.printDrawerLabel();
-      tick();
-      expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
+  describe('QuickPick Printing', () => {
+    it('should call QuickPickDrawerService on print', () => {
+      expect(component).toBeTruthy();
+      fakeAsync((component) => {
+        component.printDrawerLabel();
+        tick();
+        expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should display failed dialog on failed print', () => {
+      expect(component).toBeTruthy();
+      fakeAsync((component) => {
+        component.printDrawerLabel();
+        tick();
+        expect(dialogService).toHaveBeenCalledTimes(1);
+      });
     });
   });
 

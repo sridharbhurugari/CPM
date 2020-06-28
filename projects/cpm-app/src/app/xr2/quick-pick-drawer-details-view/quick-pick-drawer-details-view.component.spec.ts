@@ -33,4 +33,20 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should return correct light color for given state', () => {
+    const detailedDrawerData1 = new QuickPickDrawerData(null);
+    const detailedDrawerData2 = new QuickPickDrawerData(null);
+    const detailedDrawerData3 = new QuickPickDrawerData(null);
+    detailedDrawerData3.ErrorInfo = new QuickPickErrorInformation(null);
+
+    detailedDrawerData1.Status = 2;
+    detailedDrawerData2.Status = 3;
+    detailedDrawerData3.Status = 4;
+
+    expect(component).toBeTruthy();
+    expect(component.getTrafficLightProperties(detailedDrawerData1).color).toEqual('yellow');
+    expect(component.getTrafficLightProperties(detailedDrawerData2).color).toEqual('green');
+    expect(component.getTrafficLightProperties(detailedDrawerData3).color).toEqual('red');
+  });
 });
