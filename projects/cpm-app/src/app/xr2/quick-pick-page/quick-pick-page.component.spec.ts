@@ -73,7 +73,7 @@ describe('QuickPickPageComponent', () => {
 
   quickPickQueueService = {
     get: jasmine.createSpy('get').and.returnValue(of([])),
-    reroute: jasmine.createSpy('reroute').and.returnValues(of(true), throwError({ status: 404 }))
+    reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
   };
 
   popupDialogService = {
@@ -189,7 +189,7 @@ describe('QuickPickPageComponent', () => {
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
-      expect(popupDialogService.showOnce).toHaveBeenCalledTimes(1);
+      expect(popupDialogService.showOnce).toHaveBeenCalled();
     });
   });
 });
