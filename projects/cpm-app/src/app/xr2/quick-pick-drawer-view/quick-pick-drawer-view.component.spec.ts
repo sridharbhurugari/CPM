@@ -13,6 +13,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
+import { QuickPickPrintRequest } from '../model/quick-pick-print-request';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -20,7 +21,7 @@ describe('QuickPickDrawerViewComponent', () => {
   let qpDrawers: QuickPickDrawerData[];
   let quickPickEventConnectionService: Partial<QuickPickEventConnectionService>;
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
-  let dialogService: Partial<PopupDialogService>;
+  let popupDialogService: Partial<PopupDialogService>;
 
   beforeEach(async(() => {
     quickPickEventConnectionService = {
@@ -29,11 +30,11 @@ describe('QuickPickDrawerViewComponent', () => {
     };
 
     quickPickDrawerService = {
-      printLabel: jasmine.createSpy('printLabel').and.returnValues(of([]))
+      printLabel: jasmine.createSpy('printLabel').and.returnValues(of(true), throwError({ status: 404 }))
     };
 
-    dialogService = {
-      showOnce: jasmine.createSpy('showOnce').and.returnValue(of([]))
+    popupDialogService = {
+      showOnce: jasmine.createSpy('showOnce')
     };
 
     TestBed.configureTestingModule({
@@ -42,7 +43,7 @@ describe('QuickPickDrawerViewComponent', () => {
       imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
-        { provide: PopupDialogService, useValue: dialogService },
+        { provide: PopupDialogService, useValue: popupDialogService },
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
         { provide: Location, useValue: { go: () => { } } },

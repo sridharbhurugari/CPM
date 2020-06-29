@@ -66,7 +66,11 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   printDrawerLabel() {
     const printRequest = new QuickPickPrintRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe();
+    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
+      () => {
+      }, error => {
+        this.displayFailedToSaveDialog();
+      });
   }
 
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
@@ -96,6 +100,19 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
     this.quickPickEventConnectionService.QuickPickDrawerUpdateSubject
       .subscribe(message => this.onUpdateQuickPickDrawer(message));
+  }
+
+  /* istanbul ignore next */
+  private displayFailedToSaveDialog(): void {
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
   }
 
 }

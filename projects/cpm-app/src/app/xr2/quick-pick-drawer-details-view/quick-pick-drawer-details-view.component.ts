@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -25,7 +26,7 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
     return this._detailedDrawerData;
   }
 
-  constructor() { }
+  constructor(private translateService: TranslateService) { }
 
   ngOnInit() {
   }
@@ -54,16 +55,26 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   }
 
   getTrafficLightProperties(detailedDrawerData: QuickPickDrawerData) {
-
+    const pendingUnlockTranslatable = 'PENDING_UNLOCK';
+    const inProgressTranslatable = 'IN_PROGRESS';
+    let pendingUnlockTranslated = '';
+    let inProgressTranslated = '';
     let color = '';
     let text = '';
 
+    this.translateService.get(pendingUnlockTranslatable).subscribe((res: string) => {
+      pendingUnlockTranslated = res;
+    });
+    this.translateService.get(inProgressTranslatable).subscribe((res: string) => {
+      inProgressTranslated = res;
+    });
+
     if (detailedDrawerData.Status === 2) {
       color = 'yellow';
-      text = 'Pending Unlock';
+      text = pendingUnlockTranslated;
     } else if (detailedDrawerData.Status === 3) {
       color = 'green';
-      text = 'In Progress';
+      text = inProgressTranslated;
     } else if (detailedDrawerData.Status === 4) {
       color = 'red';
       text = detailedDrawerData.ErrorInfo.ErrorDescription;

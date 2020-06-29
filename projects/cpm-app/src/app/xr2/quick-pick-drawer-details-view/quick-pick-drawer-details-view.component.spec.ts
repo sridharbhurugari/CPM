@@ -1,13 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { of } from 'rxjs';
 import { ButtonActionModule, ComponentTypes } from '@omnicell/webcorecomponents';
 import { TrafficLightsComponent } from './../traffic-lights/traffic-lights.component';
 import { QuickPickBoxItemsView} from './../quick-pick-box-items-view/quick-pick-box-items-view.component';
-
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view.component';
 import { QuickPickErrorInformation } from '../model/quick-pick-error-information';
+import { TranslateService } from '@ngx-translate/core';
+
 
 describe('QuickPickDrawerDetailsViewComponent', () => {
   let component: QuickPickDrawerDetailsViewComponent;
@@ -16,7 +17,10 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ QuickPickDrawerDetailsViewComponent, TrafficLightsComponent, QuickPickBoxItemsView, MockTranslatePipe],
-      imports: [ButtonActionModule]
+      imports: [ButtonActionModule],
+      providers: [
+        { provide: TranslateService, useValue: { get: () => of([]) } },
+      ]
     })
     .compileComponents();
   }));
