@@ -472,7 +472,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
   }
 
-  private showLeaseDialog(title: string): PopupDialogComponent {
+  showLeaseDialog(title: string): PopupDialogComponent {
     const properties = new PopupDialogProperties('Lease-Busy');
     properties.titleElementText = title;
     properties.showPrimaryButton = false;
@@ -484,7 +484,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     return this.dialogService.showOnce(properties);
   }
 
-  private displayError(uniqueId, title, message): PopupDialogComponent {
+  displayError(uniqueId, title, message): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
     properties.titleElementText = title;
     properties.messageElementText = message;
@@ -497,7 +497,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   HasLabelPrinterConfigured(): boolean {
-    if ((this.devicePrinterName !== undefined && this.devicePrinterName.length > 0) || this.labelPrinterName !== undefined && this.labelPrinterName.length > 0) {
+    if ((this.devicePrinterName !== null && this.devicePrinterName.length > 0) || this.labelPrinterName !== null && this.labelPrinterName.length > 0) {
       return true;
     }
     else {
@@ -567,7 +567,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   // Scanned barcode event listener for use in Cef
-  private processScannedBarcode(scannedBarcode: string): void {
+  processScannedBarcode(scannedBarcode: string): void {
     this.barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
     if (this.rawBarcodeMessage.search('$') !== -1 || this.rawBarcodeMessage === "0000")
@@ -600,7 +600,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     // check if the character is a barcode scan
     if (isScannerInput) {
       // Since the first character always returns true, ignore it.
-      if (this.barcodeScanService.BarcodeInputCharacters.length !== 1) {
+      if (this.barcodeScanService.BarcodeInputCharacters && this.barcodeScanService.BarcodeInputCharacters.length !== 1) {
         // ignore if it is a barcodescan
         event.preventDefault();
       }
@@ -614,20 +614,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.barcodeScanService.reset();
     }
   }
-  onBarcodeExcludedInputFocus(event) {
-    this.nonBarcodeInputFocus = true;
-  }
+  // onBarcodeExcludedInputFocus(event) {
+  //   this.nonBarcodeInputFocus = true;
+  // }
 
-  onBarcodeExcludedInputBlur(event) {
-    this.nonBarcodeInputFocus = false;
-    this.barcodeScanService.reset();
-  }
+  // onBarcodeExcludedInputBlur(event) {
+  //   this.nonBarcodeInputFocus = false;
+  //   this.barcodeScanService.reset();
+  // }
 
   reset() {
     this.rawBarcodeMessage = '';
   }
 
-  private hookupEventHandlers(): void {
+  hookupEventHandlers(): void {
     if (this.isInvalid(this.barcodeScanService)) {
       return;
     }
@@ -637,7 +637,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     );
   }
 
-  private unhookEventHandlers(): void {
+  unhookEventHandlers(): void {
     if (this.isInvalid(this.barcodeScanService)) {
       return;
     }
@@ -680,7 +680,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   itemBinBarCode(): boolean {
     var formatRet, overrideRet;
-    if (this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
+    if (this.displayCycleCountItem && this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
       if (!this.productBarCodeDisplay) {
         this.ScanValidation();
@@ -694,7 +694,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.ScanValidation();
     }
     else {
-      this.guidedCycleCountService.validscan(this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
+      this.guidedCycleCountService.validscan(this.displayCycleCountItem && this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
         formatRet = res;
         if (formatRet === "") {
           this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
@@ -743,12 +743,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
   closePopup() {
     this.barcodeOverride = false;
-    this.popupDialog.onCloseClicked();
+    this.popupDialog && this.popupDialog.onCloseClicked();
   }
   ScanValidation() {
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
     if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
-      if (this.displayCycleCountItem.QuantityOnHand === 0) {
+      if (this.displayCycleCountItem && this.displayCycleCountItem.QuantityOnHand === 0) {
         this.navigateContinue();
       }
       else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
@@ -760,7 +760,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.DisableActionButtons(true);
           this.toggleredborderfornonfirstitem(false);
         }
-        else if (!this.datepicker.selectedDate.match(dateReg)) {
+        else if (this.datepicker && !(this.datepicker.selectedDate.match(dateReg))) {
           this.DisableActionButtons(true);
         }
         else if (isNaN(eventdate.getTime())) {
