@@ -104,11 +104,9 @@ describe('QuickPickDrawerViewComponent', () => {
   describe('QuickPick Printing', () => {
     it('should call QuickPickDrawerService on print', () => {
       expect(component).toBeTruthy();
-      fakeAsync((component) => {
-        component.printDrawerLabel();
-        tick();
-        expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
-      });
+      component.detailedDrawer = new QuickPickDrawerData(null);
+      component.printDrawerLabel();
+      expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
     });
   });
 
