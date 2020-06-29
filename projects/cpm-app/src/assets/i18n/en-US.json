@@ -4,6 +4,7 @@
   "BACK": "Back",
   "BIN": "Bin",
   "BINS": "Bins",
+  "QUICK_PICK_QUEUE_BINS_HEADER": "Remaining / Total",
   "CABINETS": "Cabinets",
   "CANCEL": "Cancel",
   "CARTMODULE": "Cart Module",
@@ -132,5 +133,14 @@
   "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review",
   "DEVICE_SELECTION_TEXT": "Select device",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "No devices",
-  "DEVICE_SELECTION_SEARCH_DEVICES": "Find device"
+  "DEVICE_SELECTION_SEARCH_DEVICES": "Find device",
+  "INVALID_SCAN_BARCODE_HEADER": "Bar Code Not Recognized",
+  "INVALID_TRAY_SCAN": "Invalid Tray",
+  "INVALID_TRAY_SCAN_DESC":"The bar code scanned does not match a restock tray. Please scan a Tray.",
+  "INVALID_NOEXCEPTIONS_SCAN_DESC":"Tray Scanned has no exceptions.",
+  "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
+  "SCAN_BIN_BARCODE": "The correct bin bar code must be scanned.",
+  "INVALID_SCAN_BARCODE": "The bar code scanned is not recognized. Please scan a correct bar code.",
+  "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code."
+
 }

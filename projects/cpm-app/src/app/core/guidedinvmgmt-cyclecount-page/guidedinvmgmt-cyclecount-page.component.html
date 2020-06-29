@@ -3,59 +3,77 @@
         <div class="cpmactiontitle">{{ 'GUIDED_CYCLE_COUNT' | translate }}</div>
         <div class="dateTime">
             {{time| date:'M/d/yyyy h:mm a'}}</div>
-            <div class="printlable"
-        *ngIf="HasLabelPrinterConfigured()">
+        <div class="printlable" *ngIf="HasLabelPrinterConfigured()">
             <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
         </div>
         <div class="totalItemCount">
             <span>{{currentItemCount}} / {{itemCount}}</span></div>
+        <oc-toast></oc-toast>
     </ng-container>
 
     <ng-container class="ocactiondetails">
         <div class="displayGuidedCycleCount">
-
-            <div class="BrandName">
-                <div>{{ displayCycleCountItem.GenericNameFormatted }}<span *ngIf="CheckSafetyScanConfiguration()"><img src="Scan.svg"></span></div>
+            <div #contain>
+                <div class="BrandName"
+                    *ngIf="!ItemDescriptionOverlap">
+                    <div>{{ displayCycleCountItem.GenericNameFormatted }}
+                        <span  *ngIf="(CheckSafetyScanConfiguration()) && (productBarCodeDisplay)" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}">
+                        <oc-svgicon height="50" width="50" icon="scan" theme="dark" (click)='productScanInfo()'></oc-svgicon></span>
+                    </div>
+                </div>
+                <div class="BrandNamesmall"
+                    *ngIf="ItemDescriptionOverlap">
+                    <div>{{ displayCycleCountItem.GenericNameFormatted }}<span  *ngIf="(CheckSafetyScanConfiguration()) && (productBarCodeDisplay)" [ngStyle]="{'margin-left': dynamicGenericFormatetdNameStyle}">
+                        <oc-svgicon   height="50" width="50" icon="scan" theme="dark" (click)='productScanInfo()'></oc-svgicon></span>
+                        </div>
+                </div>
             </div>
-            <div class="GenericName">
-                <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+            <div #Generic>
+                <div class="GenericName"  *ngIf="!ItemBrandNameOverlap">
+                    <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+                </div>
+                <div class="GenericNameSmall"  *ngIf="ItemBrandNameOverlap">
+                    <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+                </div>
             </div>
         </div>
-        <div class="panelContainer1">
-            <div class="itemIdBox">
+            <div class="panelContainer1">
+                <div class="itemIdBox">
 
-                <div class="itemIdHeader">
-                    <span>{{'ITEM_ID' | translate}}</span>
-                </div>
-                <div class="ItemId">
-                    <span>{{ displayCycleCountItem.ItemId }}
-
-                    </span>
-                </div>
-            </div>
-            <div class="DeviceLocation">
-                <div>
                     <div class="itemIdHeader">
-                        <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                        <span>{{'ITEM_ID' | translate}}</span>
                     </div>
-                    <div class="location">
-                        <div class="locationdescription">
-                            <div>
-                                {{ displayCycleCountItem.LocationDescription }}
-                            </div>
-                            <div>
-                            <span *ngIf="CheckSafetyScanConfiguration()"><img src="Scan.svg"></span>
+                    <div class="ItemId" *ngIf="itemIdLength &lt; 11 || itemIdLength == 11">
+                        <span>{{ displayCycleCountItem.ItemId }}</span>
+                    </div>
+                    <div class="ItemIdsmall" *ngIf="itemIdLength>11">
+                        <span>{{ displayCycleCountItem.ItemId }}</span>
+                    </div>
+                </div>
+                <div class="DeviceLocation">
+                    <div>
+                        <div class="itemIdHeader">
+                            <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                        </div>
+                        <div class="location">
+                            <div class="locationdescription">
+                                <div>
+                                    {{ displayCycleCountItem.LocationDescription }}
+                                </div>
+                                <div>
+                                    <span  *ngIf="(CheckSafetyScanConfiguration()) && (binBarCodeDisplay)" [ngStyle]="{'margin-left': dynamicLocationDescriptionStyle}">
+                                    <oc-svgicon  height="50" width="50" icon="scan" theme="dark" (click)='binbarScanInfo()' ></oc-svgicon></span>
+                                   </div>
                             </div>
                         </div>
                     </div>
+                    <div class="devicelocationaccess">
+                        <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
+                            [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
+                            (isAccessBusy)="deviceLocationAccessBusy = $event"
+                            (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+                    </div>
                 </div>
-                <div class="devicelocationaccess">
-                    <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
-                        [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
-                        (isAccessBusy)="deviceLocationAccessBusy = $event"
-                        (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
-                </div>
-            </div>
         </div>
     </ng-container>
 
@@ -91,7 +109,6 @@
                         </oc-datepicker>
 
                     </div>
-
                 </div>
 
                 <div class="expirationwhiteline" *ngIf="!CheckItemExpGranularity()"></div>
@@ -117,11 +134,14 @@
                 <div class="ocrightalign">
                     <oc-button-action [buttonText]="'SKIP' | translate" (click)="navigateSkip()" tabindex="6"
                         [disabled]="deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
-                    <oc-button-action id="nextbutton" *ngIf="!isLastItem" [buttonText]=" 'NEXT' | translate " (click)="navigateContinue()"
-                        [disabled]="nextButtonDisable || deviceLocationAccessBusy || carouselFaulted" tabindex="5">
+                    <oc-button-action id="nextbutton" *ngIf="!isLastItem" [buttonText]=" 'NEXT' | translate "
+                        (click)="navigateContinue()"
+                        [disabled]="(nextButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay)"
+                        tabindex="5">
                     </oc-button-action>
                     <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" (click)="navigateContinue()"
-                        *ngIf="isLastItem" [disabled]="doneButtonDisable" [disabled]="doneButtonDisable || deviceLocationAccessBusy || carouselFaulted"
+                        *ngIf="isLastItem"
+                        [disabled]="(doneButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay)"
                         tabindex="5"></oc-button-action>
                 </div>
             </div>

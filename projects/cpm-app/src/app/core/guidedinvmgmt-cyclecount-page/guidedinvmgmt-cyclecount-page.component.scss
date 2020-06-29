@@ -3,22 +3,49 @@
     height: 100%;
 }
   
-  .BrandName{
-    font-size: 37px;
-    font-weight: bold;
-    font-family: $font-family-sans-serif;
-    position: relative;
-    color:$text-color;
-    margin-top: 40px;
-    margin-left: 16px;
-    ::ng-deep{
-      img{
-        &:first-child{
-          width: 50px!important;
-          margin-bottom: 20px!important;
-        }
+.BrandName{
+  font-size: 37px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  position: relative;
+  color:$text-color;
+  margin-top: 45px;
+  margin-left: 16px;
+  ::ng-deep{
+    span{
+      &:first-child{
+        position: absolute!important;
+        bottom: 30px!important;
       }
     }
+  }
+}
+
+.BrandNamesmall{
+  font-size: 25px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  position: relative;
+  color:$text-color;
+  margin-top: 45px;
+  margin-left: 16px;
+  ::ng-deep{
+    span{
+      &:first-child{
+        position: absolute!important;
+        bottom: 20px!important;
+      }
+    }
+  }
+}
+
+  .ItemIdsmall{
+    font-size: 20px;
+    font-weight: bold;
+    font-family: $font-family-sans-serif;
+    color:$text-color;
+    bottom: 16px;
+    left: 16px;
   }
 
   .GenericName{
@@ -58,16 +85,10 @@
     flex-direction: row;
     justify-content: center;
     ::ng-deep{
-      div{
-        &:last-child{
-          margin-top: -25px!important;
-        }
-      }
-    }
-    ::ng-deep{
-      img{
+      span{
         &:first-child{
-          width: 50px!important;
+          position: absolute!important;
+          top: 230px!important;
         }
       }
     }
@@ -93,7 +114,7 @@
   .panelContainer1 {
     display: flex;
     flex-direction: row;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .panelContainer {
@@ -399,4 +420,15 @@
 .barcode{
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.GenericNameSmall{
+  font-size: 25px;
+  font-family: $font-family-sans-serif;
+  position:relative;
+  font-weight: normal;
+  color:$text-color;
+  margin-top: 6px;
+  margin-bottom: 8px!important;
+  margin-left: 16px;
 }

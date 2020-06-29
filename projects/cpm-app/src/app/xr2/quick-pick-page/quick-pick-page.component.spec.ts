@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, PersistService, NavComponent, SharedModule, ComponentTypes } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PersistService, NavComponent, SharedModule, PopupDialogService } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -8,8 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from '../../core/core.module';
 import { Component, Input, inject, ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
@@ -22,6 +21,8 @@ import { QuickPickDrawerViewComponent } from '../quick-pick-drawer-view/quick-pi
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
+import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
+import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 
 @Component({
   selector: 'oc-search-box',
@@ -31,6 +32,57 @@ class MockSearchBox {
   searchOutput$: Observable<string> = of();
   @Input()placeHolderText: string;
 }
+
+describe('QuickPickPageComponent', () => {
+  let component: QuickPickPageComponent;
+  let fixture: ComponentFixture<QuickPickPageComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
+        MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
+      imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
+        FooterModule, LayoutModule, CoreModule, SharedModule],
+      providers: [
+        { provide: Xr2QuickPickQueueService, useValue: { get: () => of([]) }},
+        { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) }},
+        { provide: WindowService, useValue: []},
+        { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) }},
+        { provide: Location, useValue: { go: () => {}} },
+        { provide: PopupDialogService, useValue: { get: () => of([]) }},
+        { provide: TranslateService, useValue: [] },
+      ]
+    }).overrideComponent(QuickPickQueueViewComponent, {
+      set: {
+        template: ''
+      }
+    }).overrideComponent(QuickPickDrawerViewComponent, {
+      set: {
+        template: ''
+      }
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(QuickPickPageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should set robotSelectionDisabled properly', () => {
+    expect(component).toBeTruthy();
+    component.onQuickPickActive(true);
+    expect(component.robotSelectionDisabled).toBeTruthy();
+
+    component.onQuickPickActive(false);
+    expect(component.robotSelectionDisabled).toBeFalsy();
+  });
+});
 
 describe('QuickPickPageComponent', () => {
   let component: QuickPickPageComponent;
@@ -77,15 +129,15 @@ describe('QuickPickPageComponent', () => {
         FooterModule, LayoutModule, CoreModule, SharedModule],
       providers: [
         { provide: Xr2QuickPickQueueService, useValue: { get: () => of([]) }},
-        { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) }},
+        { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of(selectableDeviceInfoList) }},,
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
-        { provide: TranslateService, useValue: { get: () => of([]) } },
-        { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: WindowService, useValue: []},
         { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) }},
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
+        { provide: PopupDialogService, useValue: [] },
+        { provide: TranslateService, useValue: { get: () => of('')} },
       ]
     }).overrideComponent(QuickPickQueueViewComponent, {
       set: {

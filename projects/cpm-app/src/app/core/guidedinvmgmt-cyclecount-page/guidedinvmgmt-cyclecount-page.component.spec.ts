@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { GuidedInvMgmtCycleCountPageComponent } from './guidedinvmgmt-cyclecount-page.component';
 import { GuidedCycleCount } from '../model/guided-cycle-count';
 import { of, Subject } from 'rxjs';
-import { NumericComponent, DatepickerComponent, PopupDialogService } from '@omnicell/webcorecomponents';
+import { NumericComponent, DatepickerComponent, PopupDialogService, ToastService } from '@omnicell/webcorecomponents';
 import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DeviceLocationTypeId } from '../../shared/constants/device-location-type-id';
@@ -20,7 +20,7 @@ import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-ver
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
-
+import { BarcodeScanService } from 'oal-core';
 describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let component: GuidedInvMgmtCycleCountPageComponent;
   let fixture: ComponentFixture<GuidedInvMgmtCycleCountPageComponent>;
@@ -28,7 +28,8 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   let hardwareLeaseService: Partial<HardwareLeaseService>;
   let systemConfigurationService: Partial<SystemConfigurationService>;
   let printPopupDialogService: Partial<PopupDialogService>;
-
+  let toasterService:Partial<ToastService>;
+  let barcodeScanService:Partial<BarcodeScanService>;
   const leaseVerificationResult: LeaseVerificationResult = 1;
   const deviceConfiguration: IDeviceConfiguration = {
     DefaultOwner: 'WRKS1',
@@ -93,13 +94,19 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     });
 
     printPopupDialogService = { showOnce: jasmine.createSpy('showOnce') };
-
+    toasterService = { info: jasmine.createSpy('info') };
     const coreEventConnectionService = {
       carouselReadySubject: new Subject(),
       carouselFaultedSubject: new Subject(),
     };
     carouselLocationAccessService = { 
       clearLightbar: jasmine.createSpy('clearLightbar').and.returnValue(of({}))
+    };
+
+    barcodeScanService = { 
+      reset: jasmine.createSpy('reset').and.returnValue(of({})),
+      handleKeyInput: jasmine.createSpy('handleKeyInput').and.returnValue(of({})),
+      isScannerInput: jasmine.createSpy('isScannerInput').and.returnValue(of({})),
     };
     hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult),
       getDeviceConfiguration: () => of(deviceConfiguration),
@@ -125,7 +132,9 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         { provide: PopupDialogService, useValue: printPopupDialogService },
         { provide: TranslateService, useValue: { get: (x: string) => of(`{x}_TRANSLATED`) } },
         { provide: HardwareLeaseService, useValue: hardwareLeaseService },
-        { provide: SystemConfigurationService, useValue: systemConfigurationService }
+        { provide: SystemConfigurationService, useValue: systemConfigurationService },
+        { provide: ToastService, useValue: toasterService },
+        { provide: BarcodeScanService, useValue: barcodeScanService }
       ]
     });
     fixture = TestBed.createComponent(GuidedInvMgmtCycleCountPageComponent);
@@ -386,6 +395,32 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('next record with 0 records validation',()=>{
     it('returns the true if zero records',() => {
       component.itemCount = 0 ;
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
+        DeviceLocationId: 86,  
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units:"EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2020",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 55,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity:"Day",
+        QuantityMin:10,
+        InStockQuantity:10,
+        DosageForm:"EA",
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan:'I'
+      });
       component.nextRecord();
       var bReturn = component.isLastItem;
       expect(true).toBe(bReturn);
