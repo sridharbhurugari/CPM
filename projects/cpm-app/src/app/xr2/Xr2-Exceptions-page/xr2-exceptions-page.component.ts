@@ -111,7 +111,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     // check if the character is a barcode scan
     if (isScannerInput) {
       //Since the first character always returns true, ignore it.
-      if (this._barcodeScanService.BarcodeInputCharacters.length != 1) {
+      if (this._barcodeScanService.BarcodeInputCharacters && this._barcodeScanService.BarcodeInputCharacters.length != 1) {
         //ignore if it is a barcodescan
         event.preventDefault();
       }
@@ -157,7 +157,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private unhookEventHandlers(): void {
+  unhookEventHandlers(): void {
     if (this.isInvalid(this._barcodeScanService)) {
       return;
     }
@@ -165,20 +165,20 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
   }
 
-  private unsubscribeIfValidSubscription(subscription: Subscription): void {
+  unsubscribeIfValidSubscription(subscription: Subscription): void {
     if (this.isValid(subscription)) {
       subscription.unsubscribe();
     }
   }
 
-  private isValid(variable: any): boolean {
+  isValid(variable: any): boolean {
     return variable !== undefined && variable !== null;
   }
 
-  private isInvalid(variable: any): boolean {
+  isInvalid(variable: any): boolean {
     return !this.isValid(variable);
   }
-  private processScannedBarcode(scannedBarcode: string): void {
+  processScannedBarcode(scannedBarcode: string): void {
     this._barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
     this.showthedetailspageordialog();
