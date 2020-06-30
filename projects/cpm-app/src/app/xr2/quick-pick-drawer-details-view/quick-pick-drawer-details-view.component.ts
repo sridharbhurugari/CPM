@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
 import { TranslateService } from '@ngx-translate/core';
+import { CpColorService } from '../../shared/services/cp-color.service';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -26,7 +27,7 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
     return this._detailedDrawerData;
   }
 
-  constructor(private translateService: TranslateService) { }
+  constructor(private translateService: TranslateService, private colorService: CpColorService) { }
 
   ngOnInit() {
   }
@@ -45,9 +46,7 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
     if (this.detailedDrawerData.Status !== this.controlDataStatus.Empty) {
       headerStyle = {
         'background-color': this.detailedDrawerData.ColorCode,
-        'color': 'white',  // TODO this needs to be based on the background...
-        // White text on white, yellow or other light priority will not be good.
-        // CPM has a determiner for this, we probably need to match that in Angular
+        'color': this.colorService.pickTextColorBasedOnBackgroundColor(this.detailedDrawerData.ColorCode, 'white', 'black'),
       };
     }
 
