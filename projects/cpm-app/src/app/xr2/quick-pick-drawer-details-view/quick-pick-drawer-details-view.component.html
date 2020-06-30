@@ -50,8 +50,16 @@
         <div class="footer">
           <div class="footer-content">
             <div class="action-buttons">
-              <oc-button-action [buttonText]="'BACK' | translate" (click)="onBackClick()"></oc-button-action>
-              <oc-button-action mode="secondary" [buttonIcon]="'print'" [buttonText]="'PRINT' | translate" (click)="onPrintClick()">
+              <oc-button-action
+                [buttonText]="'BACK' | translate"
+                [disabled]="detailedDrawerData.Status > controlDataStatus.OrderReady"
+                (click)="onBackClick()">
+              </oc-button-action>
+              <oc-button-action
+                mode="secondary"
+                [buttonIcon]="'print'"
+                [buttonText]="'PRINT' | translate"
+                (click)="onPrintClick()">
               </oc-button-action>
             </div>
           </div>

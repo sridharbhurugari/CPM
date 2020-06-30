@@ -53,6 +53,10 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.configureEventHandlers();
   }
 
+  ngOnChanges() {
+    this.loadDetailedDrawer();
+  }
+
   onShowQuickPickDrawerDetails(drawerIndex: number) {
     this.detailedDrawer = this._quickpickDrawers[drawerIndex];
     this.printDrawerLabel();
@@ -91,6 +95,14 @@ export class QuickPickDrawerViewComponent implements OnInit {
         }
       }
     }
+  }
+
+  private loadDetailedDrawer() {
+    const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
+      return drawerToDisplay.Status > 1;
+    });
+      this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
+      this.quickPickActive.emit(true);
   }
 
   private configureEventHandlers(): void {
