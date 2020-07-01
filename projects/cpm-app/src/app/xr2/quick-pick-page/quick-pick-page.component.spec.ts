@@ -153,10 +153,12 @@ describe('QuickPickPageComponent', () => {
       fakeAsync((component) => {
         const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
         const loadPicklistsQueueItemsSpy = spyOn(component, 'loadPicklistsQueueItems').and.callThrough();
+        const loadDrawersDataSpy = spyOn(component, 'loadDrawersData').and.callThrough();
         const quickPickQueueServiceSpy = spyOn(component, 'quickPickQueueService').and.callThrough();
         component.ngOnInit();
         tick();
         expect(loadPicklistsQueueItemsSpy).toHaveBeenCalled();
+        expect(loadDrawersDataSpy).toHaveBeenCalled();
         expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(0);
         expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
         expect(component.selectedDeviceId).toBeUndefined();
