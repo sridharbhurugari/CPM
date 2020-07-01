@@ -8,8 +8,8 @@
             {{ "FILLED" | translate }} ({{ drawerData.TotalFillQty }}) /
             {{ "REQ" | translate }} ({{ drawerData.TotalRequestQty }})
           </div>
+          <div class="data-spacer"></div>
         </div>
-        <div class="index"></div>
       </div>
     </div>
     <div class="body">
@@ -19,7 +19,9 @@
           *ngFor="let medication of drawerData.MedsWithCounts"
           [ngStyle]="getItemStyle(medication)">
           <div class="label">
-            {{ medication.MedicationName }}
+            <div class=text-label>
+              {{ medication.MedicationName }}
+            </div>
           </div>
           <div class="data">
             {{ medication.FilledMedicationCount }} / {{ medication.RequestedMedicationCount }}
