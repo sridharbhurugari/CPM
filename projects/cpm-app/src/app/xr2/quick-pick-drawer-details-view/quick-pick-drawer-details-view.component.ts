@@ -46,7 +46,8 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
     if (this.detailedDrawerData.Status !== this.controlDataStatus.Empty) {
       headerStyle = {
         'background-color': this.detailedDrawerData.ColorCode,
-        'color': this.colorService.pickTextColorBasedOnBackgroundColor(this.detailedDrawerData.ColorCode, 'white', 'black'),
+        'color': this.detailedDrawerData.ColorCode ?
+        this.colorService.pickTextColorBasedOnBackgroundColor(this.detailedDrawerData.ColorCode, '#FFFFFF', '#000000') : 'black'
       };
     }
 

@@ -100,6 +100,7 @@ export class QuickPickPageComponent implements OnInit {
     if (this.selectedDeviceId !== $event.value) {
       this.searchElement.clearSearch(null);
       this.selectedDeviceId = $event.value;
+      this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
   }

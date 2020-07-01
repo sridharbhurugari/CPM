@@ -42,7 +42,8 @@ export class DashboardCardComponent implements OnInit {
     if (this.drawerData.Status !== QuickPickControlDataStatus.Empty) {
       headerStyle = {
         'background-color': this.drawerData.ColorCode,
-        'color': this.colorService.pickTextColorBasedOnBackgroundColor(this.drawerData.ColorCode, 'white', 'black'),
+        'color': this.drawerData.ColorCode ?
+        this.colorService.pickTextColorBasedOnBackgroundColor(this.drawerData.ColorCode, '#FFFFFF', '#000000') : 'black'
       };
     }
 
