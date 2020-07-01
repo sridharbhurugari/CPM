@@ -20,7 +20,7 @@ export class IQuickPickRobotDispenseBoxItem {
   Exception: boolean;
   BoxNumber: number;
   BoxCount: number;
-  ItemName: string;
+  FormattedGenericName: string;
   RequestQuantity: number;
   FillQuantity: number;
 }
