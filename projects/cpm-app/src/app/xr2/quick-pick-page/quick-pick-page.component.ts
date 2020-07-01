@@ -55,7 +55,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(() => this.loadPicklistsQueueItems());
+    this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(
@@ -69,6 +69,14 @@ export class QuickPickPageComponent implements OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+  }
+
+  private onQuickPickQueueUpdate(event) {
+    if (event.DeviceId !== this.selectedDeviceId) {
+      return;
+    }
+
+    this.loadPicklistsQueueItems();
   }
 
   async getActiveXr2Devices() {
