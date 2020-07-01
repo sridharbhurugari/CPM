@@ -86,6 +86,11 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
+    if(quickPickDrawerUpdateMessage.DeviceId !== this._selectedDeviceId)
+    {
+      return;
+    }
+
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
     quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
     let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
