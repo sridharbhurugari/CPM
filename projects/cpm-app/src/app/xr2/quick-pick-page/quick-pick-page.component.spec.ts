@@ -63,7 +63,8 @@ describe('QuickPickPageComponent', () => {
 
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
-    QuickPickReloadDrawersSubject: new Subject()
+    QuickPickReloadDrawersSubject: new Subject(),
+    QuickPickQueueUpdateSubject: new Subject()
   };
 
   quickPickDrawerService = {
