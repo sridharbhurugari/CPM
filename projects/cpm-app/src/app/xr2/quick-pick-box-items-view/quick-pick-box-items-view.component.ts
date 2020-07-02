@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QuickPickDispenseBox } from '../model/quick-pick-dispense-box';
-import { IQuickPickPicklistItem } from '../../api-xr2/data-contracts/i-quick-pick-picklist-item';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
 @Component({
   selector: 'app-quick-pick-box-items-view',
@@ -9,15 +8,15 @@ import { IQuickPickPicklistItem } from '../../api-xr2/data-contracts/i-quick-pic
 })
 export class QuickPickBoxItemsView implements OnInit {
 
-  _dispenseBox: QuickPickDispenseBox;
+  _drawerData: QuickPickDrawerData;
 
   @Input()
-  set dispenseBox(value: QuickPickDispenseBox) {
-    this._dispenseBox = value;
+  set drawerData(value: QuickPickDrawerData) {
+    this._drawerData = value;
   }
 
-  get dispenseBox(): QuickPickDispenseBox {
-    return this._dispenseBox;
+  get drawerData(): QuickPickDrawerData {
+    return this._drawerData;
   }
 
   constructor() {
@@ -26,8 +25,8 @@ export class QuickPickBoxItemsView implements OnInit {
   ngOnInit() {
   }
 
-  getItemStyle(picklistItem: IQuickPickPicklistItem) {
-    return picklistItem.ReqQty !== picklistItem.FilledQty
+  getItemStyle(medication: any) {
+    return medication.FilledMedicationCount !== medication.RequestedMedicationCount
     ? { background: 'yellow' } : null;
   }
 

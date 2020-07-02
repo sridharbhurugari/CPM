@@ -13,6 +13,7 @@
   border-color: grey;
   border-radius: 5px;
   font-family: sans-serif;
+  overflow: hidden;
 
   .card-content {
     height: 100%;
@@ -35,8 +36,6 @@
         border-bottom: solid;
         border-color: grey;
         border-width: 2px;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
 
         .details {
           display: flex;

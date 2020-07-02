@@ -2,43 +2,49 @@
   <div class="header">
     <div class="header-content" [ngStyle]="getHeaderStyle()">
       <div class="description">
-        {{ drawer.Id }}
+        {{ drawerData.Id }}
       </div>
       <div class="title">
         <div class="title-content">
-          <div *ngIf="drawer.QuickPickDispenseBox">
-            {{ drawer.QuickPickDispenseBox.PriorityCodeDescription }}
+          <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+            {{ drawerData.PriorityDescription }}
           </div>
         </div>
       </div>
       <div class="index">
-        <div *ngIf="drawer.QuickPickDispenseBox">
-          {{ drawer.BoxNumber }} / {{ drawer.BoxCount }}
+        <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+          {{ drawerData.BoxNumber }} / {{ drawerData.BoxCount }}
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="drawer.QuickPickDispenseBox" class="active">
+  <div *ngIf="drawerData.Status!==controlDataStatus.Empty" class="active">
     <div class="body">
       <div class="body-content">
         <div class="grid-container">
           <div class="grid-label">{{'DESTINATION' | translate}}:</div>
           <div class="grid-data">
-            {{ drawer.QuickPickDispenseBox.DestinationLine1 }}
-            <br />
-            {{ drawer.QuickPickDispenseBox.DestinationLine2 }}
+            <div *ngIf="drawerData.PatientName && drawerData.Area">
+              {{ drawerData.PatientName }}
+              <br>
+              {{ drawerData.Area }}
+            </div>
+            <div *ngIf="!drawerData.PatientName || !drawerData.Area">
+              {{ drawerData.PatientName }}
+              {{ drawerData.Area }}
+            </div>
           </div>
           <div class="grid-label">{{'ID' | translate}}:</div>
           <div class="grid-data">
-            {{ drawer.QuickPickDispenseBox.OrderId }}
+            {{ drawerData.DestinationId }}
           </div>
           <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
           <div class="grid-data">
-            {{ drawer.QuickPickDispenseBox.FilledQty }}
+            {{ drawerData.TotalFillQty }}
           </div>
           <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
           <div class="grid-data">
-            {{ drawer.QuickPickDispenseBox.ItemsFilled }}
+            {{ drawerData.LineItems }}
           </div>
         </div>
       </div>
@@ -48,7 +54,7 @@
     </div>
     <div class="footer"></div>
   </div>
-  <div *ngIf="!drawer.QuickPickDispenseBox" class="inactive">
+  <div *ngIf="drawerData.Status===controlDataStatus.Empty" class="inactive">
     <div class="empty-content">{{'EMPTY' | translate}}</div>
   </div>
 </div>

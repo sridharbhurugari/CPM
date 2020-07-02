@@ -1,6 +1,14 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import * as _ from 'lodash';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 
-import { QuickPickDrawer } from './../model/quick-pick-drawer';
+import { QuickPickPrintRequest } from '../model/quick-pick-print-request';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
+import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
+import { TranslateService } from '@ngx-translate/core';
+
+
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -11,22 +19,38 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  _quickpickDrawers: QuickPickDrawer[];
-  detailedDrawer: QuickPickDrawer;
+  private _selectedDeviceId: string;
+  private _quickpickDrawers: QuickPickDrawerData[];
+  detailedDrawer: QuickPickDrawerData;
 
-  get quickpickDrawers(): QuickPickDrawer[] {
+  @Input()
+  set quickpickDrawers(value: QuickPickDrawerData[]) {
+    this._quickpickDrawers = value;
+  }
+
+  get quickpickDrawers(): QuickPickDrawerData[] {
     return this._quickpickDrawers;
   }
 
   @Input()
-  set quickpickDrawers(value: QuickPickDrawer[]) {
-    this._quickpickDrawers = value;
+  set selectedDeviceId(value: string) {
+    this._selectedDeviceId = value;
   }
 
-  constructor() {
+  get selectedDeviceId(): string {
+    return this._selectedDeviceId;
+  }
+
+  constructor(
+    private quickPickEventConnectionService: QuickPickEventConnectionService,
+    private quickPickDrawerService: Xr2QuickPickDrawerService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService
+  ) {
   }
 
   ngOnInit() {
+    this.configureEventHandlers();
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
@@ -41,8 +65,54 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   printDrawerLabel() {
-    // PRINT THE DRAWER LABELS for this.detailedDrawer
-    console.log('Print clicked for drawer: ' + this.detailedDrawer.Id.toString());
+    const printRequest = new QuickPickPrintRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
+      () => {
+      }, error => {
+        this.displayFailedToSaveDialog();
+      });
+  }
+
+  private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
+    const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
+    quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
+    let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
+      return x.Id === quickPickDrawerData.Id;
+    });
+
+    this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
+
+    if (this.detailedDrawer !== undefined) {
+      this.detailedDrawer = quickPickDrawerData;
+      if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
+        if (quickPickDrawerData.Status < 2) {
+          this.detailedDrawer = undefined;
+          this.quickPickActive.emit(false);
+        }
+      }
+    }
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.quickPickEventConnectionService) {
+      return;
+    }
+
+    this.quickPickEventConnectionService.QuickPickDrawerUpdateSubject
+      .subscribe(message => this.onUpdateQuickPickDrawer(message));
+  }
+
+  /* istanbul ignore next */
+  private displayFailedToSaveDialog(): void {
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
   }
 
 }

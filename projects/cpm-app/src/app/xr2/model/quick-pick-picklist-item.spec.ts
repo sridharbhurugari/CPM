@@ -1,7 +1,7 @@
-import { QuickPickPicklistItem } from './quick-pick-picklist-item';
+import { MedsWithCount } from './meds-with-count';
 
-describe('QuickPickPicklistItem', () => {
+describe('MedsWithCount', () => {
   it('should create an instance', () => {
-    expect(new QuickPickPicklistItem(null)).toBeTruthy();
+    expect(new MedsWithCount(null)).toBeTruthy();
   });
 });

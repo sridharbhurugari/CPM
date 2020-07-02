@@ -6,7 +6,7 @@ import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { CoreModule } from '../../core/core.module';
-import { QuickPickDrawer } from '../model/quick-pick-drawer';
+import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
 describe('DashboardCardComponent', () => {
   let component: DashboardCardComponent;
@@ -24,7 +24,7 @@ describe('DashboardCardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardCardComponent);
     component = fixture.componentInstance;
-    component.drawer = new QuickPickDrawer(null);
+    component.drawerData = new QuickPickDrawerData(null);
     fixture.detectChanges();
   });
 
