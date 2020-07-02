@@ -72,7 +72,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== this.selectedDeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
       return;
     }
 
@@ -80,7 +80,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   async getActiveXr2Devices() {
-    var results = await this.quickPickDeviceService.get().toPromise();
+    const results = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
