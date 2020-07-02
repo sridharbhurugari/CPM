@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { Observable, of } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
@@ -11,7 +11,6 @@ import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-event-connection.service';
-import { result } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 
