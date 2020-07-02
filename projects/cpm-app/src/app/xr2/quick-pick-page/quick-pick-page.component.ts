@@ -134,8 +134,7 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.quickPickQueueService.get(this.selectedDeviceId).subscribe(items => {
-      const incomingQuickPickQueueItems = items as QuickPickQueueItem[];
-      this.quickPickQueueItems = of(incomingQuickPickQueueItems);
+      this.quickPickQueueItems = of(items);
     });
   }
 
@@ -144,10 +143,9 @@ export class QuickPickPageComponent implements OnInit {
       return;
     }
 
-    this.quickpickDrawers = this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).pipe(map(x => {
-      const data = x.map(drawerData => new QuickPickDrawerData(drawerData));
-      return data;
-    }), shareReplay(1));
+    this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).subscribe(data => {
+      this.quickpickDrawers = of(data);
+    });
   }
 
   /* istanbul ignore next */
