@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
@@ -26,6 +26,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
     this._quickpickDrawers = value;
+    this.loadDetailedDrawerIfAvailable();
   }
 
   get quickpickDrawers(): QuickPickDrawerData[] {
@@ -45,7 +46,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
     private translateService: TranslateService,
-    private dialogService: PopupDialogService
+    private dialogService: PopupDialogService,
   ) {
   }
 
@@ -107,6 +108,20 @@ export class QuickPickDrawerViewComponent implements OnInit {
           this.quickPickActive.emit(false);
         }
       }
+    }
+  }
+
+  private loadDetailedDrawerIfAvailable() {
+    if (!this._quickpickDrawers) {
+      return;
+    }
+
+    const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
+      return drawerToDisplay.Status > 1;
+    });
+    if (matchingDrawerIndex !== -1) {
+      this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
+      this.quickPickActive.emit(true);
     }
   }
 

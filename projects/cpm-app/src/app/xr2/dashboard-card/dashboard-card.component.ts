@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
-import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status'
+import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
+import { CpColorService } from '../../shared/services/cp-color.service';
 
 @Component({
   selector: 'app-dashboard-card',
@@ -26,7 +27,7 @@ export class DashboardCardComponent implements OnInit {
 
   @Output() showQuickPickDrawerDetails: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor() { }
+  constructor(private colorService: CpColorService) { }
 
   ngOnInit() {
   }
@@ -41,7 +42,8 @@ export class DashboardCardComponent implements OnInit {
     if (this.drawerData.Status !== QuickPickControlDataStatus.Empty) {
       headerStyle = {
         'background-color': this.drawerData.ColorCode,
-        'color': 'white',
+        'color': this.drawerData.ColorCode ?
+        this.colorService.pickTextColorBasedOnBackgroundColor(this.drawerData.ColorCode, '#FFFFFF', '#000000') : 'black'
       };
     }
 
