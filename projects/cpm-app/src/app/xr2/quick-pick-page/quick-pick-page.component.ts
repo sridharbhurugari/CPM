@@ -53,6 +53,7 @@ export class QuickPickPageComponent implements OnInit {
       this.getActiveXr2Devices();
   }
 
+  /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
 

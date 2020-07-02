@@ -86,6 +86,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
       });
   }
 
+  /* istanbul ignore next */
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
     if (quickPickDrawerUpdateMessage.DeviceId !== undefined
         && quickPickDrawerUpdateMessage.DeviceId.toString() !== this.selectedDeviceId) {

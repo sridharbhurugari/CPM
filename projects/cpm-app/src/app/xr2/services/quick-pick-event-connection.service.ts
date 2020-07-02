@@ -10,7 +10,7 @@ export class QuickPickEventConnectionService {
 
   public QuickPickReloadDrawersSubject = new Subject<QuickPickDrawerData>();
   public QuickPickDrawerUpdateSubject = new Subject<QuickPickDrawerData>();
-  public QuickPickQueueUpdateSubject = new Subject<QuickPickDrawerData>();
+  public QuickPickQueueUpdateSubject = new Subject<any>();
 
   constructor(
       private eventConnectionService: EventConnectionService
