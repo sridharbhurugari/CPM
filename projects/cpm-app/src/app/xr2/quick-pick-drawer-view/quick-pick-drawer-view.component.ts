@@ -101,8 +101,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
 
     if (this.detailedDrawer !== undefined) {
-      this.detailedDrawer = quickPickDrawerData;
       if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
+        this.detailedDrawer = quickPickDrawerData;
         if (quickPickDrawerData.Status < 2) {
           this.detailedDrawer = undefined;
           this.quickPickActive.emit(false);
