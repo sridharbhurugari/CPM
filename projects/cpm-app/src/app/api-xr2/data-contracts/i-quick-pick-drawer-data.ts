@@ -27,6 +27,7 @@ export interface IQuickPickDrawerData {
   IsPartOfMultipleBoxOrder: boolean;
   DestinationHasOrdersAtOtherProcess: boolean;
   BoxCount: number;
+  BoxNumber: number;
   TotalRequestQty: number;
   TotalFillQty: number;
 }

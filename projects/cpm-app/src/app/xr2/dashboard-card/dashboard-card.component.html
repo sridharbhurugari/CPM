@@ -24,9 +24,15 @@
         <div class="grid-container">
           <div class="grid-label">{{'DESTINATION' | translate}}:</div>
           <div class="grid-data">
-            {{ drawerData.PatientName }}
-            <br />
-            {{ drawerData.Area }}
+            <div *ngIf="drawerData.PatientName && drawerData.Area">
+              {{ drawerData.PatientName }}
+              <br>
+              {{ drawerData.Area }}
+            </div>
+            <div *ngIf="!drawerData.PatientName || !drawerData.Area">
+              {{ drawerData.PatientName }}
+              {{ drawerData.Area }}
+            </div>
           </div>
           <div class="grid-label">{{'ID' | translate}}:</div>
           <div class="grid-data">
