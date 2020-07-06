@@ -81,7 +81,6 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     }));
 
     this.priorityCodeRouteAssignmentsService.DeviceManagement().subscribe(res => {
-      console.log(res);
       this.isDeviceManagement = res;
     });
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');

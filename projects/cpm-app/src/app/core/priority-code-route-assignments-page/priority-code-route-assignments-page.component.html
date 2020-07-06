@@ -34,7 +34,7 @@
             <div class="ocrightalign">
                 <oc-button-action [routerLink]="['/pickRoutes', routerLinkPickRouteId]" [buttonText]="'MAINTENANCE' | translate"
                     [disabled]="saveInProgress || !isEditAvailable || !ocsIsHealthy || !isDeviceManagement" ></oc-button-action>
-                <oc-button-action [buttonIcon]="saveInProgress ? 'spin' : 'clear'" [buttonText]="'SAVE' | translate" [disabled]="saveInProgress || !canSave || !ocsIsHealthy" (click)="save()"></oc-button-action>
+                <oc-button-action [buttonIcon]="saveInProgress ? 'spin' : 'clear'" [buttonText]="'SAVE' | translate" [disabled]="saveInProgress || !canSave || !ocsIsHealthy || !isDeviceManagement" (click)="save()"></oc-button-action>
             </div>
        </oc-footer>
     </ng-container>
