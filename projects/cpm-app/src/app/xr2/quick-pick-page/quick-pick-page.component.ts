@@ -13,6 +13,7 @@ import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-e
 import { result } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
+import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -45,7 +46,9 @@ export class QuickPickPageComponent implements OnInit {
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
     private translateService: TranslateService,
-    private dialogService: PopupDialogService) {  }
+    private dialogService: PopupDialogService,
+    private changeDetector: ChangeDetectorRef
+    ) { }
 
     ngOnInit() {
       this.getActiveXr2Devices();
@@ -64,6 +67,10 @@ export class QuickPickPageComponent implements OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   async getActiveXr2Devices() {
