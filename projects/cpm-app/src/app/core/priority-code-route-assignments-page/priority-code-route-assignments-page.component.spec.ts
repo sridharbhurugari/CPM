@@ -55,7 +55,10 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     let saveSucceededSpy = jasmine.createSpy('saveSucceeded').and.returnValue(of({}));
     let saveFailedSpy = jasmine.createSpy('saveFailed').and.returnValue(throwError(''));
     let serviceSave = saveSucceeded ? saveSucceededSpy : saveFailedSpy;
-    priorityCodeRouteAssignmentsService = { getRoutes: () => of(), save: serviceSave };
+    priorityCodeRouteAssignmentsService = { 
+      getRoutes: () => of(), save: serviceSave,
+      DeviceManagement: () => of()
+     };
 
     const popupResult: Partial<ConfirmPopupComponent> = { dismiss: popupDismissedSubject };
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
