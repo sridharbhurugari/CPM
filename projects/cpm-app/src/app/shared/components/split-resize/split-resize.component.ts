@@ -45,12 +45,12 @@ export class SplitResizeComponent implements AfterViewInit {
     this.sliderWidth = (this.slider.nativeElement.getBoundingClientRect() as ClientRect).width;
   }
 
-  @HostListener('mouseleave', ['$event'])
+  @HostListener('mouseleave')
   onMouseLeave(){
     this.sliding = false;
   }
 
-  @HostListener('mouseup', ['$event'])
+  @HostListener('mouseup')
   onMouseUp(){
     this.sliding = false;
   }
