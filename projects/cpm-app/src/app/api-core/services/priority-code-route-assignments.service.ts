@@ -35,7 +35,7 @@ export class PriorityCodeRouteAssignmentsService {
         return this.httpClient.put(url, body, { headers });
       }
 
-      DeviceManagement() : Observable<boolean> {
+      getDeviceManagement() : Observable<boolean> {
         const url = this.ocapUrlBuilderService.buildUrl(`/api/priorityCodePickRoutes/deviceManagement`);
         return this.httpClient.get<boolean>(url ,{
           headers: this.ocapHttpHeadersService.getHeaders()

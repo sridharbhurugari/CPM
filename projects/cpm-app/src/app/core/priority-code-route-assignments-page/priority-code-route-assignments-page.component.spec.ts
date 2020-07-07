@@ -57,7 +57,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     let serviceSave = saveSucceeded ? saveSucceededSpy : saveFailedSpy;
     priorityCodeRouteAssignmentsService = { 
       getRoutes: () => of(), save: serviceSave,
-      DeviceManagement: () => of()
+      getDeviceManagement: () => of()
      };
 
     const popupResult: Partial<ConfirmPopupComponent> = { dismiss: popupDismissedSubject };
