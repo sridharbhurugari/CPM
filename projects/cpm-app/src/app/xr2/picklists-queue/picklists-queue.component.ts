@@ -205,6 +205,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       });
   }
 
+  /* istanbul ignore next */
   private displayFailedToSaveDialog(): void {
 
     const properties = new PopupDialogProperties('Role-Status-Warning');
