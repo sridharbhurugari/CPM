@@ -21,8 +21,7 @@ import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IGuidedCycleCountPrintLabel } from '../../api-core/data-contracts/i-guided-cycle-count-print-label';
 import { BarcodeScanService } from 'oal-core';
-import { ValidationBadgeModule } from '@omnicell/webcorecomponents';
-import { SystemMessageModule } from '@omnicell/webcorecomponents';
+
 
 @Component({
   selector: 'app-guidedinvmgmt-cyclecount-page',
@@ -32,7 +31,7 @@ import { SystemMessageModule } from '@omnicell/webcorecomponents';
 
 export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewChecked {
   private _leaseDeniedTitle$: Observable<string>;
-
+  private BarCodeNotFound:string = "Bar Code Not Found";
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
@@ -440,6 +439,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
+        else
+        {
+          this.toggleredborderfornonfirstitem(true);
+        }
     }
   }
 
@@ -511,7 +514,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       return true;
     }
     else {
-      this.DisableActionButtons(false);
       return false;
     }
   }
@@ -614,14 +616,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.barcodeScanService.reset();
     }
   }
-  // onBarcodeExcludedInputFocus(event) {
-  //   this.nonBarcodeInputFocus = true;
-  // }
-
-  // onBarcodeExcludedInputBlur(event) {
-  //   this.nonBarcodeInputFocus = false;
-  //   this.barcodeScanService.reset();
-  // }
 
   reset() {
     this.rawBarcodeMessage = '';
@@ -682,6 +676,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     var formatRet, overrideRet;
     if (this.displayCycleCountItem && this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
+      this.closePopup();
       if (!this.productBarCodeDisplay) {
         this.ScanValidation();
       }
@@ -696,7 +691,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     else {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem && this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
         formatRet = res;
-        if (formatRet === "") {
+        if (formatRet === this.BarCodeNotFound) {
           this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
             overrideRet = val;
             this.displayWrongBarCodeDialog(overrideRet);
@@ -705,6 +700,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         else {
           this.barcodeFormat = formatRet;
           this.productBarCodeDisplay = false;
+          this.closePopup();
           if (!this.binBarCodeDisplay) {
             this.ScanValidation();
           }
