@@ -204,4 +204,81 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       expect(result).toBe(pickRouteDevice);
     });
   });
+
+  describe('PickRouteUpdated',() => {
+    it('Check route Updated or not', () => {
+      const pickRouteId = 5;
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId: pickRouteId,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      component.pickRoute = pickRouteDevice;
+      component.routerLinkPickRouteId = pickRouteDevice.PickRouteId;
+      component.pickrouteUpdated(pickRouteDevice);
+      expect(component.canSave).toBeFalsy();
+    });
+  });
+
+  describe('PickRouteUpdated',() => {
+    it('Check route Updated or not', () => {
+      const pickRouteId = 10;
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId: pickRouteId,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      component._originalRoute = pickRouteDevice;
+      component.routerLinkPickRouteId = pickRouteDevice.PickRouteId;
+      component.pickrouteUpdated(pickRouteDevice);
+      expect(component.canSave).toBeFalsy();
+    });
+  });
+
+  describe('SetOcsStatus', () => {
+    it('define ocsIsHealthy', () => {
+      const isHealthy: boolean = true;
+      component.setOcsStatus(isHealthy);
+      expect(component.ocsIsHealthy).toBeTruthy();
+    });
+  });
+
+  describe('prdsToRadio', () => {
+    it('should return description map list', () => {
+      const description:string = "pickRoute";
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId:5,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      let pickRouteDevices: IPickRouteDevice[] = [
+        pickRouteDevice
+      ];
+      component.prdsToRadio(pickRouteDevices);
+      const listMap = new Map<IPickRouteDevice,string>();
+      pickRouteDevices.map(p => listMap.set(p, description))
+      expect(listMap).not.toBeNull;
+    });
+  });
+
+  describe('setDevices', () => {
+    it('should return the devices', () => {
+      const pickRouteId = 5;
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId: pickRouteId,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      let pickRouteDevices: IPickRouteDevice[] = [
+        pickRouteDevice
+      ];
+      component.setDevices(pickRouteDevice, pickRouteDevices);
+      expect(pickRouteDevices).not.toBeNull;
+    });
+  });
+
 });
