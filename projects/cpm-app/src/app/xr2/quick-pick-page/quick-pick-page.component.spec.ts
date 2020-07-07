@@ -175,22 +175,6 @@ describe('QuickPickPageComponent', () => {
       component.onQuickPickActive(false);
       expect(component.robotSelectionDisabled).toBeFalsy();
     });
-
-    it('should reload quick pick queue when QuickPickQueueUpdateSubject triggered for Current Device', () => {
-      expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
-      const message = { DeviceId: 1 };
-      quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(message);
-      expect(quickPickQueueService.get).toHaveBeenCalled();
-    });
-
-    it('should not reload quick pick queue when QuickPickQueueUpdateSubject triggered for non-Current Device', () => {
-      expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
-      const message = { DeviceId: 5 };
-      quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(message);
-      expect(quickPickQueueService.get).toHaveBeenCalled();
-    });
   });
 
   describe('Rerouting', () => {
