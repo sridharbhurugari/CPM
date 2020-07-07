@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RowReorderButtonsComponent } from './row-reorder-buttons.component';
 import { ButtonActionModule } from '@omnicell/webcorecomponents';
+import { FormsModule } from '@angular/forms';
 
 describe('RowReorderButtonsComponent', () => {
   let component: RowReorderButtonsComponent;
@@ -11,7 +12,7 @@ describe('RowReorderButtonsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ RowReorderButtonsComponent ],
       imports: [
-        ButtonActionModule,
+        ButtonActionModule, FormsModule
       ]
     })
     .compileComponents();

@@ -1,2 +1,3 @@
 <oc-button-action class="reorderBtnLeft" [buttonIcon]="'up'" mode="secondary" (click)="onUpClicked()" [disabled]="disabled || upDisabled"></oc-button-action>
-<oc-button-action [buttonIcon]="'down'" mode="secondary" (click)="onDownClicked()" [disabled]="disabled || downDisabled"></oc-button-action>
+<input type="number" *ngIf="allowEditIndex" class="indexInput" ocTextbox [(ngModel)]="indexDisplayEdit" (blur)="onIndexChanged()" (keydown.enter)="onIndexChanged()" (keydown.esc)="onIndexChanged()"/>
+<oc-button-action class="reorderBtnRight" [buttonIcon]="'down'" mode="secondary" (click)="onDownClicked()" [disabled]="disabled || downDisabled"></oc-button-action>

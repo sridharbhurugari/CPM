@@ -6,4 +6,5 @@ export interface IPickRouteDetail {
     PickRouteGuid: string;
     DeviceSequence: IDeviceSequenceOrder[];
     AssignedPriorities: string[];
+    IsDefault: boolean;
 }

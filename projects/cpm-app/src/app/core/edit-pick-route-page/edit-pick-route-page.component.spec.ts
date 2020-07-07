@@ -29,7 +29,8 @@ describe('EditPickRoutePageComponent', () => {
     Description: 'Express Fill',
     PickRouteGuid: 'B29D8EC2-5D73-EA11-B8BB-005056893399',
     DeviceSequence: [],
-    Id: 12
+    Id: 12,
+    IsDefault: false,
   };
   const devices: IDevice[] = [ ];
   let location: Partial<Location>;

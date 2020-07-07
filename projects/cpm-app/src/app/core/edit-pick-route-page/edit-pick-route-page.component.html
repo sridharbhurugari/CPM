@@ -4,17 +4,17 @@
     </ng-container>
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
-           <div *ngIf="!isDefaultRoute">
+           <div *ngIf="!(isDefaultRoute$ | async)">
               <app-header-title-bottom-margin-container [title]="'NAME' | translate" >
-                 <input ocTextbox [ngModel]="newRouteName" (ngModelChange)="onRouteNameChange($event)" />
+                 <input ocTextbox [ngModel]="(pickRoute$ | async)?.Description" (ngModelChange)="onRouteNameChange($event)" />
               </app-header-title-bottom-margin-container>
             </div>
-            <div *ngIf="isDefaultRoute">
-               <app-header-container [title]="'NAME' | translate" >{{newRouteName}}</app-header-container>
+            <div *ngIf="isDefaultRoute$ | async">
+               <app-header-container [title]="'NAME' | translate" >{{(pickRoute$ | async)?.Description}}</app-header-container>
             </div>
         </div>
-        <div class="panelContainer">
-            <div class="leftPanel">
+        <app-split-resize [includeHeaderSpacer]="true">
+            <ng-container side="left">
                 <oc-grid ocgridfilter="false">
                     <ng-container class="ocgridheader">
                         <div class="first" data-colwrap="true"></div>
@@ -27,12 +27,12 @@
                         </div>
                     </ng-container>
                 </oc-grid>
-            </div>
-            <div class="rightPanel">
+            </ng-container>
+            <ng-container side="right">
                 <app-edit-device-sequence [enabledDevices]="enabledDevices$ | async" [disabledDevices]="disabledDevices$ | async" (deviceSequenceChanged)="onDeviceSequenceChanged($event)">
                 </app-edit-device-sequence>
-            </div>
-        </div>
+            </ng-container>
+        </app-split-resize>
     </ng-container>
     <ng-container class="ocactionfooter">
         <oc-footer>
@@ -40,18 +40,18 @@
                 <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
             <div class="ocrightalign">
-                <oc-button-action *ngIf="!isDefaultRoute"
-                    [disabled]="!canDelete || isDefaultRoute || !ocsIsHealthy"
+                <oc-button-action *ngIf="!(isDefaultRoute$ | async)"
+                    [disabled]="!(canDelete$ | async) || (isDefaultRoute$ | async) || !ocsIsHealthy || requestStatus != 'none'"
                     [buttonText]="'DELETE' | translate"
                     (click)="delete()"></oc-button-action>
-                <oc-button-action *ngIf="!isDefaultRoute"
+                <oc-button-action *ngIf="!(isDefaultRoute$ | async)"
                     [buttonIcon]="requestStatus == 'save' ? 'spin' : 'clear'"
-                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy || requestStatus != 'none'"
                     [buttonText]="'SAVE' | translate"
                     (click)="save()"></oc-button-action>
                 <oc-button-action
                     [buttonIcon]="requestStatus == 'saveAs' ? 'spin' : 'clear'"
-                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy"
+                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy || requestStatus != 'none'"
                     [buttonText]="'SAVE_AS' | translate"
                     (click)="saveAs()"></oc-button-action>
             </div>
