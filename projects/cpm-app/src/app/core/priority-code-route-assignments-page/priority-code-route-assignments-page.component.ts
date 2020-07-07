@@ -49,8 +49,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   routerLinkPickRouteId: number;
-  isDeviceManagement: boolean = false;
-  isEditAvailable = true;
+  isEditAvailable:boolean = false;
   canSave = false;
   ocsIsHealthy = false;
 
@@ -80,8 +79,8 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       return this.setDevices(this.pickRoute, results[1]);
     }));
 
-    this.priorityCodeRouteAssignmentsService.getDeviceManagement().subscribe(res => {
-      this.isDeviceManagement = res;
+    this.priorityCodeRouteAssignmentsService.getUserPermissions().subscribe(res => {
+      this.isEditAvailable = res;
     });
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
