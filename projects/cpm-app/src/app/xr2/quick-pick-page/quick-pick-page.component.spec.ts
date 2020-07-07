@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, PersistService, NavComponent, SharedModule, ComponentTypes, PopupDialogProperties } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, SharedModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { QuickPickPageComponent } from './quick-pick-page.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from '../../core/core.module';
-import { Component, Input, inject, ComponentRef } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable, of, Subject, throwError } from 'rxjs';
@@ -63,7 +63,8 @@ describe('QuickPickPageComponent', () => {
 
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
-    QuickPickReloadDrawersSubject: new Subject()
+    QuickPickReloadDrawersSubject: new Subject(),
+    QuickPickQueueUpdateSubject: new Subject()
   };
 
   quickPickDrawerService = {
@@ -124,8 +125,8 @@ describe('QuickPickPageComponent', () => {
 
   it('should call quickPickDrawerService', () => {
     expect(component).toBeTruthy();
-    fakeAsync((component) => {
-      component.ngOnInit();
+    fakeAsync(() => {
+      this.component.ngOnInit();
       tick();
       expect(quickPickDrawerService.getAllDrawers).toHaveBeenCalledTimes(1);
     });
@@ -135,34 +136,34 @@ describe('QuickPickPageComponent', () => {
     it('Should default to device selection', () => {
       expect(component.getActiveXr2Devices).toBeTruthy();
 
-      fakeAsync((component) => {
-        const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
-        const quickPickQueueServiceSpy = spyOn(component, 'quickPickQueueService').and.callThrough();
-        component.ngOnInit();
+      fakeAsync(() => {
+        const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
+        const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
+        this.component.ngOnInit();
         tick();
         expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
         expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(1);
-        expect(component.selectedDeviceId).toEqual(selectableDeviceInfo1.DeviceId.toString());
-        expect(component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo1.DeviceId.toString());
+        expect(this.component.selectedDeviceId).toEqual(selectableDeviceInfo1.DeviceId.toString());
+        expect(this.component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo1.DeviceId.toString());
       });
     });
 
     it('Should not default to device selection when device is not leased to same client', () => {
       expect(component.getActiveXr2Devices()).toBeTruthy();
 
-      fakeAsync((component) => {
-        const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
-        const loadPicklistsQueueItemsSpy = spyOn(component, 'loadPicklistsQueueItems').and.callThrough();
-        const loadDrawersDataSpy = spyOn(component, 'loadDrawersData').and.callThrough();
-        const quickPickQueueServiceSpy = spyOn(component, 'quickPickQueueService').and.callThrough();
-        component.ngOnInit();
+      fakeAsync(() => {
+        const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
+        const loadPicklistsQueueItemsSpy = spyOn(this.component, 'loadPicklistsQueueItems').and.callThrough();
+        const loadDrawersDataSpy = spyOn(this.component, 'loadDrawersData').and.callThrough();
+        const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
+        this.ngOnInit();
         tick();
         expect(loadPicklistsQueueItemsSpy).toHaveBeenCalled();
         expect(loadDrawersDataSpy).toHaveBeenCalled();
         expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(0);
         expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
-        expect(component.selectedDeviceId).toBeUndefined();
-        expect(component.defaultDeviceDisplyItem).toBeUndefined();
+        expect(this.selectedDeviceId).toBeUndefined();
+        expect(this.defaultDeviceDisplyItem).toBeUndefined();
       });
     });
 
@@ -173,6 +174,22 @@ describe('QuickPickPageComponent', () => {
 
       component.onQuickPickActive(false);
       expect(component.robotSelectionDisabled).toBeFalsy();
+    });
+
+    it('should reload quick pick queue when QuickPickQueueUpdateSubject triggered for Current Device', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const message = { DeviceId: 1 };
+      quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(message);
+      expect(quickPickQueueService.get).toHaveBeenCalled();
+    });
+
+    it('should not reload quick pick queue when QuickPickQueueUpdateSubject triggered for non-Current Device', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const message = { DeviceId: 5 };
+      quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(message);
+      expect(quickPickQueueService.get).toHaveBeenCalled();
     });
   });
 

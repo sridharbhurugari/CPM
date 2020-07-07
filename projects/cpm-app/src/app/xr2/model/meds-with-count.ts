@@ -8,4 +8,5 @@ export class MedsWithCount implements IMedsWithCount {
   MedicationName: string;
   FilledMedicationCount: number;
   RequestedMedicationCount: number;
+  IsPartial: boolean;
 }

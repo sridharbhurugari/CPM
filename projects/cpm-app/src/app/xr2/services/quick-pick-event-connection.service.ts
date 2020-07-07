@@ -10,6 +10,7 @@ export class QuickPickEventConnectionService {
 
   public QuickPickReloadDrawersSubject = new Subject<QuickPickDrawerData>();
   public QuickPickDrawerUpdateSubject = new Subject<QuickPickDrawerData>();
+  public QuickPickQueueUpdateSubject = new Subject<any>();
 
   constructor(
       private eventConnectionService: EventConnectionService
@@ -36,6 +37,11 @@ export class QuickPickEventConnectionService {
     if (message.EventId === 'QuickPickDrawerUpdateEvent') {
       console.log(message);
       this.QuickPickDrawerUpdateSubject.next(message);
+      return;
+    }
+    if (message.EventId === 'QuickPickQueueUpdateEvent') {
+      console.log(message);
+      this.QuickPickQueueUpdateSubject.next(message);
       return;
     }
   }
