@@ -13,7 +13,6 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
-import { QuickPickPrintRequest } from '../model/quick-pick-print-request';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -30,7 +29,8 @@ describe('QuickPickDrawerViewComponent', () => {
     };
 
     quickPickDrawerService = {
-      printLabel: jasmine.createSpy('printLabel').and.returnValues(of(true), throwError({ status: 404 }))
+      printLabel: jasmine.createSpy('printLabel').and.returnValues(of(true), throwError({ status: 404 })),
+      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(of(true), throwError({ status: 404 }))
     };
 
     popupDialogService = {
@@ -107,6 +107,7 @@ describe('QuickPickDrawerViewComponent', () => {
       component.detailedDrawer = new QuickPickDrawerData(null);
       component.printDrawerLabel();
       expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
   });
 

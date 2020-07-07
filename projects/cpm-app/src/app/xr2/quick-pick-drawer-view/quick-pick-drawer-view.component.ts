@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 
-import { QuickPickPrintRequest } from '../model/quick-pick-print-request';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
+import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
 
 
 
@@ -26,6 +26,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
     this._quickpickDrawers = value;
+    this.loadDetailedDrawerIfAvailable();
   }
 
   get quickpickDrawers(): QuickPickDrawerData[] {
@@ -45,7 +46,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
     private translateService: TranslateService,
-    private dialogService: PopupDialogService
+    private dialogService: PopupDialogService,
   ) {
   }
 
@@ -65,15 +66,33 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   printDrawerLabel() {
-    const printRequest = new QuickPickPrintRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
+      () => {
+      }, error => {
+        this.displayFailedToSaveDialog();
+      });
+
+      // TODO:  THIS IS HERE UNTIL PRINT AND SCAN IS THE UNLOCK METHOD
+    this.unlockDrawer();
+  }
+
+  unlockDrawer() {
+    const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, printRequest).subscribe(
       () => {
       }, error => {
         this.displayFailedToSaveDialog();
       });
   }
 
+  /* istanbul ignore next */
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
+    if (quickPickDrawerUpdateMessage.DeviceId !== undefined
+        && quickPickDrawerUpdateMessage.DeviceId.toString() !== this.selectedDeviceId) {
+      return;
+    }
+
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
     quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
     let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
@@ -83,13 +102,27 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
 
     if (this.detailedDrawer !== undefined) {
-      this.detailedDrawer = quickPickDrawerData;
       if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
+        this.detailedDrawer = quickPickDrawerData;
         if (quickPickDrawerData.Status < 2) {
           this.detailedDrawer = undefined;
           this.quickPickActive.emit(false);
         }
       }
+    }
+  }
+
+  private loadDetailedDrawerIfAvailable() {
+    if (!this._quickpickDrawers) {
+      return;
+    }
+
+    const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
+      return drawerToDisplay.Status > 1;
+    });
+    if (matchingDrawerIndex !== -1) {
+      this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
+      this.quickPickActive.emit(true);
     }
   }
 

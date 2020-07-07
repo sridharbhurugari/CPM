@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import { MedsWithCount } from '../model/meds-with-count';
 
 @Component({
   selector: 'app-quick-pick-box-items-view',
@@ -25,9 +26,8 @@ export class QuickPickBoxItemsView implements OnInit {
   ngOnInit() {
   }
 
-  getItemStyle(medication: any) {
-    return medication.FilledMedicationCount !== medication.RequestedMedicationCount
-    ? { background: 'yellow' } : null;
+  getItemStyle(medication: MedsWithCount) {
+    return medication.IsPartial ? { background: 'yellow' } : null;
   }
 
 }

@@ -2,17 +2,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { Observable, of } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
-import { SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType, PopupDialogProperties } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
+  PopupDialogProperties } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-event-connection.service';
-import { result } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
+import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -45,13 +46,20 @@ export class QuickPickPageComponent implements OnInit {
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
     private translateService: TranslateService,
-    private dialogService: PopupDialogService) {  }
+    private changeDetector: ChangeDetectorRef,
+    private dialogService: PopupDialogService
+    ) {
+      this.quickPickQueueItems = of([]);
+    }
 
-    ngOnInit() {
+  ngOnInit() {
       this.getActiveXr2Devices();
   }
 
+  /* istanbul ignore next */
   ngAfterViewInit(): void {
+    this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
+
     this.searchElement.searchOutput$
       .pipe(
         switchMap((searchData: string) => {
@@ -66,8 +74,20 @@ export class QuickPickPageComponent implements OnInit {
       });
   }
 
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
+  }
+
+  private onQuickPickQueueUpdate(event) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+      return;
+    }
+
+    this.loadPicklistsQueueItems();
+  }
+
   async getActiveXr2Devices() {
-    var results = await this.quickPickDeviceService.get().toPromise();
+    const results = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
@@ -120,10 +140,9 @@ export class QuickPickPageComponent implements OnInit {
       return;
     }
 
-    this.quickPickQueueItems = this.quickPickQueueService.get(this.selectedDeviceId).pipe(map(x => {
-      const displayObjects = x.map(queueItem => new QuickPickQueueItem(queueItem));
-      return displayObjects;
-    }), shareReplay(1));
+    this.quickPickQueueService.get(this.selectedDeviceId).subscribe(items => {
+      this.quickPickQueueItems = of(items);
+    });
   }
 
   private loadDrawersData() {
@@ -131,10 +150,9 @@ export class QuickPickPageComponent implements OnInit {
       return;
     }
 
-    this.quickpickDrawers = this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).pipe(map(x => {
-      const data = x.map(drawerData => new QuickPickDrawerData(drawerData));
-      return data;
-    }), shareReplay(1));
+    this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).subscribe(data => {
+      this.quickpickDrawers = of(data);
+    });
   }
 
   /* istanbul ignore next */
