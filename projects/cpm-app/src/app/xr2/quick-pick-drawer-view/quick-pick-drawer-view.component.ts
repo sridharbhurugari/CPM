@@ -7,7 +7,9 @@ import { QuickPickEventConnectionService } from '../services/quick-pick-event-co
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
-
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
 
 
 @Component({
@@ -18,10 +20,11 @@ import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
 export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
-
+  queryParams: Params;
   private _selectedDeviceId: string;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
+  deviceLeaseOwner = false;
 
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
@@ -36,6 +39,19 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set selectedDeviceId(value: string) {
     this._selectedDeviceId = value;
+    if (value !== undefined) {
+      console.log('Selected DeviceID :' + this.selectedDeviceId);
+      this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+        leaseVerificationResults => {
+          console.log('Lease Verification Results : ' + leaseVerificationResults);
+          if (leaseVerificationResults === LeaseVerificationResult.Success) {
+            this.deviceLeaseOwner = true;
+          } else {
+            this.deviceLeaseOwner = false;
+          }
+          console.log('Current Lease Owner : ' + this.deviceLeaseOwner);
+        });
+    }
   }
 
   get selectedDeviceId(): string {
@@ -47,6 +63,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
     private quickPickDrawerService: Xr2QuickPickDrawerService,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
+    private hardwareLeaseService: HardwareLeaseService,
+    private router: Router
   ) {
   }
 
@@ -55,9 +73,17 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
-    this.detailedDrawer = this._quickpickDrawers[drawerIndex];
-    this.printDrawerLabel();
-    this.quickPickActive.emit(true);
+    if (this.deviceLeaseOwner === false) {
+      this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+      this.printDrawerLabel();
+      this.quickPickActive.emit(true);
+    } else {
+      const navigationExtras: NavigationExtras = {
+        queryParams: { deviceId: this.selectedDeviceId, routeToPath: 'quickPick' },
+        fragment: 'anchor'
+      };
+      this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+    }
   }
 
   onCloseQuickPickDrawerDetails(value?: any) {
@@ -66,15 +92,15 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   printDrawerLabel() {
-    const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
-      () => {
-      }, error => {
-        this.displayFailedToSaveDialog();
-      });
+      const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+      this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
+        () => {
+        }, error => {
+          this.displayFailedToSaveDialog();
+        });
 
-      // TODO:  THIS IS HERE UNTIL PRINT AND SCAN IS THE UNLOCK METHOD
-    this.unlockDrawer();
+        // TODO:  THIS IS HERE UNTIL PRINT AND SCAN IS THE UNLOCK METHOD
+      this.unlockDrawer();
   }
 
   unlockDrawer() {
