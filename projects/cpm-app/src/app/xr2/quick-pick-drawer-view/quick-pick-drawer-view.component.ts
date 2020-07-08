@@ -73,7 +73,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
-    if (this.deviceLeaseOwner === false) {
+    if (this.deviceLeaseOwner === true) {
       this.detailedDrawer = this._quickpickDrawers[drawerIndex];
       this.printDrawerLabel();
       this.quickPickActive.emit(true);
