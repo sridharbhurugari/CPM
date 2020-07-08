@@ -46,12 +46,12 @@
                     (click)="delete()"></oc-button-action>
                 <oc-button-action *ngIf="!(isDefaultRoute$ | async)"
                     [buttonIcon]="requestStatus == 'save' ? 'spin' : 'clear'"
-                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy || requestStatus != 'none'"
+                    [disabled]="(newDeviceSequence && newDeviceSequence.length == 0) || (!newDeviceSequence && !routeNameChanged) || !ocsIsHealthy || requestStatus != 'none'"
                     [buttonText]="'SAVE' | translate"
                     (click)="save()"></oc-button-action>
                 <oc-button-action
                     [buttonIcon]="requestStatus == 'saveAs' ? 'spin' : 'clear'"
-                    [disabled]="(!newDeviceSequence || newDeviceSequence.length == 0) && !routeNameChanged || !ocsIsHealthy || requestStatus != 'none'"
+                    [disabled]="(newDeviceSequence && newDeviceSequence.length == 0) || (!newDeviceSequence && !routeNameChanged) || !ocsIsHealthy || requestStatus != 'none'"
                     [buttonText]="'SAVE_AS' | translate"
                     (click)="saveAs()"></oc-button-action>
             </div>
