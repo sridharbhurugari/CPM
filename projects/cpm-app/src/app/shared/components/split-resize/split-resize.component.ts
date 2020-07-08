@@ -14,7 +14,14 @@ export class SplitResizeComponent implements AfterViewInit {
   sliderWidth: number;
 
   set sideLeftBasis(value: number){
-    if(value < this.minSideWidth || this._width - this.sliderWidth - value < this.minSideWidth){
+    if(value < this.minSideWidth)
+    {
+      this._sideLeftBasis = this.minSideWidth;
+      return;
+    }
+
+    if(this._width - this.sliderWidth - value < this.minSideWidth){
+      this._sideLeftBasis = this._width - this.sliderWidth - this.minSideWidth;
       return;
     }
 
