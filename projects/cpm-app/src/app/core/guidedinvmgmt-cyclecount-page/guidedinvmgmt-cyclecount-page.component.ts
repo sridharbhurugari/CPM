@@ -307,6 +307,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.isLastItem = true;
       }
     }
+    if(this.datepicker)
+    {
+      this.datepicker.selectedDate = "";
+    }
     this.itemDescriptionLength = this.displayCycleCountItem.GenericNameFormatted.length;
     this.itemIdLength = this.displayCycleCountItem.ItemId.length;
     this.dynamicGenericFormatetdNameStyle = "-" + (2 * (this.displayCycleCountItem.GenericNameFormatted.length)) + "px";
@@ -500,7 +504,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   HasLabelPrinterConfigured(): boolean {
-    if ((this.devicePrinterName !== null && this.devicePrinterName.length > 0) || this.labelPrinterName !== null && this.labelPrinterName.length > 0) {
+    if ((this.devicePrinterName && this.devicePrinterName.length > 0) || (this.labelPrinterName  && this.labelPrinterName.length > 0)) {
       return true;
     }
     else {
@@ -592,6 +596,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       // populating the page level input into text box.
       this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
       this.barcodeScanService.reset();
+      if (this.rawBarcodeMessage.search('$') !== -1 || this.rawBarcodeMessage === "0000")
+      this.itemBinBarCode();
     }
   }
 
