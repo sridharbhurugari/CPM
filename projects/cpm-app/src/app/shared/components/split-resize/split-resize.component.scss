@@ -1,0 +1,53 @@
+@import "../../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+$slider-visible-width: 6px;
+$slider-total-width: 14px;
+$slider-border-width: #{($slider-total-width - $slider-visible-width) / 2};
+:host {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    box-sizing: border-box;
+    border-top: solid $slate-grey 4px;
+}
+.slider {
+    height:100%;
+    background-color: $slate-grey;
+    cursor: col-resize;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: $slider-total-width;
+}
+.sliderHeaderSpacer {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 66px;
+    border-left: $slider-border-width solid $brand-lightblue;
+    border-right: $slider-border-width solid $brand-lightblue;
+}
+.sliderGripSpacer {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 35%;
+    border-left: $slider-border-width solid white;
+    border-right: $slider-border-width solid white;
+}
+.sliderGrip {
+    flex-grow: 1;
+    flex-shrink: 1;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='9' width='20' viewBox='0 0 27 12' preserveAspectRatio='none' fill-opacity='0' transform='rotate(90)'%3E%3Cpath d='M0,5.33333L 26.6667,5.33333L 26.6667,6.66666L 0,6.66666L 0,5.33333 Z' fill='white' fill-opacity='1' stroke-width='0' /%3E%3Cpath d='M0,10.6667L 26.6667,10.6667L 26.6667,12L 0,12L 0,10.6667 Z' fill='white' fill-opacity='1' stroke-width='0' /%3E%3Cpath d='M0,-7.62939e-006L 26.6667,-7.62939e-006L 26.6667,1.33333L 0,1.33333L 0,-7.62939e-006 Z' fill='white' fill-opacity='1' stroke-width='0' /%3E%3C/svg%3E");
+    background-size: 17px 7px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.sideRight {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+.sideLeft {
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+.sideLeftInitial {
+    flex-basis: 40%;
+}

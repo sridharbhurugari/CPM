@@ -1,0 +1,12 @@
+<div class="sideLeft" [ngClass]="{ 'sideLeftInitial': !sideLeftBasis }" [ngStyle]="{'flex-basis.px': sideLeftBasis }">
+  <ng-content select="[side=left]"></ng-content>
+</div>
+<div #slider class="slider" (mousedown)="onSliderMouseDown($event)">
+  <div *ngIf="includeHeaderSpacer" class="sliderHeaderSpacer"></div>
+  <div class="sliderGripSpacer"></div>
+  <div class="sliderGrip"></div>
+  <div class="sliderGripSpacer"></div>
+</div>
+<div class="sideRight">
+  <ng-content select="[side=right]"></ng-content>
+</div>

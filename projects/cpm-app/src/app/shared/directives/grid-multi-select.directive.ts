@@ -3,6 +3,7 @@ import { CheckboxComponent } from '@omnicell/webcorecomponents';
 import { IGridSelectionChanged } from '../events/i-grid-selection-changed';
 import { SelectionChangeType } from '../constants/selection-change-type';
 import { Subscription } from 'rxjs';
+import { CheckboxValues } from '../constants/checkbox-values';
 
 
 @Directive({
@@ -18,11 +19,12 @@ export class GridMultiSelectDirective {
 
   @ContentChildren(CheckboxComponent)
   set rows(values: QueryList<CheckboxComponent>) {
-    this._possibleValues = values.map(x => x.valueField);
-    this._selectedValues = values.filter(x => x.selected).map(x => x.valueField);
+    this._possibleValues = values.map(x => x.valueField).filter(x => x != CheckboxValues.ToggleAll);
+    this._selectedValues = values.filter(x => x.selected && x.valueField != CheckboxValues.ToggleAll).map(x => x.valueField);
 
     if(this._subscriptions.length){
       this._subscriptions.forEach(x => x.unsubscribe());
+      this._subscriptions = [];
     }
 
     values && values.forEach(x => this._subscriptions.push(x.selection && x.selection.subscribe(x => this.onRowCheckChanged(x))));
@@ -33,10 +35,18 @@ export class GridMultiSelectDirective {
   onRowCheckChanged(selectionEvent: any) {
     var checked: boolean = selectionEvent.selectedState;
     var value: any = selectionEvent.selectedValue;
-    if(checked){
-      this._selectedValues.push(value);
-    }else{
-      this._selectedValues = this._selectedValues.filter(x => x != value);
+    if(value == CheckboxValues.ToggleAll){
+      if(checked){
+        this._selectedValues = this._possibleValues;
+      }else{
+        this._selectedValues = [];
+      }
+    } else {
+      if (checked) {
+        this._selectedValues.push(value);
+      } else {
+        this._selectedValues = this._selectedValues.filter(x => x != value);
+      }
     }
 
     this.selectionChanged.emit({

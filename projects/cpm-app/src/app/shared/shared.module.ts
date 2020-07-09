@@ -15,6 +15,8 @@ import { HeaderTitleBottomMarginContainerComponent } from './components/header-t
 import { DeviceLocationAccessComponent } from './components/device-location-access/device-location-access.component';
 import { SpinnerPopupComponent } from './components/spinner-popup/spinner-popup.component';
 import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clickable-icon.component';
+import { FormsModule } from '@angular/forms';
+import { SplitResizeComponent } from './components/split-resize/split-resize.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clic
     DeviceLocationAccessComponent,
     SpinnerPopupComponent,
     CPClickableIconComponent,
+    SplitResizeComponent,
   ],
   imports: [
     CommonModule,
@@ -41,7 +44,8 @@ import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clic
     ButtonActionModule,
     PopupWindowModule,
     FooterModule,
-    ToastModule
+    ToastModule,
+    FormsModule,
   ],
   exports: [
     HeaderContainerComponent,
@@ -55,7 +59,8 @@ import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clic
     ConfirmPopupComponent,
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
-    CPClickableIconComponent
+    CPClickableIconComponent,
+    SplitResizeComponent,
   ],
   entryComponents: [
     TextResultPopupComponent,
