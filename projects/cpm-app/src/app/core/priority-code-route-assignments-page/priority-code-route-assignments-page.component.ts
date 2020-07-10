@@ -33,7 +33,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   private _priorityCodePickRouteId: number;
   private _pickRoute: IPickRouteDevice;
-  private _originalRoute: IPickRouteDevice;
+  public _originalRoute: IPickRouteDevice;
   genericErrorTitle$: Observable<string>;
   genericErrorMessage$: Observable<string>;
   saveInProgress: boolean = false;
@@ -49,7 +49,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   routerLinkPickRouteId: number;
-  isEditAvailable = true;
+  isEditAvailable:boolean = false;
   canSave = false;
   ocsIsHealthy = false;
 
@@ -78,6 +78,10 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
       return this.setDevices(this.pickRoute, results[1]);
     }));
+
+    this.priorityCodeRouteAssignmentsService.getUserPermissions().subscribe(res => {
+      this.isEditAvailable = res;
+    });
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
     this.connectToEvents();
@@ -124,8 +128,10 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   pickrouteUpdated(pickroute: IPickRouteDevice) {
     this.pickRoute = pickroute;
-    this.routerLinkPickRouteId = pickroute.PickRouteId;
-    this.canSave = this._originalRoute.PickRouteId !== pickroute.PickRouteId;
+    if(this.pickRoute && this._originalRoute){
+    this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
+    this.canSave = this._originalRoute.PickRouteId !== this.pickRoute.PickRouteId;
+    }
   }
 
   save() {
@@ -178,7 +184,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
       .subscribe(message => this.setOcsStatus(message));
   }
 
-  private setOcsStatus(isHealthy: boolean): void {
+  public setOcsStatus(isHealthy: boolean): void {
     this.ocsIsHealthy = isHealthy;
   }
 }
