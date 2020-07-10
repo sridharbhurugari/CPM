@@ -16,6 +16,7 @@ import {
   PopupDialogType,
   DateFormat,
   SearchDropdownComponent,
+  ToastService,
 } from "@omnicell/webcorecomponents";
 import { CarouselLocationAccessService } from "../../shared/services/devices/carousel-location-access.service";
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
@@ -27,16 +28,45 @@ import { DeviceLocationAccessResult } from "../../shared/enums/device-location-a
 import { PopupDialogServiceStub } from "../../shared/testing/popup-dialog-service-stub";
 import { GuidedManualCycleCountItems } from "../../api-core/data-contracts/guided-manual-cycle-count-items";
 import { IGuidedManualCycleCountItemid } from "../../api-core/data-contracts/i-guided-manual-cycle-count-itemid";
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
+import { BarcodeScanService } from 'oal-core';
+import { DeviceOperationResult } from '../../api-core/data-contracts/device-operation-result';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 
 describe("GuidedInvMgmtCycleCountPageComponent", () => {
   let component: GuidedinvmgmtManualcyclecountPageComponent;
   let fixture: ComponentFixture<GuidedinvmgmtManualcyclecountPageComponent>;
   let carouselLocationAccessService: Partial<CarouselLocationAccessService>;
   let manualCycleCountService: Partial<GuidedManualCycleCountServiceService>;
+  let hardwareLeaseService: Partial<HardwareLeaseService>;
+  let systemConfigurationService: Partial<SystemConfigurationService>;
+  let printPopupDialogService: Partial<PopupDialogService>;
+  let toasterService: Partial<ToastService>;
+  let barcodeScanService: Partial<BarcodeScanService>;
   let searchItems: GuidedManualCycleCountItems[];
   let mockPopupDialogService: PopupDialogService;
   let returnPostUpdate: boolean;
   let itemid: string = "8939";
+  const leaseVerificationResult: LeaseVerificationResult = 1;
+  const deviceConfiguration: IDeviceConfiguration = {
+    DefaultOwner: 'WRKS1',
+    DeviceId: 1,
+    Active: true,
+    DefaultOwnerShortname: 'WRKS1',
+    DeviceDescription: 'Device1',
+    DeviceType: '',
+    IsValid: true,
+    Json: '',
+    LeaseRequired: true,
+    Model: '',
+    Order: 1,
+    PrinterName: ''
+  };
+
+  let deviceOperationResult: DeviceOperationResult = { OutcomeText: '', Outcome: 5, IsSuccessful: false };
+  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
 
   beforeEach(() => {
     const activatedRouteStub = () => ({
@@ -75,11 +105,25 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         };
         return of([obj]);
       },
+      PrintLabel: () => {
+        const obj = {
+          ItemId: '1',
+          DosageForm: '',
+          DeviceId: 1,
+          DeviceLocationId: 1,
+          DeviceLocationDescription: '',
+          TradeName: '',
+          GenericName: '',
+          UnitOfIssue: ''
+        };
+        return of([obj]);
+      },
       post: () => ({ subscribe: (f) => f({}) }),
     });
     const wpfActionControllerServiceStub = () => ({
       ExecuteBackAction: () => ({}),
     });
+    printPopupDialogService = { showOnce: jasmine.createSpy('showOnce') };
     const coreEventConnectionService = {
       carouselReadySubject: new Subject(),
       carouselFaultedSubject: new Subject(),
@@ -87,6 +131,14 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
     carouselLocationAccessService = {
       clearLightbar: jasmine.createSpy("clearLightbar").and.returnValue(of({})),
     };
+    
+    hardwareLeaseService = {
+      HasDeviceLease: () => of(leaseVerificationResult),
+      getDeviceConfiguration: () => of(deviceConfiguration),
+      RequestDeviceLease: () => of(deviceOperationResult)
+    };
+    systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
+
 
     manualCycleCountService = {
       getSearchItems: jasmine
@@ -130,6 +182,11 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
           provide: GuidedManualCycleCountServiceService,
           useValue: manualCycleCountService,
         },
+        { provide: HardwareLeaseService, useValue: hardwareLeaseService },
+        { provide: SystemConfigurationService, useValue: systemConfigurationService },
+        { provide: ToastService, useValue: toasterService },
+        { provide: BarcodeScanService, useValue: barcodeScanService },
+        { provide: PopupDialogService, useClass: PopupDialogServiceStub },
       ],
     });
     fixture = TestBed.createComponent(
@@ -168,6 +225,256 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
     });
   });
 
+  describe('returns Printer Configure true', () => {
+    it('return with configure result', () => {
+      component.devicePrinterName = "printer";
+      component.labelPrinterName = "printer"
+      var config = component.HasLabelPrinterConfigured();
+      expect(config).toBeTruthy();
+    });
+  });
+  describe('returns Printer Configure false', () => {
+    it('return with configure result', () => {
+      component.devicePrinterName = null;
+      component.labelPrinterName = null;
+      var config = component.HasLabelPrinterConfigured();
+      expect(config).toBeFalsy();
+    });
+  });
+
+  describe('displaySuccessToSaveDialog', () => {
+    let item: any = {};
+    beforeEach(() => {
+      component.printResult = true;
+      component.popupDialogProperties = item;
+    });
+
+    it('should display print success popup', () => {
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.displaySuccessToSaveDialog();
+
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+      var title: string = "display";
+    });
+  });
+
+  describe('displayFailedToSaveDialog', () => {
+    let item: any = {};
+    beforeEach(() => {
+      component.printResult = false;
+      component.popupDialogProperties = item;
+    });
+
+    it('should display print Failed popup', () => {
+
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.displayFailedToSaveDialog();
+
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+      var title: string = "display";
+
+    });
+  });
+  
+
+  // describe("Should unhook event handlers", () => {
+  //   it("unhookEventHandlers", () => {
+  //     component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+  //       DeviceId: 5,
+  //       DeviceDescription: "carousel 2",
+  //       DeviceLocationTypeId: "2023",
+  //       ShelfNumber: 3,
+  //       BinNumber: 2,
+  //       SlotNumber: 1,
+  //       DeviceLocationId: 86,
+  //       ItemId: "ace500t",
+  //       BrandNameFormatted: "Tylenol 500mg tab",
+  //       GenericNameFormatted: "acetaminophen 500mg tab",
+  //       Units: "EA",
+  //       DosageForm:"TAB",
+  //       ParLevel: 60,
+  //       ReorderLevel: 30,
+  //       ExpirationDate: new Date(),
+  //       ExpirationDateFormatted: "10/03/2020",
+  //       LocationDescription: "Carosel 01-01-01",
+  //       QuantityOnHand: 55,
+  //       ReorderSource: "Internal",
+  //       ItmExpDateGranularity: "Month",
+  //       QuantityMin: 10,
+  //       InStockQuantity: 10,
+  //       ItemDateFormat: "MM/DD/YYYY",
+  //       PackageFormType: "B",
+  //       PackageFormName: "Bulk",
+  //       DrugId: "ACEtaminophen",
+  //       ManufacturerName: "ARPON Labs",
+  //     });
+  //     component.PrintLabel();
+  //   });
+  // });
+  // describe("Should unhook event handlers", () => {
+  //   it("unhookEventHandlers", () => {
+  //     component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+  //       DeviceId: 5,
+  //       DeviceDescription: "carousel 2",
+  //       DeviceLocationTypeId: "2023",
+  //       ShelfNumber: 3,
+  //       BinNumber: 2,
+  //       SlotNumber: 1,
+  //       DeviceLocationId: 86,
+  //       ItemId: "ace500t",
+  //       BrandNameFormatted: "Tylenol 500mg tab",
+  //       GenericNameFormatted: "acetaminophen 500mg tab",
+  //       Units: "EA",
+  //       DosageForm:"TAB",
+  //       ParLevel: 60,
+  //       ReorderLevel: 30,
+  //       ExpirationDate: new Date(),
+  //       ExpirationDateFormatted: "10/03/2020",
+  //       LocationDescription: "Carosel 01-01-01",
+  //       QuantityOnHand: 55,
+  //       ReorderSource: "Internal",
+  //       ItmExpDateGranularity: "Month",
+  //       QuantityMin: 10,
+  //       InStockQuantity: 10,
+  //       ItemDateFormat: "MM/DD/YYYY",
+  //       PackageFormType: "B",
+  //       PackageFormName: "Bulk",
+  //       DrugId: "ACEtaminophen",
+  //       ManufacturerName: "ARPON Labs",
+  //     });
+  //     component.printResult = false;
+  //     component.PrintLabel();
+  //   });
+  // });
+
+
+  // describe("mockPopupDialogService", () => {
+  //   it("mockPopupDialogService message", () => {
+  //     var title: string = "display";
+  //     spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+  //     component.showLeaseDialog(title);
+  //     expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+  //   });
+  // });
+  // describe("handleLeaseBusyChanged", () => {
+  //   it("handleLeaseBusyChanged message", () => {
+  //     var isBusy: boolean = true;
+  //     component.handleLeaseBusyChanged(isBusy);
+  //   });
+  // });
+  // describe("handleDeviceLocationAccessResult", () => {
+  //   it("handleDeviceLocationAccessResult message", () => {
+  //     component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+  //       DeviceId: 5,
+  //       DeviceDescription: "carousel 2",
+  //       DeviceLocationTypeId: "2023",
+  //       ShelfNumber: 3,
+  //       BinNumber: 2,
+  //       SlotNumber: 1,
+  //       DeviceLocationId: 86,
+  //       ItemId: "ace500t",
+  //       BrandNameFormatted: "Tylenol 500mg tab",
+  //       GenericNameFormatted: "acetaminophen 500mg tab",
+  //       Units: "EA",
+  //       DosageForm:"TAB",
+  //       ParLevel: 60,
+  //       ReorderLevel: 30,
+  //       ExpirationDate: new Date(),
+  //       ExpirationDateFormatted: "10/03/2020",
+  //       LocationDescription: "Carosel 01-01-01",
+  //       QuantityOnHand: 55,
+  //       ReorderSource: "Internal",
+  //       ItmExpDateGranularity: "Month",
+  //       QuantityMin: 10,
+  //       InStockQuantity: 10,
+  //       ItemDateFormat: "MM/DD/YYYY",
+  //       PackageFormType: "B",
+  //       PackageFormName: "Bulk",
+  //       DrugId: "ACEtaminophen",
+  //       ManufacturerName: "ARPON Labs",
+  //     });
+  //     let deviceLocationAccessResult: DeviceLocationAccessResult =
+  //       DeviceLocationAccessResult.LeaseNotAvailable;
+  //     component.handleDeviceLocationAccessResult(deviceLocationAccessResult);
+  //   });
+  // });
+
+  // describe("Should display wrong bar code pop up window dialog for invalid trays", () => {
+  //   it("displayWrongBarCodeDialog should display unknown item dialog", () => {
+  //     spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+  //     component.displayWrongBarCodeDialog(true);
+
+  //     expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+  //     var title: string = "display";
+  //   });
+  // });
+  // describe("Should display wrong bar code pop up window dialog for wrong bar code", () => {
+  //   it("displayWrongBarCodeDialog should display unknown item dialog", () => {
+  //     spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+  //     component.displayWrongBarCodeDialog(false);
+
+  //     expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+  //     var title: string = "display";
+  //   });
+  // });
+  // describe("Should process bar code message", () => {
+  //   it("processScannedBarcode", () => {
+  //     component.rawBarcodeMessage = "C00000";
+  //     component.processScannedBarcode("c00000");
+  //   });
+  // });
+  // describe("Should reset bar code message", () => {
+  //   it("reset", () => {
+  //     component.reset();
+  //   });
+  // });
+  // describe("Should return tray type exists or not", () => {
+  //   it("navigatedetailspage", () => {
+  //    // component.traytypesList = ["CO", "C1", "C2"];
+  //     component.rawBarcodeMessage = "C00000";
+  //    // component.showthedetailspageordialog();
+  //    // component.navigatedetailspage(eventSelected)
+  //   });
+  // });
+  // describe("Should call  windows key down event", () => {
+  //   it("onBarcodeScanExcludedKeyPressEvent", () => {
+  //     const keyEvent = new KeyboardEvent('keydown', { code: 'KeyA' });
+  //     var event = {
+  //       type: 'click',
+  //       stopPropagation: function () { }
+  //     }
+  //     let spy = spyOn(event, 'stopPropagation');
+  //     component.onBarcodeScanExcludedKeyPressEvent(keyEvent);
+  //     expect(spy).call;
+  //   });
+  // });
+  // describe("Should call  windows key press event", () => {
+  //   it("onKeypressHandler", () => {
+  //     const event = new KeyboardEvent("keypress", {
+  //       "key": "Enter"
+  //     });
+  //     window.dispatchEvent(event);
+  //     fixture.detectChanges();
+  //   });
+  // });
+  // describe("Should call key press event", () => {
+  //   it("onKeypressHandler", () => {
+  //     const keyEvent = new KeyboardEvent('keypress', { code: 'keypress' });
+  //     var event = {
+  //       type: 'click',
+  //       stopPropagation: function () { }
+  //     }
+  //     let spy = spyOn(event, 'stopPropagation');
+  //     component.onKeypressHandler(keyEvent);
+  //     expect(spy).call;
+  //   });
+  // });
+  // describe("Should unhook event handlers", () => {
+  //   it("unhookEventHandlers", () => {
+  //     component.unhookEventHandlers();
+  //   });
+  // });
+
   describe("getSearchData", () => {
     it("should return search data for a search key ", () => {
       var key: string = "8939";
@@ -182,6 +489,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         ItemId: "8939",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
+        DosageForm:"TAB",
         Units: "EA",
         ParLevel: 60,
         ReorderLevel: 30,
@@ -264,6 +572,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -307,6 +616,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -366,6 +676,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -400,6 +711,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -478,6 +790,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -522,6 +835,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -585,6 +899,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -647,6 +962,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -680,6 +996,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -772,6 +1089,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -808,6 +1126,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -855,6 +1174,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -890,6 +1210,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -925,6 +1246,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -961,6 +1283,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
         Units: "EA",
+        DosageForm:"TAB",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -1001,6 +1324,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
           BrandNameFormatted: "Tylenol 500mg tab",
           GenericNameFormatted: "acetaminophen 500mg tab",
           Units: "EA",
+          DosageForm:"TAB",
           ParLevel: 60,
           ReorderLevel: 30,
           ExpirationDate: new Date(),
@@ -1031,6 +1355,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
           BrandNameFormatted: "Tylenol 500mg tab",
           GenericNameFormatted: "acetaminophen 500mg tab",
           Units: "EA",
+          DosageForm:"TAB",
           ParLevel: 60,
           ReorderLevel: 30,
           ExpirationDate: new Date(),
@@ -1068,6 +1393,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
           BrandNameFormatted: "Tylenol 500mg tab",
           GenericNameFormatted: "acetaminophen 500mg tab",
           Units: "EA",
+          DosageForm:"TAB",
           ParLevel: 60,
           ReorderLevel: 30,
           ExpirationDate: new Date(),
@@ -1098,6 +1424,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
           BrandNameFormatted: "Tylenol 500mg tab",
           GenericNameFormatted: "acetaminophen 500mg tab",
           Units: "EA",
+          DosageForm:"TAB",
           ParLevel: 60,
           ReorderLevel: 30,
           ExpirationDate: new Date(),

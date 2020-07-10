@@ -4,12 +4,17 @@
         <div class="dateTime">
             {{time| date:'M/d/yyyy h:mm a'}}
         </div>
+        <div *ngIf="displayCycleCountItem"> 
+        <div class="printlable" *ngIf="(HasLabelPrinterConfigured()) && (deviceId)" >
+            <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
+        </div>
+    </div>
     </ng-container>
 
     <ng-container class="ocactiondetails">
         <div class="displayGuidedCycleCount">
             <div class="searchBar">
-                <oc-search-dropdown id="requestorSearch" #dropdownSearchUser [placeHolderText]='searchRequestorText'
+                <oc-search-dropdown  #dropdownSearchUser id="requestorSearch"  [placeHolderText]='searchRequestorText'
                     [columnTemplate]='columnTemplate.THREECOLUMN' [loadingText]=''
                     [noResultsFoundText]='noResultsFoundText' [gridHeight]="'400px'" [gridWidth]="'1250px'"
                     [columnsConfig]='columnsConfig' [searchBoxAlign]='searchBoxAlign.LEFT' [clearSearch]="true"
@@ -17,10 +22,24 @@
             </div>
 
             <div class="BrandName" *ngIf="displayCycleCountItem">
+                <diV *ngIf="!ItemDescriptionOverlap">
                 <div>{{ displayCycleCountItem.GenericNameFormatted }}</div>
+                </diV>
+            </div>
+            <div class="BrandNameSmall" *ngIf="displayCycleCountItem">
+                <diV *ngIf="ItemDescriptionOverlap">
+                <div>{{ displayCycleCountItem.GenericNameFormatted }}</div>
+            </diV>
             </div>
             <div class="GenericName" *ngIf="displayCycleCountItem">
+                <div  *ngIf="!ItemBrandNameOverlap">
                 <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+                </div>
+            </div>
+            <div class="GenericNameSmall" *ngIf="displayCycleCountItem">
+                <div  *ngIf="ItemBrandNameOverlap">
+                <div>{{ displayCycleCountItem.BrandNameFormatted }}</div>
+               </div>
             </div>
         </div>
         <div class="panelContainer1">
@@ -30,10 +49,18 @@
                     <span>{{'ITEM_ID' | translate}}</span>
                 </div>
                 <div class="ItemId" *ngIf="displayCycleCountItem">
+                    <div *ngIf="itemIdLength &lt; 11 || itemIdLength == 11">
                     <span>{{ displayCycleCountItem.ItemId }}
-
+                    
                     </span>
-
+                   </div>
+                </div>
+                <div class="ItemIdSmall" *ngIf="displayCycleCountItem">
+                    <div *ngIf="itemIdLength>11">
+                    <span>{{ displayCycleCountItem.ItemId }}
+                    
+                    </span>
+                   </div>
                 </div>
             </div>
             <div class="DeviceLocation">
@@ -45,7 +72,7 @@
                     <div class="location">
                         <div class="locationdescription" *ngIf="displayCycleCountItem">
                             <oc-singleselect #selection3 [tableData]="multiLocations" selectedItem="{}"
-                                componentWidth="750" dropdownRowsVisible="6"
+                                componentWidth="750" dropdownRowsVisible="6" 
                                 (selectionChanged)="onSelectionChanged($event)" searchPlaceholderText="Find item"
                                 selectText="Select item" noItemsText="No Items" *ngIf="isSingleSelectEnable">
                             </oc-singleselect>
