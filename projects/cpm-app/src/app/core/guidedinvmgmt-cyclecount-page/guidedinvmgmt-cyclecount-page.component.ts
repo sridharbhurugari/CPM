@@ -31,7 +31,7 @@ import { BarcodeScanService } from 'oal-core';
 
 export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewChecked {
   private _leaseDeniedTitle$: Observable<string>;
-  private BarCodeNotFound:string = "Bar Code Not Found";
+  private barCodeNotFound: string = "Bar Code Not Found";
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
@@ -97,6 +97,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   private barcodeScannedSubscription: Subscription;
   ItemDescriptionOverlap: boolean;
   ItemBrandNameOverlap: boolean;
+  uiIssuesIdentified: boolean = false;
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -188,9 +189,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
         this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-        { 
-        this.DisableActionButtons(true);
+        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
+          this.DisableActionButtons(true);
         }
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
@@ -296,6 +296,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       else {
         this.disabledatecomponent(false);
       }
+      if (this.datepicker) {
+        this.datepicker.selectedDate = "";
+      }
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
@@ -307,10 +310,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.isLastItem = true;
       }
     }
-    if(this.datepicker)
-    {
-      this.datepicker.selectedDate = "";
-    }
+
     this.itemDescriptionLength = this.displayCycleCountItem.GenericNameFormatted.length;
     this.itemIdLength = this.displayCycleCountItem.ItemId.length;
     this.dynamicGenericFormatetdNameStyle = "-" + (2 * (this.displayCycleCountItem.GenericNameFormatted.length)) + "px";
@@ -368,7 +368,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.daterequired = false;
           this.DisableActionButtons(false);
           this.toggleredborderfornonfirstitem(true);
-          if (!(this.binBarCodeDisplay)&& !(this.productBarCodeDisplay)) {
+          if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
             this.navigateContinue();
           }
         }
@@ -443,10 +443,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
       if (!(this.datepicker && this.datepicker.isDisabled))
         this.toggleredborderfornonfirstitem(false);
-        else
-        {
-          this.toggleredborderfornonfirstitem(true);
-        }
+      else {
+        this.toggleredborderfornonfirstitem(true);
+      }
     }
   }
 
@@ -504,7 +503,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   HasLabelPrinterConfigured(): boolean {
-    if ((this.devicePrinterName && this.devicePrinterName.length > 0) || (this.labelPrinterName  && this.labelPrinterName.length > 0)) {
+    if ((this.devicePrinterName && this.devicePrinterName.length > 0) || (this.labelPrinterName && this.labelPrinterName.length > 0)) {
       return true;
     }
     else {
@@ -514,8 +513,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   CheckSafetyScanConfiguration(): boolean {
     if (this.safetyScanConfirmation === "Yes" && this.displayCycleCountItem.SafetyStockRestockScan !== 'N') {
-      this.DisableActionButtons(true);
-      return true;
+        this.DisableActionButtons(true);
+        return true;
     }
     else {
       return false;
@@ -597,7 +596,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
       this.barcodeScanService.reset();
       if (this.rawBarcodeMessage.search('$') !== -1 || this.rawBarcodeMessage === "0000")
-      this.itemBinBarCode();
+        this.itemBinBarCode();
     }
   }
 
@@ -678,15 +677,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     });
   }
 
-  itemBinBarCode(): boolean {
+  itemBinBarCode() {
     var formatRet, overrideRet;
     if (this.displayCycleCountItem && this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
       this.closePopup();
-      if (!this.productBarCodeDisplay) {
-        this.ScanValidation();
-      }
-      return true;
+      this.ScanValidation();
     }
     else if (this.barcodeOverride && this.rawBarcodeMessage === "0000") {
       this.binBarCodeDisplay = false;
@@ -697,7 +693,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     else {
       this.guidedCycleCountService.validscan(this.displayCycleCountItem && this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
         formatRet = res;
-        if (formatRet === this.BarCodeNotFound) {
+        if (formatRet === this.barCodeNotFound) {
           this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
             overrideRet = val;
             this.displayWrongBarCodeDialog(overrideRet);
@@ -707,9 +703,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.barcodeFormat = formatRet;
           this.productBarCodeDisplay = false;
           this.closePopup();
-          if (!this.binBarCodeDisplay) {
-            this.ScanValidation();
-          }
+          this.ScanValidation();
+
         }
       });
     }
@@ -722,8 +717,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.translateService.get('INVALID_SCAN_BARCODE_OVERRIDE').subscribe(result => { properties.messageElementText = result; });
       this.barcodeOverride = true;
     }
-    else
-    {
+    else {
       this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
     }
     properties.showPrimaryButton = true;
@@ -754,6 +748,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.navigateContinue();
       }
       else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
+        this.uiIssuesIdentified =  false;
         this.navigateContinue();
       }
       else {
@@ -763,15 +758,16 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.toggleredborderfornonfirstitem(false);
         }
         else if (this.datepicker && !(this.datepicker.selectedDate.match(dateReg))) {
-          this.DisableActionButtons(true);
+           this.DisableActionButtons(true);
         }
         else if (isNaN(eventdate.getTime())) {
           this.DisableActionButtons(true);
         }
-
         else {
+          this.uiIssuesIdentified =  false;
           this.navigateContinue();
         }
+        this.uiIssuesIdentified =  true;
       }
     }
   }
