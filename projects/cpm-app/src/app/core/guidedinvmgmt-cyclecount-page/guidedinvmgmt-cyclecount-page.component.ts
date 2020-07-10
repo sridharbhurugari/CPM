@@ -98,6 +98,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   ItemDescriptionOverlap: boolean;
   ItemBrandNameOverlap: boolean;
   uiIssuesIdentified: boolean = false;
+  isPopupVisible = false;
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -513,8 +514,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   CheckSafetyScanConfiguration(): boolean {
     if (this.safetyScanConfirmation === "Yes" && this.displayCycleCountItem.SafetyStockRestockScan !== 'N') {
-        this.DisableActionButtons(true);
-        return true;
+      this.DisableActionButtons(true);
+      return true;
     }
     else {
       return false;
@@ -681,13 +682,17 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     var formatRet, overrideRet;
     if (this.displayCycleCountItem && this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
-      this.closePopup();
+      if (this.isPopupVisible) {
+        this.closePopup();
+      }
       this.ScanValidation();
     }
     else if (this.barcodeOverride && this.rawBarcodeMessage === "0000") {
       this.binBarCodeDisplay = false;
       this.productBarCodeDisplay = false;
-      this.closePopup();
+      if (this.isPopupVisible) {
+        this.closePopup();
+      }
       this.ScanValidation();
     }
     else {
@@ -702,7 +707,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         else {
           this.barcodeFormat = formatRet;
           this.productBarCodeDisplay = false;
-          this.closePopup();
+          if (this.isPopupVisible) {
+            this.closePopup();
+          }
           this.ScanValidation();
 
         }
@@ -711,6 +718,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   }
 
   displayWrongBarCodeDialog(override): void {
+    this.isPopupVisible = true;
     const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
     this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
     if (override) {
@@ -729,9 +737,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
     this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
       this.barcodeOverride = false;
+      this.isPopupVisible = false;
     });
     this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
       this.barcodeOverride = false;
+      this.isPopupVisible = false;
     });
     this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
       this.barcodeOverride = false;
@@ -748,7 +758,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.navigateContinue();
       }
       else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
-        this.uiIssuesIdentified =  false;
+        this.uiIssuesIdentified = false;
         this.navigateContinue();
       }
       else {
@@ -758,17 +768,25 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.toggleredborderfornonfirstitem(false);
         }
         else if (this.datepicker && !(this.datepicker.selectedDate.match(dateReg))) {
-           this.DisableActionButtons(true);
+          this.DisableActionButtons(true);
         }
         else if (isNaN(eventdate.getTime())) {
           this.DisableActionButtons(true);
         }
         else {
-          this.uiIssuesIdentified =  false;
+          this.uiIssuesIdentified = false;
           this.navigateContinue();
         }
-        this.uiIssuesIdentified =  true;
+        this.uiIssuesIdentified = true;
       }
+    }
+  }
+  ngOnDestroy() {
+    if (this.popupDialogClose$) {
+      this.popupDialogClose$.unsubscribe();
+    }
+    if (this.popupDialogPrimaryClick$) {
+      this.popupDialogPrimaryClick$.unsubscribe();
     }
   }
 }
