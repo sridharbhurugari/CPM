@@ -596,8 +596,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       // populating the page level input into text box.
       this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
       this.barcodeScanService.reset();
-      if (this.rawBarcodeMessage.search('$') !== -1 || this.rawBarcodeMessage === "0000")
-        this.itemBinBarCode();
     }
   }
 
