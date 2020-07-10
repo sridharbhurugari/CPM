@@ -13,7 +13,7 @@ import {
 import * as _ from "lodash";
 import { WpfActionControllerService } from "../../shared/services/wpf-action-controller/wpf-action-controller.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, forkJoin, merge, from } from "rxjs";
+import { Observable, forkJoin, merge} from "rxjs";
 import {
   NumericComponent,
   DatepickerComponent,
@@ -24,9 +24,6 @@ import {
   PopupDialogComponent,
   PopupDialogProperties,
   PopupDialogType,
-  SingleSelectDropdownTableDataV2,
-  GridComponent,
-  OcSingleselectDropdownDatav2,
 } from "@omnicell/webcorecomponents";
 import {
   SearchDropdownInputData,
@@ -310,7 +307,6 @@ let quantity=x[i].QuantityOnHand;
       location.text = desc + pack+quantity;
       location.value = x[i].LocationDescription;
       location.Visible = true;
-      console.log(location.text);
       this.multiLocations && this.multiLocations.push(location && location);
     }
   }
