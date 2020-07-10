@@ -45,7 +45,7 @@ export class GuidedManualCycleCountServiceService {
         });
       }
       public getScanItem(scanitem:string):Observable<IGuidedManualCycleCountScanItem[]>{
-        let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/${scanitem}`);
+        let url = this.ocapUrlBuilderService.buildUrl(`/api/guidedcyclecount/manualcyclecount/${scanitem}`);
       return this.httpClient.get<IGuidedManualCycleCountScanItem[]>(url, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });

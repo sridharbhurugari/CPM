@@ -5,10 +5,7 @@ import {
   ViewChild,
   AfterViewChecked,
   HostListener,
-  ElementRef,
-  EventEmitter,
-  Output,
-  Input
+  ElementRef
 } from "@angular/core";
 import * as _ from "lodash";
 import { WpfActionControllerService } from "../../shared/services/wpf-action-controller/wpf-action-controller.service";
@@ -70,7 +67,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
   @ViewChild('contain', null) elementView: ElementRef;
   @ViewChild('Generic', null) GenericView: ElementRef;
- // @ViewChild('searchBox', {static: false}) searchElement: SearchBoxComponent;
 
   leaseBusyTitle$: Observable<any>;
   leaseBusyMessage$: Observable<any>;
@@ -107,9 +103,14 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   itemGenericWidthScroll: any;
   itemIdLength: number;
   popupDialogProperties: PopupDialogProperties;
+  popupDialog: PopupDialogComponent;
+  private popupDialogClose$: Subscription;
+  private popupDialogPrimaryClick$: Subscription;
+  private popupDialogTimeoutDialog$: Subscription;
   scanItem:GuidedManualCycleCountScanItem[];
 
   // Parent component variables
+  barcodeOverride: boolean = false;
   selectedItem: any;
   searchKey = "";
   searchData: Observable<GuidedManualCycleCountItems[]>;
@@ -290,7 +291,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
 
   itemLength() {
-    this.displayCycleCountItem.QuantityOnHand = 0;
+    //this.displayCycleCountItem.QuantityOnHand = 0;
     this.isSingleSelectEnable = true;
     this.isMultiLocation = true;
     this.DisableActionButtons(true);
@@ -532,45 +533,49 @@ this.deviceId=x[0].DeviceId;
       }
     }
   }
+Continue(){
+  if (this.ItemDescriptionOverlap) {
+    this.ItemDescriptionOverlap = false;
+  }
+  if (this.displayCycleCountItem != null) {
+    let expireddate = null,
+      actualexpiradationdate = null;
+    expireddate = new Date(
+      this.displayCycleCountItem.ExpirationDateFormatted
+    );
+    if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
+      actualexpiradationdate =
+        this.displayCycleCountItem.QuantityOnHand !== 0
+          ? new Date(expireddate.getFullYear(), expireddate.getMonth() + 1, 0)
+          : null;
+    } else {
+      actualexpiradationdate =
+        this.displayCycleCountItem.QuantityOnHand !== 0
+          ? new Date(expireddate)
+          : null;
+    }
+    let update = new deviceCycleCountItemUpdate({
+      DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
+      ItemId: this.displayCycleCountItem.ItemId,
+      ExpirationDate: actualexpiradationdate,
+      QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
+      BarCodeFormat:"UN",
+      ProductID:"0090192121"
+    });
+
+    let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");
+
+    this.guidedManualCycleCountServiceService
+      .post(deviceId, update)
+      .subscribe((res) => {
+        console.log(res);
+      });
+  }
+}
+
 
   navigateContinue() {
-    if (this.ItemDescriptionOverlap) {
-      this.ItemDescriptionOverlap = false;
-    }
-    if (this.displayCycleCountItem != null) {
-      let expireddate = null,
-        actualexpiradationdate = null;
-      expireddate = new Date(
-        this.displayCycleCountItem.ExpirationDateFormatted
-      );
-      if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
-        actualexpiradationdate =
-          this.displayCycleCountItem.QuantityOnHand !== 0
-            ? new Date(expireddate.getFullYear(), expireddate.getMonth() + 1, 0)
-            : null;
-      } else {
-        actualexpiradationdate =
-          this.displayCycleCountItem.QuantityOnHand !== 0
-            ? new Date(expireddate)
-            : null;
-      }
-      let update = new deviceCycleCountItemUpdate({
-        DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
-        ItemId: this.displayCycleCountItem.ItemId,
-        ExpirationDate: actualexpiradationdate,
-        QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
-        BarCodeFormat:"UN",
-        ProductID:"0090192121"
-      });
-
-      let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");
-
-      this.guidedManualCycleCountServiceService
-        .post(deviceId, update)
-        .subscribe((res) => {
-          console.log(res);
-        });
-    }
+    this.Continue();
     this.wpfActionController.ExecuteBackAction();
   }
 
@@ -795,16 +800,93 @@ this.deviceId=x[0].DeviceId;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
+  displayWrongBarCodeDialog(): void {
+    const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
+    this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
+   
+    
+      this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
+  
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Warning;
+    properties.timeoutLength = 0;
+    this.popupDialog = this.dialogService.showOnce(properties);
+
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
+      this.barcodeOverride = false;
+    });
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
+      this.barcodeOverride = false;
+    });
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
+      this.barcodeOverride = false;
+    });
+  }
+
+  closePopup() {
+    //this.barcodeOverride = false;
+    this.popupDialog && this.popupDialog.onCloseClicked();
+  }
+
+  ScanValidation():boolean {
+    let transaction=false;
+    var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
+      if (this.displayCycleCountItem && this.displayCycleCountItem.QuantityOnHand === 0) {
+        transaction=true;
+        this.Continue();   
+      }
+      else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
+      transaction=true;
+        this.Continue();
+        this.displayCycleCountItem=null;
+      }
+      else {
+        var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
+        if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
+          this.DisableActionButtons(true);
+          this.toggleredborderfornonfirstitem(false);
+          transaction=false;
+        }
+        else if (this.datepicker && !(this.datepicker.selectedDate.match(dateReg))) {
+          this.DisableActionButtons(true);
+          transaction=false;
+        }
+        // else if (isNaN(eventdate.getTime())) {
+        //   this.DisableActionButtons(true);
+        //   transaction=false;
+        // }
+
+        else {
+          transaction=true;
+          this.Continue();
+          this.displayCycleCountItem=null;
+        }
+        return transaction;
+      }
+    }
 
   // Scanned barcode event listener for use in Cef
   processScannedBarcode(scannedBarcode: string): void {
+    let transactionValid=true;
+    this.closePopup();
     this.barcodeScanService.reset();
+    if(this.displayCycleCountItem!==undefined)
+    {
+     transactionValid=this.ScanValidation();
+    }
     this.rawBarcodeMessage = scannedBarcode;
-    if(this.rawBarcodeMessage.search('$'))
+    if(transactionValid)
+    {
+    if(!this.rawBarcodeMessage.includes('$'))
     {
     this.guidedManualCycleCountServiceService.getScanItem(this.rawBarcodeMessage).subscribe((res) =>{
      console.log(res);
      this.scanItem = res;
+      if(this.scanItem === null || this.scanItem.length===0){
+        this.displayWrongBarCodeDialog();
+      }
      if(this.scanItem)
      {
        console.log(this.scanItem[0].ItemId);
@@ -812,17 +894,15 @@ this.deviceId=x[0].DeviceId;
     }
     });
   }
-
-   else (!this.rawBarcodeMessage.search('$'))
+   else if (this.rawBarcodeMessage.includes('$'))
    {
    if (this.rawBarcodeMessage.search('$') !== -1)
-      //this.itemBinBarCode();
       {
          var val =this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()
-         console.log(val);
          this.getCycleCountData(val);
       }
     }
+  }
   }
   // Page Level Listener for barcode scanner
   @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
