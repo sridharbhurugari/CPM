@@ -82,17 +82,27 @@
                             </oc-singleselect>
 
                             <div *ngIf="!isSingleSelectEnable">
-                               <span> {{ displayCycleCountItem.LocationDescription }}  </span> &nbsp;&nbsp;<span> {{ displayCycleCountItem.QuantityOnHand }}  </span>
+                               <span> {{ displayCycleCountItem.LocationDescription }}  </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="devicelocationaccess" *ngIf=displayCycleCountItem>
+                <div *ngIf=displayCycleCountItem>
+                <div class="devicelocationaccess" *ngIf="!isSingleSelectEnable">
                     <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
                         [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
                         (isAccessBusy)="deviceLocationAccessBusy = $event"
                         (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
                 </div>
+            </div>
+            <div *ngIf=displayCycleCountItem>
+                <div class="devicelocationaccess" *ngIf="isSingleSelectEnable">
+                    <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
+                        [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
+                        (isAccessBusy)="deviceLocationAccessBusy = $event"
+                        (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+                </div>
+            </div>
             </div>
 
         </div>

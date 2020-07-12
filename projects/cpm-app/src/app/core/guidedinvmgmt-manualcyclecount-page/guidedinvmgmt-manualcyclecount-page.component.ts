@@ -303,8 +303,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     for (let i = 0; i < x.length; i++) {
       this.locationCount++;
       let location = new SingleselectRowItem();
-let desc=x[i].LocationDescription+"        "  ;
-let pack=x[i].PackageFormName+"        " ;
+let desc=x[i].LocationDescription+"       "  ;
+let pack=x[i].PackageFormName+"      " ;
 let quantity=x[i].QuantityOnHand;
       location.text = desc + pack+quantity;
       location.value = x[i].LocationDescription;
@@ -894,8 +894,6 @@ Continue(){
     this.rawBarcodeMessage = scannedBarcode;
     if(transactionValid)
     {
-    // if(!this.rawBarcodeMessage.includes('$'))
-    // {
     this.guidedManualCycleCountServiceService.getScanItem(this.rawBarcodeMessage).subscribe((res) =>{
      console.log(res);
      this.scanItem = res;
@@ -908,15 +906,6 @@ Continue(){
     this.getCycleCountData(this.scanItem&&this.scanItem[0].ItemId);
     }
     });
-  //}
-  //  else if (this.rawBarcodeMessage.includes('$'))
-  //  {
-  //  if (this.rawBarcodeMessage.search('$') !== -1)
-  //     {
-  //        var val =this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()
-  //        this.getCycleCountData(val);
-  //     }
-  //   }
    }
   }
   // Page Level Listener for barcode scanner
