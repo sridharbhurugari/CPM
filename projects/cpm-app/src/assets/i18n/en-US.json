@@ -62,6 +62,7 @@
   "LEASE_DENIED_MESSAGE": "Access to device {{deviceDescription}} has been denied.",
   "MAINTENANCE": "Maintenance",
   "GUIDED_CYCLE_COUNT_LOCATION": "Location",
+  "GUIDED_CYCLE_COUNT_LOCATIONS":"Locations",
   "MANUAL_CYCLE_COUNT": "Manual Count",
   "MEDICATION": "Medication",
   "NAME": "Name",

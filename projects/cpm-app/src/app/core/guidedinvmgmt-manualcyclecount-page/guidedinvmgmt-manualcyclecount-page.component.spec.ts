@@ -1259,4 +1259,321 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
+
+
+  describe('Scan Validation', () => {
+    it('Scan Validation', () => {
+      component.cycleCountItemsCopy = [];
+      component.cycleCountItemsCopy.push(
+        new GuidedManualCycleCountItemid({
+          DeviceLocationId: 87,
+          DeviceId: 5,
+          DeviceDescription: "carousel 2",
+          DeviceLocationTypeId: "2023",
+          ShelfNumber: 3,
+          BinNumber: 2,
+          SlotNumber: 1,
+          ItemId: "ace500t",
+          BrandNameFormatted: "Tylenol 500mg tab",
+          GenericNameFormatted: "acetaminophen 500mg tab",
+          Units: "EA",
+          DosageForm:"TAB",
+          ParLevel: 60,
+          ReorderLevel: 30,
+          ExpirationDate: new Date(),
+          ExpirationDateFormatted: "",
+          LocationDescription: "Carosel 01-01-01",
+          QuantityOnHand: 0,
+          ReorderSource: "Internal",
+          ItmExpDateGranularity: "Month",
+          QuantityMin: 10,
+          InStockQuantity: 12,
+          PackageFormType: "B",
+          PackageFormName: "Bulk",
+          DrugId: "ACEtaminophen",
+          ManufacturerName: "ARPON Labs",
+          ItemDateFormat: "MM/DD/YYYY",
+        })
+      );
+      component.cycleCountItemsCopy.push(
+        new GuidedManualCycleCountItemid({
+          DeviceLocationId: 87,
+          DeviceId: 5,
+          DeviceDescription: "carousel 2",
+          DeviceLocationTypeId: "2023",
+          ShelfNumber: 3,
+          BinNumber: 2,
+          SlotNumber: 1,
+          ItemId: "ace500t",
+          BrandNameFormatted: "Tylenol 500mg tab",
+          GenericNameFormatted: "acetaminophen 500mg tab",
+          Units: "EA",
+          DosageForm:"TAB",
+          ParLevel: 60,
+          ReorderLevel: 30,
+          ExpirationDate: new Date(),
+          ExpirationDateFormatted: "",
+          LocationDescription: "Carosel 01-01-01",
+          QuantityOnHand: 0,
+          ReorderSource: "Internal",
+          ItmExpDateGranularity: "Month",
+          QuantityMin: 10,
+          InStockQuantity: 12,
+          PackageFormType: "B",
+          PackageFormName: "Bulk",
+          DrugId: "ACEtaminophen",
+          ManufacturerName: "ARPON Labs",
+          ItemDateFormat: "MM/DD/YYYY",
+        })
+      );
+      component.ScanValidation();
+      component.Continue();
+     });
+  });
+  describe('Scan Validation for disable buttions', () => {
+    it('Scan Validation for disable buttions', () => {
+      component.DisableActionButtons(true);
+      var config = component.ScanValidation(); 
+      expect(config).toBeTruthy;
+    });
+  });
+  // describe("Should process bar code message", () => {
+  //   it("processScannedBarcode", () => {
+  //     component.rawBarcodeMessage = "$1234";
+  //     component.processScannedBarcode("$1234");
+  //   });
+  // });
+  // describe("Should process bar code message", () => {
+  //   it("processScannedBarcode", () => {
+  //     component.rawBarcodeMessage = "0000";
+  //     //component.barcodeOverride = true;
+  //     component.processScannedBarcode("0000");
+  //   });
+  // });
+  describe("Should reset bar code message", () => {
+    it("reset", () => {
+      component.reset();
+    });
+  });
+  describe("Should display wrong bar code pop up window dialog for invalid trays", () => {
+    it("displayWrongBarCodeDialog should display unknown item dialog", () => {
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.displayWrongBarCodeDialog();
+
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+      var title: string = "display";
+    });
+  });
+  describe("Should display wrong bar code pop up window dialog for wrong bar code", () => {
+    it("displayWrongBarCodeDialog should display unknown item dialog", () => {
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.displayWrongBarCodeDialog();
+
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+      var title: string = "display";
+    });
+  });
+  describe("mockPopupDialogService", () => {
+    it("mockPopupDialogService message", () => {
+      var title: string = "display";
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.showLeaseDialog(title);
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+  describe("handleLeaseBusyChanged", () => {
+    it("handleLeaseBusyChanged message", () => {
+      var isBusy: boolean = true;
+      component.handleLeaseBusyChanged(isBusy);
+    });
+  });
+  describe("handleDeviceLocationAccessResult", () => {
+    it("handleDeviceLocationAccessResult message", () => {
+      component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+        DeviceLocationId: 87,
+        DeviceId: 5,
+        DeviceDescription: "carousel 2",
+        DeviceLocationTypeId: "2023",
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units: "EA",
+        DosageForm:"TAB",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 12,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity: "Month",
+        QuantityMin: 10,
+        InStockQuantity: 12,
+        PackageFormType: "B",
+        PackageFormName: "Bulk",
+        DrugId: "ACEtaminophen",
+        ManufacturerName: "ARPON Labs",
+        ItemDateFormat: "MM/DD/YYYY",
+      });
+      let deviceLocationAccessResult: DeviceLocationAccessResult =
+        DeviceLocationAccessResult.LeaseNotAvailable;
+      component.handleDeviceLocationAccessResult(deviceLocationAccessResult);
+    });
+  });
+  // describe("Should call  windows key down event", () => {
+  //   it("onBarcodeScanExcludedKeyPressEvent", () => {
+  //     const keyEvent = new KeyboardEvent('keydown', { code: 'KeyA' });
+  //     var event = {
+  //       type: 'click',
+  //       stopPropagation: function () { }
+  //     }
+  //     let spy = spyOn(event, 'stopPropagation');
+  //     component.onBarcodeScanExcludedKeyPressEvent(keyEvent);
+  //     expect(spy).call;
+  //   });
+  // });
+  // describe("Should call  windows key press event", () => {
+  //   it("onKeypressHandler", () => {
+  //     const event = new KeyboardEvent("keypress", {
+  //       "key": "Enter"
+  //     });
+  //     window.dispatchEvent(event);
+  //     fixture.detectChanges();
+  //   });
+  // });
+  // describe("Should call key press event", () => {
+  //   it("onKeypressHandler", () => {
+  //     const keyEvent = new KeyboardEvent('keypress', { code: 'keypress' });
+  //     var event = {
+  //       type: 'click',
+  //       stopPropagation: function () { }
+  //     }
+  //     let spy = spyOn(event, 'stopPropagation');
+  //     component.onKeypressHandler(keyEvent);
+  //     expect(spy).call;
+  //   });
+  // });
+  describe("Should unhook event handlers", () => {
+    it("unhookEventHandlers", () => {
+      component.unhookEventHandlers();
+    });
+  });
+  describe("Should unhook event handlers", () => {
+    it("unhookEventHandlers", () => {
+      component.hookupEventHandlers();
+    });
+  });
+
+  //   describe("Should unhook event handlers", () => {
+  //   it("unhookEventHandlers", () => {
+  //     component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+  //       DeviceId: 5,
+  //       DeviceDescription: "carousel 2",
+  //       DeviceLocationTypeId: "2023",
+  //       ShelfNumber: 3,
+  //       BinNumber: 2,
+  //       SlotNumber: 1,
+  //       DeviceLocationId: 86,
+  //       ItemId: "ace500t",
+  //       BrandNameFormatted: "Tylenol 500mg tab",
+  //       GenericNameFormatted: "acetaminophen 500mg tab",
+  //       Units: "EA",
+  //       DosageForm:"TAB",
+  //       ParLevel: 60,
+  //       ReorderLevel: 30,
+  //       ExpirationDate: new Date(),
+  //       ExpirationDateFormatted: "10/03/2020",
+  //       LocationDescription: "Carosel 01-01-01",
+  //       QuantityOnHand: 55,
+  //       ReorderSource: "Internal",
+  //       ItmExpDateGranularity: "Month",
+  //       QuantityMin: 10,
+  //       InStockQuantity: 10,
+  //       ItemDateFormat: "MM/DD/YYYY",
+  //       PackageFormType: "B",
+  //       PackageFormName: "Bulk",
+  //       DrugId: "ACEtaminophen",
+  //       ManufacturerName: "ARPON Labs",
+  //     });
+  //     component.PrintLabel();
+
+  //   });
+  // });
+  // describe("Should unhook event handlers", () => {
+  //   it("unhookEventHandlers", () => {
+  //     component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+  //       DeviceId: 5,
+  //       DeviceDescription: "carousel 2",
+  //       DeviceLocationTypeId: "2023",
+  //       ShelfNumber: 3,
+  //       BinNumber: 2,
+  //       SlotNumber: 1,
+  //       DeviceLocationId: 86,
+  //       ItemId: "ace500t",
+  //       BrandNameFormatted: "Tylenol 500mg tab",
+  //       GenericNameFormatted: "acetaminophen 500mg tab",
+  //       Units: "EA",
+  //       DosageForm:"TAB",
+  //       ParLevel: 60,
+  //       ReorderLevel: 30,
+  //       ExpirationDate: new Date(),
+  //       ExpirationDateFormatted: "10/03/2020",
+  //       LocationDescription: "Carosel 01-01-01",
+  //       QuantityOnHand: 55,
+  //       ReorderSource: "Internal",
+  //       ItmExpDateGranularity: "Month",
+  //       QuantityMin: 10,
+  //       InStockQuantity: 10,
+  //       ItemDateFormat: "MM/DD/YYYY",
+  //       PackageFormType: "B",
+  //       PackageFormName: "Bulk",
+  //       DrugId: "ACEtaminophen",
+  //       ManufacturerName: "ARPON Labs",
+  //     });
+  //     component.printResult = false;
+  //     component.PrintLabel();
+  //     component.displayFailedToSaveDialog();
+  //   });
+  // });
+
+  // describe("Should unhook event handlers", () => {
+  //   it("unhookEventHandlers", () => {
+  //     component.displayCycleCountItem = new GuidedManualCycleCountItemid({
+  //       DeviceId: 5,
+  //       DeviceDescription: "carousel 2",
+  //       DeviceLocationTypeId: "2023",
+  //       ShelfNumber: 3,
+  //       BinNumber: 2,
+  //       SlotNumber: 1,
+  //       DeviceLocationId: 86,
+  //       ItemId: "ace500t",
+  //       BrandNameFormatted: "Tylenol 500mg tab",
+  //       GenericNameFormatted: "acetaminophen 500mg tab",
+  //       Units: "EA",
+  //       DosageForm:"TAB",
+  //       ParLevel: 60,
+  //       ReorderLevel: 30,
+  //       ExpirationDate: new Date(),
+  //       ExpirationDateFormatted: "10/03/2020",
+  //       LocationDescription: "Carosel 01-01-01",
+  //       QuantityOnHand: 55,
+  //       ReorderSource: "Internal",
+  //       ItmExpDateGranularity: "Month",
+  //       QuantityMin: 10,
+  //       InStockQuantity: 10,
+  //       ItemDateFormat: "MM/DD/YYYY",
+  //       PackageFormType: "B",
+  //       PackageFormName: "Bulk",
+  //       DrugId: "ACEtaminophen",
+  //       ManufacturerName: "ARPON Labs",
+  //     });
+  //    // component.printResult = false;
+  //    component.rawBarcodeMessage = "0000";
+  //     component.scanCycleCountItem("0000");
+  //     //component.displayFailedToSaveDialog();
+  //   });
+  // });
 });

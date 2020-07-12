@@ -68,6 +68,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   @ViewChild('contain', null) elementView: ElementRef;
   @ViewChild('Generic', null) GenericView: ElementRef;
 
+  over:boolean
   leaseBusyTitle$: Observable<any>;
   leaseBusyMessage$: Observable<any>;
   carouselFaulted: boolean = false;
@@ -110,7 +111,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   scanItem:GuidedManualCycleCountScanItem[];
 
   // Parent component variables
-  barcodeOverride: boolean = false;
+  //barcodeOverride: boolean = false;
   selectedItem: any;
   searchKey = "";
   searchData: Observable<GuidedManualCycleCountItems[]>;
@@ -302,8 +303,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     for (let i = 0; i < x.length; i++) {
       this.locationCount++;
       let location = new SingleselectRowItem();
-let desc=x[i].LocationDescription+"            "  ;
-let pack=x[i].PackageFormName+"            " ;
+let desc=x[i].LocationDescription+"        "  ;
+let pack=x[i].PackageFormName+"        " ;
 let quantity=x[i].QuantityOnHand;
       location.text = desc + pack+quantity;
       location.value = x[i].LocationDescription;
@@ -741,7 +742,7 @@ Continue(){
     properties.showSecondaryButton = false;
     properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
 
@@ -800,7 +801,8 @@ Continue(){
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
-  displayWrongBarCodeDialog(): void {
+  displayWrongBarCodeDialog(): boolean {
+    this.over=true;
     const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
     this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
    
@@ -811,18 +813,22 @@ Continue(){
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Ok';
     properties.dialogDisplayType = PopupDialogType.Warning;
-    properties.timeoutLength = 0;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.popupDialog = this.dialogService.showOnce(properties);
 
     this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
-      this.barcodeOverride = false;
+      //this.barcodeOverride = false;
+      this.over=false;
     });
     this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
-      this.barcodeOverride = false;
+     // this.barcodeOverride = false;
+     this.over=false;
     });
     this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
-      this.barcodeOverride = false;
+     // this.barcodeOverride = false;
+     this.over=false;
     });
+    return this.over;
   }
 
   closePopup() {
@@ -833,14 +839,15 @@ Continue(){
   ScanValidation():boolean {
     let transaction=false;
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
-      if (this.displayCycleCountItem && this.displayCycleCountItem.QuantityOnHand === 0) {
+      if (this.displayCycleCountItem &&this.displayCycleCountItem.QuantityOnHand === 0) {
+        this.Continue(); 
+        this.displayCycleCountItem=null;  
         transaction=true;
-        this.Continue();   
       }
-      else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {
-      transaction=true;
+      else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {  
         this.Continue();
         this.displayCycleCountItem=null;
+        transaction=true;
       }
       else {
         var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
@@ -859,9 +866,9 @@ Continue(){
         // }
 
         else {
-          transaction=true;
           this.Continue();
           this.displayCycleCountItem=null;
+          transaction=true;
         }
         return transaction;
       }
@@ -869,40 +876,48 @@ Continue(){
 
   // Scanned barcode event listener for use in Cef
   processScannedBarcode(scannedBarcode: string): void {
-    let transactionValid=true;
+    if(this.over)
+   {
     this.closePopup();
+   }
     this.barcodeScanService.reset();
+    this.rawBarcodeMessage = scannedBarcode;
+    this.scanCycleCountItem(scannedBarcode);
+  }
+  scanCycleCountItem(scannedBarcode:string):void{
+    let transactionValid=true;
     if(this.displayCycleCountItem!==undefined)
     {
+      console.log(this.ScanValidation());
      transactionValid=this.ScanValidation();
     }
     this.rawBarcodeMessage = scannedBarcode;
     if(transactionValid)
     {
-    if(!this.rawBarcodeMessage.includes('$'))
-    {
+    // if(!this.rawBarcodeMessage.includes('$'))
+    // {
     this.guidedManualCycleCountServiceService.getScanItem(this.rawBarcodeMessage).subscribe((res) =>{
      console.log(res);
      this.scanItem = res;
       if(this.scanItem === null || this.scanItem.length===0){
         this.displayWrongBarCodeDialog();
       }
-     if(this.scanItem)
+     else if(this.scanItem.length!=0 || this.scanItem!=null)
      {
-       console.log(this.scanItem[0].ItemId);
-    this.getCycleCountData(this.scanItem[0].ItemId);
+       console.log(this.scanItem&&this.scanItem[0].ItemId);
+    this.getCycleCountData(this.scanItem&&this.scanItem[0].ItemId);
     }
     });
-  }
-   else if (this.rawBarcodeMessage.includes('$'))
-   {
-   if (this.rawBarcodeMessage.search('$') !== -1)
-      {
-         var val =this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()
-         this.getCycleCountData(val);
-      }
-    }
-  }
+  //}
+  //  else if (this.rawBarcodeMessage.includes('$'))
+  //  {
+  //  if (this.rawBarcodeMessage.search('$') !== -1)
+  //     {
+  //        var val =this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()
+  //        this.getCycleCountData(val);
+  //     }
+  //   }
+   }
   }
   // Page Level Listener for barcode scanner
   @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {

@@ -69,7 +69,8 @@
             <div class="DeviceLocation">
                 <div>
                     <div class="itemIdHeader">
-                        <span>{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                        <span *ngIf="!isSingleSelectEnable">{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
+                        <span *ngIf="isSingleSelectEnable">{{'GUIDED_CYCLE_COUNT_LOCATIONS' | translate }}</span>
                         <span *ngIf="isSingleSelectEnable">-{{locationCount}}</span>
                     </div>
                     <div class="location">
@@ -81,7 +82,7 @@
                             </oc-singleselect>
 
                             <div *ngIf="!isSingleSelectEnable">
-                                {{ displayCycleCountItem.LocationDescription }}
+                               <span> {{ displayCycleCountItem.LocationDescription }}  </span> &nbsp;&nbsp;<span> {{ displayCycleCountItem.QuantityOnHand }}  </span>
                             </div>
                         </div>
                     </div>
