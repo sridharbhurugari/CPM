@@ -899,6 +899,20 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       expect(component.doneButtonDisable).toBeFalsy();
     });
   });
+  describe('wrong format date changes validation', () => {
+    it('date changes validation', () => {
+      component.onDateChange("06/10/2019");
+      var dummy, dummy1;
+      component.numericElement = new NumericComponent(dummy, dummy1);
+      component.numericElement.displayValue = "10";
+      component.DisableActionButtons(false);
+      component.toggleredborderfornonfirstitem(false);
+      var val = component.daterequired;
+      expect(val).toBeTruthy();
+      expect(component.nextButtonDisable).toBeFalsy();
+      expect(component.doneButtonDisable).toBeFalsy();
+    });
+  });
 
   // describe('PrintLabel', () => {
   //   it('calls PrintLabel', () => {
@@ -1110,12 +1124,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   });
   describe("Should unhook event handlers", () => {
     it("unhookEventHandlers", () => {
-      
+
     });
   });
   describe("Should unhook event handlers", () => {
     it("unhookEventHandlers", () => {
-        component.displayCycleCountItem = new GuidedCycleCount({
+      component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,
         DeviceId: 5,
         DeviceDescription: 'carousel 2',
@@ -1146,7 +1160,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   });
   describe("Should unhook event handlers", () => {
     it("unhookEventHandlers", () => {
-        component.displayCycleCountItem = new GuidedCycleCount({
+      component.displayCycleCountItem = new GuidedCycleCount({
         DeviceLocationId: 87,
         DeviceId: 5,
         DeviceDescription: 'carousel 2',
@@ -1180,7 +1194,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   describe('Scan Validation', () => {
     it('Scan Validation', () => {
       component.displayCycleCountItem = new GuidedCycleCount({
-        DeviceLocationId: 87,  
+        DeviceLocationId: 87,
         DeviceId: 5,
         DeviceDescription: 'carousel 2',
         DeviceLocationTypeId: '2023',
@@ -1190,7 +1204,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         ItemId: "ace500t",
         BrandNameFormatted: "Tylenol 500mg tab",
         GenericNameFormatted: "acetaminophen 500mg tab",
-        Units:"EA",
+        Units: "EA",
         ParLevel: 60,
         ReorderLevel: 30,
         ExpirationDate: new Date(),
@@ -1198,20 +1212,101 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         LocationDescription: "Carosel 01-01-01",
         QuantityOnHand: 12,
         ReorderSource: "Internal",
-        ItmExpDateGranularity:"Month",
-        QuantityMin:10,
-        InStockQuantity:12,
-        DosageForm:"EA",
+        ItmExpDateGranularity: "Month",
+        QuantityMin: 10,
+        InStockQuantity: 12,
+        DosageForm: "EA",
         ItemDateFormat: "MM/DD/YYYY",
-        SafetyStockRestockScan:'R'
+        SafetyStockRestockScan: 'R'
       });
       component.ScanValidation();
-     });
+    });
+  });
+  describe('Scan Validation', () => {
+    it('Scan Validation', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units: "EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2018",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 0,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity: "Month",
+        QuantityMin: 10,
+        InStockQuantity: 12,
+        DosageForm: "EA",
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan: 'R'
+      });
+      component.rawBarcodeMessage = "$8939";
+      component.binBarCodeDisplay = false;
+      component.productBarCodeDisplay = false;
+      component.displayCycleCountItem.QuantityOnHand = 0;
+      component.ScanValidation();
+    });
+  });
+  describe('Scan Validation', () => {
+    it('Scan Validation', () => {
+      component.displayCycleCountItem = new GuidedCycleCount({
+        DeviceLocationId: 87,
+        DeviceId: 5,
+        DeviceDescription: 'carousel 2',
+        DeviceLocationTypeId: '2023',
+        ShelfNumber: 3,
+        BinNumber: 2,
+        SlotNumber: 1,
+        ItemId: "ace500t",
+        BrandNameFormatted: "Tylenol 500mg tab",
+        GenericNameFormatted: "acetaminophen 500mg tab",
+        Units: "EA",
+        ParLevel: 60,
+        ReorderLevel: 30,
+        ExpirationDate: new Date(),
+        ExpirationDateFormatted: "10/03/2018",
+        LocationDescription: "Carosel 01-01-01",
+        QuantityOnHand: 100,
+        ReorderSource: "Internal",
+        ItmExpDateGranularity: "None",
+        QuantityMin: 10,
+        InStockQuantity: 12,
+        DosageForm: "EA",
+        ItemDateFormat: "MM/DD/YYYY",
+        SafetyStockRestockScan: 'R'
+      });
+      component.rawBarcodeMessage = "$8939";
+      component.binBarCodeDisplay = false;
+      component.productBarCodeDisplay = false;
+      component.displayCycleCountItem.ItmExpDateGranularity = "None";
+      component.ScanValidation();
+    });
+  });
+  describe('Scan Validation', () => {
+    it('Scan Validation', () => {
+      component.rawBarcodeMessage = "$8939";
+      component.binBarCodeDisplay = false;
+      component.productBarCodeDisplay = false;
+      var dumm1,dummy2;
+      component.datepicker = new DatepickerComponent(dumm1,dummy2);
+      component.datepicker.selectedDate ="";
+      component.ScanValidation();
+    });
   });
   describe('Scan Validation for disable buttions', () => {
     it('Scan Validation for disable buttions', () => {
       component.DisableActionButtons(true);
-      var config = component.ScanValidation(); 
+      var config = component.ScanValidation();
       expect(config).toBeTruthy;
     });
   });
@@ -1246,6 +1341,12 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.rawBarcodeMessage = "$8939";
       expect(component.itemBinBarCode()).call;
 
+    });
+  });
+  describe('should pop up be closed', () => {
+    it('Close popup', () => {
+      var val = component.closePopup();
+      expect(val).toBeFalsy();
     });
   });
 });
