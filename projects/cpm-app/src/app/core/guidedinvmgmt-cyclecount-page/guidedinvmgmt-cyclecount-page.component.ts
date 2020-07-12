@@ -31,7 +31,7 @@ import { BarcodeScanService } from 'oal-core';
 
 export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewChecked {
   private _leaseDeniedTitle$: Observable<string>;
-  private barCodeNotFound: string = "Bar Code Not Found";
+  private barCodeNotFound = "Bar Code Not Found";
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) nextbutton: ButtonActionComponent;
@@ -97,7 +97,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   private barcodeScannedSubscription: Subscription;
   ItemDescriptionOverlap: boolean;
   ItemBrandNameOverlap: boolean;
-  uiIssuesIdentified: boolean = false;
+  uiIssuesIdentified = false;
   isPopupVisible = false;
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -361,6 +361,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.daterequired = true;
           this.toggleredborderfornonfirstitem(false);
           this.DisableActionButtons(false);
+          if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
+            this.navigateContinue();
+          }
         }
         else if (isNaN(eventdate.getTime())) {
           this.DisableActionButtons(true);
@@ -401,6 +404,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.wpfActionController.ExecuteBackAction();
     }
     else {
+      if(this.datepicker)
+      {
+        this.datepicker.selectedDate = "";
+      }
       this.nextRecord();
     }
   }
@@ -441,12 +448,19 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.toggleredborderfornonfirstitem(true);
     }
     else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
-      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
+      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) 
+      {
       if (!(this.datepicker && this.datepicker.isDisabled))
+      {
         this.toggleredborderfornonfirstitem(false);
+      }
       else {
         this.toggleredborderfornonfirstitem(true);
       }
+    }
+    else
+    {
+      this.toggleredborderfornonfirstitem(true);
     }
   }
 
