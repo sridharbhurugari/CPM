@@ -1,19 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
-import { SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
-  PopupDialogProperties } from '@omnicell/webcorecomponents';
+import {
+  SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
+  PopupDialogProperties
+} from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
-import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
+import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { BarcodeScanService } from 'oal-core';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -21,6 +24,8 @@ import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
   styleUrls: ['./quick-pick-page.component.scss']
 })
 export class QuickPickPageComponent implements OnInit {
+
+  private barcodeScannedSubscription: Subscription;
 
   quickpickDrawers: Observable<QuickPickDrawerData[]>;
   quickPickQueueItems: Observable<QuickPickQueueItem[]>;
@@ -30,7 +35,8 @@ export class QuickPickPageComponent implements OnInit {
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
-
+  inputLevelScan: string;
+  rawBarcodeMessage = '';
 
   @ViewChild('searchBox', {
     static: true
@@ -47,13 +53,19 @@ export class QuickPickPageComponent implements OnInit {
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
     private translateService: TranslateService,
     private changeDetector: ChangeDetectorRef,
-    private dialogService: PopupDialogService
-    ) {
-      this.quickPickQueueItems = of([]);
-    }
+    private dialogService: PopupDialogService,
+    private barcodeScanService: BarcodeScanService
+  ) {
+    this.quickPickQueueItems = of([]);
+  }
 
   ngOnInit() {
-      this.getActiveXr2Devices();
+    this.hookupEventHandlers();
+    this.getActiveXr2Devices();
+  }
+
+  ngOnDestroy(): void {
+    this.unhookEventHandlers();
   }
 
   /* istanbul ignore next */
@@ -166,5 +178,51 @@ export class QuickPickPageComponent implements OnInit {
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
+  }
+
+  private hookupEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+      this.processScannedBarcode(scannedBarcode)
+    );
+  }
+
+  private unhookEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
+  }
+
+  private processScannedBarcode(scannedBarcode: string): void {
+    this.barcodeScanService.reset();
+    this.rawBarcodeMessage = scannedBarcode;
+    this.handleInputLevelScan(scannedBarcode);
+  }
+
+  private handleInputLevelScan(scannedBarcode: string): void {
+    if (this.isInvalidSubscription(this.inputLevelScan)) {
+        this.inputLevelScan = '';
+    }
+
+    this.inputLevelScan = `${this.inputLevelScan}${scannedBarcode}`;
+  }
+
+  private unsubscribeIfValidSubscription(subscription: Subscription): void {
+    if (this.isValidSubscription(subscription)) {
+      subscription.unsubscribe();
+    }
+  }
+
+  private isValidSubscription(variable: any): boolean {
+    return variable !== undefined && variable !== null;
+  }
+
+  private isInvalidSubscription(variable: any): boolean {
+    return !this.isValidSubscription(variable);
   }
 }

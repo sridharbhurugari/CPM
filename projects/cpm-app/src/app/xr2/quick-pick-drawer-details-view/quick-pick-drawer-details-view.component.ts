@@ -55,26 +55,25 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   }
 
   getTrafficLightProperties(detailedDrawerData: QuickPickDrawerData) {
-    const pendingUnlockTranslatable = 'PENDING_UNLOCK';
-    const inProgressTranslatable = 'IN_PROGRESS';
-    let pendingUnlockTranslated = '';
-    let inProgressTranslated = '';
+
     let color = '';
     let text = '';
 
-    this.translateService.get(pendingUnlockTranslatable).subscribe((res: string) => {
-      pendingUnlockTranslated = res;
-    });
-    this.translateService.get(inProgressTranslatable).subscribe((res: string) => {
-      inProgressTranslated = res;
-    });
-
-    if (detailedDrawerData.Status === 2) {
+    if (detailedDrawerData.Status === 1) {
+      color = 'gray';
+      this.translateService.get('SCAN_TO_UNLOCK').subscribe((res: string) => {
+        text = res;
+      });
+    } else if (detailedDrawerData.Status === 2) {
       color = 'yellow';
-      text = pendingUnlockTranslated;
+      this.translateService.get('PENDING_UNLOCK').subscribe((res: string) => {
+        text = res;
+      });
     } else if (detailedDrawerData.Status === 3) {
       color = 'green';
-      text = inProgressTranslated;
+      this.translateService.get('IN_PROGRESS').subscribe((res: string) => {
+        text = res;
+      });
     } else if (detailedDrawerData.Status === 4) {
       color = 'red';
       text = detailedDrawerData.ErrorInfo.ErrorDescription;

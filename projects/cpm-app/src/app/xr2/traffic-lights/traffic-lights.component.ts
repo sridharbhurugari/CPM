@@ -12,6 +12,7 @@ export class TrafficLightsComponent implements OnInit {
   isRed: boolean;
   isYellow: boolean;
   isGreen: boolean;
+  isGray: boolean;
 
   constructor() {
   }
@@ -29,14 +30,22 @@ export class TrafficLightsComponent implements OnInit {
       this.isRed = true;
       this.isYellow = false;
       this.isGreen = false;
+      this.isGray = false;
     } else if (this.color === 'yellow') {
       this.isYellow = true;
       this.isGreen = false;
       this.isRed = false;
+      this.isGray = false;
     } else if (this.color === 'green') {
       this.isGreen = true;
       this.isYellow = false;
       this.isRed = false;
+      this.isGray = false;
+    } else if (this.color === 'green') {
+      this.isGreen = false;
+      this.isYellow = false;
+      this.isRed = false;
+      this.isGray = true;
     }
   }
 }

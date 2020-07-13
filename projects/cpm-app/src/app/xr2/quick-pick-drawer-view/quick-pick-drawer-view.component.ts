@@ -20,6 +20,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   private _selectedDeviceId: string;
+  private _scannedBarcode: string;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
 
@@ -31,6 +32,20 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   get quickpickDrawers(): QuickPickDrawerData[] {
     return this._quickpickDrawers;
+  }
+
+  @Input()
+  set scannedBarcode(value: string) {
+    this._scannedBarcode = value;
+    if (this.detailedDrawer) {
+      this.unlockDrawer();
+    } else {
+      this.loadDetailedDrawerOnScan();
+    }
+  }
+
+  get scannedBarcode(): string {
+    return this._scannedBarcode;
   }
 
   @Input()
@@ -72,9 +87,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
       }, error => {
         this.displayFailedToSaveDialog();
       });
-
-      // TODO:  THIS IS HERE UNTIL PRINT AND SCAN IS THE UNLOCK METHOD
-    this.unlockDrawer();
   }
 
   unlockDrawer() {
@@ -113,7 +125,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   private loadDetailedDrawerIfAvailable() {
-    if (!this._quickpickDrawers) {
+    if (!this.quickpickDrawers) {
       return;
     }
 
@@ -123,6 +135,23 @@ export class QuickPickDrawerViewComponent implements OnInit {
     if (matchingDrawerIndex !== -1) {
       this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
       this.quickPickActive.emit(true);
+    }
+  }
+
+  private loadDetailedDrawerOnScan() {
+    if (!this.scannedBarcode) {
+      return;
+    }
+
+    const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
+      return drawerToDisplay.Xr2ServiceBarcode === this.scannedBarcode;
+    });
+    if (matchingDrawerIndex !== -1) {
+      this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
+      this.quickPickActive.emit(true);
+      this.unlockDrawer();
+    } else {
+      this.displayFailedToSaveDialog();
     }
   }
 
