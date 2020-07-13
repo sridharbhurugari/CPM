@@ -12,6 +12,7 @@ import { CpColorService } from '../../shared/services/cp-color.service';
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   private _detailedDrawerData: QuickPickDrawerData;
+  private _scannedBarcode: string;
 
   controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
 
@@ -25,6 +26,15 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   get detailedDrawerData(): QuickPickDrawerData {
     return this._detailedDrawerData;
+  }
+
+  @Input()
+  set scannedBarcode(value: string) {
+    this._scannedBarcode = value;
+  }
+
+  get scannedBarcode(): string {
+    return this._scannedBarcode;
   }
 
   constructor(private translateService: TranslateService, private colorService: CpColorService) { }

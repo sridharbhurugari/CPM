@@ -2,6 +2,7 @@
   <div *ngIf="detailedDrawer" class="detail-card-view">
     <app-quick-pick-drawer-details-view
     [detailedDrawerData]="detailedDrawer"
+    [scannedBarcode] = "scannedBarcode"
     (closeQuickPickDetailsCard)="onCloseQuickPickDrawerDetails()"
     (printQuickPickDrawerLabel)="printDrawerLabel()">
     </app-quick-pick-drawer-details-view>
