@@ -111,7 +111,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   scanItem:GuidedManualCycleCountScanItem[];
 
   // Parent component variables
-  //barcodeOverride: boolean = false;
   selectedItem: any;
   searchKey = "";
   searchData: Observable<GuidedManualCycleCountItems[]>;
@@ -207,6 +206,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
 
     this.hookupEventHandlers();
 
+    this.addwhitespacetodropdown();
     this.cycleCountItemsCopy = [];
     this.doneButtonDisable = true;
   }
@@ -214,7 +214,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   selectedItemLocattion: SingleselectRowItem;
 
   ngAfterViewChecked() {
-    this.toggleredborderforfirstitem();
+    this.toggleredborderforfirstitem()
+    this.addwhitespacetodropdown();
     setTimeout(() => {
       if (this.elementView) {
         this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
@@ -232,6 +233,14 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       }
     });
   }
+
+  addwhitespacetodropdown() {
+    let elemt = document.getElementById("OcSingleSelectDropdown");
+    if (elemt) {
+      elemt.setAttribute("style", "white-space:pre;");
+    }
+  }
+
 
   ngOnDestroy() {
     if (this.timeIntervalId) {
@@ -323,6 +332,10 @@ let quantity=x[i].QuantityOnHand;
           );
         })
       );
+      if(this.cycleCountItems)
+      {
+      
+    }
     this.sub = this.cycleCountItems.subscribe(
       (x) => {
         if (x.length > 0 && x[0].ExpirationDate) {
@@ -335,7 +348,7 @@ let quantity=x[i].QuantityOnHand;
             this.itemLength();
             this.multipleLocations(x);
           } else {
-this.deviceId=x[0].DeviceId;
+            this.deviceId=x[0].DeviceId;
             this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
               console.log(res);
               this.devicePrinterName = res.PrinterName;
@@ -572,11 +585,22 @@ Continue(){
         console.log(res);
       });
   }
+  if (this.displayCycleCountItem) {
+    if (
+      this.displayCycleCountItem.DeviceLocationTypeId ===
+      DeviceLocationTypeId.Carousel
+    ) {
+      this.carouselLocationAccessService
+        .clearLightbar(this.displayCycleCountItem.DeviceId)
+        .subscribe();
+    }
+  }
 }
 
 
   navigateContinue() {
     this.Continue();
+
     this.wpfActionController.ExecuteBackAction();
   }
 
@@ -708,6 +732,14 @@ Continue(){
 
   onSelectionChanged($event) {
     if ($event != "" && $event != null) {
+      if (
+        this.displayCycleCountItem.DeviceLocationTypeId ===
+        DeviceLocationTypeId.Carousel
+      ) {
+        this.carouselLocationAccessService
+          .clearLightbar(this.displayCycleCountItem.DeviceId)
+          .subscribe();
+      }
       let eventData = $event.value;
       if (this.cycleCountItems != undefined) {
         this.displayCycleCountItem.ExpirationDateFormatted = "";
@@ -868,11 +900,7 @@ Continue(){
           this.DisableActionButtons(true);
           transaction=false;
         }
-        // else if (isNaN(eventdate.getTime())) {
-        //   this.DisableActionButtons(true);
-        //   transaction=false;
-        // }
-
+        
         else {
           this.Continue();
           this.displayCycleCountItem=null;
