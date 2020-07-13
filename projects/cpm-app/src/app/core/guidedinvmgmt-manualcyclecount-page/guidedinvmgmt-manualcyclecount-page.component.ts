@@ -730,7 +730,8 @@ Continue(){
     }
   }
 
-  displayUnknownItemDialog(itemId: string): void {
+  displayUnknownItemDialog(itemId: string):boolean {
+    this.over=true;
     const properties = new PopupDialogProperties("Role-Status-Warning");
     this.translateService.get("UNKNOWNITEM_HEADER_TEXT").subscribe((result) => {
       properties.titleElementText = result;
@@ -743,7 +744,18 @@ Continue(){
     properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+    this.popupDialog =this.dialogService.showOnce(properties);
+
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
+      this.over=false;
+    });
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
+     this.over=false;
+    });
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
+     this.over=false;
+    });
+    return this.over;
   }
 
   HasLabelPrinterConfigured(): boolean {
@@ -817,22 +829,18 @@ Continue(){
     this.popupDialog = this.dialogService.showOnce(properties);
 
     this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
-      //this.barcodeOverride = false;
       this.over=false;
     });
     this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
-     // this.barcodeOverride = false;
      this.over=false;
     });
     this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
-     // this.barcodeOverride = false;
      this.over=false;
     });
     return this.over;
   }
 
   closePopup() {
-    //this.barcodeOverride = false;
     this.popupDialog && this.popupDialog.onCloseClicked();
   }
 

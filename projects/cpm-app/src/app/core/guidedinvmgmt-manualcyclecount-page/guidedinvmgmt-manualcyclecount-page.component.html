@@ -87,16 +87,8 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf=displayCycleCountItem>
-                <div class="devicelocationaccess" *ngIf="!isSingleSelectEnable">
-                    <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
-                        [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
-                        (isAccessBusy)="deviceLocationAccessBusy = $event"
-                        (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
-                </div>
-            </div>
-            <div *ngIf=displayCycleCountItem>
-                <div class="devicelocationaccess" *ngIf="isSingleSelectEnable">
+            <div *ngIf="!isMultiLocation">
+                <div class="devicelocationaccess" *ngIf=displayCycleCountItem>
                     <app-device-location-access [deviceLocationAccessData]="displayCycleCountItem"
                         [disabled]="carouselFaulted" (isLeaseBusy)="handleLeaseBusyChanged($event)"
                         (isAccessBusy)="deviceLocationAccessBusy = $event"
