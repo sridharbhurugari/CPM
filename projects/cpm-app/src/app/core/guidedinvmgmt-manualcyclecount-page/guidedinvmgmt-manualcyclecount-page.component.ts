@@ -5,12 +5,12 @@ import {
   ViewChild,
   AfterViewChecked,
   HostListener,
-  ElementRef
+  ElementRef,
 } from "@angular/core";
 import * as _ from "lodash";
 import { WpfActionControllerService } from "../../shared/services/wpf-action-controller/wpf-action-controller.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, forkJoin, merge} from "rxjs";
+import { Observable, forkJoin, merge } from "rxjs";
 import {
   NumericComponent,
   DatepickerComponent,
@@ -45,13 +45,13 @@ import { deviceCycleCountItemUpdate } from "../../api-core/data-contracts/guided
 import { SingleselectRowItem } from "../model/SingleselectRowItem";
 import { searchConfiguration } from "../model/manual-cycle-count-search-configuration";
 import { Subscription } from "rxjs";
-import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
-import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided-cycle-count-print-label';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { IGuidedCycleCountPrintLabel } from '../../api-core/data-contracts/i-guided-cycle-count-print-label';
-import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
-import { BarcodeScanService } from 'oal-core';
-import{GuidedManualCycleCountScanItem} from "../../api-core/data-contracts/GuidedManualCycleCountScanItem"
+import { SystemConfigurationService } from "../../shared/services/system-configuration.service";
+import { GuidedCycleCountPrintLabel } from "../../api-core/data-contracts/guided-cycle-count-print-label";
+import { HttpResponse, HttpErrorResponse } from "@angular/common/http";
+import { IGuidedCycleCountPrintLabel } from "../../api-core/data-contracts/i-guided-cycle-count-print-label";
+import { HardwareLeaseService } from "../../api-core/services/hardware-lease-service";
+import { BarcodeScanService } from "oal-core";
+import { GuidedManualCycleCountScanItem } from "../../api-core/data-contracts/GuidedManualCycleCountScanItem";
 @Component({
   selector: "app-guidedinvmgmt-manualcyclecount-page",
   templateUrl: "./guidedinvmgmt-manualcyclecount-page.component.html",
@@ -65,10 +65,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
-  @ViewChild('contain', null) elementView: ElementRef;
-  @ViewChild('Generic', null) GenericView: ElementRef;
+  @ViewChild("contain", null) elementView: ElementRef;
+  @ViewChild("Generic", null) GenericView: ElementRef;
 
-  over:boolean
+  over: boolean;
   leaseBusyTitle$: Observable<any>;
   leaseBusyMessage$: Observable<any>;
   carouselFaulted: boolean = false;
@@ -92,12 +92,12 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   leaseBusyPopup$: Observable<PopupDialogComponent>;
   popupTimeoutSeconds: number;
   labelPrinterName: string;
-  devicePrinterName: string="";
+  devicePrinterName: string = "";
   printResult: boolean;
   displayPrintLabel: IGuidedCycleCountPrintLabel;
-  deviceId:any
-  rawBarcodeMessage: string = '';
-  nonBarCodekeyboardInput: string = '';
+  deviceId: any;
+  rawBarcodeMessage: string = "";
+  nonBarCodekeyboardInput: string = "";
   pagelevelInput: string;
   nonBarcodeInputFocus: boolean = false;
   itemGenericWidth: any;
@@ -108,7 +108,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   private popupDialogClose$: Subscription;
   private popupDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
-  scanItem:GuidedManualCycleCountScanItem[];
+  scanItem: GuidedManualCycleCountScanItem[];
 
   // Parent component variables
   selectedItem: any;
@@ -195,14 +195,17 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     ];
     this.guidedManualCycleCountServiceService.getSearchItems("");
 
+    this.systemConfigurationService
+      .GetConfigurationValues("PRINTING", "LABEL_PRINTER")
+      .subscribe((result) => {
+        this.labelPrinterName = result.Value;
+      });
 
-    this.systemConfigurationService.GetConfigurationValues('PRINTING', 'LABEL_PRINTER').subscribe(result => {
-      this.labelPrinterName = result.Value;
-    });
-
-    this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
-      this.popupTimeoutSeconds = (Number(result.Value));
-    });
+    this.systemConfigurationService
+      .GetConfigurationValues("TIMEOUTS", "POP_UP_MESSAGE_TIMEOUT")
+      .subscribe((result) => {
+        this.popupTimeoutSeconds = Number(result.Value);
+      });
 
     this.hookupEventHandlers();
 
@@ -214,20 +217,26 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   selectedItemLocattion: SingleselectRowItem;
 
   ngAfterViewChecked() {
-    this.toggleredborderforfirstitem()
+    this.toggleredborderforfirstitem();
     this.addwhitespacetodropdown();
     setTimeout(() => {
       if (this.elementView) {
         this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
         this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
-        if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
+        if (
+          this.elementView.nativeElement.offsetWidth <
+          this.elementView.nativeElement.scrollWidth
+        ) {
           this.ItemDescriptionOverlap = true;
         }
       }
       if (this.GenericView) {
         this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
         this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
-        if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
+        if (
+          this.GenericView.nativeElement.offsetWidth <
+          this.GenericView.nativeElement.scrollWidth
+        ) {
           this.ItemBrandNameOverlap = true;
         }
       }
@@ -240,7 +249,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       elemt.setAttribute("style", "white-space:pre;");
     }
   }
-
 
   ngOnDestroy() {
     if (this.timeIntervalId) {
@@ -262,9 +270,9 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.getCycleCountData(item.item.ID);
   }
   getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
-    if (this.displayCycleCountItem != undefined) {
-      this.displayCycleCountItem = null;
-    }
+    // if (this.displayCycleCountItem != undefined) {
+    //   this.displayCycleCountItem = null;
+    // }
     // Make api call to get data as an observable
     return this.guidedManualCycleCountServiceService.getSearchItems(searchKey);
     //return this.searchData ;
@@ -312,10 +320,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     for (let i = 0; i < x.length; i++) {
       this.locationCount++;
       let location = new SingleselectRowItem();
-let desc=x[i].LocationDescription+"       "  ;
-let pack=x[i].PackageFormName+"      " ;
-let quantity=x[i].QuantityOnHand;
-      location.text = desc + pack+quantity;
+      let desc = x[i].LocationDescription + "       ";
+      let pack = x[i].PackageFormName + "      ";
+      let quantity = x[i].QuantityOnHand;
+      location.text = desc + pack + quantity;
       location.value = x[i].LocationDescription;
       location.Visible = true;
       this.multiLocations && this.multiLocations.push(location && location);
@@ -332,10 +340,6 @@ let quantity=x[i].QuantityOnHand;
           );
         })
       );
-      if(this.cycleCountItems)
-      {
-      
-    }
     this.sub = this.cycleCountItems.subscribe(
       (x) => {
         if (x.length > 0 && x[0].ExpirationDate) {
@@ -348,11 +352,13 @@ let quantity=x[i].QuantityOnHand;
             this.itemLength();
             this.multipleLocations(x);
           } else {
-            this.deviceId=x[0].DeviceId;
-            this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
-              console.log(res);
-              this.devicePrinterName = res.PrinterName;
-            });
+            this.deviceId = x[0].DeviceId;
+            this.hardwareLeaseService
+              .getDeviceConfiguration(this.deviceId)
+              .subscribe((res) => {
+                console.log(res);
+                this.devicePrinterName = res.PrinterName;
+              });
             this.isSingleSelectEnable = false;
             this.displayCycleCountItem.ExpirationDateFormatted =
               date.getFullYear() == 1
@@ -547,56 +553,55 @@ let quantity=x[i].QuantityOnHand;
       }
     }
   }
-Continue(){
-  if (this.ItemDescriptionOverlap) {
-    this.ItemDescriptionOverlap = false;
-  }
-  if (this.displayCycleCountItem != null) {
-    let expireddate = null,
-      actualexpiradationdate = null;
-    expireddate = new Date(
-      this.displayCycleCountItem.ExpirationDateFormatted
-    );
-    if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
-      actualexpiradationdate =
-        this.displayCycleCountItem.QuantityOnHand !== 0
-          ? new Date(expireddate.getFullYear(), expireddate.getMonth() + 1, 0)
-          : null;
-    } else {
-      actualexpiradationdate =
-        this.displayCycleCountItem.QuantityOnHand !== 0
-          ? new Date(expireddate)
-          : null;
+  Continue() {
+    if (this.ItemDescriptionOverlap) {
+      this.ItemDescriptionOverlap = false;
     }
-    let update = new deviceCycleCountItemUpdate({
-      DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
-      ItemId: this.displayCycleCountItem.ItemId,
-      ExpirationDate: actualexpiradationdate,
-      QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
-      BarCodeFormat:"UN",
-      ProductID:"0090192121"
-    });
-
-    let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");
-
-    this.guidedManualCycleCountServiceService
-      .post(deviceId, update)
-      .subscribe((res) => {
-        console.log(res);
+    if (this.displayCycleCountItem != null) {
+      let expireddate = null,
+        actualexpiradationdate = null;
+      expireddate = new Date(
+        this.displayCycleCountItem.ExpirationDateFormatted
+      );
+      if (this.displayCycleCountItem.ItmExpDateGranularity === "Month") {
+        actualexpiradationdate =
+          this.displayCycleCountItem.QuantityOnHand !== 0
+            ? new Date(expireddate.getFullYear(), expireddate.getMonth() + 1, 0)
+            : null;
+      } else {
+        actualexpiradationdate =
+          this.displayCycleCountItem.QuantityOnHand !== 0
+            ? new Date(expireddate)
+            : null;
+      }
+      let update = new deviceCycleCountItemUpdate({
+        DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
+        ItemId: this.displayCycleCountItem.ItemId,
+        ExpirationDate: actualexpiradationdate,
+        QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
+        BarCodeFormat: "UN",
+        ProductID: "0090192121",
       });
-  }
-  if (this.displayCycleCountItem) {
-    if (
-      this.displayCycleCountItem.DeviceLocationTypeId ===
-      DeviceLocationTypeId.Carousel
-    ) {
-      this.carouselLocationAccessService
-        .clearLightbar(this.displayCycleCountItem.DeviceId)
-        .subscribe();
+
+      let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");
+
+      this.guidedManualCycleCountServiceService
+        .post(deviceId, update)
+        .subscribe((res) => {
+          console.log(res);
+        });
+    }
+    if (this.displayCycleCountItem) {
+      if (
+        this.displayCycleCountItem.DeviceLocationTypeId ===
+        DeviceLocationTypeId.Carousel
+      ) {
+        this.carouselLocationAccessService
+          .clearLightbar(this.displayCycleCountItem.DeviceId)
+          .subscribe();
+      }
     }
   }
-}
-
 
   navigateContinue() {
     this.Continue();
@@ -706,11 +711,13 @@ Continue(){
   multipleLocationItem(x: IGuidedManualCycleCountItemid[], eventData: any) {
     for (let i = 0; i < x.length; i++) {
       if (x[i].LocationDescription === eventData) {
-        this.deviceId=x[i].DeviceId;
-        this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
-          console.log(res);
-          this.devicePrinterName = res.PrinterName;
-        });
+        this.deviceId = x[i].DeviceId;
+        this.hardwareLeaseService
+          .getDeviceConfiguration(this.deviceId)
+          .subscribe((res) => {
+            console.log(res);
+            this.devicePrinterName = res.PrinterName;
+          });
         this.disablethedate = false;
         this.displayCycleCountItem = x[i];
         let date = new Date(x[i].ExpirationDate);
@@ -762,39 +769,49 @@ Continue(){
     }
   }
 
-  displayUnknownItemDialog(itemId: string):boolean {
-    this.over=true;
+  displayUnknownItemDialog(itemId: string): boolean {
+    this.over = true;
     const properties = new PopupDialogProperties("Role-Status-Warning");
     this.translateService.get("UNKNOWNITEM_HEADER_TEXT").subscribe((result) => {
       properties.titleElementText = result;
     });
-    this.translateService.get('UNKNOWNITEM_BODY_TEXT' , { itemId: itemId}).subscribe((result) => {
-      properties.messageElementText = result;
-    });
+    this.translateService
+      .get("UNKNOWNITEM_BODY_TEXT", { itemId: itemId })
+      .subscribe((result) => {
+        properties.messageElementText = result;
+      });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    this.popupDialog =this.dialogService.showOnce(properties);
+    this.popupDialog = this.dialogService.showOnce(properties);
 
-    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
-      this.over=false;
-    });
-    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
-     this.over=false;
-    });
-    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
-     this.over=false;
-    });
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
     return this.over;
   }
 
   HasLabelPrinterConfigured(): boolean {
-    if ((this.devicePrinterName !== null && this.devicePrinterName.length > 0) || this.labelPrinterName !== null && this.labelPrinterName.length > 0) {
+    if (
+      (this.devicePrinterName !== null && this.devicePrinterName.length > 0) ||
+      (this.labelPrinterName !== null && this.labelPrinterName.length > 0)
+    ) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -802,73 +819,100 @@ Continue(){
   PrintLabel() {
     this.displayPrintLabel = new GuidedCycleCountPrintLabel({
       ItemId: this.displayCycleCountItem.ItemId,
-      DosageForm:this.displayCycleCountItem.DosageForm,
+      DosageForm: this.displayCycleCountItem.DosageForm,
       DeviceId: this.displayCycleCountItem.DeviceId,
       DeviceLocationId: this.displayCycleCountItem.DeviceLocationId,
       DeviceLocationDescription: this.displayCycleCountItem.LocationDescription,
       TradeName: this.displayCycleCountItem.BrandNameFormatted,
       GenericName: this.displayCycleCountItem.GenericNameFormatted,
-      UnitOfIssue: this.displayCycleCountItem.Units
+      UnitOfIssue: this.displayCycleCountItem.Units,
     });
-    this.guidedManualCycleCountServiceService.PrintLabel(this.deviceId, this.displayPrintLabel).subscribe(res => {
-      if (res) {
-        this.printResult = true;
-        this.displaySuccessToSaveDialog();
-      }
-      else {
-        this.printResult = false;
-        this.displayFailedToSaveDialog();
-      }
-    }, err => {
-      console.error(HttpErrorResponse, err);
-    });
+    this.guidedManualCycleCountServiceService
+      .PrintLabel(this.deviceId, this.displayPrintLabel)
+      .subscribe(
+        (res) => {
+          if (res) {
+            this.printResult = true;
+            this.displaySuccessToSaveDialog();
+          } else {
+            this.printResult = false;
+            this.displayFailedToSaveDialog();
+          }
+        },
+        (err) => {
+          console.error(HttpErrorResponse, err);
+        }
+      );
   }
   displaySuccessToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Info');
-    this.translateService.get('PRINTSUCCESSFUL_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('PRINTSUCCESSFUL_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    const properties = new PopupDialogProperties("Role-Status-Info");
+    this.translateService
+      .get("PRINTSUCCESSFUL_HEADER_TEXT")
+      .subscribe((result) => {
+        properties.titleElementText = result;
+      });
+    this.translateService
+      .get("PRINTSUCCESSFUL_BODY_TEXT")
+      .subscribe((result) => {
+        properties.messageElementText = result;
+      });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
+    properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Info;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
   displayFailedToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Error');
-    this.translateService.get('PRINTFAILED_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('PRINTFAILED_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    const properties = new PopupDialogProperties("Role-Status-Error");
+    this.translateService.get("PRINTFAILED_HEADER_TEXT").subscribe((result) => {
+      properties.titleElementText = result;
+    });
+    this.translateService.get("PRINTFAILED_BODY_TEXT").subscribe((result) => {
+      properties.messageElementText = result;
+    });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
+    properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
   displayWrongBarCodeDialog(): boolean {
-    this.over=true;
-    const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
-    this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
-   
-    
-      this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
-  
+    this.over = true;
+    const properties = new PopupDialogProperties("INVALID_SCAN_BARCODE");
+    this.translateService
+      .get("INVALID_SCAN_BARCODE_HEADER")
+      .subscribe((result) => {
+        properties.titleElementText = result;
+      });
+
+    this.translateService.get("INVALID_SCAN_BARCODE").subscribe((result) => {
+      properties.messageElementText = result;
+    });
+
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
+    properties.primaryButtonText = "Ok";
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.popupDialog = this.dialogService.showOnce(properties);
 
-    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(() => {
-      this.over=false;
-    });
-    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(() => {
-     this.over=false;
-    });
-    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(() => {
-     this.over=false;
-    });
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
     return this.over;
   }
 
@@ -876,76 +920,84 @@ Continue(){
     this.popupDialog && this.popupDialog.onCloseClicked();
   }
 
-  ScanValidation():boolean {
-    let transaction=false;
+  ScanValidation(): boolean {
+    let transaction = false;
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
-      if (this.displayCycleCountItem &&this.displayCycleCountItem.QuantityOnHand === 0) {
-        this.Continue(); 
-        this.displayCycleCountItem=null;  
-        transaction=true;
-      }
-      else if (this.displayCycleCountItem && this.displayCycleCountItem.ItmExpDateGranularity === "None") {  
+    if (
+      this.displayCycleCountItem &&
+      this.displayCycleCountItem.QuantityOnHand === 0
+    ) {
+      this.Continue();
+      this.displayCycleCountItem = null;
+      transaction = true;
+    } else if (
+      this.displayCycleCountItem &&
+      this.displayCycleCountItem.ItmExpDateGranularity === "None"
+    ) {
+      this.Continue();
+      this.displayCycleCountItem = null;
+      transaction = true;
+    } else {
+      var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
+      if (
+        this.datepicker &&
+        (this.datepicker.selectedDate === null ||
+          this.datepicker.selectedDate === "//" ||
+          this.datepicker.selectedDate === "")
+      ) {
+        this.DisableActionButtons(true);
+        this.toggleredborderfornonfirstitem(false);
+        transaction = false;
+      } else if (
+        this.datepicker &&
+        !this.datepicker.selectedDate.match(dateReg)
+      ) {
+        this.DisableActionButtons(true);
+        transaction = false;
+      } else {
         this.Continue();
-        this.displayCycleCountItem=null;
-        transaction=true;
+        this.displayCycleCountItem = null;
+        transaction = true;
       }
-      else {
-        var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
-        if (this.datepicker && (this.datepicker.selectedDate === null || this.datepicker.selectedDate === "//" || this.datepicker.selectedDate === "")) {
-          this.DisableActionButtons(true);
-          this.toggleredborderfornonfirstitem(false);
-          transaction=false;
-        }
-        else if (this.datepicker && !(this.datepicker.selectedDate.match(dateReg))) {
-          this.DisableActionButtons(true);
-          transaction=false;
-        }
-        
-        else {
-          this.Continue();
-          this.displayCycleCountItem=null;
-          transaction=true;
-        }
-        return transaction;
-      }
+      return transaction;
     }
+  }
 
   // Scanned barcode event listener for use in Cef
   processScannedBarcode(scannedBarcode: string): void {
-    if(this.over)
-   {
-    this.closePopup();
-   }
+    if (this.over) {
+      this.closePopup();
+    }
     this.barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
     this.scanCycleCountItem(scannedBarcode);
   }
-  scanCycleCountItem(scannedBarcode:string):void{
-    let transactionValid=true;
-    if(this.displayCycleCountItem!==undefined)
-    {
+  scanCycleCountItem(scannedBarcode: string): void {
+    let transactionValid = true;
+    if (this.displayCycleCountItem !== undefined) {
       console.log(this.ScanValidation());
-     transactionValid=this.ScanValidation();
+      transactionValid = this.ScanValidation();
     }
     this.rawBarcodeMessage = scannedBarcode;
-    if(transactionValid)
-    {
-    this.guidedManualCycleCountServiceService.getScanItem(this.rawBarcodeMessage).subscribe((res) =>{
-     console.log(res);
-     this.scanItem = res;
-      if(this.scanItem === null || this.scanItem.length===0){
-        this.displayWrongBarCodeDialog();
-      }
-     else if(this.scanItem.length!=0 || this.scanItem!=null)
-     {
-       console.log(this.scanItem&&this.scanItem[0].ItemId);
-    this.getCycleCountData(this.scanItem&&this.scanItem[0].ItemId);
+    if (transactionValid) {
+      this.guidedManualCycleCountServiceService
+        .getScanItem(this.rawBarcodeMessage)
+        .subscribe((res) => {
+          console.log(res);
+          this.scanItem = res;
+          if (this.scanItem === null || this.scanItem.length === 0) {
+            this.displayWrongBarCodeDialog();
+          } else if (this.scanItem.length != 0 || this.scanItem != null) {
+            console.log(this.scanItem && this.scanItem[0].ItemId);
+            this.getCycleCountData(this.scanItem && this.scanItem[0].ItemId);
+          }
+        });
     }
-    });
-   }
   }
   // Page Level Listener for barcode scanner
-  @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
+  @HostListener("document:keypress", ["$event"]) onKeypressHandler(
+    event: KeyboardEvent
+  ) {
     if (this.nonBarcodeInputFocus) {
       return;
     }
@@ -971,7 +1023,10 @@ Continue(){
     // check if the character is a barcode scan
     if (isScannerInput) {
       // Since the first character always returns true, ignore it.
-      if (this.barcodeScanService.BarcodeInputCharacters && this.barcodeScanService.BarcodeInputCharacters.length !== 1) {
+      if (
+        this.barcodeScanService.BarcodeInputCharacters &&
+        this.barcodeScanService.BarcodeInputCharacters.length !== 1
+      ) {
         // ignore if it is a barcodescan
         event.preventDefault();
       }
@@ -987,7 +1042,7 @@ Continue(){
   }
 
   reset() {
-    this.rawBarcodeMessage = '';
+    this.rawBarcodeMessage = "";
   }
 
   hookupEventHandlers(): void {
@@ -995,9 +1050,11 @@ Continue(){
       return;
     }
 
-    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject && this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
-      this.processScannedBarcode(scannedBarcode)
-    );
+    this.barcodeScannedSubscription =
+      this.barcodeScanService.BarcodeScannedSubject &&
+      this.barcodeScanService.BarcodeScannedSubject.subscribe(
+        (scannedBarcode: string) => this.processScannedBarcode(scannedBarcode)
+      );
   }
 
   unhookEventHandlers(): void {
