@@ -46,18 +46,19 @@ export class EditDeviceSequenceComponent implements OnInit {
     this.deviceSequenceChanged.emit(this.enabledDevices);
   }
 
-  onOutputDeviceEditClick(){
+  onOutputDeviceEditClick(device: IDeviceSequenceOrder){
     const properties = new PopupWindowProperties();
 
     const outputDeviceDisplayList = [];
     
-    outputDeviceDisplayList.push(new SingleselectRowItem('Cart Module', '2104'));  
-    outputDeviceDisplayList.push(new SingleselectRowItem('Quick Pick', '2102'));
-    outputDeviceDisplayList.push(new SingleselectRowItem('Auto Packager', '2103'));
+    device.OutputDevices.forEach(x => {
+      const outputDeviceRow = new SingleselectRowItem(x.Label, x.DeviceId);
+      outputDeviceDisplayList.push(outputDeviceRow);
+    })       
   
     const data: IDropdownPopupData = {
       popuptitle: 'Route Device Configuration',
-      dropdowntitle: 'XR2 Output Device',
+      dropdowntitle: 'Output Device',
       dropdownrows: outputDeviceDisplayList
     };
 
