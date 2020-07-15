@@ -5,7 +5,7 @@
             {{time| date:'M/d/yyyy h:mm a'}}
         </div>
         <div *ngIf="displayCycleCountItem"> 
-        <div class="printlable" *ngIf="(HasLabelPrinterConfigured()) && (deviceId)" >
+        <div class="printlabel" *ngIf="(HasLabelPrinterConfigured()) && (deviceId)" >
             <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
         </div>
     </div>
@@ -68,7 +68,7 @@
             </div>
             <div class="DeviceLocation">
                 <div>
-                    <div class="itemIdHeader">
+                    <div class="itemIdHeader" *ngIf="displayCycleCountItem">
                         <span *ngIf="!isSingleSelectEnable">{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
                         <span *ngIf="isSingleSelectEnable">{{'GUIDED_CYCLE_COUNT_LOCATIONS' | translate }}</span>
                         <span *ngIf="isSingleSelectEnable">-{{locationCount}}</span>

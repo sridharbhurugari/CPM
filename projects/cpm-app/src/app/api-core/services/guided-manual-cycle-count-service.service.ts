@@ -44,10 +44,12 @@ export class GuidedManualCycleCountServiceService {
           headers: this.ocapHttpHeadersService.getHeaders()
         });
       }
-      public getScanItem(scanitem:string):Observable<IGuidedManualCycleCountScanItem[]>{
-        let url = this.ocapUrlBuilderService.buildUrl(`/api/guidedcyclecount/manualcyclecount/${scanitem}`);
-      return this.httpClient.get<IGuidedManualCycleCountScanItem[]>(url, {
-        headers: this.ocapHttpHeadersService.getHeaders()
+      public ValidCycleCountScanBarCode(itemID:string,barCode:string):Observable<string>{
+        let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/ValidCycleCountScanBarCode`);
+        const params = {itemID: itemID, barCode: barCode};
+      return this.httpClient.get<string>(url, {
+        headers: this.ocapHttpHeadersService.getHeaders(),params
+        
       });
       }
 }

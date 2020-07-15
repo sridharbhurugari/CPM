@@ -83,7 +83,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   numericfocus: boolean;
   isMultiLocation: boolean;
   isSingleSelectEnable: boolean;
-  locationCount: number;
+  locationCount: number = 0;
   unassignedItem: boolean;
   numericindexes = ["", 1, ""];
   datepickerindexes = [2, 3, 4, ""];
@@ -108,7 +108,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   private popupDialogClose$: Subscription;
   private popupDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
-  scanItem: GuidedManualCycleCountScanItem[];
+  scanItem: string;
 
   // Parent component variables
   selectedItem: any;
@@ -267,6 +267,16 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   itemSelected(item: any) {
     this.selectedItem = JSON.stringify(item);
     this.isSingleSelectEnable = false;
+    if (this.displayCycleCountItem) {
+      if (
+        this.displayCycleCountItem.DeviceLocationTypeId ===
+        DeviceLocationTypeId.Carousel
+      ) {
+        this.carouselLocationAccessService
+          .clearLightbar(this.displayCycleCountItem.DeviceId)
+          .subscribe();
+      }
+    }
     this.getCycleCountData(item.item.ID);
   }
   getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
@@ -320,10 +330,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     for (let i = 0; i < x.length; i++) {
       this.locationCount++;
       let location = new SingleselectRowItem();
-      let desc = x[i].LocationDescription + "       ";
-      let pack = x[i].PackageFormName + "      ";
-      let quantity = x[i].QuantityOnHand;
-      location.text = desc + pack + quantity;
+      location.text = x[i].LocationDescription + "       " + x[i].PackageFormName + "      " + x[i].QuantityOnHand;
       location.value = x[i].LocationDescription;
       location.Visible = true;
       this.multiLocations && this.multiLocations.push(location && location);
@@ -974,6 +981,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
   scanCycleCountItem(scannedBarcode: string): void {
     let transactionValid = true;
+    let itemID="";
     if (this.displayCycleCountItem !== undefined) {
       console.log(this.ScanValidation());
       transactionValid = this.ScanValidation();
@@ -981,15 +989,15 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.rawBarcodeMessage = scannedBarcode;
     if (transactionValid) {
       this.guidedManualCycleCountServiceService
-        .getScanItem(this.rawBarcodeMessage)
+        .ValidCycleCountScanBarCode(itemID,this.rawBarcodeMessage)
         .subscribe((res) => {
           console.log(res);
           this.scanItem = res;
           if (this.scanItem === null || this.scanItem.length === 0) {
             this.displayWrongBarCodeDialog();
           } else if (this.scanItem.length != 0 || this.scanItem != null) {
-            console.log(this.scanItem && this.scanItem[0].ItemId);
-            this.getCycleCountData(this.scanItem && this.scanItem[0].ItemId);
+            console.log(this.scanItem && this.scanItem);
+            this.getCycleCountData(this.scanItem && this.scanItem);
           }
         });
     }
