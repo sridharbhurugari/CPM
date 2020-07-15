@@ -17,6 +17,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
+import { ScanMessage } from '../model/scan-message';
+import { QuickPickScanError } from '../model/quick-pick-scan-error';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -37,6 +39,7 @@ export class QuickPickPageComponent implements OnInit {
   selectedDeviceId: string;
   inputLevelScan: string;
   rawBarcodeMessage = '';
+  scanInput: ScanMessage;
 
   @ViewChild('searchBox', {
     static: true
@@ -90,14 +93,6 @@ export class QuickPickPageComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
-      return;
-    }
-
-    this.loadPicklistsQueueItems();
-  }
-
   async getActiveXr2Devices() {
     const results = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
@@ -147,6 +142,45 @@ export class QuickPickPageComponent implements OnInit {
       });
   }
 
+   /* istanbul ignore next */
+   displayFailedToSaveDialog(): void {
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
+
+  /* istanbul ignore next */
+  displayFailedToScanDialog(error: QuickPickScanError): void {
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    if (error === QuickPickScanError.NotFound) {
+      this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
+      this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
+    } else if (error === QuickPickScanError.Unavailable) {
+      this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER').subscribe(result => { properties.titleElementText = result; });
+      this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS').subscribe(result => { properties.messageElementText = result; });
+    }
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Warning;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
+
+  private onQuickPickQueueUpdate(event) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+      return;
+    }
+
+    this.loadPicklistsQueueItems();
+  }
+
   private loadPicklistsQueueItems(): void {
     if (!this.selectedDeviceId) {
       return;
@@ -165,19 +199,6 @@ export class QuickPickPageComponent implements OnInit {
     this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).subscribe(data => {
       this.quickpickDrawers = of(data);
     });
-  }
-
-  /* istanbul ignore next */
-  private displayFailedToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
   }
 
   private hookupEventHandlers(): void {
@@ -206,10 +227,11 @@ export class QuickPickPageComponent implements OnInit {
 
   private handleInputLevelScan(scannedBarcode: string): void {
     if (this.isInvalidSubscription(this.inputLevelScan)) {
-        this.inputLevelScan = '';
+      this.inputLevelScan = '';
     }
 
-    this.inputLevelScan = `${this.inputLevelScan}${scannedBarcode}`;
+    this.inputLevelScan = `${scannedBarcode}`;
+    this.scanInput = new ScanMessage(this.inputLevelScan);
   }
 
   private unsubscribeIfValidSubscription(subscription: Subscription): void {

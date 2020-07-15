@@ -31,6 +31,13 @@ export class Xr2QuickPickDrawerService {
     });
   }
 
+  scanLabel(deviceId: string, printRequest: QuickPickDrawerRequest): Observable<boolean> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/scandrawer/` + deviceId);
+    return this.httpClient.post<boolean>(url, printRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
   unlockDrawer(deviceId: string, request: QuickPickDrawerRequest): Observable<boolean> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpick/unlockdrawer/` + deviceId);
     return this.httpClient.post<boolean>(url, request, {

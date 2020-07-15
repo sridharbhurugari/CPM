@@ -3,6 +3,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
 import { TranslateService } from '@ngx-translate/core';
 import { CpColorService } from '../../shared/services/cp-color.service';
+import { ScanMessage } from '../model/scan-message';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -12,7 +13,7 @@ import { CpColorService } from '../../shared/services/cp-color.service';
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   private _detailedDrawerData: QuickPickDrawerData;
-  private _scannedBarcode: string;
+  private _scanMessage: ScanMessage;
 
   controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
 
@@ -29,12 +30,12 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   }
 
   @Input()
-  set scannedBarcode(value: string) {
-    this._scannedBarcode = value;
+  set scanMessage(value: ScanMessage) {
+    this._scanMessage = value;
   }
 
-  get scannedBarcode(): string {
-    return this._scannedBarcode;
+  get scanMessage(): ScanMessage {
+    return this._scanMessage;
   }
 
   constructor(private translateService: TranslateService, private colorService: CpColorService) { }
@@ -68,30 +69,36 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
     let color = '';
     let text = '';
+    let isBlinking =  false;
 
     if (detailedDrawerData.Status === 1) {
       color = 'gray';
+      isBlinking = false;
       this.translateService.get('SCAN_TO_UNLOCK').subscribe((res: string) => {
         text = res;
       });
     } else if (detailedDrawerData.Status === 2) {
       color = 'yellow';
+      isBlinking = true;
       this.translateService.get('PENDING_UNLOCK').subscribe((res: string) => {
         text = res;
       });
     } else if (detailedDrawerData.Status === 3) {
       color = 'green';
+      isBlinking = true;
       this.translateService.get('IN_PROGRESS').subscribe((res: string) => {
         text = res;
       });
     } else if (detailedDrawerData.Status === 4) {
       color = 'red';
+      isBlinking = true;
       text = detailedDrawerData.ErrorInfo.ErrorDescription;
     }
 
     return {
       color,
-      text
+      text,
+      isBlinking
     };
   }
 }

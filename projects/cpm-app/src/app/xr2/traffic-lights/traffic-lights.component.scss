@@ -1,11 +1,7 @@
-//write color in hex
-//traffic-light color
-$whole: #333;
-//actual traffic-lights
-$color1: #ff0000; //red
-$color2: #ffff00; //yellow
-$color3: #00ff00; //green
-$color4: #808080; // gray
+$colorRed: #ff0000; //red
+$colorYellow: #ffff00; //yellow
+$colorGreen: #00ff00; //green
+$colorGray: #808080; // gray
 
 #box {
   display: flex;
@@ -16,7 +12,7 @@ $color4: #808080; // gray
   background-color: #333;
   border-radius: 8px;
 
-  .light {
+  .stoplight {
     display: flex;
     width: 65%;
     height: 65%;
@@ -30,66 +26,79 @@ $color4: #808080; // gray
   }
 }
 
+.gray {
+  background-color: $colorGray;
+  &.blink {
+    animation: blinkGray 1.1s step-end infinite;
+  }
+}
+
 .red {
-  background-color: darken($color1, 15%);
-  &.checked {
-    animation: blink1 1.1s step-end infinite;
+  background-color: darken($colorRed, 15%);
+  &.blink {
+    animation: blinkRed 1.1s step-end infinite;
   }
 }
 
 .yellow {
-  background-color: darken($color2, 15%);
-  &.checked {
-    animation: blink2 1.1s step-end infinite;
+  background-color: darken($colorYellow, 15%);
+  &.blink {
+    animation: blinkYellow 1.1s step-end infinite;
   }
 }
 
 .green {
-  background-color: darken($color3, 15%);
-  &.checked {
-    animation: blink3 1.1s step-end infinite;
+  background-color: darken($colorGreen, 15%);
+  &.blink {
+    animation: blinkGreen 1.1s step-end infinite;
   }
 }
 
-.gray {
-  background-color: darken($color4, 15%);
-  &.checked {
-    animation: blink3 1.1s step-end infinite;
-  }
-}
-
-@keyframes blink1 {
+@keyframes blinkGray {
   0% {
-    background-color: $color1;
-    box-shadow: 0 0 6em lighten($color1, 10%);
+    background-color: $colorRed;
+    box-shadow: 0 0 6em lighten($colorRed, 10%);
   }
 
   50% {
-    background-color: darken($color1, 15%);
+    background-color: darken($colorRed, 15%);
     box-shadow: 0 0 0em transparent;
   }
 }
 
-@keyframes blink2 {
+@keyframes blinkRed {
   0% {
-    background-color: $color2;
-    box-shadow: 0 0 6em lighten($color2, 10%);
+    background-color: $colorRed;
+    box-shadow: 0 0 6em lighten($colorRed, 10%);
   }
 
   50% {
-    background-color: darken($color2, 15%);
+    background-color: darken($colorRed, 15%);
     box-shadow: 0 0 0em transparent;
   }
 }
 
-@keyframes blink3 {
+@keyframes blinkYellow {
   0% {
-    background-color: $color3;
-    box-shadow: 0 0 6em lighten($color3, 10%);
+    background-color: $colorYellow;
+    box-shadow: 0 0 6em lighten($colorYellow, 10%);
   }
 
   50% {
-    background-color: darken($color3, 15%);
+    background-color: darken($colorYellow, 15%);
     box-shadow: 0 0 0em transparent;
   }
 }
+
+@keyframes blinkGreen {
+  0% {
+    background-color: $colorGreen;
+    box-shadow: 0 0 6em lighten($colorGreen, 10%);
+  }
+
+  50% {
+    background-color: darken($colorGreen, 15%);
+    box-shadow: 0 0 0em transparent;
+  }
+}
+

@@ -7,8 +7,8 @@ import { QuickPickEventConnectionService } from '../services/quick-pick-event-co
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
-
-
+import { ScanMessage } from '../model/scan-message';
+import { QuickPickScanError } from '../model/quick-pick-scan-error';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -18,16 +18,18 @@ import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
 export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() failedScanEvent: EventEmitter<QuickPickScanError> = new EventEmitter<QuickPickScanError>();
+  @Output() failedSaveEvent: EventEmitter<void> = new EventEmitter<void>();
 
   private _selectedDeviceId: string;
-  private _scannedBarcode: string;
+  private _scanMessage: ScanMessage;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
 
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
     this._quickpickDrawers = value;
-    this.loadDetailedDrawerIfAvailable();
+    this.loadDetailedDrawer();
   }
 
   get quickpickDrawers(): QuickPickDrawerData[] {
@@ -35,17 +37,16 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   @Input()
-  set scannedBarcode(value: string) {
-    this._scannedBarcode = value;
-    if (this.detailedDrawer) {
-      this.unlockDrawer();
-    } else {
-      this.loadDetailedDrawerOnScan();
+  set scanMessage(value: ScanMessage) {
+    this._scanMessage = value;
+
+    if (this.loadDetailedDrawerOnScan()) {
+      this.scanDrawerLabel();
     }
   }
 
-  get scannedBarcode(): string {
-    return this._scannedBarcode;
+  get scanMessage(): ScanMessage {
+    return this._scanMessage;
   }
 
   @Input()
@@ -60,8 +61,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
   constructor(
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
-    private translateService: TranslateService,
-    private dialogService: PopupDialogService,
   ) {
   }
 
@@ -71,7 +70,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
     this.detailedDrawer = this._quickpickDrawers[drawerIndex];
-    this.printDrawerLabel();
     this.quickPickActive.emit(true);
   }
 
@@ -80,12 +78,26 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickPickActive.emit(false);
   }
 
+  scanDrawerLabel() {
+    if (!this.scanMessage) {
+      return;
+    }
+
+    const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    this.quickPickDrawerService.scanLabel(this.selectedDeviceId, printRequest).subscribe(
+      () => {
+        this.unlockDrawer();
+      }, error => {
+        this.failedScanEvent.emit(QuickPickScanError.NotFound);
+      });
+  }
+
   printDrawerLabel() {
     const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
       () => {
       }, error => {
-        this.displayFailedToSaveDialog();
+        this.failedSaveEvent.emit();
       });
   }
 
@@ -94,7 +106,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, printRequest).subscribe(
       () => {
       }, error => {
-        this.displayFailedToSaveDialog();
+        this.failedSaveEvent.emit();
       });
   }
 
@@ -124,9 +136,9 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
   }
 
-  private loadDetailedDrawerIfAvailable() {
+  private loadDetailedDrawer(): boolean {
     if (!this.quickpickDrawers) {
-      return;
+      return false;
     }
 
     const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
@@ -135,23 +147,30 @@ export class QuickPickDrawerViewComponent implements OnInit {
     if (matchingDrawerIndex !== -1) {
       this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
       this.quickPickActive.emit(true);
+      return true;
     }
   }
 
-  private loadDetailedDrawerOnScan() {
-    if (!this.scannedBarcode) {
-      return;
+  private loadDetailedDrawerOnScan(): boolean {
+    if (!this.scanMessage) {
+      return false;
+    }
+
+    if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
+      this.failedScanEvent.emit(QuickPickScanError.Unavailable);
+      return false;
     }
 
     const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
-      return drawerToDisplay.Xr2ServiceBarcode === this.scannedBarcode;
+      return drawerToDisplay.Xr2ServiceBarcode === this.scanMessage.barcode;
     });
     if (matchingDrawerIndex !== -1) {
       this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
       this.quickPickActive.emit(true);
-      this.unlockDrawer();
+      return true;
     } else {
-      this.displayFailedToSaveDialog();
+      this.failedScanEvent.emit(QuickPickScanError.NotFound);
+      return false;
     }
   }
 
@@ -163,18 +182,4 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickPickEventConnectionService.QuickPickDrawerUpdateSubject
       .subscribe(message => this.onUpdateQuickPickDrawer(message));
   }
-
-  /* istanbul ignore next */
-  private displayFailedToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
-  }
-
 }
