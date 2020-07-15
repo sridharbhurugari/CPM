@@ -1,0 +1,24 @@
+<oc-popupwindow-layout [windowFooter]="true">
+    <ng-container class="ocwindowheader">
+      <div>{{data.popuptitle | translate}}</div>
+    </ng-container>
+    <ng-container class="ocwindowcontent">
+        <div>{{data.dropdowntitle | translate}}</div>
+        <div>
+        <oc-singleselect
+            [popupDirection]="'AUTO'"
+            [disabled]="maybeifxr2disabled"
+            [tableData]="data.dropdownrows">
+        </oc-singleselect></div>
+    </ng-container>
+    <ng-container class="ocwindowfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <oc-button-action [buttonText]="'CANCEL' | translate" (click) ="cancel()"></oc-button-action>
+      </div>
+      <div class="ocrightalign">
+        <oc-button-action [buttonText]="'SAVE' | translate" (click) ="continue()"></oc-button-action>
+      </div>
+    </oc-footer>
+  </ng-container>
+  </oc-popupwindow-layout>

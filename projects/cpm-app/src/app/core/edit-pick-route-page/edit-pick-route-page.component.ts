@@ -85,7 +85,9 @@ export class EditPickRoutePageComponent implements OnInit {
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
-          SequenceOrder: sequenceOrder,
+          DeviceType: x.DeviceType,
+          OutputDevices: x.OutputDevices,
+          SequenceOrder: sequenceOrder
         };
       });
 
@@ -107,6 +109,8 @@ export class EditPickRoutePageComponent implements OnInit {
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
+          DeviceType: x.DeviceType,
+          OutputDevices: x.OutputDevices,
           SequenceOrder: sequenceOrder,
         };
       });

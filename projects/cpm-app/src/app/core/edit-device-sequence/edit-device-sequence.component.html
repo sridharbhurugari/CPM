@@ -18,6 +18,11 @@
                         {{device.DeviceDescription}}
                     </div>
                 </div>
+                <div *ngIf="device.OutputDevices != null">                    
+                    <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'edit'"
+                        [label]="'Coming Soon' | translate" (clickEvent)="onOutputDeviceEditClick()">
+                    </app-cp-clickable-icon>
+                </div>
                 <app-row-reorder-buttons [disabled]="disabled" [allowEditIndex]="true" [orderableLength]="enabledDevices.length" [value]="device" [upDisabled]="isFirst" [downDisabled]="isLast" [index]="i"></app-row-reorder-buttons>
             </div>
         </div>
