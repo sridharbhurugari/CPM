@@ -293,9 +293,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     
   }
   getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
-    // if (this.displayCycleCountItem != undefined) {
-    //   this.displayCycleCountItem = null;
-    // }
     // Make api call to get data as an observable
     return this.guidedManualCycleCountServiceService.getSearchItems(searchKey);
     //return this.searchData ;
@@ -945,9 +942,9 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   ScanValidation(): boolean {
      this.transaction = false;
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
+    console.log(this.displayCycleCountItem.QuantityOnHand)
     if (
-      this.displayCycleCountItem &&
-      this.displayCycleCountItem.QuantityOnHand === 0
+      this.displayCycleCountItem.QuantityOnHand == 0
     ) {
       this.transaction = true;
     } else if (
@@ -1023,19 +1020,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     {
     this.Continue();
     this.displayCycleCountItem = null;
-//     if(this.location)
-//     {
-//  this.location.tableData = [];
-//   }
   }
   else if(!this.isSingleSelectEnable){
     this.Continue();
     this.displayCycleCountItem = null;
-//     if(this.location)
-//     {
-//  this.location.tableData = [];
-//   }
-   // this.location.selectedItem = this.selectedItemLocattion;
   }
   }
 
