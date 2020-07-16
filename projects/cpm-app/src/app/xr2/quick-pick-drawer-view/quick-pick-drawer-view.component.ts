@@ -6,7 +6,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
-import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
+import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
 import { ScanMessage } from '../model/scan-message';
 import { QuickPickScanError } from '../model/quick-pick-scan-error';
 
@@ -83,8 +83,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
       return;
     }
 
-    const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.scanLabel(this.selectedDeviceId, printRequest).subscribe(
+    const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    this.quickPickDrawerService.scanLabel(this.selectedDeviceId, scanRequest).subscribe(
       () => {
         this.unlockDrawer();
       }, error => {
@@ -102,8 +102,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   unlockDrawer() {
-    const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, printRequest).subscribe(
+    const unlockRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
+    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, unlockRequest).subscribe(
       () => {
       }, error => {
         this.failedSaveEvent.emit();
@@ -174,6 +174,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
   }
 
+  /* istanbul ignore next */
   private configureEventHandlers(): void {
     if (!this.quickPickEventConnectionService) {
       return;

@@ -5,7 +5,7 @@ import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { DashboardCardComponent } from '../dashboard-card/dashboard-card.component';
-import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService, ComponentTypes } from '@omnicell/webcorecomponents';
 import { CoreModule } from '../../core/core.module';
 import { Subject, Observable, of, throwError } from 'rxjs';
 import { QuickPickDrawerDetailsViewComponent } from '../quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
@@ -13,6 +13,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ScanMessage } from '../model/scan-message';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -29,8 +30,9 @@ describe('QuickPickDrawerViewComponent', () => {
     };
 
     quickPickDrawerService = {
-      printLabel: jasmine.createSpy('printLabel').and.returnValues(of(true), throwError({ status: 404 })),
-      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(of(true), throwError({ status: 404 }))
+      printLabel: jasmine.createSpy('printLabel').and.returnValues(throwError({ status: 404 }), of(true)),
+      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(throwError({ status: 404 }), of(true)),
+      scanLabel: jasmine.createSpy('scanLabel').and.returnValues(of(true), throwError({ status: 404 }), of(true))
     };
 
     popupDialogService = {
@@ -101,19 +103,134 @@ describe('QuickPickDrawerViewComponent', () => {
 
   });
 
+  it('Should load detailed view on load if available', () => {
+    expect(component).toBeTruthy();
+    const drawer = new QuickPickDrawerData(null);
+    drawer.Status = 2;
+    component.quickpickDrawers = [drawer];
+
+    expect(component.detailedDrawer).toBe(drawer);
+  });
+
+  it('Should not load detailed view on load if all statuses are ready', () => {
+    expect(component).toBeTruthy();
+
+    for (let i = 0; i < 6; i++) {
+      const drawer = new QuickPickDrawerData(null);
+      drawer.Status = 1;
+      component.quickpickDrawers.push(drawer);
+    }
+
+    expect(component.detailedDrawer).toBeUndefined();
+  });
+
   describe('QuickPick Printing', () => {
     it('should call QuickPickDrawerService on print', () => {
       expect(component).toBeTruthy();
       component.detailedDrawer = new QuickPickDrawerData(null);
+
       component.printDrawerLabel();
+
       expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
+    });
+
+    it('should emit failed save dialog on failed print', () => {
+      expect(component).toBeTruthy();
+      const failedSaveSpy = spyOn(component.failedSaveEvent, 'emit').and.callThrough();
+      component.detailedDrawer = new QuickPickDrawerData(null);
+
+      component.printDrawerLabel();
+
+      expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
+      expect(failedSaveSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Quick Pick Drawer Unlocking', () => {
+    it('Should call QuickPickDrawerService on unlock', () => {
+      expect(component).toBeTruthy();
+      component.detailedDrawer = new QuickPickDrawerData(null);
+
+      component.unlockDrawer();
+
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should emit failed save dialog on failed unlock', () => {
+      expect(component).toBeTruthy();
+      const failedSaveSpy = spyOn(component.failedSaveEvent, 'emit').and.callThrough();
+      component.detailedDrawer = new QuickPickDrawerData(null);
+
+      component.unlockDrawer();
+
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+      expect(failedSaveSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Quick Pick Drawer Scanning', () => {
+    it('Should not call service if scan not available', () => {
+      expect(component).toBeTruthy();
+      component.scanMessage = null;
+
+      component.scanDrawerLabel();
+
+      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+    });
+
+    it('Should not load detailed view if quick pick is in progress', () => {
+      expect(component).toBeTruthy();
+      const drawer = new QuickPickDrawerData(null);
+      drawer.Status = 2;
+      const scan = new ScanMessage('barcode');
+
+      component.detailedDrawer = drawer;
+      component.scanMessage = scan;
+
+      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+    });
+
+    it('Should scan label on new scan input if loaded detailed view successfully', () => {
+      expect(component).toBeTruthy();
+      const drawer = new QuickPickDrawerData(null);
+      const scan = new ScanMessage('barcode');
+      drawer.Xr2ServiceBarcode = 'barcode';
+      component.quickpickDrawers = [drawer];
+      component.scanMessage = scan;
+
+      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should call QuickPickDrawerService and unlockDrawer on successful scan', () => {
+      expect(component).toBeTruthy();
+      component.detailedDrawer = new QuickPickDrawerData(null);
+      component.scanMessage = new ScanMessage('barcode');
+
+      component.scanDrawerLabel();
+
+      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should emit failed scan dialog on failed scan', () => {
+      expect(component).toBeTruthy();
+      const failedScanSpy = spyOn(component.failedScanEvent, 'emit').and.callThrough();
+      component.detailedDrawer = new QuickPickDrawerData(null);
+      component.scanMessage = new ScanMessage('barcode');
+
+      component.scanDrawerLabel();
+
+      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(failedScanSpy).toHaveBeenCalled();
     });
   });
 
   describe('Connect to Events', () => {
     it('Connects to events on creation', () => {
       expect(component).toBeTruthy();
+
       component.ngOnInit();
+
       expect(quickPickEventConnectionService.QuickPickDrawerUpdateSubject.subscribe).toHaveBeenCalled();
     });
   });

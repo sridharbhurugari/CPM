@@ -4,7 +4,7 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
 import { QuickPickDrawerData } from '../../xr2/model/quick-pick-drawer-data';
-import { QuickPickDrawerRequest } from '../../xr2/model/quick-pick-print-request';
+import { QuickPickDrawerRequest } from '../../xr2/model/quick-pick-drawer-request';
 
 @Injectable({
   providedIn: 'root'

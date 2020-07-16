@@ -145,25 +145,26 @@ export class QuickPickPageComponent implements OnInit {
       });
   }
 
-    // Page Level Listener for barcode scanner
-    @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
-      if (this.nonBarcodeInputFocus) {
-        return;
-      }
-
-      const isInputComplete = this.barcodeScanService.handleKeyInput(event);
-
-      // If not from barcode scanner ignore the character
-      if (!this.barcodeScanService.isScannerInput()) {
-        this.barcodeScanService.reset();
-      }
-
-      if (isInputComplete) {
-        // populating the page level input into text box.
-        this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
-        this.barcodeScanService.reset();
-      }
+  // Page Level Listener for barcode scanner
+  /* istanbul ignore next */
+  @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
+    if (this.nonBarcodeInputFocus) {
+      return;
     }
+
+    const isInputComplete = this.barcodeScanService.handleKeyInput(event);
+
+    // If not from barcode scanner ignore the character
+    if (!this.barcodeScanService.isScannerInput()) {
+      this.barcodeScanService.reset();
+    }
+
+    if (isInputComplete) {
+      // populating the page level input into text box.
+      this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+      this.barcodeScanService.reset();
+    }
+  }
 
   /* istanbul ignore next */
   displayFailedToSaveDialog(): void {
@@ -224,24 +225,6 @@ export class QuickPickPageComponent implements OnInit {
     });
   }
 
-  private hookupEventHandlers(): void {
-    if (this.isInvalidSubscription(this.barcodeScanService)) {
-      return;
-    }
-
-    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
-      this.processScannedBarcode(scannedBarcode)
-    );
-  }
-
-  private unhookEventHandlers(): void {
-    if (this.isInvalidSubscription(this.barcodeScanService)) {
-      return;
-    }
-
-    this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
-  }
-
   private processScannedBarcode(scannedBarcode: string): void {
     this.barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
@@ -255,6 +238,26 @@ export class QuickPickPageComponent implements OnInit {
 
     this.inputLevelScan = `${this.inputLevelScan}${scannedBarcode}`;
     this.scanInput = new ScanMessage(this.inputLevelScan);
+  }
+
+  /* istanbul ignore next */
+  private hookupEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+      this.processScannedBarcode(scannedBarcode)
+    );
+  }
+
+  /* istanbul ignore next */
+  private unhookEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
   }
 
   private unsubscribeIfValidSubscription(subscription: Subscription): void {
