@@ -38,6 +38,9 @@ export class QuickPickPageComponent implements OnInit {
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
   inputLevelScan: string;
+  nonBarcodeKeyboardInput = '';
+  nonBarcodeInputFocus = false;
+  inputLevelScanFocused = true;
   rawBarcodeMessage = '';
   scanInput: ScanMessage;
 
@@ -142,6 +145,26 @@ export class QuickPickPageComponent implements OnInit {
       });
   }
 
+    // Page Level Listener for barcode scanner
+    @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
+      if (this.nonBarcodeInputFocus) {
+        return;
+      }
+
+      const isInputComplete = this.barcodeScanService.handleKeyInput(event);
+
+      // If not from barcode scanner ignore the character
+      if (!this.barcodeScanService.isScannerInput()) {
+        this.barcodeScanService.reset();
+      }
+
+      if (isInputComplete) {
+        // populating the page level input into text box.
+        this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+        this.barcodeScanService.reset();
+      }
+    }
+
   /* istanbul ignore next */
   displayFailedToSaveDialog(): void {
     const properties = new PopupDialogProperties('Role-Status-Warning');
@@ -230,7 +253,7 @@ export class QuickPickPageComponent implements OnInit {
       this.inputLevelScan = '';
     }
 
-    this.inputLevelScan = `${scannedBarcode}`;
+    this.inputLevelScan = `${this.inputLevelScan}${scannedBarcode}`;
     this.scanInput = new ScanMessage(this.inputLevelScan);
   }
 
