@@ -14,6 +14,7 @@ import { Observable, forkJoin, merge } from "rxjs";
 import {
   NumericComponent,
   DatepickerComponent,
+  SingleselectComponent,
   ButtonActionComponent,
   DateFormat,
   Util,
@@ -65,6 +66,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
+ // @ViewChild(SingleselectComponent, null) location: SingleselectComponent;
   @ViewChild("contain", null) elementView: ElementRef;
   @ViewChild("Generic", null) GenericView: ElementRef;
 
@@ -109,6 +111,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   private popupDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
   scanItem: string;
+  isSelected:boolean;
+  transaction:boolean;
 
   // Parent component variables
   selectedItem: any;
@@ -117,7 +121,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   startCounter = 0;
   endCounter: number;
   fetchCount = 100;
-  searchRequestorText = "";
   @ViewChild("dropdownSearchUser", { static: true })
   userSearchDropdownElement: SearchDropdownComponent;
   placeHolderText = "";
@@ -156,6 +159,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.printResult = false;
     this.ItemDescriptionOverlap = false;
     this.ItemBrandNameOverlap = false;
+    this.isSelected = false;
     this.todaydate =
       this.time.getMonth() +
       "/" +
@@ -212,6 +216,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.addwhitespacetodropdown();
     this.cycleCountItemsCopy = [];
     this.doneButtonDisable = true;
+    //this.isSelected = false;
   }
   multiLocations: SingleselectRowItem[];
   selectedItemLocattion: SingleselectRowItem;
@@ -267,17 +272,25 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   itemSelected(item: any) {
     this.selectedItem = JSON.stringify(item);
     this.isSingleSelectEnable = false;
-    if (this.displayCycleCountItem) {
-      if (
-        this.displayCycleCountItem.DeviceLocationTypeId ===
-        DeviceLocationTypeId.Carousel
-      ) {
-        this.carouselLocationAccessService
-          .clearLightbar(this.displayCycleCountItem.DeviceId)
-          .subscribe();
-      }
+    if(this.displayCycleCountItem === undefined || this.displayCycleCountItem === null)
+    {
+      this.getCycleCountData(item.item.ID);
     }
-    this.getCycleCountData(item.item.ID);
+     else if (this.displayCycleCountItem) {
+       let transactionValid = true;
+      if (this.over) {
+        this.closePopup();
+      }
+     // this.isSelected = false;
+      transactionValid = this.ScanValidation();
+      if(transactionValid)
+      {
+        this.onLocationBasedValidation(); 
+        this.getCycleCountData(item.item.ID);
+      }
+
+    }
+    
   }
   getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
     // if (this.displayCycleCountItem != undefined) {
@@ -356,6 +369,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           this.locationCount = 0;
 
           if (x.length > 1) {
+            this.isSelected = false;
             this.itemLength();
             this.multipleLocations(x);
           } else {
@@ -727,6 +741,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           });
         this.disablethedate = false;
         this.displayCycleCountItem = x[i];
+        this.isSelected=true;
         let date = new Date(x[i].ExpirationDate);
         this.displayCycleCountItem.InStockQuantity = x[i].QuantityOnHand;
         this.displayCycleCountItem.ExpirationDateFormatted =
@@ -928,22 +943,18 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
 
   ScanValidation(): boolean {
-    let transaction = false;
+     this.transaction = false;
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
     if (
       this.displayCycleCountItem &&
       this.displayCycleCountItem.QuantityOnHand === 0
     ) {
-      this.Continue();
-      this.displayCycleCountItem = null;
-      transaction = true;
+      this.transaction = true;
     } else if (
       this.displayCycleCountItem &&
       this.displayCycleCountItem.ItmExpDateGranularity === "None"
     ) {
-      this.Continue();
-      this.displayCycleCountItem = null;
-      transaction = true;
+      this.transaction = true;
     } else {
       var eventdate = new Date(this.datepicker && this.datepicker.selectedDate);
       if (
@@ -954,19 +965,18 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       ) {
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
-        transaction = false;
+       this.transaction = false;
       } else if (
         this.datepicker &&
         !this.datepicker.selectedDate.match(dateReg)
       ) {
         this.DisableActionButtons(true);
-        transaction = false;
-      } else {
-        this.Continue();
-        this.displayCycleCountItem = null;
-        transaction = true;
+       this.transaction = false;
       }
-      return transaction;
+      else {     
+        this.transaction = true;
+      }
+      return this.transaction;
     }
   }
 
@@ -975,6 +985,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     if (this.over) {
       this.closePopup();
     }
+    //this.isSelected = false;
     this.barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
     this.scanCycleCountItem(scannedBarcode);
@@ -995,13 +1006,38 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           this.scanItem = res;
           if (this.scanItem === null || this.scanItem.length === 0) {
             this.displayWrongBarCodeDialog();
-          } else if (this.scanItem.length != 0 || this.scanItem != null) {
+          } 
+          else if (this.scanItem.length != 0 || this.scanItem != null) {   
+            this.onLocationBasedValidation(); 
             console.log(this.scanItem && this.scanItem);
             this.getCycleCountData(this.scanItem && this.scanItem);
           }
         });
     }
   }
+
+  onLocationBasedValidation()
+  {
+    if(this.isSingleSelectEnable && this.isSelected)
+    {
+    this.Continue();
+    this.displayCycleCountItem = null;
+//     if(this.location)
+//     {
+//  this.location.tableData = [];
+//   }
+  }
+  else if(!this.isSingleSelectEnable){
+    this.Continue();
+    this.displayCycleCountItem = null;
+//     if(this.location)
+//     {
+//  this.location.tableData = [];
+//   }
+   // this.location.selectedItem = this.selectedItemLocattion;
+  }
+  }
+
   // Page Level Listener for barcode scanner
   @HostListener("document:keypress", ["$event"]) onKeypressHandler(
     event: KeyboardEvent
