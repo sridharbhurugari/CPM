@@ -4,10 +4,12 @@
         <div class="dateTime">
             {{time| date:'M/d/yyyy h:mm a'}}
         </div>
+        <div  *ngIf="!isMultiLocation">
         <div *ngIf="displayCycleCountItem"> 
-        <div class="printlabel" *ngIf="(HasLabelPrinterConfigured()) && (deviceId)" >
+        <div class="printlabel" *ngIf="(HasLabelPrinterConfigured()) && deviceId" >
             <oc-svgicon icon="print" theme="white" height="30" width="30" (click)="PrintLabel()"></oc-svgicon>
         </div>
+    </div>
     </div>
     </ng-container>
 
