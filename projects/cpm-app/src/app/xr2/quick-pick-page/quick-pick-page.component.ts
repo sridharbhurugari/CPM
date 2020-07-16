@@ -59,6 +59,7 @@ export class QuickPickPageComponent implements OnInit {
   /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
+    this.quickPickEventConnectionService.QuickPickErrorUpdateSubject.subscribe(event => this.onQuickPickErrorUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(
@@ -84,6 +85,13 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.loadPicklistsQueueItems();
+  }
+
+  private onQuickPickErrorUpdate(event) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+      return;
+    }
+    this.displayQuickPickError(event.ErrorMessage);
   }
 
   async getActiveXr2Devices() {
@@ -160,6 +168,18 @@ export class QuickPickPageComponent implements OnInit {
     const properties = new PopupDialogProperties('Role-Status-Warning');
     this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = 'Ok';
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
+
+  private displayQuickPickError(message): void {
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER').subscribe(result => { properties.titleElementText = result; });
+    properties.messageElementText = message;
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Ok';

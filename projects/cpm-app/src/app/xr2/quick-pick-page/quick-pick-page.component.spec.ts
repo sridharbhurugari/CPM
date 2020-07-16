@@ -64,7 +64,8 @@ describe('QuickPickPageComponent', () => {
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
     QuickPickReloadDrawersSubject: new Subject(),
-    QuickPickQueueUpdateSubject: new Subject()
+    QuickPickQueueUpdateSubject: new Subject(),
+    QuickPickErrorUpdateSubject: new Subject()
   };
 
   quickPickDrawerService = {
@@ -192,6 +193,16 @@ describe('QuickPickPageComponent', () => {
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
+      expect(popupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
+  describe('Error Notifications', () => {
+    it('should display a popupwindow with the error message', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const FakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
+      quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(FakeEvent);
       expect(popupDialogService.showOnce).toHaveBeenCalled();
     });
   });
