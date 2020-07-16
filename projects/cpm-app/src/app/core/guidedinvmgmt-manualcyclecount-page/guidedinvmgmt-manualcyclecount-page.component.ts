@@ -159,7 +159,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.printResult = false;
     this.ItemDescriptionOverlap = false;
     this.ItemBrandNameOverlap = false;
-    this.isSelected = false;
     this.todaydate =
       this.time.getMonth() +
       "/" +
@@ -271,9 +270,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   // Output from the Dropdown Search Item Click
   itemSelected(item: any) {
     this.selectedItem = JSON.stringify(item);
-    this.isSingleSelectEnable = false;
+   
     if(this.displayCycleCountItem === undefined || this.displayCycleCountItem === null)
     {
+      this.isSingleSelectEnable = false;
       this.getCycleCountData(item.item.ID);
     }
      else if (this.displayCycleCountItem) {
@@ -976,8 +976,9 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       else {     
         this.transaction = true;
       }
-      return this.transaction;
+     
     }
+    return this.transaction;
   }
 
   // Scanned barcode event listener for use in Cef
