@@ -17,6 +17,7 @@ import { QuickPickEventConnectionService } from '../services/quick-pick-event-co
 import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { BarcodeScanService } from 'oal-core';
 import { QuickPickQueueViewComponent } from '../quick-pick-queue-view/quick-pick-queue-view.component';
 import { QuickPickDrawerViewComponent } from '../quick-pick-drawer-view/quick-pick-drawer-view.component';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
@@ -60,6 +61,7 @@ describe('QuickPickPageComponent', () => {
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let quickPickQueueService: Partial<Xr2QuickPickQueueService>;
   let popupDialogService: Partial<PopupDialogService>;
+  let barcodeScanService: Partial<BarcodeScanService>;
 
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
@@ -81,6 +83,11 @@ describe('QuickPickPageComponent', () => {
     showOnce: jasmine.createSpy('showOnce')
   };
 
+  barcodeScanService = {
+    reset: jasmine.createSpy('reset'),
+    BarcodeScannedSubject: new Subject(),
+  };
+
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
@@ -93,6 +100,7 @@ describe('QuickPickPageComponent', () => {
         { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) } },
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
+        { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: WindowService, useValue: [] },

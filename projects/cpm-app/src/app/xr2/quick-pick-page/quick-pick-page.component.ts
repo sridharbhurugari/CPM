@@ -142,8 +142,8 @@ export class QuickPickPageComponent implements OnInit {
       });
   }
 
-   /* istanbul ignore next */
-   displayFailedToSaveDialog(): void {
+  /* istanbul ignore next */
+  displayFailedToSaveDialog(): void {
     const properties = new PopupDialogProperties('Role-Status-Warning');
     this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Lights } from './models/lights';
+
 @Component({
   selector: 'app-traffic-lights',
   templateUrl: './traffic-lights.component.html',
@@ -7,8 +7,8 @@ import { Lights } from './models/lights';
 })
 export class TrafficLightsComponent implements OnInit {
 
-  @Input() lightColor: string;
-  @Input() isBlinking: boolean;
+  @Input() lightColor: string = 'gray';
+  @Input() isBlinking: boolean = false;
 
   constructor() {
   }

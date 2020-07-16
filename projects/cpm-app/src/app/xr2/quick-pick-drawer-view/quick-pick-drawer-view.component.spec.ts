@@ -107,7 +107,6 @@ describe('QuickPickDrawerViewComponent', () => {
       component.detailedDrawer = new QuickPickDrawerData(null);
       component.printDrawerLabel();
       expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
-      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
   });
 
