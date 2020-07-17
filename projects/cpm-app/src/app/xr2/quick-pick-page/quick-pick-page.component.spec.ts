@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, SharedModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService,  SearchBoxComponent, SharedModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -24,6 +24,7 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
+import { ScanMessage } from '../model/scan-message';
 
 @Component({
   selector: 'oc-search-box',
@@ -201,6 +202,31 @@ describe('QuickPickPageComponent', () => {
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
       expect(popupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
+  describe('Quick Pick Queue', () => {
+    it('should load queue items on new update message', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const event = {DeviceId: 1};
+
+      quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(event);
+
+      expect(quickPickQueueService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('Quick Pick Scanning', () => {
+    it('should set scan input message when scan event is received', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const scan = 'scan';
+      const scanMessage = new ScanMessage(scan);
+
+      barcodeScanService.BarcodeScannedSubject.next(scan);
+
+      expect(component.scanInput).toEqual(scanMessage);
     });
   });
 });

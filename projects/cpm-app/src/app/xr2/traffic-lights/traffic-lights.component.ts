@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-
 @Component({
   selector: 'app-traffic-lights',
   templateUrl: './traffic-lights.component.html',
