@@ -136,7 +136,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
     it('should emit failed save dialog on failed print', () => {
       expect(component).toBeTruthy();
-      const failedSaveSpy = spyOn(component.failedSaveEvent, 'emit').and.callThrough();
+      const failedSaveSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
 
       component.printDrawerLabel();
@@ -158,7 +158,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
     it('Should emit failed save dialog on failed unlock', () => {
       expect(component).toBeTruthy();
-      const failedSaveSpy = spyOn(component.failedSaveEvent, 'emit').and.callThrough();
+      const failedSaveSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
 
       component.unlockDrawer();
@@ -214,7 +214,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
     it('Should emit failed scan dialog on failed scan', () => {
       expect(component).toBeTruthy();
-      const failedScanSpy = spyOn(component.failedScanEvent, 'emit').and.callThrough();
+      const failedScanSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
       component.scanMessage = new ScanMessage('barcode');
 

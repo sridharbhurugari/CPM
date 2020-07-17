@@ -8,7 +8,7 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { TranslateService } from '@ngx-translate/core';
 import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
 import { ScanMessage } from '../model/scan-message';
-import { QuickPickScanError } from '../model/quick-pick-scan-error';
+import { QuickPickError } from '../model/quick-pick-error';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -18,8 +18,7 @@ import { QuickPickScanError } from '../model/quick-pick-scan-error';
 export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() failedScanEvent: EventEmitter<QuickPickScanError> = new EventEmitter<QuickPickScanError>();
-  @Output() failedSaveEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() failedEvent: EventEmitter<QuickPickError> = new EventEmitter<QuickPickError>();
 
   private _selectedDeviceId: string;
   private _scanMessage: ScanMessage;
@@ -88,7 +87,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
       () => {
         this.unlockDrawer();
       }, error => {
-        this.failedScanEvent.emit(QuickPickScanError.NotFound);
+        this.failedEvent.emit(QuickPickError.ScanNotFound);
       });
   }
 
@@ -97,7 +96,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
       () => {
       }, error => {
-        this.failedSaveEvent.emit();
+        this.failedEvent.emit(QuickPickError.PrintFailure);
       });
   }
 
@@ -106,7 +105,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, unlockRequest).subscribe(
       () => {
       }, error => {
-        this.failedSaveEvent.emit();
+        this.failedEvent.emit(QuickPickError.UnlockFailure);
       });
   }
 
@@ -157,7 +156,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
 
     if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
-      this.failedScanEvent.emit(QuickPickScanError.Unavailable);
+      this.failedEvent.emit(QuickPickError.ScanUnavailable);
       return false;
     }
 
@@ -169,7 +168,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
       this.quickPickActive.emit(true);
       return true;
     } else {
-      this.failedScanEvent.emit(QuickPickScanError.NotFound);
+      this.failedEvent.emit(QuickPickError.ScanNotFound);
       return false;
     }
   }

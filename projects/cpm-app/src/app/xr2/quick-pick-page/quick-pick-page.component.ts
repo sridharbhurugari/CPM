@@ -13,12 +13,12 @@ import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-event-connection.service';
-import { TranslateService } from '@ngx-translate/core';
+import { QuickPickErrorService } from '../../xr2/services/quick-pick-error.service';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
 import { ScanMessage } from '../model/scan-message';
-import { QuickPickScanError } from '../model/quick-pick-scan-error';
+import { QuickPickError } from '../model/quick-pick-error';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -57,10 +57,9 @@ export class QuickPickPageComponent implements OnInit {
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
-    private translateService: TranslateService,
     private changeDetector: ChangeDetectorRef,
-    private dialogService: PopupDialogService,
-    private barcodeScanService: BarcodeScanService
+    private barcodeScanService: BarcodeScanService,
+    private quickPickErrorService: QuickPickErrorService
   ) {
     this.quickPickQueueItems = of([]);
   }
@@ -140,7 +139,7 @@ export class QuickPickPageComponent implements OnInit {
       () => {
         this.loadPicklistsQueueItems();
       }, error => {
-        this.displayFailedToSaveDialog();
+        this.displayFailedDialog(QuickPickError.RerouteFailure);
         this.loadPicklistsQueueItems();
       });
   }
@@ -167,34 +166,8 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  displayFailedToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
-  }
-
-  /* istanbul ignore next */
-  displayFailedToScanDialog(error: QuickPickScanError): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    if (error === QuickPickScanError.NotFound) {
-      this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
-      this.translateService.get('INVALID_SCAN_BARCODE').subscribe(result => { properties.messageElementText = result; });
-    } else if (error === QuickPickScanError.Unavailable) {
-      this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER').subscribe(result => { properties.titleElementText = result; });
-      this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS').subscribe(result => { properties.messageElementText = result; });
-    }
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
-    properties.dialogDisplayType = PopupDialogType.Warning;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
+  displayFailedDialog(error: QuickPickError): void {
+    this.quickPickErrorService.display(error);
   }
 
   private onQuickPickQueueUpdate(event) {
@@ -236,7 +209,7 @@ export class QuickPickPageComponent implements OnInit {
       this.inputLevelScan = '';
     }
 
-    this.inputLevelScan = `${this.inputLevelScan}${scannedBarcode}`;
+    this.inputLevelScan = `${scannedBarcode}`;
     this.scanInput = new ScanMessage(this.inputLevelScan);
   }
 

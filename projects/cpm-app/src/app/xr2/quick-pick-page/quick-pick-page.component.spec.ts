@@ -25,6 +25,7 @@ import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { ScanMessage } from '../model/scan-message';
+import { QuickPickErrorService } from '../services/quick-pick-error.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -62,6 +63,7 @@ describe('QuickPickPageComponent', () => {
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let quickPickQueueService: Partial<Xr2QuickPickQueueService>;
   let popupDialogService: Partial<PopupDialogService>;
+  let quickPickErrorService: Partial<QuickPickErrorService>;
   let barcodeScanService: Partial<BarcodeScanService>;
 
   quickPickEventConnectionService = {
@@ -78,6 +80,10 @@ describe('QuickPickPageComponent', () => {
   quickPickQueueService = {
     get: jasmine.createSpy('get').and.returnValue(of([])),
     reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
+  };
+
+  quickPickErrorService = {
+    display: jasmine.createSpy('display')
   };
 
   popupDialogService = {
@@ -103,6 +109,7 @@ describe('QuickPickPageComponent', () => {
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
         { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: QuickPickErrorService, useValue: quickPickErrorService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: WindowService, useValue: [] },
         { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) } },
@@ -201,7 +208,7 @@ describe('QuickPickPageComponent', () => {
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
+      expect(quickPickErrorService.display).toHaveBeenCalled();
     });
   });
 
