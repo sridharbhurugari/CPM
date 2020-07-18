@@ -1,0 +1,81 @@
+<ng-container class="ocactiondetails">
+  <div class="cpmheaderrow">
+    <oc-button-action class="button" [buttonText]="'Refined Page Demo' | translate" (click)="MyPage()"></oc-button-action> 
+    <div></div>
+    <h3>Select Date Range:&nbsp;&nbsp;</h3>
+    <oc-daterange [(startDate)]="startDate" [(endDate)]="endDate" [selectionBounds]="selectionBounds" [blacklisteddates]="blacklisteddates"></oc-daterange>                   
+    <h3>&nbsp;&nbsp;Select Device:&nbsp;&nbsp;</h3>&nbsp;&nbsp;
+    <oc-singleselect #selection3 [tableData]="multiLocations" selectedItem="{}"
+    componentWidth="350" dropdownRowsVisible="6"
+     searchPlaceholderText="Find item"
+    selectText="Select item" noItemsText="No Items">
+</oc-singleselect>
+
+    <app-header-container></app-header-container> 
+    
+    <oc-search-box class="searchbox" #searchBox [placeHolderText]=" 'Enter Text' | translate "></oc-search-box>
+  </div>
+  <ng-container>
+    <oc-grid #ocgrid ocgridfilter="false">
+      <ng-container class="ocgridheader">
+          <div class="first" data-colwrap="true"></div>
+          <div app-col-header-sortable class="col" ocGridColResize data-width="650" data-colwrap="true"
+                               [columnPropertyName]="eventLevelPropertyName"
+                               headerResourceKey="Level"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)"
+                                >
+          </div>
+          <!-- <div app-col-header-sortable class="col" ocGridColResize data-width="400" data-colwrap="true"
+                               [columnPropertyName]="eventDescriptionPropertyName"
+                               headerResourceKey="Date and time"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder" 
+                               (columnSelected)="columnSelected($event)"
+                               >
+          </div> -->
+          <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+                               [columnPropertyName]="eventDateTimePropertyName"
+                               headerResourceKey="Event Description"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)"
+                                >
+          </div>
+          <!-- <div app-col-header-sortable class="col" ocGridColResize data-width="230" data-colwrap="true"
+                               [columnPropertyName]="eventDeviceNamePropertyName"
+                               headerResourceKey="Device Name"
+                               [currentSortPropertyName]="currentSortPropertyName"
+                               [customColumnSortOrder]="sortOrder"
+                               (columnSelected)="columnSelected($event)" 
+                                >
+          </div> -->
+      </ng-container>
+      <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let exceptions of (displayEventsList$) | searchPipe:searchTextFilter:searchFields"
+        (click)="navigatedetailspage(exceptions)" >
+            <div class="first" style="align-items: center;">
+             
+            </div>
+            <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate"><div><oc-svgicon icon="warning" theme="dark"></oc-svgicon>&nbsp;&nbsp;{{exceptions.EventLevel}}</div></div>
+            <!-- <div class="col col-traytype" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_DESCRIPTION' | translate">{{exceptions.EventDateTime| date:'M/d/yyyy h:mm:ss a'}}</div> -->
+            <div class="col col-pockets" [attr.data-title]="'XR2_EXCEPTIONS_POCKETS' | translate">{{exceptions.EventDescription}}</div>
+            <!-- <div class="col col-device-name" [attr.data-title]="'XR2_EXCEPTIONS_DEVICE_NAME' | translate"> {{exceptions.EventDeviceName}}
+            </div> -->
+          </div>
+      </ng-container>
+    </oc-grid>
+  </ng-container>
+  <br>
+  <br>
+  <ng-container>
+    <h3>Details : </h3>
+    <textarea id="textbox_multiline" name="MultilineTextbox" [placeholder]="eventDetails" rows="5"
+              maxlength="5000" ocTextarea></textarea>
+  </ng-container>
+<div>
+<oc-button-action [buttonText]="'Side Panel Demo' | translate" (click)="navigatesidepaneldemo()" ></oc-button-action> 
+<oc-button-action [buttonText]="'Quick Panel Demo' | translate" (click)="navigatequickpickpaneldemo()" ></oc-button-action>     
+</div>       
+</ng-container>
