@@ -991,7 +991,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   scanCycleCountItem(scannedBarcode: string): void {
     let transactionValid = true;
     let itemID="";
-    if (this.displayCycleCountItem !== undefined) {
+    if (this.displayCycleCountItem && this.displayCycleCountItem !== undefined) {
       console.log(this.ScanValidation());
       transactionValid = this.ScanValidation();
     }
@@ -1025,6 +1025,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.Continue();
     this.displayCycleCountItem = null;
   }
+  else
+  {
+  this.displayCycleCountItem = null;
+}
   }
 
   // Page Level Listener for barcode scanner
