@@ -23,6 +23,8 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 
 @Component({
   selector: 'oc-search-box',
@@ -39,6 +41,7 @@ describe('QuickPickPageComponent', () => {
 
   let selectableDeviceInfoList: SelectableDeviceInfo[] = [];
   let selectableDeviceInfo1 = new SelectableDeviceInfo(null);
+  let systemConfigurationService: Partial<SystemConfigurationService>;
   selectableDeviceInfo1.DeviceId = 1;
   selectableDeviceInfo1.Description = 'DeviceXr21';
   selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
@@ -60,6 +63,7 @@ describe('QuickPickPageComponent', () => {
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let quickPickQueueService: Partial<Xr2QuickPickQueueService>;
   let popupDialogService: Partial<PopupDialogService>;
+  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
 
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
@@ -83,6 +87,7 @@ describe('QuickPickPageComponent', () => {
   };
 
   beforeEach(async(() => {
+    systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
 
     TestBed.configureTestingModule({
       declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
@@ -100,6 +105,7 @@ describe('QuickPickPageComponent', () => {
         { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => { } } },
         { provide: Router, useValue: { data: () => { } } },
+        { provide: SystemConfigurationService, useValue: systemConfigurationService },
       ]
     }).overrideComponent(QuickPickQueueViewComponent, {
       set: {

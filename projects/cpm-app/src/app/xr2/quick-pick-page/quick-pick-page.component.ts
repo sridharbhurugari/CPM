@@ -14,6 +14,7 @@ import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-e
 import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -30,6 +31,7 @@ export class QuickPickPageComponent implements OnInit {
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
+  popupTimeoutSeconds = 10;
 
 
   @ViewChild('searchBox', {
@@ -47,13 +49,19 @@ export class QuickPickPageComponent implements OnInit {
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
     private translateService: TranslateService,
     private changeDetector: ChangeDetectorRef,
-    private dialogService: PopupDialogService
+    private dialogService: PopupDialogService,
+    private systemConfigurationService: SystemConfigurationService
     ) {
       this.quickPickQueueItems = of([]);
     }
 
   ngOnInit() {
       this.getActiveXr2Devices();
+      this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
+        console.log('popup message timeout : ' + result);
+        console.log(result);
+        this.popupTimeoutSeconds = (Number(result.Value));
+      });
   }
 
   /* istanbul ignore next */
@@ -172,7 +180,7 @@ export class QuickPickPageComponent implements OnInit {
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Ok';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
 
@@ -184,7 +192,7 @@ export class QuickPickPageComponent implements OnInit {
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Ok';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
 }
