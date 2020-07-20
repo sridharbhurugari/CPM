@@ -13,7 +13,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ScanMessage } from '../model/scan-message';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -182,7 +182,7 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(component).toBeTruthy();
       const drawer = new QuickPickDrawerData(null);
       drawer.Status = 2;
-      const scan = new ScanMessage('barcode');
+      const scan = new BarcodeScanMessage('barcode');
 
       component.detailedDrawer = drawer;
       component.scanMessage = scan;
@@ -193,7 +193,7 @@ describe('QuickPickDrawerViewComponent', () => {
     it('Should scan label on new scan input if loaded detailed view successfully', () => {
       expect(component).toBeTruthy();
       const drawer = new QuickPickDrawerData(null);
-      const scan = new ScanMessage('barcode');
+      const scan = new BarcodeScanMessage('barcode');
       drawer.Xr2ServiceBarcode = 'barcode';
       component.quickpickDrawers = [drawer];
       component.scanMessage = scan;
@@ -204,7 +204,7 @@ describe('QuickPickDrawerViewComponent', () => {
     it('Should call QuickPickDrawerService and unlockDrawer on successful scan', () => {
       expect(component).toBeTruthy();
       component.detailedDrawer = new QuickPickDrawerData(null);
-      component.scanMessage = new ScanMessage('barcode');
+      component.scanMessage = new BarcodeScanMessage('barcode');
 
       component.scanDrawerLabel();
 
@@ -216,7 +216,7 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(component).toBeTruthy();
       const failedScanSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
-      component.scanMessage = new ScanMessage('barcode');
+      component.scanMessage = new BarcodeScanMessage('barcode');
 
       component.scanDrawerLabel();
 

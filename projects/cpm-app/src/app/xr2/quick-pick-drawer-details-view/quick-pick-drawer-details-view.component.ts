@@ -3,7 +3,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
 import { TranslateService } from '@ngx-translate/core';
 import { CpColorService } from '../../shared/services/cp-color.service';
-import { ScanMessage } from '../model/scan-message';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -13,7 +13,7 @@ import { ScanMessage } from '../model/scan-message';
 export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   private _detailedDrawerData: QuickPickDrawerData;
-  private _scanMessage: ScanMessage;
+  private _scanMessage: BarcodeScanMessage;
 
   controlDataStatus: typeof QuickPickControlDataStatus = QuickPickControlDataStatus;
 
@@ -30,11 +30,11 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
   }
 
   @Input()
-  set scanMessage(value: ScanMessage) {
+  set scanMessage(value: BarcodeScanMessage) {
     this._scanMessage = value;
   }
 
-  get scanMessage(): ScanMessage {
+  get scanMessage(): BarcodeScanMessage {
     return this._scanMessage;
   }
 

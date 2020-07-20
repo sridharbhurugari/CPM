@@ -5,9 +5,8 @@ import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omn
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
-import { TranslateService } from '@ngx-translate/core';
 import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
-import { ScanMessage } from '../model/scan-message';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
 
 @Component({
@@ -21,7 +20,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Output() failedEvent: EventEmitter<QuickPickError> = new EventEmitter<QuickPickError>();
 
   private _selectedDeviceId: string;
-  private _scanMessage: ScanMessage;
+  private _scanMessage: BarcodeScanMessage;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
 
@@ -36,7 +35,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   @Input()
-  set scanMessage(value: ScanMessage) {
+  set scanMessage(value: BarcodeScanMessage) {
     this._scanMessage = value;
 
     if (this.loadDetailedDrawerOnScan()) {
@@ -44,7 +43,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
   }
 
-  get scanMessage(): ScanMessage {
+  get scanMessage(): BarcodeScanMessage {
     return this._scanMessage;
   }
 

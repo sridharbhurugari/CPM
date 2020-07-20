@@ -17,7 +17,7 @@ import { QuickPickErrorService } from '../../xr2/services/quick-pick-error.servi
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
-import { ScanMessage } from '../model/scan-message';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
 
 @Component({
@@ -42,7 +42,7 @@ export class QuickPickPageComponent implements OnInit {
   nonBarcodeInputFocus = false;
   inputLevelScanFocused = true;
   rawBarcodeMessage = '';
-  scanInput: ScanMessage;
+  scanInput: BarcodeScanMessage;
 
   @ViewChild('searchBox', {
     static: true
@@ -210,7 +210,7 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.inputLevelScan = `${scannedBarcode}`;
-    this.scanInput = new ScanMessage(this.inputLevelScan);
+    this.scanInput = new BarcodeScanMessage(this.inputLevelScan);
   }
 
   /* istanbul ignore next */

@@ -24,7 +24,7 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { ScanMessage } from '../model/scan-message';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickErrorService } from '../services/quick-pick-error.service';
 
 @Component({
@@ -229,7 +229,7 @@ describe('QuickPickPageComponent', () => {
       expect(component).toBeTruthy();
       component.selectedDeviceId = '1';
       const scan = 'scan';
-      const scanMessage = new ScanMessage(scan);
+      const scanMessage = new BarcodeScanMessage(scan);
 
       barcodeScanService.BarcodeScannedSubject.next(scan);
 
