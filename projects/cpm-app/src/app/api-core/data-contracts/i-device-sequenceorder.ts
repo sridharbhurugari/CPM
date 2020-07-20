@@ -5,5 +5,7 @@ export interface IDeviceSequenceOrder {
   DeviceId: number;
   DeviceDescription: string;
   DeviceType: string;
-  OutputDevices: OutputDevice[];
+  DefaultOutputDeviceId: string;
+  Autofill: boolean;
+  OutputDevices: OutputDevice[];  
 }

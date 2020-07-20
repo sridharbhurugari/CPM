@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -35,7 +36,8 @@ export class EditPickRoutePageComponent implements OnInit {
   genericErrorTitle$: Observable<string>;
   genericErrorMessage$: Observable<string>;
 
-  newDeviceSequence: IDeviceSequenceOrder[];
+  newDeviceSequence: IDeviceSequenceOrder[];  
+
   newRouteName: string;
   routeNameChanged: boolean;
 
@@ -80,15 +82,17 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = pickRouteDevice.SequenceOrder;
-
+        const sequenceOrder = pickRouteDevice.SequenceOrder;                           
+        
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,
-          SequenceOrder: sequenceOrder
-        };
+          DefaultOutputDeviceId: pickRouteDevice.DefaultOutputDeviceId,
+          Autofill: pickRouteDevice.Autofill,
+          SequenceOrder: sequenceOrder          
+        };        
       });
 
       return enabledDevices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
@@ -112,6 +116,8 @@ export class EditPickRoutePageComponent implements OnInit {
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,
           SequenceOrder: sequenceOrder,
+          DefaultOutputDeviceId: pickRouteDevice.DefaultOutputDeviceId,
+          Autofill: pickRouteDevice.Autofill
         };
       });
 

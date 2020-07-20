@@ -3,13 +3,25 @@
       <div>{{data.popuptitle | translate}}</div>
     </ng-container>
     <ng-container class="ocwindowcontent">
-        <div>{{data.dropdowntitle | translate}}</div>
-        <div>
-        <oc-singleselect
-            [popupDirection]="'AUTO'"
-            [disabled]="maybeifxr2disabled"
-            [tableData]="data.dropdownrows">
-        </oc-singleselect></div>
+      <p>{{data.dropdowntitle | translate}}</p>
+      <div class="cpmheaderrow">                
+          
+          <app-header-container></app-header-container>
+          <oc-singleselect
+              [popupDirection]="'AUTO'"              
+              [tableData]="data.dropdownrows"
+              [selectedItem]="data.defaultrow"
+              componentWidth="300"
+              (selectionChanged)="onSelectionChanged($event)">
+          </oc-singleselect>   
+          <app-header-container></app-header-container>           
+          <oc-checkbox #checkBox *ngIf="data.showCheckbox"                       
+              [displayField]="data.checkboxLabel | translate"
+              [selected]="data.checkboxSelected"
+              (selection)="onSelect($event)">
+          </oc-checkbox>                      
+      </div>  
+              
     </ng-container>
     <ng-container class="ocwindowfooter">
     <oc-footer>
@@ -17,7 +29,7 @@
         <oc-button-action [buttonText]="'CANCEL' | translate" (click) ="cancel()"></oc-button-action>
       </div>
       <div class="ocrightalign">
-        <oc-button-action [buttonText]="'SAVE' | translate" (click) ="continue()"></oc-button-action>
+        <oc-button-action [buttonText]="'OK' | translate" (click) ="continue()"></oc-button-action>
       </div>
     </oc-footer>
   </ng-container>

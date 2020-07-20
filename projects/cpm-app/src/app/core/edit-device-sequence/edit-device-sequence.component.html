@@ -17,10 +17,13 @@
                     <div style="display: flex; flex-direction: column; justify-content: center; min-height: 48px;">
                         {{device.DeviceDescription}}
                     </div>
+                    <div *ngIf="device.OutputDevices != null" style="font-size: small;font-style: italic; height: 20px;">
+                        {{getCurrentOutputDeviceDescription(device.DefaultOutputDeviceId, device.Autofill)}}
+                    </div>
                 </div>
-                <div *ngIf="device.OutputDevices != null">                    
-                    <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'edit'"
-                        [label]="'Coming Soon' | translate" (clickEvent)="onOutputDeviceEditClick(device)">
+                <div *ngIf="device.OutputDevices != null" style="padding: 10px;">                    
+                    <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'edit'"
+                        (clickEvent)="onOutputDeviceEditClick(device)">
                     </app-cp-clickable-icon>
                 </div>
                 <app-row-reorder-buttons [disabled]="disabled" [allowEditIndex]="true" [orderableLength]="enabledDevices.length" [value]="device" [upDisabled]="isFirst" [downDisabled]="isLast" [index]="i"></app-row-reorder-buttons>

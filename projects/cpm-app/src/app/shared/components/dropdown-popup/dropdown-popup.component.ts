@@ -1,5 +1,5 @@
-import { Component, OnInit, Output } from '@angular/core';
-import { IPopupWindowContainer, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { Component, OnInit, Output, ViewChild } from '@angular/core';
+import { IPopupWindowContainer, SingleselectRowItem, CheckboxComponent } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
 import { IDropdownPopupData } from '../../model/i-dropdown-popup-data';
 
@@ -10,21 +10,46 @@ import { IDropdownPopupData } from '../../model/i-dropdown-popup-data';
 })
 export class DropdownPopupComponent implements OnInit, IPopupWindowContainer {
 
-  data: IDropdownPopupData;  
+  data: IDropdownPopupData; 
+  
+  selectedRowItem: SingleselectRowItem;
+  checkboxSelected: boolean;
 
   @Output()
-  dismiss: Subject<boolean> = new Subject<boolean>();
+  dismiss: Subject<boolean> = new Subject<boolean>();    
 
   constructor() { }
 
   ngOnInit() {
+    this.selectedRowItem = this.data.defaultrow;
+    this.checkboxSelected = this.data.checkboxSelected;
   }
 
-  cancel() {
+  cancel() {    
     this.dismiss.next(false);
   }
 
   continue() {
-    this.dismiss.next(true);
+    this.data.selectedrow = this.selectedRowItem;
+    this.data.selectedcheckbox = this.checkboxSelected;    
+    this.dismiss.next(true);    
+  }
+
+  onSelectionChanged($event) {
+    let found = false;
+
+    this.data.checkboxHideSelection.forEach(x => {
+      if (x.value === $event.value){
+        found = true;   
+        this.checkboxSelected = false;     
+      }
+    })   
+    this.data.showCheckbox = !found;
+
+    this.selectedRowItem = $event;
+  }
+
+  onSelect($event) {
+    this.checkboxSelected = $event.selectedState;
   }
 }

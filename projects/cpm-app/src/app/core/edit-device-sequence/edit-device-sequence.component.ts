@@ -7,6 +7,8 @@ import { PopupDialogService, PopupDialogProperties, PopupWindowService,
   PopupWindowProperties, PopupDialogType, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { TranslateService } from '@ngx-translate/core';
+import { map, shareReplay, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-device-sequence',
@@ -28,7 +30,15 @@ export class EditDeviceSequenceComponent implements OnInit {
 
   checkboxToggleAll: string = CheckboxValues.ToggleAll;
 
-  constructor(private popupWindowService: PopupWindowService) { }
+  outputDeviceDisplayList: SingleselectRowItem[] = [];
+  defaultDisplayItem: SingleselectRowItem;
+
+  rowItemsToHideCheckbox: SingleselectRowItem[] = [];
+
+  cartModuleId: string = '2104';
+
+  constructor(private popupWindowService: PopupWindowService,
+    private translateService: TranslateService) { }
 
   ngOnInit() {
   }
@@ -46,24 +56,64 @@ export class EditDeviceSequenceComponent implements OnInit {
     this.deviceSequenceChanged.emit(this.enabledDevices);
   }
 
-  onOutputDeviceEditClick(device: IDeviceSequenceOrder){
-    const properties = new PopupWindowProperties();
+  getCurrentOutputDeviceDescription(outputDeviceId: string, autofill: boolean){
+    const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;
+    const odDesc = outputDevices.find(x => x.OCTokenValue === outputDeviceId);   
+    
+    let translatedLabel = '';
+        this.translateService.get("Default: " + odDesc.Label + " , Autofill: " + autofill).subscribe((res: string) => {
+          translatedLabel = res;});
 
-    const outputDeviceDisplayList = [];
+    return translatedLabel;
+  }
+
+  onOutputDeviceEditClick(device: IDeviceSequenceOrder){
+    const properties = new PopupWindowProperties();  
+    this.outputDeviceDisplayList = [];
+    this.rowItemsToHideCheckbox = []; 
     
     device.OutputDevices.forEach(x => {
-      const outputDeviceRow = new SingleselectRowItem(x.Label, x.DeviceId);
-      outputDeviceDisplayList.push(outputDeviceRow);
-    })       
-  
+      if (x.IsActive) {
+        let translatedLabel = '';
+        this.translateService.get(x.Label).subscribe((res: string) => {
+          translatedLabel = res;});
+
+        const outputDeviceRow = new SingleselectRowItem(translatedLabel, x.OCTokenValue);
+        this.outputDeviceDisplayList.push(outputDeviceRow);
+      }      
+    })   
+
+    this.defaultDisplayItem = this.outputDeviceDisplayList.find(x => x.value === device.DefaultOutputDeviceId);
+
+    this.outputDeviceDisplayList.forEach(x => {
+      if (x.value === this.cartModuleId){
+        this.rowItemsToHideCheckbox.push(x);
+      }
+    })    
+
     const data: IDropdownPopupData = {
       popuptitle: 'Route Device Configuration',
-      dropdowntitle: 'Output Device',
-      dropdownrows: outputDeviceDisplayList
+      dropdowntitle: 'Default Output Device',
+      dropdownrows: this.outputDeviceDisplayList,
+      defaultrow: this.defaultDisplayItem,
+      showCheckbox: true,
+      checkboxLabel: 'Autofill',
+      checkboxSelected: device.Autofill,
+      checkboxHideSelection: this.rowItemsToHideCheckbox,
+      selectedrow: null,
+      selectedcheckbox: false
     };
 
-    properties.data = data;
+    properties.data = data;        
 
-    let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;    
+    let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;        
+    component.dismiss.pipe(take(1)).subscribe(selectedOk => {
+      if (selectedOk) {  
+        device.DefaultOutputDeviceId = data.selectedrow.value;
+        device.Autofill = data.selectedcheckbox; 
+        
+        this.deviceSequenceChanged.emit(this.enabledDevices);            
+      }
+    });    
   }  
 }
