@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
@@ -32,7 +32,8 @@ export class QuickPickPageComponent implements OnInit {
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
   popupTimeoutSeconds = 10;
-
+  dialogErrorTitleTranslation$: any;
+  dialogOkButtonTranslation$: any;
 
   @ViewChild('searchBox', {
     static: true
@@ -58,10 +59,10 @@ export class QuickPickPageComponent implements OnInit {
   ngOnInit() {
       this.getActiveXr2Devices();
       this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
-        console.log('popup message timeout : ' + result);
-        console.log(result);
         this.popupTimeoutSeconds = (Number(result.Value));
       });
+      this.dialogErrorTitleTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
+      this.dialogOkButtonTranslation$ = this.translateService.get('OK');
   }
 
   /* istanbul ignore next */
@@ -99,7 +100,9 @@ export class QuickPickPageComponent implements OnInit {
     if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
       return;
     }
-    this.displayQuickPickError(event.ErrorMessage);
+    forkJoin(this.dialogErrorTitleTranslation$, this.dialogOkButtonTranslation$).subscribe(r => {
+      this.displayQuickPickError(event.ErrorMessage, r[0], r[1]);
+    });
   }
 
   async getActiveXr2Devices() {
@@ -184,15 +187,15 @@ export class QuickPickPageComponent implements OnInit {
     this.dialogService.showOnce(properties);
   }
 
-  private displayQuickPickError(message): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER').subscribe(result => { properties.titleElementText = result; });
-    properties.messageElementText = message;
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+  private displayQuickPickError(message, headerText, okButtonText): void {
+      const properties = new PopupDialogProperties('Role-Status-Warning');
+      properties.titleElementText = headerText;
+      properties.messageElementText = message;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.primaryButtonText = okButtonText;
+      properties.dialogDisplayType = PopupDialogType.Error;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      this.dialogService.showOnce(properties);
   }
 }
