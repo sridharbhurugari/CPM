@@ -17,6 +17,9 @@ import { PicklistsQueueEventConnectionService } from '../services/picklists-queu
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { ReroutePickListLine } from '../../api-xr2/data-contracts/reroute-pick-list-line';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
+import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -93,12 +96,11 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       .subscribe(message => this.onRemovePicklistQueueItem(message));
   }
 
-  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
-    const picklistQueueItem = new PicklistQueueItem(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
-    picklistQueueItem.ItemPicklistLines = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem.ItemPicklistLines.$values;
+  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
+    const picklistQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
     const matchingPicklistQueueItem = _.find(this.picklistQueueItems, (x) => {
-      return x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
-      x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
+      return x.RobotPickGroupId == picklistQueueItem.RobotPickGroupId || (x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
+      x.DeviceLocationId === picklistQueueItem.DeviceLocationId && x.RobotPickGroupId === null);
     });
 
     if (matchingPicklistQueueItem == null) {
@@ -113,16 +115,17 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
     matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
+    matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
 
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
-    const orderDestinationPickLocationKey = addOrUpdatePicklistQueueItemMessage.OrderDestinationPickLocationKey;
+  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
+    const orderDestinationPickLocationKey = addOrUpdatePicklistQueueItemMessage.OrderDestinationPickLocationGroupKey;
     _.remove(this.picklistQueueItems, (x) => {
       return x.OrderId === orderDestinationPickLocationKey.OrderId && x.DestinationId === orderDestinationPickLocationKey.DestinationId &&
-      x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId;
+      x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId && x.RobotPickGroupId == orderDestinationPickLocationKey.RobotPickGroupId;
     });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
