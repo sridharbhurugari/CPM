@@ -1,7 +1,9 @@
 export enum QuickPickError {
-  ScanNotFound = 0,
+  FailedToSave = 0,
+  ScanNotFound,
   ScanUnavailable,
   PrintFailure,
   UnlockFailure,
-  RerouteFailure
+  RerouteFailure,
+  HardwareFailure
 }

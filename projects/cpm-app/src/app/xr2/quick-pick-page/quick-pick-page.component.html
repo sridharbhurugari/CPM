@@ -21,7 +21,7 @@
       [scanMessage]="scanInput"
       [selectedDeviceId]="selectedDeviceId"
       (quickPickActive)='onQuickPickActive($event)'
-      (failedEvent)='displayFailedDialog($event)'>
+      (failedEvent)='displayQuickPickError($event)'>
       </app-quick-pick-drawer-view>
       <app-quick-pick-queue-view [quickPickQueueItems]="quickPickQueueItems | async" [searchTextFilter]="searchTextFilter | async" (rerouteQuickPick)='onRerouteQuickPick($event)'></app-quick-pick-queue-view>
     </ng-container>
