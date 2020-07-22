@@ -1,5 +1,5 @@
-import { IOrderDestinationPickLocationGroupKey } from './i-order-destination-pick-location-group-key';
+import { IXr2OrderGroupKey } from './i-xr2-order-group-key';
 
 export interface IRemovePicklistQueueItemMessage {
-    OrderDestinationPickLocationGroupKey: IOrderDestinationPickLocationGroupKey;
+    Xr2OrderGroupKey: IXr2OrderGroupKey;
 }

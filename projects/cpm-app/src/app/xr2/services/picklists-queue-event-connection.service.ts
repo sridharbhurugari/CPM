@@ -42,9 +42,9 @@ export class PicklistsQueueEventConnectionService {
     if (message.EventId === 'RemovePicklistQueueItemMessage') {
       console.log(message);
       this.removePicklistQueueItemSubject.next({ 
-        OrderDestinationPickLocationGroupKey: { 
+        Xr2OrderGroupKey: { 
           OrderId: message.OrderId,
-          DestinationId: message.Destinationid, 
+          OrderGroupDestinationId: message.OrderGroupDestinationId, 
           DeviceLocationId: message.DeviceLocationId,
           RobotPickGroupId: Guid.parse(message.RobotPickGroupId),
         }

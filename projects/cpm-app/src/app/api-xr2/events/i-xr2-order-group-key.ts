@@ -1,8 +1,8 @@
 import { Guid } from 'guid-typescript';
 
-export interface IOrderDestinationPickLocationGroupKey {
+export interface IXr2OrderGroupKey {
     OrderId: string;
-    DestinationId: string;
+    OrderGroupDestinationId: string;
     DeviceLocationId: number;
     RobotPickGroupId: Guid;
 }

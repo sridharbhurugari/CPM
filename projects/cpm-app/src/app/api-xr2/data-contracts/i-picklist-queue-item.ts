@@ -10,7 +10,7 @@ export interface IPicklistQueueItem {
   PriorityCode: string;
   PriorityCodeColor: string;
   Destination: string;
-  DestinationId: string;
+  OrderGroupDestinationId: string;
   DestinationType: string;
   PriorityCodeDescription: string;
   BoxCount: number;

@@ -16,7 +16,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
       AvailableOutputDeviceList: picklistQueueItem.AvailableOutputDeviceList.$values,
       BoxCount: picklistQueueItem.BoxCount,
       Destination: picklistQueueItem.Destination,
-      DestinationId: picklistQueueItem.DestinationId,
+      OrderGroupDestinationId: picklistQueueItem.OrderGroupDestinationId,
       DestinationType: picklistQueueItem.DestinationType,
       DeviceDescription: picklistQueueItem.DeviceDescription,
       DeviceId: picklistQueueItem.DeviceId,
@@ -44,7 +44,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   PriorityCode: string;
   PriorityCodeColor: string;
   Destination: string;
-  DestinationId: string;
+  OrderGroupDestinationId: string;
   DestinationType: string;
   PriorityCodeDescription: string;
   BoxCount: number;
