@@ -1,18 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
-import { SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
-  PopupDialogProperties } from '@omnicell/webcorecomponents';
+import {
+  SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
+  PopupDialogProperties
+} from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { Xr2QuickPickQueueDeviceService } from '../../api-xr2/services/xr2-quick-pick-queue-device.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-event-connection.service';
-import { TranslateService } from '@ngx-translate/core';
+import { QuickPickErrorService } from '../../xr2/services/quick-pick-error.service';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
+import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { BarcodeScanService } from 'oal-core';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
+import { QuickPickError } from '../model/quick-pick-error';
 import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 
@@ -23,6 +29,8 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 })
 export class QuickPickPageComponent implements OnInit {
 
+  private barcodeScannedSubscription: Subscription;
+
   quickpickDrawers: Observable<QuickPickDrawerData[]>;
   quickPickQueueItems: Observable<QuickPickQueueItem[]>;
   searchTextFilter: Observable<string>;
@@ -31,6 +39,13 @@ export class QuickPickPageComponent implements OnInit {
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
+  inputLevelScan: string;
+  nonBarcodeKeyboardInput = '';
+  nonBarcodeInputFocus = false;
+  inputLevelScanFocused = true;
+  rawBarcodeMessage = '';
+  scanInput: BarcodeScanMessage;
+
   popupTimeoutSeconds = 10;
   dialogErrorTitleTranslation$: any;
   dialogOkButtonTranslation$: any;
@@ -48,21 +63,18 @@ export class QuickPickPageComponent implements OnInit {
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
-    private translateService: TranslateService,
     private changeDetector: ChangeDetectorRef,
-    private dialogService: PopupDialogService,
-    private systemConfigurationService: SystemConfigurationService
+    private dialogService: PopupDialogService
     ) {
       this.quickPickQueueItems = of([]);
     }
 
   ngOnInit() {
       this.getActiveXr2Devices();
-      this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
-        this.popupTimeoutSeconds = (Number(result.Value));
-      });
-      this.dialogErrorTitleTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
-      this.dialogOkButtonTranslation$ = this.translateService.get('OK');
+  }
+
+  ngOnDestroy(): void {
+    this.unhookEventHandlers();
   }
 
   /* istanbul ignore next */
@@ -94,15 +106,6 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.loadPicklistsQueueItems();
-  }
-
-  private onQuickPickErrorUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
-      return;
-    }
-    forkJoin(this.dialogErrorTitleTranslation$, this.dialogOkButtonTranslation$).subscribe(r => {
-      this.displayQuickPickError(event.ErrorMessage, r[0], r[1]);
-    });
   }
 
   async getActiveXr2Devices() {
@@ -149,9 +152,43 @@ export class QuickPickPageComponent implements OnInit {
       () => {
         this.loadPicklistsQueueItems();
       }, error => {
-        this.displayFailedToSaveDialog();
+        this.displayFailedDialog(QuickPickError.RerouteFailure);
         this.loadPicklistsQueueItems();
       });
+  }
+
+  // Page Level Listener for barcode scanner
+  /* istanbul ignore next */
+  @HostListener('document:keypress', ['$event']) onKeypressHandler(event: KeyboardEvent) {
+    if (this.nonBarcodeInputFocus) {
+      return;
+    }
+
+    const isInputComplete = this.barcodeScanService.handleKeyInput(event);
+
+    // If not from barcode scanner ignore the character
+    if (!this.barcodeScanService.isScannerInput()) {
+      this.barcodeScanService.reset();
+    }
+
+    if (isInputComplete) {
+      // populating the page level input into text box.
+      this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
+      this.barcodeScanService.reset();
+    }
+  }
+
+  /* istanbul ignore next */
+  displayFailedDialog(error: QuickPickError): void {
+    this.quickPickErrorService.display(error);
+  }
+
+  private onQuickPickQueueUpdate(event) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+      return;
+    }
+
+    this.loadPicklistsQueueItems();
   }
 
   private loadPicklistsQueueItems(): void {
@@ -174,6 +211,21 @@ export class QuickPickPageComponent implements OnInit {
     });
   }
 
+  private processScannedBarcode(scannedBarcode: string): void {
+    this.barcodeScanService.reset();
+    this.rawBarcodeMessage = scannedBarcode;
+    this.handleInputLevelScan(scannedBarcode);
+  }
+
+  private handleInputLevelScan(scannedBarcode: string): void {
+    if (this.isInvalidSubscription(this.inputLevelScan)) {
+      this.inputLevelScan = '';
+    }
+
+    this.inputLevelScan = `${scannedBarcode}`;
+    this.scanInput = new BarcodeScanMessage(this.inputLevelScan);
+  }
+
   /* istanbul ignore next */
   private displayFailedToSaveDialog(): void {
     const properties = new PopupDialogProperties('Role-Status-Warning');
@@ -183,19 +235,7 @@ export class QuickPickPageComponent implements OnInit {
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Ok';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = this.popupTimeoutSeconds;
+    properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);
-  }
-
-  private displayQuickPickError(message, headerText, okButtonText): void {
-      const properties = new PopupDialogProperties('Role-Status-Warning');
-      properties.titleElementText = headerText;
-      properties.messageElementText = message;
-      properties.showPrimaryButton = true;
-      properties.showSecondaryButton = false;
-      properties.primaryButtonText = okButtonText;
-      properties.dialogDisplayType = PopupDialogType.Error;
-      properties.timeoutLength = this.popupTimeoutSeconds;
-      this.dialogService.showOnce(properties);
   }
 }
