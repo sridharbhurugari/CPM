@@ -199,7 +199,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2],  PopupDialogType.Warning);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Warning);
           });
         break;
       case QuickPickError.ScanUnavailable:
@@ -209,7 +210,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2],  PopupDialogType.Warning);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Warning);
           });
         break;
       case QuickPickError.PrintFailure:
@@ -219,7 +221,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2],  PopupDialogType.Error);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
           });
         break;
       case QuickPickError.UnlockFailure:
@@ -229,7 +232,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2],  PopupDialogType.Error);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
           });
         break;
       case QuickPickError.RerouteFailure:
@@ -239,7 +243,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2],  PopupDialogType.Error);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
           });
         break;
       case QuickPickError.HardwareFailure:
@@ -249,7 +254,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2],  PopupDialogType.Error);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
           });
         break;
       case QuickPickError.FailedToSave:
@@ -259,7 +265,8 @@ export class QuickPickPageComponent implements OnInit {
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
-            this.displayDialog(headerText, bodyText, r[2], PopupDialogType.Error);
+            const okText = r[2];
+            this.displayDialog(headerText, bodyText, okText, PopupDialogType.Error);
           });
         break;
     }
