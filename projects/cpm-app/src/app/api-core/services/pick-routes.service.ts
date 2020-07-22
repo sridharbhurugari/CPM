@@ -27,7 +27,7 @@ export class PickRoutesService {
 
   save(pickRouteGuid: string, pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
     const deviceSequenceDataContracts = deviceSequence.map(x => {
-      return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
+      return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder, DefaultOutputDeviceId: x.DefaultOutputDeviceId,  Autofill: x.Autofill };
     });
     const body = {
       PickRouteGuid: pickRouteGuid,
@@ -41,7 +41,7 @@ export class PickRoutesService {
 
   saveAs(pickRouteDescription: string, deviceSequence: IDeviceSequenceOrder[]) {
     const deviceSequenceDataContracts = deviceSequence.map(x => {
-      return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder };
+      return { DeviceId: x.DeviceId, Sequence: x.SequenceOrder, DefaultOutputDeviceId: x.DefaultOutputDeviceId,  Autofill: x.Autofill };
     });
     const body = {
       Description:  pickRouteDescription,
