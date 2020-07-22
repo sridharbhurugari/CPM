@@ -46,22 +46,24 @@ export class QuickPickPageComponent implements OnInit {
   inputLevelScanFocused = true;
   rawBarcodeMessage = '';
   scanInput: BarcodeScanMessage;
-
-  dialogOkButtonTranslation$: any;
-  dialogInvalidScanHeaderTranslation$: any;
-  dialogInvalidScanBodyTranslation$: any;
-  dialogScanUnavailableHeaderTranslation$: any;
-  dialogScanUnavailableBodyTranslation$: any;
-  dialogFailedToPrintHeaderTranslation$: any;
-  dialogFailedToPrintBodyTranslation$: any;
-  dialogFailedToUnlockHeaderTranslation$: any;
-  dialogFailedToUnlockBodyTranslation$: any;
-  dialogFailedToRerouteHeaderTranslation$: any;
-  dialogFailedToRerouteBodyTranslation$: any;
-  dialogFailedToSaveHeaderTranslation$: any;
-  dialogFailedToSaveBodyTranslation$: any;
-  dialogFailedHardwareHeaderTranslation$: any;
-  dialogFailedHardwareBodyTranslation$: any;
+  translatables = [
+    'OK',
+    'INVALID_SCAN_BARCODE_HEADER',
+    'INVALID_SCAN_BARCODE',
+    'INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT',
+    'INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT',
+    'FAILEDTOPRINT_HEADER_TEXT',
+    'FAILEDTOPRINT_BODY_TEXT',
+    'FAILEDTOUNLOCKDOOR_HEADER_TEXT',
+    'FAILEDTOUNLOCKDOOR_BODY_TEXT',
+    'FAILEDTOREROUTE_HEADER_TEXT',
+    'FAILEDTOREROUTE_BODY_TEXT',
+    'FAILEDTOSAVE_HEADER_TEXT',
+    'FAILEDTOSAVE_BODY_TEXT',
+    'XR2_QUICK_PICK_ERROR_HEADER',
+    'XR2_QUICK_PICK_ERROR_BODY',
+  ];
+  translations$: any;
 
   @ViewChild('searchBox', {
     static: true
@@ -191,84 +193,62 @@ export class QuickPickPageComponent implements OnInit {
 
   /* istanbul ignore next */
   displayQuickPickError(error: QuickPickError, customHeader = null, customBody = null): void {
-
     switch (error) {
       case QuickPickError.ScanNotFound:
-        forkJoin(
-          this.dialogInvalidScanHeaderTranslation$,
-          this.dialogInvalidScanBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Warning);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['INVALID_SCAN_BARCODE_HEADER'];
+          const bodyText = customBody ? customBody : r['INVALID_SCAN_BARCODE'];
+          const okText = r['OK'];
+          this.displayWarningDialog(headerText, bodyText, okText);
+        });
         break;
       case QuickPickError.ScanUnavailable:
-        forkJoin(
-          this.dialogScanUnavailableHeaderTranslation$,
-          this.dialogScanUnavailableBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Warning);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayWarningDialog(headerText, bodyText, okText);
+        });
         break;
       case QuickPickError.PrintFailure:
-        forkJoin(
-          this.dialogFailedToPrintHeaderTranslation$,
-          this.dialogFailedToPrintBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['FAILEDTOPRINT_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['FAILEDTOPRINT_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayErrorDialog(headerText, bodyText, okText);
+        });
         break;
       case QuickPickError.UnlockFailure:
-        forkJoin(
-          this.dialogFailedToUnlockHeaderTranslation$,
-          this.dialogFailedToUnlockBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['FAILEDTOUNLOCKDOOR_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['FAILEDTOUNLOCKDOOR_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayErrorDialog(headerText, bodyText, okText);
+        });
         break;
       case QuickPickError.RerouteFailure:
-        forkJoin(
-          this.dialogFailedToRerouteHeaderTranslation$,
-          this.dialogFailedToRerouteBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['FAILEDTOREROUTE_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['FAILEDTOREROUTE_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayErrorDialog(headerText, bodyText, okText);
+        });
         break;
       case QuickPickError.HardwareFailure:
-        forkJoin(
-          this.dialogFailedHardwareHeaderTranslation$,
-          this.dialogFailedHardwareBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText,  PopupDialogType.Error);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['XR2_QUICK_PICK_ERROR_HEADER'];
+          const bodyText = customBody ? customBody : r['XR2_QUICK_PICK_ERROR_BODY'];
+          const okText = r['OK'];
+          this.displayErrorDialog(headerText, bodyText, okText);
+        });
         break;
       case QuickPickError.FailedToSave:
-        forkJoin(
-          this.dialogFailedToSaveHeaderTranslation$,
-          this.dialogFailedToSaveBodyTranslation$,
-          this.dialogOkButtonTranslation$).subscribe(r => {
-            const headerText = customHeader ? customHeader : r[0];
-            const bodyText = customBody ? customBody : r[1];
-            const okText = r[2];
-            this.displayDialog(headerText, bodyText, okText, PopupDialogType.Error);
-          });
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['FAILEDTOSAVE_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['FAILEDTOSAVE_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayErrorDialog(headerText, bodyText, okText);
+        });
         break;
     }
   }
@@ -310,14 +290,27 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  private displayDialog(headerText, bodyText, okButtonText, dialogType): void {
+  private displayWarningDialog(headerText, bodyText, okButtonText): void {
     const properties = new PopupDialogProperties('Role-Status-Warning');
     properties.titleElementText = headerText;
     properties.messageElementText = bodyText;
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = okButtonText;
-    properties.dialogDisplayType = dialogType;
+    properties.dialogDisplayType = PopupDialogType.Warning;
+    properties.timeoutLength = this.popupTimeoutSeconds;
+    this.dialogService.showOnce(properties);
+  }
+
+  /* istanbul ignore next */
+  private displayErrorDialog(headerText, bodyText, okButtonText): void {
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    properties.titleElementText = headerText;
+    properties.messageElementText = bodyText;
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = okButtonText;
+    properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
   }
@@ -329,21 +322,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private setTranslations() {
-    this.dialogOkButtonTranslation$ = this.translateService.get('OK');
-    this.dialogInvalidScanHeaderTranslation$ = this.translateService.get('INVALID_SCAN_BARCODE_HEADER');
-    this.dialogInvalidScanBodyTranslation$ = this.translateService.get('INVALID_SCAN_BARCODE');
-    this.dialogScanUnavailableHeaderTranslation$ = this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER');
-    this.dialogScanUnavailableBodyTranslation$ = this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS');
-    this.dialogFailedToPrintHeaderTranslation$ = this.translateService.get('FAILEDTOPRINT_HEADER_TEXT');
-    this.dialogFailedToPrintBodyTranslation$ = this.translateService.get('FAILEDTOPRINT_BODY_TEXT');
-    this.dialogFailedToUnlockHeaderTranslation$ = this.translateService.get('FAILEDTOUNLOCKDOOR_HEADER_TEXT');
-    this.dialogFailedToUnlockBodyTranslation$ = this.translateService.get('FAILEDTOUNLOCKDOOR_BODY_TEXT');
-    this.dialogFailedToRerouteHeaderTranslation$ = this.translateService.get('FAILEDTOREROUTE_HEADER_TEXT');
-    this.dialogFailedToRerouteBodyTranslation$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
-    this.dialogFailedToSaveHeaderTranslation$ = this.translateService.get('FAILEDTOSAVE_HEADER_TEXT');
-    this.dialogFailedToSaveBodyTranslation$ = this.translateService.get('FAILEDTOSAVE_BODY_TEXT');
-    this.dialogFailedHardwareHeaderTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
-    this.dialogFailedHardwareBodyTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_BODY');
+    this.translations$ = this.translateService.get(this.translatables);
   }
 
   private processScannedBarcode(scannedBarcode: string): void {
