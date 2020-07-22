@@ -23,6 +23,7 @@ export class GuidedManualCycleCountItemid
   DeviceId: number;
   DeviceDescription: string;
   DeviceLocationId: number;
+  DosageForm:string;
   ItemId: string;
   GenericNameFormatted: string;
   BrandNameFormatted: string;

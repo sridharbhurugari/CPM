@@ -69,6 +69,7 @@
   "LEASE_DENIED_MESSAGE": "Access to device {{deviceDescription}} has been denied.",
   "MAINTENANCE": "Maintenance",
   "GUIDED_CYCLE_COUNT_LOCATION": "Location",
+  "GUIDED_CYCLE_COUNT_LOCATIONS":"Locations",
   "MANUAL_CYCLE_COUNT": "Manual Count",
   "MEDICATION": "Medication",
   "NAME": "Name",
@@ -154,6 +155,6 @@
   "INVALID_SCAN_BARCODE": "The bar code scanned is not recognized. Please scan a correct bar code.",
   "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code.",
   "INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER": "Scanning Unavailable",
-  "INVALID_SCAN_QUICKPICK_INPROGRESS": "Scanning is not available while a door is unlocked or in progress. Please empty and relock the current door before scanning again."
-
+  "INVALID_SCAN_QUICKPICK_INPROGRESS": "Scanning is not available while a door is unlocked or in progress. Please empty and relock the current door before scanning again.",
+  "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text"
 }
