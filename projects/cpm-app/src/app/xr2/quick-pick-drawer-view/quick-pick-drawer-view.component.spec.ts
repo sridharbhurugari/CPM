@@ -14,6 +14,9 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
+import { Router, RouterModule } from '@angular/router';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -22,6 +25,10 @@ describe('QuickPickDrawerViewComponent', () => {
   let quickPickEventConnectionService: Partial<QuickPickEventConnectionService>;
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let popupDialogService: Partial<PopupDialogService>;
+  let router: Partial<Router>;
+  let hardwareLeaseService: Partial<HardwareLeaseService>;
+  let leaseVerificationResult: LeaseVerificationResult = 0;
+
 
   beforeEach(async(() => {
     quickPickEventConnectionService = {
@@ -39,16 +46,21 @@ describe('QuickPickDrawerViewComponent', () => {
       showOnce: jasmine.createSpy('showOnce')
     };
 
+    hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult) };
+    router = {navigate: jasmine.createSpy('navigate') };
+
     TestBed.configureTestingModule({
       declarations: [QuickPickDrawerViewComponent, QuickPickDrawerDetailsViewComponent, DashboardCardComponent
         , MockTranslatePipe, MockSearchPipe, MockAppHeaderContainer],
-      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule],
+      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule, RouterModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
         { provide: Location, useValue: { go: () => { } } },
+        { provide: Router, useValue: router },
+        { provide: HardwareLeaseService, useValue: hardwareLeaseService }
       ]
     }).overrideComponent(DashboardCardComponent, {
       set: {
