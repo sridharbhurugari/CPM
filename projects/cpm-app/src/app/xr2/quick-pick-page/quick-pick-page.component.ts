@@ -19,8 +19,6 @@ import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
-import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
-import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -46,10 +44,6 @@ export class QuickPickPageComponent implements OnInit {
   rawBarcodeMessage = '';
   scanInput: BarcodeScanMessage;
 
-  popupTimeoutSeconds = 10;
-  dialogErrorTitleTranslation$: any;
-  dialogOkButtonTranslation$: any;
-
   @ViewChild('searchBox', {
     static: true
   })
@@ -64,13 +58,15 @@ export class QuickPickPageComponent implements OnInit {
     private windowService: WindowService,
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
     private changeDetector: ChangeDetectorRef,
-    private dialogService: PopupDialogService
-    ) {
-      this.quickPickQueueItems = of([]);
-    }
+    private barcodeScanService: BarcodeScanService,
+    private quickPickErrorService: QuickPickErrorService
+  ) {
+    this.quickPickQueueItems = of([]);
+  }
 
   ngOnInit() {
-      this.getActiveXr2Devices();
+    this.hookupEventHandlers();
+    this.getActiveXr2Devices();
   }
 
   ngOnDestroy(): void {
@@ -80,7 +76,6 @@ export class QuickPickPageComponent implements OnInit {
   /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
-    this.quickPickEventConnectionService.QuickPickErrorUpdateSubject.subscribe(event => this.onQuickPickErrorUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(
@@ -98,14 +93,6 @@ export class QuickPickPageComponent implements OnInit {
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
-  }
-
-  private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
-      return;
-    }
-
-    this.loadPicklistsQueueItems();
   }
 
   async getActiveXr2Devices() {
@@ -227,15 +214,36 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  private displayFailedToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
+  private hookupEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+      this.processScannedBarcode(scannedBarcode)
+    );
+  }
+
+  /* istanbul ignore next */
+  private unhookEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
+  }
+
+  private unsubscribeIfValidSubscription(subscription: Subscription): void {
+    if (this.isValidSubscription(subscription)) {
+      subscription.unsubscribe();
+    }
+  }
+
+  private isValidSubscription(variable: any): boolean {
+    return variable !== undefined && variable !== null;
+  }
+
+  private isInvalidSubscription(variable: any): boolean {
+    return !this.isValidSubscription(variable);
   }
 }

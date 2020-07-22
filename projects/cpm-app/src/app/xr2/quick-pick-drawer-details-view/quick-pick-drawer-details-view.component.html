@@ -25,7 +25,10 @@
           <div class="body-content">
             <div class="grid-container">
               <div class="status-label">
-                <app-traffic-lights [color]="getTrafficLightProperties(detailedDrawerData).color"></app-traffic-lights>
+                <app-traffic-lights
+                [lightColor]="getTrafficLightProperties(detailedDrawerData).color"
+                [isBlinking] = "getTrafficLightProperties(detailedDrawerData).isBlinking">
+              </app-traffic-lights>
               </div>
               <div class="status-data">{{ getTrafficLightProperties(detailedDrawerData).text }}
               </div>

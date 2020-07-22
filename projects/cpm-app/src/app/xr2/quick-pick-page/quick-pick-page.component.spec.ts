@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, SharedModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService,  SearchBoxComponent, SharedModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -17,14 +17,15 @@ import { QuickPickEventConnectionService } from '../services/quick-pick-event-co
 import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { BarcodeScanService } from 'oal-core';
 import { QuickPickQueueViewComponent } from '../quick-pick-queue-view/quick-pick-queue-view.component';
 import { QuickPickDrawerViewComponent } from '../quick-pick-drawer-view/quick-pick-drawer-view.component';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
-import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { BarcodeScanMessage } from '../model/barcode-scan-message';
+import { QuickPickErrorService } from '../services/quick-pick-error.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -41,7 +42,6 @@ describe('QuickPickPageComponent', () => {
 
   let selectableDeviceInfoList: SelectableDeviceInfo[] = [];
   let selectableDeviceInfo1 = new SelectableDeviceInfo(null);
-  let systemConfigurationService: Partial<SystemConfigurationService>;
   selectableDeviceInfo1.DeviceId = 1;
   selectableDeviceInfo1.Description = 'DeviceXr21';
   selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
@@ -63,13 +63,13 @@ describe('QuickPickPageComponent', () => {
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let quickPickQueueService: Partial<Xr2QuickPickQueueService>;
   let popupDialogService: Partial<PopupDialogService>;
-  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
+  let quickPickErrorService: Partial<QuickPickErrorService>;
+  let barcodeScanService: Partial<BarcodeScanService>;
 
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
     QuickPickReloadDrawersSubject: new Subject(),
-    QuickPickQueueUpdateSubject: new Subject(),
-    QuickPickErrorUpdateSubject: new Subject()
+    QuickPickQueueUpdateSubject: new Subject()
   };
 
   quickPickDrawerService = {
@@ -82,12 +82,20 @@ describe('QuickPickPageComponent', () => {
     reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
   };
 
+  quickPickErrorService = {
+    display: jasmine.createSpy('display')
+  };
+
   popupDialogService = {
     showOnce: jasmine.createSpy('showOnce')
   };
 
+  barcodeScanService = {
+    reset: jasmine.createSpy('reset'),
+    BarcodeScannedSubject: new Subject(),
+  };
+
   beforeEach(async(() => {
-    systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
 
     TestBed.configureTestingModule({
       declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
@@ -99,13 +107,14 @@ describe('QuickPickPageComponent', () => {
         { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) } },
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
+        { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: QuickPickErrorService, useValue: quickPickErrorService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: WindowService, useValue: [] },
         { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => { } } },
         { provide: Router, useValue: { data: () => { } } },
-        { provide: SystemConfigurationService, useValue: systemConfigurationService },
       ]
     }).overrideComponent(QuickPickQueueViewComponent, {
       set: {
@@ -199,17 +208,32 @@ describe('QuickPickPageComponent', () => {
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
+      expect(quickPickErrorService.display).toHaveBeenCalled();
     });
   });
 
-  describe('Error Notifications', () => {
-    it('should display a popupwindow with the error message', () => {
+  describe('Quick Pick Queue', () => {
+    it('should load queue items on new update message', () => {
       expect(component).toBeTruthy();
       component.selectedDeviceId = '1';
-      const FakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
-      quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(FakeEvent);
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
+      const event = {DeviceId: 1};
+
+      quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(event);
+
+      expect(quickPickQueueService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('Quick Pick Scanning', () => {
+    it('should set scan input message when scan event is received', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const scan = 'scan';
+      const scanMessage = new BarcodeScanMessage(scan);
+
+      barcodeScanService.BarcodeScannedSubject.next(scan);
+
+      expect(component.scanInput).toEqual(scanMessage);
     });
   });
 });

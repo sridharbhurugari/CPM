@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Lights } from './models/lights';
 @Component({
   selector: 'app-traffic-lights',
   templateUrl: './traffic-lights.component.html',
@@ -7,11 +6,8 @@ import { Lights } from './models/lights';
 })
 export class TrafficLightsComponent implements OnInit {
 
-  @Input() color: string;
-
-  isRed: boolean;
-  isYellow: boolean;
-  isGreen: boolean;
+  @Input() lightColor: string = 'gray';
+  @Input() isBlinking: boolean = false;
 
   constructor() {
   }
@@ -20,23 +16,11 @@ export class TrafficLightsComponent implements OnInit {
 
   }
 
-  ngOnChanges() {
-    this.setLightColor();
-  }
+  getLightClasses() {
+    const stoplightClass = 'stoplight';
+    const lightColorClass = this.lightColor;
+    const blinkClass = this.isBlinking ? 'blink' : '';
 
-  private setLightColor() {
-    if (this.color === 'red') {
-      this.isRed = true;
-      this.isYellow = false;
-      this.isGreen = false;
-    } else if (this.color === 'yellow') {
-      this.isYellow = true;
-      this.isGreen = false;
-      this.isRed = false;
-    } else if (this.color === 'green') {
-      this.isGreen = true;
-      this.isYellow = false;
-      this.isRed = false;
-    }
+    return [stoplightClass, lightColorClass, blinkClass];
   }
 }
