@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
-import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
+import { Router, Params, NavigationExtras } from '@angular/router';
 
 
 @Component({
@@ -39,19 +39,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set selectedDeviceId(value: string) {
     this._selectedDeviceId = value;
-    if (value !== undefined) {
-      console.log('Selected DeviceID :' + this.selectedDeviceId);
-      this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
-        leaseVerificationResults => {
-          console.log('Lease Verification Results : ' + leaseVerificationResults);
-          if (leaseVerificationResults === LeaseVerificationResult.Success) {
-            this.deviceLeaseOwner = true;
-          } else {
-            this.deviceLeaseOwner = false;
-          }
-          console.log('Current Lease Owner : ' + this.deviceLeaseOwner);
-        });
-    }
   }
 
   get selectedDeviceId(): string {
@@ -73,17 +60,23 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
-    if (this.deviceLeaseOwner === true) {
-      this.detailedDrawer = this._quickpickDrawers[drawerIndex];
-      this.printDrawerLabel();
-      this.quickPickActive.emit(true);
-    } else {
-      const navigationExtras: NavigationExtras = {
-        queryParams: { deviceId: this.selectedDeviceId, routeToPath: 'quickPick' },
-        fragment: 'anchor'
-      };
-      this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
-    }
+    this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+      leaseVerificationResults => {
+        console.log('Lease Verification Results : ' + leaseVerificationResults);
+        if (leaseVerificationResults === LeaseVerificationResult.Success) {
+          this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+          this.printDrawerLabel();
+          this.quickPickActive.emit(true);
+        } else {
+          const navigationExtras: NavigationExtras = {
+            queryParams: {
+              deviceId: this.selectedDeviceId,
+              routeToPath: 'quickpick' } ,
+            fragment: 'anchor'
+          };
+          this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+        }
+      });
   }
 
   onCloseQuickPickDrawerDetails(value?: any) {
