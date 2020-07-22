@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { switchMap } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
@@ -14,6 +14,7 @@ import { QuickPickEventConnectionService } from '../../xr2/services/quick-pick-e
 import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -30,7 +31,9 @@ export class QuickPickPageComponent implements OnInit {
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   selectedDeviceId: string;
-
+  popupTimeoutSeconds = 10;
+  dialogErrorTitleTranslation$: any;
+  dialogOkButtonTranslation$: any;
 
   @ViewChild('searchBox', {
     static: true
@@ -47,18 +50,25 @@ export class QuickPickPageComponent implements OnInit {
     private ocapHttpConfigurationService: OcapHttpConfigurationService,
     private translateService: TranslateService,
     private changeDetector: ChangeDetectorRef,
-    private dialogService: PopupDialogService
+    private dialogService: PopupDialogService,
+    private systemConfigurationService: SystemConfigurationService
     ) {
       this.quickPickQueueItems = of([]);
     }
 
   ngOnInit() {
       this.getActiveXr2Devices();
+      this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
+        this.popupTimeoutSeconds = (Number(result.Value));
+      });
+      this.dialogErrorTitleTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
+      this.dialogOkButtonTranslation$ = this.translateService.get('OK');
   }
 
   /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
+    this.quickPickEventConnectionService.QuickPickErrorUpdateSubject.subscribe(event => this.onQuickPickErrorUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(
@@ -84,6 +94,15 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.loadPicklistsQueueItems();
+  }
+
+  private onQuickPickErrorUpdate(event) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+      return;
+    }
+    forkJoin(this.dialogErrorTitleTranslation$, this.dialogOkButtonTranslation$).subscribe(r => {
+      this.displayQuickPickError(event.ErrorMessage, r[0], r[1]);
+    });
   }
 
   async getActiveXr2Devices() {
@@ -164,7 +183,19 @@ export class QuickPickPageComponent implements OnInit {
     properties.showSecondaryButton = false;
     properties.primaryButtonText = 'Ok';
     properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
+    properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
+  }
+
+  private displayQuickPickError(message, headerText, okButtonText): void {
+      const properties = new PopupDialogProperties('Role-Status-Warning');
+      properties.titleElementText = headerText;
+      properties.messageElementText = message;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.primaryButtonText = okButtonText;
+      properties.dialogDisplayType = PopupDialogType.Error;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      this.dialogService.showOnce(properties);
   }
 }

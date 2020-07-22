@@ -63,6 +63,7 @@
   "LEASE_DENIED_MESSAGE": "Access to device {{deviceDescription}} has been denied.",
   "MAINTENANCE": "Maintenance",
   "GUIDED_CYCLE_COUNT_LOCATION": "Location",
+  "GUIDED_CYCLE_COUNT_LOCATIONS":"Locations",
   "MANUAL_CYCLE_COUNT": "Manual Count",
   "MEDICATION": "Medication",
   "NAME": "Name",
@@ -134,6 +135,7 @@
   "XR2_EXCEPTIONS_DETAILS_ITEMDESCRIPTION": "Item Description / ID",
   "XR2_EXCEPTIONS_DETAILS_BARCODE_NDC": "Bar Code / NDC",
   "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review",
+  "XR2_QUICK_PICK_ERROR_HEADER": "Quick Pick Error",
   "DEVICE_SELECTION_TEXT": "Select device",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "No devices",
   "DEVICE_SELECTION_SEARCH_DEVICES": "Find device",
@@ -144,6 +146,6 @@
   "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
   "SCAN_BIN_BARCODE": "The correct bin bar code must be scanned.",
   "INVALID_SCAN_BARCODE": "The bar code scanned is not recognized. Please scan a correct bar code.",
-  "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code."
-
+  "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code.",
+  "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text"
 }

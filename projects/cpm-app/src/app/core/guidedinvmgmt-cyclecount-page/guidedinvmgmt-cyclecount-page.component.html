@@ -136,12 +136,12 @@
                         [disabled]="deviceLocationAccessBusy || carouselFaulted"></oc-button-action>
                     <oc-button-action id="nextbutton" *ngIf="!isLastItem" [buttonText]=" 'NEXT' | translate "
                         (click)="navigateContinue()"
-                        [disabled]="(nextButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay)"
+                        [disabled]="(nextButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay || uiIssuesIdentified)"
                         tabindex="5">
                     </oc-button-action>
                     <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" (click)="navigateContinue()"
                         *ngIf="isLastItem"
-                        [disabled]="(doneButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay)"
+                        [disabled]="(doneButtonDisable || deviceLocationAccessBusy || carouselFaulted) && ( binBarCodeDisplay || productBarCodeDisplay || uiIssuesIdentified)"
                         tabindex="5"></oc-button-action>
                 </div>
             </div>

@@ -5,7 +5,7 @@ import { IPickRouteDetail } from '../../api-core/data-contracts/i-pickroute-deta
 import { DevicesService } from '../../api-core/services/devices.service';
 import { PickRoutesService } from '../../api-core/services/pick-routes.service';
 import { ActivatedRoute } from '@angular/router';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, take } from 'rxjs/operators';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { PopupDialogService, PopupDialogProperties, PopupWindowService,
          PopupWindowProperties, PopupDialogType } from '@omnicell/webcorecomponents';
@@ -35,15 +35,13 @@ export class EditPickRoutePageComponent implements OnInit {
   genericErrorTitle$: Observable<string>;
   genericErrorMessage$: Observable<string>;
 
-  routeGuid: string;
   newDeviceSequence: IDeviceSequenceOrder[];
-  originalDeviceSequence: IDeviceSequenceOrder[];
   newRouteName: string;
-
-  isDefaultRoute: boolean;
   routeNameChanged: boolean;
-  canDelete: boolean;
-  requestStatus: 'none' | 'save' | 'saveAs' = 'none';
+
+  isDefaultRoute$: Observable<boolean>;
+  canDelete$: Observable<boolean>;
+  requestStatus: 'none' | 'save' | 'saveAs' | 'delete' = 'none';
   ocsIsHealthy = false;
 
   constructor(
@@ -69,7 +67,8 @@ export class EditPickRoutePageComponent implements OnInit {
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
 
-    this.pickRoute$.subscribe(x => this.canDelete = x.AssignedPriorities.length == 0);
+    this.canDelete$ = this.pickRoute$.pipe(map(x => x.AssignedPriorities.length == 0));
+    this.isDefaultRoute$ = this.pickRoute$.pipe(map(x => x.IsDefault));
 
     this.enabledDevices$ = forkJoin(this.pickRoute$, allDevices$).pipe(map(results => {
       const pickRouteDetail = results[0];
@@ -90,9 +89,6 @@ export class EditPickRoutePageComponent implements OnInit {
         };
       });
 
-      this.routeGuid = pickRouteDetail.PickRouteGuid;
-      this.newRouteName = pickRouteDetail.Description;
-      this.isDefaultRoute = pickRouteDetail.Description === 'Default';
       return enabledDevices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
     }));
 
@@ -115,19 +111,8 @@ export class EditPickRoutePageComponent implements OnInit {
         };
       });
 
-      this.routeGuid = pickRouteDetail.PickRouteGuid;
-      this.newRouteName = pickRouteDetail.Description;
-      this.isDefaultRoute = pickRouteDetail.Description === 'Default';
-
       return disabledDevices.filter(x => x != null);
     }));
-
-    this.originalDeviceSequence = [];
-    this.enabledDevices$.forEach(enabledDevice => {
-      enabledDevice.forEach( device => {
-        this.originalDeviceSequence.push(device);
-      });
-    });
 
     this.connectToEvents();
   }
@@ -148,12 +133,15 @@ export class EditPickRoutePageComponent implements OnInit {
     };
     properties.data = data;
 
-    const component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
-    component.dismiss.subscribe(selectedConfirm => {
+    let component = this.popupWindowService.show(TextResultPopupComponent, properties) as unknown as TextResultPopupComponent;
+    component.dismiss.pipe(take(1)).subscribe(selectedConfirm => {
       if (selectedConfirm) {
         this.requestStatus = 'saveAs';
-        this.pickRoutesService.saveAs(data.resultValue, this.newDeviceSequence)
-          .subscribe(result => this.navigateBack(), error => this.onSaveAsFailed(error));
+        this.pickRoute$.subscribe(pickRoute => {
+          let deviceSequence = this.newDeviceSequence || pickRoute.DeviceSequence;
+          this.pickRoutesService.saveAs(data.resultValue, deviceSequence)
+            .subscribe(result => this.navigateBack(), error => this.onSaveAsFailed(error));
+        });
       }
     });
   }
@@ -167,16 +155,16 @@ export class EditPickRoutePageComponent implements OnInit {
 
     properties.data = data;
 
-    if (!this.newDeviceSequence) {
-      this.newDeviceSequence = this.originalDeviceSequence;
-    }
-
-    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
-    component.dismiss.subscribe(selectedConfirm => {
+    let component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.pipe(take(1)).subscribe(selectedConfirm => {
       if (selectedConfirm) {
         this.requestStatus = 'save';
-        this.pickRoutesService.save(this.routeGuid, this.newRouteName, this.newDeviceSequence)
-          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+        this.pickRoute$.subscribe(pickRoute => {
+          let deviceSequence = this.newDeviceSequence || pickRoute.DeviceSequence;
+          let routeDescription = this.newRouteName || pickRoute.Description;
+          this.pickRoutesService.save(pickRoute.PickRouteGuid, routeDescription, deviceSequence)
+            .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+        });
       }
     });
   }
@@ -190,11 +178,14 @@ export class EditPickRoutePageComponent implements OnInit {
 
     properties.data = data;
 
-    const component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
-    component.dismiss.subscribe(selectedConfirm => {
+    let component = this.popupWindowService.show(ConfirmPopupComponent, properties) as unknown as ConfirmPopupComponent;
+    component.dismiss.pipe(take(1)).subscribe(selectedConfirm => {
       if (selectedConfirm) {
-        this.pickRoutesService.delete(this.routeGuid)
-          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+        this.requestStatus = 'delete';
+        this.pickRoute$.subscribe(pickRoute => {
+          this.pickRoutesService.delete(pickRoute.PickRouteGuid)
+            .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+        });
       }
     });
   }

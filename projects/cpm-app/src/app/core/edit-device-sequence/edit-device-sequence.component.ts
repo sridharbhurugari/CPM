@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { IGridOrderChanged } from '../../shared/events/i-grid-order-changed';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+import { CheckboxValues } from '../../shared/constants/checkbox-values';
 
 @Component({
   selector: 'app-edit-device-sequence',
@@ -20,6 +21,8 @@ export class EditDeviceSequenceComponent implements OnInit {
 
   @Input()
   disabled: boolean;
+
+  checkboxToggleAll: string = CheckboxValues.ToggleAll;
 
   constructor() { }
 

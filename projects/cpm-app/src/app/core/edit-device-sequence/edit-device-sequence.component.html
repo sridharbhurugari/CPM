@@ -1,14 +1,16 @@
 <oc-grid appGridMultiSelect (selectionChanged)="onSelectionChanged($event)" appGridReorder (orderChanged)="onOrderChanged($event)" ocgridfilter="false">
     <ng-container class="ocgridheader">
-        <div class="first" data-colwrap="true"></div>
+        <div class="first" data-colwrap="true">
+            <oc-checkbox [selected]="disabledDevices && disabledDevices.length == 0" [noLabel]="true" [isEnabled]="!disabled" [valueField]="checkboxToggleAll"></oc-checkbox>
+        </div>
         <div class="col">
             {{'Device' | translate}}
         </div>
     </ng-container>
     <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let device of enabledDevices; let isFirst = first; let isLast = last">
+        <div class="row" *ngFor="let device of enabledDevices; let isFirst = first; let isLast = last; let i = index;">
             <div class="first">
-                <oc-checkbox [isEnabled]="!disabled" [valueField]="device" [selected]="true"></oc-checkbox>
+                <oc-checkbox [noLabel]="true" [isEnabled]="!disabled" [valueField]="device" [selected]="true"></oc-checkbox>
             </div>
             <div style="flex-direction: row;" class="col" [attr.data-title]="'DEVICE' | translate">
                 <div style="flex-grow: 1;">
@@ -16,12 +18,12 @@
                         {{device.DeviceDescription}}
                     </div>
                 </div>
-                <app-row-reorder-buttons [disabled]="disabled" [value]="device" [upDisabled]="isFirst" [downDisabled]="isLast"></app-row-reorder-buttons>
+                <app-row-reorder-buttons [disabled]="disabled" [allowEditIndex]="true" [orderableLength]="enabledDevices.length" [value]="device" [upDisabled]="isFirst" [downDisabled]="isLast" [index]="i"></app-row-reorder-buttons>
             </div>
         </div>
         <div class="row" *ngFor="let device of disabledDevices">
             <div class="first">
-                <oc-checkbox [isEnabled]="!disabled" [valueField]="device" [selected]="false"></oc-checkbox>
+                <oc-checkbox [noLabel]="true" [isEnabled]="!disabled" [valueField]="device" [selected]="false"></oc-checkbox>
             </div>
             <div [attr.data-title]="'DEVICE' | translate">
                 {{device.DeviceDescription}}

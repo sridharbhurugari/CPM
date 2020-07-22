@@ -29,10 +29,9 @@ describe('SearchPipe', () => {
       var element = { };
       element[checkKey] = checkValue;
       element[excludeKey] = excludeValue;
-      var noMatch = {
-        checkKey: '----------',
-        excludeKey: '----------'
-      }
+      var noMatch = { };
+      noMatch[checkKey] = '----------';
+      noMatch[excludeKey] = '----------';
       data.push(element);
       data.push(noMatch);
     })
