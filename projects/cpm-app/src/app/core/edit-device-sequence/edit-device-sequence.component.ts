@@ -60,11 +60,27 @@ export class EditDeviceSequenceComponent implements OnInit {
     const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;
     const odDesc = outputDevices.find(x => x.OCTokenValue === outputDeviceId);   
     
-    let translatedLabel = '';
-        this.translateService.get("Default: " + odDesc.Label + " , Autofill: " + autofill).subscribe((res: string) => {
-          translatedLabel = res;});
+    const currentODSetting: string[] = [];
 
-    return translatedLabel;
+    currentODSetting.push("DEFAULT");
+    currentODSetting.push(odDesc.Label);
+    currentODSetting.push("AUTOFILL");  
+    currentODSetting.push("ON");
+    currentODSetting.push("OFF");
+
+    let translatedLabel = '';
+        this.translateService.get(currentODSetting).subscribe((res: string) => {
+          translatedLabel = res;}); 
+          
+    let returnLabel = translatedLabel["DEFAULT"] + ": " + translatedLabel[odDesc.Label];
+
+    if (outputDeviceId !== this.cartModuleId) {
+      returnLabel = returnLabel + " (" + translatedLabel["AUTOFILL"] + " ";
+      if (autofill) { return returnLabel + translatedLabel["ON"] + ")" };
+      return returnLabel + translatedLabel["OFF"] + ")"
+    }
+
+    return returnLabel;
   }
 
   onOutputDeviceEditClick(device: IDeviceSequenceOrder){

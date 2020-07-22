@@ -3,24 +3,25 @@
       <div>{{data.popuptitle | translate}}</div>
     </ng-container>
     <ng-container class="ocwindowcontent">
-      <p>{{data.dropdowntitle | translate}}</p>
-      <div class="cpmheaderrow">                
-          
-          <app-header-container></app-header-container>
-          <oc-singleselect
+      
+      <div class="cpmheaderrow"> 
+        <p style="font-size: 20px; padding-right: 25px;">{{data.dropdowntitle | translate}}</p>         
+        <oc-singleselect
               [popupDirection]="'AUTO'"              
               [tableData]="data.dropdownrows"
               [selectedItem]="data.defaultrow"
               componentWidth="300"
               (selectionChanged)="onSelectionChanged($event)">
-          </oc-singleselect>   
-          <app-header-container></app-header-container>           
-          <oc-checkbox #checkBox *ngIf="data.showCheckbox"                       
+        </oc-singleselect>                                
+      </div>  
+      <div>
+        <oc-checkbox #checkBox *ngIf="data.showCheckbox"                       
               [displayField]="data.checkboxLabel | translate"
               [selected]="data.checkboxSelected"
-              (selection)="onSelect($event)">
-          </oc-checkbox>                      
-      </div>  
+              (selection)="onSelect($event)"
+              style="position:relative; left:420px">
+        </oc-checkbox> 
+      </div>
               
     </ng-container>
     <ng-container class="ocwindowfooter">
