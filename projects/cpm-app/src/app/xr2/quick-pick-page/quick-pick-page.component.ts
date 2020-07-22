@@ -60,7 +60,8 @@ export class QuickPickPageComponent implements OnInit {
   dialogFailedToRerouteBodyTranslation$: any;
   dialogFailedToSaveHeaderTranslation$: any;
   dialogFailedToSaveBodyTranslation$: any;
-  dialogErrorTitleTranslation$: any;
+  dialogFailedHardwareTitleTranslation$: any;
+  dialogFailedHardwareBodyTranslation$: any;
 
   @ViewChild('searchBox', {
     static: true
@@ -249,8 +250,8 @@ export class QuickPickPageComponent implements OnInit {
         break;
       case QuickPickError.HardwareFailure:
         forkJoin(
-          this.dialogFailedToSaveHeaderTranslation$,
-          this.dialogFailedToSaveBodyTranslation$,
+          this.dialogFailedHardwareTitleTranslation$,
+          this.dialogFailedHardwareBodyTranslation$,
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
             const bodyText = customBody ? customBody : r[1];
@@ -341,7 +342,8 @@ export class QuickPickPageComponent implements OnInit {
     this.dialogFailedToRerouteBodyTranslation$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
     this.dialogFailedToSaveHeaderTranslation$ = this.translateService.get('FAILEDTOSAVE_HEADER_TEXT');
     this.dialogFailedToSaveBodyTranslation$ = this.translateService.get('FAILEDTOSAVE_BODY_TEXT');
-    this.dialogErrorTitleTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
+    this.dialogFailedHardwareTitleTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
+    this.dialogFailedHardwareBodyTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_BODY');
   }
 
   private processScannedBarcode(scannedBarcode: string): void {
