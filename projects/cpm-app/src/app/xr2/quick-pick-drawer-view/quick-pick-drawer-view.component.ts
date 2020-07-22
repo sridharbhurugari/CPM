@@ -8,6 +8,9 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
+import { NavigationExtras, Router } from '@angular/router';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -59,6 +62,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   constructor(
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
+    private router: Router,
+    private hardwareLeaseService: HardwareLeaseService
   ) {
   }
 
@@ -67,8 +72,22 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
-    this.detailedDrawer = this._quickpickDrawers[drawerIndex];
-    this.quickPickActive.emit(true);
+      this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+        leaseVerificationResults => {
+          console.log('Lease Verification Results : ' + leaseVerificationResults);
+          if (leaseVerificationResults === LeaseVerificationResult.Success) {
+            this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+            this.quickPickActive.emit(true);
+          } else {
+              const navigationExtras: NavigationExtras = {
+                queryParams: {
+                  deviceId: this.selectedDeviceId,
+                  routeToPath: 'quickpick' } ,
+                fragment: 'anchor'
+              };
+              this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+          }
+        });
   }
 
   onCloseQuickPickDrawerDetails(value?: any) {
@@ -80,7 +99,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
     if (!this.scanMessage) {
       return;
     }
-
     const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.scanLabel(this.selectedDeviceId, scanRequest).subscribe(
       () => {
@@ -154,22 +172,36 @@ export class QuickPickDrawerViewComponent implements OnInit {
       return false;
     }
 
-    if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
-      this.failedEvent.emit(QuickPickError.ScanUnavailable);
-      return false;
-    }
+    this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+      leaseVerificationResults => {
+        console.log('Lease Verification Results : ' + leaseVerificationResults);
+        if (leaseVerificationResults === LeaseVerificationResult.Success) {
+          if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
+            this.failedEvent.emit(QuickPickError.ScanUnavailable);
+            return false;
+          }
 
-    const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
-      return drawerToDisplay.Xr2ServiceBarcode === this.scanMessage.barcode;
+          const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
+            return drawerToDisplay.Xr2ServiceBarcode === this.scanMessage.barcode;
+          });
+          if (matchingDrawerIndex !== -1) {
+            this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
+            this.quickPickActive.emit(true);
+            return true;
+          } else {
+            this.failedEvent.emit(QuickPickError.ScanNotFound);
+            return false;
+          }
+        } else {
+          const navigationExtras: NavigationExtras = {
+            queryParams: {
+              deviceId: this.selectedDeviceId,
+              routeToPath: 'quickpick' } ,
+            fragment: 'anchor'
+          };
+          this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+      }
     });
-    if (matchingDrawerIndex !== -1) {
-      this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
-      this.quickPickActive.emit(true);
-      return true;
-    } else {
-      this.failedEvent.emit(QuickPickError.ScanNotFound);
-      return false;
-    }
   }
 
   /* istanbul ignore next */
