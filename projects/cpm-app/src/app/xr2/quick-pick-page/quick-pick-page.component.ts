@@ -60,7 +60,7 @@ export class QuickPickPageComponent implements OnInit {
   dialogFailedToRerouteBodyTranslation$: any;
   dialogFailedToSaveHeaderTranslation$: any;
   dialogFailedToSaveBodyTranslation$: any;
-  dialogFailedHardwareTitleTranslation$: any;
+  dialogFailedHardwareHeaderTranslation$: any;
   dialogFailedHardwareBodyTranslation$: any;
 
   @ViewChild('searchBox', {
@@ -250,7 +250,7 @@ export class QuickPickPageComponent implements OnInit {
         break;
       case QuickPickError.HardwareFailure:
         forkJoin(
-          this.dialogFailedHardwareTitleTranslation$,
+          this.dialogFailedHardwareHeaderTranslation$,
           this.dialogFailedHardwareBodyTranslation$,
           this.dialogOkButtonTranslation$).subscribe(r => {
             const headerText = customHeader ? customHeader : r[0];
@@ -334,7 +334,7 @@ export class QuickPickPageComponent implements OnInit {
     this.dialogInvalidScanBodyTranslation$ = this.translateService.get('INVALID_SCAN_BARCODE');
     this.dialogScanUnavailableHeaderTranslation$ = this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER');
     this.dialogScanUnavailableBodyTranslation$ = this.translateService.get('INVALID_SCAN_QUICKPICK_INPROGRESS');
-    this.dialogFailedToPrintBodyTranslation$ = this.translateService.get('FAILEDTOPRINT_HEADER_TEXT');
+    this.dialogFailedToPrintHeaderTranslation$ = this.translateService.get('FAILEDTOPRINT_HEADER_TEXT');
     this.dialogFailedToPrintBodyTranslation$ = this.translateService.get('FAILEDTOPRINT_BODY_TEXT');
     this.dialogFailedToUnlockHeaderTranslation$ = this.translateService.get('FAILEDTOUNLOCKDOOR_HEADER_TEXT');
     this.dialogFailedToUnlockBodyTranslation$ = this.translateService.get('FAILEDTOUNLOCKDOOR_BODY_TEXT');
@@ -342,7 +342,7 @@ export class QuickPickPageComponent implements OnInit {
     this.dialogFailedToRerouteBodyTranslation$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
     this.dialogFailedToSaveHeaderTranslation$ = this.translateService.get('FAILEDTOSAVE_HEADER_TEXT');
     this.dialogFailedToSaveBodyTranslation$ = this.translateService.get('FAILEDTOSAVE_BODY_TEXT');
-    this.dialogFailedHardwareTitleTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
+    this.dialogFailedHardwareHeaderTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_HEADER');
     this.dialogFailedHardwareBodyTranslation$ = this.translateService.get('XR2_QUICK_PICK_ERROR_BODY');
   }
 
