@@ -25,6 +25,36 @@
   margin-left: 16px;
 }
 
+.BrandNameSmall {
+  font-size: 25px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  position: relative;
+  color: $text-color;
+  margin-top: 10px;
+  margin-left: 16px;
+}
+
+.GenericNameSmall{
+  font-size: 25px;
+  font-family: $font-family-sans-serif;
+  position:relative;
+  font-weight: normal;
+  color:$text-color;
+  margin-top: 6px;
+  margin-bottom: 8px!important;
+  margin-left: 16px;
+}
+
+.ItemIdSmall{
+  font-size: 20px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  color:$text-color;
+  bottom: 16px;
+  left: 16px;
+}
+
 .GenericName {
   font-size: 38px;
   font-family: $font-family-sans-serif;
@@ -61,6 +91,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  ::ng-deep {
+    div{
+      white-space: pre!important;
+    }
+  }
 }
 .devicelocationaccess {
   margin-top: 18px;
@@ -97,6 +132,11 @@
   border-bottom: solid #c8c8c8 1px;
   height: 180px;
   overflow: visible;
+}
+
+.printlabel{
+  margin-top: 12px;
+  margin-right: 80px;
 }
 
 .itemIdBox {
