@@ -106,7 +106,7 @@ describe('EditPickRoutePageComponent', () => {
       DeviceId: routeDevice1.Id,
       DeviceDescription: routeDevice1.Description,
       DeviceType: '2000',
-      DefaultOutputDeviceId: null,
+      DefaultOutputDeviceId: '2104',
       Autofill: false,
       OutputDevices: null};
     const deviceSequence2: IDeviceSequenceOrder = {
@@ -114,7 +114,7 @@ describe('EditPickRoutePageComponent', () => {
       DeviceId: routeDevice2.Id,
       DeviceDescription: routeDevice2.Description,
       DeviceType: '2000',
-      DefaultOutputDeviceId: null,
+      DefaultOutputDeviceId: '2104',
       Autofill: false,
       OutputDevices: null};
     beforeEach(() => {
@@ -227,10 +227,10 @@ describe('EditPickRoutePageComponent', () => {
 
   describe('onDeviceSequenceChanged', () => {
     it('should set newDevcieSequence', () => {
-      const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', DefaultOutputDeviceId: null,
+      const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', DefaultOutputDeviceId: '2104',
       Autofill: false, OutputDevices: null};
       const secondDevice: IDeviceSequenceOrder = { DeviceDescription: 'secondDevice', SequenceOrder: 999, DeviceId: 6, DeviceType: '2000',
-      DefaultOutputDeviceId: null,
+      DefaultOutputDeviceId: '2104',
       Autofill: false,
       OutputDevices: null};
       const changedDeviceSequence: IDeviceSequenceOrder[] = [ firstDevice, secondDevice ];
