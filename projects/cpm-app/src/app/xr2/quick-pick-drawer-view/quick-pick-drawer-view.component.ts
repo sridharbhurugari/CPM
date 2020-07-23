@@ -40,10 +40,29 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set scanMessage(value: BarcodeScanMessage) {
     this._scanMessage = value;
-
-    if (this.loadDetailedDrawerOnScan()) {
-      this.scanDrawerLabel();
+    if (value === undefined) {
+      return;
     }
+
+    this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+      leaseVerificationResults => {
+        console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
+        if (Number(leaseVerificationResults) === Number(LeaseVerificationResult.Success)) {
+          console.log('was a Success');
+          if (this.loadDetailedDrawerOnScan()) {
+            this.scanDrawerLabel();
+          }
+        } else {
+          console.log('was a fail');
+          const navigationExtras: NavigationExtras = {
+            queryParams: {
+              deviceId: this.selectedDeviceId,
+              routeToPath: 'quickpick' } ,
+            fragment: 'anchor'
+          };
+          this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+      }
+    });
   }
 
   get scanMessage(): BarcodeScanMessage {
@@ -75,7 +94,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
       this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
         leaseVerificationResults => {
           console.log('Lease Verification Results : ' + leaseVerificationResults);
-          if (leaseVerificationResults === LeaseVerificationResult.Success) {
+          if (Number(leaseVerificationResults) !== Number(LeaseVerificationResult.Success)) {
             this.detailedDrawer = this._quickpickDrawers[drawerIndex];
             this.quickPickActive.emit(true);
           } else {
@@ -135,7 +154,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
     quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
-    let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
+    const matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
       return x.Id === quickPickDrawerData.Id;
     });
 
@@ -172,36 +191,22 @@ export class QuickPickDrawerViewComponent implements OnInit {
       return false;
     }
 
-    this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
-      leaseVerificationResults => {
-        console.log('Lease Verification Results : ' + leaseVerificationResults);
-        if (leaseVerificationResults === LeaseVerificationResult.Success) {
-          if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
-            this.failedEvent.emit(QuickPickError.ScanUnavailable);
-            return false;
-          }
+    if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
+      this.failedEvent.emit(QuickPickError.ScanUnavailable);
+      return false;
+    }
 
-          const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
-            return drawerToDisplay.Xr2ServiceBarcode === this.scanMessage.barcode;
-          });
-          if (matchingDrawerIndex !== -1) {
-            this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
-            this.quickPickActive.emit(true);
-            return true;
-          } else {
-            this.failedEvent.emit(QuickPickError.ScanNotFound);
-            return false;
-          }
-        } else {
-          const navigationExtras: NavigationExtras = {
-            queryParams: {
-              deviceId: this.selectedDeviceId,
-              routeToPath: 'quickpick' } ,
-            fragment: 'anchor'
-          };
-          this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
-      }
+    const matchingDrawerIndex = _.findIndex(this.quickpickDrawers, (drawerToDisplay) => {
+      return drawerToDisplay.Xr2ServiceBarcode === this.scanMessage.barcode;
     });
+    if (matchingDrawerIndex !== -1) {
+      this.detailedDrawer = this.quickpickDrawers[matchingDrawerIndex];
+      this.quickPickActive.emit(true);
+      return true;
+    } else {
+      this.failedEvent.emit(QuickPickError.ScanNotFound);
+      return false;
+    }
   }
 
   /* istanbul ignore next */
