@@ -68,6 +68,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
     this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+    this.printDrawerLabel();
     this.quickPickActive.emit(true);
   }
 
