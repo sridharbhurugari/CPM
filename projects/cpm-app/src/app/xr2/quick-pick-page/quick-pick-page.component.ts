@@ -52,8 +52,8 @@ export class QuickPickPageComponent implements OnInit {
     'INVALID_SCAN_BARCODE',
     'INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT',
     'INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT',
-    'FAILEDTOPRINT_HEADER_TEXT',
-    'FAILEDTOPRINT_BODY_TEXT',
+    'PRINTFAILED_HEADER_TEXT',
+    'PRINTFAILED_BODY_TEXT',
     'FAILEDTOUNLOCKDOOR_HEADER_TEXT',
     'FAILEDTOUNLOCKDOOR_BODY_TEXT',
     'FAILEDTOREROUTE_HEADER_TEXT',
@@ -212,8 +212,8 @@ export class QuickPickPageComponent implements OnInit {
         break;
       case QuickPickError.PrintFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOPRINT_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOPRINT_BODY_TEXT'];
+          const headerText = customHeader ? customHeader : r['PRINTFAILED_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['PRINTFAILED_BODY_TEXT'];
           const okText = r['OK'];
           this.displayErrorDialog(headerText, bodyText, okText);
         });
