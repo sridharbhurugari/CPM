@@ -17,7 +17,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
-import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-edit-pick-route-page',

@@ -105,18 +105,18 @@ describe('EditPickRoutePageComponent', () => {
       SequenceOrder: 1,
       DeviceId: routeDevice1.Id,
       DeviceDescription: routeDevice1.Description,
-      DeviceType: '2000',
-      DefaultOutputDeviceId: '2104',
+      DeviceType: routeDevice1.DeviceType,
+      DefaultOutputDeviceId: null,
       Autofill: false,
-      OutputDevices: null};
+      OutputDevices: routeDevice1.OutputDevices};
     const deviceSequence2: IDeviceSequenceOrder = {
       SequenceOrder: 2,
       DeviceId: routeDevice2.Id,
       DeviceDescription: routeDevice2.Description,
-      DeviceType: '2000',
-      DefaultOutputDeviceId: '2104',
+      DeviceType: routeDevice2.DeviceType,
+      DefaultOutputDeviceId: null,
       Autofill: false,
-      OutputDevices: null};
+      OutputDevices: routeDevice2.OutputDevices};
     beforeEach(() => {
       devices.push(routeDevice1);
       devices.push(routeDevice2);
@@ -137,10 +137,10 @@ describe('EditPickRoutePageComponent', () => {
 
     it('should set disabled devices to devices not in route', () => {
       component.disabledDevices$.subscribe(x => {
-        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice1.Id, DeviceDescription: otherDevice1.Description }));
+        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice1.Id, DeviceDescription: otherDevice1.Description, DeviceType: '2000', OutputDevices: null, DefaultOutputDeviceId: null, Autofill: false }));
       });
       component.disabledDevices$.subscribe(x => {
-        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice2.Id, DeviceDescription: otherDevice2.Description }));
+        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice2.Id, DeviceDescription: otherDevice2.Description, DeviceType: '2000', OutputDevices: null, DefaultOutputDeviceId: null, Autofill: false }));
       });
     });
   });
@@ -227,10 +227,11 @@ describe('EditPickRoutePageComponent', () => {
 
   describe('onDeviceSequenceChanged', () => {
     it('should set newDevcieSequence', () => {
-      const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', DefaultOutputDeviceId: '2104',
+      const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', 
+      DefaultOutputDeviceId: null,
       Autofill: false, OutputDevices: null};
       const secondDevice: IDeviceSequenceOrder = { DeviceDescription: 'secondDevice', SequenceOrder: 999, DeviceId: 6, DeviceType: '2000',
-      DefaultOutputDeviceId: '2104',
+      DefaultOutputDeviceId: null,
       Autofill: false,
       OutputDevices: null};
       const changedDeviceSequence: IDeviceSequenceOrder[] = [ firstDevice, secondDevice ];
@@ -238,11 +239,19 @@ describe('EditPickRoutePageComponent', () => {
       expect(component.newDeviceSequence).toContain(jasmine.objectContaining({
          SequenceOrder: 1,
          DeviceId: firstDevice.DeviceId,
-         DeviceDescription: firstDevice.DeviceDescription }));
+         DeviceDescription: firstDevice.DeviceDescription,
+         DeviceType: firstDevice.DeviceType,
+         DefaultOutputDeviceId: firstDevice.DefaultOutputDeviceId,
+         Autofill: firstDevice.Autofill,
+         OutputDevices: firstDevice.OutputDevices}));
       expect(component.newDeviceSequence).toContain(jasmine.objectContaining({
         SequenceOrder: 2,
         DeviceId: secondDevice.DeviceId,
-        DeviceDescription: secondDevice.DeviceDescription }));
+        DeviceDescription: secondDevice.DeviceDescription,
+        DeviceType: secondDevice.DeviceType,
+        DefaultOutputDeviceId: secondDevice.DefaultOutputDeviceId,
+        Autofill: secondDevice.Autofill,
+        OutputDevices: secondDevice.OutputDevices }));
     });
   });
 
