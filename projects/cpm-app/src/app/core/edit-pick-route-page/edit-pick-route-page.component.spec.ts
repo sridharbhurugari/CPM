@@ -97,18 +97,26 @@ describe('EditPickRoutePageComponent', () => {
   });
 
   describe('given some devices in route and some devices not in route', () => {
-    const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1'};
-    const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2'};
-    const otherDevice1: IDevice = {Id: 11, Description: 'otherDevice1'};
-    const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2'};
+    const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1', DeviceType: '2000', OutputDevices: null};
+    const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2', DeviceType: '2000', OutputDevices: null};
+    const otherDevice1: IDevice = {Id: 11, Description: 'otherDevice1', DeviceType: '2000', OutputDevices: null};
+    const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2', DeviceType: '2000', OutputDevices: null};
     const deviceSequence1: IDeviceSequenceOrder = {
       SequenceOrder: 1,
       DeviceId: routeDevice1.Id,
-      DeviceDescription: routeDevice1.Description};
+      DeviceDescription: routeDevice1.Description,
+      DeviceType: '2000',
+      DefaultOutputDeviceId: null,
+      Autofill: false,
+      OutputDevices: null};
     const deviceSequence2: IDeviceSequenceOrder = {
       SequenceOrder: 2,
       DeviceId: routeDevice2.Id,
-      DeviceDescription: routeDevice2.Description};
+      DeviceDescription: routeDevice2.Description,
+      DeviceType: '2000',
+      DefaultOutputDeviceId: null,
+      Autofill: false,
+      OutputDevices: null};
     beforeEach(() => {
       devices.push(routeDevice1);
       devices.push(routeDevice2);
@@ -219,8 +227,12 @@ describe('EditPickRoutePageComponent', () => {
 
   describe('onDeviceSequenceChanged', () => {
     it('should set newDevcieSequence', () => {
-      const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5};
-      const secondDevice: IDeviceSequenceOrder = { DeviceDescription: 'secondDevice', SequenceOrder: 999, DeviceId: 6};
+      const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', DefaultOutputDeviceId: null,
+      Autofill: false, OutputDevices: null};
+      const secondDevice: IDeviceSequenceOrder = { DeviceDescription: 'secondDevice', SequenceOrder: 999, DeviceId: 6, DeviceType: '2000',
+      DefaultOutputDeviceId: null,
+      Autofill: false,
+      OutputDevices: null};
       const changedDeviceSequence: IDeviceSequenceOrder[] = [ firstDevice, secondDevice ];
       component.onDeviceSequenceChanged(changedDeviceSequence);
       expect(component.newDeviceSequence).toContain(jasmine.objectContaining({
