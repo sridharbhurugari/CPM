@@ -44,6 +44,12 @@
   "ERROR_ROUTE_MAINTENANCE_MESSAGE": "An error occurred.  Please try again.",
   "FAILEDTOSAVE_HEADER_TEXT": "Failed to Save",
   "FAILEDTOSAVE_BODY_TEXT": "Please try again.",
+  "FAILEDTOPRINT_HEADER_TEXT": "Failed to Print",
+  "FAILEDTOPRINT_BODY_TEXT": "Please try again.",
+  "FAILEDTOREROUTE_HEADER_TEXT": "Failed to Reroute",
+  "FAILEDTOREROUTE_BODY_TEXT": "Please try again.",
+  "FAILEDTOUNLOCKDOOR_HEADER_TEXT": "Failed to Unlock Door",
+  "FAILEDTOUNLOCKDOOR_BODY_TEXT": "Please try again.",
   "FILLED": "Filled",
   "FILLEDQTY": "Filled Qty",
   "GO": "Go",
@@ -101,6 +107,7 @@
   "SAVE_AS": "Save As",
   "SAVE_NEW_ROUTE": "Save New Device Workflow",
   "SAVE_ROUTE_CHANGES": "Save Route Changes",
+  "SCAN_TO_UNLOCK": "Scan Label To Unlock Drawer",
   "SKIP": "Skip",
   "REROUTE":"Reroute",
   "STATUS": "Status",
@@ -136,6 +143,7 @@
   "XR2_EXCEPTIONS_DETAILS_BARCODE_NDC": "Bar Code / NDC",
   "XR2_EXCEPTIONS_DETAILS_HEADER": "Tray Review",
   "XR2_QUICK_PICK_ERROR_HEADER": "Quick Pick Error",
+  "XR2_QUICK_PICK_ERROR_BODY": "Quick Pick hardware failure. Please try again.",
   "DEVICE_SELECTION_TEXT": "Select device",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "No devices",
   "DEVICE_SELECTION_SEARCH_DEVICES": "Find device",
@@ -149,5 +157,7 @@
   "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code.",
   "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text",
   "QUICK_PICK_CLEAR_CONTENTS_MESSAGE":"Unlock and Clear Contents",
-  "QUICK_PICK_UNKNOWN_CONTENTS":"Unknown Contents"
+  "QUICK_PICK_UNKNOWN_CONTENTS":"Unknown Contents",
+  "INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT": "Scanning Unavailable",
+  "INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT": "Scanning is not available while a drawer is unlocked or in progress. Please empty and relock the current drawer before scanning again."
 }
