@@ -25,11 +25,9 @@ export class QuickPickEventConnectionService {
     if (message === undefined) {
       return;
     }
-
     if (message.EventId === undefined) {
       return;
     }
-
     if (message.EventId === 'QuickPickReloadDrawersEvent') {
       console.log(message);
       this.QuickPickReloadDrawersSubject.next(message);
