@@ -40,7 +40,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set scanMessage(value: BarcodeScanMessage) {
     this._scanMessage = value;
-    if (value === undefined) {
+    if (!value) {
       return;
     }
 
@@ -54,17 +54,10 @@ export class QuickPickDrawerViewComponent implements OnInit {
           }
         } else {
           console.log('was a fail');
-          const navigationExtras: NavigationExtras = {
-            queryParams: {
-              deviceId: this.selectedDeviceId,
-              routeToPath: 'quickpick' } ,
-            fragment: 'anchor'
-          };
-          this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+          this.navigateToDeviceLease();
       }
     });
   }
-
   get scanMessage(): BarcodeScanMessage {
     return this._scanMessage;
   }
@@ -90,21 +83,25 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.configureEventHandlers();
   }
 
+  navigateToDeviceLease() {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        deviceId: this.selectedDeviceId,
+        routeToPath: 'quickpick' } ,
+      fragment: 'anchor'
+    };
+    this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+  }
+
   onShowQuickPickDrawerDetails(drawerIndex: number) {
       this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
         leaseVerificationResults => {
-          console.log('Lease Verification Results : ' + leaseVerificationResults);
+          console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
           if (Number(leaseVerificationResults) !== Number(LeaseVerificationResult.Success)) {
             this.detailedDrawer = this._quickpickDrawers[drawerIndex];
             this.quickPickActive.emit(true);
           } else {
-              const navigationExtras: NavigationExtras = {
-                queryParams: {
-                  deviceId: this.selectedDeviceId,
-                  routeToPath: 'quickpick' } ,
-                fragment: 'anchor'
-              };
-              this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+            this.navigateToDeviceLease();
           }
         });
   }
