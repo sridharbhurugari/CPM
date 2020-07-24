@@ -12,7 +12,9 @@
         <app-dashboard-card
         [drawerData]="quickpickDrawers[i]"
         [drawerIndex]="i"
-        (showQuickPickDrawerDetails)="onShowQuickPickDrawerDetails($event)">
+        (printQuickPickDrawer)="onPrintQuickPickDrawer($event)"
+        (viewQuickPickDrawer)="onShowQuickPickDrawerDetails($event)"
+        (rerouteQuickPickDrawer)="onRerouteQuickPickDrawer($event)">
         </app-dashboard-card>
       </div>
     </div>

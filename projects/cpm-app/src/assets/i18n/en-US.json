@@ -4,7 +4,7 @@
   "BACK": "Back",
   "BIN": "Bin",
   "BINS": "Bins",
-  "QUICK_PICK_QUEUE_BINS_HEADER": "Remaining / Total",
+  "QUICK_PICK_QUEUE_BINS_HEADER": "Remaining / Total Bins",
   "CABINETS": "Cabinets",
   "CANCEL": "Cancel",
   "CARTMODULE": "Cart Module",
@@ -147,5 +147,7 @@
   "SCAN_BIN_BARCODE": "The correct bin bar code must be scanned.",
   "INVALID_SCAN_BARCODE": "The bar code scanned is not recognized. Please scan a correct bar code.",
   "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code.",
-  "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text"
+  "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text",
+  "QUICK_PICK_CLEAR_CONTENTS_MESSAGE":"Unlock and Clear Contents",
+  "QUICK_PICK_UNKNOWN_CONTENTS":"Unknown Contents"
 }

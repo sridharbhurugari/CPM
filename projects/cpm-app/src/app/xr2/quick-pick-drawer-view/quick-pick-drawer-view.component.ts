@@ -7,6 +7,7 @@ import { QuickPickEventConnectionService } from '../services/quick-pick-event-co
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
+import { Guid } from 'guid-typescript';
 
 
 
@@ -18,6 +19,7 @@ import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
 export class QuickPickDrawerViewComponent implements OnInit {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() rerouteQuickPick: EventEmitter<Guid> = new EventEmitter<Guid>();
 
   private _selectedDeviceId: string;
   private _quickpickDrawers: QuickPickDrawerData[];
@@ -56,8 +58,16 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
     this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+  }
+
+  onPrintQuickPickDrawer(drawerIndex: number) {
+    this.detailedDrawer = this._quickpickDrawers[drawerIndex];
     this.printDrawerLabel();
     this.quickPickActive.emit(true);
+  }
+
+  onRerouteQuickPickDrawer(robotDispenseBoxId: Guid) {
+    this.rerouteQuickPick.emit(robotDispenseBoxId);
   }
 
   onCloseQuickPickDrawerDetails(value?: any) {

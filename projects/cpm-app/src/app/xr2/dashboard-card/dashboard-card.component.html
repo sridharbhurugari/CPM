@@ -6,19 +6,22 @@
       </div>
       <div class="title">
         <div class="title-content">
-          <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+          <div *ngIf="drawerData.Status!==controlDataStatus.Empty && !drawerData.UnknownContents">
             {{ drawerData.PriorityDescription }}
+          </div>
+          <div *ngIf="drawerData.Status!==controlDataStatus.Empty && drawerData.UnknownContents">
+            {{'QUICK_PICK_UNKNOWN_CONTENTS' | translate}}
           </div>
         </div>
       </div>
       <div class="index">
-        <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+        <div *ngIf="drawerData.Status!==controlDataStatus.Empty && !drawerData.UnknownContents">
           {{ drawerData.BoxNumber }} / {{ drawerData.BoxCount }}
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="drawerData.Status!==controlDataStatus.Empty" class="active">
+  <div *ngIf="drawerData.Status!==controlDataStatus.Empty && !drawerData.UnknownContents" class="active">
     <div class="body">
       <div class="body-content">
         <div class="grid-container">
@@ -38,21 +41,41 @@
           <div class="grid-data">
             {{ drawerData.DestinationId }}
           </div>
-          <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
-          <div class="grid-data">
-            {{ drawerData.TotalFillQty }}
-          </div>
-          <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
-          <div class="grid-data">
-            {{ drawerData.LineItems }}
-          </div>
+            <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
+            <div class="grid-data">
+              {{ drawerData.TotalFillQty }}
+            </div>
+            <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
+            <div class="grid-data">
+              {{ drawerData.LineItems }}
+            </div>
         </div>
       </div>
       <div class="button-content">
-        <oc-button-action mode="secondary" [buttonIcon]="'print'" (click)="onPrintClick()"></oc-button-action>
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'openv1-right'"
+          [label]="'Reroute'" (clickEvent)="onRerouteClick()">
+        </app-cp-clickable-icon>
+      </div>
+      <div class="button-content">
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'search'"
+          [label]="'View'" (clickEvent)="onViewClick()">
+        </app-cp-clickable-icon>
+      </div>
+      <div class="button-content">
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'print'"
+          [label]="'Print'" (clickEvent)="onPrintClick()">
+        </app-cp-clickable-icon>
       </div>
     </div>
     <div class="footer"></div>
+  </div>
+  <div *ngIf="drawerData.Status!==controlDataStatus.Empty && drawerData.UnknownContents" class="inactive">
+    <div class="unknown-content">
+      {{'QUICK_PICK_CLEAR_CONTENTS_MESSAGE' | translate}}
+      <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'forward'"
+        [label]="'Unlock'" (clickEvent)="onPrintClick()">
+      </app-cp-clickable-icon>
+    </div>
   </div>
   <div *ngIf="drawerData.Status===controlDataStatus.Empty" class="inactive">
     <div class="empty-content">{{'EMPTY' | translate}}</div>

@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -39,6 +40,7 @@ export class QuickPickPageComponent implements OnInit {
     static: true
   })
   searchElement: SearchBoxComponent;
+  quickPickQueueItemsComplete: QuickPickQueueItem[];
 
 
   constructor(
@@ -144,6 +146,18 @@ export class QuickPickPageComponent implements OnInit {
     }
   }
 
+  onRerouteQuickPickFromDrawer($event: Guid) {
+    const quickPickItemToReroute = this.quickPickQueueItemsComplete.find(item => item.RobotDispenseBoxIds.includes($event));
+    this.quickPickQueueService.reroute(quickPickItemToReroute).subscribe(
+      () => {
+        this.loadPicklistsQueueItems();
+      }, error => {
+        this.displayFailedToSaveDialog();
+        this.loadPicklistsQueueItems();
+        this.loadDrawersData();
+      });
+  }
+
   onRerouteQuickPick($event: IQuickPickQueueItem) {
     this.quickPickQueueService.reroute($event).subscribe(
       () => {
@@ -151,6 +165,7 @@ export class QuickPickPageComponent implements OnInit {
       }, error => {
         this.displayFailedToSaveDialog();
         this.loadPicklistsQueueItems();
+        this.loadDrawersData();
       });
   }
 
@@ -160,7 +175,8 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.quickPickQueueService.get(this.selectedDeviceId).subscribe(items => {
-      this.quickPickQueueItems = of(items);
+      this.quickPickQueueItems = of(items.filter(item => item.IncompleteBoxCount > 0));
+      this.quickPickQueueItemsComplete = items;
     });
   }
 
