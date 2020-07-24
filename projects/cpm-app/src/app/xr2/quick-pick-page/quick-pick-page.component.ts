@@ -168,7 +168,7 @@ export class QuickPickPageComponent implements OnInit {
       () => {
         this.loadPicklistsQueueItems();
       }, error => {
-        this.displayFailedToSaveDialog();
+        this.displayQuickPickError(QuickPickError.RerouteFailure);
         this.loadPicklistsQueueItems();
         this.loadDrawersData();
       });
