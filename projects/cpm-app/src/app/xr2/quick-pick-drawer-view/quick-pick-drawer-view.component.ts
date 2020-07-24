@@ -54,7 +54,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
           }
         } else {
           console.log('was a fail');
-          this.navigateToDeviceLease();
+          this.navigateToDeviceLeasePage();
       }
     });
   }
@@ -83,7 +83,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.configureEventHandlers();
   }
 
-  navigateToDeviceLease() {
+  navigateToDeviceLeasePage() {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         deviceId: this.selectedDeviceId,
@@ -97,11 +97,12 @@ export class QuickPickDrawerViewComponent implements OnInit {
       this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
         leaseVerificationResults => {
           console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
-          if (Number(leaseVerificationResults) !== Number(LeaseVerificationResult.Success)) {
+          if (Number(leaseVerificationResults) === Number(LeaseVerificationResult.Success)) {
             this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+            this.printDrawerLabel();
             this.quickPickActive.emit(true);
           } else {
-            this.navigateToDeviceLease();
+            this.navigateToDeviceLeasePage();
           }
         });
   }
@@ -115,6 +116,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     if (!this.scanMessage) {
       return;
     }
+
     const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.scanLabel(this.selectedDeviceId, scanRequest).subscribe(
       () => {

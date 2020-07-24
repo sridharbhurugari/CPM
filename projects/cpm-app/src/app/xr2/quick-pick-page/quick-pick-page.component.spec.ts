@@ -47,6 +47,11 @@ describe('QuickPickPageComponent', () => {
   selectableDeviceInfo1.Description = 'DeviceXr21';
   selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
   selectableDeviceInfoList.push(selectableDeviceInfo1);
+  let selectableDeviceInfo2 = new SelectableDeviceInfo(null);
+  selectableDeviceInfo2.DeviceId = 2;
+  selectableDeviceInfo2.Description = 'DeviceXr22';
+  selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
+  selectableDeviceInfoList.push(selectableDeviceInfo2);
 
   let ocapConfig: IOcapHttpConfiguration;
   ocapConfig = {
@@ -104,14 +109,14 @@ describe('QuickPickPageComponent', () => {
         FooterModule, LayoutModule, CoreModule, SharedModule],
       providers: [
         { provide: Xr2QuickPickQueueService, useValue: quickPickQueueService },
-        { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) } },
+        { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of(selectableDeviceInfoList) } },
         { provide: Xr2QuickPickDrawerService, useValue: quickPickDrawerService },
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
         { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: WindowService, useValue: [] },
-        { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) } },
+        { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
         { provide: Location, useValue: { go: () => { } } },
         { provide: Router, useValue: { data: () => { } } },
         { provide: SystemConfigurationService, useValue: systemConfigurationService },
@@ -150,7 +155,7 @@ describe('QuickPickPageComponent', () => {
 
   describe('Device Selection', () => {
     it('Should default to device selection', () => {
-      expect(component.getActiveXr2Devices).toBeTruthy();
+      expect(component.getActiveXr2Devices()).toBeTruthy();
 
       fakeAsync(() => {
         const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
@@ -182,6 +187,14 @@ describe('QuickPickPageComponent', () => {
         expect(this.defaultDeviceDisplyItem).toBeUndefined();
       });
     });
+
+    it('Should default device if there is only one device', fakeAsync(() => {
+      selectableDeviceInfoList.shift();
+      expect(component.getActiveXr2Devices()).toBeTruthy();
+      tick();
+      expect(component.selectedDeviceId).toEqual(selectableDeviceInfo2.DeviceId.toString());
+      expect(component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo2.DeviceId.toString());
+    }));
 
     it('should set robotSelectionDisabled properly', () => {
       expect(component).toBeTruthy();

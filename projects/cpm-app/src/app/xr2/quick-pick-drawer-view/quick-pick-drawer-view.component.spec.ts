@@ -224,6 +224,18 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
+    it('Should reroute if not device owner', () => {
+      leaseVerificationResult = 1;
+      expect(component).toBeTruthy();
+      component.detailedDrawer = new QuickPickDrawerData(null);
+      component.scanMessage = new BarcodeScanMessage('barcode');
+
+      expect(router.navigate).toHaveBeenCalled();
+
+      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
+    });
+
     it('Should emit failed scan dialog on failed scan', () => {
       expect(component).toBeTruthy();
       const failedScanSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
@@ -244,6 +256,15 @@ describe('QuickPickDrawerViewComponent', () => {
       component.ngOnInit();
 
       expect(quickPickEventConnectionService.QuickPickDrawerUpdateSubject.subscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('Device Lease', () => {
+    it('Navigation routes you to new page', () => {
+      expect(component).toBeTruthy();
+
+      component.navigateToDeviceLeasePage();
+      expect(router.navigate).toHaveBeenCalled();
     });
   });
 });
