@@ -18,6 +18,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { BarcodeScanService } from 'oal-core';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 import { QuickPickQueueViewComponent } from '../quick-pick-queue-view/quick-pick-queue-view.component';
 import { QuickPickDrawerViewComponent } from '../quick-pick-drawer-view/quick-pick-drawer-view.component';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
@@ -25,7 +27,6 @@ import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
-import { QuickPickErrorService } from '../services/quick-pick-error.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -63,13 +64,15 @@ describe('QuickPickPageComponent', () => {
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let quickPickQueueService: Partial<Xr2QuickPickQueueService>;
   let popupDialogService: Partial<PopupDialogService>;
-  let quickPickErrorService: Partial<QuickPickErrorService>;
   let barcodeScanService: Partial<BarcodeScanService>;
+  let systemConfigurationService: Partial<SystemConfigurationService>;
+  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
 
   quickPickEventConnectionService = {
     QuickPickDrawerUpdateSubject: new Subject(),
     QuickPickReloadDrawersSubject: new Subject(),
-    QuickPickQueueUpdateSubject: new Subject()
+    QuickPickQueueUpdateSubject: new Subject(),
+    QuickPickErrorUpdateSubject: new Subject()
   };
 
   quickPickDrawerService = {
@@ -80,10 +83,6 @@ describe('QuickPickPageComponent', () => {
   quickPickQueueService = {
     get: jasmine.createSpy('get').and.returnValue(of([])),
     reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
-  };
-
-  quickPickErrorService = {
-    display: jasmine.createSpy('display')
   };
 
   popupDialogService = {
@@ -109,7 +108,6 @@ describe('QuickPickPageComponent', () => {
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
         { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
-        { provide: QuickPickErrorService, useValue: quickPickErrorService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: WindowService, useValue: [] },
         { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) } },
@@ -208,7 +206,7 @@ describe('QuickPickPageComponent', () => {
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
-      expect(quickPickErrorService.display).toHaveBeenCalled();
+      expect(popupDialogService.showOnce).toHaveBeenCalled();
     });
   });
 

@@ -154,7 +154,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
     const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
     quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
-    const matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
+    let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
       return x.Id === quickPickDrawerData.Id;
     });
 
