@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, ViewChild } from '@angular/core';
-import { IPopupWindowContainer, SingleselectRowItem, CheckboxComponent } from '@omnicell/webcorecomponents';
+import { IPopupWindowContainer, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
 import { IDropdownPopupData } from '../../model/i-dropdown-popup-data';
 
