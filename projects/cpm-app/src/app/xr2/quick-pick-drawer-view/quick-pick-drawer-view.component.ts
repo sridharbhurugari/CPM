@@ -6,7 +6,7 @@ import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
-import { QuickPickDrawerRequest } from '../model/quick-pick-print-request';
+import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
 import { Guid } from 'guid-typescript';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
