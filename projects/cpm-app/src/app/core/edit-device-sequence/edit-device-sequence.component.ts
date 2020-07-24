@@ -57,8 +57,9 @@ export class EditDeviceSequenceComponent implements OnInit {
   }
 
   getCurrentOutputDeviceDescription(outputDeviceId: string, autofill: boolean){
-    const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;
-    const odDesc = outputDevices.find(x => x.OCTokenValue === outputDeviceId);   
+    const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;    
+
+    const odDesc = outputDevices.find(x => x.OCTokenValue === String(outputDeviceId));   
     
     const currentODSetting: string[] = [];
 
@@ -99,7 +100,7 @@ export class EditDeviceSequenceComponent implements OnInit {
       }      
     })   
 
-    this.defaultDisplayItem = this.outputDeviceDisplayList.find(x => x.value === device.DefaultOutputDeviceId);
+    this.defaultDisplayItem = this.outputDeviceDisplayList.find(x => x.value === String(device.DeviceOutput.DeviceOutputType));
 
     this.outputDeviceDisplayList.forEach(x => {
       if (x.value === this.cartModuleId){
@@ -114,7 +115,7 @@ export class EditDeviceSequenceComponent implements OnInit {
       defaultrow: this.defaultDisplayItem,
       showCheckbox: true,
       checkboxLabel: 'Autofill',
-      checkboxSelected: device.Autofill,
+      checkboxSelected: device.DeviceOutput.IsAutoFill,
       checkboxHideSelection: this.rowItemsToHideCheckbox,
       selectedrow: null,
       selectedcheckbox: false
@@ -125,8 +126,8 @@ export class EditDeviceSequenceComponent implements OnInit {
     let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;        
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
       if (selectedOk) {  
-        device.DefaultOutputDeviceId = data.selectedrow.value;
-        device.Autofill = data.selectedcheckbox; 
+        device.DeviceOutput.DeviceOutputType = data.selectedrow.value;
+        device.DeviceOutput.IsAutoFill = data.selectedcheckbox; 
         
         this.deviceSequenceChanged.emit(this.enabledDevices);            
       }

@@ -88,8 +88,7 @@ export class EditPickRoutePageComponent implements OnInit {
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,
-          DefaultOutputDeviceId: pickRouteDevice.DefaultOutputDeviceId,
-          Autofill: pickRouteDevice.Autofill,
+          DeviceOutput: pickRouteDevice.DeviceOutput,          
           SequenceOrder: sequenceOrder          
         };        
       });
@@ -113,10 +112,9 @@ export class EditPickRoutePageComponent implements OnInit {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
-          OutputDevices: x.OutputDevices,
-          SequenceOrder: sequenceOrder,
-          DefaultOutputDeviceId: pickRouteDevice.DefaultOutputDeviceId,
-          Autofill: pickRouteDevice.Autofill
+          OutputDevices: x.OutputDevices,          
+          DeviceOutput: pickRouteDevice.DeviceOutput,
+          SequenceOrder: sequenceOrder
         };
       });
 
