@@ -95,6 +95,7 @@ describe('QuickPickPageComponent', () => {
   };
 
   beforeEach(async(() => {
+    systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
 
     TestBed.configureTestingModule({
       declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
@@ -113,6 +114,7 @@ describe('QuickPickPageComponent', () => {
         { provide: OcapHttpConfigurationService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => { } } },
         { provide: Router, useValue: { data: () => { } } },
+        { provide: SystemConfigurationService, useValue: systemConfigurationService },
       ]
     }).overrideComponent(QuickPickQueueViewComponent, {
       set: {
@@ -232,6 +234,16 @@ describe('QuickPickPageComponent', () => {
       barcodeScanService.BarcodeScannedSubject.next(scan);
 
       expect(component.scanInput).toEqual(scanMessage);
+    });
+  });
+
+  describe('Error Notifications', () => {
+    it('should display a popupwindow with the error message', () => {
+      expect(component).toBeTruthy();
+      component.selectedDeviceId = '1';
+      const FakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
+      quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(FakeEvent);
+      expect(popupDialogService.showOnce).toHaveBeenCalled();
     });
   });
 });
