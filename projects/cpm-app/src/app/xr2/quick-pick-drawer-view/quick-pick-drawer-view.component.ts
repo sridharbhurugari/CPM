@@ -88,6 +88,13 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.quickPickActive.emit(false);
   }
 
+  onUnlockUnknownDrawer(drawerIndex: number) {
+    this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+    // shortcut right to unlock, there is no printed label here
+    this.unlockDrawer();
+    this.quickPickActive.emit(true);
+  }
+
   scanDrawerLabel() {
     if (!this.scanMessage) {
       return;
@@ -95,9 +102,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
     const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.scanLabel(this.selectedDeviceId, scanRequest).subscribe(
-      () => {
-        this.unlockDrawer();
-      }, error => {
+      () => { },
+      error => {
         this.failedEvent.emit(QuickPickError.ScanNotFound);
       });
   }
@@ -105,8 +111,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   printDrawerLabel() {
     const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
-      () => {
-      }, error => {
+      () => { },
+      error => {
         this.failedEvent.emit(QuickPickError.PrintFailure);
       });
   }
@@ -114,8 +120,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   unlockDrawer() {
     const unlockRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, unlockRequest).subscribe(
-      () => {
-      }, error => {
+      () => { },
+      error => {
         this.failedEvent.emit(QuickPickError.UnlockFailure);
       });
   }

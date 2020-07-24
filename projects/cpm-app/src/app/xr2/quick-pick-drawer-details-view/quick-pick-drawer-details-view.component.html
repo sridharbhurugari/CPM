@@ -7,13 +7,16 @@
             {{ detailedDrawerData.Id }}
           </div>
           <div class="title">
-            <div class="title-content">
+            <div *ngIf="detailedDrawerData.UnknownContents" class="title-content">
+              {{'QUICK_PICK_UNKNOWN_CONTENTS' | translate}}
+            </div>
+            <div *ngIf="!detailedDrawerData.UnknownContents" class="title-content">
               {{ detailedDrawerData.PriorityDescription }}
             </div>
           </div>
         </div>
         <div class="index">
-          <div class="index-content">
+          <div *ngIf="!detailedDrawerData.UnknownContents"  class="index-content">
             {{ detailedDrawerData.BoxNumber }} / {{ detailedDrawerData.BoxCount }}
           </div>
         </div>
@@ -22,7 +25,7 @@
     <div class="view-container">
       <div class="card-details-view">
         <div class="body">
-          <div class="body-content">
+          <div *ngIf="!detailedDrawerData.UnknownContents" class="body-content">
             <div class="grid-container">
               <div class="status-label">
                 <app-traffic-lights
@@ -55,10 +58,22 @@
               </div>
             </div>
           </div>
+          <div *ngIf="detailedDrawerData.UnknownContents" class="body-content">
+            <div class="grid-container">
+              <div class="status-label">
+                <app-traffic-lights
+                [lightColor]="getTrafficLightProperties(detailedDrawerData).color"
+                [isBlinking] = "getTrafficLightProperties(detailedDrawerData).isBlinking">
+              </app-traffic-lights>
+              </div>
+              <div class="status-data">{{ getTrafficLightProperties(detailedDrawerData).text }}
+              </div>
+            </div>
+          </div>
         </div>
         <div class="footer">
-          <div class="footer-content">
-            <div class="action-buttons">
+          <div  class="footer-content">
+            <div *ngIf="!detailedDrawerData.UnknownContents" class="action-buttons">
               <oc-button-action
                 [buttonText]="'BACK' | translate"
                 [disabled]="detailedDrawerData.Status > controlDataStatus.OrderReady"

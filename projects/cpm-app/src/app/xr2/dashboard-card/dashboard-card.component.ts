@@ -27,6 +27,7 @@ export class DashboardCardComponent implements OnInit {
   }
 
   @Output() printQuickPickDrawer: EventEmitter<number> = new EventEmitter<number>();
+  @Output() unlockUnknownQuickPickDrawer: EventEmitter<number> = new EventEmitter<number>();
   @Output() rerouteQuickPickDrawer: EventEmitter<Guid> = new EventEmitter<Guid>();
   @Output() viewQuickPickDrawer: EventEmitter<number> = new EventEmitter<number>();
 
@@ -37,6 +38,10 @@ export class DashboardCardComponent implements OnInit {
 
   onPrintClick() {
     this.printQuickPickDrawer.emit(this.drawerIndex);
+  }
+
+  onUnlockUnknownClick() {
+    this.unlockUnknownQuickPickDrawer.emit(this.drawerIndex);
   }
 
   onViewClick() {

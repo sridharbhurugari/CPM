@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
-import { Observable, of, Subscription, forkJoin } from 'rxjs';
+import { Observable, of, Subscription, forkJoin, merge } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { switchMap, } from 'rxjs/operators';
+import { switchMap, map, flatMap, } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,7 +48,11 @@ export class QuickPickPageComponent implements OnInit {
   rawBarcodeMessage = '';
   scanInput: BarcodeScanMessage;
   translatables = [
+    'YES',
+    'NO',
     'OK',
+    'REROUTE',
+    'QUICK_PICK_REROUTE_DIALOG_MESSAGE',
     'INVALID_SCAN_BARCODE_HEADER',
     'INVALID_SCAN_BARCODE',
     'INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT',
@@ -64,7 +68,7 @@ export class QuickPickPageComponent implements OnInit {
     'XR2_QUICK_PICK_ERROR_HEADER',
     'XR2_QUICK_PICK_ERROR_BODY',
   ];
-  translations$: any;
+  translations$: Observable<any>;
 
   @ViewChild('searchBox', {
     static: true
@@ -164,25 +168,29 @@ export class QuickPickPageComponent implements OnInit {
 
   onRerouteQuickPickFromDrawer($event: Guid) {
     const quickPickItemToReroute = this.quickPickQueueItemsComplete.find(item => item.RobotDispenseBoxIds.includes($event));
-    this.quickPickQueueService.reroute(quickPickItemToReroute).subscribe(
-      () => {
-        this.loadPicklistsQueueItems();
-      }, error => {
-        this.displayQuickPickError(QuickPickError.RerouteFailure);
-        this.loadPicklistsQueueItems();
-        this.loadDrawersData();
-      });
+    this.rerouteQuickPickItem(quickPickItemToReroute);
   }
 
   onRerouteQuickPick($event: IQuickPickQueueItem) {
-    this.quickPickQueueService.reroute($event).subscribe(
-      () => {
-        this.loadPicklistsQueueItems();
-      }, error => {
-        this.displayQuickPickError(QuickPickError.RerouteFailure);
-        this.loadPicklistsQueueItems();
-        this.loadDrawersData();
-      });
+    this.rerouteQuickPickItem($event);
+  }
+
+  private rerouteQuickPickItem($event: IQuickPickQueueItem) {
+    this.displayRerouteDialog().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      this.quickPickQueueService.reroute($event).subscribe(
+        () => {
+          this.loadPicklistsQueueItems();
+          this.loadDrawersData();
+        }, error => {
+          this.displayQuickPickError(QuickPickError.RerouteFailure);
+          this.loadPicklistsQueueItems();
+          this.loadDrawersData();
+        });
+    });
   }
 
   // Page Level Listener for barcode scanner
@@ -204,6 +212,27 @@ export class QuickPickPageComponent implements OnInit {
       this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
       this.barcodeScanService.reset();
     }
+  }
+
+  private displayRerouteDialog(): Observable<boolean> {
+    return forkJoin(this.translations$).pipe(flatMap(r => {
+      const translations = r[0];
+      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
+      properties.titleElementText = translations.REROUTE;
+      properties.messageElementText = translations.QUICK_PICK_REROUTE_DIALOG_MESSAGE;
+      properties.showPrimaryButton = true;
+      properties.primaryButtonText = translations.YES;
+      properties.showSecondaryButton = true;
+      properties.secondaryButtonText = translations.NO;
+      properties.primaryOnRight = true;
+      properties.showCloseIcon = false;
+      properties.dialogDisplayType = PopupDialogType.Multiselect;
+      properties.timeoutLength = 0;
+      let component = this.dialogService.showOnce(properties);
+      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      return merge(primaryClick$, secondaryClick$);
+    }));
   }
 
   /* istanbul ignore next */
