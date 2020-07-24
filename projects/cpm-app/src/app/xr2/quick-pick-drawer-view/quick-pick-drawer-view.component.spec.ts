@@ -77,20 +77,44 @@ describe('QuickPickDrawerViewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set details view and fire event when detail view opened', () => {
+  it('should set details view and fire event when detail view opened using view', () => {
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
 
     component.onShowQuickPickDrawerDetails(0);
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should set details view and fire event when detail view opened with print', () => {
+    expect(component).toBeTruthy();
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onPrintQuickPickDrawer(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
     expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
   });
 
-  it('should set details view and fire event when detail view closed', () => {
+  it('should set details view and fire event when detail view closed from view only', () => {
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
 
     component.onShowQuickPickDrawerDetails(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledTimes(0);
+
+    component.onCloseQuickPickDrawerDetails();
+
+    expect(component.detailedDrawer).toBeUndefined();
+    expect(quickPickActiveSpy).toHaveBeenCalledTimes(1);
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(false);
+  });
+
+  it('should set details view and fire event when detail view closed from active state', () => {
+    expect(component).toBeTruthy();
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onPrintQuickPickDrawer(0);
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
     expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
 
