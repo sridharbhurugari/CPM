@@ -9,7 +9,8 @@
         <tr>
           <th rowspan="2">
             <oc-daterange #dateRange [(startDate)]="indStartDate" [(endDate)]="indEndDate" iconHeight="50" iconWidth="50"
-              (startDateChange)="onStartDateChange($event)" (endDateChange)="onEndDateChange($event)">
+              (startDateChange)="onStartDateChange($event)" (endDateChange)="onEndDateChange($event)" 
+              (selectionDates)="selectionDates" [selectionBounds]="selectionDates">
             </oc-daterange>
           </th>
           <td class="startdate">{{startDateHeader$}} {{ indStartDate | date:'shortDate' }}</td>
@@ -60,12 +61,12 @@
             <oc-svgicon icon="information" *ngIf="event.EventSeverity === 3" theme="dark" height="30" width="30"
               class="informationicon"></oc-svgicon>
           </div>
-          <div class="col col-description" [attr.data-title]="'XR2_EVENTS_LIST_DESCRIPTION' | translate">
+          <div class="col eventdescription" [attr.data-title]="'XR2_EVENTS_LIST_DESCRIPTION' | translate">
             <div>
               {{event.EventDescription}}
             </div>
           </div>
-          <div class="last eventDateTime" [attr.data-title]="'XR2_EVENTS_LIST_DATETIME' | translate">
+          <div class="last eventdatetime" [attr.data-title]="'XR2_EVENTS_LIST_DATETIME' | translate">
             {{event.EventDateTime | date:'M/d/yyyy h:mm:ss a'}}</div>
         </div>
       </ng-container>

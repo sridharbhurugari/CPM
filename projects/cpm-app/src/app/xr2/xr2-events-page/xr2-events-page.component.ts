@@ -34,7 +34,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   @ViewChild('errorsCheckBox', null) errorsCheckBoxElement: CheckboxComponent;
   @ViewChild('warningsCheckBox', null) warningsCheckBoxElement: CheckboxComponent;
   @ViewChild('informationsCheckBox', null) informationsCheckBoxElement: CheckboxComponent;
-  @ViewChild(DaterangeComponent, null) dateRange: DaterangeComponent;
+  @ViewChild('DaterangeComponent', null) dateRange: DaterangeComponent;
   @ViewChild('devicesList', null) devicesList: SingleselectComponent;
 
 
@@ -72,6 +72,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   warningsSelected = true;
   errorsSelected = true;
   informationSelected = true;
+  selectionDates: any = [];
   constructor(
     private eventsListService: Xr2EventsService,
     private wpfActionControllerService: WpfActionControllerService,
@@ -219,9 +220,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
         if (this.dateRange) {
           this.dateRange.startDate = new Date(this.indStartDate);
           this.dateRange.endDate = this.indEndDate;
-         // this.dateRange.selectionDates = [this.dateRange.startDate, this.dateRange.endDate];
-          this.dateRange.startDateChange.emit(this.dateRange.startDate);
-          this.dateRange.endDateChange.emit(this.dateRange.endDate);
+          //this.selectionDates = [this.dateRange.startDate, this.dateRange.endDate];
         }
       }
     });
@@ -244,7 +243,6 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
 
   onStartDateChange(date) {
     this.startDate = date;
-    this.dateRange.startDate = date;
   }
 
   onEndDateChange(date) {
