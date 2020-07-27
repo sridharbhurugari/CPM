@@ -27,6 +27,8 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   readonly eventDescriptionPropertyName = nameof<Xr2EventsItem>("EventDescription");
   readonly eventDateTimePropertyName = nameof<Xr2EventsItem>("EventDateTime");
   readonly eventDetailsPropertyName = nameof<Xr2EventsItem>("RobotEventDetails");
+  readonly eventActiveName = nameof<Xr2EventsItem>("Active");
+  readonly robotEventId = nameof<Xr2EventsItem>("RobotEventId");
   Object = Object;
   searchSub: Subscription;
   eventDetails;
@@ -73,8 +75,9 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   errorsSelected = true;
   informationSelected = true;
   selectionDates: any = [];
-  HighlightRow: Number;
+  HighlightRow: any;
   ClickedRow: any;
+  firstTime = true;
   constructor(
     private eventsListService: Xr2EventsService,
     private wpfActionControllerService: WpfActionControllerService,
@@ -169,7 +172,19 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   sort(devices: Xr2EventsItem[], sortDirection: Many<boolean | "desc" | "asc">): Xr2EventsItem[] {
+    this.addactiveflag(devices);
     return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  addactiveflag(items: Xr2EventsItem[]) {
+    if (this.firstTime) {
+      for (let item of items) {
+        item.Active = false;
+      }
+      this.firstTime = false;
+    }
+  }
+  toggleactiveflag() {
   }
 
   ngOnDestroy(): void {
@@ -177,12 +192,27 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   navigatedetailspage(events: IXr2EventsItem, clickevent: any) {
+    let xr2events:IXr2EventsItem[];
+    this.displayFilteredList$.subscribe((data) => { xr2events = data });
+    if (xr2events.length > 0) {
+      xr2events.forEach(function(element) {
+        if (element.RobotEventId !== events.RobotEventId) {
+          element.Active = false;
+        }
+        if(element.RobotEventId === events.RobotEventId)
+        {
+          element.Active = true;
+        }
+      });
+      this.displayFilteredList$ = of(xr2events);
+    }
     this.eventDetails = JSON.parse(events.RobotEventDetails);
 
   }
 
   onOutputDeviceSelectionChanged($event) {
     this.selectedDeviceId = $event.value;
+    this.firstTime = true;
     this.clearDetailsData();
     this.resetSearchControl();
     this.resetCheckBoxes();
@@ -213,17 +243,11 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   dateRangeControlFillup() {
-    this.systemConfigurationService.GetConfigurationValues('MISC_OPTIONS', 'ROBOTEVENTS').subscribe(result => {
-      this.robotEventLatencyPeriod = Number(result.Value);
-      if (result) {
-        var enddate = new Date();
-        var startdate = new Date();
-        startdate.setDate(enddate.getDate() - this.robotEventLatencyPeriod);
-        this.indStartDate = startdate;
-        this.indEndDate = enddate;
-        this.getEventsData();
-      }
-    });
+    var enddate = new Date();
+    var startdate = new Date();
+    this.indStartDate = startdate;
+    this.indEndDate = enddate;
+    this.getEventsData();
   }
 
   onErrorsSelect($event) {
@@ -247,6 +271,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
 
   onEndDateChange(date) {
     this.endDate = date;
+    this.firstTime = true;
     this.getEventsData();
   }
 

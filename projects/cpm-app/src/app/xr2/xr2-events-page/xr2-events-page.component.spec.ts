@@ -28,47 +28,47 @@ describe('Xr2EventsPageComponent', () => {
   let eventSelected: IXr2EventsItem[] = [{
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 3
+    EventSeverity: 3,Active:false,RobotEventId:10010
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 2
+    EventSeverity: 2,Active:false,RobotEventId:10009
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 4
+    EventSeverity: 4,Active:false,RobotEventId:10008
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 3
+    EventSeverity: 3,Active:false,RobotEventId:10007
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 2
+    EventSeverity: 2,Active:false,RobotEventId:10006
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 4
+    EventSeverity: 4,Active:false,RobotEventId:10005
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 3
+    EventSeverity: 3,Active:false,RobotEventId:10002
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 2
+    EventSeverity: 2,Active:false,RobotEventId:10003
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
       "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
-    EventSeverity: 4
+    EventSeverity: 4,Active:false,RobotEventId:10004
   },
 
 ];

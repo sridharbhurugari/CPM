@@ -35,7 +35,7 @@
       (keyup)="enterKeyed($event)"></oc-search-box>
   </div>
   <ng-container>
-    <oc-grid #ocgrid ocgridfilter="false" class="">
+    <oc-grid #ocgrid ocgridfilter="false" class="table">
       <ng-container class="ocgridheader">
         <div class="first" data-colwrap="true"></div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="880" data-colwrap="true"
@@ -51,8 +51,8 @@
       </ng-container>
       <ng-container class="ocgridbody">
         <div class="row"
-          *ngFor="let event of ( displayFilteredList$  | async ) | searchPipe:searchTextFilter:searchFields;let i = index" 
-          (click)="navigatedetailspage(event,$event)" (ocScrollBoxDirective)="navigatedetailspage(event,$event)" >
+          *ngFor="let event of ( displayFilteredList$  | async ) | searchPipe:searchTextFilter:searchFields;" 
+          (click)="navigatedetailspage(event,$event)"(ocScrollBoxDirective)="navigatedetailspage(event,$event)" [class.active]="event.Active == true">
           <div class="first" style="align-items: center;">
             <oc-svgicon icon="warningModal" *ngIf="event.EventSeverity === 4" theme="dark" height="30" width="30"
               class="warningicon"></oc-svgicon>
