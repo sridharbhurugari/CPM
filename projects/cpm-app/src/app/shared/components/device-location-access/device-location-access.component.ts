@@ -136,6 +136,7 @@ export class DeviceLocationAccessComponent {
 
   private displayError(uniqueId, title, message): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
+    this._okButtonText$.subscribe((result) => { properties.primaryButtonText = result; })
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;

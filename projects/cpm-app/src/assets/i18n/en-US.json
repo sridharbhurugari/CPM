@@ -113,6 +113,8 @@
   "STATUS": "Status",
   "TYPE": "Priority Type",
   "UNDERFILLED": "Underfilled",
+  "YES": "Yes",
+  "NO": "No",
   "REPRINT": "Reprint",
   "PROCESSING": "Processing...",
   "ROBOT_QUEUE": "Robot Queue",
