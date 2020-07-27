@@ -85,7 +85,7 @@ font-weight: 400;
 }
 
 .eventdefinition{
-  width: 480px;
+  width: 500px;
   text-align: left;
   border: solid 1px #DDD ;
   font-size: 22px;
@@ -95,9 +95,10 @@ font-weight: 400;
   vertical-align: middle;
   padding-left: 10px;
   border-left: none;
+  padding-right: 10px;
 }
 .eventvalue{
-  width: 720px;
+  width: 700px;
   text-align: left;
   border: solid 1px #DDD ;
   font-size: 22px;
@@ -108,6 +109,7 @@ font-weight: 400;
   padding-left: 10px;
   overflow-wrap: anywhere;
   border-right: none;
+  word-break: break-all;
 }
 .daterange
 {
@@ -146,7 +148,7 @@ padding-left: 10px;
 .emptyborder
 {
   border-bottom: 15px solid rgba(153, 153, 153, 0.452);
-  margin-top: -40px;
+  margin-top: -20px;
 }
 
 .eventdatetime
@@ -162,3 +164,7 @@ padding-left: 10px;
   font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;
   font-weight: 400;
 }
+.row.active td {  
+  background-color:#48da24 !important;  
+  color: white;  
+} 

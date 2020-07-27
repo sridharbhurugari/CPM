@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, Pipe, PipeTransform } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, switchMap, shareReplay } from 'rxjs/operators';
-import { SearchBoxComponent, DaterangeComponent, SingleselectComponent, CheckboxComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, DaterangeComponent, SingleselectDropdownModule, SingleselectComponent, CheckboxComponent } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
@@ -34,7 +34,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   @ViewChild('errorsCheckBox', null) errorsCheckBoxElement: CheckboxComponent;
   @ViewChild('warningsCheckBox', null) warningsCheckBoxElement: CheckboxComponent;
   @ViewChild('informationsCheckBox', null) informationsCheckBoxElement: CheckboxComponent;
-  @ViewChild('DaterangeComponent', null) dateRange: DaterangeComponent;
+  @ViewChild('dateRange', null) dateRange: DaterangeComponent;
   @ViewChild('devicesList', null) devicesList: SingleselectComponent;
 
 
@@ -73,6 +73,8 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   errorsSelected = true;
   informationSelected = true;
   selectionDates: any = [];
+  HighlightRow: Number;
+  ClickedRow: any;
   constructor(
     private eventsListService: Xr2EventsService,
     private wpfActionControllerService: WpfActionControllerService,
@@ -80,6 +82,9 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     private systemConfigurationService: SystemConfigurationService
   ) {
     this.initalizeHeaders();
+    this.ClickedRow = function (index) {
+      this.HighlightRow = index;
+    }
   }
 
   ngOnInit() {
@@ -111,10 +116,8 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
         value: this.deviceList[0].value
       }
       this.selectedDeviceId = parseInt(this.deviceList[0].value);
-
       this.getEventsData();
     }
-    this.displayData();
   }
 
   getEventsData() {
@@ -123,6 +126,9 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
         return this.sort(eventsListItems.map(p => new Xr2EventsItem(p)), SortDirection.descending);
       }), shareReplay(1));
     }
+    this.displayFullEventsList$ && this.displayFullEventsList$.subscribe(x => {
+      this.displayData();
+    });
   }
 
 
@@ -136,7 +142,6 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
       .subscribe(data => {
         this.searchTextFilter = data;
       });
-    //this.dateRangeControlFillup();
   }
 
   initalizeHeaders() {
@@ -156,9 +161,11 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   columnSelected(event: IColHeaderSortChanged) {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.displayFilteredList$ = this.displayFilteredList$.pipe(map(events => {
-      return this.sort(events, event.SortDirection);
-    }));
+    if (this.displayFilteredList$) {
+      this.displayFilteredList$ = this.displayFilteredList$.pipe(map(events => {
+        return this.sort(events, event.SortDirection);
+      }));
+    }
   }
 
   sort(devices: Xr2EventsItem[], sortDirection: Many<boolean | "desc" | "asc">): Xr2EventsItem[] {
@@ -171,20 +178,15 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
 
   navigatedetailspage(events: IXr2EventsItem, clickevent: any) {
     this.eventDetails = JSON.parse(events.RobotEventDetails);
-  }
 
-  navigateBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
   }
 
   onOutputDeviceSelectionChanged($event) {
+    this.selectedDeviceId = $event.value;
     this.clearDetailsData();
     this.resetSearchControl();
     this.resetCheckBoxes();
     this.dateRangeControlFillup();
-    this.selectedDeviceId = $event.value;
-    this.getEventsData();
-    this.displayData();
   }
 
   clearDetailsData() {
@@ -215,13 +217,11 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
       this.robotEventLatencyPeriod = Number(result.Value);
       if (result) {
         var enddate = new Date();
-        this.indStartDate = new Date().setDate(enddate.getDate() - this.robotEventLatencyPeriod);
+        var startdate = new Date();
+        startdate.setDate(enddate.getDate() - this.robotEventLatencyPeriod);
+        this.indStartDate = startdate;
         this.indEndDate = enddate;
-        if (this.dateRange) {
-          this.dateRange.startDate = new Date(this.indStartDate);
-          this.dateRange.endDate = this.indEndDate;
-          //this.selectionDates = [this.dateRange.startDate, this.dateRange.endDate];
-        }
+        this.getEventsData();
       }
     });
   }
@@ -246,8 +246,8 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   onEndDateChange(date) {
+    this.endDate = date;
     this.getEventsData();
-    this.displayData();
   }
 
   enterKeyed(event) {

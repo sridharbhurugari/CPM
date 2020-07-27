@@ -1,6 +1,6 @@
 <ng-container class="ocactiondetails">
   <div class="cpmheaderrow">
-    <oc-singleselect #devicesList [tableData]="deviceList" class="devicesList" componentWidth="250"
+    <oc-singleselect #devicesList [tableData]="deviceList" class="devicesList" componentWidth="250" 
       dropdownRowsVisible="6" searchPlaceholderText="Select device " selectText="Select Device" noItemsText="No Items"
       (selectionChanged)="onOutputDeviceSelectionChanged($event)" [selectedItem]="selectedStatus">
     </oc-singleselect>
@@ -51,10 +51,10 @@
       </ng-container>
       <ng-container class="ocgridbody">
         <div class="row"
-          *ngFor="let event of ( displayFilteredList$  | async ) | searchPipe:searchTextFilter:searchFields"
-          (click)="navigatedetailspage(event,$event)">
+          *ngFor="let event of ( displayFilteredList$  | async ) | searchPipe:searchTextFilter:searchFields;let i = index" 
+          (click)="navigatedetailspage(event,$event)" (ocScrollBoxDirective)="navigatedetailspage(event,$event)" >
           <div class="first" style="align-items: center;">
-            <oc-svgicon icon="warning" *ngIf="event.EventSeverity === 4" theme="dark" height="30" width="30"
+            <oc-svgicon icon="warningModal" *ngIf="event.EventSeverity === 4" theme="dark" height="30" width="30"
               class="warningicon"></oc-svgicon>
             <oc-svgicon icon="critical" *ngIf="event.EventSeverity === 2" theme="dark" height="30" width="30"
               class="erroricon"></oc-svgicon>
