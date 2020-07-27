@@ -43,7 +43,6 @@ describe('QuickPickPageComponent', () => {
 
   let selectableDeviceInfoList: SelectableDeviceInfo[] = [];
   let selectableDeviceInfo1 = new SelectableDeviceInfo(null);
-  let systemConfigurationService: Partial<SystemConfigurationService>;
   selectableDeviceInfo1.DeviceId = 1;
   selectableDeviceInfo1.Description = 'DeviceXr21';
   selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
