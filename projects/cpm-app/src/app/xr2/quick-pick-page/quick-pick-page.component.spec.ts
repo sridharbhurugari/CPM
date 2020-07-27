@@ -151,52 +151,40 @@ describe('QuickPickPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call quickPickDrawerService', () => {
+  it('should call quickPickDrawerService', fakeAsync(() => {
     expect(component).toBeTruthy();
-    fakeAsync(() => {
-      this.component.ngOnInit();
-      tick();
-      expect(quickPickDrawerService.getAllDrawers).toHaveBeenCalledTimes(1);
-    });
-  });
+    component.ngOnInit();
+    tick();
+    expect(quickPickDrawerService.getAllDrawers).toHaveBeenCalled();
+  }));
 
   describe('Device Selection', () => {
-    it('Should default to device selection', () => {
-      expect(component.getActiveXr2Devices()).toBeTruthy();
+    it('Should default to device selection', fakeAsync(() => {
+      const expectedDeviceID = '1';
+      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceId).toEqual(expectedDeviceID);
+      expect(component.defaultDeviceDisplyItem.value).toEqual(expectedDeviceID);
+    }));
 
-      fakeAsync(() => {
-        const expectedDeviceID = '1';
-        const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
-        const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
+    it('Should not default to device selection when device is not leased to same client', fakeAsync(() => {
+      ocapConfig.clientId = '';
+      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      const loadPicklistsQueueItemsSpy = spyOn<any>(component, 'loadPicklistsQueueItems').and.callThrough();
+      const loadDrawersDataSpy = spyOn<any>(component, 'loadDrawersData').and.callThrough();
 
-        this.component.ngOnInit();
-        tick();
-
-        expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-        expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(1);
-        expect(this.component.selectedDeviceId).toEqual(expectedDeviceID);
-        expect(this.component.defaultDeviceDisplyItem.value).toEqual(expectedDeviceID);
-      });
-    });
-
-    it('Should not default to device selection when device is not leased to same client', () => {
-      expect(component.getActiveXr2Devices()).toBeTruthy();
-
-      fakeAsync(() => {
-        const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
-        const loadPicklistsQueueItemsSpy = spyOn(this.component, 'loadPicklistsQueueItems').and.callThrough();
-        const loadDrawersDataSpy = spyOn(this.component, 'loadDrawersData').and.callThrough();
-        const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
-        this.ngOnInit();
-        tick();
-        expect(loadPicklistsQueueItemsSpy).toHaveBeenCalledTimes(1);
-        expect(loadDrawersDataSpy).toHaveBeenCalledTimes(1);
-        expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(0);
-        expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-        expect(this.selectedDeviceId).toBeUndefined();
-        expect(this.defaultDeviceDisplyItem).toBeUndefined();
-      });
-    });
+      component.ngOnInit();
+      tick();
+      expect(loadPicklistsQueueItemsSpy).toHaveBeenCalledTimes(0);
+      expect(loadDrawersDataSpy).toHaveBeenCalledTimes(0);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(0);
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceId).toBeUndefined();
+      expect(component.defaultDeviceDisplyItem).toBeUndefined();
+    }));
 
     it('Should default device if there is only one device', fakeAsync(() => {
       const expectedDeviceID = '2';
