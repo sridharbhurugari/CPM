@@ -20,6 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
 
 describe('EditPickRoutePageComponent', () => {
   let component: EditPickRoutePageComponent;
@@ -96,7 +97,7 @@ describe('EditPickRoutePageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /*describe('given some devices in route and some devices not in route', () => {
+  describe('given some devices in route and some devices not in route', () => {
     const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1', DeviceType: '2000', OutputDevices: null};
     const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2', DeviceType: '2000', OutputDevices: null};
     const otherDevice1: IDevice = {Id: 11, Description: 'otherDevice1', DeviceType: '2000', OutputDevices: null};
@@ -106,24 +107,22 @@ describe('EditPickRoutePageComponent', () => {
       DeviceId: routeDevice1.Id,
       DeviceDescription: routeDevice1.Description,
       DeviceType: routeDevice1.DeviceType,
-      DefaultOutputDeviceId: null,
-      Autofill: false,
+      DeviceOutput: new DeviceOutput,
       OutputDevices: routeDevice1.OutputDevices};
     const deviceSequence2: IDeviceSequenceOrder = {
       SequenceOrder: 2,
       DeviceId: routeDevice2.Id,
       DeviceDescription: routeDevice2.Description,
       DeviceType: routeDevice2.DeviceType,
-      DefaultOutputDeviceId: null,
-      Autofill: false,
-      OutputDevices: routeDevice2.OutputDevices};
+      DeviceOutput: new DeviceOutput,      
+      OutputDevices: routeDevice2.OutputDevices};    
     beforeEach(() => {
       devices.push(routeDevice1);
       devices.push(routeDevice2);
       devices.push(otherDevice1);
       devices.push(otherDevice2);
       pickRoute.DeviceSequence.push(deviceSequence1);
-      pickRoute.DeviceSequence.push(deviceSequence2);
+      pickRoute.DeviceSequence.push(deviceSequence2);      
     });
 
     it('should set enabled devices to devices in route', () => {
@@ -137,11 +136,11 @@ describe('EditPickRoutePageComponent', () => {
 
     it('should set disabled devices to devices not in route', () => {
       component.disabledDevices$.subscribe(x => {
-        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice1.Id, DeviceDescription: otherDevice1.Description, DeviceType: '2000', OutputDevices: null, DefaultOutputDeviceId: null, Autofill: false }));
+        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice1.Id, DeviceDescription: otherDevice1.Description, DeviceType: '2000', OutputDevices: null, DeviceOutput: null }));
       });
       component.disabledDevices$.subscribe(x => {
-        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice2.Id, DeviceDescription: otherDevice2.Description, DeviceType: '2000', OutputDevices: null, DefaultOutputDeviceId: null, Autofill: false }));
-      });
+        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice2.Id, DeviceDescription: otherDevice2.Description, DeviceType: '2000', OutputDevices: null, DeviceOutput: null }));
+      });      
     });
   });
 
@@ -228,12 +227,9 @@ describe('EditPickRoutePageComponent', () => {
   describe('onDeviceSequenceChanged', () => {
     it('should set newDevcieSequence', () => {
       const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', 
-      DefaultOutputDeviceId: null,
-      Autofill: false, OutputDevices: null};
+      DeviceOutput: null, OutputDevices: null};
       const secondDevice: IDeviceSequenceOrder = { DeviceDescription: 'secondDevice', SequenceOrder: 999, DeviceId: 6, DeviceType: '2000',
-      DefaultOutputDeviceId: null,
-      Autofill: false,
-      OutputDevices: null};
+      DeviceOutput: null, OutputDevices: null};
       const changedDeviceSequence: IDeviceSequenceOrder[] = [ firstDevice, secondDevice ];
       component.onDeviceSequenceChanged(changedDeviceSequence);
       expect(component.newDeviceSequence).toContain(jasmine.objectContaining({
@@ -241,16 +237,14 @@ describe('EditPickRoutePageComponent', () => {
          DeviceId: firstDevice.DeviceId,
          DeviceDescription: firstDevice.DeviceDescription,
          DeviceType: firstDevice.DeviceType,
-         DefaultOutputDeviceId: firstDevice.DefaultOutputDeviceId,
-         Autofill: firstDevice.Autofill,
+         DeviceOutput: firstDevice.DeviceOutput,         
          OutputDevices: firstDevice.OutputDevices}));
       expect(component.newDeviceSequence).toContain(jasmine.objectContaining({
         SequenceOrder: 2,
         DeviceId: secondDevice.DeviceId,
         DeviceDescription: secondDevice.DeviceDescription,
         DeviceType: secondDevice.DeviceType,
-        DefaultOutputDeviceId: secondDevice.DefaultOutputDeviceId,
-        Autofill: secondDevice.Autofill,
+        DeviceOutput: secondDevice.DeviceOutput,        
         OutputDevices: secondDevice.OutputDevices }));
     });
   });
@@ -261,5 +255,5 @@ describe('EditPickRoutePageComponent', () => {
       component.onSaveAsFailed(error);
       expect(popupDialogService.showOnce).toHaveBeenCalled();
     });
-  });*/
+  });
 });

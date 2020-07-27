@@ -49,7 +49,7 @@ export class DropdownPopupComponent implements OnInit, IPopupWindowContainer {
     this.selectedRowItem = $event;
   }
 
-  onSelect($event) {
-    this.checkboxSelected = $event.selectedState;
+  onSelect(selected: boolean) {
+    this.checkboxSelected = selected;
   }
 }

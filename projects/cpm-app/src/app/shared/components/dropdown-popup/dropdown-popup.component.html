@@ -18,7 +18,7 @@
         <oc-checkbox #checkBox *ngIf="data.showCheckbox"                       
               [displayField]="data.checkboxLabel | translate"
               [selected]="data.checkboxSelected"
-              (selection)="onSelect($event)"
+              (selection)="onSelect($event.selectedState)"
               style="position:relative; left:420px">
         </oc-checkbox> 
       </div>

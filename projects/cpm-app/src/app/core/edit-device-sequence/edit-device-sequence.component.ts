@@ -117,7 +117,7 @@ export class EditDeviceSequenceComponent implements OnInit {
       checkboxLabel: 'Autofill',
       checkboxSelected: device.DeviceOutput.IsAutoFill,
       checkboxHideSelection: this.rowItemsToHideCheckbox,
-      selectedrow: null,
+      selectedrow: this.defaultDisplayItem,
       selectedcheckbox: false
     };
 
@@ -127,7 +127,7 @@ export class EditDeviceSequenceComponent implements OnInit {
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
       if (selectedOk) {  
         device.DeviceOutput.DeviceOutputType = data.selectedrow.value;
-        device.DeviceOutput.IsAutoFill = data.selectedcheckbox; 
+        device.DeviceOutput.IsAutoFill = data.selectedcheckbox;
         
         this.deviceSequenceChanged.emit(this.enabledDevices);            
       }

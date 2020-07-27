@@ -8,14 +8,15 @@ import { Component, OnInit, Output, ViewChild } from '@angular/core';
 import { IPopupWindowContainer, SingleselectRowItem, CheckboxComponent } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
 import { IDropdownPopupData } from '../../model/i-dropdown-popup-data';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 describe('DropdownPopupComponent', () => {
   let component: DropdownPopupComponent;
   let fixture: ComponentFixture<DropdownPopupComponent>;
   let data: IDropdownPopupData;
 
-  let fakes: SingleselectRowItem[] = [];
-  let fake: SingleselectRowItem;
+  let dropdownrowdata: SingleselectRowItem[] = [];
+  let defaultrowdata: SingleselectRowItem;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,13 +33,13 @@ describe('DropdownPopupComponent', () => {
     data = {
       popuptitle: '',
       dropdowntitle: '',    
-      dropdownrows: fakes,
-      defaultrow: fake,
+      dropdownrows: dropdownrowdata,
+      defaultrow: defaultrowdata,
       showCheckbox: true,
       checkboxLabel: '',
       checkboxSelected: true,
-      checkboxHideSelection: fakes,
-      selectedrow: fake,
+      checkboxHideSelection: dropdownrowdata,
+      selectedrow: defaultrowdata,
       selectedcheckbox: true
     };
   }));
@@ -62,16 +63,16 @@ describe('DropdownPopupComponent', () => {
     });
   });
 
-  /*describe('continue', () => {
+  describe('continue', () => {
     it('should dismiss with resultValue from textValue and true', () => {
-      var expectedValue1 = new SingleselectRowItem("test", "test", true);
-      component.selectedRowItem = expectedValue1;
-      var expectedValue2 = true;
-      component.checkboxSelected = expectedValue2;
+      var chosenRow = new SingleselectRowItem("test", "test", true);
+      component.selectedRowItem = chosenRow;
+      var chosenCheck = true;
+      component.checkboxSelected = chosenCheck;
       spyOn(component.dismiss, 'next');
       component.continue();
-      expect(component.data.selectedrow).toBe(expectedValue1);
-      expect(component.data.selectedcheckbox).toBe(expectedValue2);
+      expect(component.data.selectedrow).toBe(chosenRow);
+      expect(component.data.selectedcheckbox).toBe(chosenCheck);
       expect(component.dismiss.next).toHaveBeenCalledWith(true);
     });
   });
@@ -85,7 +86,7 @@ describe('DropdownPopupComponent', () => {
   });
 
   describe('onSelect', () => {
-    it('should set checkboxSelected to true', () => {
+    it('should set checkboxSelected to true', () => {      
       var expectedValue = true;
       component.onSelect(expectedValue);
       expect(component.checkboxSelected).toBe(expectedValue);
@@ -98,5 +99,5 @@ describe('DropdownPopupComponent', () => {
       component.onSelect(expectedValue);
       expect(component.checkboxSelected).toBe(expectedValue);
     });
-  });*/
+  });
 });

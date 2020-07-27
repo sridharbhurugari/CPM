@@ -6,14 +6,24 @@ import { ButtonActionModule, CheckboxModule, GridModule, PopupWindowService, Pop
 import { SharedModule } from '../../shared/shared.module';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
+import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
+import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
+import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
+
 
 describe('EditDeviceSequenceComponent', () => {
   let component: EditDeviceSequenceComponent;
   let fixture: ComponentFixture<EditDeviceSequenceComponent>;
   let popupWindowService: any;
+  const popupDismissedSubject = new Subject<boolean>();  
 
   beforeEach(async(() => {
+    const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
+    const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
+    popupWindowService = { show: showSpy };
     TestBed.configureTestingModule({
       declarations: [ EditDeviceSequenceComponent, MockTranslatePipe ],
       imports: [
@@ -40,7 +50,7 @@ describe('EditDeviceSequenceComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /*describe('onSelectionChanged', () => {
+  describe('onSelectionChanged', () => {
     it('should emit deviceSequenceChanged', () => {
       spyOn(component.deviceSequenceChanged, 'emit');
       component.onOrderChanged({ changedValue: undefined, orderedValues: [] });
@@ -54,5 +64,44 @@ describe('EditDeviceSequenceComponent', () => {
       component.onSelectionChanged({ changeType: SelectionChangeType.selected, unselectedValues: [], changedValue: undefined, selectedValues: [] });
       expect(component.deviceSequenceChanged.emit).toHaveBeenCalled();
     });
-  })*/
+  })
+
+  describe('onOutputDeviceEditClick', () => {
+    beforeEach(() => {
+      const deviceOutput: DeviceOutput = {
+        DeviceOutputType: '2104',
+        IsAutoFill: false
+      };
+      
+      const device: OutputDevice = {
+        DeviceId: '1',
+        Label: 'CARTMODULE',
+        IsActive: true,
+        OCTokenValue: '2104'
+      };     
+  
+      const deviceSequence: IDeviceSequenceOrder = {        
+        DeviceId: 1,
+        DeviceDescription: 'test',
+        SequenceOrder: 1,
+        DeviceType: '1',
+        DeviceOutput: deviceOutput,
+        OutputDevices: [device]
+      };        
+  
+      component.onOutputDeviceEditClick(deviceSequence);
+    });
+    
+    it('should present dropdown popup', () => {          
+      expect(popupWindowService.show).toHaveBeenCalled();
+    });
+
+    describe('given dropdown popup dismissed with ok', () => {
+      it('should emit deviceSequenceChanged', () => {
+        spyOn(component.deviceSequenceChanged, 'emit'); 
+        popupDismissedSubject.next(true);       
+        expect(component.deviceSequenceChanged.emit).toHaveBeenCalled();
+      });
+    });
+  });
 });

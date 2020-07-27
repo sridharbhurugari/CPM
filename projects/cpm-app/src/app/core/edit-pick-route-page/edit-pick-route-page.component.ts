@@ -113,7 +113,7 @@ export class EditPickRoutePageComponent implements OnInit {
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,          
-          DeviceOutput: pickRouteDevice.DeviceOutput,
+          DeviceOutput: null,
           SequenceOrder: sequenceOrder
         };
       });
