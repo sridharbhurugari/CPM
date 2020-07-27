@@ -53,8 +53,7 @@ describe('QuickPickPageComponent', () => {
   selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
   selectableDeviceInfoList.push(selectableDeviceInfo2);
 
-  let ocapConfig: IOcapHttpConfiguration;
-  ocapConfig = {
+  let ocapConfig = {
     clientId: selectableDeviceInfo1.CurrentLeaseHolder.toString(),
     apiKey: '39252',
     machineName: 'machine329',
@@ -144,49 +143,40 @@ describe('QuickPickPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call quickPickDrawerService', () => {
+  it('should call quickPickDrawerService', fakeAsync(() => {
     expect(component).toBeTruthy();
-    fakeAsync(() => {
-      this.component.ngOnInit();
-      tick();
-      expect(quickPickDrawerService.getAllDrawers).toHaveBeenCalledTimes(1);
-    });
-  });
+    component.ngOnInit();
+    tick();
+    expect(quickPickDrawerService.getAllDrawers).toHaveBeenCalled();
+  }));
 
   describe('Device Selection', () => {
-    it('Should default to device selection', () => {
+    it('Should default to device selection', fakeAsync(() => {
       expect(component.getActiveXr2Devices()).toBeTruthy();
+      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceId).toEqual(selectableDeviceInfo1.DeviceId.toString());
+      expect(component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo1.DeviceId.toString());
+    }));
 
-      fakeAsync(() => {
-        const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
-        const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
-        this.component.ngOnInit();
-        tick();
-        expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
-        expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(1);
-        expect(this.component.selectedDeviceId).toEqual(selectableDeviceInfo1.DeviceId.toString());
-        expect(this.component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo1.DeviceId.toString());
-      });
-    });
-
-    it('Should not default to device selection when device is not leased to same client', () => {
-      expect(component.getActiveXr2Devices()).toBeTruthy();
-
-      fakeAsync(() => {
-        const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
-        const loadPicklistsQueueItemsSpy = spyOn(this.component, 'loadPicklistsQueueItems').and.callThrough();
-        const loadDrawersDataSpy = spyOn(this.component, 'loadDrawersData').and.callThrough();
-        const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
-        this.ngOnInit();
-        tick();
-        expect(loadPicklistsQueueItemsSpy).toHaveBeenCalled();
-        expect(loadDrawersDataSpy).toHaveBeenCalled();
-        expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(0);
-        expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
-        expect(this.selectedDeviceId).toBeUndefined();
-        expect(this.defaultDeviceDisplyItem).toBeUndefined();
-      });
-    });
+    it('Should not default to device selection when device is not leased to same client', fakeAsync(() => {
+      ocapConfig.clientId = '';
+      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      const loadPicklistsQueueItemsSpy = spyOn<any>(component, 'loadPicklistsQueueItems').and.callThrough();
+      const loadDrawersDataSpy = spyOn<any>(component, 'loadDrawersData').and.callThrough();
+      // const quickPickQueueServiceSpy = spyOn(component, 'quickPickQueueService').and.callThrough();
+      expect(component.ngOnInit()).toBeTruthy();
+      tick();
+      expect(loadPicklistsQueueItemsSpy).toHaveBeenCalled();
+      expect(loadDrawersDataSpy).toHaveBeenCalled();
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(0);
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
+      expect(component.selectedDeviceId).toBeUndefined();
+      expect(component.defaultDeviceDisplyItem).toBeUndefined();
+    }));
 
     it('Should default device if there is only one device', fakeAsync(() => {
       selectableDeviceInfoList.shift();
