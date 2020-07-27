@@ -43,10 +43,10 @@ export class PicklistsQueueEventConnectionService {
       console.log(message);
       this.removePicklistQueueItemSubject.next({ 
         Xr2OrderGroupKey: { 
-          OrderId: message.OrderId,
-          OrderGroupDestinationId: message.OrderGroupDestinationId, 
-          DeviceLocationId: message.DeviceLocationId,
-          RobotPickGroupId: Guid.parse(message.RobotPickGroupId),
+          OrderId: message.Xr2OrderGroupKey.OrderId,
+          OrderGroupDestinationId: message.Xr2OrderGroupKey.OrderGroupDestinationId, 
+          DeviceLocationId: message.Xr2OrderGroupKey.DeviceLocationId,
+          RobotPickGroupId: Guid.parse(message.Xr2OrderGroupKey.RobotPickGroupId),
         }
       });
       return;
