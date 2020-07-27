@@ -100,8 +100,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
       return;
     }
 
-    const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.scanLabel(this.selectedDeviceId, scanRequest).subscribe(
+    const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.scanMessage.barcode);
+    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, scanRequest).subscribe(
       () => { },
       error => {
         this.failedEvent.emit(QuickPickError.ScanNotFound);

@@ -31,8 +31,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
     quickPickDrawerService = {
       printLabel: jasmine.createSpy('printLabel').and.returnValues(throwError({ status: 404 }), of(true)),
-      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(throwError({ status: 404 }), of(true)),
-      scanLabel: jasmine.createSpy('scanLabel').and.returnValues(of(true), throwError({ status: 404 }), of(true))
+      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(throwError({ status: 404 }), of(true))
     };
 
     popupDialogService = {
@@ -199,7 +198,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
       component.scanDrawerLabel();
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
     });
 
     it('Should not load detailed view if quick pick is in progress', () => {
@@ -211,7 +210,7 @@ describe('QuickPickDrawerViewComponent', () => {
       component.detailedDrawer = drawer;
       component.scanMessage = scan;
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
     });
 
     it('Should scan label on new scan input if loaded detailed view successfully', () => {
@@ -222,7 +221,7 @@ describe('QuickPickDrawerViewComponent', () => {
       component.quickpickDrawers = [drawer];
       component.scanMessage = scan;
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
     it('Should call QuickPickDrawerService and unlockDrawer on successful scan', () => {
@@ -232,7 +231,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
       component.scanDrawerLabel();
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
     it('Should emit failed scan dialog on failed scan', () => {
@@ -243,7 +242,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
       component.scanDrawerLabel();
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
       expect(failedScanSpy).toHaveBeenCalled();
     });
   });
