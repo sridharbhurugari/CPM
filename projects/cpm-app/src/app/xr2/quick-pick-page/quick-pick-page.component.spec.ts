@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService,  SearchBoxComponent, SharedModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, SearchBoxComponent, SharedModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -41,66 +41,73 @@ describe('QuickPickPageComponent', () => {
   let component: QuickPickPageComponent;
   let fixture: ComponentFixture<QuickPickPageComponent>;
 
-  let selectableDeviceInfoList: SelectableDeviceInfo[] = [];
-  let selectableDeviceInfo1 = new SelectableDeviceInfo(null);
-  selectableDeviceInfo1.DeviceId = 1;
-  selectableDeviceInfo1.Description = 'DeviceXr21';
-  selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
-  selectableDeviceInfoList.push(selectableDeviceInfo1);
-  let selectableDeviceInfo2 = new SelectableDeviceInfo(null);
-  selectableDeviceInfo2.DeviceId = 2;
-  selectableDeviceInfo2.Description = 'DeviceXr22';
-  selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
-  selectableDeviceInfoList.push(selectableDeviceInfo2);
-
+  let selectableDeviceInfoList: SelectableDeviceInfo[];
   let ocapConfig: IOcapHttpConfiguration;
-  ocapConfig = {
-    clientId: selectableDeviceInfo1.CurrentLeaseHolder.toString(),
-    apiKey: '39252',
-    machineName: 'machine329',
-    ocapServerIP: '127.0.0.1',
-    port: '3928',
-    useSecured: 'true',
-    userLocale: 'en-US',
-    clientName: 'client1'
-  };
-
   let quickPickEventConnectionService: Partial<QuickPickEventConnectionService>;
   let quickPickDrawerService: Partial<Xr2QuickPickDrawerService>;
   let quickPickQueueService: Partial<Xr2QuickPickQueueService>;
   let popupDialogService: Partial<PopupDialogService>;
   let barcodeScanService: Partial<BarcodeScanService>;
   let systemConfigurationService: Partial<SystemConfigurationService>;
-  let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
+  let configurationValue: IConfigurationValue;
 
-  quickPickEventConnectionService = {
-    QuickPickDrawerUpdateSubject: new Subject(),
-    QuickPickReloadDrawersSubject: new Subject(),
-    QuickPickQueueUpdateSubject: new Subject(),
-    QuickPickErrorUpdateSubject: new Subject()
-  };
-
-  quickPickDrawerService = {
-    getAllDrawers: jasmine.createSpy('getAllDrawer').and.returnValue(of([])),
-    printLabel: jasmine.createSpy('printLabel').and.returnValue(of())
-  };
-
-  quickPickQueueService = {
-    get: jasmine.createSpy('get').and.returnValue(of([])),
-    reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
-  };
-
-  popupDialogService = {
-    showOnce: jasmine.createSpy('showOnce')
-  };
-
-  barcodeScanService = {
-    reset: jasmine.createSpy('reset'),
-    BarcodeScannedSubject: new Subject(),
-  };
 
   beforeEach(async(() => {
     systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
+
+    quickPickEventConnectionService = {
+      QuickPickDrawerUpdateSubject: new Subject(),
+      QuickPickReloadDrawersSubject: new Subject(),
+      QuickPickQueueUpdateSubject: new Subject(),
+      QuickPickErrorUpdateSubject: new Subject()
+    };
+
+    quickPickDrawerService = {
+      getAllDrawers: jasmine.createSpy('getAllDrawer').and.returnValue(of([])),
+      printLabel: jasmine.createSpy('printLabel').and.returnValue(of())
+    };
+
+    quickPickQueueService = {
+      get: jasmine.createSpy('get').and.returnValue(of([])),
+      reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
+    };
+
+    popupDialogService = {
+      showOnce: jasmine.createSpy('showOnce')
+    };
+
+    barcodeScanService = {
+      reset: jasmine.createSpy('reset'),
+      BarcodeScannedSubject: new Subject(),
+    };
+
+    configurationValue = { Value: '15', Category: '', SubCategory: '' };
+
+    // Create mock device list
+    const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
+    const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
+
+    selectableDeviceInfo1.DeviceId = 1;
+    selectableDeviceInfo1.Description = 'DeviceXr21';
+    selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
+
+    selectableDeviceInfo2.DeviceId = 2;
+    selectableDeviceInfo2.Description = 'DeviceXr22';
+    selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
+
+    selectableDeviceInfoList = [selectableDeviceInfo1, selectableDeviceInfo2];
+
+    // Set OCAP config
+    ocapConfig = {
+      clientId: selectableDeviceInfo1.CurrentLeaseHolder.toString(),
+      apiKey: '39252',
+      machineName: 'machine329',
+      ocapServerIP: '127.0.0.1',
+      port: '3928',
+      useSecured: 'true',
+      userLocale: 'en-US',
+      clientName: 'client1'
+    };
 
     TestBed.configureTestingModule({
       declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
@@ -158,14 +165,17 @@ describe('QuickPickPageComponent', () => {
       expect(component.getActiveXr2Devices()).toBeTruthy();
 
       fakeAsync(() => {
+        const expectedDeviceID = '1';
         const getActiveXr2DevicesSpy = spyOn(this.component, 'getActiveXr2Devices').and.callThrough();
         const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
+
         this.component.ngOnInit();
         tick();
-        expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
+
+        expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
         expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(1);
-        expect(this.component.selectedDeviceId).toEqual(selectableDeviceInfo1.DeviceId.toString());
-        expect(this.component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo1.DeviceId.toString());
+        expect(this.component.selectedDeviceId).toEqual(expectedDeviceID);
+        expect(this.component.defaultDeviceDisplyItem.value).toEqual(expectedDeviceID);
       });
     });
 
@@ -179,21 +189,22 @@ describe('QuickPickPageComponent', () => {
         const quickPickQueueServiceSpy = spyOn(this.component, 'quickPickQueueService').and.callThrough();
         this.ngOnInit();
         tick();
-        expect(loadPicklistsQueueItemsSpy).toHaveBeenCalled();
-        expect(loadDrawersDataSpy).toHaveBeenCalled();
+        expect(loadPicklistsQueueItemsSpy).toHaveBeenCalledTimes(1);
+        expect(loadDrawersDataSpy).toHaveBeenCalledTimes(1);
         expect(quickPickQueueServiceSpy).toHaveBeenCalledTimes(0);
-        expect(getActiveXr2DevicesSpy).toHaveBeenCalled();
+        expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
         expect(this.selectedDeviceId).toBeUndefined();
         expect(this.defaultDeviceDisplyItem).toBeUndefined();
       });
     });
 
     it('Should default device if there is only one device', fakeAsync(() => {
+      const expectedDeviceID = '2';
       selectableDeviceInfoList.shift();
       expect(component.getActiveXr2Devices()).toBeTruthy();
       tick();
-      expect(component.selectedDeviceId).toEqual(selectableDeviceInfo2.DeviceId.toString());
-      expect(component.defaultDeviceDisplyItem.value).toEqual(selectableDeviceInfo2.DeviceId.toString());
+      expect(component.selectedDeviceId).toEqual(expectedDeviceID);
+      expect(component.defaultDeviceDisplyItem.value).toEqual(expectedDeviceID);
     }));
 
     it('should set robotSelectionDisabled properly', () => {
@@ -211,17 +222,17 @@ describe('QuickPickPageComponent', () => {
       expect(component).toBeTruthy();
       component.selectedDeviceId = '1';
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
-      expect(quickPickQueueService.reroute).toHaveBeenCalled();
-      expect(quickPickQueueService.get).toHaveBeenCalled();
+      expect(quickPickQueueService.reroute).toHaveBeenCalledTimes(1);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
     });
 
     it('should call reroute on event and show dialog if the reroute fails', () => {
       expect(component).toBeTruthy();
       component.selectedDeviceId = '1';
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
-      expect(quickPickQueueService.reroute).toHaveBeenCalled();
-      expect(quickPickQueueService.get).toHaveBeenCalled();
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
+      expect(quickPickQueueService.reroute).toHaveBeenCalledTimes(1);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
+      expect(popupDialogService.showOnce).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -229,11 +240,11 @@ describe('QuickPickPageComponent', () => {
     it('should load queue items on new update message', () => {
       expect(component).toBeTruthy();
       component.selectedDeviceId = '1';
-      const event = {DeviceId: 1};
+      const event = { DeviceId: 1 };
 
       quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(event);
 
-      expect(quickPickQueueService.get).toHaveBeenCalled();
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -256,7 +267,7 @@ describe('QuickPickPageComponent', () => {
       component.selectedDeviceId = '1';
       const FakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
       quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(FakeEvent);
-      expect(popupDialogService.showOnce).toHaveBeenCalled();
+      expect(popupDialogService.showOnce).toHaveBeenCalledTimes(1);
     });
   });
 });

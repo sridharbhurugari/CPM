@@ -11,6 +11,7 @@ import { QuickPickError } from '../model/quick-pick-error';
 import { NavigationExtras, Router } from '@angular/router';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { scan } from 'rxjs/operators';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',

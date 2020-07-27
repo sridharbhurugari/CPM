@@ -27,10 +27,10 @@ describe('QuickPickDrawerViewComponent', () => {
   let popupDialogService: Partial<PopupDialogService>;
   let router: Partial<Router>;
   let hardwareLeaseService: Partial<HardwareLeaseService>;
-  let leaseVerificationResult: LeaseVerificationResult = 0;
-
-
+  let leaseVerificationResult: LeaseVerificationResult;
   beforeEach(async(() => {
+    leaseVerificationResult = 0;
+
     quickPickEventConnectionService = {
       QuickPickDrawerUpdateSubject: new Subject(),
       QuickPickReloadDrawersSubject: new Subject()
@@ -46,8 +46,8 @@ describe('QuickPickDrawerViewComponent', () => {
       showOnce: jasmine.createSpy('showOnce')
     };
 
-    hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult) };
     router = {navigate: jasmine.createSpy('navigate') };
+    hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult) };
 
     TestBed.configureTestingModule({
       declarations: [QuickPickDrawerViewComponent, QuickPickDrawerDetailsViewComponent, DashboardCardComponent
@@ -92,6 +92,7 @@ describe('QuickPickDrawerViewComponent', () => {
   });
 
   it('should set details view and fire event when detail view opened', () => {
+    leaseVerificationResult = 0;
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
 
@@ -146,15 +147,15 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
     });
 
-    it('should emit failed save dialog on failed print', () => {
+    it('should emit failed event on failed print', () => {
       expect(component).toBeTruthy();
-      const failedSaveSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
+      const failedEventSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
 
       component.printDrawerLabel();
 
       expect(quickPickDrawerService.printLabel).toHaveBeenCalledTimes(1);
-      expect(failedSaveSpy).toHaveBeenCalled();
+      expect(failedEventSpy).toHaveBeenCalled();
     });
   });
 
@@ -168,20 +169,21 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
-    it('Should emit failed save dialog on failed unlock', () => {
+    it('Should emit failed event dialog on failed unlock', () => {
       expect(component).toBeTruthy();
-      const failedSaveSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
+      const failedEventSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
 
       component.unlockDrawer();
 
       expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
-      expect(failedSaveSpy).toHaveBeenCalled();
+      expect(failedEventSpy).toHaveBeenCalled();
     });
   });
 
   describe('Quick Pick Drawer Scanning', () => {
-    it('Should not call service if scan not available', () => {
+
+    it('Should not call drawer service if scan not available', () => {
       expect(component).toBeTruthy();
       component.scanMessage = null;
 
@@ -230,7 +232,7 @@ describe('QuickPickDrawerViewComponent', () => {
       component.detailedDrawer = new QuickPickDrawerData(null);
       component.scanMessage = new BarcodeScanMessage('barcode');
 
-      expect(router.navigate).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledTimes(1);
 
       expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
       expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
