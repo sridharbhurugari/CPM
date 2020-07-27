@@ -41,27 +41,23 @@
           <div class="grid-data">
             {{ drawerData.DestinationId }}
           </div>
-            <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
-            <div class="grid-data">
-              {{ drawerData.TotalFillQty }}
-            </div>
-            <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
-            <div class="grid-data">
-              {{ drawerData.LineItems }}
-            </div>
+          <div class="grid-label">{{'FILLEDQTY' | translate}}:</div>
+          <div class="grid-data">
+            {{ drawerData.TotalFillQty }}
+          </div>
+          <div class="grid-label">{{'LINEITEMS' | translate}}:</div>
+          <div class="grid-data">
+            {{ drawerData.LineItems }}
+          </div>
         </div>
       </div>
       <div class="button-content">
         <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'openv1-right'"
           [label]="'Reroute'" (clickEvent)="onRerouteClick()">
         </app-cp-clickable-icon>
-      </div>
-      <div class="button-content">
         <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'search'"
           [label]="'View'" (clickEvent)="onViewClick()">
         </app-cp-clickable-icon>
-      </div>
-      <div class="button-content">
         <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'print'"
           [label]="'Print'" (clickEvent)="onPrintClick()">
         </app-cp-clickable-icon>

@@ -60,24 +60,24 @@
 
     .body {
       display: flex;
-      height: 95%;
+      height: 100%;
       width: 100%;
-      flex-direction: row;
+      flex-direction: column;
 
       .body-content {
         height: 100%;
-        width: 80%;
+        width: 100%;
         border-width: 2px;
         border-color: grey;
         font-size: medium;
         align-items: center;
-        margin-left: 2px;
+        margin-top: 5px;
 
         .grid-container {
           display: grid;
-          height: 100%;
+          height: 95%;
           width: 100%;
-          grid-template-columns: 90px auto;
+          grid-template-columns: 90px 100%;
           grid-template-rows: auto;
           grid-template-areas: "grid-label grid-data";
         }
@@ -97,6 +97,9 @@
           height: 100%;
           align-items: center;
           margin-left: 15px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
 
         .row {
@@ -125,12 +128,12 @@
 
       .button-content {
         display: flex;
-        height: 100%;
-        width: 30%;
+        height: auto;
+        width: 100%;
         margin-top: 5px;
         align-items: center;
-        flex-direction: column;
-        justify-content: flex-end;
+        flex-direction: row;
+        justify-content: space-around;
       }
     }
 
