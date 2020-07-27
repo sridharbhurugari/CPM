@@ -233,7 +233,6 @@ describe('QuickPickDrawerViewComponent', () => {
       component.scanDrawerLabel();
 
       expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
-      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
     it('Should emit failed scan dialog on failed scan', () => {
