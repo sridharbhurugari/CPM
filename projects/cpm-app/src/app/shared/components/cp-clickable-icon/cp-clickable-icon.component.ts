@@ -22,6 +22,10 @@ export class CPClickableIconComponent implements OnInit {
   }
 
   onClick() {
+    if (this.disabled) {
+      return;
+    }
+
     this.clickEvent.emit(null);
   }
 
