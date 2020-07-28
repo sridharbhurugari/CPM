@@ -4,6 +4,7 @@ export interface IGuidedManualCycleCountItemid {
   ShelfNumber: number;
   DeviceLocationTypeId: string;
   DeviceId: number;
+  DosageForm:string;
   DeviceDescription: string;
   DeviceLocationId: number;
   ItemId: string;
