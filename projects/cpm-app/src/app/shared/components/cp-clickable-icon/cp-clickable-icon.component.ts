@@ -12,6 +12,7 @@ export class CPClickableIconComponent implements OnInit {
   @Input() icon: string;
   @Input() theme: string;
   @Input() label: string;
+  @Input() disabled: boolean = false;
 
   @Output() clickEvent: EventEmitter<any> = new EventEmitter();
 
