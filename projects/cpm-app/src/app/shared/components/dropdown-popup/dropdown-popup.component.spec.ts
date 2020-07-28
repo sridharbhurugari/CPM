@@ -30,9 +30,10 @@ describe('DropdownPopupComponent', () => {
       ]
     })
     .compileComponents();
+    defaultrowdata = new SingleselectRowItem("test", "test", true);
     data = {
-      popuptitle: '',
-      dropdowntitle: '',    
+      popuptitle: 'TEST POPUP',
+      dropdowntitle: 'TEST DROPDOWN',    
       dropdownrows: dropdownrowdata,
       defaultrow: defaultrowdata,
       showCheckbox: true,
