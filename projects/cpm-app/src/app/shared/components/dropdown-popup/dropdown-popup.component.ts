@@ -23,6 +23,7 @@ export class DropdownPopupComponent implements OnInit, IPopupWindowContainer {
   ngOnInit() {
     this.selectedRowItem = this.data.defaultrow;
     this.checkboxSelected = this.data.checkboxSelected;
+    this.showCheckbox(this.selectedRowItem.value);
   }
 
   cancel() {    
@@ -36,20 +37,23 @@ export class DropdownPopupComponent implements OnInit, IPopupWindowContainer {
   }
 
   onSelectionChanged($event) {
-    let found = false;
-
-    this.data.checkboxHideSelection.forEach(x => {
-      if (x.value === $event.value){
-        found = true;   
-        this.checkboxSelected = false;     
-      }
-    })   
-    this.data.showCheckbox = !found;
-
+    this.showCheckbox($event.value);
     this.selectedRowItem = $event;
   }
 
   onSelect(selected: boolean) {
     this.checkboxSelected = selected;
+  }  
+
+  showCheckbox(selectedValue: string) {
+    let found = false;
+
+    this.data.checkboxHideSelection.forEach(x => {
+      if (x.value === selectedValue){
+        found = true;   
+        this.checkboxSelected = false;     
+      }
+    })   
+    this.data.showCheckbox = !found;
   }
 }

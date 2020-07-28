@@ -75,7 +75,7 @@ export class EditDeviceSequenceComponent implements OnInit {
           
     let returnLabel = translatedLabel["DEFAULT"] + ": " + translatedLabel[odDesc.Label];
 
-    if (outputDeviceId !== this.cartModuleId) {
+    if (String(outputDeviceId) !== this.cartModuleId) {
       returnLabel = returnLabel + " (" + translatedLabel["AUTOFILL"] + " ";
       if (autofill) { return returnLabel + translatedLabel["ON"] + ")" };
       return returnLabel + translatedLabel["OFF"] + ")"
