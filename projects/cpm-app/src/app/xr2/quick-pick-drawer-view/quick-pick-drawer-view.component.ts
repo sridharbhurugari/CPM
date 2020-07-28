@@ -10,6 +10,10 @@ import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
 import { Guid } from 'guid-typescript';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
+import { NavigationExtras, Router } from '@angular/router';
+import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { scan } from 'rxjs/operators';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -40,12 +44,24 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Input()
   set scanMessage(value: BarcodeScanMessage) {
     this._scanMessage = value;
-
-    if (this.loadDetailedDrawerOnScan()) {
-      this.scanDrawerLabel();
+    if (!value) {
+      return;
     }
-  }
 
+    this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+      leaseVerificationResults => {
+        console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
+        if (Number(leaseVerificationResults) === Number(LeaseVerificationResult.Success)) {
+          console.log('was a Success');
+          if (this.loadDetailedDrawerOnScan()) {
+            this.scanDrawerLabel();
+          }
+        } else {
+          console.log('was a fail');
+          this.navigateToDeviceLeasePage();
+      }
+    });
+  }
   get scanMessage(): BarcodeScanMessage {
     return this._scanMessage;
   }
@@ -62,6 +78,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   constructor(
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
+    private router: Router,
+    private hardwareLeaseService: HardwareLeaseService
   ) {
   }
 
@@ -69,14 +87,33 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.configureEventHandlers();
   }
 
+  navigateToDeviceLeasePage() {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        deviceId: this.selectedDeviceId,
+        routeToPath: 'quickpick' } ,
+      fragment: 'anchor'
+    };
+    this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+  }
+
   onShowQuickPickDrawerDetails(drawerIndex: number) {
     this.detailedDrawer = this._quickpickDrawers[drawerIndex];
   }
 
   onPrintQuickPickDrawer(drawerIndex: number) {
-    this.detailedDrawer = this._quickpickDrawers[drawerIndex];
-    this.printDrawerLabel();
     this.quickPickActive.emit(true);
+    this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(
+      leaseVerificationResults => {
+        console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
+        if (Number(leaseVerificationResults) === Number(LeaseVerificationResult.Success)) {
+          this.detailedDrawer = this._quickpickDrawers[drawerIndex];
+          this.printDrawerLabel();
+          this.quickPickActive.emit(true);
+        } else {
+          this.navigateToDeviceLeasePage();
+        }
+      });
   }
 
   onRerouteQuickPickDrawer(robotDispenseBoxId: Guid) {
