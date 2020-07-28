@@ -224,7 +224,7 @@ export class QuickPickPageComponent implements OnInit {
       properties.primaryButtonText = translations.YES;
       properties.showSecondaryButton = true;
       properties.secondaryButtonText = translations.NO;
-      properties.primaryOnRight = true;
+      properties.primaryOnRight = false;
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Multiselect;
       properties.timeoutLength = 0;
