@@ -226,7 +226,7 @@ export class QuickPickPageComponent implements OnInit {
       properties.secondaryButtonText = translations.NO;
       properties.primaryOnRight = false;
       properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Multiselect;
+      properties.dialogDisplayType = PopupDialogType.Info;
       properties.timeoutLength = 0;
       let component = this.dialogService.showOnce(properties);
       let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
