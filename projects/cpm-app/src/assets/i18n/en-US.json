@@ -162,5 +162,8 @@
   "INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT": "Scanning is not available while a drawer is unlocked or in progress. Please empty and relock the current drawer before scanning again.",
   "YES": "Yes",
   "NO": "No",
-  "QUICK_PICK_REROUTE_DIALOG_MESSAGE": "This will reroute all orders for this destination, including those available in Quick Pick Drawers.<br /><br />Do you want to reroute?"
+  "QUICK_PICK_REROUTE_DIALOG_MESSAGE": "This will reroute all orders for this destination, including those available in Quick Pick Drawers.<br /><br />Do you want to reroute?",
+  "VIEW": "View",
+  "QUICK_PICK_UNLOCK": "Unlock"
+
 }

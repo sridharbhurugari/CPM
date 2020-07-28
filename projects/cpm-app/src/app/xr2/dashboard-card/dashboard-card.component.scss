@@ -1,3 +1,14 @@
+.button-content {
+  height: 41px;
+  display: flex;
+  height: auto;
+  width: 100%;
+  margin-bottom: 5px;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 .card {
   height: 100%;
   width: 100%;
@@ -126,15 +137,7 @@
         }
       }
 
-      .button-content {
-        display: flex;
-        height: auto;
-        width: 100%;
-        margin-top: 5px;
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-around;
-      }
+
     }
 
     .footer {
@@ -162,10 +165,19 @@
       width: 100%;
       height: 100%;
       align-items: center;
-      font-size: xx-large;
-      color: grey;
       flex-direction: column;
       justify-content: space-evenly;
+
+      .unknown-text {
+        display: flex;
+        font-size: xx-large;
+        color: grey;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-evenly;
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 }
