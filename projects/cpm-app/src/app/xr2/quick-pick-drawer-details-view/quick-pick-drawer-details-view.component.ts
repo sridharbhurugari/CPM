@@ -4,6 +4,7 @@ import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-sta
 import { TranslateService } from '@ngx-translate/core';
 import { CpColorService } from '../../shared/services/cp-color.service';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-quick-pick-drawer-details-view',
@@ -19,6 +20,7 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   @Output() closeQuickPickDetailsCard: EventEmitter<any> = new EventEmitter<any>();
   @Output() printQuickPickDrawerLabel: EventEmitter<any> = new EventEmitter<any>();
+  @Output() rerouteQuickPickDrawer: EventEmitter<Guid> = new EventEmitter<Guid>();
 
   @Input()
   set detailedDrawerData(value: QuickPickDrawerData) {
@@ -45,6 +47,10 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   onPrintClick() {
     this.printQuickPickDrawerLabel.emit();
+  }
+
+  onRerouteClick() {
+    this.rerouteQuickPickDrawer.emit(this.detailedDrawerData.RobotDispenseBoxId);
   }
 
   onBackClick() {
