@@ -48,7 +48,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   searchTextFilter: string;
   indStartDate = null;
   indEndDate = null;
-  searchFields = [this.eventDescriptionPropertyName, this.eventDateTimePropertyName, this.eventDetailsPropertyName];
+  searchFields = [this.eventDescriptionPropertyName, this.eventDetailsPropertyName];
   deviceList$: Observable<Xr2DevicesList[]>;
   deviceList: SingleselectRowItem[];
   selectedDeviceId: number;
@@ -73,7 +73,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   robotEventLatencyPeriod: number;
   warningsSelected = true;
   errorsSelected = true;
-  informationSelected = true;
+  informationSelected = false;
   selectionDates: any = [];
   HighlightRow: any;
   ClickedRow: any;
@@ -184,32 +184,31 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
       this.firstTime = false;
     }
   }
-  toggleactiveflag() {
-  }
 
   ngOnDestroy(): void {
     if (this.searchSub) { this.searchSub.unsubscribe(); }
   }
 
   navigatedetailspage(events: IXr2EventsItem, clickevent: any) {
-    let xr2events:IXr2EventsItem[];
+    let xr2events: IXr2EventsItem[];
     this.displayFilteredList$.subscribe((data) => { xr2events = data });
     if (xr2events.length > 0) {
-      xr2events.forEach(function(element) {
+      xr2events.forEach(function (element) {
         if (element.RobotEventId !== events.RobotEventId) {
           element.Active = false;
         }
-        if(element.RobotEventId === events.RobotEventId)
-        {
+        if (element.RobotEventId === events.RobotEventId) {
           element.Active = true;
         }
       });
       this.displayFilteredList$ = of(xr2events);
     }
     this.eventDetails = JSON.parse(events.RobotEventDetails);
-
   }
 
+  stopclearingdetailsofactiveitem(): boolean {
+    return true;
+  }
   onOutputDeviceSelectionChanged($event) {
     this.selectedDeviceId = $event.value;
     this.firstTime = true;
@@ -220,16 +219,17 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   clearDetailsData() {
+
     this.eventDetails = null;
   }
 
   resetCheckBoxes() {
     this.warningsSelected = true;
     this.errorsSelected = true;
-    this.informationSelected = true;
+    this.informationSelected = false;
     this.errorsCheckBoxElement.selected = true;
     this.warningsCheckBoxElement.selected = true;
-    this.informationsCheckBoxElement.selected = true;
+    this.informationsCheckBoxElement.selected = false;
   }
 
   resetSearchControl() {
