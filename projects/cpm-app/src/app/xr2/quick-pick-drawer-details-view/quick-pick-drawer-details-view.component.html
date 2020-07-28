@@ -77,7 +77,7 @@
               <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'"
                 [label]="'BACK' | translate" (clickEvent)="onBackClick()" [disabled]="detailedDrawerData.Status > controlDataStatus.OrderReady">
               </app-cp-clickable-icon>
-              <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'openv1-right'"
+              <app-cp-clickable-icon *ngIf="!detailedDrawerData.UnknownContents" [width]="35" [height]="35" [theme]="'dark'" [icon]="'openv1-right'"
                 [label]="'REROUTE' | translate" (clickEvent)="onRerouteClick()">
               </app-cp-clickable-icon>
               <app-cp-clickable-icon *ngIf="!detailedDrawerData.UnknownContents" [width]="35" [height]="35" [theme]="'dark'" [icon]="'print'"
