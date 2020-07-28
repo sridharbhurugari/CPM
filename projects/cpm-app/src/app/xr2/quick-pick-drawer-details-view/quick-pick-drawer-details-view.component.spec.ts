@@ -9,6 +9,7 @@ import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details
 import { QuickPickErrorInformation } from '../model/quick-pick-error-information';
 import { TranslateService } from '@ngx-translate/core';
 import { CpColorService } from '../../shared/services/cp-color.service';
+import { SharedModule } from '../../shared/shared.module';
 
 
 describe('QuickPickDrawerDetailsViewComponent', () => {
@@ -18,7 +19,7 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ QuickPickDrawerDetailsViewComponent, TrafficLightsComponent, QuickPickBoxItemsView, MockTranslatePipe],
-      imports: [ButtonActionModule],
+      imports: [ButtonActionModule, SharedModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: CpColorService, useValue: { pickTextColorBasedOnBackgroundColor: () => of() } },
