@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import * as _ from 'lodash';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { Observable, of, Subscription, forkJoin } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
@@ -20,6 +21,7 @@ import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -36,6 +38,9 @@ export class QuickPickPageComponent implements OnInit {
   searchTextFilter: Observable<string>;
 
   robotSelectionDisabled = false;
+  activeQuickPickDevice: boolean;
+  selectedDeviceInformation: SelectableDeviceInfo;
+  deviceInformationList: SelectableDeviceInfo[];
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   popupTimeoutSeconds = 60;
@@ -50,8 +55,9 @@ export class QuickPickPageComponent implements OnInit {
     'OK',
     'INVALID_SCAN_BARCODE_HEADER',
     'INVALID_SCAN_BARCODE',
-    'INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT',
+    'INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT',
     'INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT',
+    'INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT',
     'PRINTFAILED_HEADER_TEXT',
     'PRINTFAILED_BODY_TEXT',
     'FAILEDTOUNLOCKDOOR_HEADER_TEXT',
@@ -122,13 +128,14 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   async getActiveXr2Devices() {
-    const results = await this.quickPickDeviceService.get().toPromise();
+    this.deviceInformationList = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
     let defaultFound: SingleselectRowItem;
-    results.forEach(selectableDeviceInfo => {
-      const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description, selectableDeviceInfo.DeviceId.toString());
+    this.deviceInformationList.forEach(selectableDeviceInfo => {
+      const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description,
+        selectableDeviceInfo.DeviceId.toString(), selectableDeviceInfo.IsActive);
       newList.push(selectRow);
 
       if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
@@ -140,6 +147,7 @@ export class QuickPickPageComponent implements OnInit {
 
     if (defaultFound) {
       this.selectedDeviceId = defaultFound.value;
+      this.selectedDeviceInformation = this.getDeviceConfiguration(defaultFound.value);
       this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === this.selectedDeviceId);
       this.loadDrawersData();
       this.loadPicklistsQueueItems();
@@ -155,6 +163,7 @@ export class QuickPickPageComponent implements OnInit {
     if (this.selectedDeviceId !== $event.value) {
       this.searchElement.clearSearch(null);
       this.selectedDeviceId = $event.value;
+      this.selectedDeviceInformation = this.getDeviceConfiguration($event.value);
       this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
@@ -206,6 +215,14 @@ export class QuickPickPageComponent implements OnInit {
         this.translations$.subscribe(r => {
           const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT'];
           const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayWarningDialog(headerText, bodyText, okText);
+        });
+        break;
+      case QuickPickError.InActive:
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT'];
           const okText = r['OK'];
           this.displayWarningDialog(headerText, bodyText, okText);
         });
@@ -286,6 +303,12 @@ export class QuickPickPageComponent implements OnInit {
 
     this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).subscribe(data => {
       this.quickpickDrawers = of(data);
+    });
+  }
+
+  private getDeviceConfiguration(deviceId: string) {
+    return this.deviceInformationList.find((deviceInformation) => {
+      return deviceInformation.DeviceId.toString() === deviceId;
     });
   }
 

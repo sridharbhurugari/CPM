@@ -2,6 +2,14 @@
   height: 100%;
 }
 
+.header-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .quick-pick-page {
   display: flex;
   flex-flow: column;
@@ -12,8 +20,39 @@
   }
 }
 
-.robotSelection {
-  float: left;
+.information-box {
+  font-family: sans-serif;
+  border: solid;
+  border-radius: 5px;
+  border-color: grey;
+  overflow: hidden;
+  font-size: 16px;
+  color: white;
+  background-color: red;
+  width: 330px;
+  height: 40px;
+
+  .information-box-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+
+    .icon {
+      display: flex;
+      width:15%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+    .text {
+      display: flex;
+      width:85%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 }
 
 :host ::ng-deep oc-search-box{

@@ -1,18 +1,30 @@
 <div class="quick-pick-page">
   <div class="cpmheaderrow">
-    <oc-singleselect
-      [tableData] = "outputDeviceDisplayList"
-      [selectedItem] = "defaultDeviceDisplyItem"
-      componentWidth="300"
-      dropdownRowsVisible="6"
-      popupDirection="AUTO"
-      [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
-      [selectText]="'DEVICE_SELECTION_TEXT' | translate"
-      [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
-      [disabled]="robotSelectionDisabled"
-      (selectionChanged)="onDeviceSelectionChanged($event)"></oc-singleselect>
-    <app-header-container></app-header-container>
-    <oc-search-box #searchBox [placeHolderText]="'SEARCH_QUEUE' | translate"></oc-search-box>
+    <div class="header-content">
+      <oc-singleselect
+        [tableData] = "outputDeviceDisplayList"
+        [selectedItem] = "defaultDeviceDisplyItem"
+        componentWidth="370"
+        dropdownRowsVisible="6"
+        popupDirection="AUTO"
+        [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
+        [selectText]="'DEVICE_SELECTION_TEXT' | translate"
+        [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
+        [disabled]="robotSelectionDisabled"
+        (selectionChanged)="onDeviceSelectionChanged($event)">
+      </oc-singleselect>
+        <div class="information-box" *ngIf="this.selectedDeviceInformation && !this.selectedDeviceInformation.IsActive">
+          <div class="information-box-content">
+            <div class="icon">
+              <oc-svgicon icon="alertnopermission"></oc-svgicon>
+            </div>
+            <div class ="text">
+              Device's Quick Pick is deactivated.
+            </div>
+          </div>
+        </div>
+      <oc-search-box #searchBox [placeHolderText]="'SEARCH_QUEUE' | translate"></oc-search-box>
+      </div>
   </div>
   <div class="quick-pick-content">
     <ng-container class="ocactiondetails">
@@ -20,6 +32,7 @@
       [quickpickDrawers]="quickpickDrawers | async"
       [scanMessage]="scanInput"
       [selectedDeviceId]="selectedDeviceId"
+      [selectedDeviceInformation]="selectedDeviceInformation"
       (quickPickActive)='onQuickPickActive($event)'
       (failedEvent)='displayQuickPickError($event)'>
       </app-quick-pick-drawer-view>

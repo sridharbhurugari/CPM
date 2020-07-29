@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import {SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
@@ -23,6 +24,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   private _scanMessage: BarcodeScanMessage;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
+
+  @Input() selectedDeviceInformation: SelectableDeviceInfo;
 
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
@@ -151,11 +154,13 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   private loadDetailedDrawerOnScan(): boolean {
-    if (!this.scanMessage) {
+    if (!this.scanMessage || !this.selectedDeviceInformation) {
       return false;
     }
 
-    if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
+    if (!this.selectedDeviceInformation.IsActive) {
+      this.failedEvent.emit(QuickPickError.InActive)
+    } else if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
       this.failedEvent.emit(QuickPickError.ScanUnavailable);
       return false;
     }

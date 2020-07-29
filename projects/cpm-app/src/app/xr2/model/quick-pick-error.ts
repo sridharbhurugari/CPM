@@ -5,5 +5,6 @@ export enum QuickPickError {
   PrintFailure,
   UnlockFailure,
   RerouteFailure,
-  HardwareFailure
+  HardwareFailure,
+  InActive
 }
