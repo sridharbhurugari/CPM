@@ -5,15 +5,42 @@
   </div>
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-      <div class="first" data-colwrap="true"></div>
-      <div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}
+      <div app-col-header-sortable class="first" data-colwrap="true"
+        [columnPropertyName]="priorityCodePropertyName"
+        [currentSortPropertyName]="currentSortPropertyName" 
+        (columnSelected)="columnSelected($event)">
       </div>
-      <div class="col width-type" data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div>
-      <div class="col width-type" data-width="160" data-colwrap="true">{{'STATUS' | translate}}
+      <div app-col-header-sortable class="col" ocGridColResize data-width="400" data-colwrap="true"
+        [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
+        [currentSortPropertyName]="currentSortPropertyName" 
+        (columnSelected)="columnSelected($event)">
       </div>
-      <div class="col width-destination" data-width="270" data-colwrap="true">{{'DEVICE' | translate}}
+      <!--<div class="col width-type" ocGridColResize data-width="400" data-colwrap="true">{{'DESTINATION' | translate}}
+      </div>-->
+
+       <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
+        [columnPropertyName]="itemCountPropertyName" headerResourceKey="ITEMS"
+        [currentSortPropertyName]="currentSortPropertyName" 
+        (columnSelected)="columnSelected($event)">
       </div>
+      <!--<div class="col width-type" data-width="100" data-colwrap="true">{{'ITEMS' | translate}}</div> -->
+ 
+      <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
+        [columnPropertyName]="statusDisplayPropertyName" headerResourceKey="STATUS"
+        [currentSortPropertyName]="currentSortPropertyName" 
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <!--<div class="col width-type" data-width="160" data-colwrap="true">{{'STATUS' | translate}}</div>-->
+
+      <div app-col-header-sortable class="col" ocGridColResize data-width="230" data-colwrap="true"
+        [columnPropertyName]="deviceDescriptionPropertyName" headerResourceKey="DEVICE"
+        [currentSortPropertyName]="currentSortPropertyName" 
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <!--<div class="col width-destination" data-width="270" data-colwrap="true">{{'DEVICE' | translate}}</div>-->
+
       <div class="last width-type" data-width="350" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"

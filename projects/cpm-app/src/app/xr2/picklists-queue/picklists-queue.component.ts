@@ -1,7 +1,7 @@
 import { Component, Input, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem } from '@omnicell/webcorecomponents';
@@ -17,6 +17,10 @@ import { PicklistsQueueEventConnectionService } from '../services/picklists-queu
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { ReroutePickListLine } from '../../api-xr2/data-contracts/reroute-pick-list-line';
+import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { SortDirection } from '../../shared/constants/sort-direction';
+import { Many } from 'lodash';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -24,6 +28,18 @@ import { ReroutePickListLine } from '../../api-xr2/data-contracts/reroute-pick-l
   styleUrls: ['./picklists-queue.component.scss']
 })
 export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
+  readonly priorityCodePropertyName = nameof<PicklistQueueItem>('PriorityCode');
+  readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
+  readonly itemCountPropertyName = nameof<PicklistQueueItem>('ItemCount');
+  readonly statusDisplayPropertyName = nameof<PicklistQueueItem>('StatusDisplay');
+  readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
+
+  firstTime = true;
+
+  currentSortPropertyName: string = this.destinationPropertyName;
+  sortOrder: SortDirection = SortDirection.ascending;
+  alphaValues: Array<string> = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
   private _picklistQueueItems: PicklistQueueItem[];
 
@@ -39,7 +55,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return this._picklistQueueItems;
   }
 
-  constructor(
+   constructor(
     private windowService: WindowService,
     private picklistsQueueService: PicklistsQueueService,
     private dialogService: PopupDialogService,
@@ -48,7 +64,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
     private wpfActionController: WpfActionControllerService) {
       this.configureEventHandlers();
-  }
+    }
 
   @ViewChild('searchBox', {
     static: true
@@ -309,5 +325,15 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   /* istanbul ignore next */
   onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.OutputDeviceId = $event.value;
+  }
+
+  columnSelected(event: IColHeaderSortChanged) {
+    this.currentSortPropertyName = event.ColumnPropertyName;
+    this.sortOrder = event.SortDirection;
+    this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
+  }
+
+  sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
+    return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 }
