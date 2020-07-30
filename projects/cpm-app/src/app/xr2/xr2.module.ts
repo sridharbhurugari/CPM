@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PicklistsQueueComponent } from './picklists-queue/picklists-queue.component';
 import {
   GridModule, ButtonActionModule, SingleselectDropdownModule, CardContainerModule, DashboardCardModule, LayoutModule, FooterModule, SearchModule, InputsModule,
-  PopupDialogModule, SvgIconModule, DaterangeModule
+  PopupDialogModule, SvgIconModule
 } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -19,7 +19,6 @@ import { DashboardCardComponent } from './dashboard-card/dashboard-card.componen
 import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
 import { QuickPickBoxItemsView } from './quick-pick-box-items-view/quick-pick-box-items-view.component';
 import { TrafficLightsComponent } from './traffic-lights/traffic-lights.component';
-import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.component';
 @NgModule({
   declarations: [
     PicklistsQueueComponent,
@@ -33,7 +32,6 @@ import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.componen
     QuickPickDrawerDetailsViewComponent,
     QuickPickBoxItemsView,
     TrafficLightsComponent,
-    Xr2EventsPageComponent
   ],
   imports: [
     CommonModule,
@@ -50,8 +48,7 @@ import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.componen
     InputsModule,
     SearchModule,
     PopupDialogModule,
-    SvgIconModule,
-    DaterangeModule
+    SvgIconModule
   ]
 })
 export class Xr2Module { }
