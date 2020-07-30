@@ -8,9 +8,9 @@ describe('TrafficLightsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TrafficLightsComponent ]
+      declarations: [TrafficLightsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -23,28 +23,20 @@ describe('TrafficLightsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set red light color on red input', () => {
-    component.color = 'red';
-    component.ngOnChanges();
-    expect(component.isRed).toBeTruthy();
-    expect(component.isYellow).toBeFalsy();
-    expect(component.isGreen).toBeFalsy();
+  it('should should set blinking class on blinking input', () => {
+    component.lightColor = 'red';
+    component.isBlinking = true;
+    const expectedClasses = ['stoplight', 'red', 'blink'];
+
+    expect(component.getLightClasses()).toEqual(expectedClasses);
   });
 
-  it('should set green light color on green input', () => {
-    component.color = 'green';
-    component.ngOnChanges();
-    expect(component.isRed).toBeFalsy();
-    expect(component.isYellow).toBeFalsy();
-    expect(component.isGreen).toBeTruthy();
-  });
 
-  it('should set yellow light color on yellow input', () => {
-    component.color = 'yellow';
-    component.ngOnChanges();
-    expect(component.isRed).toBeFalsy();
-    expect(component.isYellow).toBeTruthy();
-    expect(component.isGreen).toBeFalsy();
-  });
+  it('should should not set blinking class on non-blinking input', () => {
+    component.lightColor = 'yellow';
+    component.isBlinking = false;
+    const expectedClasses = ['stoplight', 'yellow', ''];
 
+    expect(component.getLightClasses()).toEqual(expectedClasses);
+  });
 });

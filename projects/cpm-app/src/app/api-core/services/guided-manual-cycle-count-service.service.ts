@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
 import { GuidedManualCycleCountItemid } from '../data-contracts/guided-manual-cycle-count-itemid'
 import { deviceCycleCountItemUpdate } from '../data-contracts/guided-cycle-count-update';
 import {IGuidedManualCycleCountItems } from '../data-contracts/i-guided-manual-cycle-count-items'
-
+import { GuidedCycleCountPrintLabel } from '../data-contracts/guided-cycle-count-print-label';
+import {IGuidedManualCycleCountScanItem} from '../data-contracts/IGuidedMaualCycleCountScanItem';
 @Injectable({
   providedIn: 'root'
 })
@@ -36,5 +37,19 @@ export class GuidedManualCycleCountServiceService {
         return this.httpClient.get<IGuidedManualCycleCountItems[]>(url, {
           headers: this.ocapHttpHeadersService.getHeaders(),params
         });
+      }
+      public PrintLabel(deviceId: string, binData: GuidedCycleCountPrintLabel): Observable<boolean> {
+        const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/PrintLabel`);
+        return this.httpClient.post<boolean>(url, binData, {
+          headers: this.ocapHttpHeadersService.getHeaders()
+        });
+      }
+      public ValidCycleCountScanBarCode(itemID:string,barCode:string):Observable<string>{
+        let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/ValidCycleCountScanBarCode`);
+        const params = {itemID: itemID, barCode: barCode};
+      return this.httpClient.get<string>(url, {
+        headers: this.ocapHttpHeadersService.getHeaders(),params
+        
+      });
       }
 }
