@@ -10,6 +10,7 @@ import { QuickPickErrorInformation } from '../model/quick-pick-error-information
 import { TranslateService } from '@ngx-translate/core';
 import { CpColorService } from '../../shared/services/cp-color.service';
 import { SharedModule } from '../../shared/shared.module';
+import { Guid } from 'guid-typescript';
 
 
 describe('QuickPickDrawerDetailsViewComponent', () => {
@@ -45,8 +46,10 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
     const detailedDrawerData1 = new QuickPickDrawerData(null);
     const detailedDrawerData2 = new QuickPickDrawerData(null);
     const detailedDrawerData3 = new QuickPickDrawerData(null);
+    const detailedDrawerData4 = new QuickPickDrawerData(null);
     detailedDrawerData3.ErrorInfo = new QuickPickErrorInformation(null);
 
+    detailedDrawerData4.Status = 1;
     detailedDrawerData1.Status = 2;
     detailedDrawerData2.Status = 3;
     detailedDrawerData3.Status = 4;
@@ -55,5 +58,25 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
     expect(component.getTrafficLightProperties(detailedDrawerData1).color).toEqual('yellow');
     expect(component.getTrafficLightProperties(detailedDrawerData2).color).toEqual('green');
     expect(component.getTrafficLightProperties(detailedDrawerData3).color).toEqual('red');
+    expect(component.getTrafficLightProperties(detailedDrawerData4).color).toEqual('gray');
+  });
+
+  it('should react properly to button actions', () => {
+    const detailedDrawerData1 = new QuickPickDrawerData(null);
+    detailedDrawerData1.RobotDispenseBoxId = Guid.create();
+    component.detailedDrawerData = detailedDrawerData1;
+    const printEventSpy = spyOn(component.printQuickPickDrawerLabel, 'emit').and.callThrough();
+    const rerouteEventSpy = spyOn(component.rerouteQuickPickDrawer, 'emit').and.callThrough();
+    const backEventSpy = spyOn(component.closeQuickPickDetailsCard, 'emit').and.callThrough();
+
+    component.onPrintClick();
+    expect(printEventSpy).toHaveBeenCalledTimes(1);
+
+    component.onRerouteClick();
+    expect(rerouteEventSpy).toHaveBeenCalledTimes(1);
+    expect(rerouteEventSpy).toHaveBeenCalledWith(detailedDrawerData1.RobotDispenseBoxId);
+
+    component.onBackClick();
+    expect(backEventSpy).toHaveBeenCalledTimes(1);
   });
 });

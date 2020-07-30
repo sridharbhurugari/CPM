@@ -221,6 +221,7 @@ export class QuickPickPageComponent implements OnInit {
     }
   }
 
+  /* istanbul ignore next */
   private displayRerouteDialog(): Observable<boolean> {
     return forkJoin(this.translations$).pipe(flatMap(r => {
       const translations = r[0];

@@ -17,6 +17,7 @@ import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { Router, RouterModule } from '@angular/router';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { Guid } from 'guid-typescript';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -81,6 +82,7 @@ describe('QuickPickDrawerViewComponent', () => {
     fixture = TestBed.createComponent(QuickPickDrawerViewComponent);
     component = fixture.componentInstance;
     const qpDrawer1: QuickPickDrawerData = new QuickPickDrawerData(null);
+    qpDrawer1.RobotDispenseBoxId = Guid.create();
     qpDrawers = [qpDrawer1];
     component.quickpickDrawers = qpDrawers;
     fixture.detectChanges();
@@ -105,6 +107,17 @@ describe('QuickPickDrawerViewComponent', () => {
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
 
     component.onPrintQuickPickDrawer(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should set details view and fire event when detail view openand print is clicked', () => {
+    leaseVerificationResult = 0;
+    expect(component).toBeTruthy();
+    component.detailedDrawer = qpDrawers[0];
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onPrintCurrentQuickPickDrawer();
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
     expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
   });
@@ -136,7 +149,25 @@ describe('QuickPickDrawerViewComponent', () => {
 
     expect(component.detailedDrawer).toBeUndefined();
     expect(quickPickActiveSpy).toHaveBeenCalledWith(false);
+  });
 
+  it('should set details view and fire event when unlocking unknown drawer', () => {
+    expect(component).toBeTruthy();
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onUnlockUnknownDrawer(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
+    expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call reroute event with supplied id', () => {
+    expect(component).toBeTruthy();
+    const rerouteQuickPickSpy = spyOn(component.rerouteQuickPick, 'emit').and.callThrough();
+    const guid = Guid.create();
+    component.onRerouteQuickPickDrawer(guid);
+
+    expect(rerouteQuickPickSpy).toHaveBeenCalledWith(guid);
   });
 
   it('Should load detailed view on load if available', () => {

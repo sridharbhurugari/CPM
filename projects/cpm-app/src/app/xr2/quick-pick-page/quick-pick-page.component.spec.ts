@@ -51,6 +51,15 @@ describe('QuickPickPageComponent', () => {
   let barcodeScanService: Partial<BarcodeScanService>;
   let systemConfigurationService: Partial<SystemConfigurationService>;
   let configurationValue: IConfigurationValue;
+  let quickPickQueueServiceResults: QuickPickQueueItem[];
+
+  let queueItemWithAllBoxesInDrawers = new QuickPickQueueItem(null);
+  queueItemWithAllBoxesInDrawers.RobotDispenseBoxIds = [ Guid.create() ];
+  queueItemWithAllBoxesInDrawers.IncompleteBoxCount = 0;
+
+  let queueItemWithPartialBoxesInDrawers = new QuickPickQueueItem(null);
+  queueItemWithPartialBoxesInDrawers.RobotDispenseBoxIds = [ Guid.create(), Guid.create() ];
+  queueItemWithPartialBoxesInDrawers.IncompleteBoxCount = 2;
 
   beforeEach(async(() => {
     // Create mock device list
@@ -92,8 +101,10 @@ describe('QuickPickPageComponent', () => {
       printLabel: jasmine.createSpy('printLabel').and.returnValue(of())
     };
 
+    quickPickQueueServiceResults = [queueItemWithAllBoxesInDrawers, queueItemWithPartialBoxesInDrawers]
+
     quickPickQueueService = {
-      get: jasmine.createSpy('get').and.returnValue(of([])),
+      get: jasmine.createSpy('get').and.returnValue(of(quickPickQueueServiceResults)),
       reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
     };
 
@@ -118,11 +129,6 @@ describe('QuickPickPageComponent', () => {
     quickPickDrawerService = {
       getAllDrawers: jasmine.createSpy('getAllDrawer').and.returnValue(of([])),
       printLabel: jasmine.createSpy('printLabel').and.returnValue(of())
-    };
-
-    quickPickQueueService = {
-      get: jasmine.createSpy('get').and.returnValue(of([])),
-      reroute: jasmine.createSpy('reroute').and.returnValues(throwError({ status: 404 }), of(true))
     };
 
     popupDialogService = {
@@ -243,6 +249,37 @@ describe('QuickPickPageComponent', () => {
       expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
       expect(rerouteSpy).toHaveBeenCalled();
     });
+
+    it('should call reroute and not reroute if dialog result false', () => {
+      expect(component).toBeTruthy();
+      const rerouteSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
+      component.selectedDeviceId = '1';
+      component.onRerouteQuickPick(new QuickPickQueueItem(null));
+      expect(quickPickQueueService.reroute).toHaveBeenCalledTimes(0);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(0);
+      expect(rerouteSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call reroute and reroute quickpickqueue item associated with dispense box id', fakeAsync(() => {
+      expect(component).toBeTruthy();
+      const expectedDeviceID = '1';
+      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceId).toEqual(expectedDeviceID);
+      expect(component.defaultDeviceDisplyItem.value).toEqual(expectedDeviceID);
+
+      const rerouteSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
+      component.selectedDeviceId = '1';
+      component.onRerouteQuickPickFromDrawer(queueItemWithAllBoxesInDrawers.RobotDispenseBoxIds[0]);
+
+      expect(quickPickQueueService.reroute).toHaveBeenCalledTimes(1);
+      expect(quickPickQueueService.reroute).toHaveBeenCalledWith(queueItemWithAllBoxesInDrawers);
+      expect(quickPickQueueService.get).toHaveBeenCalledTimes(2);
+      expect(rerouteSpy).toHaveBeenCalledTimes(1);
+    }));
 
     it('should call reroute and not reroute if dialog result false', () => {
       expect(component).toBeTruthy();
