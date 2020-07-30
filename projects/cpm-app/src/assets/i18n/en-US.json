@@ -157,5 +157,17 @@
   "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code.",
   "INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT": "Scanning Unavailable",
   "INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT": "Scanning is not available while a drawer is unlocked or in progress. Please empty and relock the current drawer before scanning again.",
-  "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text"
+  "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text",
+  "XR2_EVENTS_DATERANGE_HEADER": "Date Range",
+  "XR2_EVENTS_START_DATE": "Start Date :",
+  "XR2_EVENTS_END_DATE": "End Date :",
+  "XR2_EVENTS_ERRORS": "Errors",
+  "XR2_EVENTS_WARNINGS": "Warnings",
+  "XR2_EVENTS_INFORMATION": "Information",
+  "XR2_EVENT_SEARCH_DESCRIPTION": "Enter text",
+  "XR2_EVENTS_TITLE": "Xr2 Events",
+  "XR2_EVENTS_LIST_DESCRIPTION": "Event Description",
+  "XR2_EVENTS_LIST_DATETIME": "Event Date",
+  "XR2_EVENTS_DETAILS_DEFINITION": "Event Definition",
+  "XR2_EVENTS_DETAILS_VALUE": "Event Value"
 }
