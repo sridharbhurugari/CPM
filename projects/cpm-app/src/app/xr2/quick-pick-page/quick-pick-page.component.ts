@@ -20,6 +20,7 @@ import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
+import { resolve } from 'url';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -127,14 +128,20 @@ export class QuickPickPageComponent implements OnInit {
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
     let defaultFound: SingleselectRowItem;
-    results.forEach(selectableDeviceInfo => {
-      const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description, selectableDeviceInfo.DeviceId.toString());
-      newList.push(selectRow);
 
-      if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
-        defaultFound = selectRow;
-      }
-    });
+    if (results.length === 1) {
+      defaultFound = new SingleselectRowItem(results[0].Description, results[0].DeviceId.toString());
+      newList.push(defaultFound);
+    } else {
+      results.forEach(selectableDeviceInfo => {
+        const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description, selectableDeviceInfo.DeviceId.toString());
+        newList.push(selectRow);
+
+        if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
+          defaultFound = selectRow;
+        }
+      });
+    }
 
     this.outputDeviceDisplayList = newList;
 
