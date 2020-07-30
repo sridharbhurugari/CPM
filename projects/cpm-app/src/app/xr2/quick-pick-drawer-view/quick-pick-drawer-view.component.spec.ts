@@ -161,6 +161,17 @@ describe('QuickPickDrawerViewComponent', () => {
     expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
   });
 
+  it('should set details view and fire event when unlocking unknown current drawer', () => {
+    expect(component).toBeTruthy();
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+    component.detailedDrawer = qpDrawers[0];
+
+    component.onUnlockCurrentQuickPickDrawer();
+
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
+    expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+  });
+
   it('should call reroute event with supplied id', () => {
     expect(component).toBeTruthy();
     const rerouteQuickPickSpy = spyOn(component.rerouteQuickPick, 'emit').and.callThrough();

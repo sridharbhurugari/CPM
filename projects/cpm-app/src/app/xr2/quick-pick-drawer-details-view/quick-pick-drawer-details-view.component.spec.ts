@@ -68,6 +68,7 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
     const printEventSpy = spyOn(component.printQuickPickDrawerLabel, 'emit').and.callThrough();
     const rerouteEventSpy = spyOn(component.rerouteQuickPickDrawer, 'emit').and.callThrough();
     const backEventSpy = spyOn(component.closeQuickPickDetailsCard, 'emit').and.callThrough();
+    const unlockEventSpy = spyOn(component.unlockUnknownQuickPickDrawer, 'emit').and.callThrough();
 
     component.onPrintClick();
     expect(printEventSpy).toHaveBeenCalledTimes(1);
@@ -78,5 +79,8 @@ describe('QuickPickDrawerDetailsViewComponent', () => {
 
     component.onBackClick();
     expect(backEventSpy).toHaveBeenCalledTimes(1);
+
+    component.onUnlockUnknownClick();
+    expect(unlockEventSpy).toHaveBeenCalledTimes(1);
   });
 });

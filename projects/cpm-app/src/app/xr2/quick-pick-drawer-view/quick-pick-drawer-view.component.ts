@@ -142,6 +142,14 @@ export class QuickPickDrawerViewComponent implements OnInit {
         });
   }
 
+  onUnlockCurrentQuickPickDrawer() {
+    this.checkForHardwareLease(
+      () => {
+        this.unlockDrawer();
+        this.quickPickActive.emit(true);
+        });
+  }
+
   scanDrawerLabel() {
     if (!this.scanMessage) {
       return;

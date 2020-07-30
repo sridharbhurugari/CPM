@@ -5,7 +5,8 @@
     [scanMessage] = "scanMessage"
     (closeQuickPickDetailsCard)="onCloseQuickPickDrawerDetails()"
     (printQuickPickDrawerLabel)="onPrintCurrentQuickPickDrawer()"
-    (rerouteQuickPickDrawer)="onRerouteQuickPickDrawer($event)">
+    (rerouteQuickPickDrawer)="onRerouteQuickPickDrawer($event)"
+    (unlockUnknownQuickPickDrawer)="onUnlockCurrentQuickPickDrawer()" >
     </app-quick-pick-drawer-details-view>
   </div>
   <div *ngIf="!detailedDrawer" class="cards-view">

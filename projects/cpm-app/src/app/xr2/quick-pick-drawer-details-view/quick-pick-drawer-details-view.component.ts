@@ -20,6 +20,7 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   @Output() closeQuickPickDetailsCard: EventEmitter<any> = new EventEmitter<any>();
   @Output() printQuickPickDrawerLabel: EventEmitter<any> = new EventEmitter<any>();
+  @Output() unlockUnknownQuickPickDrawer: EventEmitter<any> = new EventEmitter<any>();
   @Output() rerouteQuickPickDrawer: EventEmitter<Guid> = new EventEmitter<Guid>();
 
   @Input()
@@ -55,6 +56,10 @@ export class QuickPickDrawerDetailsViewComponent implements OnInit {
 
   onBackClick() {
     this.closeQuickPickDetailsCard.emit();
+  }
+
+  onUnlockUnknownClick() {
+    this.unlockUnknownQuickPickDrawer.emit();
   }
 
   getHeaderStyle() {
