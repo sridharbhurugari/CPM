@@ -196,7 +196,7 @@ describe('QuickPickPageComponent', () => {
   describe('Rerouting', () => {
     it('should call reroute and refresh when event received', () => {
       expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
+      component.selectedDeviceInformation.DeviceId = 1;
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
@@ -204,7 +204,7 @@ describe('QuickPickPageComponent', () => {
 
     it('should call reroute on event and show dialog if the reroute fails', () => {
       expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
+      component.selectedDeviceInformation.DeviceId = 1;
       component.onRerouteQuickPick(new QuickPickQueueItem(null));
       expect(quickPickQueueService.reroute).toHaveBeenCalled();
       expect(quickPickQueueService.get).toHaveBeenCalled();
@@ -215,7 +215,7 @@ describe('QuickPickPageComponent', () => {
   describe('Quick Pick Queue', () => {
     it('should load queue items on new update message', () => {
       expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
+      component.selectedDeviceInformation.DeviceId = 1;
       const event = {DeviceId: 1};
 
       quickPickEventConnectionService.QuickPickQueueUpdateSubject.next(event);
@@ -227,7 +227,7 @@ describe('QuickPickPageComponent', () => {
   describe('Quick Pick Scanning', () => {
     it('should set scan input message when scan event is received', () => {
       expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
+      component.selectedDeviceInformation.DeviceId = 1;
       const scan = 'scan';
       const scanMessage = new BarcodeScanMessage(scan);
 
@@ -240,7 +240,7 @@ describe('QuickPickPageComponent', () => {
   describe('Error Notifications', () => {
     it('should display a popupwindow with the error message', () => {
       expect(component).toBeTruthy();
-      component.selectedDeviceId = '1';
+      component.selectedDeviceInformation.DeviceId = 1;
       const FakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
       quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(FakeEvent);
       expect(popupDialogService.showOnce).toHaveBeenCalled();

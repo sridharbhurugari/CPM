@@ -50,15 +50,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
     return this._scanMessage;
   }
 
-  @Input()
-  set selectedDeviceId(value: string) {
-    this._selectedDeviceId = value;
-  }
-
-  get selectedDeviceId(): string {
-    return this._selectedDeviceId;
-  }
-
   constructor(
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
@@ -86,7 +77,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
 
     const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.scanLabel(this.selectedDeviceId, scanRequest).subscribe(
+    this.quickPickDrawerService.scanLabel(this.selectedDeviceInformation.DeviceId.toString(), scanRequest).subscribe(
       () => {
         this.unlockDrawer();
       }, error => {
@@ -96,7 +87,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   printDrawerLabel() {
     const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
+    this.quickPickDrawerService.printLabel(this.selectedDeviceInformation.DeviceId.toString(), printRequest).subscribe(
       () => {
       }, error => {
         this.failedEvent.emit(QuickPickError.PrintFailure);
@@ -105,7 +96,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   unlockDrawer() {
     const unlockRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, unlockRequest).subscribe(
+    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceInformation.DeviceId.toString(), unlockRequest).subscribe(
       () => {
       }, error => {
         this.failedEvent.emit(QuickPickError.UnlockFailure);
@@ -115,7 +106,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   /* istanbul ignore next */
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
     if (quickPickDrawerUpdateMessage.DeviceId !== undefined
-      && quickPickDrawerUpdateMessage.DeviceId.toString() !== this.selectedDeviceId) {
+      && quickPickDrawerUpdateMessage.DeviceId !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 

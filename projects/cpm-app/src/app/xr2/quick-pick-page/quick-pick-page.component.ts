@@ -44,7 +44,6 @@ export class QuickPickPageComponent implements OnInit {
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   popupTimeoutSeconds = 60;
-  selectedDeviceId: string;
   inputLevelScan: string;
   nonBarcodeKeyboardInput = '';
   nonBarcodeInputFocus = false;
@@ -108,6 +107,7 @@ export class QuickPickPageComponent implements OnInit {
   ngAfterViewInit(): void {
     this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
     this.quickPickEventConnectionService.QuickPickErrorUpdateSubject.subscribe(event => this.onQuickPickErrorUpdate(event));
+    this.quickPickEventConnectionService.QuickPickDeviceStatusUpdateSubject.subscribe(event => this.onQuickPickDeviceStatusUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(
@@ -146,9 +146,8 @@ export class QuickPickPageComponent implements OnInit {
     this.outputDeviceDisplayList = newList;
 
     if (defaultFound) {
-      this.selectedDeviceId = defaultFound.value;
-      this.selectedDeviceInformation = this.getDeviceConfiguration(defaultFound.value);
-      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === this.selectedDeviceId);
+      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === defaultFound.value);
+      this.loadSelectedDeviceInformation(defaultFound.value);
       this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
@@ -160,10 +159,9 @@ export class QuickPickPageComponent implements OnInit {
 
   /* istanbul ignore next */
   onDeviceSelectionChanged($event) {
-    if (this.selectedDeviceId !== $event.value) {
+    if (this.selectedDeviceInformation.DeviceId !== $event.value) {
       this.searchElement.clearSearch(null);
-      this.selectedDeviceId = $event.value;
-      this.selectedDeviceInformation = this.getDeviceConfiguration($event.value);
+      this.loadSelectedDeviceInformation($event.value);
       this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
@@ -271,7 +269,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
@@ -279,37 +277,55 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickErrorUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
     this.displayQuickPickError(QuickPickError.HardwareFailure, null, event.ErrorMessage);
   }
 
-  private loadPicklistsQueueItems(): void {
-    if (!this.selectedDeviceId) {
+  private onQuickPickDeviceStatusUpdate(event) {
+    if (!event.DeviceId) {
       return;
     }
 
-    this.quickPickQueueService.get(this.selectedDeviceId).subscribe(items => {
+    const indexToUpdate =  this.deviceInformationList.findIndex((deviceInformation) => {
+      return deviceInformation.DeviceId.toString() === event.DeviceId;
+    });
+
+    if (indexToUpdate !== -1) {
+      this.deviceInformationList[indexToUpdate].IsActive = event.Status;
+    }
+  }
+
+  private loadPicklistsQueueItems(): void {
+    if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId) {
+      return;
+    }
+
+    this.quickPickQueueService.get(this.selectedDeviceInformation.DeviceId.toString()).subscribe(items => {
       this.quickPickQueueItems = of(items);
     });
   }
 
   private loadDrawersData() {
-    if (!this.selectedDeviceId) {
+    if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
-    this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).subscribe(data => {
+    this.quickPickDrawerService.getAllDrawers(this.selectedDeviceInformation.DeviceId.toString()).subscribe(data => {
       this.quickpickDrawers = of(data);
     });
   }
 
-  private getDeviceConfiguration(deviceId: string) {
-    return this.deviceInformationList.find((deviceInformation) => {
+  private loadSelectedDeviceInformation(deviceId: string) {
+    const indexToLoad =  this.deviceInformationList.findIndex((deviceInformation) => {
       return deviceInformation.DeviceId.toString() === deviceId;
     });
+
+    if (indexToLoad !== -1) {
+      this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
+    }
   }
 
   /* istanbul ignore next */
