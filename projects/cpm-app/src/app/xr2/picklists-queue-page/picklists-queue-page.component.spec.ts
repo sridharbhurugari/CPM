@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { CoreModule } from '../../core/core.module';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 
 @Component({
   selector: 'oc-search-box',
@@ -46,7 +47,7 @@ describe('PicklistsQueuePageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox,
-         MockSearchPipe, MockAppHeaderContainer ],
+         MockSearchPipe, MockAppHeaderContainer, MockColHeaderSortable ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: { get: () => of([]) } },

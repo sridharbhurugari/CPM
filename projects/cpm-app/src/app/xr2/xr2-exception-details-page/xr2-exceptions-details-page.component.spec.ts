@@ -21,17 +21,18 @@ import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception
 describe('Xr2ExceptionDetailsPageComponent', () => {
   let component: Xr2ExceptionDetailsPageComponent;
   let fixture: ComponentFixture<Xr2ExceptionDetailsPageComponent>;
-  let event: IColHeaderSortChanged = {ColumnPropertyName:"Reason",SortDirection:"asc"};
+  const event: IColHeaderSortChanged = {ColumnPropertyName: 'Reason', SortDirection: 'asc'};
   let router: Partial<Router>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
-  let selectedItem: IXr2ExceptionsItem = {
-    TrayID: 'c00003',
-    DeviceID: '7',
-    CompletedDateTime: '2020-06-01 07:41:19.763',
-    DeviceName: '',
-    ExceptionPockets: '',
-    TrayDescription: ''
-  };
+  // let selectedItem: IXr2ExceptionsItem = {
+  //  TrayID: 'c00003',
+  //  DeviceID: '7',
+  //  CompletedDateTime: '2020-06-01 07:41:19.763',
+  //  DeviceName: '',
+  //  ExceptionPockets: '',
+  //  TrayDescription: ''
+  // };
+
   beforeEach(async(() => {
     wpfActionControllerService = {ExecuteBackAction: jasmine.createSpy('ExecuteBackAction')};
     // component.selectedItem = new Xr2ExceptionsItem(selectedItem);
@@ -40,20 +41,20 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
     // component.deviceName = 'XR2 dev1';
     // component.completedDate = '2020-06-01 07:41:19.763';
     router = {navigate: jasmine.createSpy('navigate') };
+
     TestBed.configureTestingModule({
       declarations: [ Xr2ExceptionDetailsPageComponent, MockTranslatePipe,
         MockColHeaderSortable, MockAppHeaderContainer],
-      imports: [GridModule, FooterModule, LayoutModule, SearchModule,  ButtonActionModule],
+      imports: [GridModule, FooterModule, LayoutModule, SearchModule, ButtonActionModule],
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: Xr2ExceptionDetailsService, useValue: { get: (item:IXr2ExceptionsItem) => of([]) } },
+        { provide: Xr2ExceptionDetailsService, useValue: { get: (item: IXr2ExceptionsItem) => of([]) } },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: Router, useValue: router },
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
        ]
     })
     .compileComponents();
-
   }));
 
   beforeEach(() => {
@@ -67,9 +68,8 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
   });
 
   it('column selected ', () => {
-    component.displayExceptionDetailList$.source;
     component.displayExceptionDetailList$ = component.displayExceptionDetailList$.pipe(map(exceptions => {
-        return this.sort(exceptions, "desc");
+        return this.sort(exceptions, 'desc');
     }));
     expect(component.columnSelected(event));
   });

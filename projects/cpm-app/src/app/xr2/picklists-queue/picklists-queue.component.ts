@@ -55,7 +55,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     return this._picklistQueueItems;
   }
 
-   constructor(
+  constructor(
     private windowService: WindowService,
     private picklistsQueueService: PicklistsQueueService,
     private dialogService: PopupDialogService,
@@ -69,6 +69,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   @ViewChild('searchBox', {
     static: true
   })
+
   searchElement: SearchBoxComponent;
 
   searchTextFilter: string;
