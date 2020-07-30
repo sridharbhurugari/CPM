@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -106,14 +107,24 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = 999;
+        const sequenceOrder = 999;    
+        
+        let defaultOutputType = '0';
+        if (x.DeviceType === '2100'){
+          defaultOutputType = '2104'; 
+        }
+
+        let nonAssignedDefaultOutputDevice: DeviceOutput = {
+          DeviceOutputType: defaultOutputType,
+          IsAutoFill: false
+        };
 
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,          
-          DeviceOutput: null,
+          DeviceOutput: nonAssignedDefaultOutputDevice,
           SequenceOrder: sequenceOrder
         };
       });
