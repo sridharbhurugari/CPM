@@ -101,7 +101,8 @@ describe('EditPickRoutePageComponent', () => {
     const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1', DeviceType: '2000', OutputDevices: null};
     const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2', DeviceType: '2000', OutputDevices: null};
     const otherDevice1: IDevice = {Id: 11, Description: 'otherDevice1', DeviceType: '2000', OutputDevices: null};
-    const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2', DeviceType: '2000', OutputDevices: null};
+    const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2', DeviceType: '2000', OutputDevices: null};    
+
     const deviceSequence1: IDeviceSequenceOrder = {
       SequenceOrder: 1,
       DeviceId: routeDevice1.Id,
@@ -135,11 +136,16 @@ describe('EditPickRoutePageComponent', () => {
     });
 
     it('should set disabled devices to devices not in route', () => {
+      let nonAssignedDefaultOutputDevice: DeviceOutput = {
+        DeviceOutputType: '0',
+        IsAutoFill: false
+      };
+
       component.disabledDevices$.subscribe(x => {
-        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice1.Id, DeviceDescription: otherDevice1.Description, DeviceType: '2000', OutputDevices: null, DeviceOutput: null }));
+        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice1.Id, DeviceDescription: otherDevice1.Description, DeviceType: '2000', OutputDevices: null, DeviceOutput: nonAssignedDefaultOutputDevice }));
       });
       component.disabledDevices$.subscribe(x => {
-        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice2.Id, DeviceDescription: otherDevice2.Description, DeviceType: '2000', OutputDevices: null, DeviceOutput: null }));
+        expect(x).toContain(jasmine.objectContaining({ DeviceId: otherDevice2.Id, DeviceDescription: otherDevice2.Description, DeviceType: '2000', OutputDevices: null, DeviceOutput: nonAssignedDefaultOutputDevice }));
       });      
     });
   });
@@ -226,10 +232,15 @@ describe('EditPickRoutePageComponent', () => {
 
   describe('onDeviceSequenceChanged', () => {
     it('should set newDevcieSequence', () => {
+      let nonAssignedDefaultOutputDevice: DeviceOutput = {
+        DeviceOutputType: '0',
+        IsAutoFill: false
+      };
+
       const firstDevice: IDeviceSequenceOrder = { DeviceDescription: 'firstDevice', SequenceOrder: 999, DeviceId: 5, DeviceType: '2000', 
-      DeviceOutput: null, OutputDevices: null};
+      DeviceOutput: nonAssignedDefaultOutputDevice, OutputDevices: null};
       const secondDevice: IDeviceSequenceOrder = { DeviceDescription: 'secondDevice', SequenceOrder: 999, DeviceId: 6, DeviceType: '2000',
-      DeviceOutput: null, OutputDevices: null};
+      DeviceOutput: nonAssignedDefaultOutputDevice, OutputDevices: null};
       const changedDeviceSequence: IDeviceSequenceOrder[] = [ firstDevice, secondDevice ];
       component.onDeviceSequenceChanged(changedDeviceSequence);
       expect(component.newDeviceSequence).toContain(jasmine.objectContaining({
