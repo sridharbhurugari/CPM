@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { CoreModule } from '../../core/core.module';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 
 @Component({
   selector: 'oc-search-box',
@@ -32,6 +33,8 @@ describe('PicklistsQueuePageComponent', () => {
   let fixture: ComponentFixture<PicklistsQueuePageComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistQueueService: Partial<PicklistsQueueService>;
+  let spyPicklistQueueServiceGet: jasmine.Spy;
+
 
   beforeEach(async(() => {
     picklistsQueueEventConnectionService = {
@@ -41,15 +44,18 @@ describe('PicklistsQueuePageComponent', () => {
     };
 
     picklistQueueService = {
-      get: () => of([])
+      get: () => of()
     };
+
+    spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
+    spyPicklistQueueServiceGet = spyOn(picklistQueueService, 'get').and.returnValue(of());
 
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox,
          MockSearchPipe, MockAppHeaderContainer ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
       providers: [
-        { provide: PicklistsQueueService, useValue: { get: () => of([]) } },
+        { provide: PicklistsQueueService, useValue: picklistQueueService },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
@@ -61,41 +67,34 @@ describe('PicklistsQueuePageComponent', () => {
   }));
 
   beforeEach(() => {
-    spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe');
-    spyOn(picklistQueueService, 'get');
     fixture = TestBed.createComponent(PicklistsQueuePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+     expect(component).toBeTruthy();
   });
 
-  it('should call picklistQueueService', () => {
-    expect(component).toBeTruthy();
-    fakeAsync((component) => {
-      component.ngOnInit();
-      tick();
-      expect(picklistQueueService.get).toHaveBeenCalledTimes(1);
-    });
-  });
+  it('should call picklistQueueService', fakeAsync(() => {
+    const spy = picklistQueueService.get;
+    component.ngOnInit();
+    tick();
+    expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+  }));
 
   it('should subscribe to events', () => {
     expect(component).toBeTruthy();
     expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
   });
 
-  it('should reload on reloadPicklistQueueItemsSubject event', () => {
-    expect(component).toBeTruthy();
-    expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
-    fakeAsync((component) => {
-      component.ngOnInit();
-      tick();
-      expect(picklistQueueService.get).toHaveBeenCalledTimes(1);
-      picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
-      tick();
-      expect(picklistQueueService.get).toHaveBeenCalledTimes(2);
-    });
-  });
+  it('should reload on reloadPicklistQueueItemsSubject event', fakeAsync(() => {
+    component.ngOnInit();
+    tick();
+    expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+    const currentCallCount = spyPicklistQueueServiceGet.calls.count();
+    picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
+    tick();
+    expect(spyPicklistQueueServiceGet.calls.count()).toBeGreaterThan(currentCallCount);
+  }));
 });
