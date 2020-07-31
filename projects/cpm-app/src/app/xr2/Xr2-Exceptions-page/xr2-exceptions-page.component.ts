@@ -220,6 +220,9 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   }
   displayWrongBarCodeDialog(trays: boolean): void {
     const properties = new PopupDialogProperties('INVALID_TRAY_SCAN_DESC');
+    this.translateService.get('OK').subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
     this.translateService.get('INVALID_TRAY_SCAN').subscribe(result => { properties.titleElementText = result; });
     if (trays) {
       this.translateService.get('INVALID_TRAY_SCAN').subscribe(result => { properties.titleElementText = result; });
@@ -231,7 +234,6 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
     } properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
