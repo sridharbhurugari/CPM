@@ -34,6 +34,7 @@ export class EditPickRoutePageComponent implements OnInit {
   duplicateErrorMessage$: Observable<string>;
   genericErrorTitle$: Observable<string>;
   genericErrorMessage$: Observable<string>;
+  okButtonText$: Observable<string>;
 
   newDeviceSequence: IDeviceSequenceOrder[];
   newRouteName: string;
@@ -66,6 +67,7 @@ export class EditPickRoutePageComponent implements OnInit {
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+    this.okButtonText$ = this.translateService.get('OK');
 
     this.canDelete$ = this.pickRoute$.pipe(map(x => x.AssignedPriorities.length == 0));
     this.isDefaultRoute$ = this.pickRoute$.pipe(map(x => x.IsDefault));
@@ -232,10 +234,10 @@ export class EditPickRoutePageComponent implements OnInit {
 
   displayError(uniqueId, title, message) {
     const properties = new PopupDialogProperties(uniqueId);
+    this.okButtonText$.subscribe((result) => { properties.primaryButtonText = result; });
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Ok';
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
