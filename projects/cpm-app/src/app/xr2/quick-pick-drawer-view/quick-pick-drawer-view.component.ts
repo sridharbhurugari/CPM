@@ -20,7 +20,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() failedEvent: EventEmitter<QuickPickError> = new EventEmitter<QuickPickError>();
 
-  private _selectedDeviceId: string;
   private _scanMessage: BarcodeScanMessage;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;

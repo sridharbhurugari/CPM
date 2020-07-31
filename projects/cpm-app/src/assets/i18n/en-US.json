@@ -158,7 +158,7 @@
   "INVALID_SCAN_BARCODE_OVERRIDE": "The bar code scanned is not associated with the item requested.<br /> <br/> Scan the correct bar code or confirm bar code override by entering the override code.",
   "INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT": "Scanning Unavailable",
   "INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT": "Scanning is not available while a drawer is unlocked or in progress. Please empty and relock the current drawer before scanning again.",
-  "INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT": "Scanning is not available. The current selected device has quick pick configured as inactive.",
+  "INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT": "Scanning is not available. The current selected device is configured as inactive.",
   "SEARCH_CYCLECOUNT":"Scan Bar Code or Enter Text",
   "XR2_EVENTS_DATERANGE_HEADER": "Date Range",
   "XR2_EVENTS_START_DATE": "Start Date :",

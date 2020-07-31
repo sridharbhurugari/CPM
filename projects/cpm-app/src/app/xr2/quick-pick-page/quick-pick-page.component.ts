@@ -200,6 +200,7 @@ export class QuickPickPageComponent implements OnInit {
 
   /* istanbul ignore next */
   displayQuickPickError(error: QuickPickError, customHeader = null, customBody = null): void {
+    console.log(this.quickpickDrawers);
     switch (error) {
       case QuickPickError.ScanNotFound:
         this.translations$.subscribe(r => {
