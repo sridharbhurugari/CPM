@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from '../../core/core.module';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { SharedModule as CPSharedModule } from '../../shared/shared.module';
 
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
@@ -101,7 +102,7 @@ describe('QuickPickPageComponent', () => {
       declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
         MockSearchPipe, MockSearchBox, MockAppHeaderContainer],
       imports: [GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
-        FooterModule, LayoutModule, CoreModule, SharedModule],
+        FooterModule, LayoutModule, CoreModule, SharedModule, CPSharedModule],
       providers: [
         { provide: Xr2QuickPickQueueService, useValue: quickPickQueueService },
         { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of([]) } },
@@ -132,6 +133,7 @@ describe('QuickPickPageComponent', () => {
     spyOn(quickPickEventConnectionService.QuickPickReloadDrawersSubject, 'subscribe');
     fixture = TestBed.createComponent(QuickPickPageComponent);
     component = fixture.componentInstance;
+    component.selectedDeviceInformation = new SelectableDeviceInfo(null);
     fixture.detectChanges();
   });
 

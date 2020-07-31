@@ -1,7 +1,11 @@
 <div class="notification-box" [ngStyle] = "getDimensions()">
   <div class="notification-box-content" [ngStyle]="{'backgroundColor': backgroundColor}">
     <div class="icon">
-      <oc-svgicon icon= "{{ icon }}"></oc-svgicon>
+      <oc-svgicon
+      icon= "{{ icon }}"
+      height="25"
+      width="25"
+      ></oc-svgicon>
     </div>
     <div class ="text" [ngStyle]="{'color': this.fontColor}">
       {{this.text}}

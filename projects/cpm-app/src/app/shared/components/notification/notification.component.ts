@@ -7,14 +7,14 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class NotificationComponent implements OnInit {
 
-  constructor() { }
-
   @Input() icon: string;
   @Input() text: string;
   @Input() backgroundColor: string;
   @Input() fontColor: string;
   @Input() width: number;
   @Input() height: number;
+
+  constructor() { }
 
   ngOnInit() {
   }

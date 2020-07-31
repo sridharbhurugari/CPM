@@ -14,6 +14,7 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -82,6 +83,8 @@ describe('QuickPickDrawerViewComponent', () => {
   it('should set details view and fire event when detail view opened', () => {
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+    component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+    component.selectedDeviceInformation.DeviceId = 1;
 
     component.onShowQuickPickDrawerDetails(0);
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
@@ -91,6 +94,8 @@ describe('QuickPickDrawerViewComponent', () => {
   it('should set details view and fire event when detail view closed', () => {
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+    component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+    component.selectedDeviceInformation.DeviceId = 1;
 
     component.onShowQuickPickDrawerDetails(0);
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
@@ -128,6 +133,8 @@ describe('QuickPickDrawerViewComponent', () => {
     it('should call QuickPickDrawerService on print', () => {
       expect(component).toBeTruthy();
       component.detailedDrawer = new QuickPickDrawerData(null);
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.printDrawerLabel();
 
@@ -138,6 +145,8 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(component).toBeTruthy();
       const failedSaveSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.printDrawerLabel();
 
@@ -150,6 +159,8 @@ describe('QuickPickDrawerViewComponent', () => {
     it('Should call QuickPickDrawerService on unlock', () => {
       expect(component).toBeTruthy();
       component.detailedDrawer = new QuickPickDrawerData(null);
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.unlockDrawer();
 
@@ -160,6 +171,8 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(component).toBeTruthy();
       const failedSaveSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.unlockDrawer();
 
@@ -172,6 +185,8 @@ describe('QuickPickDrawerViewComponent', () => {
     it('Should not call service if scan not available', () => {
       expect(component).toBeTruthy();
       component.scanMessage = null;
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.scanDrawerLabel();
 
@@ -197,6 +212,8 @@ describe('QuickPickDrawerViewComponent', () => {
       drawer.Xr2ServiceBarcode = 'barcode';
       component.quickpickDrawers = [drawer];
       component.scanMessage = scan;
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
     });
@@ -205,6 +222,8 @@ describe('QuickPickDrawerViewComponent', () => {
       expect(component).toBeTruthy();
       component.detailedDrawer = new QuickPickDrawerData(null);
       component.scanMessage = new BarcodeScanMessage('barcode');
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.scanDrawerLabel();
 
@@ -217,6 +236,8 @@ describe('QuickPickDrawerViewComponent', () => {
       const failedScanSpy = spyOn(component.failedEvent, 'emit').and.callThrough();
       component.detailedDrawer = new QuickPickDrawerData(null);
       component.scanMessage = new BarcodeScanMessage('barcode');
+      component.selectedDeviceInformation = new SelectableDeviceInfo(null);
+      component.selectedDeviceInformation.DeviceId = 1;
 
       component.scanDrawerLabel();
 

@@ -20,7 +20,6 @@ import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details
 import { QuickPickBoxItemsView } from './quick-pick-box-items-view/quick-pick-box-items-view.component';
 import { TrafficLightsComponent } from './traffic-lights/traffic-lights.component';
 import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.component';
-import { NotificationComponent } from './notification/notification.component';
 @NgModule({
   declarations: [
     PicklistsQueueComponent,
@@ -35,7 +34,6 @@ import { NotificationComponent } from './notification/notification.component';
     QuickPickBoxItemsView,
     TrafficLightsComponent,
     Xr2EventsPageComponent,
-    NotificationComponent
   ],
   imports: [
     CommonModule,
