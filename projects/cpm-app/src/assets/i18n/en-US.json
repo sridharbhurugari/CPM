@@ -1,5 +1,6 @@
 {
   "ACTIONS": "Actions",
+  "AUTOFILL": "Autofill",
   "AUTOPACKAGER": "Auto Packager",
   "BACK": "Back",
   "BIN": "Bin",
@@ -78,7 +79,9 @@
   "GUIDED_CYCLE_COUNT": "Guided Cycle Count",
   "NEXT": "Next",
   "OF": "of",
+  "OFF": "OFF",
   "OK": "OK",
+  "ON": "ON",
   "ORDER_ID": "ID",
   "PAR_LEVEL": "Par Level",
   "PATIENTS": "Patients",
