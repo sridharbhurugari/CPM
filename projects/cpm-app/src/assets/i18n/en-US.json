@@ -164,6 +164,17 @@
   "NO": "No",
   "QUICK_PICK_REROUTE_DIALOG_MESSAGE": "This will reroute all orders for this destination, including those available in Quick Pick Drawers.<br /><br />Do you want to reroute?",
   "VIEW": "View",
-  "QUICK_PICK_UNLOCK": "Unlock"
-
+  "QUICK_PICK_UNLOCK": "Unlock",
+  "XR2_EVENTS_DATERANGE_HEADER": "Date Range",
+  "XR2_EVENTS_START_DATE": "Start Date :",
+  "XR2_EVENTS_END_DATE": "End Date :",
+  "XR2_EVENTS_ERRORS": "Errors",
+  "XR2_EVENTS_WARNINGS": "Warnings",
+  "XR2_EVENTS_INFORMATION": "Information",
+  "XR2_EVENT_SEARCH_DESCRIPTION": "Enter text",
+  "XR2_EVENTS_TITLE": "Xr2 Events",
+  "XR2_EVENTS_LIST_DESCRIPTION": "Event Description",
+  "XR2_EVENTS_LIST_DATETIME": "Event Date",
+  "XR2_EVENTS_DETAILS_DEFINITION": "Event Definition",
+  "XR2_EVENTS_DETAILS_VALUE": "Event Value"
 }
