@@ -330,21 +330,42 @@ export class GuidedinvmgmtManualcyclecountPageComponent
 
   itemLength() {
     //this.displayCycleCountItem.QuantityOnHand = 0;
-    this.isSingleSelectEnable = true;
-    this.isMultiLocation = true;
     this.DisableActionButtons(true);
     this.multiLocations = [];
     this.itemIdLength = this.displayCycleCountItem.ItemId.length;
   }
   multipleLocations(x: IGuidedManualCycleCountItemid[]) {
     for (let i = 0; i < x.length; i++) {
-      this.locationCount++;
+      if(x[i].DeviceLocationTypeId === DeviceLocationTypeId.Carousel || x[i].DeviceLocationTypeId ===  DeviceLocationTypeId.OpenStorage)
+      {
+        this.locationCount++;
       let location = new SingleselectRowItem();
       location.text = x[i].LocationDescription + "       " + x[i].PackageFormName + "      " + x[i].QuantityOnHand;
       location.value = x[i].LocationDescription;
       location.Visible = true;
       this.multiLocations && this.multiLocations.push(location && location);
+      if(this.locationCount>1)
+      {
+        this.isSingleSelectEnable = true;
+        this.isMultiLocation = true;
+      }
+      else{
+        this.displayCycleCountItem=x[i];
+      }
     }
+    
+    }
+      if(this.locationCount === 0)
+      {
+        let itemID;
+        let itemLocation='';
+        this.displayCycleCountItem= null;
+        for (let i = 0; i < x.length; i++) {
+     itemID =x[i].ItemId;
+     itemLocation+='<br/>'+x[i].LocationDescription;
+        }
+        this.displayPackagerAssignItemDialog(itemID,itemLocation);
+      }
   }
 
   getCycleCountData(itemid: string) {
@@ -370,6 +391,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             this.itemLength();
             this.multipleLocations(x);
           } else {
+            if(x[0].DeviceLocationTypeId === DeviceLocationTypeId.Carousel || x[0].DeviceLocationTypeId ===  DeviceLocationTypeId.OpenStorage)
+            {
             this.deviceId = x[0].DeviceId;
             this.hardwareLeaseService
               .getDeviceConfiguration(this.deviceId)
@@ -391,6 +414,14 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             this.CycleCountValidation();
             this.itemIdLength = this.displayCycleCountItem.ItemId.length;
           }
+          else
+          // if(x[0].DeviceLocationTypeId===DeviceLocationTypeId.Canister || x[0].DeviceLocationTypeId===DeviceLocationTypeId.Xr2MedicationStorage)
+          {
+            this.displayCycleCountItem=null;
+            this.displayPackagerAssignItemDialog(itemid,x[0].LocationDescription);
+          }
+          }
+
         } else {
           this.displayUnknownItemDialog(itemid);
         }
@@ -1115,4 +1146,42 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   private isInvalid(variable: any): boolean {
     return !this.isValid(variable);
   }
+
+
+  displayPackagerAssignItemDialog(itemId: string,deviceDescription: string): boolean {
+    this.over = true;
+    const properties = new PopupDialogProperties("Role-Status-Warning");
+    this.translateService.get("PACKAGER_ASSIGNITEM_HEADER_TEXT").subscribe((result) => {
+      properties.titleElementText = result;
+    });
+    this.translateService
+      .get("PACKAGER_ASSIGNITEM_BODY_TEXT", { itemId: itemId,deviceDescription:deviceDescription })
+      .subscribe((result) => {
+        properties.messageElementText = result;
+      });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = "OK";
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = this.popupTimeoutSeconds;
+    this.popupDialog = this.dialogService.showOnce(properties);
+
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    return this.over;
+  }
+
 }
