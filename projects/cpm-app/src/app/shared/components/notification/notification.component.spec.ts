@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SharedModule } from '@omnicell/webcorecomponents';
+import { SvgIconModule } from '@omnicell/webcorecomponents';
 
 import { NotificationComponent } from './notification.component';
 
@@ -10,7 +10,7 @@ describe('NotificationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NotificationComponent ],
-      imports: [SharedModule],
+      imports: [SvgIconModule],
     })
     .compileComponents();
   }));

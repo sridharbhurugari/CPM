@@ -22,6 +22,7 @@ import { BarcodeScanService } from 'oal-core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { resolve } from 'url';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -133,15 +134,21 @@ export class QuickPickPageComponent implements OnInit {
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
     let defaultFound: SingleselectRowItem;
-    this.deviceInformationList.forEach(selectableDeviceInfo => {
-      const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description,
-        selectableDeviceInfo.DeviceId.toString(), selectableDeviceInfo.IsActive);
-      newList.push(selectRow);
 
-      if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
-        defaultFound = selectRow;
-      }
-    });
+    if (this.deviceInformationList.length === 1) {
+      defaultFound = new SingleselectRowItem(this.deviceInformationList[0].Description, this.deviceInformationList[0].DeviceId.toString());
+      newList.push(defaultFound);
+    } else {
+      this.deviceInformationList.forEach(selectableDeviceInfo => {
+        const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description,
+          selectableDeviceInfo.DeviceId.toString(), selectableDeviceInfo.IsActive);
+        newList.push(selectRow);
+
+        if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
+          defaultFound = selectRow;
+        }
+      });
+    }
 
     this.outputDeviceDisplayList = newList;
 
@@ -270,7 +277,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceInformation.DeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
@@ -278,7 +285,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickErrorUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceInformation.DeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 

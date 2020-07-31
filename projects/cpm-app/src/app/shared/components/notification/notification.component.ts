@@ -11,8 +11,8 @@ export class NotificationComponent implements OnInit {
   @Input() text: string;
   @Input() backgroundColor: string;
   @Input() fontColor: string;
-  @Input() width: number;
-  @Input() height: number;
+  @Input() width = 0;
+  @Input() height = 0;
 
   constructor() { }
 
