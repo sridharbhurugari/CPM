@@ -97,7 +97,7 @@ export class QuickPickPageComponent implements OnInit {
     this.hookupEventHandlers();
     this.setTranslations();
     this.setConfigurations();
-    this.getActiveXr2Devices();
+    this.getXr2Devices();
   }
 
   ngOnDestroy(): void {
@@ -128,7 +128,7 @@ export class QuickPickPageComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  async getActiveXr2Devices() {
+  async getXr2Devices() {
     this.deviceInformationList = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
 
@@ -405,6 +405,7 @@ export class QuickPickPageComponent implements OnInit {
     }
 
     this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
+    this.unsubscribeIfValidSubscription(this.translations$);
   }
 
   private unsubscribeIfValidSubscription(subscription: Subscription): void {
