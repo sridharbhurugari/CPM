@@ -207,7 +207,6 @@ export class QuickPickPageComponent implements OnInit {
 
   /* istanbul ignore next */
   displayQuickPickError(error: QuickPickError, customHeader = null, customBody = null): void {
-    console.log(this.quickpickDrawers);
     switch (error) {
       case QuickPickError.ScanNotFound:
         this.translations$.subscribe(r => {
@@ -293,12 +292,12 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickDeviceStatusUpdate(event) {
-    if (!event.DeviceId) {
+    if (event.DeviceId === undefined) {
       return;
     }
 
     const indexToUpdate =  this.deviceInformationList.findIndex((deviceInformation) => {
-      return deviceInformation.DeviceId.toString() === event.DeviceId;
+      return deviceInformation.DeviceId === event.DeviceId;
     });
 
     if (indexToUpdate !== -1) {

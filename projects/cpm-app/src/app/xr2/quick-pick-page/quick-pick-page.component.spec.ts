@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, SearchBoxComponent, SharedModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PopupDialogService, SearchBoxComponent, SharedModule, ComponentTypes } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -167,7 +167,7 @@ describe('QuickPickPageComponent', () => {
     it('Should default to device selection', fakeAsync(() => {
       const expectedDeviceID = '1';
       component.selectedDeviceInformation = selectedDeviceInformation;
-      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      const getActiveXr2DevicesSpy = spyOn(component, 'getXr2Devices').and.callThrough();
       component.ngOnInit();
       tick();
       expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
@@ -178,7 +178,7 @@ describe('QuickPickPageComponent', () => {
 
     it('Should not default to device selection when device is not leased to same client', fakeAsync(() => {
       ocapConfig.clientId = '';
-      const getActiveXr2DevicesSpy = spyOn(component, 'getActiveXr2Devices').and.callThrough();
+      const getActiveXr2DevicesSpy = spyOn(component, 'getXr2Devices').and.callThrough();
       const loadPicklistsQueueItemsSpy = spyOn<any>(component, 'loadPicklistsQueueItems').and.callThrough();
       const loadDrawersDataSpy = spyOn<any>(component, 'loadDrawersData').and.callThrough();
 
@@ -196,7 +196,7 @@ describe('QuickPickPageComponent', () => {
       const expectedDeviceID = '2';
       component.selectedDeviceInformation = selectedDeviceInformation;
       selectableDeviceInfoList.shift();
-      expect(component.getActiveXr2Devices()).toBeTruthy();
+      expect(component.getXr2Devices()).toBeTruthy();
       tick();
       expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
       expect(component.defaultDeviceDisplyItem.value).toEqual(expectedDeviceID);
@@ -260,9 +260,27 @@ describe('QuickPickPageComponent', () => {
     it('should display a popupwindow with the error message', () => {
       expect(component).toBeTruthy();
       component.selectedDeviceInformation = selectedDeviceInformation;
-      const FakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
-      quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(FakeEvent);
+      const fakeEvent = { DeviceId: 1, ErrorMessage: 'Error Message' };
+      quickPickEventConnectionService.QuickPickErrorUpdateSubject.next(fakeEvent);
       expect(popupDialogService.showOnce).toHaveBeenCalledTimes(1);
+    });
+
+    fit('should display error notication with inactive xr2 device', () => {
+      expect(component).toBeTruthy();
+      component.deviceInformationList = [];
+      for (let i = 0; i < 4; i++) {
+        const fakeSelectedDeviceInformation = new SelectableDeviceInfo(null);
+        fakeSelectedDeviceInformation.DeviceId = i;
+        fakeSelectedDeviceInformation.IsActive = true;
+        component.deviceInformationList.push(fakeSelectedDeviceInformation);
+      }
+      component.selectedDeviceInformation = component.deviceInformationList[0];
+      const fakeEvent = {DeviceId: 0, Status: false};
+
+
+      quickPickEventConnectionService.QuickPickDeviceStatusUpdateSubject.next(fakeEvent);
+
+      expect(component.selectedDeviceInformation.IsActive).toBe(false);
     });
   });
 });
