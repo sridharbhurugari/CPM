@@ -265,7 +265,7 @@ describe('QuickPickPageComponent', () => {
       expect(popupDialogService.showOnce).toHaveBeenCalledTimes(1);
     });
 
-    fit('should display error notication with inactive xr2 device', () => {
+    it('should display error notication with inactive xr2 device selected', () => {
       expect(component).toBeTruthy();
       component.deviceInformationList = [];
       for (let i = 0; i < 4; i++) {

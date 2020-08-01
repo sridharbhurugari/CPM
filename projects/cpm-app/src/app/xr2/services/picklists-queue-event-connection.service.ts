@@ -8,8 +8,8 @@ import { EventConnectionService } from '../../shared/services/event-connection.s
 })
 export class PicklistsQueueEventConnectionService {
 
-  public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
-  public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
+  public addOrUpdatePicklistQueueItemSubject = new Subject<any>();
+  public removePicklistQueueItemSubject = new Subject<any>();
   public reloadPicklistQueueItemsSubject = new Subject<any>();
 
   constructor(
