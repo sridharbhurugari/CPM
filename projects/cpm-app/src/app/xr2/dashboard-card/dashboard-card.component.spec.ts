@@ -9,6 +9,7 @@ import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcor
 import { CoreModule } from '../../core/core.module';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { CpColorService } from '../../shared/services/cp-color.service';
+import { SharedModule } from '../../shared/shared.module';
 
 describe('DashboardCardComponent', () => {
   let component: DashboardCardComponent;
@@ -18,7 +19,7 @@ describe('DashboardCardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DashboardCardComponent, MockTranslatePipe,
         MockSearchPipe, MockAppHeaderContainer],
-      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule],
+      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule, SharedModule],
       providers: [ { provide: CpColorService, useValue: { pickTextColorBasedOnBackgroundColor: () => of() } }]
     })
     .compileComponents();
