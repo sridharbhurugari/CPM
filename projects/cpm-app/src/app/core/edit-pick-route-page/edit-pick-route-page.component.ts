@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
 
 @Component({
   selector: 'app-edit-pick-route-page',
@@ -34,8 +35,10 @@ export class EditPickRoutePageComponent implements OnInit {
   duplicateErrorMessage$: Observable<string>;
   genericErrorTitle$: Observable<string>;
   genericErrorMessage$: Observable<string>;
+  okButtonText$: Observable<string>;
 
-  newDeviceSequence: IDeviceSequenceOrder[];
+  newDeviceSequence: IDeviceSequenceOrder[];  
+
   newRouteName: string;
   routeNameChanged: boolean;
 
@@ -66,6 +69,7 @@ export class EditPickRoutePageComponent implements OnInit {
     this.duplicateErrorMessage$ = this.translateService.get('ERROR_DUPLICATE_NAME_MESSAGE');
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+    this.okButtonText$ = this.translateService.get('OK');
 
     this.canDelete$ = this.pickRoute$.pipe(map(x => x.AssignedPriorities.length == 0));
     this.isDefaultRoute$ = this.pickRoute$.pipe(map(x => x.IsDefault));
@@ -80,13 +84,16 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = pickRouteDevice.SequenceOrder;
-
+        const sequenceOrder = pickRouteDevice.SequenceOrder;                           
+        
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
-          SequenceOrder: sequenceOrder,
-        };
+          DeviceType: x.DeviceType,
+          OutputDevices: x.OutputDevices,
+          DeviceOutput: pickRouteDevice.DeviceOutput,          
+          SequenceOrder: sequenceOrder          
+        };        
       });
 
       return enabledDevices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
@@ -102,12 +109,25 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = 999;
+        const sequenceOrder = 999;    
+        
+        let defaultOutputType = '0';
+        if (x.DeviceType === '2100'){
+          defaultOutputType = '2104'; 
+        }
+
+        let nonAssignedDefaultOutputDevice: DeviceOutput = {
+          DeviceOutputType: defaultOutputType,
+          IsAutoFill: false
+        };
 
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
-          SequenceOrder: sequenceOrder,
+          DeviceType: x.DeviceType,
+          OutputDevices: x.OutputDevices,          
+          DeviceOutput: nonAssignedDefaultOutputDevice,
+          SequenceOrder: sequenceOrder
         };
       });
 
@@ -232,10 +252,10 @@ export class EditPickRoutePageComponent implements OnInit {
 
   displayError(uniqueId, title, message) {
     const properties = new PopupDialogProperties(uniqueId);
+    this.okButtonText$.subscribe((result) => { properties.primaryButtonText = result; });
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Ok';
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;

@@ -130,6 +130,7 @@ describe('PicklistsQueueComponent', () => {
         DeviceId: '1',
         Label: translatedLabel,
         IsActive: true,
+        OCTokenValue: '2104'
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '1');
       const picklistQueueItem = new PicklistQueueItem(null);
@@ -150,6 +151,7 @@ describe('PicklistsQueueComponent', () => {
         DeviceId: '100',
         Label: translatedLabel,
         IsActive: false,
+        OCTokenValue: '2104'
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '100');
       const picklistQueueItem = new PicklistQueueItem(null);
@@ -170,6 +172,7 @@ describe('PicklistsQueueComponent', () => {
         DeviceId: '100',
         Label: translatedLabel,
         IsActive: true,
+        OCTokenValue: '2104'
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '100');
       const picklistQueueItem = new PicklistQueueItem(null);
