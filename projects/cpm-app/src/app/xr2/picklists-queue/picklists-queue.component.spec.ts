@@ -110,7 +110,7 @@ describe('PicklistsQueueComponent', () => {
 
       const picklistQueueItem = new PicklistQueueItem(null);
       picklistQueueItem.Status = 2;
-      picklistQueueItem.OutputDeviceId = '1';
+      picklistQueueItem.OutputDeviceId = '2104';
       picklistQueueItem.AvailableOutputDeviceList = [];
 
       expect(component.getSelectedOutputDeviceRow(picklistQueueItem)).toBeNull();
@@ -122,15 +122,14 @@ describe('PicklistsQueueComponent', () => {
         translatedLabel = res;
       });
       const device: OutputDevice = {
-        DeviceId: '1',
+        DeviceId: '2102',
         Label: translatedLabel,
-        IsActive: true,
-        OCTokenValue: '2104'
+        IsActive: true       
       };
-      const expectedRow = new SingleselectRowItem(translatedLabel, '1');
+      const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
       picklistQueueItem.Status = 1;
-      picklistQueueItem.OutputDeviceId = '1';
+      picklistQueueItem.OutputDeviceId = '2102';
       picklistQueueItem.AvailableOutputDeviceList = [device];
 
       expect(component.getSelectedOutputDeviceRow(picklistQueueItem).text).toEqual(expectedRow.text);
@@ -145,8 +144,7 @@ describe('PicklistsQueueComponent', () => {
       const device: OutputDevice = {
         DeviceId: '2102',
         Label: translatedLabel,
-        IsActive: false,
-        OCTokenValue: '2104'
+        IsActive: false        
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
@@ -166,13 +164,12 @@ describe('PicklistsQueueComponent', () => {
       const device: OutputDevice = {
         DeviceId: '2102',
         Label: translatedLabel,
-        IsActive: true,
-        OCTokenValue: '2104'
+        IsActive: true        
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
       picklistQueueItem.Status = 2;
-      picklistQueueItem.OutputDeviceId = '1';
+      picklistQueueItem.OutputDeviceId = '2102';
       picklistQueueItem.AvailableOutputDeviceList = [device];
 
       expect(component.getActiveOutputDeviceList(picklistQueueItem)).toEqual([expectedRow]);
