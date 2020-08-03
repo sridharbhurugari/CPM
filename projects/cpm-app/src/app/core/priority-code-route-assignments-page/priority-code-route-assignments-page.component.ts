@@ -162,10 +162,12 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   displayError(uniqueId, title, message) {
     const properties = new PopupDialogProperties(uniqueId);
+    this.translateService.get("OK").subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Ok';
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
