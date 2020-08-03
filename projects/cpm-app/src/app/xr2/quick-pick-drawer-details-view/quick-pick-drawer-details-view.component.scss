@@ -208,8 +208,6 @@
           }
         }
         .footer {
-          border-top: solid;
-          border-color: grey;
           height: 20%;
           width: 100%;
 
@@ -217,7 +215,7 @@
             display: flex;
             width: 100%;
             height: 100%;
-            background-color: rgb(192, 192, 192);
+            background-color: white;
 
             .action-buttons {
               display: flex;

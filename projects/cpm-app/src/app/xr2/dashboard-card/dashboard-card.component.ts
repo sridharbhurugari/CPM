@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
 import { CpColorService } from '../../shared/services/cp-color.service';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-dashboard-card',
@@ -25,7 +26,10 @@ export class DashboardCardComponent implements OnInit {
     return this._drawerData;
   }
 
-  @Output() showQuickPickDrawerDetails: EventEmitter<number> = new EventEmitter<number>();
+  @Output() printQuickPickDrawer: EventEmitter<number> = new EventEmitter<number>();
+  @Output() unlockUnknownQuickPickDrawer: EventEmitter<number> = new EventEmitter<number>();
+  @Output() rerouteQuickPickDrawer: EventEmitter<Guid> = new EventEmitter<Guid>();
+  @Output() viewQuickPickDrawer: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private colorService: CpColorService) { }
 
@@ -33,7 +37,19 @@ export class DashboardCardComponent implements OnInit {
   }
 
   onPrintClick() {
-    this.showQuickPickDrawerDetails.emit(this.drawerIndex);
+    this.printQuickPickDrawer.emit(this.drawerIndex);
+  }
+
+  onUnlockUnknownClick() {
+    this.unlockUnknownQuickPickDrawer.emit(this.drawerIndex);
+  }
+
+  onViewClick() {
+    this.viewQuickPickDrawer.emit(this.drawerIndex);
+  }
+
+  onRerouteClick() {
+    this.rerouteQuickPickDrawer.emit(this._drawerData.RobotDispenseBoxId);
   }
 
   getHeaderStyle() {

@@ -6,19 +6,22 @@
       </div>
       <div class="title">
         <div class="title-content">
-          <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+          <div *ngIf="drawerData.Status!==controlDataStatus.Empty && !drawerData.UnknownContents">
             {{ drawerData.PriorityDescription }}
+          </div>
+          <div *ngIf="drawerData.Status!==controlDataStatus.Empty && drawerData.UnknownContents">
+            {{'QUICK_PICK_UNKNOWN_CONTENTS' | translate}}
           </div>
         </div>
       </div>
       <div class="index">
-        <div *ngIf="drawerData.Status!==controlDataStatus.Empty">
+        <div *ngIf="drawerData.Status!==controlDataStatus.Empty && !drawerData.UnknownContents">
           {{ drawerData.BoxNumber }} / {{ drawerData.BoxCount }}
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="drawerData.Status!==controlDataStatus.Empty" class="active">
+  <div *ngIf="drawerData.Status!==controlDataStatus.Empty && !drawerData.UnknownContents" class="active">
     <div class="body">
       <div class="body-content">
         <div class="grid-container">
@@ -49,10 +52,30 @@
         </div>
       </div>
       <div class="button-content">
-        <oc-button-action mode="secondary" [buttonIcon]="'print'" (click)="onPrintClick()"></oc-button-action>
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'openv1-right'"
+          [label]="'REROUTE' | translate" (clickEvent)="onRerouteClick()">
+        </app-cp-clickable-icon>
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'search'"
+          [label]="'VIEW' | translate" (clickEvent)="onViewClick()">
+        </app-cp-clickable-icon>
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'print'"
+          [label]="'PRINT' | translate" (clickEvent)="onPrintClick()">
+        </app-cp-clickable-icon>
       </div>
     </div>
     <div class="footer"></div>
+  </div>
+  <div *ngIf="drawerData.Status!==controlDataStatus.Empty && drawerData.UnknownContents" class="inactive">
+    <div class="unknown-content">
+      <div class="unknown-text">{{'QUICK_PICK_CLEAR_CONTENTS_MESSAGE' | translate}}</div>
+      <div class="button-content">
+        <div style="width: 30px;"></div>
+        <div style="width: 30px;"></div>
+        <app-cp-clickable-icon [width]="25" [height]="25" [theme]="'dark'" [icon]="'forward'"
+          [label]="'QUICK_PICK_UNLOCK' | translate" (clickEvent)="onUnlockUnknownClick()">
+        </app-cp-clickable-icon>
+      </div>
+    </div>
   </div>
   <div *ngIf="drawerData.Status===controlDataStatus.Empty" class="inactive">
     <div class="empty-content">{{'EMPTY' | translate}}</div>
