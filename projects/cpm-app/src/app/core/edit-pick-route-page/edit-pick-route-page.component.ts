@@ -47,6 +47,9 @@ export class EditPickRoutePageComponent implements OnInit {
   requestStatus: 'none' | 'save' | 'saveAs' | 'delete' = 'none';
   ocsIsHealthy = false;
 
+  xr2Id: string = '2100';
+  cartModuleId: string = '2104';
+
   constructor(
     private route: ActivatedRoute,
     private pickRoutesService: PickRoutesService,
@@ -91,7 +94,7 @@ export class EditPickRoutePageComponent implements OnInit {
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,
-          DeviceOutput: pickRouteDevice.DeviceOutput,          
+          DeviceOutput: this.provideDeviceOutput(pickRouteDevice.DeviceOutput.DeviceOutputType, pickRouteDevice.DeviceOutput.IsAutoFill, x.DeviceType),          
           SequenceOrder: sequenceOrder          
         };        
       });
@@ -109,24 +112,14 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = 999;    
-        
-        let defaultOutputType = '0';
-        if (x.DeviceType === '2100'){
-          defaultOutputType = '2104'; 
-        }
-
-        let nonAssignedDefaultOutputDevice: DeviceOutput = {
-          DeviceOutputType: defaultOutputType,
-          IsAutoFill: false
-        };
+        const sequenceOrder = 999;         
 
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,          
-          DeviceOutput: nonAssignedDefaultOutputDevice,
+          DeviceOutput: this.provideDeviceOutput('0', false, x.DeviceType),
           SequenceOrder: sequenceOrder
         };
       });
@@ -276,5 +269,30 @@ export class EditPickRoutePageComponent implements OnInit {
 
   private setOcsStatus(isHealthy: boolean): void {
     this.ocsIsHealthy = isHealthy;
+  }
+
+  private provideDeviceOutput(knownOutputDevice: string, knownAutofill: boolean, deviceType: string): DeviceOutput {
+    const autofillDefault = false;
+    let outputTypeDefault = '0';
+
+    if (deviceType === this.xr2Id){
+      
+      if (String(knownOutputDevice) === '0'){
+        return {
+          DeviceOutputType: this.cartModuleId,
+          IsAutoFill: autofillDefault
+        }
+      }        
+
+      return {
+        DeviceOutputType: knownOutputDevice,
+        IsAutoFill: knownAutofill
+      }
+    }    
+
+    return {
+      DeviceOutputType: outputTypeDefault,
+      IsAutoFill: autofillDefault
+    }
   }
 }

@@ -101,21 +101,26 @@ describe('EditPickRoutePageComponent', () => {
     const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1', DeviceType: '2000', OutputDevices: null};
     const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2', DeviceType: '2000', OutputDevices: null};
     const otherDevice1: IDevice = {Id: 11, Description: 'otherDevice1', DeviceType: '2000', OutputDevices: null};
-    const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2', DeviceType: '2000', OutputDevices: null};    
+    const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2', DeviceType: '2000', OutputDevices: null};   
+    
+    const assignedDefaultOutputDevice: DeviceOutput = {
+      DeviceOutputType: '0',
+      IsAutoFill: false
+    };
 
     const deviceSequence1: IDeviceSequenceOrder = {
       SequenceOrder: 1,
       DeviceId: routeDevice1.Id,
       DeviceDescription: routeDevice1.Description,
       DeviceType: routeDevice1.DeviceType,
-      DeviceOutput: new DeviceOutput,
+      DeviceOutput: assignedDefaultOutputDevice,
       OutputDevices: routeDevice1.OutputDevices};
     const deviceSequence2: IDeviceSequenceOrder = {
       SequenceOrder: 2,
       DeviceId: routeDevice2.Id,
       DeviceDescription: routeDevice2.Description,
       DeviceType: routeDevice2.DeviceType,
-      DeviceOutput: new DeviceOutput,      
+      DeviceOutput: assignedDefaultOutputDevice,      
       OutputDevices: routeDevice2.OutputDevices};    
     beforeEach(() => {
       devices.push(routeDevice1);
@@ -136,7 +141,7 @@ describe('EditPickRoutePageComponent', () => {
     });
 
     it('should set disabled devices to devices not in route', () => {
-      let nonAssignedDefaultOutputDevice: DeviceOutput = {
+      const nonAssignedDefaultOutputDevice: DeviceOutput = {
         DeviceOutputType: '0',
         IsAutoFill: false
       };
