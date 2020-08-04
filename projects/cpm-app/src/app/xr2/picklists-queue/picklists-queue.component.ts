@@ -215,9 +215,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     const properties = new PopupDialogProperties('Role-Status-Warning');
     this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Ok';
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 60;
     this.dialogService.showOnce(properties);

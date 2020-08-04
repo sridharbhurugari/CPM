@@ -22,6 +22,9 @@ export class DeviceLocationAccessComponent {
   private _deviceLeaseBusy: boolean;
   private _requestLeaseTitle$: Observable<string>;
   private _requestLeaseMessage$: Observable<string>;
+  private _okButtonText$: Observable<string>;
+  private _yesButtonText$: Observable<string>;
+  private _noButtonText$: Observable<string>;
 
   get deviceLocationAccessBusy(): boolean {
     return this._deviceLocationAccessBusy;
@@ -74,6 +77,9 @@ export class DeviceLocationAccessComponent {
     this._requestLeaseMessage$ = translateService.get('REQUEST_LEASE_MESSAGE');
     this._errorDialogTitle$ = translateService.get('DEVICE_LOC_ACCESS_ERROR_TITLE');
     this._deviceOfflineMessage$ = translateService.get('DEVICE_OFFLINE_MESSAGE');
+    this._okButtonText$ = translateService.get('OK');
+    this._yesButtonText$ = translateService.get('YES');
+    this._noButtonText$ = translateService.get('NO');
   }
 
   accessLocation() {
@@ -130,10 +136,10 @@ export class DeviceLocationAccessComponent {
 
   private displayError(uniqueId, title, message): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
+    this._okButtonText$.subscribe((result) => { properties.primaryButtonText = result; })
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Ok';
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
@@ -146,12 +152,14 @@ export class DeviceLocationAccessComponent {
 
   private displayRequestLeaseDialog(title: string, message: string): Observable<boolean> {
     const properties = new PopupDialogProperties('Request-Lease');
+    forkJoin(this._yesButtonText$, this._noButtonText$).subscribe((r) => {
+      properties.primaryButtonText = r[0];
+      properties.secondaryButtonText = r[1];
+    });
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Yes';
     properties.showSecondaryButton = true;
-    properties.secondaryButtonText = 'No';
     properties.primaryOnRight = false;
     properties.showCloseIcon = false;
     properties.dialogDisplayType = PopupDialogType.Info;

@@ -30,4 +30,5 @@ export interface IQuickPickDrawerData {
   BoxNumber: number;
   TotalRequestQty: number;
   TotalFillQty: number;
+  UnknownContents: boolean;
 }

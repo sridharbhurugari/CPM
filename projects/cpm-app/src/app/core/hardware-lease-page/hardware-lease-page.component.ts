@@ -142,9 +142,11 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     const properties = new PopupDialogProperties('Request-Device-Lease');
     this.translateService.get('DeviceConfiguration_MessageBoxTitle').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get(outcomeText).subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);

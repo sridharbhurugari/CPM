@@ -2,8 +2,11 @@
   <div *ngIf="detailedDrawer" class="detail-card-view">
     <app-quick-pick-drawer-details-view
     [detailedDrawerData]="detailedDrawer"
+    [scanMessage] = "scanMessage"
     (closeQuickPickDetailsCard)="onCloseQuickPickDrawerDetails()"
-    (printQuickPickDrawerLabel)="printDrawerLabel()">
+    (printQuickPickDrawerLabel)="onPrintCurrentQuickPickDrawer()"
+    (rerouteQuickPickDrawer)="onRerouteQuickPickDrawer($event)"
+    (unlockUnknownQuickPickDrawer)="onUnlockCurrentQuickPickDrawer()" >
     </app-quick-pick-drawer-details-view>
   </div>
   <div *ngIf="!detailedDrawer" class="cards-view">
@@ -12,7 +15,10 @@
         <app-dashboard-card
         [drawerData]="quickpickDrawers[i]"
         [drawerIndex]="i"
-        (showQuickPickDrawerDetails)="onShowQuickPickDrawerDetails($event)">
+        (printQuickPickDrawer)="onPrintQuickPickDrawer($event)"
+        (viewQuickPickDrawer)="onShowQuickPickDrawerDetails($event)"
+        (rerouteQuickPickDrawer)="onRerouteQuickPickDrawer($event)"
+        (unlockUnknownQuickPickDrawer)="onUnlockUnknownDrawer($event)">
         </app-dashboard-card>
       </div>
     </div>

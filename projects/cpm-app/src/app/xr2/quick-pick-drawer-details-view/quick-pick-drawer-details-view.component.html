@@ -7,13 +7,16 @@
             {{ detailedDrawerData.Id }}
           </div>
           <div class="title">
-            <div class="title-content">
+            <div *ngIf="detailedDrawerData.UnknownContents" class="title-content">
+              {{'QUICK_PICK_UNKNOWN_CONTENTS' | translate}}
+            </div>
+            <div *ngIf="!detailedDrawerData.UnknownContents" class="title-content">
               {{ detailedDrawerData.PriorityDescription }}
             </div>
           </div>
         </div>
         <div class="index">
-          <div class="index-content">
+          <div *ngIf="!detailedDrawerData.UnknownContents"  class="index-content">
             {{ detailedDrawerData.BoxNumber }} / {{ detailedDrawerData.BoxCount }}
           </div>
         </div>
@@ -22,10 +25,13 @@
     <div class="view-container">
       <div class="card-details-view">
         <div class="body">
-          <div class="body-content">
+          <div *ngIf="!detailedDrawerData.UnknownContents" class="body-content">
             <div class="grid-container">
               <div class="status-label">
-                <app-traffic-lights [color]="getTrafficLightProperties(detailedDrawerData).color"></app-traffic-lights>
+                <app-traffic-lights
+                [lightColor]="getTrafficLightProperties(detailedDrawerData).color"
+                [isBlinking] = "getTrafficLightProperties(detailedDrawerData).isBlinking">
+              </app-traffic-lights>
               </div>
               <div class="status-data">{{ getTrafficLightProperties(detailedDrawerData).text }}
               </div>
@@ -52,21 +58,34 @@
               </div>
             </div>
           </div>
+          <div *ngIf="detailedDrawerData.UnknownContents" class="body-content">
+            <div class="grid-container">
+              <div class="status-label">
+                <app-traffic-lights
+                [lightColor]="getTrafficLightProperties(detailedDrawerData).color"
+                [isBlinking] = "getTrafficLightProperties(detailedDrawerData).isBlinking">
+              </app-traffic-lights>
+              </div>
+              <div class="status-data">{{ getTrafficLightProperties(detailedDrawerData).text }}
+              </div>
+            </div>
+          </div>
         </div>
         <div class="footer">
-          <div class="footer-content">
+          <div  class="footer-content">
             <div class="action-buttons">
-              <oc-button-action
-                [buttonText]="'BACK' | translate"
-                [disabled]="detailedDrawerData.Status > controlDataStatus.OrderReady"
-                (click)="onBackClick()">
-              </oc-button-action>
-              <oc-button-action
-                mode="secondary"
-                [buttonIcon]="'print'"
-                [buttonText]="'PRINT' | translate"
-                (click)="onPrintClick()">
-              </oc-button-action>
+              <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'"
+                [label]="'BACK' | translate" (clickEvent)="onBackClick()" [disabled]="detailedDrawerData.Status > controlDataStatus.OrderReady">
+              </app-cp-clickable-icon>
+              <app-cp-clickable-icon *ngIf="!detailedDrawerData.UnknownContents" [width]="35" [height]="35" [theme]="'dark'" [icon]="'openv1-right'"
+                [label]="'REROUTE' | translate" (clickEvent)="onRerouteClick()">
+              </app-cp-clickable-icon>
+              <app-cp-clickable-icon *ngIf="!detailedDrawerData.UnknownContents" [width]="35" [height]="35" [theme]="'dark'" [icon]="'print'"
+                [label]="'PRINT' | translate" (clickEvent)="onPrintClick()">
+              </app-cp-clickable-icon>
+              <app-cp-clickable-icon *ngIf="detailedDrawerData.UnknownContents" [width]="35" [height]="35" [theme]="'dark'" [icon]="'forward'"
+                [label]="'QUICK_PICK_UNLOCK' | translate" (clickEvent)="onUnlockUnknownClick()">
+              </app-cp-clickable-icon>
             </div>
           </div>
         </div>

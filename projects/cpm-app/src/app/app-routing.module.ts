@@ -17,7 +17,7 @@ import { Xr2ExceptionsPageComponent } from './xr2/Xr2-Exceptions-page/xr2-except
 import { GuidedinvmgmtManualcyclecountPageComponent } from './core/guidedinvmgmt-manualcyclecount-page/guidedinvmgmt-manualcyclecount-page.component';
 import { QuickPickPageComponent } from './xr2/quick-pick-page/quick-pick-page.component';
 import { Xr2ExceptionDetailsPageComponent } from './xr2/xr2-exception-details-page/xr2-exceptions-details-page.component';
-
+import { Xr2EventsPageComponent } from './xr2/xr2-events-page/xr2-events-page.component';
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
@@ -35,7 +35,8 @@ const routes: Routes = [
   { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
   { path: 'guidedinvmgmt/manualcyclecount', component: GuidedinvmgmtManualcyclecountPageComponent },
   { path: 'quickpick', component: QuickPickPageComponent},
-  { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent }
+  { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
+  { path: 'settings/xr2eventslist', component:Xr2EventsPageComponent }
 ];
 
 @NgModule({

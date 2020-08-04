@@ -35,4 +35,5 @@ export class QuickPickDrawerData implements IQuickPickDrawerData {
   BoxCount: number;
   TotalRequestQty: number;
   TotalFillQty: number;
+  UnknownContents: boolean;
 }

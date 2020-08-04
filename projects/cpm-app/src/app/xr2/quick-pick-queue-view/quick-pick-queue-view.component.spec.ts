@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuickPickQueueViewComponent } from './quick-pick-queue-view.component';
-import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule, LayoutModule, PersistService } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, FooterModule,
+          LayoutModule, PersistService } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';

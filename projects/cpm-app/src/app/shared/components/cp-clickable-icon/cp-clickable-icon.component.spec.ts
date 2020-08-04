@@ -24,4 +24,20 @@ describe('CPClickableIconComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit click event when enabled', () => {
+    expect(component).toBeTruthy();
+    const spyEmit = spyOn(component.clickEvent, 'emit');
+    component.disabled = false;
+    component.onClick();
+    expect(spyEmit).toHaveBeenCalled();
+  });
+
+  it('should not emit click event when disabled', () => {
+    expect(component).toBeTruthy();
+    const spyEmit = spyOn(component.clickEvent, 'emit');
+    component.disabled = true;
+    component.onClick();
+    expect(spyEmit).toHaveBeenCalledTimes(0);
+  });
 });
