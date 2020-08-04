@@ -12,6 +12,7 @@ export class CPClickableIconComponent implements OnInit {
   @Input() icon: string;
   @Input() theme: string;
   @Input() label: string;
+  @Input() disabled: boolean = false;
 
   @Output() clickEvent: EventEmitter<any> = new EventEmitter();
 
@@ -21,6 +22,10 @@ export class CPClickableIconComponent implements OnInit {
   }
 
   onClick() {
+    if (this.disabled) {
+      return;
+    }
+
     this.clickEvent.emit(null);
   }
 
