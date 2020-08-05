@@ -16,4 +16,5 @@ export class QuickPickQueueItem implements IQuickPickQueueItem {
   RobotDispenseBoxIds: Guid[];
   PicklistId: Guid;
   DeviceId: number;
+  OrdersInDrawers: boolean;
 }

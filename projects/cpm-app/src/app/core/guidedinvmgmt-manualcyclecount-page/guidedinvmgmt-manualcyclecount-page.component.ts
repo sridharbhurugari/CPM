@@ -271,10 +271,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   itemSelected(item: any) {
     this.selectedItem = JSON.stringify(item);
 
-    if (
-      this.displayCycleCountItem === undefined ||
-      this.displayCycleCountItem === null
-    ) {
+    if(this.displayCycleCountItem === undefined || this.displayCycleCountItem === null)
+    {
       this.isSingleSelectEnable = false;
       this.getCycleCountData(item.item.ID);
     } else if (this.displayCycleCountItem) {
@@ -284,11 +282,13 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       }
       // this.isSelected = false;
       transactionValid = this.ScanValidation();
-      if (transactionValid) {
+      if(transactionValid)
+      {
         this.onLocationBasedValidation();
         this.getCycleCountData(item.item.ID);
       }
     }
+
   }
   getSearchData(searchKey): Observable<GuidedManualCycleCountItems[]> {
     // Make api call to get data as an observable
@@ -756,10 +756,12 @@ export class GuidedinvmgmtManualcyclecountPageComponent
 
   displayError(uniqueId, title, message): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
+    this.translateService.get("OK").subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = "Ok";
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
@@ -839,9 +841,11 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       .subscribe((result) => {
         properties.messageElementText = result;
       });
+    this.translateService.get("OK").subscribe((result) => {
+        properties.primaryButtonText = result;
+      });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.popupDialog = this.dialogService.showOnce(properties);
@@ -915,9 +919,11 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       .subscribe((result) => {
         properties.messageElementText = result;
       });
+    this.translateService.get("OK").subscribe((result) => {
+        properties.primaryButtonText = result;
+      });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Info;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
@@ -930,9 +936,11 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.translateService.get("PRINTFAILED_BODY_TEXT").subscribe((result) => {
       properties.messageElementText = result;
     });
+    this.translateService.get("OK").subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = "OK";
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
@@ -950,9 +958,13 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       properties.messageElementText = result;
     });
 
+
+    this.translateService.get('OK').subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
+
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = "Ok";
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.popupDialog = this.dialogService.showOnce(properties);
@@ -1006,10 +1018,12 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         !this.datepicker.selectedDate.match(dateReg)
       ) {
         this.DisableActionButtons(true);
-        this.transaction = false;
-      } else {
+       this.transaction = false;
+      }
+      else {
         this.transaction = true;
       }
+
     }
     return this.transaction;
   }
@@ -1043,7 +1057,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           this.scanItem = res;
           if (this.scanItem === null || this.scanItem.length === 0) {
             this.displayWrongBarCodeDialog();
-          } else if (this.scanItem.length != 0 || this.scanItem != null) {
+          }
+          else if (this.scanItem.length != 0 || this.scanItem != null) {
             this.onLocationBasedValidation();
             console.log(this.scanItem && this.scanItem);
             this.getCycleCountData(this.scanItem && this.scanItem);
