@@ -59,7 +59,7 @@ export class EditDeviceSequenceComponent implements OnInit {
   getCurrentOutputDeviceDescription(outputDeviceId: string, autofill: boolean){
     const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;    
 
-    const odDesc = outputDevices.find(x => x.OCTokenValue === String(outputDeviceId));   
+    const odDesc = outputDevices.find(x => x.DeviceId === String(outputDeviceId));   
     
     const currentODSetting: string[] = [];
 
@@ -95,7 +95,7 @@ export class EditDeviceSequenceComponent implements OnInit {
         this.translateService.get(x.Label).subscribe((res: string) => {
           translatedLabel = res;});
 
-        const outputDeviceRow = new SingleselectRowItem(translatedLabel, x.OCTokenValue);
+        const outputDeviceRow = new SingleselectRowItem(translatedLabel, x.DeviceId);
         this.outputDeviceDisplayList.push(outputDeviceRow);
       }      
     })   

@@ -74,10 +74,9 @@ describe('EditDeviceSequenceComponent', () => {
       };
       
       const device: OutputDevice = {
-        DeviceId: '1',
+        DeviceId: '2104',
         Label: 'CARTMODULE',
-        IsActive: true,
-        OCTokenValue: '2104'
+        IsActive: true
       };     
   
       const deviceSequence: IDeviceSequenceOrder = {        

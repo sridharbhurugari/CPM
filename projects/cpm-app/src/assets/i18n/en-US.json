@@ -70,7 +70,7 @@
   "LEASE_DENIED_MESSAGE": "Access to device {{deviceDescription}} has been denied.",
   "MAINTENANCE": "Maintenance",
   "GUIDED_CYCLE_COUNT_LOCATION": "Location",
-  "GUIDED_CYCLE_COUNT_LOCATIONS":"Locations",
+  "GUIDED_CYCLE_COUNT_LOCATIONS": "Locations",
   "MANUAL_CYCLE_COUNT": "Manual Count",
   "MEDICATION": "Medication",
   "NAME": "Device Workflow Description",
@@ -113,7 +113,7 @@
   "SAVE_ROUTE_CHANGES": "Save Route Changes",
   "SCAN_TO_UNLOCK": "Scan Label To Unlock Drawer",
   "SKIP": "Skip",
-  "REROUTE":"Reroute",
+  "REROUTE": "Reroute",
   "STATUS": "Status",
   "TYPE": "Priority Type",
   "UNDERFILLED": "Underfilled",
@@ -155,8 +155,8 @@
   "DEVICE_SELECTION_SEARCH_DEVICES": "Find device",
   "INVALID_SCAN_BARCODE_HEADER": "Bar Code Not Recognized",
   "INVALID_TRAY_SCAN": "Invalid Tray",
-  "INVALID_TRAY_SCAN_DESC":"The bar code scanned does not match a restock tray. Please scan a Tray.",
-  "INVALID_NOEXCEPTIONS_SCAN_DESC":"Tray Scanned has no exceptions.",
+  "INVALID_TRAY_SCAN_DESC": "The bar code scanned does not match a restock tray. Please scan a Tray.",
+  "INVALID_NOEXCEPTIONS_SCAN_DESC": "Tray Scanned has no exceptions.",
   "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
   "SCAN_BIN_BARCODE": "The correct bin bar code must be scanned.",
   "INVALID_SCAN_BARCODE": "The bar code scanned is not recognized. Please scan a correct bar code.",
@@ -180,5 +180,7 @@
   "XR2_EVENTS_LIST_DESCRIPTION": "Event Description",
   "XR2_EVENTS_LIST_DATETIME": "Event Date",
   "XR2_EVENTS_DETAILS_DEFINITION": "Event Definition",
-  "XR2_EVENTS_DETAILS_VALUE": "Event Value"
+  "XR2_EVENTS_DETAILS_VALUE": "Event Value",
+  "PACKAGER_ASSIGNITEM_BODY_TEXT": "Cycle counting is not supported for items assigned only to Packager or XR2.<br />This item is assigned to the following location(s)<br />{{genericName}} <br />{{itemId}} <br /> {{deviceDescription}}",
+  "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count"
 }
