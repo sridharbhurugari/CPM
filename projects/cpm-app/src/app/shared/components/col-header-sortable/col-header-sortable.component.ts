@@ -22,13 +22,10 @@ export class ColHeaderSortableComponent implements OnInit {
   @Input()
   customColumnSortOrder: 'asc' | 'desc';
 
-
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   sortDirection: 'asc' | 'desc' = SortDirection.ascending;
-
-sample: string = this.currentSortPropertyName ;
 
   get IsSortAscending(){
     this.sortDirection = this.customColumnSortOrder && this.customColumnSortOrder === SortDirection.descending ? this.customColumnSortOrder : this.sortDirection;

@@ -1,0 +1,33 @@
+<div class="cpmheaderrow">
+    <app-header-container></app-header-container>
+    <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
+<oc-grid #ocgrid ocgridfilter="false"
+    appGridSortCol
+    [initialSortPropertyName]="deviceDescriptionPropertyName"
+    [orderableValues]="deviceNeeds" 
+    (valuesReordered)="deviceNeeds = $event">
+    <ng-container class="ocgridheader">
+        <div class="first" data-colwrap="true"></div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+            [columnPropertyName]='deviceDescriptionPropertyName' headerResourceKey='DEVICE'>
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
+            [columnPropertyName]='countPropertyName' headerResourceKey='BELOW_RESTOCK'>
+        </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+        <div class="row" 
+             *ngFor="let deviceNeed of (deviceNeeds | searchPipe:searchTextFilter:searchPropertyNames)" 
+             (click)="deviceSelected.emit(deviceNeed.DeviceId)">
+            <div class="first">
+            </div>
+            <div class="col" [attr.data-title]="'DEVICE' | translate">
+                <span>{{deviceNeed.DeviceDescription}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'BELOW_RESTOCK' | translate">
+                <span>{{deviceNeed.ItemsBelowReorderLevel}} {{'ITEMS' | translate}}</span>
+            </div>
+        </div>
+    </ng-container>
+</oc-grid>
