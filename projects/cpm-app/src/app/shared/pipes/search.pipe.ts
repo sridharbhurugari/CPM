@@ -3,7 +3,6 @@ import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device
 
 @Pipe({ name: 'searchPipe' })
 export class SearchPipe implements PipeTransform {
-  transform(allSearchData: IDeviceReplenishmentNeed[], searchTxt: string, searchProperties?: string[]): IDeviceReplenishmentNeed[];
   transform(allSearchData: any[], searchTxt: string, searchProperties?: string[]): any[] {
     if (!searchTxt || !searchTxt.trim() || allSearchData.length < 1) {
       return allSearchData;
