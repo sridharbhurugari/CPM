@@ -42,9 +42,7 @@ export class InternalTransferDeviceListComponent implements OnInit {
     this.searchElement.searchOutput$
       .subscribe(data => {
         this.searchTextFilter = data;
-        if (this.windowService.nativeWindow) {
-          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-        }
+        this.windowService.dispatchResizeEvent();
       });
   }
 }

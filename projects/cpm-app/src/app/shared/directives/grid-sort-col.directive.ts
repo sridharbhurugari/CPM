@@ -56,23 +56,7 @@ export class GridSortColDirective {
     this._columnHeaders = columnHeaders;
   }
 
-  // @ContentChildren(GridSortableRowDirective)
-  // set rows(rows: QueryList<GridSortableRowDirective>){
-  //   var rowValues = rows.map(x => x.sortableValue);
-  //   if(!_.xor(rowValues, this._values).length){
-  //     return;
-  //   }
-
-  //   this._values = rowValues;
-  //   if(this._currentSortPropertyName){
-  //     this.columnSelected({ ColumnPropertyName: this._currentSortPropertyName, SortDirection: this._currentSortDirection })
-  //   }
-  // }
-
   constructor() {
-  }
-
-  ngAfterViewInit(): void {
   }
 
   columnSelected(event: IColHeaderSortChanged) {
