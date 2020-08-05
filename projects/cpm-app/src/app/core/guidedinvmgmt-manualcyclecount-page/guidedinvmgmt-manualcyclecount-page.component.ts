@@ -66,7 +66,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   @ViewChild(DatepickerComponent, null) datepicker: DatepickerComponent;
   @ViewChild(ButtonActionComponent, null) cancelbutton: ButtonActionComponent;
   @ViewChild(ButtonActionComponent, null) donebutton: ButtonActionComponent;
- // @ViewChild(SingleselectComponent, null) location: SingleselectComponent;
+  // @ViewChild(SingleselectComponent, null) location: SingleselectComponent;
   @ViewChild("contain", null) elementView: ElementRef;
   @ViewChild("Generic", null) GenericView: ElementRef;
 
@@ -111,8 +111,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   private popupDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
   scanItem: string;
-  isSelected:boolean;
-  transaction:boolean;
+  isSelected: boolean;
+  transaction: boolean;
 
   // Parent component variables
   selectedItem: any;
@@ -275,20 +275,18 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     {
       this.isSingleSelectEnable = false;
       this.getCycleCountData(item.item.ID);
-    }
-     else if (this.displayCycleCountItem) {
-       let transactionValid = true;
+    } else if (this.displayCycleCountItem) {
+      let transactionValid = true;
       if (this.over) {
         this.closePopup();
       }
-     // this.isSelected = false;
+      // this.isSelected = false;
       transactionValid = this.ScanValidation();
       if(transactionValid)
       {
         this.onLocationBasedValidation();
         this.getCycleCountData(item.item.ID);
       }
-
     }
 
   }
@@ -330,20 +328,46 @@ export class GuidedinvmgmtManualcyclecountPageComponent
 
   itemLength() {
     //this.displayCycleCountItem.QuantityOnHand = 0;
-    this.isSingleSelectEnable = true;
-    this.isMultiLocation = true;
     this.DisableActionButtons(true);
     this.multiLocations = [];
     this.itemIdLength = this.displayCycleCountItem.ItemId.length;
   }
   multipleLocations(x: IGuidedManualCycleCountItemid[]) {
     for (let i = 0; i < x.length; i++) {
-      this.locationCount++;
-      let location = new SingleselectRowItem();
-      location.text = x[i].LocationDescription + "       " + x[i].PackageFormName + "      " + x[i].QuantityOnHand;
-      location.value = x[i].LocationDescription;
-      location.Visible = true;
-      this.multiLocations && this.multiLocations.push(location && location);
+      if (
+        x[i].DeviceLocationTypeId === DeviceLocationTypeId.Carousel ||
+        x[i].DeviceLocationTypeId === DeviceLocationTypeId.OpenStorage
+      ) {
+        this.locationCount++;
+        let location = new SingleselectRowItem();
+        location.text =
+          x[i].LocationDescription +
+          "       " +
+          x[i].PackageFormName +
+          "      " +
+          x[i].QuantityOnHand;
+        location.value = x[i].LocationDescription;
+        location.Visible = true;
+        this.multiLocations && this.multiLocations.push(location && location);
+        if (this.locationCount > 1) {
+          this.isSingleSelectEnable = true;
+          this.isMultiLocation = true;
+        } else {
+          this.displayCycleCountItem = x[i];
+        }
+      }
+    }
+    if (this.locationCount === 0) {
+      let itemID;
+      let itemLocation = "";
+      let genericName;
+      this.displayCycleCountItem = null;
+      for (let i = 0; i < x.length; i++) {
+        itemID = x[i].ItemId;
+        genericName = x[i].GenericNameFormatted;
+        itemLocation +=x[i].LocationDescription + "<br/>";
+      }
+      this.displayPackagerAssignItemDialog(itemID, itemLocation, genericName);
     }
   }
 
@@ -370,26 +394,42 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             this.itemLength();
             this.multipleLocations(x);
           } else {
-            this.deviceId = x[0].DeviceId;
-            this.hardwareLeaseService
-              .getDeviceConfiguration(this.deviceId)
-              .subscribe((res) => {
-                console.log(res);
-                this.devicePrinterName = res.PrinterName;
-              });
-            this.isSingleSelectEnable = false;
-            this.displayCycleCountItem.ExpirationDateFormatted =
-              date.getFullYear() == 1
-                ? ""
-                : (date.getMonth() > 8
-                    ? date.getMonth() + 1
-                    : "0" + (date.getMonth() + 1)) +
-                  "/" +
-                  (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
-                  "/" +
-                  (date.getFullYear() == 1 ? 1900 : date.getFullYear());
-            this.CycleCountValidation();
-            this.itemIdLength = this.displayCycleCountItem.ItemId.length;
+            if (
+              x[0].DeviceLocationTypeId === DeviceLocationTypeId.Carousel ||
+              x[0].DeviceLocationTypeId === DeviceLocationTypeId.OpenStorage
+            ) {
+              this.deviceId = x[0].DeviceId;
+              this.hardwareLeaseService
+                .getDeviceConfiguration(this.deviceId)
+                .subscribe((res) => {
+                  console.log(res);
+                  this.devicePrinterName = res.PrinterName;
+                });
+              this.isSingleSelectEnable = false;
+              this.displayCycleCountItem.ExpirationDateFormatted =
+                date.getFullYear() == 1
+                  ? ""
+                  : (date.getMonth() > 8
+                      ? date.getMonth() + 1
+                      : "0" + (date.getMonth() + 1)) +
+                    "/" +
+                    (date.getDate() > 9
+                      ? date.getDate()
+                      : "0" + date.getDate()) +
+                    "/" +
+                    (date.getFullYear() == 1 ? 1900 : date.getFullYear());
+              this.CycleCountValidation();
+              this.itemIdLength = this.displayCycleCountItem.ItemId.length;
+            }
+            // if(x[0].DeviceLocationTypeId===DeviceLocationTypeId.Canister || x[0].DeviceLocationTypeId===DeviceLocationTypeId.Xr2MedicationStorage)
+            else {
+              this.displayCycleCountItem = null;
+              this.displayPackagerAssignItemDialog(
+                itemid,
+                x[0].LocationDescription,
+                x[0].GenericNameFormatted
+              );
+            }
           }
         } else {
           this.displayUnknownItemDialog(itemid);
@@ -740,7 +780,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           });
         this.disablethedate = false;
         this.displayCycleCountItem = x[i];
-        this.isSelected=true;
+        this.isSelected = true;
         let date = new Date(x[i].ExpirationDate);
         this.displayCycleCountItem.InStockQuantity = x[i].QuantityOnHand;
         this.displayCycleCountItem.ExpirationDateFormatted =
@@ -952,12 +992,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
 
   ScanValidation(): boolean {
-     this.transaction = false;
+    this.transaction = false;
     var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
-    console.log(this.displayCycleCountItem.QuantityOnHand)
-    if (
-      this.displayCycleCountItem.QuantityOnHand == 0
-    ) {
+    console.log(this.displayCycleCountItem.QuantityOnHand);
+    if (this.displayCycleCountItem.QuantityOnHand == 0) {
       this.transaction = true;
     } else if (
       this.displayCycleCountItem &&
@@ -974,7 +1012,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       ) {
         this.DisableActionButtons(true);
         this.toggleredborderfornonfirstitem(false);
-       this.transaction = false;
+        this.transaction = false;
       } else if (
         this.datepicker &&
         !this.datepicker.selectedDate.match(dateReg)
@@ -1002,15 +1040,18 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
   scanCycleCountItem(scannedBarcode: string): void {
     let transactionValid = true;
-    let itemID="";
-    if (this.displayCycleCountItem && this.displayCycleCountItem !== undefined) {
+    let itemID = "";
+    if (
+      this.displayCycleCountItem &&
+      this.displayCycleCountItem !== undefined
+    ) {
       console.log(this.ScanValidation());
       transactionValid = this.ScanValidation();
     }
     this.rawBarcodeMessage = scannedBarcode;
     if (transactionValid) {
       this.guidedManualCycleCountServiceService
-        .ValidCycleCountScanBarCode(itemID,this.rawBarcodeMessage)
+        .ValidCycleCountScanBarCode(itemID, this.rawBarcodeMessage)
         .subscribe((res) => {
           console.log(res);
           this.scanItem = res;
@@ -1026,21 +1067,16 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     }
   }
 
-  onLocationBasedValidation()
-  {
-    if(this.isSingleSelectEnable && this.isSelected)
-    {
-    this.Continue();
-    this.displayCycleCountItem = null;
-  }
-  else if(!this.isSingleSelectEnable){
-    this.Continue();
-    this.displayCycleCountItem = null;
-  }
-  else
-  {
-  this.displayCycleCountItem = null;
-}
+  onLocationBasedValidation() {
+    if (this.isSingleSelectEnable && this.isSelected) {
+      this.Continue();
+      this.displayCycleCountItem = null;
+    } else if (!this.isSingleSelectEnable) {
+      this.Continue();
+      this.displayCycleCountItem = null;
+    } else {
+      this.displayCycleCountItem = null;
+    }
   }
 
   // Page Level Listener for barcode scanner
@@ -1126,5 +1162,51 @@ export class GuidedinvmgmtManualcyclecountPageComponent
 
   private isInvalid(variable: any): boolean {
     return !this.isValid(variable);
+  }
+
+  displayPackagerAssignItemDialog(
+    itemId: string,
+    deviceDescription: string,
+    genericName: string
+  ): boolean {
+    this.over = true;
+    const properties = new PopupDialogProperties("Role-Status-Warning");
+    this.translateService
+      .get("PACKAGER_ASSIGNITEM_HEADER_TEXT")
+      .subscribe((result) => {
+        properties.titleElementText = result;
+      });
+    this.translateService
+      .get("PACKAGER_ASSIGNITEM_BODY_TEXT", {
+        itemId: itemId,
+        deviceDescription: deviceDescription,
+        genericName: genericName,
+      })
+      .subscribe((result) => {
+        properties.messageElementText = result;
+      });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.primaryButtonText = "OK";
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = this.popupTimeoutSeconds;
+    this.popupDialog = this.dialogService.showOnce(properties);
+
+    this.popupDialogClose$ = this.popupDialog.didClickCloseButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogPrimaryClick$ = this.popupDialog.didClickPrimaryButton.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    this.popupDialogTimeoutDialog$ = this.popupDialog.didTimeoutDialog.subscribe(
+      () => {
+        this.over = false;
+      }
+    );
+    return this.over;
   }
 }
