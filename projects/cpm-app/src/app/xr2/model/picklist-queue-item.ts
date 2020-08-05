@@ -31,4 +31,5 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   TrackById: Guid;
   ItemCount: number;
   IsPrintable: boolean;
+  SequenceOrder: number;
 }

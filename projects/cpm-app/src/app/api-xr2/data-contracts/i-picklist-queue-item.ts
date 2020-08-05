@@ -23,4 +23,5 @@ export interface IPicklistQueueItem {
   OutputDeviceId: string;
   ItemCount: number;
   IsPrintable: boolean;
+  SequenceOrder: number;
 }

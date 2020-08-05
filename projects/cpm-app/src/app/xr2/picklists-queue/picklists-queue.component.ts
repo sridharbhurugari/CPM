@@ -28,15 +28,13 @@ import { Many } from 'lodash';
   styleUrls: ['./picklists-queue.component.scss']
 })
 export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
-  readonly priorityCodePropertyName = nameof<PicklistQueueItem>('PriorityCode');
   readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
-  readonly itemCountPropertyName = nameof<PicklistQueueItem>('ItemCount');
-  readonly statusDisplayPropertyName = nameof<PicklistQueueItem>('StatusDisplay');
+  readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
   readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
 
   firstTime = true;
 
-  currentSortPropertyName: string = this.destinationPropertyName;
+  currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   alphaValues: Array<string> = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -45,7 +43,12 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
-    this._picklistQueueItems = value;
+    if (!this.currentSortPropertyName || 0 === this.currentSortPropertyName.length) {
+      this._picklistQueueItems = this.defaultSort(value);
+    } else {
+      this._picklistQueueItems = value;
+    }
+
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
@@ -336,5 +339,9 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  defaultSort(picklistItems: PicklistQueueItem[]): PicklistQueueItem[] {
+    return _.orderBy(picklistItems, x => x[this.sequenceOrderPropertyName, this.destinationPropertyName], ['asc', 'asc']);
   }
 }
