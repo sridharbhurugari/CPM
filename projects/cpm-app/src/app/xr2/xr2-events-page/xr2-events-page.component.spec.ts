@@ -142,6 +142,12 @@ describe('Xr2EventsPageComponent', () => {
     expect(component.columnSelected(event));
   });
 
+  it('should display the selected event details', () =>{
+    component.displayFilteredList$ && component.displayFilteredList$.source;
+    component.searchTextFilter = 'abc';
+    component.preventSearchData();
+  });
+
   it('should display the details of errors check box checked', () => {
     let errorEvent: any = { selectedState: true };
     component.onErrorsSelect(errorEvent);
@@ -166,6 +172,7 @@ describe('Xr2EventsPageComponent', () => {
     component.onOutputDeviceSelectionChanged(errorEvent);
 
   });
+  
   it('should parse date string to expected format', () => {
     let date: string = "07/22/2020";
     component.parseDateFormat(date);
