@@ -43,11 +43,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
-    if (!this.currentSortPropertyName || 0 === this.currentSortPropertyName.length) {
-      this._picklistQueueItems = this.defaultSort(value);
-    } else {
-      this._picklistQueueItems = value;
-    }
+    this._picklistQueueItems = value;
 
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
@@ -339,9 +335,5 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
-  }
-
-  defaultSort(picklistItems: PicklistQueueItem[]): PicklistQueueItem[] {
-    return _.orderBy(picklistItems, x => x[this.sequenceOrderPropertyName, this.destinationPropertyName], ['asc', 'asc']);
   }
 }
