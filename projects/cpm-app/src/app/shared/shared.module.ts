@@ -18,6 +18,7 @@ import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clic
 import { NotificationComponent } from './components/notification/notification.component';
 import { FormsModule } from '@angular/forms';
 import { SplitResizeComponent } from './components/split-resize/split-resize.component';
+import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-popup.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { SplitResizeComponent } from './components/split-resize/split-resize.com
     CPClickableIconComponent,
     NotificationComponent,
     SplitResizeComponent,
+    DropdownPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -64,11 +66,13 @@ import { SplitResizeComponent } from './components/split-resize/split-resize.com
     CPClickableIconComponent,
     NotificationComponent,
     SplitResizeComponent,
+    DropdownPopupComponent
   ],
   entryComponents: [
     TextResultPopupComponent,
     ConfirmPopupComponent,
     SpinnerPopupComponent,
+    DropdownPopupComponent
   ]
 })
 export class SharedModule { }

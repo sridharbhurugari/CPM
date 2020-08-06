@@ -448,7 +448,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.toggleredborderfornonfirstitem(true);
     }
     else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
-      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) 
+      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === ""))
       {
       if (!(this.datepicker && this.datepicker.isDisabled))
       {
@@ -507,10 +507,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   displayError(uniqueId, title, message): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
+    this.translateService.get("OK").subscribe((result) => {
+      properties.primaryButtonText = result;
+    });
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
-    properties.primaryButtonText = 'Ok';
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = 0;
@@ -566,9 +568,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     const properties = new PopupDialogProperties('Role-Status-Info');
     this.translateService.get('PRINTSUCCESSFUL_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('PRINTSUCCESSFUL_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe(result => { properties.primaryButtonText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Info;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
@@ -578,9 +580,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     const properties = new PopupDialogProperties('Role-Status-Error');
     this.translateService.get('PRINTFAILED_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('PRINTFAILED_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe(result => { properties.primaryButtonText = result; });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'OK';
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
@@ -733,6 +735,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     this.isPopupVisible = true;
     const properties = new PopupDialogProperties('INVALID_SCAN_BARCODE');
     this.translateService.get('INVALID_SCAN_BARCODE_HEADER').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('CANCEL').subscribe(result => { properties.primaryButtonText = result; });
     if (override) {
       this.translateService.get('INVALID_SCAN_BARCODE_OVERRIDE').subscribe(result => { properties.messageElementText = result; });
       this.barcodeOverride = true;
@@ -742,7 +745,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
-    properties.primaryButtonText = 'Cancel';
+
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = 0;
     this.popupDialog = this.dialogService.showOnce(properties);

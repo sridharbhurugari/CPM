@@ -18,6 +18,7 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { Router, RouterModule } from '@angular/router';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
+import { Guid } from 'guid-typescript';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -44,8 +45,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
     quickPickDrawerService = {
       printLabel: jasmine.createSpy('printLabel').and.returnValues(throwError({ status: 404 }), of(true)),
-      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(throwError({ status: 404 }), of(true)),
-      scanLabel: jasmine.createSpy('scanLabel').and.returnValues(of(true), throwError({ status: 404 }), of(true))
+      unlockDrawer: jasmine.createSpy('unlockDrawer').and.returnValues(throwError({ status: 404 }), of(true))
     };
 
     popupDialogService = {
@@ -53,6 +53,7 @@ describe('QuickPickDrawerViewComponent', () => {
     };
 
     router = {navigate: jasmine.createSpy('navigate') };
+
     hardwareLeaseService = { HasDeviceLease: () => of(leaseVerificationResult) };
 
     TestBed.configureTestingModule({
@@ -88,6 +89,7 @@ describe('QuickPickDrawerViewComponent', () => {
     fixture = TestBed.createComponent(QuickPickDrawerViewComponent);
     component = fixture.componentInstance;
     const qpDrawer1: QuickPickDrawerData = new QuickPickDrawerData(null);
+    qpDrawer1.RobotDispenseBoxId = Guid.create();
     qpDrawers = [qpDrawer1];
     component.quickpickDrawers = qpDrawers;
     fixture.detectChanges();
@@ -97,25 +99,61 @@ describe('QuickPickDrawerViewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set details view and fire event when detail view opened', () => {
-    leaseVerificationResult = 0;
+  it('should set details view and fire event when detail view opened using view', () => {
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
-    component.selectedDeviceInformation = new SelectableDeviceInfo(null);
-    component.selectedDeviceInformation.DeviceId = 1;
+    component.selectedDeviceInformation = selectedDeviceInformation;
 
     component.onShowQuickPickDrawerDetails(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should set details view and fire event when detail view opened with print', () => {
+    leaseVerificationResult = 0;
+    expect(component).toBeTruthy();
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onPrintQuickPickDrawer(0);
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
     expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
   });
 
-  it('should set details view and fire event when detail view closed', () => {
+  it('should set details view and fire event when detail view openand print is clicked', () => {
+    leaseVerificationResult = 0;
+    expect(component).toBeTruthy();
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    component.detailedDrawer = qpDrawers[0];
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onPrintCurrentQuickPickDrawer();
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should set details view and fire event when detail view closed from view only', () => {
     expect(component).toBeTruthy();
     const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
-    component.selectedDeviceInformation = new SelectableDeviceInfo(null);
-    component.selectedDeviceInformation.DeviceId = 1;
+    component.selectedDeviceInformation = selectedDeviceInformation;
 
     component.onShowQuickPickDrawerDetails(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledTimes(0);
+
+    component.onCloseQuickPickDrawerDetails();
+
+    expect(component.detailedDrawer).toBeUndefined();
+    expect(quickPickActiveSpy).toHaveBeenCalledTimes(1);
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(false);
+  });
+
+  it('should set details view and fire event when detail view closed from active state', () => {
+    expect(component).toBeTruthy();
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+    component.selectedDeviceInformation = selectedDeviceInformation;
+
+    component.onPrintQuickPickDrawer(0);
     expect(component.detailedDrawer).toEqual(qpDrawers[0]);
     expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
 
@@ -123,7 +161,38 @@ describe('QuickPickDrawerViewComponent', () => {
 
     expect(component.detailedDrawer).toBeUndefined();
     expect(quickPickActiveSpy).toHaveBeenCalledWith(false);
+  });
 
+  it('should set details view and fire event when unlocking unknown drawer', () => {
+    expect(component).toBeTruthy();
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+
+    component.onUnlockUnknownDrawer(0);
+    expect(component.detailedDrawer).toEqual(qpDrawers[0]);
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
+    expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+  });
+
+  it('should set details view and fire event when unlocking unknown current drawer', () => {
+    expect(component).toBeTruthy();
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    const quickPickActiveSpy = spyOn(component.quickPickActive, 'emit').and.callThrough();
+    component.detailedDrawer = qpDrawers[0];
+
+    component.onUnlockCurrentQuickPickDrawer();
+
+    expect(quickPickActiveSpy).toHaveBeenCalledWith(true);
+    expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call reroute event with supplied id', () => {
+    expect(component).toBeTruthy();
+    const rerouteQuickPickSpy = spyOn(component.rerouteQuickPick, 'emit').and.callThrough();
+    const guid = Guid.create();
+    component.onRerouteQuickPickDrawer(guid);
+
+    expect(rerouteQuickPickSpy).toHaveBeenCalledWith(guid);
   });
 
   it('Should load detailed view on load if available', () => {
@@ -150,8 +219,8 @@ describe('QuickPickDrawerViewComponent', () => {
   describe('QuickPick Printing', () => {
     it('should call QuickPickDrawerService on print', () => {
       expect(component).toBeTruthy();
-      component.detailedDrawer = new QuickPickDrawerData(null);
       component.selectedDeviceInformation = selectedDeviceInformation;
+      component.detailedDrawer = new QuickPickDrawerData(null);
 
       component.printDrawerLabel();
 
@@ -204,7 +273,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
       component.scanDrawerLabel();
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
     });
 
     it('Should not load detailed view if quick pick is in progress', () => {
@@ -217,7 +286,7 @@ describe('QuickPickDrawerViewComponent', () => {
       component.detailedDrawer = drawer;
       component.scanMessage = scan;
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
     });
 
     it('Should scan label on new scan input if loaded detailed view successfully', () => {
@@ -229,7 +298,7 @@ describe('QuickPickDrawerViewComponent', () => {
       component.quickpickDrawers = [drawer];
       component.scanMessage = scan;
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
     it('Should call QuickPickDrawerService and unlockDrawer on successful scan', () => {
@@ -240,7 +309,6 @@ describe('QuickPickDrawerViewComponent', () => {
 
       component.scanDrawerLabel();
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
       expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
     });
 
@@ -253,7 +321,6 @@ describe('QuickPickDrawerViewComponent', () => {
 
       expect(router.navigate).toHaveBeenCalledTimes(1);
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(0);
       expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(0);
     });
 
@@ -266,7 +333,7 @@ describe('QuickPickDrawerViewComponent', () => {
 
       component.scanDrawerLabel();
 
-      expect(quickPickDrawerService.scanLabel).toHaveBeenCalledTimes(1);
+      expect(quickPickDrawerService.unlockDrawer).toHaveBeenCalledTimes(1);
       expect(failedScanSpy).toHaveBeenCalled();
     });
   });
