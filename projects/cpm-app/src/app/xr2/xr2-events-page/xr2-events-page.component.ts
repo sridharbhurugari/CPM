@@ -8,7 +8,7 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 import * as _ from 'lodash';
 import { nameof } from '../../shared/functions/nameof';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { Many } from 'lodash';
+import { Many, forEach } from 'lodash';
 import { Xr2EventsService } from '../../api-xr2/services/xr2-events.service';
 import { IXr2EventsItem } from '../../api-xr2/data-contracts/i-xr2-events-item';
 import { Xr2EventsItem } from '../model/xr2-events-item';
@@ -20,6 +20,10 @@ import { SingleselectRowItem } from '../../core/model/SingleselectRowItem';
   selector: 'app-xr2-events-page',
   templateUrl: './xr2-events-page.component.html',
   styleUrls: ['./xr2-events-page.component.scss']
+})
+
+@Pipe({
+  name: 'filter'
 })
 
 export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
@@ -195,10 +199,10 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     if (xr2events.length > 0) {
       xr2events.forEach(function (element) {
         if (element.RobotEventId !== events.RobotEventId) {
-          element.Active = false;
+           element.Active = false;
         }
         if (element.RobotEventId === events.RobotEventId) {
-          element.Active = true;
+           element.Active = true;
         }
       });
       this.displayFilteredList$ = of(xr2events);
@@ -219,8 +223,35 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   clearDetailsData() {
-
     this.eventDetails = null;
+  }
+
+  preventSearchData(){
+    let xr2events: IXr2EventsItem[];
+    let searchString = this.getSearchData();
+    if(this.displayFilteredList$ !== undefined && this.searchTextFilter != undefined){
+      this.displayFilteredList$.subscribe((data) => { xr2events = data });
+      xr2events = xr2events.filter(data => data.EventDescription.includes(searchString)|| data.RobotEventDetails.includes(searchString));
+      for (let index = 0; index < xr2events.length; index++) {
+        const element = xr2events[index];
+        if(element.Active == true){
+          this.eventDetails = JSON.parse(element.RobotEventDetails);
+        }
+      }
+    }
+  }
+
+  getSearchData() : string{
+    this.searchSub = this.searchElement.searchOutput$
+      .pipe(
+        switchMap((searchData: string) => {
+          return of(searchData);
+        })
+      )
+      .subscribe(data => {
+        this.searchTextFilter = data;
+      });
+      return this.searchTextFilter;
   }
 
   resetCheckBoxes() {
@@ -278,8 +309,12 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   enterKeyed(event) {
     event.preventDefault();
     this.clearDetailsData();
-  }
+    setTimeout( () => { 
 
+     }, 2000 );
+    this.preventSearchData();
+  }
+  
   parseDateFormat(param): string {
     var date = new Date(param);
     var strDate;
