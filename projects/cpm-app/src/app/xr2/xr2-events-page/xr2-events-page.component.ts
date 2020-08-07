@@ -223,6 +223,15 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   clearDetailsData() {
+    if(this.displayFilteredList$ !== undefined){
+      let xr2events: IXr2EventsItem[];
+      this.displayFilteredList$.subscribe((data) => { xr2events = data });
+      if (xr2events.length > 0) {
+        xr2events.forEach(function (element) {
+          element.Active = false;
+        });
+      }
+    }
     this.eventDetails = null;
   }
 
@@ -309,7 +318,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   enterKeyed(event) {
     event.preventDefault();
     this.clearDetailsData();
-    this.preventSearchData();
+    //this.preventSearchData();
   }
   
   parseDateFormat(param): string {

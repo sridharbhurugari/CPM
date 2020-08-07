@@ -54,11 +54,11 @@
           *ngFor="let event of ( displayFilteredList$  | async ) | searchPipe:searchTextFilter:searchFields;" 
           (click)="navigatedetailspage(event,$event)"(ocScrollBoxDirective)="navigatedetailspage(event,$event)" [class.active]="event.Active == true">
           <div class="first" style="align-items: center;">
-            <oc-svgicon icon="warningModal" *ngIf="event.EventSeverity === 4" theme="dark" height="30" width="30"
-              class="warningicon"></oc-svgicon>
+            <oc-svgicon icon="warningModal" *ngIf="event.EventSeverity === 4" theme="white" height="30" width="30"
+              ></oc-svgicon>
             <oc-svgicon icon="critical" *ngIf="event.EventSeverity === 2" theme="dark" height="30" width="30"
               ></oc-svgicon>
-            <oc-svgicon icon="information" *ngIf="event.EventSeverity === 3" theme="dark" height="30" width="30"
+            <oc-svgicon icon="infoToast" *ngIf="event.EventSeverity === 3" theme="white" height="30" width="30"
               ></oc-svgicon>
           </div>
           <div class="col eventdescription" [attr.data-title]="'XR2_EVENTS_LIST_DESCRIPTION' | translate">
