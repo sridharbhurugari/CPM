@@ -28,16 +28,16 @@ import { Many } from 'lodash';
   styleUrls: ['./picklists-queue.component.scss']
 })
 export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
-  readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
   readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
+  readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
+  readonly itemPropertyName = nameof<PicklistQueueItem>('ItemCount');
+  readonly statusPropertyName = nameof<PicklistQueueItem>('StatusDisplay');
   readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
 
   firstTime = true;
 
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
-  alphaValues: Array<string> = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
   private _picklistQueueItems: PicklistQueueItem[];
 
