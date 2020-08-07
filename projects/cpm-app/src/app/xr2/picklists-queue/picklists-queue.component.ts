@@ -31,7 +31,6 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
   readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
   readonly itemPropertyName = nameof<PicklistQueueItem>('ItemCount');
-  readonly statusPropertyName = nameof<PicklistQueueItem>('StatusDisplay');
   readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
 
   firstTime = true;
