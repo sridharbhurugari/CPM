@@ -76,6 +76,7 @@
   "NAME": "Device Workflow Description",
   "NEW_ROUTE_NAME": "New Route Name",
   "NOTSENT": "Not Sent",
+  "NOTRELEASED": "Not Released",
   "GUIDED_CYCLE_COUNT": "Guided Cycle Count",
   "NEXT": "Next",
   "OF": "of",

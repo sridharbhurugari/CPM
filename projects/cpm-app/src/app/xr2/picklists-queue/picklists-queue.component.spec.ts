@@ -25,6 +25,9 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
+import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
+import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
@@ -46,6 +49,7 @@ describe('PicklistsQueueComponent', () => {
   let eventConnectionService: Partial<EventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
   let translateService: Partial<TranslateService>;
+  const event: IColHeaderSortChanged = {ColumnPropertyName: 'Destination', SortDirection: 'asc'};
 
   beforeEach(async(() => {
     picklistsQueueEventConnectionService = {
@@ -60,7 +64,8 @@ describe('PicklistsQueueComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox, MockAppHeaderContainer ],
+      declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
+        MockColHeaderSortable, MockAppHeaderContainer ],
       imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
         FooterModule, LayoutModule, CoreModule],
       providers: [
@@ -293,6 +298,13 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
       expect(component.getPrintButtonProperties(component.picklistQueueItems[1]).disabled).toBeFalsy();
+    });
+  });
+
+  describe('Action Sort by Column', () => {
+    it('column selected ', () => {
+      component.sort(component.picklistQueueItems, 'desc');
+      expect(component.columnSelected(event));
     });
   });
 });

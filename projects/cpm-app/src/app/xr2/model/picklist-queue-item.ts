@@ -34,6 +34,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
       RobotPickGroupId: picklistQueueItem.RobotPickGroupId,
       Status: picklistQueueItem.Status,
       StatusDisplay: picklistQueueItem.StatusDisplay,
+      SequenceOrder: picklistQueueItem.SequenceOrder
     });
   }
 
@@ -59,5 +60,6 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   TrackById: Guid;
   ItemCount: number;
   IsPrintable: boolean;
+  SequenceOrder: number;
   RobotPickGroupId: Guid;
 }

@@ -25,4 +25,5 @@ export interface IPicklistQueueItemNonstandardJson {
     ItemCount: number;
     IsPrintable: boolean;
     RobotPickGroupId: Guid;
+    SequenceOrder: number;
   }
