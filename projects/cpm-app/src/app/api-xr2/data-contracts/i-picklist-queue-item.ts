@@ -10,7 +10,7 @@ export interface IPicklistQueueItem {
   PriorityCode: string;
   PriorityCodeColor: string;
   Destination: string;
-  DestinationId: string;
+  OrderGroupDestinationId: string;
   DestinationType: string;
   PriorityCodeDescription: string;
   BoxCount: number;
@@ -23,4 +23,5 @@ export interface IPicklistQueueItem {
   OutputDeviceId: string;
   ItemCount: number;
   IsPrintable: boolean;
+  RobotPickGroupId: Guid;
 }

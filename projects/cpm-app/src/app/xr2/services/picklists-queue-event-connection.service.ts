@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Subject, of, Observable } from 'rxjs';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { Subject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { Guid } from 'guid-typescript';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PicklistsQueueEventConnectionService {
 
-  public addOrUpdatePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
-  public removePicklistQueueItemSubject = new Subject<PicklistQueueItem>();
+  public addOrUpdatePicklistQueueItemSubject = new Subject<IAddOrUpdatePicklistQueueItemMesssage>();
+  public removePicklistQueueItemSubject = new Subject<IRemovePicklistQueueItemMessage>();
   public reloadPicklistQueueItemsSubject = new Subject<any>();
 
   constructor(
@@ -31,13 +33,22 @@ export class PicklistsQueueEventConnectionService {
 
     if (message.EventId === 'AddOrUpdatePicklistQueueItemMessage') {
       console.log(message);
-      this.addOrUpdatePicklistQueueItemSubject.next(message);
+      this.addOrUpdatePicklistQueueItemSubject.next({
+        PicklistQueueItem: message.PicklistQueueItem
+      });
       return;
     }
 
     if (message.EventId === 'RemovePicklistQueueItemMessage') {
       console.log(message);
-      this.removePicklistQueueItemSubject.next(message);
+      this.removePicklistQueueItemSubject.next({ 
+        Xr2OrderGroupKey: { 
+          OrderId: message.Xr2OrderGroupKey.OrderId,
+          OrderGroupDestinationId: message.Xr2OrderGroupKey.OrderGroupDestinationId, 
+          DeviceLocationId: message.Xr2OrderGroupKey.DeviceLocationId,
+          RobotPickGroupId: Guid.parse(message.Xr2OrderGroupKey.RobotPickGroupId),
+        }
+      });
       return;
     }
 
