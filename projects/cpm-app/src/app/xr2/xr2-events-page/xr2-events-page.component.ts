@@ -8,7 +8,7 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 import * as _ from 'lodash';
 import { nameof } from '../../shared/functions/nameof';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { Many, forEach } from 'lodash';
+import { Many} from 'lodash';
 import { Xr2EventsService } from '../../api-xr2/services/xr2-events.service';
 import { IXr2EventsItem } from '../../api-xr2/data-contracts/i-xr2-events-item';
 import { Xr2EventsItem } from '../model/xr2-events-item';
@@ -309,9 +309,6 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   enterKeyed(event) {
     event.preventDefault();
     this.clearDetailsData();
-    setTimeout( () => { 
-
-     }, 2000 );
     this.preventSearchData();
   }
   
