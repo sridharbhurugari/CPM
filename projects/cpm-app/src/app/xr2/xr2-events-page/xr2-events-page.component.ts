@@ -22,10 +22,6 @@ import { SingleselectRowItem } from '../../core/model/SingleselectRowItem';
   styleUrls: ['./xr2-events-page.component.scss']
 })
 
-@Pipe({
-  name: 'filter'
-})
-
 export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   readonly eventLevelPropertyName = nameof<Xr2EventsItem>("EventLevel");
   readonly eventDescriptionPropertyName = nameof<Xr2EventsItem>("EventDescription");
