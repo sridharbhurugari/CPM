@@ -144,8 +144,9 @@ describe('Xr2EventsPageComponent', () => {
 
   it('should display the selected event details', () =>{
     component.displayFilteredList$ && component.displayFilteredList$.source;
+    component.currentEvents = eventSelected;
     component.searchTextFilter = 'abc';
-    component.preventSearchData();
+    component.preventSearchData(component.searchTextFilter);
   });
 
   it('should display the details of errors check box checked', () => {
