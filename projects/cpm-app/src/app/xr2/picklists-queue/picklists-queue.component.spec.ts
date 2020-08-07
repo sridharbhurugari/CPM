@@ -25,6 +25,9 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
+import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
 
 @Component({
   selector: 'oc-search-box',
@@ -78,8 +81,8 @@ describe('PicklistsQueueComponent', () => {
   }));
 
   beforeEach(() => {
-    spyOn(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject, 'subscribe');
-    spyOn(picklistsQueueEventConnectionService.removePicklistQueueItemSubject, 'subscribe');
+    spyOn(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject, 'subscribe').and.callThrough();
+    spyOn(picklistsQueueEventConnectionService.removePicklistQueueItemSubject, 'subscribe').and.callThrough();
     fixture = TestBed.createComponent(PicklistsQueueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -124,7 +127,7 @@ describe('PicklistsQueueComponent', () => {
       const device: OutputDevice = {
         DeviceId: '2102',
         Label: translatedLabel,
-        IsActive: true       
+        IsActive: true
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
@@ -144,7 +147,7 @@ describe('PicklistsQueueComponent', () => {
       const device: OutputDevice = {
         DeviceId: '2102',
         Label: translatedLabel,
-        IsActive: false        
+        IsActive: false
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
@@ -164,7 +167,7 @@ describe('PicklistsQueueComponent', () => {
       const device: OutputDevice = {
         DeviceId: '2102',
         Label: translatedLabel,
-        IsActive: true        
+        IsActive: true
       };
       const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
@@ -178,11 +181,20 @@ describe('PicklistsQueueComponent', () => {
 
   describe('Button State Diplay Texts', () => {
     it('Release button should display on new status', () => {
-      component.picklistQueueItems = [
-        new PicklistQueueItem(null),
+      const item = new PicklistQueueItem(null);
+      item.OutputDeviceId = '1';
+      item.IsPrintable = true;
+      item.Status = 1;
+
+      const outputDevice = new OutputDevice();
+      outputDevice.DeviceId = '1';
+
+      item.AvailableOutputDeviceList = [
+        outputDevice
       ];
-      component.picklistQueueItems[0].IsPrintable = true;
-      component.picklistQueueItems[0].Status = 1;
+      component.picklistQueueItems = [
+        item
+      ];
 
       let validText = '';
       translateService.get('RELEASE').subscribe((res: string) => {
@@ -237,11 +249,22 @@ describe('PicklistsQueueComponent', () => {
 
   describe('Action Button Disable States', () => {
     it('Release should be enabled on new status', () => {
-      component.picklistQueueItems = [
-        new PicklistQueueItem(null),
+      const item = new PicklistQueueItem(null);
+      item.OutputDeviceId = '1';
+      item.IsPrintable = false;
+      item.Status = 1;
+      item.Saving = false;
+
+      const outputDevice = new OutputDevice();
+      outputDevice.DeviceId = '1';
+      outputDevice.IsActive = true;
+
+      item.AvailableOutputDeviceList = [
+        outputDevice
       ];
-      component.picklistQueueItems[0].IsPrintable = false;
-      component.picklistQueueItems[0].Status = 1;
+      component.picklistQueueItems = [
+        item
+      ];
 
       expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
     });
@@ -273,3 +296,4 @@ describe('PicklistsQueueComponent', () => {
     });
   });
 });
+

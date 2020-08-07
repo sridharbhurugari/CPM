@@ -257,7 +257,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
 
     return {
-      disabled : picklistQueueItem.Saving,
+      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
       text
     };
   }

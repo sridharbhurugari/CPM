@@ -12,4 +12,5 @@ export class SelectableDeviceInfo implements ISelectableDeviceInfo {
   DefaultOwnerName: string;
   DeviceTypeId: string;
   CurrentLeaseHolder: Guid;
+  IsActive: boolean;
 }

@@ -15,6 +15,7 @@ import { HeaderTitleBottomMarginContainerComponent } from './components/header-t
 import { DeviceLocationAccessComponent } from './components/device-location-access/device-location-access.component';
 import { SpinnerPopupComponent } from './components/spinner-popup/spinner-popup.component';
 import { CPClickableIconComponent } from './components/cp-clickable-icon/cp-clickable-icon.component';
+import { NotificationComponent } from './components/notification/notification.component';
 import { FormsModule } from '@angular/forms';
 import { SplitResizeComponent } from './components/split-resize/split-resize.component';
 import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-popup.component';
@@ -33,6 +34,7 @@ import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-pop
     DeviceLocationAccessComponent,
     SpinnerPopupComponent,
     CPClickableIconComponent,
+    NotificationComponent,
     SplitResizeComponent,
     DropdownPopupComponent,
   ],
@@ -62,6 +64,7 @@ import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-pop
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
     CPClickableIconComponent,
+    NotificationComponent,
     SplitResizeComponent,
     DropdownPopupComponent
   ],

@@ -17,7 +17,7 @@ export class Xr2QuickPickQueueDeviceService {
     ) { }
 
   get(): Observable<SelectableDeviceInfo[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpickqueue/activedevices`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/quickpickqueue/devices`);
     return this.httpClient.get<SelectableDeviceInfo[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });

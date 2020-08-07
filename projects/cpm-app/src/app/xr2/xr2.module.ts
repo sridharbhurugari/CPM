@@ -33,7 +33,7 @@ import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.componen
     QuickPickDrawerDetailsViewComponent,
     QuickPickBoxItemsView,
     TrafficLightsComponent,
-    Xr2EventsPageComponent
+    Xr2EventsPageComponent,
   ],
   imports: [
     CommonModule,
