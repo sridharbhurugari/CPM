@@ -1,25 +1,37 @@
 <div class="quick-pick-page">
   <div class="cpmheaderrow">
-    <oc-singleselect
-      [tableData] = "outputDeviceDisplayList"
-      [selectedItem] = "defaultDeviceDisplyItem"
-      componentWidth="300"
-      dropdownRowsVisible="6"
-      popupDirection="AUTO"
-      [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
-      [selectText]="'DEVICE_SELECTION_TEXT' | translate"
-      [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
-      [disabled]="robotSelectionDisabled"
-      (selectionChanged)="onDeviceSelectionChanged($event)"></oc-singleselect>
-    <app-header-container></app-header-container>
-    <oc-search-box #searchBox [placeHolderText]="'SEARCH_QUEUE' | translate"></oc-search-box>
+    <div class="header-content">
+      <oc-singleselect
+        [tableData] = "outputDeviceDisplayList"
+        [selectedItem] = "defaultDeviceDisplyItem"
+        componentWidth="358"
+        dropdownRowsVisible="6"
+        popupDirection="AUTO"
+        [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
+        [selectText]="'DEVICE_SELECTION_TEXT' | translate"
+        [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
+        [disabled]="robotSelectionDisabled"
+        (selectionChanged)="onDeviceSelectionChanged($event)">
+      </oc-singleselect>
+      <div *ngIf="this.selectedDeviceInformation && !this.selectedDeviceInformation.IsActive">
+        <app-notification
+        [icon] = "'alertnopermission'"
+        [backgroundColor] = "'red'"
+        [fontColor] = "'white'"
+        [text] = "'XR2_DEVICE_INACTIVE' | translate"
+        [width]="250"
+        [height]="35"
+        ></app-notification>
+      </div>
+      <oc-search-box #searchBox [placeHolderText]="'SEARCH_QUEUE' | translate"></oc-search-box>
+      </div>
   </div>
   <div class="quick-pick-content">
     <ng-container class="ocactiondetails">
       <app-quick-pick-drawer-view
       [quickpickDrawers]="quickpickDrawers | async"
       [scanMessage]="scanInput"
-      [selectedDeviceId]="selectedDeviceId"
+      [selectedDeviceInformation]="selectedDeviceInformation"
       (quickPickActive)='onQuickPickActive($event)'
       (failedEvent)='displayQuickPickError($event)'
       (rerouteQuickPick)='onRerouteQuickPickFromDrawer($event)'>

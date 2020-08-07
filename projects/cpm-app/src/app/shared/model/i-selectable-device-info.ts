@@ -3,4 +3,5 @@ export interface ISelectableDeviceInfo {
   Description: string;
   DefaultOwnerName: string;
   DeviceTypeId: string;
+  IsActive: boolean;
 }

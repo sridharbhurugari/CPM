@@ -2,6 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash';
 
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
+import {SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { QuickPickDrawerRequest } from '../model/quick-pick-drawer-request';
@@ -23,10 +24,11 @@ export class QuickPickDrawerViewComponent implements OnInit {
   @Output() rerouteQuickPick: EventEmitter<Guid> = new EventEmitter<Guid>();
   @Output() failedEvent: EventEmitter<QuickPickError> = new EventEmitter<QuickPickError>();
 
-  private _selectedDeviceId: string;
   private _scanMessage: BarcodeScanMessage;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
+
+  @Input() selectedDeviceInformation: SelectableDeviceInfo;
 
   @Input()
   set quickpickDrawers(value: QuickPickDrawerData[]) {
@@ -56,15 +58,6 @@ export class QuickPickDrawerViewComponent implements OnInit {
     return this._scanMessage;
   }
 
-  @Input()
-  set selectedDeviceId(value: string) {
-    this._selectedDeviceId = value;
-  }
-
-  get selectedDeviceId(): string {
-    return this._selectedDeviceId;
-  }
-
   constructor(
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
@@ -78,7 +71,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   checkForHardwareLease(success: () => void) {
-    return this.hardwareLeaseService.HasDeviceLease(Number(this.selectedDeviceId)).subscribe(leaseVerificationResults => {
+    return this.hardwareLeaseService.HasDeviceLease(this.selectedDeviceInformation.DeviceId).subscribe(leaseVerificationResults => {
       console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
       if (Number(leaseVerificationResults) === Number(LeaseVerificationResult.Success)) {
         console.log('was a Success');
@@ -93,7 +86,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   navigateToDeviceLeasePage() {
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        deviceId: this.selectedDeviceId,
+        deviceId: this.selectedDeviceInformation.DeviceId,
         routeToPath: 'quickpick' } ,
       fragment: 'anchor'
     };
@@ -156,7 +149,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
 
     const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.scanMessage.barcode);
-    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, scanRequest).subscribe(
+    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceInformation.DeviceId.toString(), scanRequest).subscribe(
       () => { },
       () => {
         this.failedEvent.emit(QuickPickError.ScanNotFound);
@@ -165,7 +158,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   printDrawerLabel() {
     const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.printLabel(this.selectedDeviceId, printRequest).subscribe(
+    this.quickPickDrawerService.printLabel(this.selectedDeviceInformation.DeviceId.toString(), printRequest).subscribe(
       () => { },
       () => {
         this.failedEvent.emit(QuickPickError.PrintFailure);
@@ -174,7 +167,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   unlockDrawer() {
     const unlockRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
-    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceId, unlockRequest).subscribe(
+    this.quickPickDrawerService.unlockDrawer(this.selectedDeviceInformation.DeviceId.toString(), unlockRequest).subscribe(
       () => { },
       () => {
         this.failedEvent.emit(QuickPickError.UnlockFailure);
@@ -184,7 +177,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
   /* istanbul ignore next */
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
     if (quickPickDrawerUpdateMessage.DeviceId !== undefined
-      && quickPickDrawerUpdateMessage.DeviceId.toString() !== this.selectedDeviceId) {
+      && quickPickDrawerUpdateMessage.DeviceId !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
@@ -223,11 +216,13 @@ export class QuickPickDrawerViewComponent implements OnInit {
   }
 
   private loadDetailedDrawerOnScan(): boolean {
-    if (!this.scanMessage) {
+    if (!this.scanMessage || !this.selectedDeviceInformation) {
       return false;
     }
 
-    if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
+    if (!this.selectedDeviceInformation.IsActive) {
+      this.failedEvent.emit(QuickPickError.InActive)
+    } else if (this.detailedDrawer && this.detailedDrawer.Status > 1) {
       this.failedEvent.emit(QuickPickError.ScanUnavailable);
       return false;
     }

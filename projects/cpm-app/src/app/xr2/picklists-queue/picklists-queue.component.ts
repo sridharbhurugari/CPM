@@ -21,6 +21,8 @@ import { ColHeaderSortableComponent } from '../../shared/components/col-header-s
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 
 @Component({
   selector: 'app-picklists-queue',
@@ -108,11 +110,13 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
       .subscribe(message => this.onRemovePicklistQueueItem(message));
   }
 
-  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
-    const picklistQueueItem = new PicklistQueueItem(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
-    picklistQueueItem.ItemPicklistLines = addOrUpdatePicklistQueueItemMessage.PicklistQueueItem.ItemPicklistLines.$values;
-    const matchingPicklistQueueItem = _.find(this.picklistQueueItems, (x) => {
-      return x.OrderId === picklistQueueItem.OrderId && x.Destination === picklistQueueItem.Destination &&
+  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
+    const picklistQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
+    const matchingRobotGroupLine = _.find(this.picklistQueueItems, (x) => {
+      return x.RobotPickGroupId != null && x.RobotPickGroupId == picklistQueueItem.RobotPickGroupId;
+    });
+    const matchingPicklistQueueItem = matchingRobotGroupLine || _.find(this.picklistQueueItems, (x) => {
+      return x.RobotPickGroupId === null && x.OrderId === picklistQueueItem.OrderId && x.OrderGroupDestinationId === picklistQueueItem.OrderGroupDestinationId &&
       x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
     });
 
@@ -128,16 +132,17 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
     matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
+    matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
 
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage): void {
-    const orderDestinationPickLocationKey = addOrUpdatePicklistQueueItemMessage.OrderDestinationPickLocationKey;
+  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
+    const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
     _.remove(this.picklistQueueItems, (x) => {
-      return x.OrderId === orderDestinationPickLocationKey.OrderId && x.DestinationId === orderDestinationPickLocationKey.DestinationId &&
-      x.DeviceLocationId === orderDestinationPickLocationKey.DeviceLocationId;
+      return x.OrderId === xr2OrderGroupKey.OrderId && x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
+      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
     });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
@@ -268,7 +273,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
 
     return {
-      disabled : picklistQueueItem.Saving,
+      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
       text
     };
   }

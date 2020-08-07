@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import * as _ from 'lodash';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { Observable, of, Subscription, forkJoin, merge } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
@@ -21,6 +22,7 @@ import { Guid } from 'guid-typescript';
 import { BarcodeScanService } from 'oal-core';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { resolve } from 'url';
 
 @Component({
@@ -38,10 +40,12 @@ export class QuickPickPageComponent implements OnInit {
   searchTextFilter: Observable<string>;
 
   robotSelectionDisabled = false;
+  activeQuickPickDevice: boolean;
+  selectedDeviceInformation: SelectableDeviceInfo;
+  deviceInformationList: SelectableDeviceInfo[];
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   popupTimeoutSeconds = 60;
-  selectedDeviceId: string;
   inputLevelScan: string;
   nonBarcodeKeyboardInput = '';
   nonBarcodeInputFocus = false;
@@ -56,8 +60,9 @@ export class QuickPickPageComponent implements OnInit {
     'QUICK_PICK_REROUTE_DIALOG_MESSAGE',
     'INVALID_SCAN_BARCODE_HEADER',
     'INVALID_SCAN_BARCODE',
-    'INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT',
+    'INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT',
     'INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT',
+    'INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT',
     'PRINTFAILED_HEADER_TEXT',
     'PRINTFAILED_BODY_TEXT',
     'FAILEDTOUNLOCKDOOR_HEADER_TEXT',
@@ -98,7 +103,7 @@ export class QuickPickPageComponent implements OnInit {
     this.hookupEventHandlers();
     this.setTranslations();
     this.setConfigurations();
-    this.getActiveXr2Devices();
+    this.getXr2Devices();
   }
 
   ngOnDestroy(): void {
@@ -109,6 +114,7 @@ export class QuickPickPageComponent implements OnInit {
   ngAfterViewInit(): void {
     this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
     this.quickPickEventConnectionService.QuickPickErrorUpdateSubject.subscribe(event => this.onQuickPickErrorUpdate(event));
+    this.quickPickEventConnectionService.QuickPickDeviceStatusUpdateSubject.subscribe(event => this.onQuickPickDeviceStatusUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(
@@ -128,19 +134,20 @@ export class QuickPickPageComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  async getActiveXr2Devices() {
-    const results = await this.quickPickDeviceService.get().toPromise();
+  async getXr2Devices() {
+    this.deviceInformationList = await this.quickPickDeviceService.get().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
     let defaultFound: SingleselectRowItem;
 
-    if (results.length === 1) {
-      defaultFound = new SingleselectRowItem(results[0].Description, results[0].DeviceId.toString());
+    if (this.deviceInformationList.length === 1) {
+      defaultFound = new SingleselectRowItem(this.deviceInformationList[0].Description, this.deviceInformationList[0].DeviceId.toString());
       newList.push(defaultFound);
     } else {
-      results.forEach(selectableDeviceInfo => {
-        const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description, selectableDeviceInfo.DeviceId.toString());
+      this.deviceInformationList.forEach(selectableDeviceInfo => {
+        const selectRow = new SingleselectRowItem(selectableDeviceInfo.Description,
+          selectableDeviceInfo.DeviceId.toString(), selectableDeviceInfo.IsActive);
         newList.push(selectRow);
 
         if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId) {
@@ -152,8 +159,8 @@ export class QuickPickPageComponent implements OnInit {
     this.outputDeviceDisplayList = newList;
 
     if (defaultFound) {
-      this.selectedDeviceId = defaultFound.value;
-      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === this.selectedDeviceId);
+      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(x => x.value === defaultFound.value);
+      this.loadSelectedDeviceInformation(defaultFound.value);
       this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
@@ -165,9 +172,9 @@ export class QuickPickPageComponent implements OnInit {
 
   /* istanbul ignore next */
   onDeviceSelectionChanged($event) {
-    if (this.selectedDeviceId !== $event.value) {
+    if (this.selectedDeviceInformation.DeviceId !== $event.value) {
       this.searchElement.clearSearch(null);
-      this.selectedDeviceId = $event.value;
+      this.loadSelectedDeviceInformation($event.value);
       this.loadDrawersData();
       this.loadPicklistsQueueItems();
     }
@@ -256,8 +263,16 @@ export class QuickPickPageComponent implements OnInit {
         break;
       case QuickPickError.ScanUnavailable:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_INPROGRESS_HEADER_TEXT'];
+          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
           const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT'];
+          const okText = r['OK'];
+          this.displayWarningDialog(headerText, bodyText, okText);
+        });
+        break;
+      case QuickPickError.InActive:
+        this.translations$.subscribe(r => {
+          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
+          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT'];
           const okText = r['OK'];
           this.displayWarningDialog(headerText, bodyText, okText);
         });
@@ -306,7 +321,7 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
@@ -314,32 +329,56 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickErrorUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId.toString() !== this.selectedDeviceId) {
+    if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
     this.displayQuickPickError(QuickPickError.HardwareFailure, null, event.ErrorMessage);
   }
 
-  private loadPicklistsQueueItems(): void {
-    if (!this.selectedDeviceId) {
+  private onQuickPickDeviceStatusUpdate(event) {
+    if (event.DeviceId === undefined) {
       return;
     }
 
-    this.quickPickQueueService.get(this.selectedDeviceId).subscribe(items => {
+    const indexToUpdate =  this.deviceInformationList.findIndex((deviceInformation) => {
+      return deviceInformation.DeviceId === event.DeviceId;
+    });
+
+    if (indexToUpdate !== -1) {
+      this.deviceInformationList[indexToUpdate].IsActive = event.Status;
+    }
+  }
+
+  private loadPicklistsQueueItems(): void {
+    if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId) {
+      return;
+    }
+
+    this.quickPickQueueService.get(this.selectedDeviceInformation.DeviceId.toString()).subscribe(items => {
       this.quickPickQueueItems = of(items.filter(item => item.IncompleteBoxCount > 0));
       this.quickPickQueueItemsComplete = items;
     });
   }
 
   private loadDrawersData() {
-    if (!this.selectedDeviceId) {
+    if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId) {
       return;
     }
 
-    this.quickPickDrawerService.getAllDrawers(this.selectedDeviceId).subscribe(data => {
+    this.quickPickDrawerService.getAllDrawers(this.selectedDeviceInformation.DeviceId.toString()).subscribe(data => {
       this.quickpickDrawers = of(data);
     });
+  }
+
+  private loadSelectedDeviceInformation(deviceId: string) {
+    const indexToLoad =  this.deviceInformationList.findIndex((deviceInformation) => {
+      return deviceInformation.DeviceId.toString() === deviceId;
+    });
+
+    if (indexToLoad !== -1) {
+      this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
+    }
   }
 
   /* istanbul ignore next */
