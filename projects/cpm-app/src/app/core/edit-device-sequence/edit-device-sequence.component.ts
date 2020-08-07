@@ -37,10 +37,20 @@ export class EditDeviceSequenceComponent implements OnInit {
 
   cartModuleId: string = '2104';
 
+  popupTitle: string;
+  dropdowntitle: string;
+  checkboxLabel: string;
+
   constructor(private popupWindowService: PopupWindowService,
     private translateService: TranslateService) { }
 
   ngOnInit() {
+    this.translateService.get('ROUTE_POPUP_TITLE').subscribe((res: string) => {
+      this.popupTitle = res;});
+    this.translateService.get('ROUTE_DROPDOWN_TITLE').subscribe((res: string) => {
+      this.dropdowntitle = res;});
+    this.translateService.get('ROUTE_CHECKBOX_LABEL').subscribe((res: string) => {
+      this.checkboxLabel = res;});
   }
 
   onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<IDeviceSequenceOrder>){
@@ -57,22 +67,22 @@ export class EditDeviceSequenceComponent implements OnInit {
   }
 
   getCurrentOutputDeviceDescription(outputDeviceId: string, autofill: boolean){
-    const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;    
+    const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;
 
-    const odDesc = outputDevices.find(x => x.DeviceId === String(outputDeviceId));   
-    
+    const odDesc = outputDevices.find(x => x.DeviceId === String(outputDeviceId));
+
     const currentODSetting: string[] = [];
 
     currentODSetting.push("DEFAULT");
     currentODSetting.push(odDesc.Label);
-    currentODSetting.push("AUTOFILL");  
+    currentODSetting.push("AUTOFILL");
     currentODSetting.push("ON");
     currentODSetting.push("OFF");
 
     let translatedLabel = '';
         this.translateService.get(currentODSetting).subscribe((res: string) => {
-          translatedLabel = res;}); 
-          
+          translatedLabel = res;});
+
     let returnLabel = translatedLabel["DEFAULT"] + ": " + translatedLabel[odDesc.Label];
 
     if (String(outputDeviceId) !== this.cartModuleId) {
@@ -85,10 +95,10 @@ export class EditDeviceSequenceComponent implements OnInit {
   }
 
   onOutputDeviceEditClick(device: IDeviceSequenceOrder){
-    const properties = new PopupWindowProperties();  
+    const properties = new PopupWindowProperties();
     this.outputDeviceDisplayList = [];
-    this.rowItemsToHideCheckbox = []; 
-    
+    this.rowItemsToHideCheckbox = [];
+
     device.OutputDevices.forEach(x => {
       if (x.IsActive) {
         let translatedLabel = '';
@@ -97,8 +107,8 @@ export class EditDeviceSequenceComponent implements OnInit {
 
         const outputDeviceRow = new SingleselectRowItem(translatedLabel, x.DeviceId);
         this.outputDeviceDisplayList.push(outputDeviceRow);
-      }      
-    })   
+      }
+    })
 
     this.defaultDisplayItem = this.outputDeviceDisplayList.find(x => x.value === String(device.DeviceOutput.DeviceOutputType));
 
@@ -106,31 +116,31 @@ export class EditDeviceSequenceComponent implements OnInit {
       if (x.value === this.cartModuleId){
         this.rowItemsToHideCheckbox.push(x);
       }
-    })    
+    })
 
     const data: IDropdownPopupData = {
-      popuptitle: 'Route Device Configuration',
-      dropdowntitle: 'Default Output Device',
+      popuptitle: this.popupTitle,
+      dropdowntitle: this.dropdowntitle,
       dropdownrows: this.outputDeviceDisplayList,
       defaultrow: this.defaultDisplayItem,
       showCheckbox: true,
-      checkboxLabel: 'Autofill',
+      checkboxLabel: this.checkboxLabel,
       checkboxSelected: device.DeviceOutput.IsAutoFill,
       checkboxHideSelection: this.rowItemsToHideCheckbox,
       selectedrow: this.defaultDisplayItem,
       selectedcheckbox: false
     };
 
-    properties.data = data;        
+    properties.data = data;
 
-    let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;        
+    let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
-      if (selectedOk) {  
+      if (selectedOk) {
         device.DeviceOutput.DeviceOutputType = data.selectedrow.value;
         device.DeviceOutput.IsAutoFill = data.selectedcheckbox;
-        
-        this.deviceSequenceChanged.emit(this.enabledDevices);            
+
+        this.deviceSequenceChanged.emit(this.enabledDevices);
       }
-    });    
-  }  
+    });
+  }
 }
