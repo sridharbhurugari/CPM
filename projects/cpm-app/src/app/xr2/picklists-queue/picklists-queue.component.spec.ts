@@ -25,6 +25,8 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
 
 @Component({
@@ -291,59 +293,6 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
       expect(component.getPrintButtonProperties(component.picklistQueueItems[1]).disabled).toBeFalsy();
-    });
-  });
-
-  describe('Queue Eventing', () => {
-    it('should add picklist queue item on add or update event', () => {
-      component.picklistQueueItems = [];
-      const pickListItemUpdate = new PicklistQueueItem(null);
-      pickListItemUpdate.ItemPicklistLines = [];
-      const fakeAddEvent = {PicklistQueueItem: pickListItemUpdate};
-
-      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeAddEvent);
-
-      expect(component.picklistQueueItems.length).toBe(1);
-    });
-
-    it('should update picklist queue item on add or update event', () => {
-      component.picklistQueueItems = [
-        new PicklistQueueItem(null),
-      ];
-      component.picklistQueueItems[0].Status = 1;
-      component.picklistQueueItems[0].OrderId = 'orderId';
-      component.picklistQueueItems[0].Destination = 'destination';
-      component.picklistQueueItems[0].DeviceLocationId = 1;
-      const pickListItemUpdate = new PicklistQueueItem(null);
-      pickListItemUpdate.Status = 2;
-      pickListItemUpdate.OrderId = 'orderId';
-      pickListItemUpdate.Destination = 'destination';
-      pickListItemUpdate.DeviceLocationId = 1;
-      pickListItemUpdate.ItemPicklistLines = [];
-      const fakeUpdateEvent = {PicklistQueueItem: pickListItemUpdate};
-
-      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeUpdateEvent);
-
-      expect(component.picklistQueueItems[0].Status).toBe(pickListItemUpdate.Status);
-    });
-    it('should remove picklist queue item on remove event', () => {
-      component.picklistQueueItems = [
-        new PicklistQueueItem(null),
-      ];
-      component.picklistQueueItems[0].Status = 1;
-      component.picklistQueueItems[0].OrderId = 'orderId';
-      component.picklistQueueItems[0].DestinationId = 'destinationId';
-      component.picklistQueueItems[0].DeviceLocationId = 1;
-      const orderDestinationPickLocationKey = {
-        OrderId: 'orderId',
-        DestinationId: 'destinationId',
-        DeviceLocationId: 1,
-      };
-      const fakeEvent = {OrderDestinationPickLocationKey: orderDestinationPickLocationKey};
-
-      picklistsQueueEventConnectionService.removePicklistQueueItemSubject.next(fakeEvent);
-
-      expect(component.picklistQueueItems.length).toBe(0);
     });
   });
 });
