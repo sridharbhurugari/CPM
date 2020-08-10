@@ -52,7 +52,7 @@ describe('Xr2EventsPageComponent', () => {
   },
   {
     EventLevel: "c00004", EventDescription: "5", EventDateTime: "2020-06-01 07:41:19.763", EventDeviceName: "", RobotEventDetails:
-      "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
+    "{'RobotEventDetailId':10002,'EventValue':'2','eventname':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS','EventDefinition':'PARAMETER_TYPE_CTRLMODE_CURR_PROCESS'},{'RobotEventDetailId':10003,'EventValue':'0','eventname':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE','EventDefinition':'PARAMETER_TYPE_SYSCTRL_DISPENSE_DEVICE'},{'RobotEventDetailId':10004,'EventValue':'Bagger disabled.','eventname':'PARAMETER_TYPE_DESCRIPTION','EventDefinition':'PARAMETER_TYPE_DESCRIPTION'},{'RobotEventDetailId':10005,'EventValue':'Robot Control','eventname':'PARAMETER_TYPE_CONTROL_SYSTEM_NAME','EventDefinition':'Control System Name'},{'RobotEventDetailId':10006,'EventValue':'Bagger Disable','eventname':'PARAMETER_TYPE_CONTROL_PROCESS_NAME','EventDefinition':'Control Process Name'},{'RobotEventDetailId':10007,'EventValue':'3.7104999992152443','eventname':'PARAMETER_TYPE_TIME_ELAPSED','EventDefinition':'Time Elapsed'}",
     EventSeverity: 4,Active:false,RobotEventId:10005
   },
   {
@@ -149,13 +149,13 @@ describe('Xr2EventsPageComponent', () => {
     component.preventSearchData(component.searchTextFilter);
   });
 
-  it('should display the selected event details', () =>{
+  it('should display the selected record event details', () =>{
     component.displayFilteredList$ && component.displayFilteredList$.source;
     component.currentEvents = eventSelected;
     component.displaySelectedRecordDetails();
   });
 
-  it('should display the selected event details', () =>{
+  it('should Clear the selected event description and details', () =>{
     component.displayFilteredList$ && component.displayFilteredList$.source;
     component.currentEvents = eventSelected;
     component.clearFocus();
@@ -165,6 +165,13 @@ describe('Xr2EventsPageComponent', () => {
     component.displayFilteredList$ && component.displayFilteredList$.source;
     component.currentEvents = eventSelected;
     component.stopclearingdetailsofactiveitem();
+  });
+
+  it('should not clear the selected event details', () =>{
+    component.displayFilteredList$ && component.displayFilteredList$.source;
+    component.currentEvents = eventSelected;
+    const keyEvent = new KeyboardEvent('keydown', { code: 'KeyA' });
+    component.enterKeyed(keyEvent);
   });
 
   it('should display the details of errors check box checked', () => {

@@ -319,9 +319,11 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     this.getEventsData();
   }
 
-  enterKeyed(event) {
-    event.preventDefault();
+  enterKeyed($event: KeyboardEvent) {
+    $event.preventDefault();
+    if(!([37].indexOf($event.keyCode) === 0) && !([38].indexOf($event.keyCode) === 0) && !([39].indexOf($event.keyCode) === 0) && !([40].indexOf($event.keyCode) === 0) ){
     this.clearDetailsData();
+    }
   }
 
   clearFocus(){
