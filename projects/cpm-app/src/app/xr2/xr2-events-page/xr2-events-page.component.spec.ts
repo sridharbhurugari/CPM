@@ -149,6 +149,24 @@ describe('Xr2EventsPageComponent', () => {
     component.preventSearchData(component.searchTextFilter);
   });
 
+  it('should display the selected event details', () =>{
+    component.displayFilteredList$ && component.displayFilteredList$.source;
+    component.currentEvents = eventSelected;
+    component.displaySelectedRecordDetails();
+  });
+
+  it('should display the selected event details', () =>{
+    component.displayFilteredList$ && component.displayFilteredList$.source;
+    component.currentEvents = eventSelected;
+    component.clearFocus();
+  });
+
+  it('should display the selected event details', () =>{
+    component.displayFilteredList$ && component.displayFilteredList$.source;
+    component.currentEvents = eventSelected;
+    component.stopclearingdetailsofactiveitem();
+  });
+
   it('should display the details of errors check box checked', () => {
     let errorEvent: any = { selectedState: true };
     component.onErrorsSelect(errorEvent);

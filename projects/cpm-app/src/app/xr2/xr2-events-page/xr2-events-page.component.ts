@@ -148,6 +148,9 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
         if(this.searchTextFilter !== ''){
           this.preventSearchData(this.searchTextFilter);
         }
+        if(this.searchTextFilter === ''){
+          this.displaySelectedRecordDetails();
+        }
       });
   }
 
@@ -227,6 +230,17 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     this.eventDetails = null;
   }
 
+  displaySelectedRecordDetails(){
+    if(this.currentEvents !== undefined && this.currentEvents.length > 0){
+      for (let index = 0; index < this.currentEvents.length; index++) {
+        const element = this.currentEvents[index];
+        if(element.Active === true){
+          this.eventDetails = JSON.parse(element.RobotEventDetails);
+        }
+      }
+    }
+  }
+
   preventSearchData(searchData:string){
     let filterEvents: IXr2EventsItem[] = [];
     let searchString = searchData;
@@ -279,16 +293,19 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
 
   onErrorsSelect($event) {
     this.errorsSelected = $event.selectedState;
+    this.clearFocus();
     this.displayData();
   }
 
   onWarningsSelect($event) {
     this.warningsSelected = $event.selectedState;
+    this.clearFocus();
     this.displayData();
   }
 
   onInformationsSelect($event) {
     this.informationSelected = $event.selectedState;
+    this.clearFocus();
     this.displayData();
   }
 
@@ -305,6 +322,15 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   enterKeyed(event) {
     event.preventDefault();
     this.clearDetailsData();
+  }
+
+  clearFocus(){
+    if(this.currentEvents !== undefined && this.currentEvents.length > 0){
+      for (let index = 0; index < this.currentEvents.length; index++) {
+        const element = this.currentEvents[index];
+        element.Active = false;
+      }
+    }
   }
   
   parseDateFormat(param): string {
