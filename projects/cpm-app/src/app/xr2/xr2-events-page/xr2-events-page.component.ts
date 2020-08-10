@@ -8,7 +8,7 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 import * as _ from 'lodash';
 import { nameof } from '../../shared/functions/nameof';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { Many } from 'lodash';
+import { Many} from 'lodash';
 import { Xr2EventsService } from '../../api-xr2/services/xr2-events.service';
 import { IXr2EventsItem } from '../../api-xr2/data-contracts/i-xr2-events-item';
 import { Xr2EventsItem } from '../model/xr2-events-item';
@@ -51,6 +51,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   searchFields = [this.eventDescriptionPropertyName, this.eventDetailsPropertyName];
   deviceList$: Observable<Xr2DevicesList[]>;
   deviceList: SingleselectRowItem[];
+  currentEvents: IXr2EventsItem[];
   selectedDeviceId: number;
   startDate: Date = new Date();
   endDate: Date = new Date();
@@ -144,6 +145,12 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
       )
       .subscribe(data => {
         this.searchTextFilter = data;
+        if(this.searchTextFilter !== ''){
+          this.preventSearchData(this.searchTextFilter);
+        }
+        if(this.searchTextFilter === ''){
+          this.displaySelectedRecordDetails();
+        }
       });
   }
 
@@ -193,12 +200,13 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     let xr2events: IXr2EventsItem[];
     this.displayFilteredList$.subscribe((data) => { xr2events = data });
     if (xr2events.length > 0) {
+      this.currentEvents = xr2events;
       xr2events.forEach(function (element) {
         if (element.RobotEventId !== events.RobotEventId) {
-          element.Active = false;
+           element.Active = false;
         }
         if (element.RobotEventId === events.RobotEventId) {
-          element.Active = true;
+           element.Active = true;
         }
       });
       this.displayFilteredList$ = of(xr2events);
@@ -219,8 +227,41 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
   }
 
   clearDetailsData() {
-
     this.eventDetails = null;
+  }
+
+  displaySelectedRecordDetails(){
+    if(this.currentEvents !== undefined && this.currentEvents.length > 0){
+      for (let index = 0; index < this.currentEvents.length; index++) {
+        const element = this.currentEvents[index];
+        if(element.Active === true){
+          this.eventDetails = JSON.parse(element.RobotEventDetails);
+        }
+      }
+    }
+  }
+
+  preventSearchData(searchData:string){
+    let filterEvents: IXr2EventsItem[] = [];
+    let searchString = searchData;
+    if(this.currentEvents !== undefined && this.currentEvents.length > 0){
+      for (let index = 0; index < this.currentEvents.length; index++) {
+        const element = this.currentEvents[index];
+        let eventDescription = element.EventDescription.toLowerCase();
+        let eventDetails = JSON.parse(JSON.stringify(element.RobotEventDetails, function(a, b) {
+          return typeof b === "string" ? b.toLowerCase() : b
+        }));
+        if(eventDescription.includes(searchString)|| eventDetails.includes(searchString)){
+          filterEvents.push(element);
+        }
+      }
+      for (let index = 0; index < filterEvents.length; index++) {
+        const element = filterEvents[index];
+        if(element.Active === true){
+          this.eventDetails = JSON.parse(element.RobotEventDetails);
+        }
+      }
+    }
   }
 
   resetCheckBoxes() {
@@ -252,16 +293,19 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
 
   onErrorsSelect($event) {
     this.errorsSelected = $event.selectedState;
+    this.clearFocus();
     this.displayData();
   }
 
   onWarningsSelect($event) {
     this.warningsSelected = $event.selectedState;
+    this.clearFocus();
     this.displayData();
   }
 
   onInformationsSelect($event) {
     this.informationSelected = $event.selectedState;
+    this.clearFocus();
     this.displayData();
   }
 
@@ -275,11 +319,22 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     this.getEventsData();
   }
 
-  enterKeyed(event) {
-    event.preventDefault();
+  enterKeyed($event: KeyboardEvent) {
+    $event.preventDefault();
+    if(!([37].indexOf($event.keyCode) === 0) && !([38].indexOf($event.keyCode) === 0) && !([39].indexOf($event.keyCode) === 0) && !([40].indexOf($event.keyCode) === 0) ){
     this.clearDetailsData();
+    }
   }
 
+  clearFocus(){
+    if(this.currentEvents !== undefined && this.currentEvents.length > 0){
+      for (let index = 0; index < this.currentEvents.length; index++) {
+        const element = this.currentEvents[index];
+        element.Active = false;
+      }
+    }
+  }
+  
   parseDateFormat(param): string {
     var date = new Date(param);
     var strDate;
