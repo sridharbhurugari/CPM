@@ -19,6 +19,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { FormsModule } from '@angular/forms';
 import { SplitResizeComponent } from './components/split-resize/split-resize.component';
 import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-popup.component';
+import { GridSortColDirective } from './directives/grid-sort-col.directive';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-pop
     NotificationComponent,
     SplitResizeComponent,
     DropdownPopupComponent,
+    GridSortColDirective,
   ],
   imports: [
     CommonModule,
@@ -66,7 +68,8 @@ import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-pop
     CPClickableIconComponent,
     NotificationComponent,
     SplitResizeComponent,
-    DropdownPopupComponent
+    DropdownPopupComponent,
+    GridSortColDirective,
   ],
   entryComponents: [
     TextResultPopupComponent,

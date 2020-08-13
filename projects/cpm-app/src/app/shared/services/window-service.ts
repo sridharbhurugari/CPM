@@ -20,4 +20,10 @@ export class WindowService {
   get nativeWindow() : any {
     return this.windowRef;
   }
+
+  dispatchResizeEvent() {
+    if (this.nativeWindow) {
+      this.nativeWindow.dispatchEvent(new Event('resize'));
+    }
+  }
 }

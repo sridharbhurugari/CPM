@@ -12,12 +12,12 @@ import { EditPickRoutePageComponent } from './core/edit-pick-route-page/edit-pic
 import { GuidedInvMgmtCycleCountPageComponent } from './core/guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component';
 import { HardwareLeasePageComponent } from './core/hardware-lease-page/hardware-lease-page.component';
 import { ItemManagementComponent } from './core/item-management/item-management.component';
-import { Xr2ExceptionsItem } from './xr2/model/xr2-exceptions-item';
 import { Xr2ExceptionsPageComponent } from './xr2/Xr2-Exceptions-page/xr2-exceptions-page.component';
 import { GuidedinvmgmtManualcyclecountPageComponent } from './core/guidedinvmgmt-manualcyclecount-page/guidedinvmgmt-manualcyclecount-page.component';
 import { QuickPickPageComponent } from './xr2/quick-pick-page/quick-pick-page.component';
 import { Xr2ExceptionDetailsPageComponent } from './xr2/xr2-exception-details-page/xr2-exceptions-details-page.component';
 import { Xr2EventsPageComponent } from './xr2/xr2-events-page/xr2-events-page.component';
+import { InternalTransferNeedsPageComponent } from './core/internal-transfer-needs-page/internal-transfer-needs-page.component';
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
@@ -36,7 +36,8 @@ const routes: Routes = [
   { path: 'guidedinvmgmt/manualcyclecount', component: GuidedinvmgmtManualcyclecountPageComponent },
   { path: 'quickpick', component: QuickPickPageComponent},
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
-  { path: 'settings/xr2eventslist', component:Xr2EventsPageComponent }
+  { path: 'settings/xr2eventslist', component:Xr2EventsPageComponent },
+  { path: 'internalTransfer/replenishmentNeeds', component:InternalTransferNeedsPageComponent },
 ];
 
 @NgModule({
