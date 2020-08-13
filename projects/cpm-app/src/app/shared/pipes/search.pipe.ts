@@ -1,8 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 
 @Pipe({ name: 'searchPipe' })
 export class SearchPipe implements PipeTransform {
-  transform(allSearchData: any[], searchTxt: string, searchProperties?: string[]) {
+  transform(allSearchData: any[], searchTxt: string, searchProperties?: string[]): any[] {
     if (!searchTxt || !searchTxt.trim() || allSearchData.length < 1) {
       return allSearchData;
     }
