@@ -18,7 +18,7 @@
                         {{device.DeviceDescription}}
                     </div>
                     <div *ngIf="device.OutputDevices != null" style="font-size: small;font-style: italic; height: 20px;">
-                        {{getCurrentOutputDeviceDescription(device.DeviceOutput.DeviceOutputType, device.DeviceOutput.IsAutoFill)}}
+                        {{getCurrentOutputDeviceDescription(device)}}
                     </div>
                 </div>
                 <div *ngIf="device.OutputDevices != null" style="padding: 10px;">
