@@ -14,10 +14,7 @@ import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialog
   FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
-import { CoreModule } from '../../core/core.module';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
-import { IQuickPickQueueItem } from '../../api-xr2/data-contracts/i-quick-pick-queue-item';
 
 @Component({
   selector: 'oc-search-box',
@@ -54,7 +51,7 @@ describe('PicklistsQueuePageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ PicklistsQueuePageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox,
          MockSearchPipe, MockAppHeaderContainer, MockColHeaderSortable ],
-      imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule, CoreModule ],
+      imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistQueueService },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
