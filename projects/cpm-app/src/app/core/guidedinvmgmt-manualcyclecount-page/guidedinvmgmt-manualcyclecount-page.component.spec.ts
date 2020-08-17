@@ -627,7 +627,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       var dummy, dummy1;
 
       var datevalue = component.datepicker.selectedDate;
-      expect(datevalue).toEqual(null);
+      expect(datevalue).toEqual('');
       component.daterequired = false;
       expect(component.daterequired).toBeFalsy();
       component.DisableActionButtons(false);
@@ -671,7 +671,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       component.onQuantityChange("10");
       var dummy, dummy1;
       var datevalue = component.datepicker.selectedDate;
-      expect(datevalue).toEqual(null);
+      expect(datevalue).toEqual('')
       component.daterequired = true;
       expect(component.daterequired).toBeTruthy();
       component.DisableActionButtons(true);

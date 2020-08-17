@@ -365,7 +365,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       for (let i = 0; i < x.length; i++) {
         itemID = x[i].ItemId;
         genericName = x[i].GenericNameFormatted;
-        itemLocation +=x[i].LocationDescription + "<br/>";
+        itemLocation += x[i].ItemId + " is assigned to " + x[i].LocationDescription + "<br/>";
       }
       this.displayPackagerAssignItemDialog(itemID, itemLocation, genericName);
     }
@@ -424,9 +424,10 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             // if(x[0].DeviceLocationTypeId===DeviceLocationTypeId.Canister || x[0].DeviceLocationTypeId===DeviceLocationTypeId.Xr2MedicationStorage)
             else {
               this.displayCycleCountItem = null;
+              let locationDetails = x[0].ItemId + " is assigned to " + x[0].LocationDescription;
               this.displayPackagerAssignItemDialog(
                 itemid,
-                x[0].LocationDescription,
+                locationDetails,
                 x[0].GenericNameFormatted
               );
             }
