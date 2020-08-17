@@ -1,6 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InternalTransferDeviceNeedsPageComponent } from './internal-transfer-device-needs-page.component';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { InternalTransferItemsListComponent } from '../internal-transfer-items-list/internal-transfer-items-list.component';
+import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+import { ActivatedRoute } from '@angular/router';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { DevicesService } from '../../api-core/services/devices.service';
+import { of } from 'rxjs';
+import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
+import { Input, Component } from '@angular/core';
+import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
+
+@Component({
+  selector: 'app-internal-transfer-items-list',
+  template: ''
+})
+class MockInternalTransferItemsListComponent {
+  @Input()itemNeeds: IItemReplenishmentNeed[]
+}
 
 describe('InternalTransferDeviceNeedsPageComponent', () => {
   let component: InternalTransferDeviceNeedsPageComponent;
@@ -8,7 +27,23 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InternalTransferDeviceNeedsPageComponent ]
+      declarations: [ 
+        InternalTransferDeviceNeedsPageComponent,
+        MockInternalTransferItemsListComponent,
+        MockAppHeaderContainer,
+        MockTranslatePipe,
+      ],
+      imports: [
+        LayoutModule,
+        FooterModule,
+        ButtonActionModule,
+      ],
+      providers:[
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
+        { provide: WpfActionControllerService, useVaule: { } },
+        { provide: DevicesService, useValue: { get: () => of([]) } },
+        { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceItemNeeds: () => of([]) } },
+      ]
     })
     .compileComponents();
   }));
