@@ -66,8 +66,10 @@ export class EditDeviceSequenceComponent implements OnInit {
     this.deviceSequenceChanged.emit(this.enabledDevices);
   }
 
-  getCurrentOutputDeviceDescription(outputDeviceId: string, autofill: boolean){
-    const outputDevices = this.enabledDevices.find(x => x.OutputDevices != null).OutputDevices;
+  getCurrentOutputDeviceDescription(device: IDeviceSequenceOrder){
+    const outputDevices = device.OutputDevices;
+    const outputDeviceId = device.DeviceOutput.DeviceOutputType;
+    const autofill = device.DeviceOutput.IsAutoFill;
 
     const odDesc = outputDevices.find(x => x.DeviceId === String(outputDeviceId));
 
