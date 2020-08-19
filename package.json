@@ -29,6 +29,7 @@
     "guid-typescript": "^1.0.9",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.19",
+    "pdfmake": "^0.1.68",
     "rxjs": "~6.4.0",
     "signalr-no-jquery": "^0.1.10",
     "tslib": "^1.13.0",
