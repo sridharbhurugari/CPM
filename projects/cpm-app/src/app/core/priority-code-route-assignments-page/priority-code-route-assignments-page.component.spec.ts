@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
 import { PickRouteSelectComponent } from '../pick-route-select/pick-route-select.component';
-import { SharedModule } from '../../shared/shared.module';
 import { GridModule, FooterModule, LayoutModule, ButtonActionModule,
    PopupWindowService, PopupDialogService } from '@omnicell/webcorecomponents';
 import { DeviceSequenceOrderComponent } from '../device-sequence-order/device-sequence-order.component';
@@ -20,6 +19,7 @@ import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-devi
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 @Component({
   selector: 'app-priority-code-route-assignments',
   template: ''
@@ -73,7 +73,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     };
     TestBed.configureTestingModule({
       declarations: [ PriorityCodeRouteAssignmentsPageComponent, MockPriorityCodeRouteAssignmentsComponent,
-         MockTranslatePipe, PickRouteSelectComponent, DeviceSequenceOrderComponent ],
+         MockTranslatePipe, PickRouteSelectComponent, DeviceSequenceOrderComponent, MockAppHeaderContainer ],
       providers: [
         { provide: PriorityCodeRouteAssignmentsService, useValue: priorityCodeRouteAssignmentsService },
         { provide: PriorityCodePickRoutesService, useValue: { getPriority: () => of() } },
@@ -87,7 +87,6 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       ],
       imports: [
         GridModule,
-        SharedModule,
         ButtonActionModule,
         LayoutModule,
         FooterModule,

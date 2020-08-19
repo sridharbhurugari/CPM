@@ -33,7 +33,7 @@ export class GridSortColDirective {
     }
 
     this._orderableValues = values;
-    if(this._currentSortPropertyName){
+    if(this._currentSortPropertyName && this._columnHeaders){
       this.columnSelected({ ColumnPropertyName: this._currentSortPropertyName, SortDirection: this._currentSortDirection })
     }
   }
@@ -54,6 +54,9 @@ export class GridSortColDirective {
     });
 
     this._columnHeaders = columnHeaders;
+    if(this._currentSortPropertyName && this._columnHeaders){
+      this.columnSelected({ ColumnPropertyName: this._currentSortPropertyName, SortDirection: this._currentSortDirection })
+    }
   }
 
   constructor() {

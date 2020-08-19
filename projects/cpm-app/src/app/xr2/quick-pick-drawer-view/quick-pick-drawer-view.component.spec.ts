@@ -6,7 +6,6 @@ import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { DashboardCardComponent } from '../dashboard-card/dashboard-card.component';
 import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService, ComponentTypes } from '@omnicell/webcorecomponents';
-import { CoreModule } from '../../core/core.module';
 import { Subject, Observable, of, throwError } from 'rxjs';
 import { QuickPickDrawerDetailsViewComponent } from '../quick-pick-drawer-details-view/quick-pick-drawer-details-view.component';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
@@ -59,7 +58,7 @@ describe('QuickPickDrawerViewComponent', () => {
     TestBed.configureTestingModule({
       declarations: [QuickPickDrawerViewComponent, QuickPickDrawerDetailsViewComponent, DashboardCardComponent
         , MockTranslatePipe, MockSearchPipe, MockAppHeaderContainer],
-      imports: [ButtonActionModule, FooterModule, LayoutModule, CoreModule, RouterModule],
+      imports: [ButtonActionModule, FooterModule, LayoutModule, RouterModule],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: popupDialogService },

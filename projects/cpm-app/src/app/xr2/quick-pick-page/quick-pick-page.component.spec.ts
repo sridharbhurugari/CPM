@@ -5,10 +5,8 @@ import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { QuickPickPageComponent } from './quick-pick-page.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CoreModule } from '../../core/core.module';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedModule as CPSharedModule } from '../../shared/shared.module';
 
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
@@ -28,6 +26,7 @@ import { Guid } from 'guid-typescript';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
+import { MockNotificationComponent } from '../../shared/testing/mock-notification.spec';
 
 @Component({
   selector: 'oc-search-box',
@@ -152,9 +151,9 @@ describe('QuickPickPageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
-        MockSearchPipe, MockSearchBox, MockAppHeaderContainer],
+        MockSearchPipe, MockSearchBox, MockAppHeaderContainer, MockNotificationComponent, ],
       imports: [GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
-        FooterModule, LayoutModule, CoreModule, SharedModule, CPSharedModule],
+        FooterModule, LayoutModule, SharedModule, ],
       providers: [
         { provide: Xr2QuickPickQueueService, useValue: quickPickQueueService },
         { provide: Xr2QuickPickQueueDeviceService, useValue: { get: () => of(selectableDeviceInfoList) } },
