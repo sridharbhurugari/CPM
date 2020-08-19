@@ -1359,10 +1359,11 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
   describe("Should display cycle count pop up window dialog for packager or xr2 items", () => {
     it("displayPackagerAssignItemDialog should display unknown item dialog", () => {
       var title: string = "display";
-      var message: string ='message';
-      var genericName : string = "Acetmofil";
+      var message: string[] =[];
+      message.push("Packager");
+      message.push("Xr2");
       spyOn(mockPopupDialogService, "showOnce").and.callThrough();
-      component.displayPackagerAssignItemDialog(title,message,genericName);
+      component.displayPackagerAssignItemDialog(title,message);
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
   });

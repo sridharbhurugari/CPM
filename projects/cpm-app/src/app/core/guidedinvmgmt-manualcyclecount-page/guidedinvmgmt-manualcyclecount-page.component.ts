@@ -95,7 +95,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   popupTimeoutSeconds: number;
   labelPrinterName: string;
   devicePrinterName: string = "";
-  warningMessage: string;
   printResult: boolean;
   displayPrintLabel: IGuidedCycleCountPrintLabel;
   deviceId: any;
@@ -216,9 +215,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.addwhitespacetodropdown();
     this.cycleCountItemsCopy = [];
     this.doneButtonDisable = true;
-    this.translateService.get('WARNING_ROUTE_MAINTENANCE_MESSAGE').subscribe(res => {
-      this.warningMessage = res;
-    });
+
   }
   multiLocations: SingleselectRowItem[];
   selectedItemLocattion: SingleselectRowItem;
@@ -362,16 +359,13 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     }
     if (this.locationCount === 0) {
       let itemID;
-      let itemLocation = "";
-      let genericName;
+      let itemLocation:string[] = [];
       this.displayCycleCountItem = null;
       for (let i = 0; i < x.length; i++) {
         itemID = x[i].ItemId;
-        genericName = x[i].GenericNameFormatted;
-
-        itemLocation = itemLocation.concat(x[i].ItemId, this.warningMessage, x[i].LocationDescription,"<br/>");
+        itemLocation.push(x[i].LocationDescription);
       }
-      this.displayPackagerAssignItemDialog(itemID, itemLocation, genericName);
+      this.displayPackagerAssignItemDialog(itemID, itemLocation);
     }
   }
 
@@ -428,12 +422,11 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             // if(x[0].DeviceLocationTypeId===DeviceLocationTypeId.Canister || x[0].DeviceLocationTypeId===DeviceLocationTypeId.Xr2MedicationStorage)
             else {
               this.displayCycleCountItem = null;
-              let locationDetails:string = "";
-              locationDetails = locationDetails.concat(x[0].ItemId, this.warningMessage, x[0].LocationDescription);
+              let locationDetails:string[] = [];
+              locationDetails.push(x[0].DeviceDescription);
               this.displayPackagerAssignItemDialog(
                 itemid,
-                locationDetails,
-                x[0].GenericNameFormatted
+                locationDetails
               );
             }
           }
@@ -1172,8 +1165,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
 
   displayPackagerAssignItemDialog(
     itemId: string,
-    deviceDescription: string,
-    genericName: string
+    deviceDescription: string[]
   ): boolean {
     this.over = true;
     const properties = new PopupDialogProperties("Role-Status-Warning");
@@ -1182,15 +1174,21 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       .subscribe((result) => {
         properties.titleElementText = result;
       });
-    this.translateService
-      .get("PACKAGER_ASSIGNITEM_BODY_TEXT", {
-        itemId: itemId,
-        deviceDescription: deviceDescription,
-        genericName: genericName,
+      this.translateService
+        .get("PACKAGER_ASSIGNITEM_BODY_TEXT")
+        .subscribe((result) => {
+        properties.messageElementText = result;
+      });  
+      for(let i=0; i< deviceDescription.length; i++){
+      this.translateService
+        .get("PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT", {
+          itemId: itemId,
+          deviceDescription: deviceDescription[i],
       })
       .subscribe((result) => {
-        properties.messageElementText = result;
+        properties.messageElementText += result;
       });
+    }
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.primaryButtonText = "OK";
