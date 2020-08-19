@@ -27,12 +27,20 @@ import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
       }
     
 
-  public post(deviceId: string,item: deviceCycleCountItemUpdate): Observable<boolean>{
+  public post(deviceId: string,item: deviceCycleCountItemUpdate): Observable<number>{
     var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
-      return this.httpClient.post<boolean>(url, item, {
+      return this.httpClient.post<number>(url, item, {
         headers: this.ocapHttpHeadersService.getHeaders(),
       });
     }
+
+    public updateSelectedItem(deviceId: string,itemID: string): Observable<boolean>{
+      var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/SelectedItem`);
+      const params = {deviceId: deviceId, itemID: itemID};  
+      return this.httpClient.get<boolean>(url ,{
+        headers: this.ocapHttpHeadersService.getHeaders(),params
+      });
+      }
 
     public PrintLabel(deviceId: string, binData: GuidedCycleCountPrintLabel): Observable<boolean> {
       const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/PrintLabel`);

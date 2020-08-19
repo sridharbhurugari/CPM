@@ -188,5 +188,7 @@
   "XR2_EVENTS_DETAILS_DEFINITION": "Event Definition",
   "XR2_EVENTS_DETAILS_VALUE": "Event Value",
   "PACKAGER_ASSIGNITEM_BODY_TEXT": "Cycle counting is not supported for items assigned only to Packager or XR2.<br />This item is assigned to the following location(s)<br />{{genericName}} <br />{{itemId}} <br /> {{deviceDescription}}",
-  "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count"
+  "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count",
+  "CycleCount_Concurrency_UpdateConflictMsg":"The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
+  "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information"
 }

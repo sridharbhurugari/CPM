@@ -201,6 +201,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.itemIdLength = this.displayCycleCountItem.ItemId.length;
         this.dynamicGenericFormatetdNameStyle = "-" + (2 * (x[0] && x[0].GenericNameFormatted.length)) + "px";
         this.dynamicLocationDescriptionStyle = "-" + (3 * (x[0] && x[0].LocationDescription.length)) + "px";
+
+        this.guidedCycleCountService.updateSelectedItem(deviceID, this.displayCycleCountItem.ItemId).subscribe(
+          res => {
+            console.log(res);
+          }
+        );
       }
       this.IsLastItem();
       this.currentItemCount++;
@@ -267,17 +273,21 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.guidedCycleCountService.post(deviceId, update).subscribe(
         res => {
           console.log(res);
+          if (res === 3) {
+            this.displayConcurrencyDialog();
+          } else {
+            if (this.isLastItem || this.currentItemCount === this.itemCount) {
+              if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+                this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+              }
+
+              this.wpfActionController.ExecuteBackAction();
+            } else {
+              this.nextRecord();
+            }
+          }
         }
       );
-    }
-    if (this.isLastItem || this.currentItemCount === this.itemCount) {
-      if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
-        this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
-      }
-
-      this.wpfActionController.ExecuteBackAction();
-    } else {
-      this.nextRecord();
     }
   }
 
@@ -290,6 +300,11 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
     else {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
+      this.guidedCycleCountService.updateSelectedItem(this.displayCycleCountItem.DeviceId.toString(), this.displayCycleCountItem.ItemId).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
       if (this.displayCycleCountItem.QuantityOnHand === 0) {
         this.disabledatecomponent(true);
@@ -404,8 +419,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.wpfActionController.ExecuteBackAction();
     }
     else {
-      if(this.datepicker)
-      {
+      if (this.datepicker) {
         this.datepicker.selectedDate = "";
       }
       this.nextRecord();
@@ -448,18 +462,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.toggleredborderfornonfirstitem(true);
     }
     else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
-      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === ""))
-      {
-      if (!(this.datepicker && this.datepicker.isDisabled))
-      {
+      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
+      if (!(this.datepicker && this.datepicker.isDisabled)) {
         this.toggleredborderfornonfirstitem(false);
       }
       else {
         this.toggleredborderfornonfirstitem(true);
       }
     }
-    else
-    {
+    else {
       this.toggleredborderfornonfirstitem(true);
     }
   }
@@ -803,5 +814,16 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     if (this.popupDialogPrimaryClick$) {
       this.popupDialogPrimaryClick$.unsubscribe();
     }
+  }
+  displayConcurrencyDialog(): void {
+    const properties = new PopupDialogProperties('CycleCount_Concurrency_ConflictDialogTitle');
+    this.translateService.get('CycleCount_Concurrency_ConflictDialogTitle').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('CycleCount_Concurrency_UpdateConflictMsg').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe(result => { properties.primaryButtonText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = this.popupTimeoutSeconds;
+    this.dialogService.showOnce(properties);
   }
 }
