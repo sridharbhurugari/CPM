@@ -1194,6 +1194,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
     let item2: any = {};
       beforeEach(() => {
         item1.itemID = '8939';
+        item2.itemID = '8939';
         item1.DeviceLocationTypeId = DeviceLocationTypeId.Canister;
         item2.DeviceLocationTypeId = DeviceLocationTypeId.Xr2MedicationStorage;
       });

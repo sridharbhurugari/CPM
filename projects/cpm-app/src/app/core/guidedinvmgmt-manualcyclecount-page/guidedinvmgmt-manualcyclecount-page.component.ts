@@ -95,6 +95,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   popupTimeoutSeconds: number;
   labelPrinterName: string;
   devicePrinterName: string = "";
+  warningMessage: string;
   printResult: boolean;
   displayPrintLabel: IGuidedCycleCountPrintLabel;
   deviceId: any;
@@ -215,7 +216,9 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     this.addwhitespacetodropdown();
     this.cycleCountItemsCopy = [];
     this.doneButtonDisable = true;
-    //this.isSelected = false;
+    this.translateService.get('WARNING_ROUTE_MAINTENANCE_MESSAGE').subscribe(res => {
+      this.warningMessage = res;
+    });
   }
   multiLocations: SingleselectRowItem[];
   selectedItemLocattion: SingleselectRowItem;
@@ -365,7 +368,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       for (let i = 0; i < x.length; i++) {
         itemID = x[i].ItemId;
         genericName = x[i].GenericNameFormatted;
-        itemLocation += x[i].ItemId + " is assigned to " + x[i].LocationDescription + "<br/>";
+
+        itemLocation = itemLocation.concat(x[i].ItemId, this.warningMessage, x[i].LocationDescription,"<br/>");
       }
       this.displayPackagerAssignItemDialog(itemID, itemLocation, genericName);
     }
@@ -424,7 +428,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             // if(x[0].DeviceLocationTypeId===DeviceLocationTypeId.Canister || x[0].DeviceLocationTypeId===DeviceLocationTypeId.Xr2MedicationStorage)
             else {
               this.displayCycleCountItem = null;
-              let locationDetails = x[0].ItemId + " is assigned to " + x[0].LocationDescription;
+              let locationDetails:string = "";
+              locationDetails = locationDetails.concat(x[0].ItemId, this.warningMessage, x[0].LocationDescription);
               this.displayPackagerAssignItemDialog(
                 itemid,
                 locationDetails,
