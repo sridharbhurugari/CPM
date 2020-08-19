@@ -423,7 +423,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
             else {
               this.displayCycleCountItem = null;
               let locationDetails:string[] = [];
-              locationDetails.push(x[0].DeviceDescription);
+              locationDetails.push(x[0].LocationDescription);
               this.displayPackagerAssignItemDialog(
                 itemid,
                 locationDetails
