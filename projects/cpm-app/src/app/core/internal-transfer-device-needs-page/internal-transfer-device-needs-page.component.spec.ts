@@ -14,6 +14,7 @@ import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-rep
 import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -48,6 +49,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         { provide: PdfGridReportService, useValue: { buildTableBody: () => of({}) } },
         { provide: TableBodyService, useValue: { print: () => of(true) } },
         { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: SimpleDialogService, useValue: { displayError: () => { } } },
       ]
     })
     .compileComponents();

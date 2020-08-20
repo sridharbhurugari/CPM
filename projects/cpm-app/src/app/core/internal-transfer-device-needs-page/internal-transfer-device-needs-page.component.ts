@@ -11,6 +11,7 @@ import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-re
 import { TranslateService } from '@ngx-translate/core';
 import { ITableColumnDefintion } from '../../shared/services/printing/i-table-column-definition';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -32,6 +33,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     private wpfActionControllerService: WpfActionControllerService,
     private pdfGridReportService: PdfGridReportService,
     private tableBodyService: TableBodyService,
+    private simpleDialogService: SimpleDialogService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
     deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
@@ -61,10 +63,20 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: "*" },
     ];
     let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.itemNeeds$);
-    this.pdfGridReportService.print(tableBody$, this.reportTitle$).subscribe(x => {
+    this.pdfGridReportService.print(tableBody$, this.reportTitle$).subscribe(succeeded => {
       this.requestStatus = 'none';
+      if (!succeeded) {
+        this.displayPrintFailed();
+      } else {
+        this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
+      }
     }, err => {
       this.requestStatus = 'none';
+      this.displayPrintFailed();
     });
+  }
+
+  private displayPrintFailed() {
+    this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
   }
 }

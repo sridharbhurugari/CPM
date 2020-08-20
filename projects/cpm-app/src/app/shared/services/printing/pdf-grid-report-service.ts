@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
-import * as pdfMake from 'pdfmake/build/pdfmake.js';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
-import { AngularReportBaseData } from '../../../api-core/data-contracts/angular-report-base-data';
+import { Injectable, Inject } from '@angular/core';
+import { IAngularReportBaseData } from '../../../api-core/data-contracts/i-angular-report-base-data';
 import { PdfPrintService } from '../../../api-core/services/pdf-print-service';
 import { OcapUrlBuilderService } from '../ocap-url-builder.service';
 import { TDocumentDefinitions, ContentTable } from 'pdfmake/interfaces';
@@ -9,19 +7,21 @@ import { from, Observable, forkJoin, bindCallback } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { IReportLabels } from './i-report-labels';
+import { PdfMakeService } from './pdf-make.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PdfGridReportService
 {
-  reportBaseData$: Observable<AngularReportBaseData>;
+  reportBaseData$: Observable<IAngularReportBaseData>;
   reportLogo$: Observable<string>;
   reportLabels$: Observable<IReportLabels>;
 
   constructor(
     private pdfPrintService: PdfPrintService,
     private ocapUrlBuilderService: OcapUrlBuilderService,
+    private pdfMakeService: PdfMakeService,
     translateService: TranslateService,
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -36,27 +36,27 @@ export class PdfGridReportService
     }));
   }
 
-  private generateAndPrintPdf(reportBaseData: AngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
+  private generateAndPrintPdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
     const blob$ = this.generatePdfBlob(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
     return blob$.pipe(switchMap((blob: Blob) => {
       return this.pdfPrintService.printPdf(blob);
     }));
   }
 
-  private generatePdfBlob(reportBaseData: AngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<Blob> {
+  private generatePdfBlob(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<Blob> {
     const pdf = this.generatePdf(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
     const boundGetBlob = pdf.getBlob.bind(pdf);
     const blob$ = bindCallback<Blob>(boundGetBlob)();
     return blob$;
   }
 
-  private generatePdf(reportBaseData: AngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
+  private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
     const documentDefinition = this.getDocumentDefinition(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
-    const pdf = pdfMake.createPdf(documentDefinition, null, null, pdfFonts.pdfMake.vfs);
+    const pdf = this.pdfMakeService.createPdf(documentDefinition);
     return pdf;
   }
 
-  private getDocumentDefinition(reportBaseData: AngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
+  private getDocumentDefinition(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
     return {
       footer: (currentPage: number, pageCount: number) => {
         return [

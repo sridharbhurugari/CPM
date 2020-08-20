@@ -1,4 +1,4 @@
-export class AngularReportBaseData {
+export interface IAngularReportBaseData {
   OmniId: string;
   OmniName: string;
   SiteDescription: string;
@@ -7,5 +7,4 @@ export class AngularReportBaseData {
   Address3: string;
   CombinedAddress: string;
   FormattedDateTime: string;
-
 }
