@@ -13,6 +13,14 @@
             <div class="ocleftalign">
                 <oc-button-action [buttonText]="'CANCEL' | translate" (click)="goBack()">}</oc-button-action>
             </div>
+            <div class="ocrightalign">
+                <oc-button-action 
+                    [disabled]="requestStatus != 'none'"
+                    [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
+                    [buttonText]="'PRINT' | translate"
+                    (click)="print()">
+                </oc-button-action>
+            </div>
         </oc-footer>
     </ng-container>
 </oc-action-layout>

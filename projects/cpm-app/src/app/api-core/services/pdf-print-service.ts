@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
