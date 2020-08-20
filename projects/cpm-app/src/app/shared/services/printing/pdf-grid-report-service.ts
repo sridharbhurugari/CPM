@@ -30,6 +30,12 @@ export class PdfGridReportService
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
+  printWithBaseData(tableBody$: Observable<ContentTable>, reportTitle$: Observable<string>, reportBaseData$: Observable<IAngularReportBaseData>): Observable<boolean> {
+    return forkJoin(reportBaseData$, this.reportLogo$, tableBody$, reportTitle$, this.reportLabels$).pipe(switchMap(r => {
+      return this.generateAndPrintPdf(r[0], r[1], r[2], r[3], r[4]);
+    }));
+  }
+
   print(tableBody$: Observable<ContentTable>, reportTitle$: Observable<string>): Observable<boolean> {
     return forkJoin(this.reportBaseData$, this.reportLogo$, tableBody$, reportTitle$, this.reportLabels$).pipe(switchMap(r => {
       return this.generateAndPrintPdf(r[0], r[1], r[2], r[3], r[4]);

@@ -12,6 +12,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ITableColumnDefintion } from '../../shared/services/printing/i-table-column-definition';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { PdfPrintService } from '../../api-core/services/pdf-print-service';
+import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -28,6 +30,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   colHeaders$: Observable<any>;
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' = 'none';
+  reportBaseData$: Observable<IAngularReportBaseData>;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -38,6 +41,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     devicesService: DevicesService,
     deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     translateService: TranslateService,
+    pdfPrintService: PdfPrintService,
   ) {
     let deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id == deviceId)));
@@ -45,6 +49,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));
     this.itemNeeds$ = deviceReplenishmentNeedsService.getDeviceItemNeeds(deviceId).pipe(shareReplay(1));
+    this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
 
   ngOnInit() {
@@ -63,7 +68,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: "*" },
     ];
     let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.itemNeeds$);
-    this.pdfGridReportService.print(tableBody$, this.reportTitle$).subscribe(succeeded => {
+    this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();

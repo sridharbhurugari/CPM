@@ -15,6 +15,7 @@ import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-re
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -50,6 +51,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         { provide: TableBodyService, useValue: { print: () => of(true) } },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: { displayError: () => { } } },
+        { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
       ]
     })
     .compileComponents();

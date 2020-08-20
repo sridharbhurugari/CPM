@@ -7,4 +7,5 @@ export interface IAngularReportBaseData {
   Address3: string;
   CombinedAddress: string;
   FormattedDateTime: string;
+  FormPrinterName: string;
 }
