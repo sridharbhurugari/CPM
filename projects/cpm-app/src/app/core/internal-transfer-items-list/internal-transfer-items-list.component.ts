@@ -17,6 +17,7 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   readonly needPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityNeeded');
   readonly qohPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityOnHand');
   readonly pendingPickPropertyName: string = nameof<IItemReplenishmentNeed>('PendingDevicePickQuantity');
+  private _itemNeeds: IItemReplenishmentNeed[];
 
   searchPropertyNames: string[] = [
     this.itemDescriptionPropertyName,
@@ -26,7 +27,14 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   searchTextFilter: string;
 
   @Input()
-  itemNeeds: IItemReplenishmentNeed[];
+  set itemNeeds(value: IItemReplenishmentNeed[]) {
+    this._itemNeeds = value;
+    this.windowService.dispatchResizeEvent();
+  }
+
+  get itemNeeds(): IItemReplenishmentNeed[] {
+    return this._itemNeeds;
+  }
 
   @ViewChild('ocsearchbox', {
     static: true
