@@ -192,6 +192,7 @@
   "XR2_EVENTS_LIST_DATETIME": "Event Date",
   "XR2_EVENTS_DETAILS_DEFINITION": "Event Definition",
   "XR2_EVENTS_DETAILS_VALUE": "Event Value",
-  "PACKAGER_ASSIGNITEM_BODY_TEXT": "Cycle counting is not supported for items assigned only to Packager or XR2.<br />This item is assigned to the following location(s)<br />{{genericName}} <br />{{itemId}} <br /> {{deviceDescription}}",
+  "PACKAGER_ASSIGNITEM_BODY_TEXT": "Cycle counting is not supported for Packager or XR2 assignments.<br />",
+  "PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT": "{{itemId}} is assigned to {{deviceDescription}}<br />",
   "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count"
 }

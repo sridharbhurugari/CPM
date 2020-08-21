@@ -7,7 +7,7 @@ import { GridModule, ButtonActionModule,  SingleselectDropdownModule, Singlesele
   LayoutModule} from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, throwError } from 'rxjs';
 import { Input, Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from 'selenium-webdriver/http';
@@ -24,6 +24,11 @@ import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.se
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
+import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
+import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
+import { Guid } from 'guid-typescript';
+import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
 
 @Component({
   selector: 'oc-search-box',
@@ -41,6 +46,7 @@ describe('PicklistsQueueComponent', () => {
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
   let translateService: Partial<TranslateService>;
+  let popupDialogService: Partial<PopupDialogService>;
   const event: IColHeaderSortChanged = {ColumnPropertyName: 'Destination', SortDirection: 'asc'};
 
   beforeEach(async(() => {
@@ -49,10 +55,15 @@ describe('PicklistsQueueComponent', () => {
       removePicklistQueueItemSubject: new Subject()
     };
     picklistsQueueService = {
-      skip: jasmine.createSpy('skip').and.returnValue(of(picklistsQueueService))
+      skip: jasmine.createSpy('skip').and.returnValue(of(PicklistsQueueService)),
+      sendToRobot: jasmine.createSpy('sendToRobot').and.returnValue(of(PicklistsQueueService)),
+      printLabels: jasmine.createSpy('printLabels').and.returnValue(of(PicklistsQueueService))
     };
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
+    };
+    popupDialogService = {
+      showOnce: jasmine.createSpy('showOnce')
     };
 
     TestBed.configureTestingModule({
@@ -63,7 +74,7 @@ describe('PicklistsQueueComponent', () => {
       providers: [
         { provide: WpfActionControllerService, useValue: jasmine.createSpyObj('WpfActionControllerService', ['ExecuteContinueAction']) },
         { provide: TranslateService, useValue: translateService },
-        { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
+        { provide: PopupDialogService, useValue: popupDialogService },
         { provide: HttpClient, useValue: { get: () => {}} },
         { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
         { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
@@ -94,7 +105,7 @@ describe('PicklistsQueueComponent', () => {
       const picklistQueueItem = new PicklistQueueItem(null);
       component.skip(picklistQueueItem);
       expect(picklistsQueueService.skip).toHaveBeenCalled();
-      })
+      });
     });
 
   describe('Connect to Events', () => {
@@ -166,6 +177,7 @@ describe('PicklistsQueueComponent', () => {
         Label: translatedLabel,
         IsActive: true
       };
+
       const expectedRow = new SingleselectRowItem(translatedLabel, '2102');
       const picklistQueueItem = new PicklistQueueItem(null);
       picklistQueueItem.Status = 2;
@@ -177,7 +189,7 @@ describe('PicklistsQueueComponent', () => {
   });
 
   describe('Button State Diplay Texts', () => {
-    it('Release button should display on new status', () => {
+    it('should display release button on new status', () => {
       const item = new PicklistQueueItem(null);
       item.OutputDeviceId = '1';
       item.IsPrintable = true;
@@ -200,7 +212,7 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
     });
-    it('Print button should display on sent status', () => {
+    it('should display print button on sent status', () => {
       component.picklistQueueItems = [
         new PicklistQueueItem(null),
       ];
@@ -214,7 +226,7 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
     });
-    it('Print button should display on boxsplitreceived status', () => {
+    it('it should display print button on boxsplitreceived status', () => {
       component.picklistQueueItems = [
         new PicklistQueueItem(null),
       ];
@@ -228,7 +240,7 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(validText);
     });
-    it('Reprint button should display on printed status', () => {
+    it('should display reprint button on printed status', () => {
       component.picklistQueueItems = [
         new PicklistQueueItem(null),
       ];
@@ -245,7 +257,7 @@ describe('PicklistsQueueComponent', () => {
   });
 
   describe('Action Button Disable States', () => {
-    it('Release should be enabled on new status', () => {
+    it('should set release to enabled on new status', () => {
       const item = new PicklistQueueItem(null);
       item.OutputDeviceId = '1';
       item.IsPrintable = false;
@@ -265,7 +277,7 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
     });
-    it('Print should disable on non-printable devices', () => {
+    it('should set print to disabled on non-printable devices', () => {
       component.picklistQueueItems = [
         new PicklistQueueItem(null),
       ];
@@ -275,7 +287,7 @@ describe('PicklistsQueueComponent', () => {
 
       expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).disabled).toBeTruthy();
     });
-    it('Print should enable on printable devices with valid state', () => {
+    it('should set print to enabled on printable devices with valid state', () => {
       component.picklistQueueItems = [
         new PicklistQueueItem(null),
         new PicklistQueueItem(null)
@@ -299,5 +311,130 @@ describe('PicklistsQueueComponent', () => {
       expect(component.columnSelected(event));
     });
   });
-});
 
+  describe('Queue Eventing', () => {
+    it('should add picklist queue item on add or update event', () => {
+      const fakeRobotGroupId = Guid.create();
+      const pickListItemUpdate = new PicklistQueueItem(null);
+      const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+      component.picklistQueueItems = [];
+
+      const picklistItemAdd = {} as IPicklistQueueItemNonstandardJson;
+      picklistItemAdd.RobotPickGroupId = fakeRobotGroupId;
+      picklistItemAdd.ItemPicklistLines = itemPicklistLines;
+      picklistItemAdd.AvailableOutputDeviceList = availableOutputDeviceList;
+      const fakeAddEvent = {PicklistQueueItem: picklistItemAdd};
+
+      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeAddEvent);
+
+      expect(component.picklistQueueItems.length).toBe(1);
+    });
+    it('should update picklist queue item on add or update event by robot group ID', () => {
+      const fakeRobotGroupId = Guid.create();
+      const existingQueueItem = new PicklistQueueItem(null);
+      const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+
+      existingQueueItem.Status = 1;
+      existingQueueItem.RobotPickGroupId = fakeRobotGroupId;
+      component.picklistQueueItems = [
+        existingQueueItem
+      ]
+
+      const pickListItemUpdate = {} as IPicklistQueueItemNonstandardJson;
+      pickListItemUpdate.Status = 2;
+      pickListItemUpdate.ItemPicklistLines = itemPicklistLines;
+      pickListItemUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
+      pickListItemUpdate.RobotPickGroupId = fakeRobotGroupId;
+      const fakeUpdateEvent = {PicklistQueueItem: pickListItemUpdate};
+
+      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeUpdateEvent);
+
+      expect(existingQueueItem.Status).toBe(pickListItemUpdate.Status);
+    });
+    it('should update picklist queue item on add or update event by order and order destination IDs', () => {
+      const existingQueueItem = new PicklistQueueItem(null);
+      const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+
+      existingQueueItem.Status = 1;
+      existingQueueItem.OrderId = 'orderId';
+      existingQueueItem.DeviceLocationId = 1;
+      existingQueueItem.OrderGroupDestinationId = '1';
+      existingQueueItem.RobotPickGroupId = null;
+      component.picklistQueueItems = [
+        existingQueueItem
+      ];
+
+      const pickListItemUpdate = {} as IPicklistQueueItemNonstandardJson;
+      pickListItemUpdate.Status = 2;
+      pickListItemUpdate.OrderId = 'orderId';
+      pickListItemUpdate.DeviceLocationId = 1;
+      pickListItemUpdate.OrderGroupDestinationId = '1';
+      pickListItemUpdate.ItemPicklistLines = itemPicklistLines;
+      pickListItemUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const fakeUpdateEvent = {PicklistQueueItem: pickListItemUpdate};
+
+      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeUpdateEvent);
+
+      expect(existingQueueItem.Status).toBe(pickListItemUpdate.Status);
+    });
+    it('should remove picklist queue item on remove event', () => {
+      const fakeRobotGroupId = Guid.create();
+      const existingQueueItem = new PicklistQueueItem(null);
+
+      existingQueueItem.OrderId = 'orderId';
+      existingQueueItem.OrderGroupDestinationId = 'destinationId';
+      existingQueueItem.DeviceLocationId = 1;
+      existingQueueItem.RobotPickGroupId = fakeRobotGroupId;
+      component.picklistQueueItems = [
+        existingQueueItem
+      ]
+
+      const xr2OrderGroupKey: IXr2OrderGroupKey = {
+        OrderId: 'orderId',
+        OrderGroupDestinationId: 'destinationId',
+        DeviceLocationId: 1,
+        RobotPickGroupId: fakeRobotGroupId
+      };
+      const fakeEvent = {Xr2OrderGroupKey: xr2OrderGroupKey};
+
+      picklistsQueueEventConnectionService.removePicklistQueueItemSubject.next(fakeEvent);
+
+      expect(component.picklistQueueItems.length).toBe(0);
+    });
+  });
+  describe('Queue API Actions', () => {
+    it('should call PicklistQueue service to send to robot on release click', () => {
+      const fakePicklistItem = new PicklistQueueItem(null);
+      const itemPicklistLine = {} as IItemPicklistLine;
+      fakePicklistItem.ItemPicklistLines = [itemPicklistLine];
+
+      component.sendToRobot(fakePicklistItem);
+
+      expect(picklistsQueueService.sendToRobot).toHaveBeenCalledTimes(1);
+      expect(fakePicklistItem.Saving).toBeFalsy();
+    });
+    it('should call PicklistQueue service to reroute on reroute click', () => {
+      const fakePicklistItem = new PicklistQueueItem(null);
+      const itemPicklistLine = {} as IItemPicklistLine;
+      fakePicklistItem.ItemPicklistLines = [itemPicklistLine];
+
+      component.skip(fakePicklistItem);
+
+      expect(picklistsQueueService.skip).toHaveBeenCalledTimes(1);
+      expect(fakePicklistItem.Saving).toBeFalsy();
+    });
+    it('should call PicklistQueue service to print label on print click', () => {
+      const fakePicklistItem = new PicklistQueueItem(null);
+      const itemPicklistLine = {} as IItemPicklistLine;
+      fakePicklistItem.ItemPicklistLines = [itemPicklistLine];
+
+      component.printLabels(fakePicklistItem);
+
+      expect(picklistsQueueService.printLabels).toHaveBeenCalledTimes(1);
+    });
+  });
+});

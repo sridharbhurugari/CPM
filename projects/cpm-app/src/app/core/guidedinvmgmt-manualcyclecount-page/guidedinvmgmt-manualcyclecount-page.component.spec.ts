@@ -671,7 +671,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       component.onQuantityChange("10");
       var dummy, dummy1;
       var datevalue = component.datepicker.selectedDate;
-      expect(datevalue).toEqual(null);
+      expect(datevalue).toEqual(null)
       component.daterequired = true;
       expect(component.daterequired).toBeTruthy();
       component.DisableActionButtons(true);
@@ -1194,6 +1194,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
     let item2: any = {};
       beforeEach(() => {
         item1.itemID = '8939';
+        item2.itemID = '8939';
         item1.DeviceLocationTypeId = DeviceLocationTypeId.Canister;
         item2.DeviceLocationTypeId = DeviceLocationTypeId.Xr2MedicationStorage;
       });
@@ -1358,10 +1359,11 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
   describe("Should display cycle count pop up window dialog for packager or xr2 items", () => {
     it("displayPackagerAssignItemDialog should display unknown item dialog", () => {
       var title: string = "display";
-      var message: string ='message';
-      var genericName : string = "Acetmofil";
+      var message: string[] =[];
+      message.push("Packager");
+      message.push("Xr2");
       spyOn(mockPopupDialogService, "showOnce").and.callThrough();
-      component.displayPackagerAssignItemDialog(title,message,genericName);
+      component.displayPackagerAssignItemDialog(title,message);
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
   });
