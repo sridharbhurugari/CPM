@@ -10,7 +10,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 import { DeviceConfigurationList } from '../model/device-configuration-list';
 import { nameof } from '../../shared/functions/nameof';
-import { SharedModule } from '../../shared/shared.module';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ActivatedRoute, Router, Params, NavigationExtras, RouterModule } from '@angular/router';
 import { HardwareLeaseEventConnectionService } from '../../api-core/services/hardware-lease-event-connection.service';
@@ -85,7 +84,7 @@ describe('HardwareLeasePageComponent', () => {
         { provide: EventConnectionService, useValue: eventConnectionService}
       ],
       imports: [
-        SharedModule, FooterModule, LayoutModule, ButtonActionModule, GridModule, RouterModule
+        FooterModule, LayoutModule, ButtonActionModule, GridModule, RouterModule
       ]
     })
     .compileComponents();

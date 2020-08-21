@@ -3,15 +3,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditDeviceSequenceComponent } from './edit-device-sequence.component';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ButtonActionModule, CheckboxModule, GridModule, PopupWindowService, PopupWindowProperties, SingleselectRowItem} from '@omnicell/webcorecomponents';
-import { SharedModule } from '../../shared/shared.module';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { TranslateService } from '@ngx-translate/core';
 import { of, Subject } from 'rxjs';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
-import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { MockRowReorderButtonsComponent } from '../../shared/testing/mock-row-reorder-buttons.spec';
 
 
 describe('EditDeviceSequenceComponent', () => {
@@ -25,12 +25,16 @@ describe('EditDeviceSequenceComponent', () => {
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
     popupWindowService = { show: showSpy };
     TestBed.configureTestingModule({
-      declarations: [ EditDeviceSequenceComponent, MockTranslatePipe ],
+      declarations: [ 
+        EditDeviceSequenceComponent,
+        MockTranslatePipe,
+        MockCpClickableIconComponent,
+        MockRowReorderButtonsComponent,
+      ],
       imports: [
         ButtonActionModule,
         CheckboxModule,
         GridModule,
-        SharedModule,
       ],
       providers: [
         { provide: TranslateService, useValue: { get: () => of([]) } },

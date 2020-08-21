@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { EditPickRoutePageComponent } from './edit-pick-route-page.component';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
-import { SharedModule } from '../../shared/shared.module';
 import { GridModule, ButtonActionModule, FooterModule, LayoutModule,
   PopupWindowService, PopupDialogService } from '@omnicell/webcorecomponents';
 import { EditDeviceSequenceComponent } from '../edit-device-sequence/edit-device-sequence.component';
@@ -21,6 +20,9 @@ import { FormsModule } from '@angular/forms';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
+import { MockHeaderTitleBottomMarginContainerComponent } from '../../shared/testing/mock-header-title-bottom-margin-container.spec';
+import { MockSplitResizeComponent } from '../../shared/testing/mock-split-resize.spec';
 
 describe('EditPickRoutePageComponent', () => {
   let component: EditPickRoutePageComponent;
@@ -53,10 +55,16 @@ describe('EditPickRoutePageComponent', () => {
     pickRoutesService = { get: () => of(pickRoute), saveAs: saveAsSpy, save: saveSpy, delete: deleteSpy };
     popupDialogService = { showOnce: jasmine.createSpy('showOnce') };
     TestBed.configureTestingModule({
-      declarations: [ EditPickRoutePageComponent, MockTranslatePipe, EditDeviceSequenceComponent ],
+      declarations: [ 
+        EditPickRoutePageComponent,
+        MockTranslatePipe,
+        EditDeviceSequenceComponent,
+        MockAppHeaderContainer,
+        MockHeaderTitleBottomMarginContainerComponent,
+        MockSplitResizeComponent,
+      ],
       imports: [
         GridModule,
-        SharedModule,
         ButtonActionModule,
         LayoutModule,
         FooterModule,

@@ -18,26 +18,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
-import { CoreModule } from '../../core/core.module';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
-import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
-import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
-import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
-import { TextResultPopupComponent } from '../../shared/components/text-result-popup/text-result-popup.component';
 import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
-import { property } from 'lodash';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
 import { Guid } from 'guid-typescript';
 import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
-import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 
 @Component({
   selector: 'oc-search-box',
@@ -53,7 +44,6 @@ describe('PicklistsQueueComponent', () => {
   let component: PicklistsQueueComponent;
   let fixture: ComponentFixture<PicklistsQueueComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
-  let eventConnectionService: Partial<EventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
   let translateService: Partial<TranslateService>;
   let popupDialogService: Partial<PopupDialogService>;
@@ -80,7 +70,7 @@ describe('PicklistsQueueComponent', () => {
       declarations: [ PicklistsQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
         MockColHeaderSortable, MockAppHeaderContainer ],
       imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
-        FooterModule, LayoutModule, CoreModule],
+        FooterModule, LayoutModule ],
       providers: [
         { provide: WpfActionControllerService, useValue: jasmine.createSpyObj('WpfActionControllerService', ['ExecuteContinueAction']) },
         { provide: TranslateService, useValue: translateService },
