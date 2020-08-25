@@ -259,7 +259,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         ExpirationDate: actualexpiradationdate,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
         BarCodeFormat: this.barcodeFormat,
-        ProductID: this.rawBarcodeMessage && this.rawBarcodeMessage
+        ProductID: this.rawBarcodeMessage && this.rawBarcodeMessage,
+        OriginalQuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
+        OriginalExpirationDate: this.displayCycleCountItem.ExpirationDate
       });
 
       var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');

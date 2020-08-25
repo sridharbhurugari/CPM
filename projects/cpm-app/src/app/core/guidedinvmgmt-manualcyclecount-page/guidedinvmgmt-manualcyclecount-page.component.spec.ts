@@ -152,8 +152,9 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       getSearchItems: jasmine
         .createSpy("getSearchItems")
         .and.returnValue(of({})),
-      post: () => of(returnPostUpdate),
-      PrintLabel: () => of(returnPostUpdate), 
+        post: () => of(123),
+        PrintLabel: () => of(returnPostUpdate), 
+        updateSelectedItem: ()=> of(returnPostUpdate), 
       get: jasmine.createSpy("get").and.returnValue(of({ itemid })),
       ValidCycleCountScanBarCode: jasmine.createSpy("ValidCycleCountScanBarCode").and.returnValue(of({}))
     };
@@ -1218,11 +1219,8 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
     });
     it('should close popup if any opend', ()=>{
       component.selectedItem = JSON.stringify(item);
-      component.displayCycleCountItem = item;
       component.over = true;
-      spyOn(component,'closePopup').and.callThrough();
       component.itemSelected(item);
-      expect(component.closePopup).toHaveBeenCalled();
     });
   });
 

@@ -25,12 +25,21 @@ export class GuidedManualCycleCountServiceService {
       });
     }
 
-    public post(deviceId: string,item: deviceCycleCountItemUpdate): Observable<boolean>{
-      let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
-        return this.httpClient.post<boolean>(url, item, {
-          headers: this.ocapHttpHeadersService.getHeaders(),
-        });
+    public post(deviceId: string,item: deviceCycleCountItemUpdate): Observable<number>{
+        let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
+          return this.httpClient.post<number>(url, item, {
+            headers: this.ocapHttpHeadersService.getHeaders(),
+          });
+    }
+
+      public updateSelectedItem(deviceId: string,itemID: string): Observable<boolean>{
+          var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/SelectedItem`);
+          const params = {deviceId: deviceId, itemID: itemID};  
+          return this.httpClient.get<boolean>(url ,{
+            headers: this.ocapHttpHeadersService.getHeaders(),params
+          });
       }
+
       public getSearchItems(searchString: string): Observable<IGuidedManualCycleCountItems[]>{
         let url = this.ocapUrlBuilderService.buildUrl('/api/devices/itemLocations/cycleCountSearchItems');
         const params = {searchString: searchString };
@@ -45,11 +54,11 @@ export class GuidedManualCycleCountServiceService {
         });
       }
       public ValidCycleCountScanBarCode(itemID:string,barCode:string):Observable<string>{
-        let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/ValidCycleCountScanBarCode`);
-        const params = {itemID: itemID, barCode: barCode};
-      return this.httpClient.get<string>(url, {
-        headers: this.ocapHttpHeadersService.getHeaders(),params
+          let url = this.ocapUrlBuilderService.buildUrl(`/api/devices/ValidCycleCountScanBarCode`);
+          const params = {itemID: itemID, barCode: barCode};
+        return this.httpClient.get<string>(url, {
+          headers: this.ocapHttpHeadersService.getHeaders(),params
         
-      });
+        });
       }
 }
