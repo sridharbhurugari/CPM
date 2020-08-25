@@ -1211,15 +1211,19 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
 
   describe('itemSelected', () =>{
     let item: any = {};
+    let displayItem: any = {};
     beforeEach(() => {
       item = {"status": 200,
       "item":{ID: "8939", GenericNameFormatted: "acebutolol 200mg CAPSULE", 
       TradeNameFormatted: "SECTRAL 200mg CAPSULE", TradeName: "SECTRAL"}
       }
+      displayItem.DeviceId = "5"
     });
     it('should close popup if any opend', ()=>{
       component.selectedItem = JSON.stringify(item);
+      component.displayCycleCountItem = displayItem;
       component.over = true;
+      component.isSelected = true;
       component.itemSelected(item);
     });
   });
@@ -1374,6 +1378,15 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
   });
+
+  describe("mockPopupDialogService", () => {
+    it("mockPopupDialogService message", () => {
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.displayConcurrencyDialog();
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
   describe("handleLeaseBusyChanged", () => {
     it("handleLeaseBusyChanged message", () => {
       var isBusy: boolean = true;
