@@ -107,9 +107,13 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   itemIdLength: number;
   popupDialogProperties: PopupDialogProperties;
   popupDialog: PopupDialogComponent;
+  popupConcurrencyDialog: PopupDialogComponent;
   private popupDialogClose$: Subscription;
   private popupDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
+  private popupConcurrencyDialogClose$: Subscription;
+  private popupConcurrencyDialogPrimaryClick$: Subscription;
+  private popupConcurrencyDialogTimeout$: Subscription;
   scanItem: string;
   isSelected: boolean;
   transaction: boolean;
@@ -268,6 +272,23 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     if (this.sub1) {
       this.sub1.unsubscribe();
     }
+
+    if (this.popupDialogClose$) {
+      this.popupDialogClose$.unsubscribe();
+    }
+    if (this.popupDialogPrimaryClick$) {
+      this.popupDialogPrimaryClick$.unsubscribe();
+    }
+    if (this.popupConcurrencyDialogClose$) {
+      this.popupConcurrencyDialogClose$.unsubscribe();
+    }
+    if (this.popupConcurrencyDialogPrimaryClick$) {
+      this.popupConcurrencyDialogPrimaryClick$.unsubscribe();
+    }
+    if (this.popupConcurrencyDialogTimeout$) {
+      this.popupConcurrencyDialogTimeout$.unsubscribe();
+    }
+
   }
 
   // Output from the Dropdown Search Item Click
@@ -659,9 +680,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       this.guidedManualCycleCountServiceService.post(deviceId, update).subscribe(res => {
           console.log(res);
           if(res === 3){
-            this.displayCycleCountItem = null;
-            this.displayConcurrencyDialog();
-            this.getCycleCountData(itemId);
+            this.displayConcurrencyDialog(itemId);
           }
           else{
             if(this.displayCycleCountItem){
@@ -1239,7 +1258,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     return this.over;
   }
 
-  displayConcurrencyDialog(): void {
+  displayConcurrencyDialog(itemId: string): void {
     const properties = new PopupDialogProperties('CycleCount_Concurrency_ConflictDialogTitle');
     this.translateService.get('CycleCount_Concurrency_ConflictDialogTitle').subscribe(result => { properties.titleElementText = result; });
     this.translateService.get('CycleCount_Concurrency_UpdateConflictMsg').subscribe(result => { properties.messageElementText = result; });
@@ -1248,6 +1267,16 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Info;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+    this.popupConcurrencyDialog = this.dialogService.showOnce(properties);
+    this.popupConcurrencyDialogClose$ = this.popupConcurrencyDialog.didClickCloseButton.subscribe(() => {
+    });
+    this.popupConcurrencyDialogPrimaryClick$ = this.popupConcurrencyDialog.didClickPrimaryButton.subscribe(() => {
+      this.displayCycleCountItem = null;
+      this.getCycleCountData(itemId);
+    });
+    this.popupConcurrencyDialogTimeout$ = this.popupConcurrencyDialog.didTimeoutDialog.subscribe(() => {
+      this.displayCycleCountItem = null;
+      this.getCycleCountData(itemId);
+    })
   }
 }

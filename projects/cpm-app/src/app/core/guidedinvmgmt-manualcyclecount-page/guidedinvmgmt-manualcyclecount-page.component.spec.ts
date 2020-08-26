@@ -1381,8 +1381,9 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
 
   describe("mockPopupDialogService", () => {
     it("mockPopupDialogService message", () => {
+      var itemId:string = '8939'
       spyOn(mockPopupDialogService, "showOnce").and.callThrough();
-      component.displayConcurrencyDialog();
+      component.displayConcurrencyDialog(itemId);
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
   });
