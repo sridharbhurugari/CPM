@@ -3,6 +3,7 @@ import { PopupDialogService, PopupDialogProperties, PopupDialogType } from '@omn
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, forkJoin } from 'rxjs';
 import { Guid } from 'guid-typescript';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class SimpleDialogService {
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
   ) {
-    this.okButtonText$ = translateService.get('OK');
+    this.okButtonText$ = translateService.get('OK').pipe(shareReplay(1));
   }
 
   displayErrorOk(titleResourceKey: string, messageResourceKey: string) {

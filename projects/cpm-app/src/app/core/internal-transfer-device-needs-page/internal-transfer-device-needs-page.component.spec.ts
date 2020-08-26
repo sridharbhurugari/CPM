@@ -28,8 +28,18 @@ class MockInternalTransferItemsListComponent {
 describe('InternalTransferDeviceNeedsPageComponent', () => {
   let component: InternalTransferDeviceNeedsPageComponent;
   let fixture: ComponentFixture<InternalTransferDeviceNeedsPageComponent>;
+  let simpleDialogService: Partial<SimpleDialogService>;
+  let printWithBaseData: jasmine.Spy;
 
   beforeEach(async(() => {
+    printWithBaseData = jasmine.createSpy('printWithBaseData');
+    let pdfGridReportService: Partial<PdfGridReportService> = {
+      printWithBaseData: printWithBaseData
+    };
+    simpleDialogService = {
+      displayErrorOk: jasmine.createSpy('displayErrorOk'),
+      displayInfoOk: jasmine.createSpy('displayInfoOk'),
+    };
     TestBed.configureTestingModule({
       declarations: [ 
         InternalTransferDeviceNeedsPageComponent,
@@ -47,10 +57,10 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: DevicesService, useValue: { get: () => of([]) } },
         { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceItemNeeds: () => of([]) } },
-        { provide: PdfGridReportService, useValue: { buildTableBody: () => of({}) } },
-        { provide: TableBodyService, useValue: { print: () => of(true) } },
+        { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
+        { provide: PdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: SimpleDialogService, useValue: { displayError: () => { } } },
+        { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
       ]
     })
@@ -65,5 +75,22 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('print', () => {
+    describe('succeeded', () => {
+      it('should display info dialog', () => {
+        printWithBaseData.and.returnValue(of(true));
+        component.print();
+        expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();
+      });
+    });
+    describe('failed', () => {
+      it('should display error dialog', () => {
+        printWithBaseData.and.returnValue(of(false));
+        component.print();
+        expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
+      });
+    });
   });
 });

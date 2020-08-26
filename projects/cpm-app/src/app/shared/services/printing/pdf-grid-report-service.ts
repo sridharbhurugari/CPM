@@ -3,11 +3,12 @@ import { IAngularReportBaseData } from '../../../api-core/data-contracts/i-angul
 import { PdfPrintService } from '../../../api-core/services/pdf-print-service';
 import { OcapUrlBuilderService } from '../ocap-url-builder.service';
 import { TDocumentDefinitions, ContentTable } from 'pdfmake/interfaces';
-import { from, Observable, forkJoin, bindCallback } from 'rxjs';
+import { Observable, forkJoin, bindCallback } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { IReportLabels } from './i-report-labels';
 import { PdfMakeService } from './pdf-make.service';
+import { ImageDataService } from '../images/image-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,10 @@ export class PdfGridReportService
     private ocapUrlBuilderService: OcapUrlBuilderService,
     private pdfMakeService: PdfMakeService,
     translateService: TranslateService,
+    imageDataService: ImageDataService,
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
-    this.reportLogo$ = this.getBase64ImageFromURL(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
+    this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
     const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED' ];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
@@ -121,25 +123,5 @@ export class PdfGridReportService
         tableBody,
       ]
     };
-  }
-
-  private getBase64ImageFromURL(url): Observable<string> {
-    return from(new Promise<string>((resolve, reject) => {
-      var img = new Image();
-      img.setAttribute("crossOrigin", "anonymous");
-      img.onload = () => {
-        var canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        var dataURL = canvas.toDataURL("image/png");
-        resolve(dataURL);
-      };
-      img.onerror = error => {
-        reject(error);
-      };
-      img.src = url;
-    }));
   }
 }

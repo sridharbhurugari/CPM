@@ -59,6 +59,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.wpfActionControllerService.ExecuteBackAction();
   }
   
+  /* istanbul ignore next */
   print() {
     this.requestStatus = 'printing';
     var colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
