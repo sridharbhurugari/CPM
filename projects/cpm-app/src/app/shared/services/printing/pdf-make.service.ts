@@ -11,6 +11,7 @@ export class PdfMakeService {
 
   constructor() { }
 
+  /* istanbul ignore next */
   createPdf(documentDefinitions: TDocumentDefinitions): pdfMake.TCreatedPdf {
     return pdfMake.createPdf(documentDefinitions, null, null, pdfFonts.pdfMake.vfs);
   }
