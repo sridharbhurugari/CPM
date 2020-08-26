@@ -14,6 +14,7 @@ import { TableBodyService } from '../../shared/services/printing/table-body.serv
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -59,7 +60,6 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.wpfActionControllerService.ExecuteBackAction();
   }
   
-  /* istanbul ignore next */
   print() {
     this.requestStatus = 'printing';
     var colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
@@ -68,7 +68,10 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       { cellPropertyNames: [ 'DeviceQuantityNeeded' ], headerResourceKey: this.xferQtyHeaderKey, width: "*" },
       { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: "*" },
     ];
-    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.itemNeeds$);
+    let sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
+      return _.orderBy(needs, x => x.DeviceQuantityOnHand, 'asc');
+    }));
+    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
