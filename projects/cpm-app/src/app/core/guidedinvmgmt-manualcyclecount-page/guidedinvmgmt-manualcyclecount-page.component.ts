@@ -178,13 +178,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
 
   ngOnInit() {
-    let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");
-    this.coreEventConnectionService.carouselReadySubject
-      .pipe(filter((x) => x.DeviceId.toString() == deviceId))
-      .subscribe((x) => (this.carouselFaulted = false));
-    this.coreEventConnectionService.carouselFaultedSubject
-      .pipe(filter((x) => x.DeviceId.toString() == deviceId))
-      .subscribe((x) => (this.carouselFaulted = true));
     this.noResultsFoundText = "No results found";
     this.placeHolderText = "localized search text";
     this.gridHeight = "500px";
@@ -444,15 +437,14 @@ export class GuidedinvmgmtManualcyclecountPageComponent
                       : "0" + date.getDate()) +
                     "/" +
                     (date.getFullYear() == 1 ? 1900 : date.getFullYear());
-                    this.guidedManualCycleCountServiceService.updateSelectedItem(this.displayCycleCountItem.DeviceId.toString(), this.displayCycleCountItem.ItemId).subscribe(
+                    this.guidedManualCycleCountServiceService.updateSelectedItem(this.deviceId, this.displayCycleCountItem.ItemId).subscribe(
                       res => {
                         console.log(res);
                       }
-                    );           
+                    );                 
               this.CycleCountValidation();
               this.itemIdLength = this.displayCycleCountItem.ItemId.length;
             }
-            // if(x[0].DeviceLocationTypeId===DeviceLocationTypeId.Canister || x[0].DeviceLocationTypeId===DeviceLocationTypeId.Xr2MedicationStorage)
             else {
               this.displayCycleCountItem = null;
               let locationDetails:string[] = [];
@@ -496,6 +488,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       )
         this.DisableActionButtons(true);
     }
+    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = true);
   }
 
   DisableActionButtons(value: boolean) {
