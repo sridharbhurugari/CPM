@@ -172,12 +172,10 @@ export class QuickPickPageComponent implements OnInit {
 
   /* istanbul ignore next */
   onDeviceSelectionChanged($event) {
-    if (this.selectedDeviceInformation.DeviceId !== $event.value) {
-      this.searchElement.clearSearch(null);
-      this.loadSelectedDeviceInformation($event.value);
-      this.loadDrawersData();
-      this.loadPicklistsQueueItems();
-    }
+    this.searchElement.clearSearch(null);
+    this.loadSelectedDeviceInformation($event.value);
+    this.loadDrawersData();
+    this.loadPicklistsQueueItems();
   }
 
   onRerouteQuickPickFromDrawer($event: Guid) {
