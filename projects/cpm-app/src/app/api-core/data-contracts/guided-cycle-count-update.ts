@@ -11,4 +11,6 @@ export class deviceCycleCountItemUpdate implements IGuidedCycleCountUpdate {
   QuantityOnHand: number;
   BarCodeFormat: string;
   ProductID: string;
+  OriginalQuantityOnHand: number;
+  OriginalExpirationDate: Date;
 }

@@ -21,6 +21,7 @@ import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IGuidedCycleCountPrintLabel } from '../../api-core/data-contracts/i-guided-cycle-count-print-label';
 import { BarcodeScanService } from 'oal-core';
+import { IGuidedCycleCountUpdate } from '../../api-core/data-contracts/i-guided-cycle-count-update';
 
 
 @Component({
@@ -51,6 +52,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   displayCycleCountItem: IGuidedCycleCount;
   displayPrintLabel: IGuidedCycleCountPrintLabel;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
+  concurrencyItem: Observable<IGuidedCycleCountUpdate>;
   cycleCountItemsCopy: IGuidedCycleCount[];
   popupDialogProperties: PopupDialogProperties;
   itemCount: number;
@@ -90,15 +92,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   itemGenericWidthScroll: any;
   barcodeOverride: boolean = false;
   popupDialog: PopupDialogComponent;
+  popupConcurrencyDialog: PopupDialogComponent;
   barcodeFormat: string = "";
   private popupDialogClose$: Subscription;
   private popupDialogPrimaryClick$: Subscription;
+  private popupConcurrencyDialogClose$: Subscription;
+  private popupConcurrencyDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
   private barcodeScannedSubscription: Subscription;
   ItemDescriptionOverlap: boolean;
   ItemBrandNameOverlap: boolean;
   uiIssuesIdentified = false;
   isPopupVisible = false;
+  oldQunatityOnHand: number;
+  oldExpirationDate: Date;
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -182,14 +189,23 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
     }));
     this.cycleCountItems.subscribe(x => {
-      if (x.length > 0 && x[0].ExpirationDate) {
+      if (x.length > 0) {
         this.displayCycleCountItem = x[0];
-        var date = new Date(x[0].ExpirationDate);
+        if (x[0].ExpirationDate) {
+          var date = new Date(x[0].ExpirationDate);
+          this.oldExpirationDate = x[0].ExpirationDate;
+          this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        }
+        else {
+          this.oldExpirationDate = x[0].ExpirationDate;
+          this.displayCycleCountItem.ExpirationDateFormatted = null;
+        }
+        this.oldQunatityOnHand = x[0].QuantityOnHand;
         this.displayCycleCountItem.InStockQuantity = x[0].QuantityOnHand;
 
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
-        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+
         if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
           this.DisableActionButtons(true);
         }
@@ -202,11 +218,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.dynamicGenericFormatetdNameStyle = "-" + (2 * (x[0] && x[0].GenericNameFormatted.length)) + "px";
         this.dynamicLocationDescriptionStyle = "-" + (3 * (x[0] && x[0].LocationDescription.length)) + "px";
 
-        this.guidedCycleCountService.updateSelectedItem(deviceID, this.displayCycleCountItem.ItemId).subscribe(
-          res => {
-            console.log(res);
-          }
-        );
       }
       this.IsLastItem();
       this.currentItemCount++;
@@ -265,7 +276,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         ExpirationDate: actualexpiradationdate,
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
         BarCodeFormat: this.barcodeFormat,
-        ProductID: this.rawBarcodeMessage && this.rawBarcodeMessage
+        ProductID: this.rawBarcodeMessage && this.rawBarcodeMessage,
+        OriginalQuantityOnHand: this.oldQunatityOnHand,
+        OriginalExpirationDate: this.oldExpirationDate
       });
 
       var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
@@ -300,11 +313,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
     else {
       this.displayCycleCountItem = this.cycleCountItemsCopy[this.currentItemCount - 1];
-      this.guidedCycleCountService.updateSelectedItem(this.displayCycleCountItem.DeviceId.toString(), this.displayCycleCountItem.ItemId).subscribe(
-        res => {
-          console.log(res);
-        }
-      );
       var date = new Date(this.cycleCountItemsCopy[this.currentItemCount - 1].ExpirationDate);
       if (this.displayCycleCountItem.QuantityOnHand === 0) {
         this.disabledatecomponent(true);
@@ -316,6 +324,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.datepicker.selectedDate = "";
       }
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
+      this.oldQunatityOnHand = this.displayCycleCountItem.QuantityOnHand;
+      this.oldExpirationDate = this.displayCycleCountItem.ExpirationDate;
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
       if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
         this.DisableActionButtons(true);
@@ -814,6 +824,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     if (this.popupDialogPrimaryClick$) {
       this.popupDialogPrimaryClick$.unsubscribe();
     }
+    if (this.popupConcurrencyDialogClose$) {
+      this.popupConcurrencyDialogClose$.unsubscribe();
+    }
+    if (this.popupConcurrencyDialogPrimaryClick$) {
+      this.popupConcurrencyDialogPrimaryClick$.unsubscribe();
+    }
   }
   displayConcurrencyDialog(): void {
     const properties = new PopupDialogProperties('CycleCount_Concurrency_ConflictDialogTitle');
@@ -823,7 +839,23 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Info;
-    properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+    properties.timeoutLength = 0;
+    this.popupConcurrencyDialog = this.dialogService.showOnce(properties);
+    this.popupConcurrencyDialogClose$ = this.popupConcurrencyDialog.didClickCloseButton.subscribe(() => {
+    });
+    this.popupConcurrencyDialogPrimaryClick$ = this.popupConcurrencyDialog.didClickPrimaryButton.subscribe(() => {
+      this.concurrencyItem = this.guidedCycleCountService.getConcurrencyItem(this.displayCycleCountItem.DeviceLocationId.toString(), this.displayCycleCountItem.ItemId);
+      this.concurrencyItem.subscribe(x => {
+        this.displayCycleCountItem.InStockQuantity = x.QuantityOnHand;
+        this.displayCycleCountItem.QuantityOnHand = x.QuantityOnHand;
+        this.oldQunatityOnHand = x.QuantityOnHand;
+        this.oldExpirationDate = x.ExpirationDate && x.ExpirationDate;
+        var date = new Date(x.ExpirationDate);
+        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        this.binBarCodeDisplay = true;
+        this.productBarCodeDisplay = true;
+        this.reset();
+      });
+    });
   }
 }

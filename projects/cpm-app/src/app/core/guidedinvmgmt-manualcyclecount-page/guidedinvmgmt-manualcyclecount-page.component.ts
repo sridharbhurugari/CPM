@@ -639,6 +639,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
         BarCodeFormat: "UN",
         ProductID: "0090192121",
+        OriginalQuantityOnHand:25,
+        OriginalExpirationDate: new Date()
       });
 
       let deviceId = this.activatedRoute.snapshot.queryParamMap.get("deviceId");
