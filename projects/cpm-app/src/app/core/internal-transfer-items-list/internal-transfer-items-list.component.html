@@ -1,0 +1,44 @@
+<div class="cpmheaderrow">
+    <app-header-container></app-header-container>
+    <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
+<oc-grid #ocgrid ocgridfilter="false"
+    appGridSortCol
+    [initialSortPropertyName]="qohPropertyName"
+    [orderableValues]="itemNeeds" 
+    (valuesReordered)="itemNeeds = $event">
+    <ng-container class="ocgridheader">
+        <div class="first" data-colwrap="true"></div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+            [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="ITEM">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
+            [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
+            [columnPropertyName]="needPropertyName" headerResourceKey="QTY_TO_XFER">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
+            [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
+        </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
+            <div class="first">
+            </div>
+            <div class="col" [attr.data-title]="'ITEM' | translate">
+                <div>{{itemNeed.ItemFormattedGenericName}}</div>
+                <div>{{itemNeed.ItemBrandName}}</div>
+            </div>
+            <div class="col" [attr.data-title]="'QOH' | translate">
+                <span>{{itemNeed.DeviceQuantityOnHand}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
+                <span>{{itemNeed.DeviceQuantityNeeded}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
+                <span>{{itemNeed.PendingDevicePickQuantity}}</span>
+            </div>
+        </div>
+    </ng-container>
+</oc-grid>

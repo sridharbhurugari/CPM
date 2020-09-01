@@ -23,8 +23,10 @@ import { EditDeviceSequenceComponent } from './edit-device-sequence/edit-device-
 import { HardwareLeasePageComponent } from './hardware-lease-page/hardware-lease-page.component';
 import { ItemManagementComponent } from './item-management/item-management.component';
 import { GuidedinvmgmtManualcyclecountPageComponent } from './guidedinvmgmt-manualcyclecount-page/guidedinvmgmt-manualcyclecount-page.component';
-import { InternalTransferNeedsPageComponent } from './internal-transfer-needs-page/internal-transfer-needs-page.component';
+import { InternalTransferDeviceSummariesPageComponent } from './internal-transfer-device-summaries-page/internal-transfer-device-summaries-page.component';
 import { InternalTransferDeviceListComponent } from './internal-transfer-device-list/internal-transfer-device-list.component';
+import { InternalTransferDeviceNeedsPageComponent } from './internal-transfer-device-needs-page/internal-transfer-device-needs-page.component';
+import { InternalTransferItemsListComponent } from './internal-transfer-items-list/internal-transfer-items-list.component';
 @NgModule({
   declarations: [
     UnderfilledPicklistsPageComponent,
@@ -44,8 +46,10 @@ import { InternalTransferDeviceListComponent } from './internal-transfer-device-
     HardwareLeasePageComponent,
         ItemManagementComponent,
     GuidedinvmgmtManualcyclecountPageComponent,
-    InternalTransferNeedsPageComponent,
+    InternalTransferDeviceSummariesPageComponent,
     InternalTransferDeviceListComponent,
+    InternalTransferDeviceNeedsPageComponent,
+    InternalTransferItemsListComponent,
   ],
   imports: [
     CommonModule,

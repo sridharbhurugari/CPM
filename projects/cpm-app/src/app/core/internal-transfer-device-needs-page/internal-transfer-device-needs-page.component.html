@@ -1,0 +1,27 @@
+<oc-action-layout>
+    <ng-container class="ocactionheader">
+        <div class="cpmactiontitle">{{'DEVICE_NEEDS' | translate}}</div>
+    </ng-container>
+    <ng-container class="ocactiondetails">
+        <div class="cpmheaderrow">
+            <app-header-container *ngIf="device$ | async as device" [title]="'DEVICE' | translate">{{device.Description}}</app-header-container>
+        </div>
+        <app-internal-transfer-items-list [itemNeeds]="itemNeeds$ | async"></app-internal-transfer-items-list>
+    </ng-container>
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'CANCEL' | translate" (click)="goBack()">}</oc-button-action>
+            </div>
+            <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
+                <oc-button-action 
+                    *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
+                    [disabled]="requestStatus != 'none'"
+                    [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
+                    [buttonText]="'PRINT' | translate"
+                    (click)="print()">
+                </oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+</oc-action-layout>

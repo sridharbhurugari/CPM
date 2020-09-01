@@ -17,7 +17,8 @@ import { GuidedinvmgmtManualcyclecountPageComponent } from './core/guidedinvmgmt
 import { QuickPickPageComponent } from './xr2/quick-pick-page/quick-pick-page.component';
 import { Xr2ExceptionDetailsPageComponent } from './xr2/xr2-exception-details-page/xr2-exceptions-details-page.component';
 import { Xr2EventsPageComponent } from './xr2/xr2-events-page/xr2-events-page.component';
-import { InternalTransferNeedsPageComponent } from './core/internal-transfer-needs-page/internal-transfer-needs-page.component';
+import { InternalTransferDeviceSummariesPageComponent } from './core/internal-transfer-device-summaries-page/internal-transfer-device-summaries-page.component';
+import { InternalTransferDeviceNeedsPageComponent } from './core/internal-transfer-device-needs-page/internal-transfer-device-needs-page.component';
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
@@ -37,7 +38,8 @@ const routes: Routes = [
   { path: 'quickpick', component: QuickPickPageComponent},
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
   { path: 'settings/xr2eventslist', component:Xr2EventsPageComponent },
-  { path: 'internalTransfer/replenishmentNeeds', component:InternalTransferNeedsPageComponent },
+  { path: 'internalTransfer/deviceReplenishmentNeeds', component:InternalTransferDeviceSummariesPageComponent },
+  { path: 'internalTransfer/deviceReplenishmentNeeds/:deviceId', component:InternalTransferDeviceNeedsPageComponent },
 ];
 
 @NgModule({
