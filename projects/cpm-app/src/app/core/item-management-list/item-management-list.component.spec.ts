@@ -8,6 +8,7 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { WindowService } from '../../shared/services/window-service';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
+import { GridModule } from '@omnicell/webcorecomponents';
 
 describe('ItemManagementListComponent', () => {
   let component: ItemManagementListComponent;
@@ -23,6 +24,9 @@ describe('ItemManagementListComponent', () => {
         MockTranslatePipe,
         MockColHeaderSortable,
         MockGridSortCol
+      ],
+      imports: [
+        GridModule,
       ],
       providers: [
         { provide: WindowService, useValue: { } }
