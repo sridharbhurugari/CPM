@@ -483,8 +483,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       )
         this.DisableActionButtons(true);
     }
-    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = false);
-    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = true);
+    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() === this.deviceId)).subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() === this.deviceId)).subscribe(x => this.carouselFaulted = true);
   }
 
   DisableActionButtons(value: boolean) {
