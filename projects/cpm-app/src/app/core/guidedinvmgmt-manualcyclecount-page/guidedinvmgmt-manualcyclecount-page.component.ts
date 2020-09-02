@@ -436,12 +436,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
                       ? date.getDate()
                       : "0" + date.getDate()) +
                     "/" +
-                    (date.getFullYear() == 1 ? 1900 : date.getFullYear());
-                    this.guidedManualCycleCountServiceService.updateSelectedItem(this.deviceId, this.displayCycleCountItem.ItemId).subscribe(
-                      res => {
-                        console.log(res);
-                      }
-                    );                 
+                    (date.getFullYear() == 1 ? 1900 : date.getFullYear());               
               this.CycleCountValidation();
               this.itemIdLength = this.displayCycleCountItem.ItemId.length;
             }
@@ -824,12 +819,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
               "/" +
               (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
               "/" +
-              (date.getFullYear() == 1 ? 1900 : date.getFullYear());
-              this.guidedManualCycleCountServiceService.updateSelectedItem(this.deviceId.toString(), this.displayCycleCountItem.ItemId).subscribe(
-                res => {
-                  console.log(res);
-                }
-              );         
+              (date.getFullYear() == 1 ? 1900 : date.getFullYear());      
         this.CycleCountValidation();
       }
     }

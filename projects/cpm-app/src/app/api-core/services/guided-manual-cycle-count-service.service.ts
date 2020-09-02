@@ -31,15 +31,6 @@ export class GuidedManualCycleCountServiceService {
             headers: this.ocapHttpHeadersService.getHeaders(),
           });
     }
-
-      public updateSelectedItem(deviceId: string,itemID: string): Observable<boolean>{
-          var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/SelectedItem`);
-          const params = {deviceId: deviceId, itemID: itemID};  
-          return this.httpClient.get<boolean>(url ,{
-            headers: this.ocapHttpHeadersService.getHeaders(),params
-          });
-      }
-
       public getSearchItems(searchString: string): Observable<IGuidedManualCycleCountItems[]>{
         let url = this.ocapUrlBuilderService.buildUrl('/api/devices/itemLocations/cycleCountSearchItems');
         const params = {searchString: searchString };

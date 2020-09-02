@@ -153,8 +153,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
         .createSpy("getSearchItems")
         .and.returnValue(of({})),
         post: () => of(123),
-        PrintLabel: () => of(returnPostUpdate), 
-        updateSelectedItem: ()=> of(returnPostUpdate), 
+        PrintLabel: () => of(returnPostUpdate),
       get: jasmine.createSpy("get").and.returnValue(of({ itemid })),
       ValidCycleCountScanBarCode: jasmine.createSpy("ValidCycleCountScanBarCode").and.returnValue(of({}))
     };
