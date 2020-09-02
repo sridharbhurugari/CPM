@@ -193,7 +193,6 @@
             <div class="buttonadjust">
                 <div class="ocrightalign">
                     <oc-button-action id="donebutton" [buttonText]="'DONE' | translate" (click)="navigateContinue()"
-                        [disabled]="doneButtonDisable"
                         [disabled]="doneButtonDisable || deviceLocationAccessBusy || carouselFaulted" tabindex="5">
                     </oc-button-action>
                 </div>
