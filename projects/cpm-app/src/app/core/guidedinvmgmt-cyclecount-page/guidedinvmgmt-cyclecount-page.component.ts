@@ -166,22 +166,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
-    //setTimeout(() => {
-      if (this.elementView) {
-        this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
-        this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
-        if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
-          this.ItemDescriptionOverlap = true;
-        }
+    if (this.elementView) {
+      this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
+      this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
+      if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
+        this.ItemDescriptionOverlap = true;
       }
-      if (this.GenericView) {
-        this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
-        this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
-        if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
-          this.ItemBrandNameOverlap = true;
-        }
+    }
+    if (this.GenericView) {
+      this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
+      this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
+      if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
+        this.ItemBrandNameOverlap = true;
       }
-    //});
+    }
   }
 
   getCycleCountData(deviceID) {
@@ -206,7 +204,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
 
-        if(this.displayCycleCountItem.ItmExpDateGranularity != "None"){
+        if (this.displayCycleCountItem.ItmExpDateGranularity != "None") {
           if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
             this.DisableActionButtons(true);
           }
@@ -329,14 +327,14 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
       this.oldQunatityOnHand = this.displayCycleCountItem.QuantityOnHand;
       this.oldExpirationDate = this.displayCycleCountItem.ExpirationDate;
-      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-      if(this.displayCycleCountItem.ItmExpDateGranularity != "None"){
+      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() === 1) ? 1900 : date.getFullYear());
+      if (this.displayCycleCountItem.ItmExpDateGranularity !== "None") {
         if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
           this.DisableActionButtons(true);
         else
           this.DisableActionButtons(false);
       }
-      else{
+      else {
         this.DisableActionButtons(false);
       }
       this.currentItemCount++;
@@ -391,17 +389,23 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       if ($event.match(dateReg)) {
         var eventdate = new Date($event);
         if (!(this.validateDate($event)) || isNaN(eventdate.getTime())) {
+          this.daterequired = true;
           this.DisableActionButtons(true);
+          this.toggleredborderfornonfirstitem(false);
         }
         else if (this.isdateexpired($event)) {
-          this.daterequired = true;
-          this.toggleredborderfornonfirstitem(false);
-          this.DisableActionButtons(false);
-          if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
-            this.navigateContinue();
+          if (!(this.validateDate($event)) || !(this.checkforvalidyear($event))) {
+            this.DisableActionButtons(true);
+          }
+          else {
+            this.daterequired = true;
+            this.toggleredborderfornonfirstitem(false);
+            this.DisableActionButtons(false);
+            if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
+              this.navigateContinue();
+            }
           }
         }
-       
         else {
           this.daterequired = false;
           this.DisableActionButtons(false);
@@ -418,14 +422,24 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
   }
 
-  validateDate( input ) {
-    var date = new Date( input );
-    input = input.split( '/' );   
-    return date.getMonth() + 1 === +input[0] && 
-           date.getDate() === +input[1] && 
-           date.getFullYear() === +input[2];
-}
+  validateDate(input) {
+    const date = new Date(input);
+    input = input.split('/');
+    return date.getMonth() + 1 === +input[0] &&
+      date.getDate() === +input[1] &&
+      date.getFullYear() === +input[2];
+  }
 
+  checkforvalidyear(input) {
+    const date = new Date(input);
+    input = input.split('/');
+    if (date.getFullYear() > 99 && date.getFullYear() < 1753) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
   DisableActionButtons(value: boolean) {
     if (this.isLastItem !== true) { this.nextButtonDisable = value };
     if (this.isLastItem === true) { this.doneButtonDisable = value };

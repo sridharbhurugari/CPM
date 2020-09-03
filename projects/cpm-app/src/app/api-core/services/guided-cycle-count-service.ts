@@ -22,7 +22,7 @@ export class GuidedCycleCountService {
   ) { }
 
   public get(deviceId: string): Observable<IGuidedCycleCount[]> {
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount`);
     return this.httpClient.get<IGuidedCycleCount[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
@@ -36,7 +36,7 @@ export class GuidedCycleCountService {
     });
   }
   public post(deviceId: string, item: deviceCycleCountItemUpdate): Observable<number> {
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/${deviceId}/itemLocations/cycleCount/update`);
     return this.httpClient.post<number>(url, item, {
       headers: this.ocapHttpHeadersService.getHeaders(),
     });

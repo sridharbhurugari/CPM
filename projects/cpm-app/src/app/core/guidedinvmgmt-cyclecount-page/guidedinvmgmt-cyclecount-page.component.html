@@ -105,7 +105,7 @@
                         <oc-datepicker id="datepicker" [format]="displayCycleCountItem.ItemDateFormat"
                             [(ngModel)]="displayCycleCountItem.ExpirationDateFormatted" [isRequired]="daterequired"
                             [autocorrect]="false" [isDisabled]="disablethedate" popupDirection="UP"
-                            (ngModelChange)=onDateChange($event) [minDate]="todaydate" [tabIndexes]="datepickerindexes" (blur)=onDateChange($event)>
+                            (ngModelChange)="onDateChange($event)" [minDate]="todaydate" [tabIndexes]="datepickerindexes" (blur)=onDateChange($event)>
                         </oc-datepicker>
 
                     </div>
