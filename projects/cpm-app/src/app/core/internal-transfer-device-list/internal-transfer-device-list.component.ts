@@ -10,6 +10,7 @@ import { WindowService } from '../../shared/services/window-service';
   styleUrls: ['./internal-transfer-device-list.component.scss']
 })
 export class InternalTransferDeviceListComponent implements OnInit {
+  private _deviceNeeds: IDeviceReplenishmentNeed[];
 
   readonly deviceDescriptionPropertyName: string = nameof<IDeviceReplenishmentNeed>('DeviceDescription');
   readonly countPropertyName: string = nameof<IDeviceReplenishmentNeed>('ItemsBelowReorderLevel');
@@ -21,7 +22,14 @@ export class InternalTransferDeviceListComponent implements OnInit {
   searchTextFilter: string;
 
   @Input()
-  deviceNeeds: IDeviceReplenishmentNeed[];
+  set deviceNeeds(value: IDeviceReplenishmentNeed[]) {
+    this._deviceNeeds = value;
+    this.windowService.dispatchResizeEvent();
+  }
+
+  get deviceNeeds(): IDeviceReplenishmentNeed[] {
+    return this._deviceNeeds;
+  }
 
   @ViewChild('ocsearchbox', {
     static: true
