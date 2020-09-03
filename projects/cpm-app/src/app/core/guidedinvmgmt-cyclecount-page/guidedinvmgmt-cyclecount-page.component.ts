@@ -159,7 +159,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
-    setTimeout(() => {
+   // setTimeout(() => {
       if (this.elementView) {
         this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
         this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
@@ -174,7 +174,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.ItemBrandNameOverlap = true;
         }
       }
-    });
+   // });
   }
 
   getCycleCountData(deviceID) {
