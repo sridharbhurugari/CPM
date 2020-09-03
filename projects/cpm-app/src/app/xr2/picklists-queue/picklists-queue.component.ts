@@ -203,9 +203,8 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
 
   printLabels(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
-    const robotPrintRequest = new RobotPrintRequest();
+    const robotPrintRequest = new RobotPrintRequest(picklistQueueItem.PicklistId, picklistQueueItem.RobotPickGroupId);
 
-    robotPrintRequest.PickListIdentifier = picklistQueueItem.PicklistId;
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
       const pickListLineDetail = new PickListLineDetail();
       pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
