@@ -166,7 +166,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
-    setTimeout(() => {
+    //setTimeout(() => {
       if (this.elementView) {
         this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
         this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
@@ -181,7 +181,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
           this.ItemBrandNameOverlap = true;
         }
       }
-    });
+    //});
   }
 
   getCycleCountData(deviceID) {
@@ -206,9 +206,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
 
-        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
-          this.DisableActionButtons(true);
+        if(this.displayCycleCountItem.ItmExpDateGranularity != "None"){
+          if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
+            this.DisableActionButtons(true);
+          }
         }
+
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -327,10 +330,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.oldQunatityOnHand = this.displayCycleCountItem.QuantityOnHand;
       this.oldExpirationDate = this.displayCycleCountItem.ExpirationDate;
       this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-      if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-        this.DisableActionButtons(true);
-      else
+      if(this.displayCycleCountItem.ItmExpDateGranularity != "None"){
+        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+          this.DisableActionButtons(true);
+        else
+          this.DisableActionButtons(false);
+      }
+      else{
         this.DisableActionButtons(false);
+      }
       this.currentItemCount++;
       if (this.currentItemCount === this.itemCount) {
         this.isLastItem = true;
@@ -382,7 +390,10 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
         var eventdate = new Date($event);
-        if (this.isdateexpired($event)) {
+        if (!(this.validateDate($event)) || isNaN(eventdate.getTime())) {
+          this.DisableActionButtons(true);
+        }
+        else if (this.isdateexpired($event)) {
           this.daterequired = true;
           this.toggleredborderfornonfirstitem(false);
           this.DisableActionButtons(false);
@@ -390,9 +401,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
             this.navigateContinue();
           }
         }
-        else if (isNaN(eventdate.getTime())) {
-          this.DisableActionButtons(true);
-        }
+       
         else {
           this.daterequired = false;
           this.DisableActionButtons(false);
@@ -408,6 +417,14 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       }
     }
   }
+
+  validateDate( input ) {
+    var date = new Date( input );
+    input = input.split( '/' );   
+    return date.getMonth() + 1 === +input[0] && 
+           date.getDate() === +input[1] && 
+           date.getFullYear() === +input[2];
+}
 
   DisableActionButtons(value: boolean) {
     if (this.isLastItem !== true) { this.nextButtonDisable = value };

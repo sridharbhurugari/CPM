@@ -8,6 +8,7 @@ import { deviceCycleCountItemUpdate } from '../data-contracts/guided-cycle-count
 import { GuidedCycleCountPrintLabel } from '../data-contracts/guided-cycle-count-print-label';
 import { IDeviceConfiguration } from '../data-contracts/i-device-configuration';
 import { IGuidedCycleCountUpdate } from '../data-contracts/i-guided-cycle-count-update';
+import { constants } from 'os';
 
 
 @Injectable({
@@ -28,7 +29,7 @@ export class GuidedCycleCountService {
   }
 
   public getConcurrencyItem(deviceLocationId: string, itemId: string): Observable<IGuidedCycleCountUpdate> {
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/getconcurrencyitem`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/devices/itemLocations/getconcurrencyitem`);
     const params = { deviceLocationID: deviceLocationId, itemID: itemId };
     return this.httpClient.get<IGuidedCycleCountUpdate>(url, {
       headers: this.ocapHttpHeadersService.getHeaders(), params
