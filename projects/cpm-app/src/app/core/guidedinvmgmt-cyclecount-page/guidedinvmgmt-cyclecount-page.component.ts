@@ -359,16 +359,23 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       var dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
         var eventdate = new Date($event);
-        if (this.isdateexpired($event)) {
+        if (!(this.validateDate($event)) || isNaN(eventdate.getTime())) {
           this.daterequired = true;
-          this.toggleredborderfornonfirstitem(false);
-          this.DisableActionButtons(false);
-          if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
-            this.navigateContinue();
-          }
-        }
-        else if (isNaN(eventdate.getTime())) {
           this.DisableActionButtons(true);
+          this.toggleredborderfornonfirstitem(false);
+        }
+        else if (this.isdateexpired($event)) {
+          if (!(this.validateDate($event)) || !(this.checkforvalidyear($event))) {
+            this.DisableActionButtons(true);
+          }
+          else {
+            this.daterequired = true;
+            this.toggleredborderfornonfirstitem(false);
+            this.DisableActionButtons(false);
+            if (!(this.binBarCodeDisplay) && !(this.productBarCodeDisplay)) {
+              this.navigateContinue();
+            }
+          }
         }
         else {
           this.daterequired = false;
@@ -383,6 +390,25 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.daterequired = true;
         this.DisableActionButtons(true);
       }
+    }
+  }
+
+  validateDate(input) {
+    var date = new Date(input);
+    input = input.split('/');
+    return date.getMonth() + 1 === +input[0] &&
+      date.getDate() === +input[1] &&
+      date.getFullYear() === +input[2];
+  }
+
+  checkforvalidyear(input) {
+    var date = new Date(input);
+    input = input.split('/');
+    if (date.getFullYear() > 99 && date.getFullYear() < 1753) {
+      return false;
+    }
+    else {
+      return true;
     }
   }
 
