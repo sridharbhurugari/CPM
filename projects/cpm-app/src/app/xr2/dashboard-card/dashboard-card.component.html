@@ -27,14 +27,10 @@
         <div class="grid-container">
           <div class="grid-label">{{'DESTINATION' | translate}}:</div>
           <div class="grid-data">
-            <div *ngIf="drawerData.PatientName && drawerData.Area">
-              {{ drawerData.PatientName }}
+            <div>
+              {{ drawerData.DestinationLine1 }}
               <br>
-              {{ drawerData.Area }}
-            </div>
-            <div *ngIf="!drawerData.PatientName || !drawerData.Area">
-              {{ drawerData.PatientName }}
-              {{ drawerData.Area }}
+              {{ drawerData.DestinationLine2 }}
             </div>
           </div>
           <div class="grid-label">{{'ID' | translate}}:</div>

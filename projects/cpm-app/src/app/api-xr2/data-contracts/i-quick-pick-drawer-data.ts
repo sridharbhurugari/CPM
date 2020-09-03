@@ -17,6 +17,7 @@ export interface IQuickPickDrawerData {
   DestinationAreaId: string;
   DestinationType: string;
   Area: string;
+  PatientArea: string;
   PatientName: string;
   PatientRoom: string;
   LineItems: number;
@@ -31,4 +32,6 @@ export interface IQuickPickDrawerData {
   TotalRequestQty: number;
   TotalFillQty: number;
   UnknownContents: boolean;
+  DestinationLine1: string;
+  DestinationLine2: string;
 }

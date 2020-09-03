@@ -37,14 +37,10 @@
               </div>
               <div class="dest-label">{{'DESTINATION' | translate}}:</div>
               <div class="dest-data">
-                <div *ngIf="detailedDrawerData.PatientName && detailedDrawerData.Area">
-                  {{ detailedDrawerData.PatientName }}
+                <div>
+                  {{ detailedDrawerData.DestinationLine1 }}
                   <br>
-                  {{ detailedDrawerData.Area }}
-                </div>
-                <div *ngIf="!detailedDrawerData.PatientName || !detailedDrawerData.Area">
-                  {{ detailedDrawerData.PatientName }}
-                  {{ detailedDrawerData.Area }}
+                  {{ detailedDrawerData.DestinationLine2 }}
                 </div>
               </div>
               <div class="id-label">{{ 'ID' | translate }}:</div>

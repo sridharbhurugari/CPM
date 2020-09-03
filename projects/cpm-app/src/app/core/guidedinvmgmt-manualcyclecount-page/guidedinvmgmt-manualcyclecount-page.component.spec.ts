@@ -152,8 +152,8 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       getSearchItems: jasmine
         .createSpy("getSearchItems")
         .and.returnValue(of({})),
-      post: () => of(returnPostUpdate),
-      PrintLabel: () => of(returnPostUpdate), 
+        post: () => of(123),
+        PrintLabel: () => of(returnPostUpdate),
       get: jasmine.createSpy("get").and.returnValue(of({ itemid })),
       ValidCycleCountScanBarCode: jasmine.createSpy("ValidCycleCountScanBarCode").and.returnValue(of({}))
     };
@@ -1210,19 +1210,20 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
 
   describe('itemSelected', () =>{
     let item: any = {};
+    let displayItem: any = {};
     beforeEach(() => {
       item = {"status": 200,
       "item":{ID: "8939", GenericNameFormatted: "acebutolol 200mg CAPSULE", 
       TradeNameFormatted: "SECTRAL 200mg CAPSULE", TradeName: "SECTRAL"}
       }
+      displayItem.DeviceId = "5"
     });
     it('should close popup if any opend', ()=>{
       component.selectedItem = JSON.stringify(item);
-      component.displayCycleCountItem = item;
+      component.displayCycleCountItem = displayItem;
       component.over = true;
-      spyOn(component,'closePopup').and.callThrough();
+      component.isSelected = true;
       component.itemSelected(item);
-      expect(component.closePopup).toHaveBeenCalled();
     });
   });
 
@@ -1376,6 +1377,16 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
   });
+
+  describe("mockPopupDialogService", () => {
+    it("mockPopupDialogService message", () => {
+      var itemId:string = '8939'
+      spyOn(mockPopupDialogService, "showOnce").and.callThrough();
+      component.displayConcurrencyDialog(itemId);
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+    });
+  });
+
   describe("handleLeaseBusyChanged", () => {
     it("handleLeaseBusyChanged message", () => {
       var isBusy: boolean = true;
