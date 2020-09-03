@@ -1,16 +1,24 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ItemManagementComponent } from './item-management.component';
-import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
-import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { SearchModule, GridModule } from '@omnicell/webcorecomponents';
-import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ItemManagementService } from '../../api-core/services/item-management.service';
-import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ItemManagement } from '../model/item-management';
+
+@Component({
+  selector: 'app-item-management-list',
+  template: '',
+})
+class MockItemManagementList {
+  @Input()
+  items: ItemManagement[];
+
+  @Output()
+  itemIdSelected: EventEmitter<string> = new EventEmitter<string>();
+}
 
 describe('ItemManagementComponent', () => {
   let component: ItemManagementComponent;
@@ -21,7 +29,7 @@ describe('ItemManagementComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemManagementComponent, MockAppHeaderContainer, MockSearchPipe, MockTranslatePipe, MockColHeaderSortable],
+      declarations: [ ItemManagementComponent, MockItemManagementList ],
       imports: [SearchModule, GridModule],
       providers: [
         { provide: ItemManagementService, useValue: { get: () => of([]) } },

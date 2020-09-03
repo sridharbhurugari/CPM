@@ -27,6 +27,7 @@ import { InternalTransferDeviceSummariesPageComponent } from './internal-transfe
 import { InternalTransferDeviceListComponent } from './internal-transfer-device-list/internal-transfer-device-list.component';
 import { InternalTransferDeviceNeedsPageComponent } from './internal-transfer-device-needs-page/internal-transfer-device-needs-page.component';
 import { InternalTransferItemsListComponent } from './internal-transfer-items-list/internal-transfer-items-list.component';
+import { ItemManagementListComponent } from './item-management-list/item-management-list.component';
 @NgModule({
   declarations: [
     UnderfilledPicklistsPageComponent,
@@ -50,6 +51,7 @@ import { InternalTransferItemsListComponent } from './internal-transfer-items-li
     InternalTransferDeviceListComponent,
     InternalTransferDeviceNeedsPageComponent,
     InternalTransferItemsListComponent,
+    ItemManagementListComponent,
   ],
   imports: [
     CommonModule,
