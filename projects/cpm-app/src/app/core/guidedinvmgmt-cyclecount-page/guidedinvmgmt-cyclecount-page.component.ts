@@ -21,6 +21,7 @@ import { GuidedCycleCountPrintLabel } from '../../api-core/data-contracts/guided
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IGuidedCycleCountPrintLabel } from '../../api-core/data-contracts/i-guided-cycle-count-print-label';
 import { BarcodeScanService } from 'oal-core';
+import { IGuidedCycleCountUpdate } from '../../api-core/data-contracts/i-guided-cycle-count-update';
 
 
 @Component({
@@ -51,6 +52,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   displayCycleCountItem: IGuidedCycleCount;
   displayPrintLabel: IGuidedCycleCountPrintLabel;
   cycleCountItems: Observable<IGuidedCycleCount[]>;
+  concurrencyItem: Observable<IGuidedCycleCountUpdate>;
   cycleCountItemsCopy: IGuidedCycleCount[];
   popupDialogProperties: PopupDialogProperties;
   itemCount: number;
@@ -90,15 +92,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   itemGenericWidthScroll: any;
   barcodeOverride: boolean = false;
   popupDialog: PopupDialogComponent;
+  popupConcurrencyDialog: PopupDialogComponent;
   barcodeFormat: string = "";
   private popupDialogClose$: Subscription;
   private popupDialogPrimaryClick$: Subscription;
+  private popupConcurrencyDialogClose$: Subscription;
+  private popupConcurrencyDialogPrimaryClick$: Subscription;
   private popupDialogTimeoutDialog$: Subscription;
   private barcodeScannedSubscription: Subscription;
   ItemDescriptionOverlap: boolean;
   ItemBrandNameOverlap: boolean;
   uiIssuesIdentified = false;
   isPopupVisible = false;
+  oldQunatityOnHand: number;
+  oldExpirationDate: Date;
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -159,20 +166,20 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
-      if (this.elementView) {
-        this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
-        this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
-        if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
-          this.ItemDescriptionOverlap = true;
-        }
+    if (this.elementView) {
+      this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
+      this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
+      if (this.elementView.nativeElement.offsetWidth < this.elementView.nativeElement.scrollWidth) {
+        this.ItemDescriptionOverlap = true;
       }
-      if (this.GenericView) {
-        this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
-        this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
-        if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
-          this.ItemBrandNameOverlap = true;
-        }
+    }
+    if (this.GenericView) {
+      this.itemGenericWidth = this.GenericView.nativeElement.offsetWidth;
+      this.itemGenericWidthScroll = this.GenericView.nativeElement.scrollWidth;
+      if (this.GenericView.nativeElement.offsetWidth < this.GenericView.nativeElement.scrollWidth) {
+        this.ItemBrandNameOverlap = true;
       }
+    }
   }
 
   getCycleCountData(deviceID) {
@@ -180,17 +187,29 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       return guidedCycleCountItems.map(p => new GuidedCycleCount(p));
     }));
     this.cycleCountItems.subscribe(x => {
-      if (x.length > 0 && x[0].ExpirationDate) {
+      if (x.length > 0) {
         this.displayCycleCountItem = x[0];
-        var date = new Date(x[0].ExpirationDate);
+        if (x[0].ExpirationDate) {
+          var date = new Date(x[0].ExpirationDate);
+          this.oldExpirationDate = x[0].ExpirationDate;
+          this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        }
+        else {
+          this.oldExpirationDate = x[0].ExpirationDate;
+          this.displayCycleCountItem.ExpirationDateFormatted = null;
+        }
+        this.oldQunatityOnHand = x[0].QuantityOnHand;
         this.displayCycleCountItem.InStockQuantity = x[0].QuantityOnHand;
 
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
-        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
-          this.DisableActionButtons(true);
+
+        if (this.displayCycleCountItem.ItmExpDateGranularity !== "None") {
+          if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
+            this.DisableActionButtons(true);
+          }
         }
+
         this.cycleCountItemsCopy = x;
         x.splice(0, 1);
         this.itemCount = x.length + 1;
@@ -199,6 +218,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.itemIdLength = this.displayCycleCountItem.ItemId.length;
         this.dynamicGenericFormatetdNameStyle = "-" + (2 * (x[0] && x[0].GenericNameFormatted.length)) + "px";
         this.dynamicLocationDescriptionStyle = "-" + (3 * (x[0] && x[0].LocationDescription.length)) + "px";
+
       }
       this.IsLastItem();
       this.currentItemCount++;
@@ -258,8 +278,8 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
         BarCodeFormat: this.barcodeFormat,
         ProductID: this.rawBarcodeMessage && this.rawBarcodeMessage,
-        OriginalQuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
-        OriginalExpirationDate: this.displayCycleCountItem.ExpirationDate
+        OriginalQuantityOnHand: this.oldQunatityOnHand,
+        OriginalExpirationDate: this.oldExpirationDate
       });
 
       var deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
@@ -267,17 +287,21 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.guidedCycleCountService.post(deviceId, update).subscribe(
         res => {
           console.log(res);
+          if (res === 3) {
+            this.displayConcurrencyDialog();
+          } else {
+            if (this.isLastItem || this.currentItemCount === this.itemCount) {
+              if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+                this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
+              }
+
+              this.wpfActionController.ExecuteBackAction();
+            } else {
+              this.nextRecord();
+            }
+          }
         }
       );
-    }
-    if (this.isLastItem || this.currentItemCount === this.itemCount) {
-      if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
-        this.carouselLocationAccessService.clearLightbar(this.displayCycleCountItem.DeviceId).subscribe();
-      }
-
-      this.wpfActionController.ExecuteBackAction();
-    } else {
-      this.nextRecord();
     }
   }
 
@@ -301,11 +325,18 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.datepicker.selectedDate = "";
       }
       this.displayCycleCountItem.InStockQuantity = this.displayCycleCountItem.QuantityOnHand;
-      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() == 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
-      if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
-        this.DisableActionButtons(true);
-      else
+      this.oldQunatityOnHand = this.displayCycleCountItem.QuantityOnHand;
+      this.oldExpirationDate = this.displayCycleCountItem.ExpirationDate;
+      this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() === 1) ? 1900 : date.getFullYear());
+      if (this.displayCycleCountItem.ItmExpDateGranularity !== "None") {
+        if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0)
+          this.DisableActionButtons(true);
+        else
+          this.DisableActionButtons(false);
+      }
+      else {
         this.DisableActionButtons(false);
+      }
       this.currentItemCount++;
       if (this.currentItemCount === this.itemCount) {
         this.isLastItem = true;
@@ -410,6 +441,24 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
   }
 
+  validateDate(input) {
+    const date = new Date(input);
+    input = input.split('/');
+    return date.getMonth() + 1 === +input[0] &&
+      date.getDate() === +input[1] &&
+      date.getFullYear() === +input[2];
+  }
+
+  checkforvalidyear(input) {
+    const date = new Date(input);
+    input = input.split('/');
+    if (date.getFullYear() > 99 && date.getFullYear() < 1753) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
   DisableActionButtons(value: boolean) {
     if (this.isLastItem !== true) { this.nextButtonDisable = value };
     if (this.isLastItem === true) { this.doneButtonDisable = value };
@@ -430,8 +479,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.wpfActionController.ExecuteBackAction();
     }
     else {
-      if(this.datepicker)
-      {
+      if (this.datepicker) {
         this.datepicker.selectedDate = "";
       }
       this.nextRecord();
@@ -474,18 +522,15 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
       this.toggleredborderfornonfirstitem(true);
     }
     else if (this.isdateexpired(this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted)
-      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === ""))
-      {
-      if (!(this.datepicker && this.datepicker.isDisabled))
-      {
+      || (this.displayCycleCountItem && this.displayCycleCountItem.ExpirationDateFormatted === "")) {
+      if (!(this.datepicker && this.datepicker.isDisabled)) {
         this.toggleredborderfornonfirstitem(false);
       }
       else {
         this.toggleredborderfornonfirstitem(true);
       }
     }
-    else
-    {
+    else {
       this.toggleredborderfornonfirstitem(true);
     }
   }
@@ -829,5 +874,38 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     if (this.popupDialogPrimaryClick$) {
       this.popupDialogPrimaryClick$.unsubscribe();
     }
+    if (this.popupConcurrencyDialogClose$) {
+      this.popupConcurrencyDialogClose$.unsubscribe();
+    }
+    if (this.popupConcurrencyDialogPrimaryClick$) {
+      this.popupConcurrencyDialogPrimaryClick$.unsubscribe();
+    }
+  }
+  displayConcurrencyDialog(): void {
+    const properties = new PopupDialogProperties('CycleCount_Concurrency_ConflictDialogTitle');
+    this.translateService.get('CycleCount_Concurrency_ConflictDialogTitle').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('CycleCount_Concurrency_UpdateConflictMsg').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe(result => { properties.primaryButtonText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = 0;
+    this.popupConcurrencyDialog = this.dialogService.showOnce(properties);
+    this.popupConcurrencyDialogClose$ = this.popupConcurrencyDialog.didClickCloseButton.subscribe(() => {
+    });
+    this.popupConcurrencyDialogPrimaryClick$ = this.popupConcurrencyDialog.didClickPrimaryButton.subscribe(() => {
+      this.concurrencyItem = this.guidedCycleCountService.getConcurrencyItem(this.displayCycleCountItem.DeviceLocationId.toString(), this.displayCycleCountItem.ItemId);
+      this.concurrencyItem.subscribe(x => {
+        this.displayCycleCountItem.InStockQuantity = x.QuantityOnHand;
+        this.displayCycleCountItem.QuantityOnHand = x.QuantityOnHand;
+        this.oldQunatityOnHand = x.QuantityOnHand;
+        this.oldExpirationDate = x.ExpirationDate && x.ExpirationDate;
+        var date = new Date(x.ExpirationDate);
+        this.displayCycleCountItem.ExpirationDateFormatted = (date.getFullYear() === 1) ? '' : ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getFullYear() == 1) ? 1900 : date.getFullYear());
+        this.binBarCodeDisplay = true;
+        this.productBarCodeDisplay = true;
+        this.reset();
+      });
+    });
   }
 }

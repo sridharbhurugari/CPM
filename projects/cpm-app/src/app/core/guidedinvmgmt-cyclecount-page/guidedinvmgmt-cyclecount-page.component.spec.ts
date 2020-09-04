@@ -279,7 +279,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
   });
   describe('cycle count data retrieval', () => {
     it('cycle count data retrieval', () => {
-      fixture.detectChanges();
+      //fixture.detectChanges();
     });
   });
   describe('Sending proper date with required format', () => {
@@ -1087,7 +1087,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
         "key": "Enter"
       });
       window.dispatchEvent(event);
-      fixture.detectChanges();
+      //fixture.detectChanges();
     });
   });
   describe("Should call key press event", () => {
