@@ -755,7 +755,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       component.numericElement.displayValue = "10";
       component.DisableActionButtons(true);
       var val = component.daterequired;
-      expect(val).toBeFalsy();
+      expect(val).toBeTruthy();
       expect(component.doneButtonDisable).toBeTruthy();
     });
   });
@@ -841,7 +841,7 @@ describe("GuidedInvMgmtCycleCountPageComponent", () => {
       component.numericElement.displayValue = "10";
       component.DisableActionButtons(true);
       var val = component.daterequired;
-      expect(val).toBeFalsy();
+      expect(val).toBeTruthy();
       expect(component.doneButtonDisable).toBeTruthy();
     });
   });

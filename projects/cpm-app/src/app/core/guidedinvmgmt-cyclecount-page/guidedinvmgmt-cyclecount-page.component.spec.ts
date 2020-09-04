@@ -894,7 +894,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
       component.numericElement.displayValue = "10";
       component.DisableActionButtons(true);
       var val = component.daterequired;
-      expect(val).toBeFalsy();
+      expect(val).toBeTruthy();
       expect(component.nextButtonDisable).toBeTruthy();
       expect(component.doneButtonDisable).toBeFalsy();
     });

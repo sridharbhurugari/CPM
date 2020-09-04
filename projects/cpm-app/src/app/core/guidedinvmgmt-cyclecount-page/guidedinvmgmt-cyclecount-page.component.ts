@@ -204,7 +204,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
         this.toggleredborderfornonfirstitem(true);
         this.displayCycleCountItem.ItemDateFormat = DateFormat.mmddyyyy_withslashes;
 
-        if (this.displayCycleCountItem.ItmExpDateGranularity != "None") {
+        if (this.displayCycleCountItem.ItmExpDateGranularity !== "None") {
           if (this.displayCycleCountItem.ExpirationDateFormatted === "" && this.displayCycleCountItem.QuantityOnHand !== 0) {
             this.DisableActionButtons(true);
           }
