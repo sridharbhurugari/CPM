@@ -441,24 +441,6 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
   }
 
-  validateDate(input) {
-    const date = new Date(input);
-    input = input.split('/');
-    return date.getMonth() + 1 === +input[0] &&
-      date.getDate() === +input[1] &&
-      date.getFullYear() === +input[2];
-  }
-
-  checkforvalidyear(input) {
-    const date = new Date(input);
-    input = input.split('/');
-    if (date.getFullYear() > 99 && date.getFullYear() < 1753) {
-      return false;
-    }
-    else {
-      return true;
-    }
-  }
   DisableActionButtons(value: boolean) {
     if (this.isLastItem !== true) { this.nextButtonDisable = value };
     if (this.isLastItem === true) { this.doneButtonDisable = value };
