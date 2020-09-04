@@ -223,8 +223,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
     this.addwhitespacetodropdown();
-    setTimeout(() => {
-      if (this.elementView) {
+        if (this.elementView) {
         this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
         this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
         if (
@@ -244,7 +243,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           this.ItemBrandNameOverlap = true;
         }
       }
-    });
   }
 
   addwhitespacetodropdown() {
