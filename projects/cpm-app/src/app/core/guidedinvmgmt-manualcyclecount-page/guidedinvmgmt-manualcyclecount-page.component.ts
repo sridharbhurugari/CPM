@@ -117,9 +117,9 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   scanItem: string;
   isSelected: boolean;
   transaction: boolean;
-  originalQunatityOnHand:number;
-  originalExpirationDate:Date;
-  canDone:boolean;
+  originalQunatityOnHand: number;
+  originalExpirationDate: Date;
+  canDone: boolean;
 
   // Parent component variables
   selectedItem: any;
@@ -223,8 +223,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   ngAfterViewChecked() {
     this.toggleredborderforfirstitem();
     this.addwhitespacetodropdown();
-    setTimeout(() => {
-      if (this.elementView) {
+        if (this.elementView) {
         this.itemDescriptionWidth = this.elementView.nativeElement.offsetWidth;
         this.itemDescriptionWidthScroll = this.elementView.nativeElement.scrollWidth;
         if (
@@ -244,7 +243,6 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           this.ItemBrandNameOverlap = true;
         }
       }
-    });
   }
 
   addwhitespacetodropdown() {
@@ -288,8 +286,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   itemSelected(item: any) {
     this.selectedItem = JSON.stringify(item);
 
-    if(this.displayCycleCountItem === undefined || this.displayCycleCountItem === null)
-    {
+    if (this.displayCycleCountItem === undefined || this.displayCycleCountItem === null) {
       this.isSingleSelectEnable = false;
       this.getCycleCountData(item.item.ID);
     } else if (this.displayCycleCountItem) {
@@ -299,8 +296,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       }
       // this.isSelected = false;
       transactionValid = this.ScanValidation();
-      if(transactionValid)
-      {
+      if (transactionValid) {
         this.onLocationBasedValidation();
         this.getCycleCountData(item.item.ID);
       }
@@ -370,15 +366,32 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           this.isSingleSelectEnable = true;
           this.isMultiLocation = true;
         } else {
+          this.isSingleSelectEnable = false;
+          this.isMultiLocation = false;
           this.displayCycleCountItem = x[i];
+          let date = new Date(x[i].ExpirationDate);
+          this.displayCycleCountItem.InStockQuantity = x[i].QuantityOnHand;
           this.originalQunatityOnHand = x[i].QuantityOnHand;
           this.originalExpirationDate = x[i].ExpirationDate;
+          this.displayCycleCountItem.ExpirationDateFormatted =
+                  date.getFullYear() === 1
+                    ? ""
+                    : (date.getMonth() > 8
+                        ? date.getMonth() + 1
+                        : "0" + (date.getMonth() + 1)) +
+                      "/" +
+                      (date.getDate() > 9
+                        ? date.getDate()
+                        : "0" + date.getDate()) +
+                      "/" +
+                      (date.getFullYear() === 1 ? 1900 : date.getFullYear());               
+          this.CycleCountValidation();
         }
       }
     }
     if (this.locationCount === 0) {
       let itemID;
-      let itemLocation:string[] = [];
+      let itemLocation: string[] = [];
       this.displayCycleCountItem = null;
       for (let i = 0; i < x.length; i++) {
         itemID = x[i].ItemId;
@@ -429,20 +442,20 @@ export class GuidedinvmgmtManualcyclecountPageComponent
                 date.getFullYear() == 1
                   ? ""
                   : (date.getMonth() > 8
-                      ? date.getMonth() + 1
-                      : "0" + (date.getMonth() + 1)) +
-                    "/" +
-                    (date.getDate() > 9
-                      ? date.getDate()
-                      : "0" + date.getDate()) +
-                    "/" +
-                    (date.getFullYear() == 1 ? 1900 : date.getFullYear());               
+                    ? date.getMonth() + 1
+                    : "0" + (date.getMonth() + 1)) +
+                  "/" +
+                  (date.getDate() > 9
+                    ? date.getDate()
+                    : "0" + date.getDate()) +
+                  "/" +
+                  (date.getFullYear() == 1 ? 1900 : date.getFullYear());
               this.CycleCountValidation();
               this.itemIdLength = this.displayCycleCountItem.ItemId.length;
             }
             else {
               this.displayCycleCountItem = null;
-              let locationDetails:string[] = [];
+              let locationDetails: string[] = [];
               locationDetails.push(x[0].LocationDescription);
               this.displayPackagerAssignItemDialog(
                 itemid,
@@ -548,7 +561,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
     } else if (
       this.isdateexpired(
         this.displayCycleCountItem &&
-          this.displayCycleCountItem.ExpirationDateFormatted
+        this.displayCycleCountItem.ExpirationDateFormatted
       ) ||
       (this.displayCycleCountItem &&
         this.displayCycleCountItem.ExpirationDateFormatted === "")
@@ -615,10 +628,22 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       let dateReg = /^\d{2}([./-])\d{2}\1\d{4}$/;
       if ($event.match(dateReg)) {
         let eventdate = new Date($event);
-        if (this.isdateexpired($event)) {
+        if (!(this.validateDate($event)) || isNaN(eventdate.getTime())) {
           this.daterequired = true;
+          this.DisableActionButtons(true);
           this.toggleredborderfornonfirstitem(false);
-          this.DisableActionButtons(false);
+        }
+        else if (this.isdateexpired($event)) {
+          if (!(this.validateDate($event)) || !(this.checkforvalidyear($event))) {
+            this.daterequired = true;
+            this.DisableActionButtons(true);
+            this.toggleredborderfornonfirstitem(false);
+          }
+          else {
+            this.daterequired = true;
+            this.toggleredborderfornonfirstitem(false);
+            this.DisableActionButtons(false);
+          }
         } else if (isNaN(eventdate.getTime())) {
           this.DisableActionButtons(true);
         } else {
@@ -632,6 +657,26 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       }
     }
   }
+
+  validateDate(input) {
+    const date = new Date(input);
+    input = input.split('/');
+    return date.getMonth() + 1 === +input[0] &&
+      date.getDate() === +input[1] &&
+      date.getFullYear() === +input[2];
+  }
+
+  checkforvalidyear(input) {
+    const date = new Date(input);
+    input = input.split('/');
+    if (date.getFullYear() > 99 && date.getFullYear() < 1753) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
   Continue() {
     if (this.ItemDescriptionOverlap) {
       this.ItemDescriptionOverlap = false;
@@ -660,29 +705,29 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         QuantityOnHand: this.displayCycleCountItem.QuantityOnHand,
         BarCodeFormat: "UN",
         ProductID: "0090192121",
-        OriginalQuantityOnHand:this.originalQunatityOnHand,
-        OriginalExpirationDate:this.originalExpirationDate
+        OriginalQuantityOnHand: this.originalQunatityOnHand,
+        OriginalExpirationDate: this.originalExpirationDate
       });
 
-      let deviceId:string = this.displayCycleCountItem.DeviceId.toString();
+      let deviceId: string = this.displayCycleCountItem.DeviceId.toString();
       let itemId = this.displayCycleCountItem.ItemId;
       this.guidedManualCycleCountServiceService.post(deviceId, update).subscribe(res => {
-          console.log(res);
-          if(res === 3){
-            this.displayConcurrencyDialog(itemId);
-          }
-          else{
-            if(this.displayCycleCountItem){
-              if(this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel){
-                this.carouselLocationAccessService
+        console.log(res);
+        if (res === 3) {
+          this.displayConcurrencyDialog(itemId);
+        }
+        else {
+          if (this.displayCycleCountItem) {
+            if (this.displayCycleCountItem.DeviceLocationTypeId === DeviceLocationTypeId.Carousel) {
+              this.carouselLocationAccessService
                 .clearLightbar(this.displayCycleCountItem.DeviceId)
                 .subscribe();
-              }
-              if(this.canDone === true){
-                this.wpfActionController.ExecuteBackAction();
-              }
+            }
+            if (this.canDone === true) {
+              this.wpfActionController.ExecuteBackAction();
             }
           }
+        }
       });
     }
   }
@@ -814,12 +859,12 @@ export class GuidedinvmgmtManualcyclecountPageComponent
           date.getFullYear() == 1
             ? ""
             : (date.getMonth() > 8
-                ? date.getMonth() + 1
-                : "0" + (date.getMonth() + 1)) +
-              "/" +
-              (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
-              "/" +
-              (date.getFullYear() == 1 ? 1900 : date.getFullYear());      
+              ? date.getMonth() + 1
+              : "0" + (date.getMonth() + 1)) +
+            "/" +
+            (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
+            "/" +
+            (date.getFullYear() == 1 ? 1900 : date.getFullYear());
         this.CycleCountValidation();
       }
     }
@@ -869,8 +914,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         properties.messageElementText = result;
       });
     this.translateService.get("OK").subscribe((result) => {
-        properties.primaryButtonText = result;
-      });
+      properties.primaryButtonText = result;
+    });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Error;
@@ -947,8 +992,8 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         properties.messageElementText = result;
       });
     this.translateService.get("OK").subscribe((result) => {
-        properties.primaryButtonText = result;
-      });
+      properties.primaryButtonText = result;
+    });
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
     properties.dialogDisplayType = PopupDialogType.Info;
@@ -1045,7 +1090,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
         !this.datepicker.selectedDate.match(dateReg)
       ) {
         this.DisableActionButtons(true);
-       this.transaction = false;
+        this.transaction = false;
       }
       else {
         this.transaction = true;
@@ -1202,20 +1247,20 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       .subscribe((result) => {
         properties.titleElementText = result;
       });
-      this.translateService
-        .get("PACKAGER_ASSIGNITEM_BODY_TEXT")
-        .subscribe((result) => {
+    this.translateService
+      .get("PACKAGER_ASSIGNITEM_BODY_TEXT")
+      .subscribe((result) => {
         properties.messageElementText = result;
-      });  
-      for(let i=0; i< deviceDescription.length; i++){
+      });
+    for (let i = 0; i < deviceDescription.length; i++) {
       this.translateService
         .get("PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT", {
           itemId: itemId,
           deviceDescription: deviceDescription[i],
-      })
-      .subscribe((result) => {
-        properties.messageElementText += result;
-      });
+        })
+        .subscribe((result) => {
+          properties.messageElementText += result;
+        });
     }
     properties.showPrimaryButton = true;
     properties.showSecondaryButton = false;
