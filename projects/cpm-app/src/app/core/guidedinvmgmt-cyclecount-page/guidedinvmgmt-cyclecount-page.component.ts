@@ -747,31 +747,33 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   itemBinBarCode() {
     var formatRet, overrideRet;
-    if (this.displayCycleCountItem && this.displayCycleCountItem.ItemId.toUpperCase() === this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
+    const firstBarcodeChar = this.rawBarcodeMessage.substring(0, 1).toUpperCase();
+
+    if (this.displayCycleCountItem && (firstBarcodeChar === '.' || firstBarcodeChar === '$') &&
+      this.displayCycleCountItem.ItemId.toUpperCase() ===
+      this.rawBarcodeMessage.substring(1, this.rawBarcodeMessage.length).toUpperCase()) {
       this.binBarCodeDisplay = false;
       if (this.isPopupVisible) {
         this.closePopup();
       }
       this.ScanValidation();
-    }
-    else if (this.barcodeOverride && this.rawBarcodeMessage === "0000") {
+    } else if (this.barcodeOverride && this.rawBarcodeMessage === '0000') {
       this.binBarCodeDisplay = false;
       this.productBarCodeDisplay = false;
       if (this.isPopupVisible) {
         this.closePopup();
       }
       this.ScanValidation();
-    }
-    else {
-      this.guidedCycleCountService.validscan(this.displayCycleCountItem && this.displayCycleCountItem.ItemId, this.rawBarcodeMessage).subscribe(res => {
+    } else {
+      this.guidedCycleCountService.validscan(this.displayCycleCountItem && this.displayCycleCountItem.ItemId, this.rawBarcodeMessage)
+      .subscribe(res => {
         formatRet = res;
         if (formatRet === this.barCodeNotFound) {
           this.guidedCycleCountService.canoverridebarcode().subscribe(val => {
             overrideRet = val;
             this.displayWrongBarCodeDialog(overrideRet);
           });
-        }
-        else {
+        } else {
           this.barcodeFormat = formatRet;
           this.productBarCodeDisplay = false;
           if (this.isPopupVisible) {
