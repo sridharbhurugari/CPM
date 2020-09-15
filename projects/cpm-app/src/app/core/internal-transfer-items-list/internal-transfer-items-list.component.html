@@ -29,12 +29,14 @@
             <div class="col" [attr.data-title]="'ITEM' | translate">
                 <div>{{itemNeed.ItemFormattedGenericName}}</div>
                 <div>{{itemNeed.ItemBrandName}}</div>
+                <div class="packSize">{{itemNeed.PackageSize}}</div>
             </div>
             <div class="col" [attr.data-title]="'QOH' | translate">
                 <span>{{itemNeed.DeviceQuantityOnHand}}</span>
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
                 <span>{{itemNeed.DeviceQuantityNeeded}}</span>
+                <div class="packs">{{itemNeed.NumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
                 <span>{{itemNeed.PendingDevicePickQuantity}}</span>

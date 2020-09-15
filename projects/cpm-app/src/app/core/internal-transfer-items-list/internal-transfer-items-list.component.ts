@@ -52,5 +52,4 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
       this.windowService.dispatchResizeEvent();
     });
   }
-
 }

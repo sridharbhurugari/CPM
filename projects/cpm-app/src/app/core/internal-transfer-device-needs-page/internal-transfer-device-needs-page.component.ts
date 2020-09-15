@@ -23,6 +23,7 @@ import * as _ from 'lodash';
 })
 export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   itemHeaderKey: string = 'ITEM';
+  packSizeHeaderKey: string = 'PACKSIZE';
   qohHeaderKey: string = 'QOH';
   xferQtyHeaderKey: string = 'QTY_TO_XFER';
   qtyPendingHeaderKey: string = 'QTY_PENDING_PICK';
@@ -44,8 +45,8 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
   ) {
-    let deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
-    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id == deviceId)));
+    const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));
