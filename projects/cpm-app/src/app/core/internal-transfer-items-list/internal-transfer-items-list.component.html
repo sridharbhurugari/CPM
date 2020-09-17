@@ -33,7 +33,7 @@
             </div>
             <div class="col" [attr.data-title]="'QOH' | translate">
                 <span>{{itemNeed.DeviceQuantityOnHand}}</span>
-                <div class="packs" *ngIf="itemNeed.PackSize > 1">{{itemNeed.QohNumberOfPackages}}</div>
+                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.QohNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
                 <span>{{itemNeed.DeviceQuantityNeeded}}</span>

@@ -11,4 +11,5 @@ export interface IItemReplenishmentNeed {
     NumberOfPackages: string;
     QohNumberOfPackages: string;
     PackSize: number;
+    Xr2Item: boolean;
 }
