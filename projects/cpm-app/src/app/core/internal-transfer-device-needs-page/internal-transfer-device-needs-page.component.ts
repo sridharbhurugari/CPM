@@ -60,19 +60,19 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   goBack() {
     this.wpfActionControllerService.ExecuteBackAction();
   }
-  
+
   print() {
     this.requestStatus = 'printing';
     var colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
       { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ], headerResourceKey: this.itemHeaderKey, width: "auto" },
-      { cellPropertyNames: [ 'DeviceQuantityOnHand' ], headerResourceKey: this.qohHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'DeviceQuantityNeeded' ], headerResourceKey: this.xferQtyHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: "*" },
+      { cellPropertyNames: [ 'DeviceQuantityOnHand' ], headerResourceKey: this.qohHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'DeviceQuantityNeeded' ], headerResourceKey: this.xferQtyHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
     ];
-    let sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-      return _.orderBy(needs, x => x.DeviceQuantityOnHand, 'asc');
+    const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
+      return _.orderBy(needs, x => x.ItemFormattedGenericName, 'asc');
     }));
-    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
+    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {

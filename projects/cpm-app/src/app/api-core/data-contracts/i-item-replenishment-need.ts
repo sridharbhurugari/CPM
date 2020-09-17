@@ -9,4 +9,6 @@ export interface IItemReplenishmentNeed {
     PendingDevicePickQuantity: number;
     PackageSize: string;
     NumberOfPackages: string;
+    QohNumberOfPackages: string;
+    PackSize: number;
 }
