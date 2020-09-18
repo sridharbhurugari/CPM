@@ -70,7 +70,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
     ];
     const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-      return _.orderBy(needs, x => x.ItemFormattedGenericName, 'asc');
+      return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase, 'asc');
     }));
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
