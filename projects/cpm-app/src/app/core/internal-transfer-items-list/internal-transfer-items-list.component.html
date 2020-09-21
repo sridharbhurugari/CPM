@@ -29,14 +29,14 @@
             <div class="col" [attr.data-title]="'ITEM' | translate">
                 <div>{{itemNeed.ItemFormattedGenericName}}</div>
                 <div>{{itemNeed.ItemBrandName}}</div>
-                <div class="packSize">{{itemNeed.PackageSize}}</div>
+                <div class="packSize" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.PackageSize}}</div>
             </div>
             <div class="col" [attr.data-title]="'QOH' | translate">
-                <span>{{itemNeed.DeviceQuantityOnHand}}</span>
+                <span>{{itemNeed.DeviceQuantityOnHand}} {{itemNeed.UnitOfIssue}}</span>
                 <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.QohNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
-                <span>{{itemNeed.DeviceQuantityNeeded}}</span>
+                <span>{{itemNeed.DeviceQuantityNeeded}}  {{itemNeed.UnitOfIssue}}</span>
                 <div class="packs">{{itemNeed.NumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">

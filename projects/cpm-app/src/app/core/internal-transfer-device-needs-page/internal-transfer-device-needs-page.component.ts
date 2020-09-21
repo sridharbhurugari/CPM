@@ -63,14 +63,15 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
   print() {
     this.requestStatus = 'printing';
-    var colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ], headerResourceKey: this.itemHeaderKey, width: "auto" },
+    const colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
+      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+       headerResourceKey: this.itemHeaderKey, width: 'auto' },
       { cellPropertyNames: [ 'DeviceQuantityOnHand' ], headerResourceKey: this.qohHeaderKey, width: '*' },
       { cellPropertyNames: [ 'DeviceQuantityNeeded' ], headerResourceKey: this.xferQtyHeaderKey, width: '*' },
       { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
     ];
     const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-      return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase, 'asc');
+      return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
     }));
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
