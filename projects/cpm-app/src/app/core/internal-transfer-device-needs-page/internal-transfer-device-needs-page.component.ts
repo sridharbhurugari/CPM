@@ -65,9 +65,11 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.requestStatus = 'printing';
     const colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
       { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
-       headerResourceKey: this.itemHeaderKey, width: 'auto' },
-      { cellPropertyNames: [ 'DeviceQuantityOnHand' ], headerResourceKey: this.qohHeaderKey, width: '*' },
-      { cellPropertyNames: [ 'DeviceQuantityNeeded' ], headerResourceKey: this.xferQtyHeaderKey, width: '*' },
+          headerResourceKey: this.itemHeaderKey, width: 'auto' },
+      { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'QohNumberOfPackages' ],
+          headerResourceKey: this.qohHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue', 'NumberOfPackages' ],
+          headerResourceKey: this.xferQtyHeaderKey, width: '*' },
       { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
     ];
     const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
