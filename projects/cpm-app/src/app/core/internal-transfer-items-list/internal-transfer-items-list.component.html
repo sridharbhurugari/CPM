@@ -37,7 +37,7 @@
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
                 <span>{{itemNeed.DeviceQuantityNeeded}}  {{itemNeed.UnitOfIssue}}</span>
-                <div class="packs">{{itemNeed.NumberOfPackages}}</div>
+                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.NumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
                 <span>{{itemNeed.PendingDevicePickQuantity}}</span>
