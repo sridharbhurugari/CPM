@@ -22,11 +22,11 @@ import * as _ from 'lodash';
   styleUrls: ['./internal-transfer-device-needs-page.component.scss']
 })
 export class InternalTransferDeviceNeedsPageComponent implements OnInit {
-  itemHeaderKey: string = 'ITEM';
-  packSizeHeaderKey: string = 'PACKSIZE';
-  qohHeaderKey: string = 'QOH';
-  xferQtyHeaderKey: string = 'QTY_TO_XFER';
-  qtyPendingHeaderKey: string = 'QTY_PENDING_PICK';
+  itemHeaderKey = 'ITEM';
+  packSizeHeaderKey = 'PACKSIZE';
+  qohHeaderKey = 'QOH';
+  xferQtyHeaderKey = 'QTY_TO_XFER';
+  qtyPendingHeaderKey = 'QTY_PENDING_PICK';
   itemNeeds$: Observable<IItemReplenishmentNeed[]>;
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
@@ -64,7 +64,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   print() {
     this.requestStatus = 'printing';
     const colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'PackageSize' ],
           headerResourceKey: this.itemHeaderKey, width: 'auto' },
       { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'QohNumberOfPackages' ],
           headerResourceKey: this.qohHeaderKey, width: '*' },
