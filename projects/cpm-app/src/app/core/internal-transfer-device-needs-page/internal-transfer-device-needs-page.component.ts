@@ -55,9 +55,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.itemNeeds$ = deviceReplenishmentNeedsService.getDeviceItemNeeds(deviceId).pipe(shareReplay(1));
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
 
-    this.itemNeeds$.pipe(map(needs => {
-      this.isXr2Item =  _.first(needs).Xr2Item;
-    }));
+    this.itemNeeds$.subscribe(needs => {
+      this.isXr2Item = needs[0].Xr2Item;
+    });
   }
 
   ngOnInit() {
