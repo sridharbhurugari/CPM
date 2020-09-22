@@ -56,7 +56,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
 
     this.itemNeeds$.pipe(map(needs => {
-      this.isXr2Item =  findIndex(needs, x => x.Xr2Item === true) > -1;
+      this.isXr2Item =  _.first(needs).Xr2Item;
     }));
   }
 
