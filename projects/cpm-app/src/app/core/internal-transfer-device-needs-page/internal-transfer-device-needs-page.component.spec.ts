@@ -36,12 +36,19 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     let pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData: printWithBaseData
     };
+
+    const needs = [
+      {
+        Xr2Item: true
+      }
+    ];
+
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
       displayInfoOk: jasmine.createSpy('displayInfoOk'),
     };
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         InternalTransferDeviceNeedsPageComponent,
         MockInternalTransferItemsListComponent,
         MockAppHeaderContainer,
@@ -52,11 +59,11 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         FooterModule,
         ButtonActionModule,
       ],
-      providers:[
+      providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: DevicesService, useValue: { get: () => of([]) } },
-        { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceItemNeeds: () => of([]) } },
+        { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceItemNeeds: () => of(needs) } },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
         { provide: PdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
