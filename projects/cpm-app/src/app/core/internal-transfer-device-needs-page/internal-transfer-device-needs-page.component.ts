@@ -34,7 +34,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
-  isXr2Item; boolean;
+  isXr2Item: boolean;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -55,8 +55,8 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.itemNeeds$ = deviceReplenishmentNeedsService.getDeviceItemNeeds(deviceId).pipe(shareReplay(1));
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
 
-    this.isXr2Item = this.itemNeeds$.pipe(map(needs => {
-      return findIndex(needs, x => x.Xr2Item === true) >= 0;
+    this.itemNeeds$.pipe(map(needs => {
+      this.isXr2Item =  findIndex(needs, x => x.Xr2Item === true) > -1;
     }));
   }
 
@@ -85,9 +85,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       colDefinitions = [
         { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue' ],
+        { cellPropertyNames: [ 'QohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue' ],
+        { cellPropertyNames: [ 'NumberOfPackages' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
