@@ -31,7 +31,7 @@ export class TableBodyService {
         let rowCells: TableCell[] = [];
         columnDefinitions.forEach(c => {
           if (c.cellPropertyNames.length > 1) {
-            let stackedValues = c.cellPropertyNames.map(prop => row[prop]).map(v => v.toString());
+            let stackedValues = c.cellPropertyNames.map(prop => row[prop]).map(v => v && v.toString());
             rowCells.push({ stack: stackedValues });
           } else {
             rowCells.push(row[c.cellPropertyNames[0]]);
