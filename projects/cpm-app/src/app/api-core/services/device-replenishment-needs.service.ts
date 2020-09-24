@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IItemReplenishmentNeed } from '../data-contracts/i-item-replenishment-need';
+import { IItemNeedsOperationResult } from '../data-contracts/i-item-needs-operation-result';
 
 @Injectable({
   providedIn: 'root'
@@ -18,16 +19,24 @@ export class DeviceReplenishmentNeedsService {
   ) { }
 
   get(): Observable<IDeviceReplenishmentNeed[]> {
-    var url = this.ocapUrlBuilderService.buildUrl('/api/InterDeviceTransfer');
-    return this.httpClient.get<IDeviceReplenishmentNeed[]>(url, { 
+    const url = this.ocapUrlBuilderService.buildUrl('/api/InterDeviceTransfer');
+    return this.httpClient.get<IDeviceReplenishmentNeed[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
 
   getDeviceItemNeeds(deviceId: number): Observable<IItemReplenishmentNeed[]> {
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}`);
-    return this.httpClient.get<IItemReplenishmentNeed[]>(url, { 
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}`);
+    return this.httpClient.get<IItemReplenishmentNeed[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
+  }
+
+  pickDeviceItemNeeds(deviceId: number, itemId: string): Observable<IItemNeedsOperationResult[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/${itemId}`);
+    return this.httpClient.post<IItemNeedsOperationResult[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+
   }
 }

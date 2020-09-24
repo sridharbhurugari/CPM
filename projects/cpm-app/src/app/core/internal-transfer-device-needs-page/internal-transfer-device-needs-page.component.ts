@@ -35,24 +35,25 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   requestStatus: 'none' | 'printing' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
+  deviceId: number;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
     private pdfGridReportService: PdfGridReportService,
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
+    private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
-    deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
   ) {
-    const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
-    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === deviceId)));
+    this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));
-    this.itemNeeds$ = deviceReplenishmentNeedsService.getDeviceItemNeeds(deviceId).pipe(shareReplay(1));
+    this.itemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
 
     this.itemNeeds$.subscribe(needs => {
@@ -108,6 +109,10 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       this.requestStatus = 'none';
       this.displayPrintFailed();
     });
+  }
+
+  itemSelected(itemId: string){
+    this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, itemId);
   }
 
   private displayPrintFailed() {

@@ -6,7 +6,7 @@
         <div class="cpmheaderrow">
             <app-header-container *ngIf="device$ | async as device" [title]="'DEVICE' | translate">{{device.Description}}</app-header-container>
         </div>
-        <app-internal-transfer-items-list [itemNeeds]="itemNeeds$ | async"></app-internal-transfer-items-list>
+        <app-internal-transfer-items-list [itemNeeds]="itemNeeds$ | async" (itemSelected)="itemSelected($event)"></app-internal-transfer-items-list>
     </ng-container>
     <ng-container class="ocactionfooter">
         <oc-footer>

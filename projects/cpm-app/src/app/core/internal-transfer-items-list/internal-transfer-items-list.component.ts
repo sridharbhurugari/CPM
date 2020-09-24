@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { nameof } from '../../shared/functions/nameof';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
@@ -51,5 +51,8 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
       this.searchTextFilter = data;
       this.windowService.dispatchResizeEvent();
     });
+  }
+
+  onSelect(itemNeeds: IItemReplenishmentNeed) {
   }
 }
