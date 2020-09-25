@@ -15,6 +15,7 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
 import * as _ from 'lodash';
+import { findIndex } from 'lodash';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -22,16 +23,18 @@ import * as _ from 'lodash';
   styleUrls: ['./internal-transfer-device-needs-page.component.scss']
 })
 export class InternalTransferDeviceNeedsPageComponent implements OnInit {
-  itemHeaderKey: string = 'ITEM';
-  qohHeaderKey: string = 'QOH';
-  xferQtyHeaderKey: string = 'QTY_TO_XFER';
-  qtyPendingHeaderKey: string = 'QTY_PENDING_PICK';
+  itemHeaderKey = 'ITEM';
+  packSizeHeaderKey = 'PACKSIZE';
+  qohHeaderKey = 'QOH';
+  xferQtyHeaderKey = 'QTY_TO_XFER';
+  qtyPendingHeaderKey = 'QTY_PENDING_PICK';
   itemNeeds$: Observable<IItemReplenishmentNeed[]>;
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
+  isXr2Item: boolean;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -44,13 +47,17 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
   ) {
-    let deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
-    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id == deviceId)));
+    const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));
     this.itemNeeds$ = deviceReplenishmentNeedsService.getDeviceItemNeeds(deviceId).pipe(shareReplay(1));
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
+
+    this.itemNeeds$.subscribe(needs => {
+      this.isXr2Item = needs[0].Xr2Item;
+    });
   }
 
   ngOnInit() {
@@ -59,19 +66,37 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   goBack() {
     this.wpfActionControllerService.ExecuteBackAction();
   }
-  
+
   print() {
     this.requestStatus = 'printing';
-    var colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ], headerResourceKey: this.itemHeaderKey, width: "auto" },
-      { cellPropertyNames: [ 'DeviceQuantityOnHand' ], headerResourceKey: this.qohHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'DeviceQuantityNeeded' ], headerResourceKey: this.xferQtyHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: "*" },
-    ];
-    let sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-      return _.orderBy(needs, x => x.DeviceQuantityOnHand, 'asc');
+    let colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[];
+
+    if (this.isXr2Item) {
+      colDefinitions = [
+        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'PackageSize' ],
+            headerResourceKey: this.itemHeaderKey, width: 'auto' },
+        { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'QohNumberOfPackages' ],
+            headerResourceKey: this.qohHeaderKey, width: '*' },
+        { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue', 'NumberOfPackages' ],
+            headerResourceKey: this.xferQtyHeaderKey, width: '*' },
+        { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
+      ];
+    } else {
+      colDefinitions = [
+        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+            headerResourceKey: this.itemHeaderKey, width: 'auto' },
+        { cellPropertyNames: [ 'QohNumberOfPackages' ],
+            headerResourceKey: this.qohHeaderKey, width: '*' },
+        { cellPropertyNames: [ 'NumberOfPackages' ],
+            headerResourceKey: this.xferQtyHeaderKey, width: '*' },
+        { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
+      ];
+    }
+
+    const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
+      return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
     }));
-    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
+    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
