@@ -19,6 +19,7 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockedDatePipe} from '../testing/mock-date-pipe.spec'
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { DatePipe } from '@angular/common';
+import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
@@ -27,7 +28,33 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let printWithBaseData: jasmine.Spy;
-
+  let date = new Date();
+  let pickListLinesData: UnderfilledPicklistLine[] = [{
+    DestinationId:"1241", DestinationType:"P", PriorityCode:"Patient", PicklistTypeDb:"P",ItemId:"8939",
+    ItemFormattedGenericName:"aectonla", ItemBrandName:"ace", PatientRoom:"2121", PatientName:"BIN",AreaDescription:"121",
+    DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
+    DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
+    DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/10/2020",
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+  },
+  {
+    DestinationId:"1242", DestinationType:"P", PriorityCode:"Area", PicklistTypeDb:"P",ItemId:"8939",
+    ItemFormattedGenericName:"aectonla", ItemBrandName:"ace", PatientRoom:"2122", PatientName:"Jhon",AreaDescription:"122",
+    DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
+    DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
+    DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/11/2020",
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+  },
+  {
+    DestinationId:"1243", DestinationType:"P", PriorityCode:"FirstDose", PicklistTypeDb:"P",ItemId:"8939",
+    ItemFormattedGenericName:"aectonla", ItemBrandName:"ace", PatientRoom:"2123", PatientName:"Jack",AreaDescription:"123",
+    DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
+    DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
+    DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/12/2020",
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+  },
+];
+  
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: () => { } };
     spyOn(wpfActionControllerService, 'ExecuteBackAction');
@@ -83,6 +110,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     fixture = TestBed.createComponent(UnderfilledPicklistLinesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    component.picklistLines$ = of(pickListLinesData);
   });
 
   it('should create', () => {
@@ -98,6 +126,14 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
 
   describe('print', () => {
     describe('succeeded', () => {
+      let pickList: any = {};
+      let baseData: any = {};
+      beforeEach(() => {
+        pickList.OrderId = 'PHA00000101';
+        pickList.PriorityCode = 'Patient';
+        component.reportBaseData$ = of(baseData);
+        component.picklist$ = of(pickList);
+      });
       it('should display info dialog', () => {
         printWithBaseData.and.returnValue(of(true));
         component.print();
@@ -106,8 +142,17 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       });
     });
     describe('failed', () => {
+      let pickList: any = {};
+      let baseData: any = {};
+      beforeEach(() => {
+        pickList.OrderId = 'PHA00000101';
+        pickList.PriorityCode = 'Patient';
+        component.reportBaseData$ = of(baseData);
+        component.picklist$ = of(pickList);
+      });
       it('should display error dialog', () => {
         printWithBaseData.and.returnValue(of(false));
+        component.requestStatus = 'none';
         component.print();
         expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
       });

@@ -38,6 +38,8 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     PharmacyQOH: number;
     UnfilledReason: string;
     PrintFillDate: string;
+    DisplayFillRequired: string;
+    DisplayDestionationValue: string;
 
     get DestinationSortValue(): string{
         if(this.DestinationType == 'P'){

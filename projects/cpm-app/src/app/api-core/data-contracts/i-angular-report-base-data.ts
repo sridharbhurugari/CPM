@@ -8,4 +8,7 @@ export interface IAngularReportBaseData {
   CombinedAddress: string;
   FormattedDateTime: string;
   FormPrinterName: string;
+  OrderId: string; //For Unfilled report
+  PriorityCode: string; //For Unfilled report
+  RouteName: string // For unfilled report
 }
