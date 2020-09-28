@@ -22,6 +22,9 @@ export class ColHeaderSortableComponent implements OnInit {
   @Input()
   customColumnSortOrder: 'asc' | 'desc';
 
+  @Input()
+  wrap: boolean;
+
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 

@@ -13,4 +13,7 @@ export interface IItemReplenishmentNeed {
     PackSize: number;
     Xr2Item: boolean;
     UnitOfIssue: string;
+    PickLocationDeviceLocationId: number;
+    PickLocationDescription: string;
+    PickLocationQoh: number;
 }
