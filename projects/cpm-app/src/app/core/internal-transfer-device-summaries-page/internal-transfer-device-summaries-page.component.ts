@@ -22,7 +22,7 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  deviceSelected(deviceId: number){
+  deviceSelected(deviceId: number) {
     this.wpfActionControllerService.ExecuteContinueNavigationAction(`/internalTransfer/deviceReplenishmentNeeds/${deviceId}`);
   }
 }

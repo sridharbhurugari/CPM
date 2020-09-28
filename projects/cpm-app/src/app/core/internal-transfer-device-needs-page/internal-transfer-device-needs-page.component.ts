@@ -16,6 +16,7 @@ import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
 import * as _ from 'lodash';
 import { findIndex } from 'lodash';
+import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-needs-operation-result';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -36,6 +37,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
   deviceId: number;
+  itemsToPick: IItemReplenishmentNeed[];
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -68,17 +70,30 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.wpfActionControllerService.ExecuteBackAction();
   }
 
+  pick() {
+    let itemIds: string[];
+
+    if (itemIds !== null && itemIds.length > 0 ) {
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, itemIds);
+
+      this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
+      return;
+    }
+
+    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
+  }
+
   print() {
     this.requestStatus = 'printing';
     let colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[];
 
     if (this.isXr2Item) {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'PackageSize' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'DisplayPackageSize' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'QohNumberOfPackages' ],
+        { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'DisplayQohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue', 'NumberOfPackages' ],
+        { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue', 'DisplayNumberOfPackages' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
@@ -86,9 +101,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       colDefinitions = [
         { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'QohNumberOfPackages' ],
+        { cellPropertyNames: [ 'DisplayQohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'NumberOfPackages' ],
+        { cellPropertyNames: [ 'DisplayNumberOfPackages' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
@@ -111,10 +126,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     });
   }
 
-  itemSelected(itemId: string){
-    this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, itemId);
+  onSelect(selectedItems: any) {
+    this.itemsToPick = selectedItems;
   }
-
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
   }

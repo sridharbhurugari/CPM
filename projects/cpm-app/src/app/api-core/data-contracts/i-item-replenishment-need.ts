@@ -7,9 +7,9 @@ export interface IItemReplenishmentNeed {
     DeviceParLevel: number;
     DeviceRestockLevel: number;
     PendingDevicePickQuantity: number;
-    PackageSize: string;
-    NumberOfPackages: string;
-    QohNumberOfPackages: string;
+    DisplayPackageSize: string;
+    DisplayNumberOfPackages: string;
+    DisplayQohNumberOfPackages: string;
     PackSize: number;
     Xr2Item: boolean;
     UnitOfIssue: string;

@@ -204,5 +204,9 @@
   "PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT": "{{itemId}} is assigned to {{deviceDescription}}<br />",
   "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count",
   "CycleCount_Concurrency_UpdateConflictMsg":"The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
-  "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information"
+  "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information",
+  "INTERNAL_TRANS_PICKQUEUE_BUTTON": "Pick",
+  "INTERNAL_TRANS_PICKQUEUE_SENT_TITLE": "Interanl Transfer Items",
+  "INTERNAL_TRANS_PICKQUEUE_SENT_OK": "Selected interanl transfer items have been sent to picking queues.",
+  "INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED": "No items have been selected. Nothing sent to picking queues."
 }

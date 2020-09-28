@@ -32,11 +32,13 @@ export class DeviceReplenishmentNeedsService {
     });
   }
 
-  pickDeviceItemNeeds(deviceId: number, itemId: string): Observable<IItemNeedsOperationResult[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/${itemId}`);
-    return this.httpClient.post<IItemNeedsOperationResult[]>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-
+  pickDeviceItemNeeds(deviceId: number, itemIds: string[]): Observable<IItemNeedsOperationResult[]> {
+    const body = {
+      DeviceId: deviceId,
+      ItemIds: itemIds,
+    };
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/PickQueue`);
+    const headers = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.put<IItemNeedsOperationResult[]>(url, body, { headers });
   }
 }

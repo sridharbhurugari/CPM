@@ -2,7 +2,8 @@
     <app-header-container></app-header-container>
     <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
-<oc-grid #ocgrid ocgridfilter="false" GridMultiSelect='true'
+<oc-grid #ocgrid ocgridfilter="false" 
+    appGridMultiSelect
     appGridSortCol
     [initialSortPropertyName]="itemDescriptionPropertyName"
     [orderableValues]="itemNeeds" 
@@ -23,27 +24,22 @@
         </div>
     </ng-container>
     <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)"
-        (click)="itemSelected.emit(itemNeed.ItemId)">
+        <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
             <div class="first">
-                <oc-checkbox
-                valueField='standard'   
-                [selected]='false' 
-                (selection)="onSelect($event)">
-            </oc-checkbox>
+                <oc-checkbox class="noLabel" valueField="itemNeed"></oc-checkbox>
             </div>
             <div class="col" [attr.data-title]="'ITEM' | translate">
                 <div>{{itemNeed.ItemFormattedGenericName}}</div>
                 <div>{{itemNeed.ItemBrandName}}</div>
-                <div class="packSize" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.PackageSize}}</div>
+                <div class="packSize" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayPackageSize}}</div>
             </div>
             <div class="col" [attr.data-title]="'QOH' | translate">
                 <span>{{itemNeed.DeviceQuantityOnHand}} {{itemNeed.UnitOfIssue}}</span>
-                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.QohNumberOfPackages}}</div>
+                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayQohNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
                 <span>{{itemNeed.DeviceQuantityNeeded}}  {{itemNeed.UnitOfIssue}}</span>
-                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.NumberOfPackages}}</div>
+                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
                 <span>{{itemNeed.PendingDevicePickQuantity}}</span>
