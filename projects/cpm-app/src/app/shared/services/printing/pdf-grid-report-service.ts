@@ -28,7 +28,7 @@ export class PdfGridReportService
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
     this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
-    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED', 'UNFILLED_REPORT_LABEL_ORDER_ID', 'UNFILLED_REPORT_LABEL_PRIORITYCODE', 'UNFILLED_REPORT_LABEL_ROUTENAME'];
+    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED', 'UNFILLED_REPORT_LABEL_ORDER_ID', 'UNFILLED_REPORT_LABEL_PRIORITYCODE'];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
@@ -59,7 +59,7 @@ export class PdfGridReportService
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-    if(reportBaseData.OrderId !== undefined && reportBaseData.PriorityCode !== undefined && reportBaseData.RouteName !== undefined){
+    if(reportBaseData.OrderId !== undefined && reportBaseData.PriorityCode !== undefined){
       const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
       const pdf = this.pdfMakeService.createPdf(documentDefinition);
       return pdf;
@@ -179,9 +179,8 @@ export class PdfGridReportService
             widths: [50, 75, 150, 50, '*'],
             body: [
               ['', reportLabels.UNFILLED_REPORT_LABEL_ORDER_ID, reportBaseData.OrderId, reportLabels.REPORT_LABEL_PRINTED, reportBaseData.FormattedDateTime],
-              ['', reportLabels.UNFILLED_REPORT_LABEL_PRIORITYCODE, reportBaseData.PriorityCode, reportLabels.UNFILLED_REPORT_LABEL_ROUTENAME, reportBaseData.RouteName],
+              ['', reportLabels.UNFILLED_REPORT_LABEL_PRIORITYCODE, reportBaseData.PriorityCode, '', ''],
               ['','','', '', ''],
-              ['', reportLabels.REPORT_LABEL_OMNI_ID, reportBaseData.OmniId, '', ''],
               ['', reportLabels.REPORT_LABEL_OMNI_NAME, reportBaseData.OmniName, '', ''],
             ]
           }

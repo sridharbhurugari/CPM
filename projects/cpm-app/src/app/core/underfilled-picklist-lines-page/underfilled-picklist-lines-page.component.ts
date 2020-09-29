@@ -116,7 +116,6 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.reportBaseData$.subscribe((baseData) => { reportBasedata = baseData });
     reportBasedata.OrderId = pickList.OrderId;
     reportBasedata.PriorityCode = pickList.PriorityCode;
-    reportBasedata.RouteName = pickList.RouteName;
     this.reportBaseData$ = of(reportBasedata);
   }
   private displayPrintFailed() {
