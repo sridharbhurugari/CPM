@@ -34,11 +34,11 @@
                 <div class="packSize" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayPackageSize}}</div>
             </div>
             <div class="col" [attr.data-title]="'QOH' | translate">
-                <span>{{itemNeed.DeviceQuantityOnHand}} {{itemNeed.UnitOfIssue}}</span>
+                <span>{{itemNeed.DisplayDeviceQuantityOnHand}}</span>
                 <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayQohNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
-                <span>{{itemNeed.DeviceQuantityNeeded}}  {{itemNeed.UnitOfIssue}}</span>
+                <span>{{itemNeed.DisplayDeviceQuantityNeeded}}</span>
                 <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">

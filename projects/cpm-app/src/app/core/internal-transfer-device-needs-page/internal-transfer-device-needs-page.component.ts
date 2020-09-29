@@ -73,6 +73,10 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   pick() {
     let itemIds: string[];
 
+    this.itemsToPick.forEach(item => {
+      itemIds.push(item.ItemId);
+    });
+
     if (itemIds !== null && itemIds.length > 0 ) {
       this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, itemIds);
 
@@ -91,9 +95,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       colDefinitions = [
         { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'DisplayPackageSize' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'DisplayQohNumberOfPackages' ],
+        { cellPropertyNames: [ 'DisplayDeviceQuantityOnHand', 'DisplayQohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue', 'DisplayNumberOfPackages' ],
+        { cellPropertyNames: [ 'DisplayDeviceQuantityNeeded', 'DisplayNumberOfPackages' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
@@ -101,9 +105,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       colDefinitions = [
         { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'DisplayQohNumberOfPackages' ],
+        { cellPropertyNames: [ 'DisplayDeviceQuantityOnHand' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'DisplayNumberOfPackages' ],
+        { cellPropertyNames: [ 'DisplayDeviceQuantityNeeded' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
