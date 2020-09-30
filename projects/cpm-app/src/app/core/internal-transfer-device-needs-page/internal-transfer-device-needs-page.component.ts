@@ -78,12 +78,9 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   pick() {
     if (this.itemsToPick.length > 0) {
 
-      const results = this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, this.itemsToPick);
-
-      if (results[0].IsSucceful) {
-        this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
-        return;
-      }
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, this.itemsToPick);
+      this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
+      return;
     }
 
     this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
