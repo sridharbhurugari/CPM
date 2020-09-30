@@ -24,7 +24,9 @@ describe('PdfGridReportService', () => {
       FormattedDateTime: '24 May 2020',
       OmniId: 'someOmni',
       OmniName: 'some omni',
-      SiteDescription: 'some site'
+      SiteDescription: 'some site',
+      OrderId:'PHA24-0000000105',
+      PriorityCode:'Area'
     };
     pdfPrintService = { 
       printPdf: jasmine.createSpy('printPdf').and.returnValue(of(true)),
@@ -33,7 +35,9 @@ describe('PdfGridReportService', () => {
     let translatedReportLabels: IReportLabels = {
       REPORT_LABEL_OMNI_ID: 'omni id:',
       REPORT_LABEL_OMNI_NAME: 'omni name:',
-      REPORT_LABEL_PRINTED: 'printed:'
+      REPORT_LABEL_PRINTED: 'printed:',
+      UNFILLED_REPORT_LABEL_ORDER_ID : 'Order Id',
+      UNFILLED_REPORT_LABEL_PRIORITYCODE: 'Priority type'
     }
     let pdfResult: Partial<TCreatedPdf> = {
       getBlob: (cb: Function) => cb(new Blob())
