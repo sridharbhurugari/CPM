@@ -64,7 +64,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: DevicesService, useValue: { get: () => of([]) } },
-        { provide: DeviceReplenishmentNeedsService, 
+        { provide: DeviceReplenishmentNeedsService,
           useValue: { getDeviceItemNeeds: () => of(needs),
              pickDeviceItemNeeds: () => of([]) }},
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },

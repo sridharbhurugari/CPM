@@ -18,11 +18,12 @@
                     *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
                     [disabled]="requestStatus != 'none'"
                     [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
-                    [buttonText]="'PRINT' | translate"
-                    (click)="print()">
+                    [buttonText]="'PRINT_ALL' | translate"
+                    (click)="print(true)">
                 </oc-button-action>
                 <oc-button-action 
-                    [disabled]="false"
+                    [disabled]="requestStatus != 'none'"
+                    [buttonIcon]="requestStatus == 'picking' ? 'spin' : 'clear'"
                     [buttonText]="'INTERNAL_TRANS_PICKQUEUE_BUTTON' | translate"
                     (click)="pick()">
                 </oc-button-action>

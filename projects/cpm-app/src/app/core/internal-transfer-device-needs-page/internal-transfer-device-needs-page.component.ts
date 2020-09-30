@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 import { findIndex } from 'lodash';
 import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-needs-operation-result';
 import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
+import { of } from 'rxjs/internal/observable/of';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -34,11 +35,12 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
   reportTitle$: Observable<string>;
-  requestStatus: 'none' | 'printing' = 'none';
+  requestStatus: 'none' | 'picking' | 'printing' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
   deviceId: number;
   itemsToPick: IItemReplenishmentNeed[] = new Array();
+  sortedNeeds$: Observable<IItemReplenishmentNeed[]>;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -79,6 +81,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     if (this.itemsToPick.length > 0) {
 
       this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, this.itemsToPick);
+      this.print(false);
       this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
       return;
     }
@@ -86,8 +89,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
   }
 
-  print() {
-    this.requestStatus = 'printing';
+  print(printAll: boolean) {
     let colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[];
 
     if (this.isXr2Item) {
@@ -112,10 +114,18 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       ];
     }
 
-    const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-      return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
-    }));
-    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
+    if (printAll) {
+      this.requestStatus = 'printing';
+      this.sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
+        return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
+      }));
+    } else {
+      this.requestStatus = 'picking';
+      this.sortedNeeds$ = of(this.itemsToPick).pipe(map(needs => {
+        return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
+      }));
+    }
+    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {

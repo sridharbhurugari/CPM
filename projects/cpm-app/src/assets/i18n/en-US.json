@@ -96,7 +96,7 @@
   "PRINT_SUCCEEDED_DIALOG_TITLE": "Print Document",
   "PRINT_SUCCEEDED_DIALOG_MESSAGE": "Document printed successfully.",
   "RELEASE": "Release",
-  "PRINT": "Print",
+  "PRINT_ALL": "Print All",
   "QOH": "QOH",
   "QTY": "Qty",
   "QTY_TO_XFER": "Qty to Transfer",
