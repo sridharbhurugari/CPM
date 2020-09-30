@@ -17,6 +17,7 @@ import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-
 import * as _ from 'lodash';
 import { findIndex } from 'lodash';
 import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-needs-operation-result';
+import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -37,7 +38,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
   deviceId: number;
-  itemsToPick: IItemReplenishmentNeed[];
+  itemsToPick: INeedsItemQuantity[] = new Array();
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -70,21 +71,22 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.wpfActionControllerService.ExecuteBackAction();
   }
 
+  onSelect(items: INeedsItemQuantity[]) {
+    this.itemsToPick = items;
+  }
+
   pick() {
-    let itemIds: string[];
+    if (this.itemsToPick.length > 0) {
 
-    this.itemsToPick.forEach(item => {
-      itemIds.push(item.ItemId);
-    });
+      const results = this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, this.itemsToPick);
 
-    if (itemIds !== null && itemIds.length > 0 ) {
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, itemIds);
-
-      this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
-      return;
+      if (results[0].IsSucceful) {
+        this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
+        return;
+      }
     }
 
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
+    this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
   }
 
   print() {
@@ -130,9 +132,6 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     });
   }
 
-  onSelect(selectedItems: any) {
-    this.itemsToPick = selectedItems;
-  }
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
   }

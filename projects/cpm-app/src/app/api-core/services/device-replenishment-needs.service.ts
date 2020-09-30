@@ -6,6 +6,7 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IItemReplenishmentNeed } from '../data-contracts/i-item-replenishment-need';
 import { IItemNeedsOperationResult } from '../data-contracts/i-item-needs-operation-result';
+import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
 
 @Injectable({
   providedIn: 'root'
@@ -32,13 +33,14 @@ export class DeviceReplenishmentNeedsService {
     });
   }
 
-  pickDeviceItemNeeds(deviceId: number, itemIds: string[]): Observable<IItemNeedsOperationResult[]> {
+  pickDeviceItemNeeds(deviceId: number, items: INeedsItemQuantity[]): Observable<IItemNeedsOperationResult[]> {
     const body = {
       DeviceId: deviceId,
-      ItemIds: itemIds,
+      Items: items,
     };
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/PickQueue`);
-    const headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.put<IItemNeedsOperationResult[]>(url, body, { headers });
+    return this.httpClient.put<IItemNeedsOperationResult[]>(url, body, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
   }
 }

@@ -26,7 +26,8 @@
     <ng-container class="ocgridbody">
         <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
             <div class="first">
-                <oc-checkbox class="noLabel" valueField="itemNeed"></oc-checkbox>
+                <oc-checkbox class="noLabel"
+                (selection)="onSelect(itemNeed.ItemId, itemNeed.DeviceQuantityNeeded)"></oc-checkbox>
             </div>
             <div class="col" [attr.data-title]="'ITEM' | translate">
                 <div>{{itemNeed.ItemFormattedGenericName}}</div>
