@@ -62,7 +62,6 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
 
   selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>){
     this.selectedItemNeeds = selectionEvent.selectedValues;
-    console.log(this.selectedItemNeeds);
     this.selectionChanged.next(this.selectedItemNeeds);
   }
 }
