@@ -38,7 +38,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
   deviceId: number;
-  itemsToPick: INeedsItemQuantity[] = new Array();
+  itemsToPick: IItemReplenishmentNeed[] = new Array();
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -71,7 +71,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.wpfActionControllerService.ExecuteBackAction();
   }
 
-  onSelect(items: INeedsItemQuantity[]) {
+  onSelect(items: IItemReplenishmentNeed[]) {
     this.itemsToPick = items;
   }
 

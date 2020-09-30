@@ -33,7 +33,7 @@ export class DeviceReplenishmentNeedsService {
     });
   }
 
-  pickDeviceItemNeeds(deviceId: number, items: INeedsItemQuantity[]): Observable<IItemNeedsOperationResult[]> {
+  pickDeviceItemNeeds(deviceId: number, items: IItemReplenishmentNeed[]): Observable<IItemNeedsOperationResult[]> {
     const body = {
       DeviceId: deviceId,
       Items: items,

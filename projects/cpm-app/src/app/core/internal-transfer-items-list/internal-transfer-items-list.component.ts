@@ -5,6 +5,7 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { AfterContentInit } from '@angular/core';
 import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
+import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -20,7 +21,7 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   readonly qohPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityOnHand');
   readonly pendingPickPropertyName: string = nameof<IItemReplenishmentNeed>('PendingDevicePickQuantity');
   private deviceItemNeeds: IItemReplenishmentNeed[];
-  private selectedItemNeeds: INeedsItemQuantity[] = new Array();
+  private selectedItemNeeds: IItemReplenishmentNeed[] = new Array();
 
   searchPropertyNames: string[] = [
     this.itemDescriptionPropertyName,
@@ -40,7 +41,7 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   }
 
   @Output()
-  selectionChanged: EventEmitter<INeedsItemQuantity[]> = new EventEmitter();
+  selectionChanged: EventEmitter<IItemReplenishmentNeed[]> = new EventEmitter();
 
   @ViewChild('ocsearchbox', {
     static: true
@@ -59,20 +60,9 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
     });
   }
 
-  onSelect(selectedItem: string, needsQuantity: number) {
-    const item = { itemId: selectedItem, quantity: needsQuantity };
-    if (this.selectedItemNeeds === null) {
-      this.selectedItemNeeds = new Array();
-      this.selectedItemNeeds.push(item);
-    } else {
-      const index = this.selectedItemNeeds.indexOf(item);
-      if (index < 0) {
-        this.selectedItemNeeds.push(item);
-      } else {
-        this.selectedItemNeeds.splice(index, 1);
-      }
-    }
-
-    this.selectionChanged.emit(this.selectedItemNeeds);
+  selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>){
+    this.selectedItemNeeds = selectionEvent.selectedValues;
+    console.log(this.selectedItemNeeds);
+    this.selectionChanged.next(this.selectedItemNeeds);
   }
 }
