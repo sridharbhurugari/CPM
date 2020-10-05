@@ -168,7 +168,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
-        // force the status to 2 at this point - reset it if the save fails
+        // force the status to 2 at this point
         picklistQueueItem.Status = 2;
         picklistQueueItem.Saving = false;
       }, result => {
