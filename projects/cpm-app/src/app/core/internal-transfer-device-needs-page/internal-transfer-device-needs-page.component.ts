@@ -90,7 +90,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
         items.push(item);
       });
 
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items);
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items).subscribe();
       this.print(false);
       this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
       return;
