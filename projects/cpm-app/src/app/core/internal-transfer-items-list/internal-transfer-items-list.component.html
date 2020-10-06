@@ -9,23 +9,29 @@
     [initialSortPropertyName]="itemDescriptionPropertyName"
     [orderableValues]="itemNeeds" 
     (valuesReordered)="itemNeeds = $event">
-    <ng-container class="ocgridheader">
-        <div class="first" data-colwrap="true"></div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
-            [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="ITEM">
-        </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
-            [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
-        </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
-            [columnPropertyName]="needPropertyName" headerResourceKey="QTY_TO_XFER">
-        </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
-            [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
-        </div>
-    </ng-container>
+  <ng-container class="ocgridheader">
+    <div class="first" data-colwrap="true"></div>
+    <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+        [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="ITEM">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+         [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+         [columnPropertyName]="needPropertyName" headerResourceKey="QTY_TO_XFER">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+         [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+         [columnPropertyName]="PickLocationDescriptionPropertyName" headerResourceKey="SOURCE_LOCACTION">
+    </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+         [columnPropertyName]="PickLocationQohPropertyName" headerResourceKey="SOURCE_QOH">
+    </div>
+  </ng-container>
     <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
+      <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
             <div class="first">
                 <oc-checkbox [noLabel]="true" [valueField]="itemNeed"></oc-checkbox>
             </div>
@@ -44,6 +50,12 @@
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
                 <span>{{itemNeed.PendingDevicePickQuantity}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'SOURCE_LOCACTION' | translate">
+                <span>{{itemNeed.PickLocationDescription}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'SOURCE_QOH' | translate">
+                <span>{{itemNeed.PickLocationQoh}}</span>
             </div>
         </div>
     </ng-container>

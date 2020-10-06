@@ -1,11 +1,17 @@
-.headertext{
+.headertext {
   user-select: none;
   float: left;
 }
-
-.headericon{
+.headertextwrapped {
+  user-select: none;
+  float: left;
+  white-space: pre-wrap;
+  max-width: 80px;
+}
+.headericon {
+  height: 100%;
   position: relative;
   left: 15px;
-  top: 3px;
+  top: 25%;
   float: left;
 }

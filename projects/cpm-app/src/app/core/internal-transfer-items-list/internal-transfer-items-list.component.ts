@@ -20,33 +20,35 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   readonly needPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityNeeded');
   readonly qohPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityOnHand');
   readonly pendingPickPropertyName: string = nameof<IItemReplenishmentNeed>('PendingDevicePickQuantity');
-  private deviceItemNeeds: IItemReplenishmentNeed[];
+  readonly PickLocationDescriptionPropertyName: string = nameof<IItemReplenishmentNeed>('PickLocationDescription');
+  readonly PickLocationQohPropertyName: string = nameof<IItemReplenishmentNeed>('PickLocationQoh');
+  private _itemNeeds: IItemReplenishmentNeed[];
   private selectedItemNeeds: IItemReplenishmentNeed[] = new Array();
 
   searchPropertyNames: string[] = [
     this.itemDescriptionPropertyName,
     this.brandPropertyName,
-  ];
+  ]
 
   searchTextFilter: string;
 
   @Input()
   set itemNeeds(value: IItemReplenishmentNeed[]) {
-    this.deviceItemNeeds = value;
+    this._itemNeeds = value;
     this.windowService.dispatchResizeEvent();
   }
 
   get itemNeeds(): IItemReplenishmentNeed[] {
-    return this.deviceItemNeeds;
+    return this._itemNeeds;
   }
-
-  @Output()
-  selectionChanged: EventEmitter<IItemReplenishmentNeed[]> = new EventEmitter();
 
   @ViewChild('ocsearchbox', {
     static: true
   })
   searchElement: SearchBoxComponent;
+
+  @Output()
+  selectionChanged: EventEmitter<IItemReplenishmentNeed[]> = new EventEmitter();
 
   constructor(
     private windowService: WindowService
@@ -60,8 +62,9 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
     });
   }
 
-  selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>){
+  selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>) {
     this.selectedItemNeeds = selectionEvent.selectedValues;
+    console.log(this.selectedItemNeeds);
     this.selectionChanged.next(this.selectedItemNeeds);
   }
 }
