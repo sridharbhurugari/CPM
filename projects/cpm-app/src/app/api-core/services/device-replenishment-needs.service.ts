@@ -36,7 +36,7 @@ export class DeviceReplenishmentNeedsService {
 
   pickDeviceItemNeeds(deviceId: number, items: IInterDeviceTransferPickRequest[]) {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/picklists`);
-    this.httpClient.post(url, items, {
+    return this.httpClient.post(url, items, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
