@@ -19,6 +19,9 @@ import { Xr2ExceptionDetailsPageComponent } from './xr2/xr2-exception-details-pa
 import { Xr2EventsPageComponent } from './xr2/xr2-events-page/xr2-events-page.component';
 import { InternalTransferDeviceSummariesPageComponent } from './core/internal-transfer-device-summaries-page/internal-transfer-device-summaries-page.component';
 import { InternalTransferDeviceNeedsPageComponent } from './core/internal-transfer-device-needs-page/internal-transfer-device-needs-page.component';
+import { Xr2QueueGroupingPageComponent } from './xr2/xr2-queue-grouping-page/xr2-queue-grouping-page.component';
+import { Xr2QueueDetailsPageComponent } from './xr2/xr2-queue-details-page/xr2-queue-details-page.component';
+
 const routes: Routes = [
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
@@ -26,6 +29,8 @@ const routes: Routes = [
   resolve: {
     cpmSignalR: CpmSignalRResolverService
   }*/ },
+  { path: 'xr2Queue/groupingQueue', component: Xr2QueueGroupingPageComponent },
+  { path: 'xr2Queue/detailsQueue', component: Xr2QueueDetailsPageComponent},
   { path: 'priorityCodePickRoutes', component: PriorityCodePickRoutesPageComponent },
   { path: 'priorityCode/RouteAssignments', component: PriorityCodeRouteAssignmentsPageComponent },
   { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },

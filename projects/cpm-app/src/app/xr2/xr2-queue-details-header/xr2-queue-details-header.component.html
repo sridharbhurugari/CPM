@@ -1,0 +1,10 @@
+<div class="cpmheaderrow">
+  <div class="header">
+    <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'"
+        (clickEvent)="onBackClick()">
+    </app-cp-clickable-icon>
+    <div class="title">Patient - Details</div>
+  </div>
+  <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
+

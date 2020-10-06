@@ -20,6 +20,12 @@ import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details
 import { QuickPickBoxItemsView } from './quick-pick-box-items-view/quick-pick-box-items-view.component';
 import { TrafficLightsComponent } from './traffic-lights/traffic-lights.component';
 import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.component';
+import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page/xr2-queue-grouping-page.component';
+import { Xr2QueueDetailsPageComponent } from './xr2-queue-details-page/xr2-queue-details-page.component';
+import { Xr2GroupingQueueComponent } from './xr2-grouping-queue/xr2-grouping-queue.component';
+import { Xr2DetailsQueueComponent } from './xr2-details-queue/xr2-details-queue.component';
+import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2-queue-grouping-header.component';
+import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 @NgModule({
   declarations: [
     PicklistsQueueComponent,
@@ -34,6 +40,12 @@ import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.componen
     QuickPickBoxItemsView,
     TrafficLightsComponent,
     Xr2EventsPageComponent,
+    Xr2QueueGroupingPageComponent,
+    Xr2QueueDetailsPageComponent,
+    Xr2GroupingQueueComponent,
+    Xr2DetailsQueueComponent,
+    Xr2QueueGroupingHeaderComponent,
+    Xr2QueueDetailsHeaderComponent,
   ],
   imports: [
     CommonModule,

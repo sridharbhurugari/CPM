@@ -62,4 +62,5 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   IsPrintable: boolean;
   SequenceOrder: number;
   RobotPickGroupId: Guid;
+  isSelected: boolean;
 }

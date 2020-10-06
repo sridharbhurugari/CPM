@@ -1,0 +1,8 @@
+<app-xr2-queue-details-header
+  (backEvent)='onBackClick($event)'
+  (searchTextFilterEvent)='onSearchTextFilter($event)'>
+</app-xr2-queue-details-header>
+<app-xr2-details-queue
+  [picklistQueueItems]="picklistsQueueItems | async"
+  [searchTextFilter]="searchTextFilter">
+</app-xr2-details-queue>

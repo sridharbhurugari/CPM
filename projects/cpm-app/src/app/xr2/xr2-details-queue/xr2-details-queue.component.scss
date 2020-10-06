@@ -1,0 +1,31 @@
+:host{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}
+.skip-button {
+  float: right;
+}
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: auto;
+  padding-right: 20px;
+}
+.first {
+  align-items: center;
+}
