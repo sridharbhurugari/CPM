@@ -91,14 +91,14 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     describe('succeeded', () => {
       it('should display info dialog', () => {
         printWithBaseData.and.returnValue(of(true));
-        component.print();
+        component.print(false);
         expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();
       });
     });
     describe('failed', () => {
       it('should display error dialog', () => {
         printWithBaseData.and.returnValue(of(false));
-        component.print();
+        component.print(false);
         expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
       });
     });
@@ -123,7 +123,10 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
           DisplayQohNumberOfPackages: 'Packs: 0, 0, 0',
           PackSize: 1,
           PendingDevicePickQuantity: 0,
-          UnitOfIssue: 'EA'
+          UnitOfIssue: 'EA',
+          PickLocationDescription: 'Test',
+          PickLocationDeviceLocationId: 79141,
+          PickLocationQoh: 500
         });
         component.pick();
         expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();
