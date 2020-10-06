@@ -19,6 +19,7 @@ import { findIndex } from 'lodash';
 import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-needs-operation-result';
 import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
 import { of } from 'rxjs/internal/observable/of';
+import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -79,8 +80,17 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
   pick() {
     if (this.itemsToPick.length > 0) {
+      const items: IInterDeviceTransferPickRequest[] = new Array();
+      this.itemsToPick.forEach(selecteItem => {
+        const item = {
+          ItemId: selecteItem.ItemId,
+          QuantityToPick: selecteItem.DeviceQuantityNeeded,
+          SourceDeviceLocationId: selecteItem.
+        };
+        items.push(item);
+      });
 
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, this.itemsToPick);
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items);
       this.print(false);
       this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
       return;
