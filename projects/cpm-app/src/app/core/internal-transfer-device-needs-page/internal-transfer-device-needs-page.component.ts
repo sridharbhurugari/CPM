@@ -85,7 +85,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
         const item = {
           ItemId: selecteItem.ItemId,
           QuantityToPick: selecteItem.DeviceQuantityNeeded,
-          SourceDeviceLocationId: selecteItem.
+          SourceDeviceLocationId: 0
         };
         items.push(item);
       });
