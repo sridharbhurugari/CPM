@@ -39,7 +39,7 @@ export class DeviceReplenishmentNeedsService {
       Items: items
     };
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/picklist`);
-    this.httpClient.put<IItemNeedsOperationResult[]>(url, body, {
+    this.httpClient.post<IItemNeedsOperationResult[]>(url, body, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
