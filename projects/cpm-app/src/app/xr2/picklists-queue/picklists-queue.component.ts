@@ -168,6 +168,8 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     });
     this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
+        // force the status to 2 at this point
+        picklistQueueItem.Status = 2;
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
@@ -298,7 +300,7 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
     }
 
     return {
-      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      disabled: picklistQueueItem.Status <= 2 || !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
       text
     };
   }

@@ -28,7 +28,7 @@ export class PdfGridReportService
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
     this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
-    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED' ];
+    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED', 'UNFILLED_REPORT_LABEL_ORDER_ID', 'UNFILLED_REPORT_LABEL_PRIORITYCODE'];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
@@ -59,11 +59,18 @@ export class PdfGridReportService
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-    const documentDefinition = this.getDocumentDefinition(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
-    const pdf = this.pdfMakeService.createPdf(documentDefinition);
-    return pdf;
+    if(reportBaseData.OrderId !== undefined && reportBaseData.PriorityCode !== undefined){
+      const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+      const pdf = this.pdfMakeService.createPdf(documentDefinition);
+      return pdf;
+    }
+    else{
+      const documentDefinition = this.getDocumentDefinition(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+      const pdf = this.pdfMakeService.createPdf(documentDefinition);
+      return pdf;
+    }
   }
-
+  
   private getDocumentDefinition(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
     return {
       footer: (currentPage: number, pageCount: number) => {
@@ -124,4 +131,68 @@ export class PdfGridReportService
       ]
     };
   }
+
+  //for Unfilled report
+  private getDocumentDefinitionForUnfilled(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
+    return {
+      footer: (currentPage: number, pageCount: number) => {
+        return [
+          {
+            columns: [
+              { text: reportBaseData.SiteDescription, alignment: 'left', fontSize: 8, margin: 5 },
+              { text: reportBaseData.CombinedAddress, alignment: 'center', fontSize: 8, margin: 5 },
+              { text: currentPage.toString() + '/' + pageCount, alignment: 'right', fontSize: 8, margin: 5 }
+            ]
+          }]
+      },
+      header: (currentPage: number, pageCount: number) => {
+        return [
+          {
+            columns: [
+              { text: '', alignment: 'left', fontSize: 8, margin: 5 },
+              { text: '', alignment: 'center', fontSize: 8, margin: 5 },
+              { text: '', alignment: 'right', fontSize: 8, margin: 5 }
+            ]
+          }]
+      },
+      content: [
+        // logo and title
+        {
+          columns: [
+            {
+              image: reportLogo,
+              width: 82,
+              height: 18
+            },
+            { text: reportTitle, alignment: 'right', style: 'header', fontSize: 20, bold: true }
+          ]
+        },
+        // line
+        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595 - 2 * 40, y2: 5, lineWidth: 1 }] },
+        // report base data
+        {
+          layout: 'noBorders', // optional
+          table: {
+            // headers are automatically repeated if the table spans over multiple pages
+            // you can declare how many rows should be treated as headers
+            headerRows: 0,
+            widths: [50, 75, 150, 50, '*'],
+            body: [
+              ['', reportLabels.UNFILLED_REPORT_LABEL_ORDER_ID, reportBaseData.OrderId, reportLabels.REPORT_LABEL_PRINTED, reportBaseData.FormattedDateTime],
+              ['', reportLabels.UNFILLED_REPORT_LABEL_PRIORITYCODE, reportBaseData.PriorityCode, '', ''],
+              ['','','', '', ''],
+              ['', reportLabels.REPORT_LABEL_OMNI_NAME, reportBaseData.OmniName, '', ''],
+            ]
+          }
+        },
+        // line
+        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1 }] },
+        // blank line
+        { text: '   ', alignment: 'center', fontSize: 12, bold: true, lineHeight: 1.25 },
+        // report contents
+        tableBody,
+      ]
+    };
+  }
+
 }

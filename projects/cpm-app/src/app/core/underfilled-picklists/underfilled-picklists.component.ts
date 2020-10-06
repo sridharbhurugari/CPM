@@ -8,6 +8,7 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import * as _ from 'lodash';
+import { SortDirection } from '../../shared/constants/sort-direction';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -39,7 +40,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   destinationPropertyName = nameof<UnderfilledPicklist>('DesintationSearchValue');
   datePropertyName = nameof<UnderfilledPicklist>('CompletedDate');
 
-  currentSortPropertyName: string;
+  currentSortPropertyName : string = this.datePropertyName;
+  sortOrder: SortDirection = SortDirection.descending;
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
