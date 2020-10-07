@@ -1,8 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter } from '@angular/core';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { CheckboxValues } from '../../shared/constants/checkbox-values';
+import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
+import { IGridOrderChanged } from '../../shared/events/i-grid-order-changed';
 import * as _ from 'lodash';
 
 @Component({
@@ -17,7 +20,7 @@ export class UnderfilledPicklistLinesComponent {
   destinationPropertyName = nameof<UnderfilledPicklistLine>('DestinationSortValue');
   qtyFillReqPropertyName = nameof<UnderfilledPicklistLine>('FillQuantity');
   fillDatePropertyName = nameof<UnderfilledPicklistLine>('FillDate');
-
+  checkboxToggleAll: string = CheckboxValues.ToggleAll;
   currentSortPropertyName: string;
 
   @Input('picklistLines')
@@ -27,7 +30,10 @@ export class UnderfilledPicklistLinesComponent {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
-
+  onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>){
+  }
+  onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>){
+  }
   get picklistLines(): UnderfilledPicklistLine[] {
     return this._picklistLines;
   }

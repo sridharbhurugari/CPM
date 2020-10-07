@@ -13,7 +13,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
         this.DisplayOmniName = PicklistDestinationDescriptionHelper.DisplayOmniName(1, 1, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayPatientNameSecondLine = PicklistDestinationDescriptionHelper.DisplayPatientNameSecondLine(1, this.PicklistTypeDb, this.PriorityCode);
     }
-
+IsChecked: boolean;
     DestinationId: string;
     DestinationType: string;
     PriorityCode: string;
