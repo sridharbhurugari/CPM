@@ -4,5 +4,6 @@
 </app-xr2-queue-details-header>
 <app-xr2-details-queue
   [picklistQueueItems]="picklistsQueueItems | async"
-  [searchTextFilter]="searchTextFilter">
+  [searchTextFilter]="searchTextFilter"
+  (rerouteEvent)="reroutePicklistItems($event)">
 </app-xr2-details-queue>

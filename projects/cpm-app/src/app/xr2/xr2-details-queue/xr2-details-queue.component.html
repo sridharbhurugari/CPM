@@ -1,13 +1,13 @@
 <ng-container class="ocactiondetails">
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-      <div class="first" data-colwrap="true">
-        <oc-checkbox
-        [selected]="picklistQueueItems && getSelectedPicklistQueueItems().length === picklistQueueItems.length"
-        [noLabel]="true"
-        [valueField]="checkboxToggleAll"
-        (selection)="onSelectAllCheckBox($event)">
-      </oc-checkbox>
+      <div data-colwrap="true">
+          <oc-checkbox
+          [selected]="picklistQueueItems && getSelectedPicklistQueueItems().length === picklistQueueItems.length"
+          [noLabel]="true"
+          [valueField]="checkboxToggleAll"
+          (selection)="onSelectAllCheckBox($event)">
+        </oc-checkbox>
       </div>
       <!-- 1256px total -->
       <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
@@ -42,7 +42,7 @@
           <span>{{picklistQueueItem.Destination}}</span>
         </div>
         <div class="col width-type" [attr.data-title]="'ITEMS' | translate">
-          <app-cp-data-label [label]="'PATIENTS' | translate" [numberedData]=10></app-cp-data-label>
+          <app-cp-data-label [label]="getItemPriorityLabel(picklistQueueItem)" [numberedData]=picklistQueueItem.ItemCount></app-cp-data-label>
         </div>
         <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">
           {{'NOTRELEASED' | translate}}</div>
@@ -68,16 +68,18 @@
             [height]="35"
             [theme]="'dark'"
             [label]="getReleaseButtonProperties(picklistQueueItem).text"
+            [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
             [icon]="'openv1-right'"
-            (clickEvent)="sendToRobot(picklistQueueItem)">
+            (clickEvent)="onReleaseClick(picklistQueueItem)">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon *ngIf="picklistQueueItem.Status!==1"
             [width]="35"
             [height]="35"
             [theme]="'dark'"
             [label]="getPrintButtonProperties(picklistQueueItem).text"
+            [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
             [icon]="'print'"
-            (clickEvent)="printLabels(picklistQueueItem)">
+            (clickEvent)="onPrintClick(picklistQueueItem)">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon
             [width]="35"
@@ -85,7 +87,7 @@
             [theme]="'dark'"
             [icon]="'reroute'"
             [label]="'Reroute'"
-            (clickEvent)="skip(picklistQueueItem)">
+            (clickEvent)="onRerouteClick(picklistQueueItem)">
             </app-cp-clickable-icon>
           </div>
         </div>

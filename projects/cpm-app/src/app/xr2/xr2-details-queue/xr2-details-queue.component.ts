@@ -1,8 +1,9 @@
-import { Component, Input, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, OnInit, OnDestroy, ElementRef, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService,
   SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
@@ -21,12 +22,19 @@ import { Many } from 'lodash';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
+import { PriorityCodeTypes } from '../../shared/constants/priority-code-types';
+import { SelectControlValueAccessor } from '@angular/forms';
 @Component({
   selector: 'app-xr2-details-queue',
   templateUrl: './xr2-details-queue.component.html',
   styleUrls: ['./xr2-details-queue.component.scss']
 })
-export class Xr2DetailsQueueComponent implements OnDestroy {
+export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
+
+  @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
+
+  private _picklistQueueItems: PicklistQueueItem[];
 
   readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
   readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
@@ -37,8 +45,17 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
-  private _picklistQueueItems: PicklistQueueItem[];
-  selectedPicklistItems: Set<PicklistQueueItem>;
+
+  translatables = [
+    'RELEASE',
+    'PRINT',
+    'REPRINT',
+    'PATIENT',
+    'PATIENTS',
+    'ITEM',
+    'ITEMS'
+  ];
+  translations$: Observable<any>;
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -59,17 +76,6 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
     return this._searchTextFilter;
   }
 
-  constructor(
-    private windowService: WindowService,
-    private picklistsQueueService: PicklistsQueueService,
-    private dialogService: PopupDialogService,
-    private translateService: TranslateService,
-    private location: Location,
-    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-    private wpfActionController: WpfActionControllerService) {
-      this.configureEventHandlers();
-    }
-
   @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
 
   @ViewChild('searchBox', {
@@ -82,11 +88,168 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
 
   @ViewChild('outputDeviceSingleSelect', { static: true })
   outputDeviceSingleSelect: OcSingleselectDropdownComponent;
+
+
+  constructor(
+    private windowService: WindowService,
+    private picklistsQueueService: PicklistsQueueService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService,
+    private location: Location,
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
+    private wpfActionController: WpfActionControllerService) {
+      this.configureEventHandlers();
+  }
+
+  ngOnInit(): void {
+    this.setTranslations();
+  }
+
   ngOnDestroy(): void {
   }
 
+
   back() {
     this.wpfActionController.ExecuteContinueAction();
+  }
+
+  onRerouteClick(picklistQueueItem: PicklistQueueItem) {
+    const selectedItems = this.getSelectedPicklistQueueItems();
+
+    if (selectedItems.length > 0) {
+      // TODO: Reroute multiple items at once
+    } else {
+      this.reroute(picklistQueueItem);
+    }
+  }
+
+  onReleaseClick(picklistQueueItem: PicklistQueueItem) {
+    this.release(picklistQueueItem);
+  }
+
+  onPrintClick(picklistQueueItem: PicklistQueueItem) {
+    this.printLabels(picklistQueueItem);
+  }
+
+  /* istanbul ignore next */
+  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
+    if (!picklistQueueItem) {
+      return null;
+    }
+    return picklistQueueItem.TrackById;
+  }
+
+  getItemPriorityLabel(picklistQueueItem: PicklistQueueItem) {
+    let label = '';
+
+    if (picklistQueueItem.ItemCount > 1) {
+      this.translations$.subscribe(r => {
+        label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  r['PATIENTS'] : r['ITEMS'];
+      });
+    } else {
+      this.translations$.subscribe(r => {
+        label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  r['PATIENT'] : r['ITEM'];
+      });
+    }
+
+    return label;
+  }
+
+  getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
+    const outputDeviceDisplayList = [];
+    _.forEach(picklistQueueItem.AvailableOutputDeviceList, (outputDevice) => {
+      if (outputDevice.IsActive) {
+        let translatedLabel = '';
+        this.translateService.get(outputDevice.Label).subscribe((res: string) => {
+        translatedLabel = res;
+      });
+        outputDeviceDisplayList.push(new SingleselectRowItem(translatedLabel, outputDevice.DeviceId));
+      }
+    });
+    return outputDeviceDisplayList;
+  }
+
+  getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    let text = '';
+    this.translations$.subscribe(r => {
+      text = r['RELEASE'];
+     });
+
+    return {
+      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
+      text
+    };
+  }
+
+  getPrintButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    let printTranslated = '';
+    let reprintTranslated = '';
+    let text = '';
+
+    this.translations$.subscribe(r => {
+      printTranslated = r['PRINT'];
+      reprintTranslated = r['REPRINT'];
+     });
+
+    if (picklistQueueItem.Status === 2 || picklistQueueItem.Status === 3) {
+      text = printTranslated;
+    } else if (picklistQueueItem.Status === 4) {
+      text = picklistQueueItem.IsPrintable ? reprintTranslated : printTranslated;
+    }
+    return {
+      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      text
+    };
+  }
+
+  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
+    let selectedDevice = null;
+    if (picklistQueueItem.Status === 1) {
+      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
+         && x.IsActive);
+        } else {
+      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
+    }
+    if (!selectedDevice) {
+      return null;
+    }
+    let translatedLabel = '';
+    this.translateService.get(selectedDevice.Label).subscribe((res: string) => {
+      translatedLabel = res;
+    });
+
+    return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
+  }
+
+  onBackClick() {
+    this.location.back();
+  }
+
+  getSelectedPicklistQueueItems() {
+    return this._picklistQueueItems.filter((item) => item.isSelected);
+  }
+
+  onSelectAllCheckBox(boxState: any) {
+    this.picklistQueueItems.map((item) => item.isSelected = boxState.selectedState);
+  }
+
+  onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.isSelected = boxState.selectedState;
+  }
+
+  /* istanbul ignore next */
+  onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.OutputDeviceId = $event.value;
+  }
+
+  columnSelected(event: IColHeaderSortChanged) {
+    this.currentSortPropertyName = event.ColumnPropertyName;
+    this.sortOrder = event.SortDirection;
+    this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
+  }
+
+  sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
+    return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
   private configureEventHandlers(): void {
@@ -97,6 +260,11 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
       .subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
     this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
       .subscribe(message => this.onRemovePicklistQueueItem(message));
+  }
+
+
+  private setTranslations() {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
@@ -134,11 +302,9 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
     });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
-  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.TrackById = Guid.create();
-  }
 
-  sendToRobot(picklistQueueItem: PicklistQueueItem) {
+
+  private release(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
@@ -158,12 +324,12 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
+        this.failedEvent.emit();
       });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  skip(picklistQueueItem: PicklistQueueItem) {
+  private reroute(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
     globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
@@ -183,12 +349,12 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
+        this.failedEvent.emit();
       });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  printLabels(picklistQueueItem: PicklistQueueItem) {
+  private printLabels(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const robotPrintRequest = new RobotPrintRequest(picklistQueueItem.PicklistId, picklistQueueItem.RobotPickGroupId);
     _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
@@ -206,126 +372,12 @@ export class Xr2DetailsQueueComponent implements OnDestroy {
         picklistQueueItem.Saving = false;
       }, result => {
         picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
+        this.failedEvent.emit();
       });
   }
 
-  /* istanbul ignore next */
-  private displayFailedToSaveDialog(): void {
-    const properties = new PopupDialogProperties('Role-Status-Warning');
-    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-    this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
-    properties.showPrimaryButton = true;
-    properties.showSecondaryButton = false;
-    properties.dialogDisplayType = PopupDialogType.Error;
-    properties.timeoutLength = 60;
-    this.dialogService.showOnce(properties);
-  }
 
-  /* istanbul ignore next */
-  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
-    if (!picklistQueueItem) {
-      return null;
-    }
-    return picklistQueueItem.TrackById;
-  }
-
-  getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
-    const outputDeviceDisplayList = [];
-    _.forEach(picklistQueueItem.AvailableOutputDeviceList, (outputDevice) => {
-      if (outputDevice.IsActive) {
-        let translatedLabel = '';
-        this.translateService.get(outputDevice.Label).subscribe((res: string) => {
-        translatedLabel = res;
-      });
-        outputDeviceDisplayList.push(new SingleselectRowItem(translatedLabel, outputDevice.DeviceId));
-      }
-    });
-    return outputDeviceDisplayList;
-  }
-
-  getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
-    const releaseTranslatable = 'RELEASE';
-    let text = '';
-    this.translateService.get(releaseTranslatable).subscribe((res: string) => {
-      text = res;
-    });
-    return {
-      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
-      text
-    };
-  }
-
-  getPrintButtonProperties(picklistQueueItem: PicklistQueueItem) {
-    const printTranslatable = 'PRINT';
-    const reprintTranslatable = 'REPRINT';
-    let printTranslated = '';
-    let reprintTranslated = '';
-    let text = '';
-    this.translateService.get(printTranslatable).subscribe((res: string) => {
-      printTranslated = res;
-    });
-    this.translateService.get(reprintTranslatable).subscribe((res: string) => {
-      reprintTranslated = res;
-    });
-    if (picklistQueueItem.Status === 2 || picklistQueueItem.Status === 3) {
-      text = printTranslated;
-    } else if (picklistQueueItem.Status === 4) {
-      text = picklistQueueItem.IsPrintable ? reprintTranslated : printTranslated;
-    }
-    return {
-      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
-      text
-    };
-  }
-
-  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
-    let selectedDevice = null;
-    if (picklistQueueItem.Status === 1) {
-      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
-         && x.IsActive);
-    } else {
-      selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
-    }
-    if (!selectedDevice) {
-      return null;
-    }
-    let translatedLabel = '';
-    this.translateService.get(selectedDevice.Label).subscribe((res: string) => {
-      translatedLabel = res;
-    });
-    return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
-  }
-
-  onBackClick() {
-    this.location.back();
-  }
-
-  getSelectedPicklistQueueItems() {
-    return this._picklistQueueItems.filter((item) => item.isSelected);
-  }
-
-  onSelectAllCheckBox(boxState: any) {
-    this.picklistQueueItems.map((item) => item.isSelected = boxState.selectedState);
-  }
-
-  onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.isSelected = boxState.selectedState;
-  }
-
-  /* istanbul ignore next */
-  onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.OutputDeviceId = $event.value;
-  }
-
-  columnSelected(event: IColHeaderSortChanged) {
-    this.currentSortPropertyName = event.ColumnPropertyName;
-    this.sortOrder = event.SortDirection;
-    this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
-  }
-
-  sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
-    return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
+  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
+    picklistQueueItem.TrackById = Guid.create();
   }
 }
