@@ -28,10 +28,13 @@ class MockInternalTransferItemsListComponent {
 describe('InternalTransferDeviceNeedsPageComponent', () => {
   let component: InternalTransferDeviceNeedsPageComponent;
   let fixture: ComponentFixture<InternalTransferDeviceNeedsPageComponent>;
+  let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let printWithBaseData: jasmine.Spy;
 
   beforeEach(async(() => {
+    wpfActionControllerService = { ExecuteBackAction: () => { } };
+    spyOn(wpfActionControllerService, 'ExecuteBackAction');
     printWithBaseData = jasmine.createSpy('printWithBaseData');
     let pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData: printWithBaseData
@@ -61,7 +64,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
-        { provide: WpfActionControllerService, useVaule: { } },
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: DevicesService, useValue: { get: () => of([]) } },
         { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceItemNeeds: () => of(needs) } },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
@@ -82,6 +85,13 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('goBack', () => {
+    it('should call wpfActionControllerService.back', () => {
+      component.goBack();
+      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalled();
+    });
   });
 
   describe('print', () => {

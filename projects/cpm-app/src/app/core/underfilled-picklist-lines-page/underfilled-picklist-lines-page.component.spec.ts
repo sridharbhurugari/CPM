@@ -5,6 +5,7 @@ import { FooterModule, LayoutModule, ButtonActionModule } from '@omnicell/webcor
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
@@ -35,7 +36,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/10/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE"
   },
   {
     DestinationId:"1242", DestinationType:"P", PriorityCode:"Area", PicklistTypeDb:"P",ItemId:"8939",
@@ -43,7 +45,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/11/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE"
   },
   {
     DestinationId:"1243", DestinationType:"P", PriorityCode:"FirstDose", PicklistTypeDb:"P",ItemId:"8939",
@@ -51,7 +54,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/12/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE"
   },
 ];
   
@@ -111,10 +115,20 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.picklistLines$ = of(pickListLinesData);
+    component.reportPickListLines$ = component.picklistLines$;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should get report data',()=>{
+    component.picklistLines$ = of(pickListLinesData);
+    const spy = spyOn(component, 'getReportData').and.callThrough();
+    let datePipe = new DatePipe('en-Us');
+    component.getReportData(datePipe);
+    expect(spy).toBeDefined();
+    expect(spy).toHaveBeenCalled();
   });
 
   describe('navigateBack', () => {

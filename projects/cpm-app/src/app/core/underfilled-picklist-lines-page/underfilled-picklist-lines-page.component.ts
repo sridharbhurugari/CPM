@@ -29,6 +29,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   qtyFilledHeaderKey: string = 'QTY_FILLED_REQUESTED';
   dateHeaderKey: string = 'DATE'
   picklistLines$: Observable<UnderfilledPicklistLine[]>;
+  reportPickListLines$: Observable<UnderfilledPicklistLine[]>;
   picklist$: Observable<IUnderfilledPicklist>;
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' = 'none';
@@ -66,15 +67,34 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   getReportData(datePipe: DatePipe){
-    this.picklistLines$ = this.picklistLines$.pipe(
+    this.reportPickListLines$ = this.picklistLines$.pipe(
       map(underfilled => {
         underfilled.forEach(function(element)
         {
           let date = element.FillDate;
-          element.PrintFillDate = datePipe.transform(date, 'M/d/yyyy h:mm:ss a');
+          element.PrintFillDate = datePipe.transform(date, 'M/d/yy h:mm a');
           element.DisplayFillRequired = element.FillQuantity + ' / ' + element.OrderQuantity;
           if(element.PatientRoom && element.PatientRoom !== '')
             element.DisplayDestionationValue  = element.PatientRoom + ',';
+            
+            if(element.ItemFormattedGenericName.length > 40) {
+              let reg = new RegExp(".{1," + 18 + "}","g");
+              let parts = element.ItemFormattedGenericName.match(reg);
+              element.ItemFormatedDescription =  parts.join('\n');
+              element.ItemFormattedGenericName = '';
+            }
+            if(element.ItemBrandName.length > 40) {
+              let reg = new RegExp(".{1," + 18 + "}","g");
+              let parts = element.ItemBrandName.match(reg);
+              element.ItemBrandDescription =  parts.join('\n');
+              element.ItemBrandName = '';
+            }  
+            if(element.ItemId.length > 40) {
+              let reg = new RegExp(".{1," + 18 + "}","g");
+              let parts = element.ItemBrandName.match(reg);
+              element.ItemIdDescription =  parts.join('\n');
+              element.ItemId = '';
+            }
         })
         return underfilled;
       })
@@ -84,15 +104,15 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   print() {
     this.requestStatus = 'printing';
     var colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ], headerResourceKey: this.itemHeaderKey, width: "auto" },
+      { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormatedDescription','ItemBrandName','ItemBrandDescription','ItemId','ItemIdDescription'], headerResourceKey: this.itemHeaderKey, width: "auto" },
       { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: "*" },
       { cellPropertyNames: [ 'DisplayDestionationValue','AreaDescription','PatientName','DestinationOmni' ], headerResourceKey: this.destinationHeaderKey, width: "*" },
       { cellPropertyNames: [ 'DisplayFillRequired','UnfilledReason' ], headerResourceKey: this.qtyFilledHeaderKey, width: "*" },
       { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: "auto" },
     ];
 
-    let sortedFilled$ = this.picklistLines$.pipe(map(underFill => {
-      return _.orderBy(underFill, x => x.ItemFormattedGenericName.toLowerCase(), 'asc');
+    let sortedFilled$ = this.reportPickListLines$.pipe(map(underFill => {
+      return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
     }));
 
     this.getDocumentData();
