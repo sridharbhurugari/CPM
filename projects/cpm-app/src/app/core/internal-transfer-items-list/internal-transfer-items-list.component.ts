@@ -17,6 +17,8 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   readonly needPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityNeeded');
   readonly qohPropertyName: string = nameof<IItemReplenishmentNeed>('DeviceQuantityOnHand');
   readonly pendingPickPropertyName: string = nameof<IItemReplenishmentNeed>('PendingDevicePickQuantity');
+  readonly PickLocationDescriptionPropertyName: string = nameof<IItemReplenishmentNeed>('PickLocationDescription');
+  readonly PickLocationQohPropertyName: string = nameof<IItemReplenishmentNeed>('PickLocationQoh');
   private _itemNeeds: IItemReplenishmentNeed[];
 
   searchPropertyNames: string[] = [

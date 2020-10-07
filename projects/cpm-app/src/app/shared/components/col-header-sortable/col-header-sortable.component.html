@@ -1,9 +1,9 @@
-<span class="headertext">
+  <span [ngClass]="(wrap==true)?'headertextwrapped':'headertext'">
     <div *ngIf="headerResourceKey">{{headerResourceKey | translate}}</div>
-</span>
-<span class="headericon">
+  </span>
+  <span class="headericon">
     <div *ngIf="currentSortPropertyName == columnPropertyName">
-        <oc-svgicon *ngIf="IsSortAscending" icon="up" theme="white"></oc-svgicon>
-        <oc-svgicon *ngIf="IsSortDescending" icon="down" theme="white"></oc-svgicon>
+      <oc-svgicon *ngIf="IsSortAscending" icon="up" theme="white"></oc-svgicon>
+      <oc-svgicon *ngIf="IsSortDescending" icon="down" theme="white"></oc-svgicon>
     </div>
-</span>
+  </span>
