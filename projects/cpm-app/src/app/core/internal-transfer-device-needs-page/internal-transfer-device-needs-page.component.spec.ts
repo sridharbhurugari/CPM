@@ -128,6 +128,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
           PickLocationDeviceLocationId: 79141,
           PickLocationQoh: 500
         });
+        printWithBaseData.and.returnValue(of(true));
         component.pick();
         expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();
       });
