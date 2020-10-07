@@ -394,27 +394,27 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       });
   }
 
-      /* istanbul ignore next */
-      private displayRerouteDialog(): Observable<boolean> {
-        return forkJoin(this.translations$).pipe(flatMap(r => {
-          const translations = r[0];
-          const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-          properties.titleElementText = translations.REROUTE;
-          properties.messageElementText = translations.XR2_QUEUE_REROUTE_DIALOG_MESSAGE;
-          properties.showPrimaryButton = true;
-          properties.primaryButtonText = translations.YES;
-          properties.showSecondaryButton = true;
-          properties.secondaryButtonText = translations.NO;
-          properties.primaryOnRight = false;
-          properties.showCloseIcon = false;
-          properties.dialogDisplayType = PopupDialogType.Info;
-          properties.timeoutLength = 0;
-          let component = this.dialogService.showOnce(properties);
-          let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-          let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
-          return merge(primaryClick$, secondaryClick$);
-        }));
-      }
+  /* istanbul ignore next */
+  private displayRerouteDialog(): Observable<boolean> {
+    return forkJoin(this.translations$).pipe(flatMap(r => {
+      const translations = r[0];
+      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
+      properties.titleElementText = translations.REROUTE;
+      properties.messageElementText = translations.XR2_QUEUE_REROUTE_DIALOG_MESSAGE;
+      properties.showPrimaryButton = true;
+      properties.primaryButtonText = translations.YES;
+      properties.showSecondaryButton = true;
+      properties.secondaryButtonText = translations.NO;
+      properties.primaryOnRight = false;
+      properties.showCloseIcon = false;
+      properties.dialogDisplayType = PopupDialogType.Info;
+      properties.timeoutLength = 0;
+      let component = this.dialogService.showOnce(properties);
+      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      return merge(primaryClick$, secondaryClick$);
+    }));
+  }
 
 
   private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
