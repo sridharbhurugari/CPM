@@ -18,7 +18,7 @@
                     *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
                     [disabled]="requestStatus != 'none'"
                     [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
-                    [buttonText]="'PRINT_ALL' | translate"
+                    [buttonText]="'PRINT' | translate"
                     (click)="print(true)">
                 </oc-button-action>
                 <oc-button-action 

@@ -80,6 +80,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
   pick() {
     if (this.itemsToPick.length > 0) {
+      this.requestStatus = 'picking';
       const items: IInterDeviceTransferPickRequest[] = new Array();
       this.itemsToPick.forEach(selecteItem => {
         const item = {
@@ -91,7 +92,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       });
 
       this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items).subscribe();
-      this.print(false);
+      this.requestStatus = 'none';
       this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
       return;
     }
@@ -99,7 +100,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
   }
 
-  print(printAll: boolean) {
+  print() {
     let colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[];
 
     if (this.isXr2Item) {
@@ -124,17 +125,10 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       ];
     }
 
-    if (printAll) {
-      this.requestStatus = 'printing';
-      this.sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
+    this.requestStatus = 'printing';
+    this.sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
         return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
       }));
-    } else {
-      this.requestStatus = 'picking';
-      this.sortedNeeds$ = of(this.itemsToPick).pipe(map(needs => {
-        return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
-      }));
-    }
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
