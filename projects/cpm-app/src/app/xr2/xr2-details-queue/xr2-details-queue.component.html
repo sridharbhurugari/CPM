@@ -3,13 +3,12 @@
     <ng-container class="ocgridheader">
       <div data-colwrap="true">
           <oc-checkbox
-          [selected]="picklistQueueItems && getSelectedPicklistQueueItems().length === picklistQueueItems.length"
+          [selected]="picklistQueueItems && selectedItems.size === picklistQueueItems.length"
           [noLabel]="true"
           [valueField]="checkboxToggleAll"
           (selection)="onSelectAllCheckBox($event)">
         </oc-checkbox>
       </div>
-      <!-- 1256px total -->
       <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
         [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
         [currentSortPropertyName]="currentSortPropertyName"
@@ -26,15 +25,15 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="250" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+      <div class="last width-type" data-width="200" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" [ngStyle]="{'background-color': (picklistQueueItem.isSelected) ? 'lightgrey': ''}"
+      <div class="row" [ngStyle]="{'background-color': (isContainedInSelected(picklistQueueItem)) ? 'gainsboro': ''}"
        *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
         <div class="first" style="align-items: center;">
           <oc-checkbox valueField='enterprise'
           [noLabel]="true"
-          [selected]="picklistQueueItem.isSelected"
+          [selected]="isContainedInSelected(picklistQueueItem)"
           (selection)="onSelectItemCheckBox($event, picklistQueueItem)">
         </oc-checkbox>
         </div>
@@ -42,7 +41,10 @@
           <span>{{picklistQueueItem.Destination}}</span>
         </div>
         <div class="col width-type" [attr.data-title]="'ITEMS' | translate">
-          <app-cp-data-label [label]="getItemPriorityLabel(picklistQueueItem)" [numberedData]=picklistQueueItem.ItemCount></app-cp-data-label>
+          <app-cp-data-label
+            [label]="getItemPriorityLabel(picklistQueueItem) | translate"
+            [numberedData]=picklistQueueItem.ItemCount>
+          </app-cp-data-label>
         </div>
         <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">
           {{'NOTRELEASED' | translate}}</div>
@@ -67,7 +69,7 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [label]="getReleaseButtonProperties(picklistQueueItem).text"
+            [label]="getReleaseButtonProperties(picklistQueueItem).text | translate"
             [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
             [icon]="'openv1-right'"
             (clickEvent)="onReleaseClick(picklistQueueItem)">
@@ -76,7 +78,7 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [label]="getPrintButtonProperties(picklistQueueItem).text"
+            [label]="getPrintButtonProperties(picklistQueueItem).text | translate"
             [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
             [icon]="'print'"
             (clickEvent)="onPrintClick(picklistQueueItem)">
@@ -86,7 +88,7 @@
             [height]="35"
             [theme]="'dark'"
             [icon]="'reroute'"
-            [label]="'Reroute'"
+            [label]="'REROUTE' | translate"
             (clickEvent)="onRerouteClick(picklistQueueItem)">
             </app-cp-clickable-icon>
           </div>

@@ -66,34 +66,34 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [label]="getReleaseButtonProperties(picklistQueueItem).text"
+            [label]="getReleaseButtonProperties(picklistQueueItem).text | translate"
             [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
             [icon]="'openv1-right'"
-            (clickEvent)="sendToRobot(picklistQueueItem)">
+            (clickEvent)="onReleaseClick()">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon *ngIf="picklistQueueItem.Status!==1"
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [label]="getPrintButtonProperties(picklistQueueItem).text"
+            [label]="getPrintButtonProperties(picklistQueueItem).text | translate"
             [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
             [icon]="'print'"
-            (clickEvent)="printLabels(picklistQueueItem)">
+            (clickEvent)="onPrintClick()">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon
             [width]="35"
             [height]="35"
             [theme]="'dark'"
             [icon]="'reroute'"
-            [label]="'Reroute'"
-            (clickEvent)="skip(picklistQueueItem)">
+            [label]="'REROUTE' | translate"
+            (clickEvent)="onRerouteClick()">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon
             [width]="35"
             [height]="35"
             [theme]="'dark'"
             [icon]="'search'"
-            [label]="'Details'"
+            [label]="'DETAILS' | translate"
             (clickEvent)="onDetailsClick()">
             </app-cp-clickable-icon>
           </div>

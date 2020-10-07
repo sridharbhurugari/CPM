@@ -20,17 +20,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   searchTextFilter: string;
   translatables = [
-    'YES',
-    'NO',
     'OK',
-    'REROUTE',
-    'PRINTFAILED_HEADER_TEXT',
-    'PRINTFAILED_BODY_TEXT',
-    'FAILEDTOREROUTE_HEADER_TEXT',
-    'FAILEDTOREROUTE_BODY_TEXT',
     'FAILEDTOSAVE_HEADER_TEXT',
     'FAILEDTOSAVE_BODY_TEXT',
-    'XR2_QUEUE_REROUTE_DIALOG_MESSAGE'
   ];
   translations$: Observable<any>;
 
@@ -53,6 +45,14 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.searchTextFilter = filterText;
   }
 
+  onBackClick() {
+    this.location.back();
+  }
+
+  displayXr2QueueError() {
+    this.displayFailedToSaveDialog();
+  }
+
   private configureEventHandlers(): void {
     if (!this.picklistQueueEventConnectionService) {
       return;
@@ -72,42 +72,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     }), shareReplay(1));
   }
 
-  onBackClick() {
-    this.location.back();
-  }
-
-  reroutePicklistItems($event: any) {
-    const itemsToReroute = $event;
-    if (itemsToReroute.length > 1) {
-      this.rerouteMultipleItems(itemsToReroute);
-    } else {
-      this.rerouteItem(itemsToReroute[0]);
-    }
-  }
-
-  private rerouteMultipleItems(picklistQueueItem: PicklistQueueItem[]) {
-
-    this.displayRerouteDialog().subscribe(result => {
-      if (!result) {
-        return;
-      }
-
-      // TODO: reroute selected items
-      // this.quickPickQueueService.reroute($event).subscribe(
-      //   () => {
-      //     this.loadPicklistsQueueItems();
-      //     this.loadDrawersData();
-      //   }, error => {
-      //     this.displayQuickPickError(QuickPickError.RerouteFailure);
-      //     this.loadPicklistsQueueItems();
-      //     this.loadDrawersData();
-      //   });
-    });
-  }
-
-  private rerouteItem(picklistQueueItem: PicklistQueueItem) {
-  }
-
    /* istanbul ignore next */
    private displayFailedToSaveDialog(): void {
     const properties = new PopupDialogProperties('Role-Status-Warning');
@@ -121,29 +85,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.dialogService.showOnce(properties);
   }
 
-    /* istanbul ignore next */
-    private displayRerouteDialog(): Observable<boolean> {
-      return forkJoin(this.translations$).pipe(flatMap(r => {
-        const translations = r[0];
-        const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-        properties.titleElementText = translations.REROUTE;
-        properties.messageElementText = translations.XR2_QUEUE_REROUTE_DIALOG_MESSAGE;
-        properties.showPrimaryButton = true;
-        properties.primaryButtonText = translations.YES;
-        properties.showSecondaryButton = true;
-        properties.secondaryButtonText = translations.NO;
-        properties.primaryOnRight = false;
-        properties.showCloseIcon = false;
-        properties.dialogDisplayType = PopupDialogType.Info;
-        properties.timeoutLength = 0;
-        let component = this.dialogService.showOnce(properties);
-        let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-        let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
-        return merge(primaryClick$, secondaryClick$);
-      }));
-    }
-
-    private setTranslations() {
-      this.translations$ = this.translateService.get(this.translatables);
-    }
+  private setTranslations() {
+    this.translations$ = this.translateService.get(this.translatables);
+  }
 }

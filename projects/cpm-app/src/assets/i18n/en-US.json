@@ -25,6 +25,7 @@
   "DEVICE_NEEDS": "Device Needs",
   "DEVICE_NEEDS_REPORT_TITLE": "Device Needs - {{deviceDescription}}",
   "DETAIL": "Detail",
+  "DETAILS": "Details",
   "DEVICE_ACCESS": "Device Access",
   "DEVICE_LOC_ACCESS_ERROR_TITLE": "Carousel Configuration",
   "DEVICE_OFFLINE_MESSAGE": "The device where the item is located is either offline or does not exist.",

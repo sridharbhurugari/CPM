@@ -3,7 +3,8 @@ import { Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, merge } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService,
   SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
@@ -23,7 +24,7 @@ import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-p
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { PriorityCodeTypes } from '../../shared/constants/priority-code-types';
-import { SelectControlValueAccessor } from '@angular/forms';
+
 @Component({
   selector: 'app-xr2-details-queue',
   templateUrl: './xr2-details-queue.component.html',
@@ -35,6 +36,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
 
   private _picklistQueueItems: PicklistQueueItem[];
+  selectedItems = new Set<PicklistQueueItem>();
 
   readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
   readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
@@ -46,14 +48,26 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
 
+  translationMap = {
+    RELEASE: 'RELEASE',
+    PRINT: 'PRINT',
+    REPRINT: 'REPRINT',
+    PATIENT: 'PATIENT',
+    PATIENTS: 'PATIENTS',
+    ITEM: 'ITEM',
+    ITEMS: 'ITEMS'
+  };
+
   translatables = [
     'RELEASE',
     'PRINT',
     'REPRINT',
-    'PATIENT',
-    'PATIENTS',
-    'ITEM',
-    'ITEMS'
+    'YES',
+    'NO',
+    'REROUTE',
+    'XR2_QUEUE_REROUTE_DIALOG_MESSAGE',
+    'FAILEDTOREROUTE_HEADER_TEXT',
+    'FAILEDTOREROUTE_BODY_TEXT',
   ];
   translations$: Observable<any>;
 
@@ -103,6 +117,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setTranslations();
+    this.selectedItems = new Set<PicklistQueueItem>();
   }
 
   ngOnDestroy(): void {
@@ -114,10 +129,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   onRerouteClick(picklistQueueItem: PicklistQueueItem) {
-    const selectedItems = this.getSelectedPicklistQueueItems();
 
-    if (selectedItems.length > 0) {
-      // TODO: Reroute multiple items at once
+    if (this.selectedItems.size > 0) {
+      this.rerouteSelectedItems([picklistQueueItem]); // TODO: finish this method
     } else {
       this.reroute(picklistQueueItem);
     }
@@ -143,13 +157,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     let label = '';
 
     if (picklistQueueItem.ItemCount > 1) {
-      this.translations$.subscribe(r => {
-        label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  r['PATIENTS'] : r['ITEMS'];
-      });
+      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  this.translationMap.PATIENTS : this.translationMap.ITEMS;
     } else {
-      this.translations$.subscribe(r => {
-        label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  r['PATIENT'] : r['ITEM'];
-      });
+      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  this.translationMap.PATIENT : this.translationMap.ITEM;
     }
 
     return label;
@@ -170,34 +180,23 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
-    let text = '';
-    this.translations$.subscribe(r => {
-      text = r['RELEASE'];
-     });
-
     return {
       disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
-      text
+      text: this.translationMap.RELEASE
     };
   }
 
   getPrintButtonProperties(picklistQueueItem: PicklistQueueItem) {
-    let printTranslated = '';
-    let reprintTranslated = '';
     let text = '';
 
-    this.translations$.subscribe(r => {
-      printTranslated = r['PRINT'];
-      reprintTranslated = r['REPRINT'];
-     });
-
     if (picklistQueueItem.Status === 2 || picklistQueueItem.Status === 3) {
-      text = printTranslated;
+      text = this.translationMap.PRINT;
     } else if (picklistQueueItem.Status === 4) {
-      text = picklistQueueItem.IsPrintable ? reprintTranslated : printTranslated;
+      text = picklistQueueItem.IsPrintable ? this.translationMap.REPRINT : this.translationMap.PRINT;
     }
+
     return {
-      disabled: !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      disabled: picklistQueueItem.Status <= 2 || !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
       text
     };
   }
@@ -225,16 +224,24 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  getSelectedPicklistQueueItems() {
-    return this._picklistQueueItems.filter((item) => item.isSelected);
-  }
-
   onSelectAllCheckBox(boxState: any) {
-    this.picklistQueueItems.map((item) => item.isSelected = boxState.selectedState);
+    if (boxState.selectedState) {
+      this.picklistQueueItems.map((item) => this.selectedItems.add(item));
+    } else {
+      this.picklistQueueItems.map((item) => this.selectedItems.delete(item));
+    }
   }
 
   onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.isSelected = boxState.selectedState;
+    if (boxState.selectedState) {
+      this.selectedItems.add(picklistQueueItem);
+    } else {
+      this.selectedItems.delete(picklistQueueItem);
+    }
+  }
+
+  isContainedInSelected(picklistQueueItem: PicklistQueueItem) {
+    return this.selectedItems.has(picklistQueueItem);
   }
 
   /* istanbul ignore next */
@@ -354,6 +361,17 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
+  private rerouteSelectedItems(picklistQueueItem: PicklistQueueItem[]) {
+
+    this.displayRerouteDialog().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      // TODO: reroute selected items
+    });
+  }
+
   private printLabels(picklistQueueItem: PicklistQueueItem) {
     picklistQueueItem.Saving = true;
     const robotPrintRequest = new RobotPrintRequest(picklistQueueItem.PicklistId, picklistQueueItem.RobotPickGroupId);
@@ -375,6 +393,28 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
         this.failedEvent.emit();
       });
   }
+
+      /* istanbul ignore next */
+      private displayRerouteDialog(): Observable<boolean> {
+        return forkJoin(this.translations$).pipe(flatMap(r => {
+          const translations = r[0];
+          const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
+          properties.titleElementText = translations.REROUTE;
+          properties.messageElementText = translations.XR2_QUEUE_REROUTE_DIALOG_MESSAGE;
+          properties.showPrimaryButton = true;
+          properties.primaryButtonText = translations.YES;
+          properties.showSecondaryButton = true;
+          properties.secondaryButtonText = translations.NO;
+          properties.primaryOnRight = false;
+          properties.showCloseIcon = false;
+          properties.dialogDisplayType = PopupDialogType.Info;
+          properties.timeoutLength = 0;
+          let component = this.dialogService.showOnce(properties);
+          let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+          let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+          return merge(primaryClick$, secondaryClick$);
+        }));
+      }
 
 
   private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {

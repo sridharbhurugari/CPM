@@ -29,8 +29,8 @@ const routes: Routes = [
   resolve: {
     cpmSignalR: CpmSignalRResolverService
   }*/ },
-  { path: 'xr2Queue/groupingQueue', component: Xr2QueueGroupingPageComponent },
-  { path: 'xr2Queue/detailsQueue', component: Xr2QueueDetailsPageComponent},
+  { path: 'xr2Queue/grouping', component: Xr2QueueGroupingPageComponent },
+  { path: 'xr2Queue/details', component: Xr2QueueDetailsPageComponent},
   { path: 'priorityCodePickRoutes', component: PriorityCodePickRoutesPageComponent },
   { path: 'priorityCode/RouteAssignments', component: PriorityCodeRouteAssignmentsPageComponent },
   { path: 'guidedinvmgmt/devicelist', component: GuidedInvMgmtDevicelistPageComponent },
