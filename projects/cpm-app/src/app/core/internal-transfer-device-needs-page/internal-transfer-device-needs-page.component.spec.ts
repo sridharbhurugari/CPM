@@ -91,14 +91,14 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     describe('succeeded', () => {
       it('should display info dialog', () => {
         printWithBaseData.and.returnValue(of(true));
-        component.print(false);
+        component.print();
         expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();
       });
     });
     describe('failed', () => {
       it('should display error dialog', () => {
         printWithBaseData.and.returnValue(of(false));
-        component.print(false);
+        component.print();
         expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
       });
     });
