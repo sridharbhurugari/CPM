@@ -10,7 +10,6 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-queue-page.component';
 import { QuickPickPageComponent } from './quick-pick-page/quick-pick-page.component';
-import { environment } from '../../environments/environment';
 import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component';
 import {Xr2ExceptionDetailsPageComponent} from './xr2-exception-details-page/xr2-exceptions-details-page.component';
 import { QuickPickQueueViewComponent } from './quick-pick-queue-view/quick-pick-queue-view.component';
@@ -20,6 +19,8 @@ import { QuickPickDrawerDetailsViewComponent } from './quick-pick-drawer-details
 import { QuickPickBoxItemsView } from './quick-pick-box-items-view/quick-pick-box-items-view.component';
 import { TrafficLightsComponent } from './traffic-lights/traffic-lights.component';
 import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.component';
+import { Xr2RoutingModule } from "./xr2-routing.module";
+
 @NgModule({
   declarations: [
     PicklistsQueueComponent,
@@ -51,7 +52,8 @@ import {Xr2EventsPageComponent} from './xr2-events-page/xr2-events-page.componen
     SearchModule,
     PopupDialogModule,
     SvgIconModule,
-    DaterangeModule
+    DaterangeModule,
+    Xr2RoutingModule
   ]
 })
 export class Xr2Module { }
