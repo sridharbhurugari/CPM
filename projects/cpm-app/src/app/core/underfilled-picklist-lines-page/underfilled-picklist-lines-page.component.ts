@@ -77,19 +77,19 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
           if(element.PatientRoom && element.PatientRoom !== '')
             element.DisplayDestionationValue  = element.PatientRoom + ',';
             
-            if(element.ItemFormattedGenericName.length > 40) {
+            if(element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
               let reg = new RegExp(".{1," + 18 + "}","g");
               let parts = element.ItemFormattedGenericName.match(reg);
               element.ItemFormatedDescription =  parts.join('\n');
               element.ItemFormattedGenericName = '';
             }
-            if(element.ItemBrandName.length > 40) {
+            if(element.ItemBrandName && element.ItemBrandName.length > 40) {
               let reg = new RegExp(".{1," + 18 + "}","g");
               let parts = element.ItemBrandName.match(reg);
               element.ItemBrandDescription =  parts.join('\n');
               element.ItemBrandName = '';
             }  
-            if(element.ItemId.length > 40) {
+            if(element.ItemId && element.ItemId.length > 40) {
               let reg = new RegExp(".{1," + 18 + "}","g");
               let parts = element.ItemBrandName.match(reg);
               element.ItemIdDescription =  parts.join('\n');
@@ -99,6 +99,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         return underfilled;
       })
     );
+    
   }
 
   print() {

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { FooterModule, LayoutModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 
@@ -122,13 +122,14 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get report data',()=>{
-    component.picklistLines$ = of(pickListLinesData);
-    const spy = spyOn(component, 'getReportData').and.callThrough();
-    let datePipe = new DatePipe('en-Us');
-    component.getReportData(datePipe);
-    expect(spy).toBeDefined();
-    expect(spy).toHaveBeenCalled();
+  describe('Unfilled record selection', () => {
+    it('Should get report data ', fakeAsync(() => {
+      component.reportPickListLines$ = of(pickListLinesData);
+      const getReportFields = spyOn(component, 'getReportData').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getReportFields).toHaveBeenCalledTimes(1);
+    }));
   });
 
   describe('navigateBack', () => {
