@@ -1,5 +1,5 @@
-<div class="cpmheaderrow">          
-  <app-header-container></app-header-container>           
+<div class="cpmheaderrow">
+  <app-header-container></app-header-container>
   <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
 <oc-grid #ocgrid ocgridfilter="false">
@@ -85,6 +85,10 @@
       <div class="last width-date" [attr.data-title]="'DATE' | translate">
         <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
         <div>{{picklist.CompletedDate | date: 'shortTime'}}</div>
+        <oc-button-action
+        [buttonIcon]="'clear'"
+        [buttonText]="'DELETE' | translate"
+        (click)="delete(picklist)"></oc-button-action>
       </div>
     </div>
   </ng-container>

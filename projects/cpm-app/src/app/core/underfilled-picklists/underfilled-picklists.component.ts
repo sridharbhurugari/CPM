@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { WindowService } from '../../shared/services/window-service';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { nameof } from '../../shared/functions/nameof';
@@ -25,7 +26,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
 
   searchTextFilter: string;
 
-  searchFields = [ 
+  searchFields = [
     nameof<UnderfilledPicklist>('DescriptionSearchValue'),
     nameof<UnderfilledPicklist>('DesintationSearchValue'),
     nameof<UnderfilledPicklist>('DateSearchValue'),
@@ -50,7 +51,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
-  
+
   get picklists(): UnderfilledPicklist[]{
     return this._picklists;
   }
@@ -58,6 +59,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   constructor(
     private windowService: WindowService,
     private wpfActionControllerService: WpfActionControllerService,
+    private underfilledPicklistsService: UnderfilledPicklistsService
   ) {
   }
 
@@ -83,5 +85,13 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], event.SortDirection)
+  }
+
+  delete(underfilledPicklist: UnderfilledPicklist) {
+    this.underfilledPicklistsService.delete(underfilledPicklist.OrderId).subscribe(x => {
+      alert('success');
+    }, y => {
+      alert('failure');
+    });
   }
 }
