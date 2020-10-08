@@ -3,11 +3,11 @@
     <ng-container class="ocgridheader">
       <div data-colwrap="true">
           <oc-checkbox
-          [selected]="picklistQueueItems && selectedItems.size === picklistQueueItems.length"
-          [noLabel]="true"
-          [valueField]="checkboxToggleAll"
-          (selection)="onSelectAllCheckBox($event)">
-        </oc-checkbox>
+            [selected]="picklistQueueItems && selectedItems.size === picklistQueueItems.length"
+            [noLabel]="true"
+            [valueField]="checkboxToggleAll"
+            (selection)="onSelectAllCheckBox($event)">
+          </oc-checkbox>
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
         [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
@@ -28,7 +28,7 @@
       <div class="last width-type" data-width="200" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" [ngStyle]="{'background-color': (isContainedInSelected(picklistQueueItem)) ? 'gainsboro': ''}"
+      <div class="row" [ngStyle]="{'background-color': isContainedInSelected(picklistQueueItem) ? 'gainsboro': ''}"
        *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
         <div class="first" style="align-items: center;">
           <oc-checkbox valueField='enterprise'

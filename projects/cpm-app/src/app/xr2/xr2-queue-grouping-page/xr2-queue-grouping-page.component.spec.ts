@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page.component';
-import { PicklistsQueueComponent } from './../picklists-queue/picklists-queue.component';
+import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr2-queue-grouping-header.component';
+import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { Subject, of, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -15,6 +16,7 @@ import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialog
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 
 @Component({
   selector: 'oc-search-box',
@@ -49,8 +51,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
     spyPicklistQueueServiceGet = spyOn(picklistQueueService, 'get').and.returnValue(of());
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueGroupingPageComponent, PicklistsQueueComponent, MockTranslatePipe, MockSearchBox,
-         MockSearchPipe, MockAppHeaderContainer, MockColHeaderSortable ],
+      declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
+        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchBox,
+         MockSearchPipe, MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistQueueService },
@@ -73,26 +76,4 @@ describe('Xr2QueueGroupingPageComponent', () => {
   it('should create', () => {
      expect(component).toBeTruthy();
   });
-
-  it('should call picklistQueueService', fakeAsync(() => {
-    const spy = picklistQueueService.get;
-    component.ngOnInit();
-    tick();
-    expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
-  }));
-
-  it('should subscribe to events', () => {
-    expect(component).toBeTruthy();
-    expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
-  });
-
-  it('should reload on reloadPicklistQueueItemsSubject event', fakeAsync(() => {
-    component.ngOnInit();
-    tick();
-    expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
-    const currentCallCount = spyPicklistQueueServiceGet.calls.count();
-    picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
-    tick();
-    expect(spyPicklistQueueServiceGet.calls.count()).toBeGreaterThan(currentCallCount);
-  }));
 });

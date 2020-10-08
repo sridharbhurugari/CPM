@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PicklistsQueueComponent } from './picklists-queue/picklists-queue.component';
 import {
   GridModule, ButtonActionModule, SingleselectDropdownModule, CardContainerModule, DashboardCardModule, LayoutModule, FooterModule, SearchModule, InputsModule,
-  PopupDialogModule, SvgIconModule, DaterangeModule
+  PopupDialogModule, SvgIconModule, DaterangeModule, CheckboxModule
 } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -62,6 +62,7 @@ import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-q
     InputsModule,
     SearchModule,
     PopupDialogModule,
+    CheckboxModule,
     SvgIconModule,
     DaterangeModule
   ]
