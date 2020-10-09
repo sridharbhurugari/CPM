@@ -13,6 +13,10 @@ export interface IItemReplenishmentNeed {
     PackSize: number;
     Xr2Item: boolean;
     UnitOfIssue: string;
+    PickLocationDeviceLocationId: number;
+    PickLocationDescription: string;
+    PickLocationQoh: number;
+}
     ItemFormattedDescription: string; //for report 
     ItemBrandNameDescription: string; //for report
     ItemIdDescription: string; // for report

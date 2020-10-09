@@ -16,6 +16,9 @@ export class MockColHeaderSortable {
   @Input()
   customColumnSortOrder: 'asc' | 'desc';
 
+  @Input()
+  wrap: boolean;
+
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 }
