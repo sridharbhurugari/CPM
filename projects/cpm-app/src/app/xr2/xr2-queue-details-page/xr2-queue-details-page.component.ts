@@ -58,12 +58,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.displayFailedToSaveDialog();
   }
 
-  updateButtonPannel(selectedItems: PicklistQueueItem[]) {
-    let releaseEnabledScanner = selectedItems.length > 0 ? true : false;
-    let printEnabledScanner = selectedItems.length > 0 ? true : false;
-    let rerouteEnabledScanner = selectedItems.length > 0 ? true : false;
+  updateButtonPannel(selectedItems: Set<PicklistQueueItem>) {
+    let releaseEnabledScanner = selectedItems.size > 0 ? true : false;
+    let printEnabledScanner = selectedItems.size > 0 ? true : false;
+    let rerouteEnabledScanner = selectedItems.size > 0 ? true : false;
 
-    _.forEach(selectedItems, (item) => {
+    selectedItems.forEach((item) => {
       releaseEnabledScanner = releaseEnabledScanner && this.releasedIsEnabled(item);
       printEnabledScanner = printEnabledScanner && this.printIsEnabled(item);
       rerouteEnabledScanner = rerouteEnabledScanner && this.rerouteIsEnabled(item);

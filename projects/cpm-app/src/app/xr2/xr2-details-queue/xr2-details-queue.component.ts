@@ -255,7 +255,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       this.picklistQueueItems.map((item) => this.selectedItems.delete(item));
     }
 
-    this.updateSelectedItemsEvent.emit([...this.selectedItems]);
+    this.updateSelectedItemsEvent.emit(this.selectedItems);
   }
 
   onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
@@ -265,7 +265,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       this.selectedItems.delete(picklistQueueItem);
     }
 
-    this.updateSelectedItemsEvent.emit([...this.selectedItems]);
+    this.updateSelectedItemsEvent.emit(this.selectedItems);
   }
 
   isContainedInSelected(picklistQueueItem: PicklistQueueItem) {
