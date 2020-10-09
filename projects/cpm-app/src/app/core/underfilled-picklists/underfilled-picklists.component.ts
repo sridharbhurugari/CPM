@@ -3,14 +3,13 @@ import { UnderfilledPicklist } from '../model/underfilled-picklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { WindowService } from '../../shared/services/window-service';
-import { SearchBoxComponent, PopupDialogProperties, PopupDialogType, PopupDialogService, PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap, take } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import * as _ from 'lodash';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { TranslateService } from '@ngx-translate/core';
 import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 

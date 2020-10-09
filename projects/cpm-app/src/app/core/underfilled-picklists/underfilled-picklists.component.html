@@ -40,7 +40,7 @@
                                [currentSortPropertyName]="currentSortPropertyName"
                                (columnSelected)="columnSelected($event)">
                               </div>
-       <div class="col width-type last" ocGridColResize data-width="100" data-colwrap="true">
+      <div class="col width-type last" ocGridColResize data-width="100" data-colwrap="true">
                               </div>
 
   </ng-container>
@@ -94,7 +94,7 @@
           <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'" [disabled]="picklist.Saving"
             [label]="'View'" (clickEvent)="view(picklist)">
           </app-cp-clickable-icon>
-          <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'"  [disabled]="picklist.Saving"
+          <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'" [disabled]="picklist.Saving"
           [label]="'Delete'" (clickEvent)="delete(picklist)">
         </app-cp-clickable-icon>
         </div>
