@@ -24,6 +24,9 @@ import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-p
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { PriorityCodeTypes } from '../../shared/constants/priority-code-types';
+import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
+import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
+
 
 @Component({
   selector: 'app-xr2-details-queue',
@@ -34,6 +37,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() updateSelectedItemsEvent: EventEmitter<any> = new EventEmitter<any>();
 
   private _picklistQueueItems: PicklistQueueItem[];
   selectedItems = new Set<PicklistQueueItem>();
@@ -55,19 +59,21 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     PATIENT: 'PATIENT',
     PATIENTS: 'PATIENTS',
     ITEM: 'ITEM',
-    ITEMS: 'ITEMS'
+    ITEMS: 'ITEMS',
+    BIN: 'BIN',
+    BINS: 'BINS',
+    BAG: 'BAG',
+    BAGS: 'BAGS',
   };
 
   translatables = [
-    'RELEASE',
-    'PRINT',
-    'REPRINT',
     'YES',
     'NO',
     'REROUTE',
-    'XR2_QUEUE_REROUTE_DIALOG_MESSAGE',
+    'XR2_QUEUE_REROUTE_AREA_DIALOG_MESSAGE',
     'FAILEDTOREROUTE_HEADER_TEXT',
     'FAILEDTOREROUTE_BODY_TEXT',
+    'OF'
   ];
   translations$: Observable<any>;
 
@@ -129,12 +135,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   onRerouteClick(picklistQueueItem: PicklistQueueItem) {
-
-    if (this.selectedItems.size > 0) {
-      this.rerouteSelectedItems([picklistQueueItem]); // TODO: finish this method
-    } else {
-      this.reroute(picklistQueueItem);
-    }
+    this.processReroute([]); // TODO: finish this method
   }
 
   onReleaseClick(picklistQueueItem: PicklistQueueItem) {
@@ -220,6 +221,29 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
+  getOrderSplitDataString(picklistQueueItem: PicklistQueueItem) {
+    let dataString = '';
+    let translatedLabel = '';
+    this.translateService.get('OF').subscribe((res: string) => {
+      translatedLabel = res;
+    });
+
+    dataString = `${picklistQueueItem.FilledBoxCount} ${translatedLabel} ${picklistQueueItem.BoxCount}`;
+
+    return dataString;
+  }
+
+  getOrderSplitDataLabel(picklistQueueItem: PicklistQueueItem) {
+    let label = '';
+    if (picklistQueueItem.OutputDeviceId === OutputDeviceTypeId.AutoPackagerCPM) {
+      label = picklistQueueItem.BoxCount > 1 ? this.translationMap.BAGS : this.translationMap.BAG;
+    } else {
+      label = picklistQueueItem.BoxCount > 1 ? this.translationMap.BINS : this.translationMap.BIN;
+    }
+
+    return label;
+  }
+
   onBackClick() {
     this.location.back();
   }
@@ -230,6 +254,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     } else {
       this.picklistQueueItems.map((item) => this.selectedItems.delete(item));
     }
+
+    this.updateSelectedItemsEvent.emit([...this.selectedItems]);
   }
 
   onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
@@ -238,6 +264,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     } else {
       this.selectedItems.delete(picklistQueueItem);
     }
+
+    this.updateSelectedItemsEvent.emit([...this.selectedItems]);
   }
 
   isContainedInSelected(picklistQueueItem: PicklistQueueItem) {
@@ -361,13 +389,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  private rerouteSelectedItems(picklistQueueItem: PicklistQueueItem[]) {
+  private processReroute(picklistQueueItem: PicklistQueueItem[]) {
 
     this.displayRerouteDialog().subscribe(result => {
       if (!result) {
         return;
       }
-
       // TODO: reroute selected items
     });
   }
@@ -400,7 +427,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       const translations = r[0];
       const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
       properties.titleElementText = translations.REROUTE;
-      properties.messageElementText = translations.XR2_QUEUE_REROUTE_DIALOG_MESSAGE;
+      properties.messageElementText = translations.XR2_QUEUE_REROUTE_AREA_DIALOG_MESSAGE;
       properties.showPrimaryButton = true;
       properties.primaryButtonText = translations.YES;
       properties.showSecondaryButton = true;

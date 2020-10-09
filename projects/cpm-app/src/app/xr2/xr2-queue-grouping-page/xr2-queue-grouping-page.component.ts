@@ -6,6 +6,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
+import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -15,6 +16,7 @@ import { PicklistsQueueEventConnectionService } from '../services/picklists-queu
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
+  buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
   searchTextFilter: string;
 
   constructor(private picklistsQueueService: PicklistsQueueService,

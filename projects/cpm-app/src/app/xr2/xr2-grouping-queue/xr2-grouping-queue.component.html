@@ -6,7 +6,6 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <!-- 1256px total -->
       <div app-col-header-sortable class="col" ocGridColResize data-width="426" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
@@ -27,7 +26,7 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="270" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+      <div class="last width-type" data-width="300" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
@@ -39,21 +38,29 @@
           <div class=priority-container>
             <div class=identifier-container>
               <span>{{picklistQueueItem.PriorityCodeDescription}}</span>
-              <span [ngStyle]="{'font-size': '14px'}">{{picklistQueueItem.OrderId}}</span>
             </div>
           </div>
         </div>
         <div class="col width-type" [attr.data-title]="'NEW' | translate">
-          <span class="centered-text">{{picklistQueueItem.ItemCount}}</span>
+          <span class="centered-content">
+            <app-cp-data-label
+            [data]="picklistQueueItem.ItemCount"
+            [label]="'ITEMS' | translate"
+            ></app-cp-data-label>
+          </span>
         </div>
         <div class="col width-type" [attr.data-title]="'RELEASED' | translate">
-          <span class="centered-text">{{picklistQueueItem.ItemCount}}</span>
+          <span class="centered-content">
+            <app-cp-data-label
+            [data]="picklistQueueItem.ItemCount"
+            [label]="'ITEMS' | translate"
+            ></app-cp-data-label>
+          </span>
         </div>
         <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
           <span [ngStyle]="{'font-size': '18px'}">{{picklistQueueItem.DeviceDescription}}</span>
           <oc-singleselect
             [popupDirection]="'AUTO'"
-            [disabled]="picklistQueueItem.Status > 1"
             [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
             [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
@@ -61,7 +68,7 @@
         </div>
         <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
           <div class="btn-group">
-            <app-cp-clickable-icon *ngIf="picklistQueueItem.Status===1"
+            <app-cp-clickable-icon
             [width]="35"
             [height]="35"
             [theme]="'dark'"
@@ -69,15 +76,6 @@
             [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
             [icon]="'openv1-right'"
             (clickEvent)="onReleaseClick()">
-            </app-cp-clickable-icon>
-            <app-cp-clickable-icon *ngIf="picklistQueueItem.Status!==1"
-            [width]="35"
-            [height]="35"
-            [theme]="'dark'"
-            [label]="getPrintButtonProperties(picklistQueueItem).text | translate"
-            [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
-            [icon]="'print'"
-            (clickEvent)="onPrintClick()">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon
             [width]="35"

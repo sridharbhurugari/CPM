@@ -3,8 +3,17 @@
     <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'"
         (clickEvent)="onBackClick()">
     </app-cp-clickable-icon>
-    <div class="title">Patient - Details</div>
+    <div class="title">
+      {{'PATIENT' | translate}} - {{'DETAILS' | translate}}
+    </div>
+    <oc-search-box #searchBox id="searchBox" [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
   </div>
-  <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  <div class="button-panel-container">
+    <app-xr2-queue-button-panel
+    [releaseAllDisabled]="releaseAllDisabled"
+    [printAllDisabled]="printAllDisabled"
+    [rerouteAllDisabled]="rerouteAllDisabled">
+  </app-xr2-queue-button-panel>
+  </div>
 </div>
 

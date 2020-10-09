@@ -10,6 +10,7 @@ import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.se
 
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omnicell/webcorecomponents';
+import { release } from 'os';
 
 @Component({
   selector: 'app-xr2-queue-details-queue-page',
@@ -18,6 +19,10 @@ import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omn
 })
 export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
+  releaseAllDisabled: boolean;
+  printAllDisabled: boolean;
+  rerouteAllDisabled: boolean;
+
   searchTextFilter: string;
   translatables = [
     'OK',
@@ -51,6 +56,34 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
   displayXr2QueueError() {
     this.displayFailedToSaveDialog();
+  }
+
+  updateButtonPannel(selectedItems: PicklistQueueItem[]) {
+    let releaseEnabledScanner = selectedItems.length > 0 ? true : false;
+    let printEnabledScanner = selectedItems.length > 0 ? true : false;
+    let rerouteEnabledScanner = selectedItems.length > 0 ? true : false;
+
+    _.forEach(selectedItems, (item) => {
+      releaseEnabledScanner = releaseEnabledScanner && this.releasedIsEnabled(item);
+      printEnabledScanner = printEnabledScanner && this.printIsEnabled(item);
+      rerouteEnabledScanner = rerouteEnabledScanner && this.rerouteIsEnabled(item);
+    });
+
+    this.releaseAllDisabled = !releaseEnabledScanner;
+    this.printAllDisabled = !printEnabledScanner;
+    this.rerouteAllDisabled = !rerouteEnabledScanner;
+  }
+
+  private releasedIsEnabled(picklistQueueItem: PicklistQueueItem) {
+    return picklistQueueItem.Status === 1;
+  }
+
+  private printIsEnabled(picklistQueueItem: PicklistQueueItem) {
+    return picklistQueueItem.Status > 1 && picklistQueueItem.IsPrintable;
+  }
+
+  private rerouteIsEnabled(picklistQueueItem: PicklistQueueItem) {
+    return true;
   }
 
   private configureEventHandlers(): void {

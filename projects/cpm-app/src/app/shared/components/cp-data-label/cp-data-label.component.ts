@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class CPDataLabelComponent implements OnInit {
   @Input() dataSize: number = 25;
   @Input() labelSize: number = 15;
-  @Input() numberedData: number;
+  @Input() data: string;
   @Input() label: string;
   constructor() { }
   ngOnInit() {

@@ -28,17 +28,6 @@
   padding-right: 20px;
 }
 
-.priority-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  .identifier-container{
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.centered-text {
-  text-align: center;
+.centered-content {
+  align-items: center;
 }

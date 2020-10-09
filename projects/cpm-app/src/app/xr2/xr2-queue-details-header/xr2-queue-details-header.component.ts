@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -9,6 +9,10 @@ import { WindowService } from '../../shared/services/window-service';
   styleUrls: ['./xr2-queue-details-header.component.scss']
 })
 export class Xr2QueueDetailsHeaderComponent implements OnInit, AfterViewInit {
+
+  @Input() releaseAllDisabled: boolean;
+  @Input() printAllDisabled: boolean;
+  @Input() rerouteAllDisabled: boolean;
 
   @Output() backEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
