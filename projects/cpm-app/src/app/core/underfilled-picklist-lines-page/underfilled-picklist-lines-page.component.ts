@@ -69,7 +69,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   getReportData(datePipe: DatePipe){
     this.reportPickListLines$ = this.picklistLines$.pipe(
       map(underfilled => {
-        underfilled.forEach(function(element)
+        underfilled.forEach(element =>
         {
           let date = element.FillDate;
           element.PrintFillDate = datePipe.transform(date, 'M/d/yy h:mm a');

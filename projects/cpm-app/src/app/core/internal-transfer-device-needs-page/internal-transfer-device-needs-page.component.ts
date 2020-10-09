@@ -49,7 +49,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
   ) {
-    this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.deviceId = Number(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
@@ -67,8 +67,8 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.reportItemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
     this.reportItemNeeds$ = this.reportItemNeeds$.pipe(
       map(need => {
-        need.forEach(function(element)
-        {  
+        need.forEach(element =>
+        {
             element.SortFormattedName = element.ItemFormattedGenericName;
             if(element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
               const reg = new RegExp(".{1," + 18 + "}","g");
@@ -88,7 +88,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
               element.ItemIdDescription =  parts.join('\n');
               element.ItemId = '';
             }
-        })
+          })
         return need;
       })
     );
