@@ -34,15 +34,18 @@
                                [currentSortPropertyName]="currentSortPropertyName"
                                (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="last" ocGridColResize data-width="125" data-colwrap="true"
+      <div app-col-header-sortable ocGridColResize data-width="125" data-colwrap="true"
                                [columnPropertyName]='datePropertyName'
                                headerResourceKey='DATE'
                                [currentSortPropertyName]="currentSortPropertyName"
                                (columnSelected)="columnSelected($event)">
-      </div>
+                              </div>
+       <div class="col width-type last" ocGridColResize data-width="100" data-colwrap="true">
+                              </div>
+
   </ng-container>
   <ng-container class="ocgridbody">
-    <div class="row" *ngFor="let picklist of picklists | searchPipe:searchTextFilter:searchFields" (click)="navigate(picklist.OrderId)">
+    <div class="row" *ngFor="let picklist of picklists | searchPipe:searchTextFilter:searchFields">
       <div class="first" style="align-items: center;">
         <div class="firstcolumncolorblock" [style.background-color]="picklist.PriorityColorCode"></div>
       </div>
@@ -85,10 +88,16 @@
       <div class="last width-date" [attr.data-title]="'DATE' | translate">
         <div>{{picklist.CompletedDate | date: 'shortDate'}}</div>
         <div>{{picklist.CompletedDate | date: 'shortTime'}}</div>
-        <oc-button-action
-        [buttonIcon]="'clear'"
-        [buttonText]="'DELETE' | translate"
-        (click)="delete(picklist)"></oc-button-action>
+      </div>
+      <div class="col width-type">
+        <div class="col-content-container">
+          <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'" [disabled]="picklist.Saving"
+            [label]="'View'" (clickEvent)="view(picklist)">
+          </app-cp-clickable-icon>
+          <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'"  [disabled]="picklist.Saving"
+          [label]="'Delete'" (clickEvent)="delete(picklist)">
+        </app-cp-clickable-icon>
+        </div>
       </div>
     </div>
   </ng-container>

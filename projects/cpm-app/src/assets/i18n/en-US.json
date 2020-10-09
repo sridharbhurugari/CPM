@@ -209,5 +209,7 @@
   "PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT": "{{itemId}} is assigned to {{deviceDescription}}<br />",
   "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count",
   "CycleCount_Concurrency_UpdateConflictMsg": "The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
-  "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information"
+  "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information",
+  "UNFILLED_DELET_PICKLIST_PROMPT_TITLE": "Delete Unfilled Picklist",
+  "UNFILLED_DELET_PICKLIST_PROMPT_MESSAGE": "Are you sure you want to delete the unfilled picklist?"
 }
