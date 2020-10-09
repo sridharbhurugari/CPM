@@ -5,7 +5,7 @@
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
             <app-header-container [title]="'ID' | translate">{{(picklist$ | async)?.OrderId}}</app-header-container>
-            <app-header-container [title]="'ROUTE' | translate">{{(picklist$ | async)?.RouteName}}</app-header-container>
+            <app-header-container></app-header-container>
             <app-header-container [title]="'DATE' | translate">
                 {{(picklist$ | async)?.OrderDate | date:'shortDate'}}
                 {{(picklist$ | async)?.OrderDate | date:'mediumTime'}}
