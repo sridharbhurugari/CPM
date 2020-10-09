@@ -16,8 +16,8 @@ export interface IItemReplenishmentNeed {
     PickLocationDeviceLocationId: number;
     PickLocationDescription: string;
     PickLocationQoh: number;
-    ItemFormattedDescription: string; //for report 
-    ItemBrandNameDescription: string; //for report
-    ItemIdDescription: string; // for report
-    SortFormattedName: string; // for reports
+    ItemFormattedDescription: string;  
+    ItemBrandNameDescription: string; 
+    ItemIdDescription: string; 
+    SortFormattedName: string; 
 }
