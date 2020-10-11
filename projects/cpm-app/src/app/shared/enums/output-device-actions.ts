@@ -1,5 +1,5 @@
 export enum OutputDeviceAction {
-  Release,
+  Release = 0,
   Print,
   Reroute,
 }

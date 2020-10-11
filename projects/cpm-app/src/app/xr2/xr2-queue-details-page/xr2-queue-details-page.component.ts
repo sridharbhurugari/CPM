@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, shareReplay, single } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omnicell/webcorecomponents';
-import { release } from 'os';
+import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
+import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
+import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 
 @Component({
   selector: 'app-xr2-queue-details-queue-page',
@@ -19,6 +20,11 @@ import { release } from 'os';
 })
 export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
+  actionDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> =
+    new Map<OutputDeviceAction, Set<PicklistQueueItem>>();
+  updateDisableSelectAllEvent: Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>> =
+    new Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>>();
+  updateMultiSelectModeEvent: Subject<boolean> = new Subject<boolean>();
   releaseAllDisabled: boolean;
   printAllDisabled: boolean;
   rerouteAllDisabled: boolean;
@@ -44,6 +50,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   ngOnInit() {
     this.setTranslations();
     this.loadPicklistsQueueItems();
+    this.initializeActionDisableMap();
   }
 
   onSearchTextFilter(filterText: string) {
@@ -58,32 +65,55 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.displayFailedToSaveDialog();
   }
 
-  updateButtonPannel(selectedItems: Set<PicklistQueueItem>) {
-    let releaseEnabledScanner = selectedItems.size > 0 ? true : false;
-    let printEnabledScanner = selectedItems.size > 0 ? true : false;
-    let rerouteEnabledScanner = selectedItems.size > 0 ? true : false;
+  onGridSelectionChanged(event: IGridSelectionChanged<PicklistQueueItem[]>) {
+    const itemsToProcess = event.changedValue;
+    const selectedItems = event.selectedValues;
 
-    selectedItems.forEach((item) => {
-      releaseEnabledScanner = releaseEnabledScanner && this.releasedIsEnabled(item);
-      printEnabledScanner = printEnabledScanner && this.printIsEnabled(item);
-      rerouteEnabledScanner = rerouteEnabledScanner && this.rerouteIsEnabled(item);
+    if (selectedItems.length === 0) {
+      this.updateMultiSelectModeEvent.next(false);
+      this.clearActionDisableMap();
+      this.updateDisableSelectAllEvent.next(this.actionDisableMap);
+      return;
+    }
+
+    this.updateMultiSelectModeEvent.next(true);
+
+    _.forEach(itemsToProcess, (item) => {
+      if (this.releasedIsDisabled(item)) {
+        const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Release);
+        event.changeType === SelectionChangeType.selected ? currentSet.add(item)
+         : currentSet.delete(item);
+        this.actionDisableMap.set(OutputDeviceAction.Release, currentSet);
+      }
+
+      if (this.printIsDisabled(item)) {
+        const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Print);
+        event.changeType === SelectionChangeType.selected ? currentSet.add(item)
+         : currentSet.delete(item);
+        this.actionDisableMap.set(OutputDeviceAction.Print, currentSet);
+      }
+
+      if (this.rerouteIsDisabled(item)) {
+        const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Reroute);
+        event.changeType === SelectionChangeType.selected ? currentSet.add(item)
+         : currentSet.delete(item);
+        this.actionDisableMap.set(OutputDeviceAction.Reroute, currentSet);
+      }
     });
 
-    this.releaseAllDisabled = !releaseEnabledScanner;
-    this.printAllDisabled = !printEnabledScanner;
-    this.rerouteAllDisabled = !rerouteEnabledScanner;
+    this.updateDisableSelectAllEvent.next(this.actionDisableMap);
   }
 
-  private releasedIsEnabled(picklistQueueItem: PicklistQueueItem) {
-    return picklistQueueItem.Status === 1;
+  private releasedIsDisabled(picklistQueueItem: PicklistQueueItem) {
+    return picklistQueueItem.Status !== 1;
   }
 
-  private printIsEnabled(picklistQueueItem: PicklistQueueItem) {
-    return picklistQueueItem.Status > 1 && picklistQueueItem.IsPrintable;
+  private printIsDisabled(picklistQueueItem: PicklistQueueItem) {
+    return picklistQueueItem.Status <= 1 || !picklistQueueItem.IsPrintable;
   }
 
-  private rerouteIsEnabled(picklistQueueItem: PicklistQueueItem) {
-    return true;
+  private rerouteIsDisabled(picklistQueueItem: PicklistQueueItem) {
+    return false;
   }
 
   private configureEventHandlers(): void {
@@ -92,6 +122,23 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     }
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
       .subscribe(() => this.onReloadPicklistQueueItems());
+  }
+
+  private initializeActionDisableMap(): void {
+    for (const action in OutputDeviceAction) {
+      if (!isNaN(Number(action))) {
+        this.actionDisableMap.set(Number(action), new Set<PicklistQueueItem>());
+      }
+    }
+  }
+
+  private clearActionDisableMap(): void {
+    for (const action in OutputDeviceAction) {
+      if (!isNaN(Number(action))) {
+        const currentSet = this.actionDisableMap.get(Number(action));
+        currentSet.clear();
+      }
+    }
   }
 
   private onReloadPicklistQueueItems(): void {

@@ -10,9 +10,9 @@
   </div>
   <div class="button-panel-container">
     <app-xr2-queue-button-panel
-    [releaseAllDisabled]="releaseAllDisabled"
-    [printAllDisabled]="printAllDisabled"
-    [rerouteAllDisabled]="rerouteAllDisabled">
+    [printAllDisabled]="disabledButtonActions[outputDeviceAction.Print]"
+    [rerouteAllDisabled]="disabledButtonActions[outputDeviceAction.Reroute]"
+    [releaseAllDisabled]="disabledButtonActions[outputDeviceAction.Release]">
   </app-xr2-queue-button-panel>
   </div>
 </div>

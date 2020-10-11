@@ -26,6 +26,8 @@ import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { PriorityCodeTypes } from '../../shared/constants/priority-code-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
+import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
+import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 
 
 @Component({
@@ -37,7 +39,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
-  @Output() updateSelectedItemsEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() selectionChanged: EventEmitter<IGridSelectionChanged<any>> = new EventEmitter();
+  @Output() selectAllChanged: EventEmitter<IGridSelectionChanged<any>> = new EventEmitter();
 
   private _picklistQueueItems: PicklistQueueItem[];
   selectedItems = new Set<PicklistQueueItem>();
@@ -158,9 +161,11 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     let label = '';
 
     if (picklistQueueItem.ItemCount > 1) {
-      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  this.translationMap.PATIENTS : this.translationMap.ITEMS;
+      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?
+        this.translationMap.PATIENTS : this.translationMap.ITEMS;
     } else {
-      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?  this.translationMap.PATIENT : this.translationMap.ITEM;
+      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?
+        this.translationMap.PATIENT : this.translationMap.ITEM;
     }
 
     return label;
@@ -255,7 +260,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       this.picklistQueueItems.map((item) => this.selectedItems.delete(item));
     }
 
-    this.updateSelectedItemsEvent.emit(this.selectedItems);
+    this.selectionChanged.emit({
+      changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
+      changedValue: [...this.selectedItems],
+      selectedValues: [...this.selectedItems],
+      unselectedValues: []
+    });
   }
 
   onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
@@ -265,7 +275,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       this.selectedItems.delete(picklistQueueItem);
     }
 
-    this.updateSelectedItemsEvent.emit(this.selectedItems);
+    this.selectionChanged.emit({
+      changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
+      changedValue: [picklistQueueItem],
+      selectedValues: [...this.selectedItems],
+      unselectedValues: []
+    });
   }
 
   isContainedInSelected(picklistQueueItem: PicklistQueueItem) {

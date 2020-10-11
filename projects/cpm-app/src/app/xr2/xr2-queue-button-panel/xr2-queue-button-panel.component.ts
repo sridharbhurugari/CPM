@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { release } from 'os';
 
 @Component({
   selector: 'app-xr2-queue-button-panel',
@@ -8,21 +7,13 @@ import { release } from 'os';
 })
 export class Xr2QueueButtonPanelComponent implements OnInit {
 
-  @Input() releaseAllDisabled: boolean;
   @Input() printAllDisabled: boolean;
+  @Input() releaseAllDisabled: boolean;
   @Input() rerouteAllDisabled: boolean;
 
-
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
-    this.setAllDisabled();
   }
-
-  private setAllDisabled() {
-    this.releaseAllDisabled = true;
-    this.printAllDisabled = true;
-    this.rerouteAllDisabled = true;
-  }
-
 }
