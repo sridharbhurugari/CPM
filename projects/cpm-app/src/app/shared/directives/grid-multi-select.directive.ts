@@ -19,7 +19,7 @@ export class GridMultiSelectDirective {
 
   @ContentChildren(CheckboxComponent)
   set rows(values: QueryList<CheckboxComponent>) {
-    this._possibleValues = values.map(x => x.valueField).filter(x => x !== CheckboxValues.ToggleAll);
+    this._possibleValues = values.filter(x => x.isEnabled && x.valueField !== CheckboxValues.ToggleAll).map(x => x.valueField);
     this._selectedValues = values.filter(x => x.selected && x.valueField !== CheckboxValues.ToggleAll).map(x => x.valueField);
 
     if(this._subscriptions.length) {
@@ -53,7 +53,8 @@ export class GridMultiSelectDirective {
       changeType: checked ? SelectionChangeType.selected : SelectionChangeType.unselected,
       changedValue: value,
       selectedValues: this._selectedValues,
-      unselectedValues: this._possibleValues.filter(x => this._selectedValues.indexOf(x) === -1)
+      unselectedValues: this._possibleValues.filter(x => this._selectedValues.indexOf(x) === -1),
+      areAllValuesSelected: this._selectedValues.length == this._possibleValues.length,
     });
   }
 }

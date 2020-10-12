@@ -65,7 +65,7 @@ describe('EditDeviceSequenceComponent', () => {
   describe('onOrderChanged', () => {
     it('should emit deviceSequenceChanged', () => {
       spyOn(component.deviceSequenceChanged, 'emit');
-      component.onSelectionChanged({ changeType: SelectionChangeType.selected, unselectedValues: [], changedValue: undefined, selectedValues: [] });
+      component.onSelectionChanged({ changeType: SelectionChangeType.selected, unselectedValues: [], changedValue: undefined, selectedValues: [], areAllValuesSelected: false });
       expect(component.deviceSequenceChanged.emit).toHaveBeenCalled();
     });
   })
