@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { nameof } from '../../shared/functions/nameof';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
@@ -51,6 +51,11 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   })
   searchElement: SearchBoxComponent;
 
+  @ViewChild('headerCheckContainer', {
+    static: true
+  })
+  headerCheckContainer: ElementRef;
+
   @Output()
   selectionChanged: EventEmitter<IItemReplenishmentNeed[]> = new EventEmitter();
 
@@ -64,11 +69,16 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
       this.searchTextFilter = data;
       this.windowService.dispatchResizeEvent();
     });
+    this.fixCheckAllNoneClass();
   }
 
   selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>) {
     this.selectedItemNeeds = selectionEvent.selectedValues;
     this.selectionChanged.next(this.selectedItemNeeds);
     this.areAllValuesSelected = selectionEvent.areAllValuesSelected;
+  }
+
+  private fixCheckAllNoneClass() {
+    this.headerCheckContainer.nativeElement.className = 'first';
   }
 }
