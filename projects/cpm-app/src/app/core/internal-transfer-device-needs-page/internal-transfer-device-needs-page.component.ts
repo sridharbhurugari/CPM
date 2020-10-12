@@ -20,6 +20,7 @@ import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-
 import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
 import { of } from 'rxjs/internal/observable/of';
 import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -81,23 +82,22 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   pick() {
     if (this.itemsToPick.length > 0) {
       this.requestStatus = 'picking';
-      const items: IInterDeviceTransferPickRequest[] = new Array();
-      this.itemsToPick.forEach(selecteItem => {
+      var picksByItemId = _.groupBy(this.itemsToPick, x => x.ItemId);
+      const items: IInterDeviceTransferPickRequest[] = new Array<IInterDeviceTransferPickRequest>();
+      for(var itemId in picksByItemId){
+        const itemPicks = picksByItemId[itemId];
         const item = {
-          ItemId: selecteItem.ItemId,
-          QuantityToPick: selecteItem.DeviceQuantityNeeded,
-          SourceDeviceLocationId: selecteItem.PickLocationDeviceLocationId
+          ItemId: itemId,
+          QuantityToPick: itemPicks.map(x => x.DeviceQuantityNeeded).reduce((total, value) => total + value),
+          SourceDeviceLocationId: itemPicks[0].PickLocationDeviceLocationId
         };
         items.push(item);
-      });
+      }
 
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items).subscribe();
-      this.requestStatus = 'none';
-      this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
-      return;
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
+    } else {
+      this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
     }
-
-    this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
   }
 
   print() {
@@ -145,5 +145,15 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
+  }
+
+  private handlePickSuccess() {
+    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
+    this.requestStatus = 'none';
+  }
+
+  private handlePickFailure() {
+    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE', 'INTERNAL_TRANS_PICKQUEUE_FAILED_MSG');
+    this.requestStatus = 'none';
   }
 }

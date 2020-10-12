@@ -3,8 +3,6 @@ import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-rep
 import { nameof } from '../../shared/functions/nameof';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
-import { AfterContentInit } from '@angular/core';
-import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 
 @Component({
@@ -64,7 +62,6 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
 
   selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>) {
     this.selectedItemNeeds = selectionEvent.selectedValues;
-    console.log(this.selectedItemNeeds);
     this.selectionChanged.next(this.selectedItemNeeds);
   }
 }
