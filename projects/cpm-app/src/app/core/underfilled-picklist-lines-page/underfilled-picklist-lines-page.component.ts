@@ -108,7 +108,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 async getSelected(): Promise<string[]> {
   const picklistLines = await this.picklistLines$.toPromise();
   const checkedPicklistLines = _.filter(picklistLines, (picklistLine: UnderfilledPicklistLine) => {
-    return picklistLine.IsChecked;
+    return picklistLine.IsPicklistLineSelected;
   });
   const checkedPicklistLineIds = _.map(checkedPicklistLines, 'PicklistLineId');
   return checkedPicklistLineIds;

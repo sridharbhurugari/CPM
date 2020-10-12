@@ -22,6 +22,7 @@ export class UnderfilledPicklistLinesComponent {
   fillDatePropertyName = nameof<UnderfilledPicklistLine>('FillDate');
   checkboxToggleAll: boolean;
   currentSortPropertyName: string;
+  isHeaderCheckboxChecked: boolean;
 
   @Input('picklistLines')
   set picklistLines(value: UnderfilledPicklistLine[]) {
@@ -44,10 +45,34 @@ export class UnderfilledPicklistLinesComponent {
 
   constructor(
     private windowService: WindowService,
-  ) { }
+  ) {
+    this.isHeaderCheckboxChecked = false;
+   }
 
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.picklistLines = _.orderBy(this._picklistLines, x => x[this.currentSortPropertyName], event.SortDirection)
+  }
+
+  headerCheckboxChanged() {
+    this.isHeaderCheckboxChecked = !this.isHeaderCheckboxChecked;
+    if (this.isHeaderCheckboxChecked) {
+      this.checkAllRows();
+      return;
+    }
+
+    this.unCheckAllRows();
+  }
+
+  checkAllRows() {
+    _.forEach(this._picklistLines, x => {
+      x.IsPicklistLineSelected = true;
+    });
+  }
+
+  unCheckAllRows() {
+    _.forEach(this._picklistLines, x => {
+      x.IsPicklistLineSelected = false;
+    });
   }
 }

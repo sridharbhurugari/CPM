@@ -12,6 +12,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
         this.DisplayArea = PicklistDestinationDescriptionHelper.DisplayArea(1, 1, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayOmniName = PicklistDestinationDescriptionHelper.DisplayOmniName(1, 1, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayPatientNameSecondLine = PicklistDestinationDescriptionHelper.DisplayPatientNameSecondLine(1, this.PicklistTypeDb, this.PriorityCode);
+        this.IsPicklistLineSelected = data.IsPicklistLineSelected;
     }
     PicklistLineId: string;
     DestinationId: string;
@@ -30,7 +31,8 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     FillQuantity: number;
     OrderQuantity: number;
 
-    public IsChecked: boolean = true;
+    IsPicklistLineSelected: boolean;
+    DaveTest: string;
     DisplayPatientRoomAndArea: boolean;
     DisplayPatientRoom: boolean;
     DisplayArea: boolean;
