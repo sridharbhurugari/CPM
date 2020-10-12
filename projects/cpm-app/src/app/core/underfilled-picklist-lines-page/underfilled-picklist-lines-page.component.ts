@@ -105,34 +105,13 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     );
   }
 
-getSelected(): string[] {
-  let selected: string[] = [];
-  const mapping = this.picklistLines$.pipe(
-    map(f => {
-      let pllId: string[] = [];
-      f.forEach(function(p)
-      {
-
-if (p.IsChecked)
-{
-  console.log(`checked ${p.PicklistLineId.toString()}`);
-  pllId.push(p.PicklistLineId.toString());
-}
-else
-{
-  console.log(`NOT checked ${p.PicklistLineId.toString()}`);
-}
-console.log(`PLL: ${pllId}`);
-      }); return pllId; }));
-      const sub = mapping.subscribe({
-        next: event => {
-          selected.push(event.toString());
-          console.log(`You will send ${event.toString()}!`)
-        },
-        error: err => console.log(`Oops... Error: ${err}`),
-        complete: () => console.log(`Observable Complete!`),});
-
-      return selected;
+async getSelected(): Promise<string[]> {
+  const picklistLines = await this.picklistLines$.toPromise();
+  const checkedPicklistLines = _.filter(picklistLines, (picklistLine: UnderfilledPicklistLine) => {
+    return picklistLine.IsChecked;
+  });
+  const checkedPicklistLineIds = _.map(checkedPicklistLines, 'PicklistLineId');
+  return checkedPicklistLineIds;
 }
 
  clearCheckedItems()
@@ -152,17 +131,17 @@ console.log(`PLL: ${pllId}`);
 
  close() {
     this.requestStatus = 'complete';
-    let selected: string[] = this.getSelected();
-    // var picklistLineIds = selected.join(", ");
-    this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
-      this.requestStatus = 'none';
-      if (!succeeded) {
-        this.displayPrintFailed();
-      } else {
-        this.clearCheckedItems();
-      }
-    }, err => {
-      this.requestStatus = 'none';
+    this.getSelected().then(selected => {
+      this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
+        this.requestStatus = 'none';
+        if (!succeeded) {
+          this.displayPrintFailed();
+        } else {
+          this.clearCheckedItems();
+        }
+      }, err => {
+        this.requestStatus = 'none';
+      });
     });
   }
 
