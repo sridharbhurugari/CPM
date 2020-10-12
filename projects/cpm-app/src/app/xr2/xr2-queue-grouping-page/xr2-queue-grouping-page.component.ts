@@ -48,19 +48,15 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.searchTextFilter = filterText;
   }
 
-  processReroute(picklistQueueItem: PicklistQueueGrouped[]) {
-
-    this.displayRerouteDialog().subscribe(result => {
-      if (!result) {
-        return;
-      }
-      // TODO: load in all items and reroute
-    });
-  }
-
-
-  processRelease(picklistQueueItem: PicklistQueueGrouped[]) {
-      // TODO: load in all items and release
+  processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
+    this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
+      result => {
+        picklistQueueGrouped.Saving = false;
+      }, result => {
+        picklistQueueGrouped.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+    // this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private configureEventHandlers(): void {
@@ -69,12 +65,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .subscribe(() => this.onReloadPicklistQueueItems());
-  }
-
-
-  private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueGrouped();
+      .subscribe(() => this.loadPicklistsQueueGrouped());
   }
 
   private loadPicklistsQueueGrouped(): void {
@@ -89,25 +80,17 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-   /* istanbul ignore next */
-   private displayRerouteDialog(): Observable<boolean> {
-    return forkJoin(this.translations$).pipe(flatMap(r => {
-      const translations = r[0];
-      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-      properties.titleElementText = translations.REROUTE;
-      properties.messageElementText = translations.XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE;
+    /* istanbul ignore next */
+    private displayFailedToSaveDialog(): void {
+
+      const properties = new PopupDialogProperties('Role-Status-Warning');
+      this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+      this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+      this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
       properties.showPrimaryButton = true;
-      properties.primaryButtonText = translations.YES;
-      properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.NO;
-      properties.primaryOnRight = false;
-      properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Info;
-      properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
-      return merge(primaryClick$, secondaryClick$);
-    }));
-  }
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Error;
+      properties.timeoutLength = 60;
+      this.dialogService.showOnce(properties);
+    }
 }

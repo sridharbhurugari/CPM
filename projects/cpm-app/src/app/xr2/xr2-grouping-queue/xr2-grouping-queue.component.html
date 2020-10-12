@@ -12,12 +12,12 @@
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
-        [columnPropertyName]="itemPropertyName" headerResourceKey="NEW"
+        [columnPropertyName]="newPropertyName" headerResourceKey="NEW"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
-        [columnPropertyName]="itemPropertyName" headerResourceKey="RELEASED"
+        [columnPropertyName]="releasedPropertyName" headerResourceKey="RELEASED"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
@@ -26,7 +26,7 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="300" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+      <div class="last width-type" data-width="280" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
@@ -36,15 +36,12 @@
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
           <div class=priority-container>
-            <div class=identifier-container>
-              <span>{{picklistQueueGroup.PriorityCodeDescription}}</span>
-            </div>
-            <span class="centered-content">
+            <span>{{picklistQueueGroup.PriorityCodeDescription}}</span>
             <app-cp-data-label
               [data]="picklistQueueGroup.NewCount"
-              [label]="'Destinations' | translate"
+              [label]="'Areas' | translate"
             ></app-cp-data-label> 
-            </span> 
+
           </div>
         </div>
         <div class="col width-type" [attr.data-title]="'NEW' | translate">
@@ -81,15 +78,7 @@
             [label]="getReleaseButtonProperties(picklistQueueGroup).text | translate"
             [disabled]="getReleaseButtonProperties(picklistQueueGroup).disabled"
             [icon]="'openv1-right'"
-            (clickEvent)="onReleaseClick()">
-            </app-cp-clickable-icon>
-            <app-cp-clickable-icon
-            [width]="35"
-            [height]="35"
-            [theme]="'dark'"
-            [icon]="'reroute'"
-            [label]="'REROUTE' | translate"
-            (clickEvent)="onRerouteClick()">
+            (clickEvent)="onReleaseClick(picklistQueueGroup)">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon
             [width]="35"

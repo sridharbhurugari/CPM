@@ -1,4 +1,5 @@
 import { OutputDevice } from './output-device';
+import { Guid } from 'guid-typescript';
 
 export interface IPicklistQueueGrouped {
   PriorityCode: string;
@@ -15,4 +16,5 @@ export interface IPicklistQueueGrouped {
   ReleasedCount: number;
   AreaCount: number;
   DeviceLocationId: number;
+  UnsentPickListLines: Array<Guid>;
 }

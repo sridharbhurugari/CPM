@@ -25,8 +25,7 @@ import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 export class Xr2GroupingQueueComponent implements OnInit {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
-  @Output() releaseEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
 
 
   private _picklistQueueGrouped: PicklistQueueGrouped[];
@@ -41,6 +40,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
   readonly sequenceOrderPropertyName = nameof<PicklistQueueGrouped>('SequenceOrder');
   readonly destinationPropertyName = nameof<PicklistQueueGrouped>('Destination');
   readonly deviceDescriptionPropertyName = nameof<PicklistQueueGrouped>('DeviceDescription');
+  readonly newPropertyName = nameof<PicklistQueueGrouped>('NewCount');
+  readonly releasedPropertyName = nameof<PicklistQueueGrouped>('ReleasedCount');
   firstTime = true;
 
   currentSortPropertyName: string;
@@ -89,12 +90,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
     this.wpfActionController.ExecuteContinueAction();
   }
 
-  onRerouteClick() {
-    this.rerouteEvent.emit();
-  }
-
-  onReleaseClick() {
-    this.releaseEvent.emit();
+  onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
+    console.log(picklistQueueGrouped);
+    this.releaseEvent.emit(picklistQueueGrouped);
   }
 
   onDetailsClick() {
@@ -126,12 +124,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   getSelectedOutputDeviceRow(picklistQueueGrouped: PicklistQueueGrouped) {
     let selectedDevice = null;
-    if (picklistQueueGrouped.NewCount > 0) {
-      selectedDevice = picklistQueueGrouped.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueGrouped.OutputDeviceId
-         && x.IsActive);
-    } else {
-      selectedDevice = picklistQueueGrouped.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueGrouped.OutputDeviceId);
-    }
+    selectedDevice = picklistQueueGrouped.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueGrouped.OutputDeviceId
+        && x.IsActive);
+
     if (!selectedDevice) {
       return null;
     }

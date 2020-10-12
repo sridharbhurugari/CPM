@@ -25,7 +25,8 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
       SequenceOrder: picklistQueueGrouped.SequenceOrder,
       NewCount: picklistQueueGrouped.NewCount,
       ReleasedCount: picklistQueueGrouped.ReleasedCount,
-      AreaCount: picklistQueueGrouped.AreaCount
+      AreaCount: picklistQueueGrouped.AreaCount,
+      UnsentPickListLines : picklistQueueGrouped.UnsentPickListLines
     });
   }
 
@@ -45,4 +46,5 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
   ReleasedCount: number;
   AreaCount: number;
   TrackById: Guid;
+  UnsentPickListLines: Array<Guid>;
 }
