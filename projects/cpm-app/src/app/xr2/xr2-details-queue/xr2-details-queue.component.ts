@@ -3,17 +3,11 @@ import { Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { Observable, forkJoin, merge, Subscription } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService,
-  SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
-import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
-import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
-import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
+import { Observable, Subscription } from 'rxjs';
+import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
-import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
@@ -23,7 +17,7 @@ import { Many } from 'lodash';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
-import { PriorityCodeTypes } from '../../shared/constants/priority-code-types';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
@@ -40,11 +34,13 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Output() rerouteEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
-  @Output() selectionChanged: EventEmitter<IGridSelectionChanged<PicklistQueueItem>> = new EventEmitter();
-  @Output() selectAllChanged: EventEmitter<IGridSelectionChanged<PicklistQueueItem>> = new EventEmitter();
+  @Output() selectionChangedEvent: EventEmitter<IGridSelectionChanged<PicklistQueueItem>> = new EventEmitter();
+  @Output() itemUpdatedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
+  @Output() itemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
 
   private _picklistQueueItems: PicklistQueueItem[];
   private updateMultiSelectMode$: Subscription;
+  private updateSelectedItems$: Subscription;
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -78,6 +74,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   translations$: Observable<any>;
 
   @Input() updateMultiSelectModeEvent: Observable<any>;
+
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
     this._picklistQueueItems = value;
@@ -104,7 +101,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   })
 
   searchElement: SearchBoxComponent;
-  searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),
+  searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('OrderId'),
     , nameof<PicklistQueueItem>('DeviceDescription')];
 
   @ViewChild('outputDeviceSingleSelect', { static: true })
@@ -123,9 +120,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
-    this.updateMultiSelectMode$ = this.updateMultiSelectModeEvent.subscribe((event) => {
-      this.onMultiSelectModeUpdateEvent(event);
-    });
+    this.updateMultiSelectMode$ = this.updateMultiSelectModeEvent
+      .subscribe(message => this.onMultiSelectModeUpdate(message));
   }
 
   ngOnDestroy(): void {
@@ -161,10 +157,10 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     let label = '';
 
     if (picklistQueueItem.ItemCount > 1) {
-      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?
+      label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
         this.translationMap.PATIENTS : this.translationMap.ITEMS;
     } else {
-      label = picklistQueueItem.PriorityCode === PriorityCodeTypes.Patient ?
+      label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
         this.translationMap.PATIENT : this.translationMap.ITEM;
     }
 
@@ -260,7 +256,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       this.selectedItems.clear();
     }
 
-    this.selectionChanged.emit({
+    this.selectionChangedEvent.emit({
       changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
       changedValue: null,
       selectedValues: [...this.selectedItems],
@@ -275,7 +271,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       this.selectedItems.delete(picklistQueueItem);
     }
 
-    this.selectionChanged.emit({
+    this.selectionChangedEvent.emit({
       changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
       changedValue: picklistQueueItem,
       selectedValues: [...this.selectedItems],
@@ -317,7 +313,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-  private onMultiSelectModeUpdateEvent(state: boolean) {
+  private onMultiSelectModeUpdate(state: boolean) {
     if (state === false) {
       this.selectedItems.clear();
     }
@@ -346,16 +342,20 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
     matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
     matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
+    this.itemUpdatedEvent.emit(matchingPicklistQueueItem);
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
     const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
-    _.remove(this.picklistQueueItems, (x) => {
+
+    const matchingPicklistItem = _.remove(this.picklistQueueItems, (x) => {
       return x.OrderId === xr2OrderGroupKey.OrderId && x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
       x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
     });
+
+    this.itemRemovedEvent.emit(matchingPicklistItem[0]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
