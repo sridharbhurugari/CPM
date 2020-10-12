@@ -27,7 +27,7 @@
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistLine of picklistLines">
       <div class="first">
-        <oc-checkbox [noLabel]="true" [isEnabled]="true"  [valueField]="IsChecked" [selected]="false" ></oc-checkbox>
+        <oc-checkbox [noLabel]="true" [isEnabled]="true"  [valueField]="picklistLine.IsChecked" [selected]="true" ></oc-checkbox>
     </div>
       <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
         <span>{{picklistLine.ItemFormattedGenericName}}</span>

@@ -127,10 +127,10 @@ console.log(`PLL: ${pllId}`);
       const sub = mapping.subscribe({
         next: event => {
           selected.push(event.toString());
-          console.log(`You just typed ${event.toString()}!`)
+          console.log(`You will send ${event.toString()}!`)
         },
-        error: err => console.log(`Oops... ${err}`),
-        complete: () => console.log(`Complete!`),});
+        error: err => console.log(`Oops... Error: ${err}`),
+        complete: () => console.log(`Observable Complete!`),});
 
       return selected;
 }
@@ -153,8 +153,8 @@ console.log(`PLL: ${pllId}`);
  close() {
     this.requestStatus = 'complete';
     let selected: string[] = this.getSelected();
-    var picklistLineIds = selected.join(", ");
-    this.underfilledPicklistLinesService.close(picklistLineIds).subscribe(succeeded => {
+    // var picklistLineIds = selected.join(", ");
+    this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();
