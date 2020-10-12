@@ -1,11 +1,8 @@
-import { Component, Input, ViewChild, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
-import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-import { SingleselectRowItem, OcSingleselectDropdownComponent, PopupDialogService, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
+import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';

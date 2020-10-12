@@ -27,8 +27,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   selectedItems: PicklistQueueItem[];
   actionDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
-  updateDisableSelectAllEvent: Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>> = new Subject();
-  updateMultiSelectModeEvent: Subject<boolean> = new Subject();
+  updateDisableSelectAllSubject: Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>> = new Subject();
+  updateMultiSelectModeSubject: Subject<boolean> = new Subject();
   releaseAllDisabled: boolean;
   printAllDisabled: boolean;
   rerouteAllDisabled: boolean;
@@ -106,13 +106,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     const itemsToProcess = singleItemSelected ? [singleItemSelected] : this.selectedItems;
 
     if (this.selectedItems.length === 0) {
-      this.updateMultiSelectModeEvent.next(false);
+      this.updateMultiSelectModeSubject.next(false);
       this.clearActionDisableMap();
-      this.updateDisableSelectAllEvent.next(this.actionDisableMap);
+      this.updateDisableSelectAllSubject.next(this.actionDisableMap);
       return;
     }
 
-    this.updateMultiSelectModeEvent.next(true);
+    this.updateMultiSelectModeSubject.next(true);
 
     _.forEach(itemsToProcess, (item) => {
       if (this.releasedIsDisabled(item)) {
@@ -137,7 +137,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
       }
     });
 
-    this.updateDisableSelectAllEvent.next(this.actionDisableMap);
+    this.updateDisableSelectAllSubject.next(this.actionDisableMap);
   }
 
   private releasedIsDisabled(picklistQueueItem: PicklistQueueItem) {
@@ -162,8 +162,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
   private clearMultiSelectedItems(): void {
     this.clearActionDisableMap();
-    this.updateMultiSelectModeEvent.next(false);
-    this.updateDisableSelectAllEvent.next(this.actionDisableMap);
+    this.updateMultiSelectModeSubject.next(false);
+    this.updateDisableSelectAllSubject.next(this.actionDisableMap);
   }
 
   private initializeActionDisableMap(): void {
