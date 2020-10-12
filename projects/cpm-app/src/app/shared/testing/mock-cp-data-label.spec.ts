@@ -9,7 +9,9 @@ export class MockCpDataLabelComponent implements OnInit {
   @Input() labelSize: number = 15;
   @Input() data: string;
   @Input() label: string;
+
   constructor() { }
+
   ngOnInit() {
   }
 }

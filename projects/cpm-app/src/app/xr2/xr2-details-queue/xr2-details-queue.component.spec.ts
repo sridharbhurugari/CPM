@@ -21,7 +21,7 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { Xr2DetailsQueueComponent } from './xr2-details-queue.component';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
-import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label-spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 
 @Component({
   selector: 'oc-search-box',
