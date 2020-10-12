@@ -8,6 +8,7 @@ import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-syn
 import { catchError } from 'rxjs/operators';
 import { RobotPrintRequest } from '../data-contracts/robot-print-request';
 import { ReroutePickListLine } from '../data-contracts/reroute-pick-list-line';
+import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,13 @@ export class PicklistsQueueService {
   get(): Observable<IPicklistQueueItem[]> {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues');
     return this.httpClient.get<IPicklistQueueItem[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  getGrouped(): Observable<IPicklistQueueGrouped[]> {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueuesgrouped');
+    return this.httpClient.get<IPicklistQueueGrouped[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

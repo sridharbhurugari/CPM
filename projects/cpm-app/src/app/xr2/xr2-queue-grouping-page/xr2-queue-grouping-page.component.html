@@ -1,7 +1,7 @@
 <app-xr2-queue-grouping-header (searchTextFilterEvent)='onSearchTextFilter($event)'>
 </app-xr2-queue-grouping-header>
 <app-xr2-grouping-queue
-  [picklistQueueItems]="picklistsQueueItems | async"
+  [picklistQueueGrouped]="picklistsQueueGrouped | async"
   [searchTextFilter]="searchTextFilter"
   (rerouteEvent)="processReroute($event)"
   (releaseEvent)="processRelease($event)">

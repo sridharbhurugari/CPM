@@ -30,40 +30,46 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-       *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
+       *ngFor="let picklistQueueGroup of picklistQueueGrouped | searchPipe:searchTextFilter:searchFields">
         <div class="first" style="align-items: center;">
-          <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
+          <div class="firstcolumncolorblock" [style.background-color]="picklistQueueGroup.PriorityCodeColor"></div>
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
           <div class=priority-container>
             <div class=identifier-container>
-              <span>{{picklistQueueItem.PriorityCodeDescription}}</span>
+              <span>{{picklistQueueGroup.PriorityCodeDescription}}</span>
             </div>
+            <span class="centered-content">
+            <app-cp-data-label
+              [data]="picklistQueueGroup.NewCount"
+              [label]="'Destinations' | translate"
+            ></app-cp-data-label> 
+            </span> 
           </div>
         </div>
         <div class="col width-type" [attr.data-title]="'NEW' | translate">
           <span class="centered-content">
             <app-cp-data-label
-            [data]="picklistQueueItem.ItemCount"
-            [label]="'ITEMS' | translate"
+            [data]="picklistQueueGroup.NewCount"
+            [label]="picklistQueueGroup.DestinationType | translate"
             ></app-cp-data-label>
           </span>
         </div>
         <div class="col width-type" [attr.data-title]="'RELEASED' | translate">
           <span class="centered-content">
             <app-cp-data-label
-            [data]="picklistQueueItem.ItemCount"
-            [label]="'ITEMS' | translate"
+            [data]="picklistQueueGroup.ReleasedCount"
+            [label]="picklistQueueGroup.DestinationType | translate"
             ></app-cp-data-label>
           </span>
         </div>
         <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
-          <span [ngStyle]="{'font-size': '18px'}">{{picklistQueueItem.DeviceDescription}}</span>
+          <span [ngStyle]="{'font-size': '18px'}">{{picklistQueueGroup.DeviceDescription}}</span>
           <oc-singleselect
             [popupDirection]="'AUTO'"
-            [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
-            [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
-            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
+            [tableData]="getActiveOutputDeviceList(picklistQueueGroup)"
+            [selectedItem]="getSelectedOutputDeviceRow(picklistQueueGroup)"
+            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueGroup)">
           </oc-singleselect>
         </div>
         <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
@@ -72,8 +78,8 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [label]="getReleaseButtonProperties(picklistQueueItem).text | translate"
-            [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
+            [label]="getReleaseButtonProperties(picklistQueueGroup).text | translate"
+            [disabled]="getReleaseButtonProperties(picklistQueueGroup).disabled"
             [icon]="'openv1-right'"
             (clickEvent)="onReleaseClick()">
             </app-cp-clickable-icon>

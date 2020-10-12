@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { map, flatMap, shareReplay } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { TranslateService } from '@ngx-translate/core';
+import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -17,7 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
-  picklistsQueueItems: Observable<IPicklistQueueItem[]>;
+  picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
   searchTextFilter: string;
 
@@ -41,14 +41,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
-    this.loadPicklistsQueueItems();
+    this.loadPicklistsQueueGrouped();
   }
 
   onSearchTextFilter(filterText: string) {
     this.searchTextFilter = filterText;
   }
 
-  processReroute(picklistQueueItem: PicklistQueueItem[]) {
+  processReroute(picklistQueueItem: PicklistQueueGrouped[]) {
 
     this.displayRerouteDialog().subscribe(result => {
       if (!result) {
@@ -59,7 +59,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
 
-  processRelease(picklistQueueItem: PicklistQueueItem[]) {
+  processRelease(picklistQueueItem: PicklistQueueGrouped[]) {
       // TODO: load in all items and release
   }
 
@@ -74,12 +74,13 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
 
   private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueItems();
+    this.loadPicklistsQueueGrouped();
   }
 
-  private loadPicklistsQueueItems(): void {
-    this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
-      const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
+  private loadPicklistsQueueGrouped(): void {
+    this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
+      const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
+      console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
   }
