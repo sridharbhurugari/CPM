@@ -25,6 +25,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() releaseEvent: EventEmitter<any> = new EventEmitter<any>();
+
 
   private _picklistQueueItems: PicklistQueueItem[];
 
@@ -99,25 +101,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   onRerouteClick() {
-    this.processReroute([]);
-    // TODO: reroute all items
+    this.rerouteEvent.emit();
   }
 
   onReleaseClick() {
-    // TODO: release all items
+    this.releaseEvent.emit();
   }
 
   onDetailsClick() {
     this.router.navigate(['/xr2Queue/details']);
-  }
-
-
-  /* istanbul ignore next */
-  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
-    if (!picklistQueueItem) {
-      return null;
-    }
-    return picklistQueueItem.TrackById;
   }
 
   getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
@@ -146,7 +138,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     if (picklistQueueItem.Status === 1) {
       selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
          && x.IsActive);
-        } else {
+    } else {
       selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId);
     }
     if (!selectedDevice) {
@@ -179,43 +171,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
-  private processReroute(picklistQueueItem: PicklistQueueItem[]) {
-
-    this.displayRerouteDialog().subscribe(result => {
-      if (!result) {
-        return;
-      }
-      // TODO: reroute all items in priority
-    });
-  }
-
-  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.TrackById = Guid.create();
-  }
-
   private setTranslations() {
     this.translations$ = this.translateService.get(this.translatables);
-  }
-
-  /* istanbul ignore next */
-  private displayRerouteDialog(): Observable<boolean> {
-    return forkJoin(this.translations$).pipe(flatMap(r => {
-      const translations = r[0];
-      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-      properties.titleElementText = translations.REROUTE;
-      properties.messageElementText = translations.XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE;
-      properties.showPrimaryButton = true;
-      properties.primaryButtonText = translations.YES;
-      properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.NO;
-      properties.primaryOnRight = false;
-      properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Info;
-      properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
-      return merge(primaryClick$, secondaryClick$);
-    }));
   }
 }

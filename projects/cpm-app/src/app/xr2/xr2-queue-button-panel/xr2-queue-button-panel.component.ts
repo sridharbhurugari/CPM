@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'app-xr2-queue-button-panel',
@@ -7,9 +8,13 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class Xr2QueueButtonPanelComponent implements OnInit {
 
-  @Input() printAllDisabled: boolean;
-  @Input() releaseAllDisabled: boolean;
-  @Input() rerouteAllDisabled: boolean;
+  @Input() printDisabled: boolean;
+  @Input() releaseDisabled: boolean;
+  @Input() rerouteDisabled: boolean;
+
+  @Output() rerouteEvent: EventEmitter<void> = new EventEmitter();
+  @Output() releaseEvent: EventEmitter<void> = new EventEmitter();
+  @Output() printEvent: EventEmitter<void> = new EventEmitter();
 
   constructor() {
   }

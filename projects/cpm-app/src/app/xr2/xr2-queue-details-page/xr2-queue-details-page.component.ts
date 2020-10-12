@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { Observable, Subject } from 'rxjs';
-import { map, shareReplay, single } from 'rxjs/operators';
+import { Observable, forkJoin, merge, Subject } from 'rxjs';
+import { map, flatMap, shareReplay } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
@@ -20,11 +20,10 @@ import { SelectionChangeType } from '../../shared/constants/selection-change-typ
 })
 export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
-  actionDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> =
-    new Map<OutputDeviceAction, Set<PicklistQueueItem>>();
-  updateDisableSelectAllEvent: Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>> =
-    new Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>>();
-  updateMultiSelectModeEvent: Subject<boolean> = new Subject<boolean>();
+  selectedItems: PicklistQueueItem[];
+  actionDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
+  updateDisableSelectAllEvent: Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>> = new Subject();
+  updateMultiSelectModeEvent: Subject<boolean> = new Subject();
   releaseAllDisabled: boolean;
   printAllDisabled: boolean;
   rerouteAllDisabled: boolean;
@@ -34,6 +33,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     'OK',
     'FAILEDTOSAVE_HEADER_TEXT',
     'FAILEDTOSAVE_BODY_TEXT',
+    'YES',
+    'NO',
+    'REROUTE',
+    'XR2_QUEUE_REROUTE_SELECTED_DIALOG_MESSAGE',
+    'FAILEDTOREROUTE_HEADER_TEXT',
+    'FAILEDTOREROUTE_BODY_TEXT',
   ];
   translations$: Observable<any>;
 
@@ -61,15 +66,34 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.location.back();
   }
 
+  processReroute(picklistQueueItem: PicklistQueueItem[]) {
+
+    this.displayRerouteDialog().subscribe(result => {
+      if (!result) {
+        return;
+      }
+      // TODO: reroute selected items
+    });
+  }
+
+  processRelease(picklistQueueItem: PicklistQueueItem[]) {
+      // TODO: release selected items
+  }
+
+  processPrint(picklistQueueItem: PicklistQueueItem[]) {
+    // TODO: print selected items
+  }
+
   displayXr2QueueError() {
     this.displayFailedToSaveDialog();
   }
 
-  onGridSelectionChanged(event: IGridSelectionChanged<PicklistQueueItem[]>) {
-    const itemsToProcess = event.changedValue;
-    const selectedItems = event.selectedValues;
+  onGridSelectionChanged(event: IGridSelectionChanged<PicklistQueueItem>) {
+    this.selectedItems = event.selectedValues;
+    const singleItemSelected = event.changedValue;
+    const itemsToProcess = singleItemSelected ? [singleItemSelected] : this.selectedItems;
 
-    if (selectedItems.length === 0) {
+    if (this.selectedItems.length === 0) {
       this.updateMultiSelectModeEvent.next(false);
       this.clearActionDisableMap();
       this.updateDisableSelectAllEvent.next(this.actionDisableMap);
@@ -152,6 +176,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     }), shareReplay(1));
   }
 
+  private setTranslations() {
+    this.translations$ = this.translateService.get(this.translatables);
+  }
+
    /* istanbul ignore next */
    private displayFailedToSaveDialog(): void {
     const properties = new PopupDialogProperties('Role-Status-Warning');
@@ -165,7 +193,25 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.dialogService.showOnce(properties);
   }
 
-  private setTranslations() {
-    this.translations$ = this.translateService.get(this.translatables);
-  }
+     /* istanbul ignore next */
+     private displayRerouteDialog(): Observable<boolean> {
+      return forkJoin(this.translations$).pipe(flatMap(r => {
+        const translations = r[0];
+        const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
+        properties.titleElementText = translations.REROUTE;
+        properties.messageElementText = translations.XR2_QUEUE_REROUTE_SELECTED_DIALOG_MESSAGE;
+        properties.showPrimaryButton = true;
+        properties.primaryButtonText = translations.YES;
+        properties.showSecondaryButton = true;
+        properties.secondaryButtonText = translations.NO;
+        properties.primaryOnRight = false;
+        properties.showCloseIcon = false;
+        properties.dialogDisplayType = PopupDialogType.Info;
+        properties.timeoutLength = 0;
+        let component = this.dialogService.showOnce(properties);
+        let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+        let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+        return merge(primaryClick$, secondaryClick$);
+      }));
+    }
 }

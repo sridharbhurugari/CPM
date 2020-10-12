@@ -25,7 +25,6 @@ import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-ad
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { PriorityCodeTypes } from '../../shared/constants/priority-code-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
-import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 
@@ -38,9 +37,11 @@ import { SelectionChangeType } from '../../shared/constants/selection-change-typ
 export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rerouteEvent: EventEmitter<any> = new EventEmitter<any>();
-  @Output() selectionChanged: EventEmitter<IGridSelectionChanged<any>> = new EventEmitter();
-  @Output() selectAllChanged: EventEmitter<IGridSelectionChanged<any>> = new EventEmitter();
+  @Output() rerouteEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() selectionChanged: EventEmitter<IGridSelectionChanged<PicklistQueueItem>> = new EventEmitter();
+  @Output() selectAllChanged: EventEmitter<IGridSelectionChanged<PicklistQueueItem>> = new EventEmitter();
 
   private _picklistQueueItems: PicklistQueueItem[];
   selectedItems = new Set<PicklistQueueItem>();
@@ -138,15 +139,15 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   onRerouteClick(picklistQueueItem: PicklistQueueItem) {
-    this.processReroute([]); // TODO: finish this method
+    this.rerouteEvent.emit([picklistQueueItem]);
   }
 
   onReleaseClick(picklistQueueItem: PicklistQueueItem) {
-    this.release(picklistQueueItem);
+    this.releaseEvent.emit([picklistQueueItem]);
   }
 
   onPrintClick(picklistQueueItem: PicklistQueueItem) {
-    this.printLabels(picklistQueueItem);
+    this.printEvent.emit([picklistQueueItem]);
   }
 
   /* istanbul ignore next */
@@ -262,7 +263,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
     this.selectionChanged.emit({
       changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
-      changedValue: [...this.selectedItems],
+      changedValue: null,
       selectedValues: [...this.selectedItems],
       unselectedValues: []
     });
@@ -277,7 +278,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
     this.selectionChanged.emit({
       changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
-      changedValue: [picklistQueueItem],
+      changedValue: picklistQueueItem,
       selectedValues: [...this.selectedItems],
       unselectedValues: []
     });

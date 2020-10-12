@@ -1,12 +1,18 @@
 <app-xr2-queue-details-header
   [updateDisableSelectAllEvent] = "updateDisableSelectAllEvent.asObservable()"
   [updateMultiSelectModeEvent] = "updateMultiSelectModeEvent.asObservable()"
-  (backEvent)='onBackClick($event)'
+  (backEvent)="onBackClick($event)"
+  (releaseAllEvent)="processRelease(selectedItems)"
+  (printAllEvent)="processPrint(selectedItems)"
+  (rerouteAllEvent)="processReroute(selectedItems)"
   (searchTextFilterEvent)='onSearchTextFilter($event)'>
 </app-xr2-queue-details-header>
 <app-xr2-details-queue
   [picklistQueueItems]="picklistsQueueItems | async"
   [searchTextFilter]="searchTextFilter"
   (failedEvent)="displayXr2QueueError()"
-  (selectionChanged)="onGridSelectionChanged($event)">
+  (selectionChanged)="onGridSelectionChanged($event)"
+  (releaseEvent)="processRelease($event)"
+  (rerouteEvent)="processReroute($event)"
+  (printEvent)="processPrint($event)">
 </app-xr2-details-queue>

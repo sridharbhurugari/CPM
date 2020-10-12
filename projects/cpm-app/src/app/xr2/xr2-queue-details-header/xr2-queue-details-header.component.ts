@@ -25,6 +25,9 @@ export class Xr2QueueDetailsHeaderComponent implements OnInit, OnDestroy, AfterV
 
   @Output() backEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
+  @Output() rerouteAllEvent: EventEmitter<void> = new EventEmitter();
+  @Output() releaseAllEvent: EventEmitter<void> = new EventEmitter();
+  @Output() printAllEvent: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('searchBox', {
     static: true
