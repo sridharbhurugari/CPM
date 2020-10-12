@@ -20,7 +20,7 @@ export class UnderfilledPicklistLinesComponent {
   destinationPropertyName = nameof<UnderfilledPicklistLine>('DestinationSortValue');
   qtyFillReqPropertyName = nameof<UnderfilledPicklistLine>('FillQuantity');
   fillDatePropertyName = nameof<UnderfilledPicklistLine>('FillDate');
-  checkboxToggleAll: string = CheckboxValues.ToggleAll;
+  checkboxToggleAll: boolean;
   currentSortPropertyName: string;
 
   @Input('picklistLines')
@@ -30,6 +30,10 @@ export class UnderfilledPicklistLinesComponent {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
+  onMassCheck(event){
+     CheckboxValues.ToggleAll;
+  }
+
   onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>){
   }
   onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>){

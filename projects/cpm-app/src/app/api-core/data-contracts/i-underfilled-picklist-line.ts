@@ -1,4 +1,5 @@
 export interface IUnderfilledPicklistLine{
+  PicklistLineId: string;
   DestinationId: string;
   DestinationType: string;
   PriorityCode: string;

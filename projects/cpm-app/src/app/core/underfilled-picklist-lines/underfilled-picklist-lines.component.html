@@ -1,7 +1,7 @@
 <oc-grid appGridMultiSelect (selectionChanged)="onSelectionChanged($event)" appGridReorder (orderChanged)="onOrderChanged($event)" ocgridfilter="false">
   <ng-container class="ocgridheader">
     <div class="first" data-colwrap="true">
-      <oc-checkbox [selected]="0" [noLabel]="true" [isEnabled]="checkboxToggleAll" [valueField]="checkboxToggleAll"></oc-checkbox>
+      <oc-checkbox [selected]="0" [noLabel]="true" [isEnabled]="true" [valueField]="IsChecked"></oc-checkbox>
   </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
       [columnPropertyName]='descriptionPropertyName' headerResourceKey='DESCRIPTION_ID'
@@ -27,7 +27,7 @@
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistLine of picklistLines">
       <div class="first">
-        <oc-checkbox [noLabel]="true" [isEnabled]="true" [selected]="false"></oc-checkbox>
+        <oc-checkbox [noLabel]="true" [isEnabled]="true"  [valueField]="IsChecked" [selected]="false" ></oc-checkbox>
     </div>
       <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
         <span>{{picklistLine.ItemFormattedGenericName}}</span>

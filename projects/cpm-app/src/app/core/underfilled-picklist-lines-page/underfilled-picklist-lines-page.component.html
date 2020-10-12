@@ -16,16 +16,28 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()">}</oc-button-action>
+                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
             <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
-                <oc-button-action 
+                <oc-button-action
                     *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
                     [disabled]="requestStatus != 'none'"
                     [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
                     [buttonText]="'PRINT' | translate"
                     (click)="print()">
                 </oc-button-action>
+                <oc-button-action
+                [disabled]="requestStatus != 'none'"
+                [buttonIcon]="'reroute'"
+                [buttonText]="'REROUTE' | translate"
+                (click)="reroute()">
+            </oc-button-action>
+            <oc-button-action
+            [disabled]="requestStatus != 'none'"
+            [buttonIcon]="'checkmark'"
+            [buttonText]="'CLOSE' | translate"
+            (click)="close()">
+        </oc-button-action>
             </div>
         </oc-footer>
     </ng-container>

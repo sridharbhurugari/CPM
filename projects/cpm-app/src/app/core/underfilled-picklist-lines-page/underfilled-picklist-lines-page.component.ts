@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map, shareReplay } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -16,6 +16,15 @@ import { ITableColumnDefintion } from '../../shared/services/printing/i-table-co
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DatePipe } from '@angular/common';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { fdatasync } from 'fs';
+import { HttpErrorResponse } from '@angular/common/http';
+import {   PopupDialogService,
+  PopupDialogComponent,
+  PopupDialogProperties,
+  PopupDialogType, } from '@omnicell/webcorecomponents';
+import { pullAllWith } from 'lodash';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -31,9 +40,15 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   picklistLines$: Observable<UnderfilledPicklistLine[]>;
   picklist$: Observable<IUnderfilledPicklist>;
   reportTitle$: Observable<string>;
-  requestStatus: 'none' | 'printing' = 'none';
+  requestStatus: 'none' | 'printing' | 'complete' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
-
+  errorGenericTitle$: Observable<string>;
+  errorGenericMessage$: Observable<string>;
+  okButtonText$: Observable<string>;
+  errorRerouteTitle$: Observable<string>;
+  errorRerouteMessage$: Observable<string>;
+  errorCloseTitle$: Observable<string>;
+  errorCloseMessage$: Observable<string>;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -42,9 +57,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,
     private wpfActionControllerService: WpfActionControllerService,
-    translateService: TranslateService,
-    pdfPrintService: PdfPrintService,
-  ) { 
+    public translateService: TranslateService,
+    public pdfPrintService: PdfPrintService,
+    private dialogService: PopupDialogService,
+  ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
@@ -58,6 +74,14 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       var result = _.orderBy(displayObjects, (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
     }));
+    this.errorGenericTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
+    this.errorGenericMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+    this.okButtonText$ = this.translateService.get('OK');
+    this.errorRerouteTitle$ = this.translateService.get('FAILEDTOREROUTE_HEADER_TEXT');
+    this.errorRerouteMessage$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
+    this.errorCloseTitle$ = this.translateService.get('FAILEDTOCLOSE_HEADER_TEXT');
+    this.errorCloseMessage$ = this.translateService.get('FAILEDTOCLOSE_BODY_TEXT');
+
     this.getReportData(datePipe);
   }
 
@@ -79,6 +103,70 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         return underfilled;
       })
     );
+  }
+
+getSelected(): string[] {
+  let selected: string[] = [];
+  const mapping = this.picklistLines$.pipe(
+    map(f => {
+      let pllId: string[] = [];
+      f.forEach(function(p)
+      {
+
+if (p.IsChecked)
+{
+  console.log(`checked ${p.PicklistLineId.toString()}`);
+  pllId.push(p.PicklistLineId.toString());
+}
+else
+{
+  console.log(`NOT checked ${p.PicklistLineId.toString()}`);
+}
+console.log(`PLL: ${pllId}`);
+      }); return pllId; }));
+      const sub = mapping.subscribe({
+        next: event => {
+          selected.push(event.toString());
+          console.log(`You just typed ${event.toString()}!`)
+        },
+        error: err => console.log(`Oops... ${err}`),
+        complete: () => console.log(`Complete!`),});
+
+      return selected;
+}
+
+ clearCheckedItems()
+  {
+  //   this.picklistLines$ = this.picklistLines$.pipe(
+  //     map(f => {
+  //       f.forEach(function(p)
+  //       {
+  // if (p.IsChecked)
+  // {
+  //   f.re
+  // }
+  //       });
+  //       return f;
+  //     }));
+  }
+
+ close() {
+    this.requestStatus = 'complete';
+    let selected: string[] = this.getSelected();
+    var picklistLineIds = selected.join(", ");
+    this.underfilledPicklistLinesService.close(picklistLineIds).subscribe(succeeded => {
+      this.requestStatus = 'none';
+      if (!succeeded) {
+        this.displayPrintFailed();
+      } else {
+        this.clearCheckedItems();
+      }
+    }, err => {
+      this.requestStatus = 'none';
+    });
+  }
+
+  reroute() {
   }
 
   print() {
@@ -121,4 +209,44 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
   }
+
+  onRerouteFailed(error: HttpErrorResponse): any {
+    this.requestStatus = 'none';
+    if (error.status === 400) {
+      forkJoin(this.errorRerouteTitle$, this.errorRerouteMessage$).subscribe(r => {
+        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+      });
+    } else {
+      forkJoin(this.errorGenericTitle$, this.errorGenericMessage$).subscribe(r => {
+        this.displayError('Generic-Error', r[0], r[1]);
+      });
+    }
+  }
+
+  onCloseFailed(error: HttpErrorResponse): any {
+    this.requestStatus = 'none';
+    if (error.status === 400) {
+      forkJoin(this.errorCloseTitle$, this.errorCloseMessage$).subscribe(r => {
+        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+      });
+    } else {
+      forkJoin(this.errorGenericTitle$, this.errorGenericMessage$).subscribe(r => {
+        this.displayError('Generic-Error', r[0], r[1]);
+      });
+    }
+  }
+
+
+  displayError(uniqueId, title, message) {
+    const properties = new PopupDialogProperties(uniqueId);
+    this.okButtonText$.subscribe((result) => { properties.primaryButtonText = result; });
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 0;
+    this.dialogService.showOnce(properties);
+  }
+
 }
