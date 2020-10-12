@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { SplitResizeComponent } from './components/split-resize/split-resize.component';
 import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-popup.component';
 import { GridSortColDirective } from './directives/grid-sort-col.directive';
+import { CPDataLabelComponent } from './components/cp-data-label/cp-data-label.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { GridSortColDirective } from './directives/grid-sort-col.directive';
     SplitResizeComponent,
     DropdownPopupComponent,
     GridSortColDirective,
+    CPDataLabelComponent,
   ],
   imports: [
     CommonModule,
@@ -66,6 +68,7 @@ import { GridSortColDirective } from './directives/grid-sort-col.directive';
     HeaderTitleBottomMarginContainerComponent,
     DeviceLocationAccessComponent,
     CPClickableIconComponent,
+    CPDataLabelComponent,
     NotificationComponent,
     SplitResizeComponent,
     DropdownPopupComponent,

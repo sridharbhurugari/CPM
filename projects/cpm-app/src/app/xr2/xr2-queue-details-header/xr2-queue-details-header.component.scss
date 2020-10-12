@@ -1,0 +1,31 @@
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  flex: auto;
+  align-items: center;
+}
+
+.title {
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 30px;
+  padding-left: 42px;
+  color: gray;
+  font-weight: lighter;
+}
+
+#searchBox {
+  margin-left: auto;
+}
+
+.button-panel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px; // same as Actions column width - 20px for margin
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}

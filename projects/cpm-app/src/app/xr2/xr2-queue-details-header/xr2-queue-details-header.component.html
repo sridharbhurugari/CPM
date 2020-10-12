@@ -1,0 +1,26 @@
+<div class="cpmheaderrow">
+  <div class="header">
+    <app-cp-clickable-icon
+      [width]="35"
+      [height]="35"
+      [theme]="'dark'"
+      [icon]="'back'"
+      (clickEvent)="onBackClick()">
+    </app-cp-clickable-icon>
+    <div class="title">
+      {{'PATIENT' | translate}} - {{'DETAILS' | translate}}
+    </div>
+    <oc-search-box #searchBox id="searchBox" [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  </div>
+  <div class="button-panel-container">
+    <app-xr2-queue-button-panel
+    [printDisabled]="disabledButtonActions[outputDeviceAction.Print]"
+    [rerouteDisabled]="disabledButtonActions[outputDeviceAction.Reroute]"
+    [releaseDisabled]="disabledButtonActions[outputDeviceAction.Release]"
+    (releaseEvent)="releaseAllEvent.emit($event)"
+    (printEvent)="printAllEvent.emit($event)"
+    (rerouteEvent)="rerouteAllEvent.emit($event)">
+  </app-xr2-queue-button-panel>
+  </div>
+</div>
+

@@ -1,0 +1,110 @@
+<ng-container class="ocactiondetails">
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div data-colwrap="true">
+          <oc-checkbox
+            [selected]="picklistQueueItems && selectedItems.size === picklistQueueItems.length"
+            [noLabel]="true"
+            [valueField]="checkboxToggleAll"
+            (selection)="onSelectAllCheckBox($event)">
+          </oc-checkbox>
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+        [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="120" data-colwrap="true"
+        [columnPropertyName]="itemPropertyName"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div class="col width-type" data-width="186" data-colwrap="true">{{'STATUS' | translate}}</div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
+        [columnPropertyName]="deviceDescriptionPropertyName" headerResourceKey="DEVICE"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div class="last width-type" data-width="270" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row" [ngStyle]="{'background-color': isContainedInSelected(picklistQueueItem) ? 'gainsboro': ''}"
+       *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
+        <div class="first" style="align-items: center;">
+          <oc-checkbox valueField='enterprise'
+          [noLabel]="true"
+          [selected]="isContainedInSelected(picklistQueueItem)"
+          (selection)="onSelectItemCheckBox($event, picklistQueueItem)">
+        </oc-checkbox>
+        </div>
+        <div class="col width-type" [attr.data-title]="'DESTINATION' | translate">
+          <span>{{picklistQueueItem.Destination}}</span>
+          <div class="destination-details">
+            <span [ngStyle]="{'font-size': '14px'}">{{picklistQueueItem.OrderId}}</span>
+            <span [ngStyle]="{'font-size': '14px'}">10/9/2020 | 11:14:31 AM</span>
+          </div>
+        </div>
+        <div class="col width-type" [attr.data-title]="'ITEMS' | translate">
+          <app-cp-data-label
+            [data]="picklistQueueItem.ItemCount"
+            [label]="getItemPriorityLabel(picklistQueueItem) | translate">
+          </app-cp-data-label>
+        </div>
+        <div class="col width-type centered-text" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">
+          <span class="centered-text">{{'NOTRELEASED' | translate}}</span>
+        </div>
+        <div class="col width-type" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===2">
+          <span class="centered-text">{{'PROCESSING' | translate}}</span>
+        </div>
+        <div class="col width-type" [attr.data-title]="'STATUS' | translate"
+          *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">
+          <app-cp-data-label
+            [data]="getOrderSplitDataString(picklistQueueItem)"
+            [label]="getOrderSplitDataLabel(picklistQueueItem) | translate">
+          </app-cp-data-label>
+        </div>
+        <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
+          <span [ngStyle]="{'font-size': '17px'}">{{picklistQueueItem.DeviceDescription}}</span>
+          <oc-singleselect
+            [popupDirection]="'AUTO'"
+            [disabled]="picklistQueueItem.Status > 1"
+            [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
+            [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
+            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
+          </oc-singleselect>
+        </div>
+        <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
+          <div class="btn-group">
+            <app-cp-clickable-icon *ngIf="picklistQueueItem.Status===1"
+            [width]="35"
+            [height]="35"
+            [theme]="'dark'"
+            [label]="getReleaseButtonProperties(picklistQueueItem).text | translate"
+            [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
+            [icon]="'openv1-right'"
+            (clickEvent)="onReleaseClick(picklistQueueItem)">
+            </app-cp-clickable-icon>
+            <app-cp-clickable-icon *ngIf="picklistQueueItem.Status!==1"
+            [width]="35"
+            [height]="35"
+            [theme]="'dark'"
+            [label]="getPrintButtonProperties(picklistQueueItem).text | translate"
+            [disabled]="getPrintButtonProperties(picklistQueueItem).disabled"
+            [icon]="'print'"
+            (clickEvent)="onPrintClick(picklistQueueItem)">
+            </app-cp-clickable-icon>
+            <app-cp-clickable-icon
+            [width]="35"
+            [height]="35"
+            [theme]="'dark'"
+            [icon]="'reroute'"
+            [label]="'REROUTE' | translate"
+            (clickEvent)="onRerouteClick(picklistQueueItem)">
+            </app-cp-clickable-icon>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>
+
