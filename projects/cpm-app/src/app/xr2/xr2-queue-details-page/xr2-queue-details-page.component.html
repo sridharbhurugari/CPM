@@ -1,7 +1,7 @@
 <ng-container>
   <app-xr2-queue-details-header
-    [updateDisableSelectAllEvent] = "updateDisableSelectAllSubject.asObservable()"
-    [updateMultiSelectModeEvent] = "updateMultiSelectModeSubject.asObservable()"
+    [updateDisableSelectAllEvent]="updateDisableSelectAllSubject.asObservable()"
+    [updateMultiSelectModeEvent]="updateMultiSelectModeSubject.asObservable()"
     (backEvent)="onBackClick()"
     (releaseAllEvent)="processRelease(selectedItems)"
     (printAllEvent)="processPrint(selectedItems)"
