@@ -1,7 +1,7 @@
 <app-xr2-queue-details-header
   [updateDisableSelectAllEvent] = "updateDisableSelectAllEvent.asObservable()"
   [updateMultiSelectModeEvent] = "updateMultiSelectModeEvent.asObservable()"
-  (backEvent)="onBackClick($event)"
+  (backEvent)="onBackClick()"
   (releaseAllEvent)="processRelease(selectedItems)"
   (printAllEvent)="processPrint(selectedItems)"
   (rerouteAllEvent)="processReroute(selectedItems)"
