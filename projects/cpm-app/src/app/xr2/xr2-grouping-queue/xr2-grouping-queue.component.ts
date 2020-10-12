@@ -35,15 +35,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
     PRINT: 'PRINT',
     REPRINT: 'REPRINT'
   };
-  translatables = [
-    'YES',
-    'NO',
-    'REROUTE',
-    'XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE',
-    'FAILEDTOREROUTE_HEADER_TEXT',
-    'FAILEDTOREROUTE_BODY_TEXT',
-  ];
-  translations$: Observable<any>;
 
   readonly typePropertyName = nameof<PicklistQueueItem>('PriorityCodeDescription');
   readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
@@ -86,14 +77,12 @@ export class Xr2GroupingQueueComponent implements OnInit {
   constructor(
     private windowService: WindowService,
     private translateService: TranslateService,
-    private dialogService: PopupDialogService,
     private location: Location,
     private wpfActionController: WpfActionControllerService,
     private router: Router) {
   }
 
   ngOnInit() {
-    this.setTranslations();
   }
 
   back() {
@@ -169,9 +158,5 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
-  }
-
-  private setTranslations() {
-    this.translations$ = this.translateService.get(this.translatables);
   }
 }

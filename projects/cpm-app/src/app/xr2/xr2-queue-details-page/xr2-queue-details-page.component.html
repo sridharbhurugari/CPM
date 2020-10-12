@@ -10,6 +10,7 @@
 <app-xr2-details-queue
   [picklistQueueItems]="picklistsQueueItems | async"
   [searchTextFilter]="searchTextFilter"
+  [updateMultiSelectModeEvent] = "updateMultiSelectModeEvent.asObservable()"
   (failedEvent)="displayXr2QueueError()"
   (selectionChanged)="onGridSelectionChanged($event)"
   (releaseEvent)="processRelease($event)"
