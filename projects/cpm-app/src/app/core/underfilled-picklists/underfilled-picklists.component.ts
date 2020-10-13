@@ -51,6 +51,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
 
   currentSortPropertyName : string = this.datePropertyName;
   sortOrder: SortDirection = SortDirection.descending;
+  doesUserHaveDispensePermissions: boolean;
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
@@ -78,6 +79,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
       this.failedToSavePopupTitle = res;});
     this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe((res: string) => {
         this.failedToSavePopupMessage = res;});
+    this.underfilledPicklistsService.doesUserHaveDispensePermissions().subscribe((res: boolean) => {
+      this.doesUserHaveDispensePermissions = res;});
   }
 
   ngAfterViewInit(): void {

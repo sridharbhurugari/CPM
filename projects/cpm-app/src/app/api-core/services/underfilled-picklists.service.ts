@@ -40,4 +40,11 @@ export class UnderfilledPicklistsService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
+  doesUserHaveDispensePermissions() : Observable<boolean> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/picklists/underfilled/doesUserHaveDispensePermissions`);
+    return this.httpClient.get<boolean>(url ,{
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+   }
 }
