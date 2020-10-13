@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'app-xr2-queue-button-panel',

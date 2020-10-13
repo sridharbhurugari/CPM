@@ -1,19 +1,21 @@
-<app-xr2-queue-details-header
-  [updateDisableSelectAllEvent] = "updateDisableSelectAllEvent.asObservable()"
-  [updateMultiSelectModeEvent] = "updateMultiSelectModeEvent.asObservable()"
-  (backEvent)="onBackClick()"
-  (releaseAllEvent)="processRelease(selectedItems)"
-  (printAllEvent)="processPrint(selectedItems)"
-  (rerouteAllEvent)="processReroute(selectedItems)"
-  (searchTextFilterEvent)='onSearchTextFilter($event)'>
-</app-xr2-queue-details-header>
-<app-xr2-details-queue
-  [picklistQueueItems]="picklistsQueueItems | async"
-  [searchTextFilter]="searchTextFilter"
-  [updateMultiSelectModeEvent] = "updateMultiSelectModeEvent.asObservable()"
-  (failedEvent)="displayXr2QueueError()"
-  (selectionChanged)="onGridSelectionChanged($event)"
-  (releaseEvent)="processRelease($event)"
-  (rerouteEvent)="processReroute($event)"
-  (printEvent)="processPrint($event)">
-</app-xr2-details-queue>
+<ng-container>
+  <app-xr2-queue-details-header
+    [updateDisableSelectAllEvent]="updateDisableSelectAllSubject.asObservable()"
+    [updateMultiSelectModeEvent]="updateMultiSelectModeSubject.asObservable()"
+    (backEvent)="onBackClick()"
+    (releaseAllEvent)="processRelease(selectedItems)"
+    (printAllEvent)="processPrint(selectedItems)"
+    (rerouteAllEvent)="processReroute(selectedItems)"
+    (searchTextFilterEvent)='onSearchTextFilter($event)'>
+  </app-xr2-queue-details-header>
+  <app-xr2-details-queue
+    [picklistQueueItems]="picklistsQueueItems | async"
+    [searchTextFilter]="searchTextFilter"
+    [updateMultiSelectModeEvent] = "updateMultiSelectModeSubject.asObservable()"
+    (failedEvent)="displayXr2QueueError()"
+    (selectionChangedEvent)="onGridSelectionChanged($event)"
+    (releaseEvent)="processRelease($event)"
+    (rerouteEvent)="processReroute($event)"
+    (printEvent)="processPrint($event)">
+  </app-xr2-details-queue>
+</ng-container>

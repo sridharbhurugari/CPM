@@ -1,9 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GridModule, ButtonActionModule,  SingleselectDropdownModule, SingleselectRowItem, PopupWindowModule, PopupDialogService,
-  PopupDialogModule,
-  FooterModule,
-  LayoutModule, CheckboxModule, CheckboxComponent} from '@omnicell/webcorecomponents';
+  PopupDialogModule,FooterModule, LayoutModule, CheckboxModule, CheckboxComponent} from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { Subject, Observable, of, throwError } from 'rxjs';
@@ -22,6 +20,8 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { Xr2DetailsQueueComponent } from './xr2-details-queue.component';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
+import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
+import { Xr2QueueDetailsPageComponent } from '../xr2-queue-details-page/xr2-queue-details-page.component';
 
 @Component({
   selector: 'oc-search-box',
@@ -38,14 +38,21 @@ describe('Xr2DetailsQueueComponent', () => {
   let fixture: ComponentFixture<Xr2DetailsQueueComponent>;
   let translateService: Partial<TranslateService>;
   let popupDialogService: Partial<PopupDialogService>;
+  let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   const event: IColHeaderSortChanged = {ColumnPropertyName: 'Destination', SortDirection: 'asc'};
 
   beforeEach(async(() => {
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
     };
+
     popupDialogService = {
       showOnce: jasmine.createSpy('showOnce')
+    };
+
+    picklistsQueueEventConnectionService = {
+      addOrUpdatePicklistQueueItemSubject: new Subject(),
+      removePicklistQueueItemSubject: new Subject()
     };
 
     TestBed.configureTestingModule({
@@ -61,6 +68,7 @@ describe('Xr2DetailsQueueComponent', () => {
         { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
         { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
         { provide: ActivatedRoute, useValue: { actr: () => { }} },
+        { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
       ]
@@ -72,6 +80,8 @@ describe('Xr2DetailsQueueComponent', () => {
     fixture = TestBed.createComponent(Xr2DetailsQueueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    spyOn(picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject, 'subscribe').and.callThrough();
+    spyOn(picklistsQueueEventConnectionService.removePicklistQueueItemSubject, 'subscribe').and.callThrough();
   });
 
   // it('should create', () => {
