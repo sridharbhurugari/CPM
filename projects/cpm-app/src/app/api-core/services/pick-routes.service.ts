@@ -59,7 +59,7 @@ export class PickRoutesService {
   }
 
   reset(picklistLineIds: string[]) {
-    const url = this.ocapUrlBuilderService.buildUrl(`api/pickRoutes/Reset`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/pickRoutes/Reset`);
     const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
     const data = {
       PicklistLineIds: picklistLineIds
