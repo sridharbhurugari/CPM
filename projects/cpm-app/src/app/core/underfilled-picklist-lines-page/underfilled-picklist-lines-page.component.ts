@@ -190,11 +190,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.requestStatus = 'none';
     if (error.status === 400) {
       forkJoin(this.errorRerouteTitle$, this.errorRerouteMessage$).subscribe(r => {
-        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+        this.displayError(r[0], r[0], r[1]);
       });
     } else {
       forkJoin(this.errorGenericTitle$, this.errorGenericMessage$).subscribe(r => {
-        this.displayError('Generic-Error', r[0], r[1]);
+        this.displayError(r[0], r[0], r[1]);
       });
     }
   }
@@ -203,11 +203,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.requestStatus = 'none';
     if (error.status === 400) {
       forkJoin(this.errorCloseTitle$, this.errorCloseMessage$).subscribe(r => {
-        this.displayError('Duplicate-Description-Error', r[0], r[1]);
+        this.displayError(r[0], r[0], r[1]);
       });
     } else {
       forkJoin(this.errorGenericTitle$, this.errorGenericMessage$).subscribe(r => {
-        this.displayError('Generic-Error', r[0], r[1]);
+        this.displayError(r[0], r[0], r[1]);
       });
     }
   }
