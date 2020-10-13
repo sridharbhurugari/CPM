@@ -1,27 +1,27 @@
-<oc-grid appGridMultiSelect (selectionChanged)="onSelectionChanged($event)" appGridReorder (orderChanged)="onOrderChanged($event)" ocgridfilter="false">
+<oc-grid  #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div class="first" data-colwrap="true">
+    <div class="first" ocGridColResize data-colwrap="true" data-width="100">
       <oc-checkbox [noLabel]="true" [isEnabled]="true" [selected]="isHeaderCheckboxChecked"
       (selection)="onHeaderCheck($event)"></oc-checkbox>
   </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
-      [columnPropertyName]='descriptionPropertyName' headerResourceKey='DESCRIPTION_ID'
+      [columnPropertyName]="'descriptionPropertyName'" headerResourceKey='DESCRIPTION_ID'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="194" data-colwrap="true"
-      [columnPropertyName]='descriptionPropertyName' headerResourceKey='PHARMACY_QOH'
+      [columnPropertyName]="'pharmacyQohPropertyName'" headerResourceKey='PHARMACY_QOH'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
-      [columnPropertyName]='destinationPropertyName' headerResourceKey='DESTINATION'
+      [columnPropertyName]="'destinationPropertyName'" headerResourceKey='DESTINATION'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
-      [columnPropertyName]='qtyFillReqPropertyName' headerResourceKey='QTY_FILLED_REQUESTED'
+      [columnPropertyName]="'qtyFillReqPropertyName'" headerResourceKey='QTY_FILLED_REQUESTED'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
-      [columnPropertyName]='fillDatePropertyName' headerResourceKey='DATE_COMPLETED'
+      [columnPropertyName]="'fillDatePropertyName'" headerResourceKey='DATE_COMPLETED'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
   </ng-container>

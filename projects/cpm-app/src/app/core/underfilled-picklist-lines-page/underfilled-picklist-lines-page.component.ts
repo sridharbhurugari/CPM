@@ -124,9 +124,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     const selected: string[] = this.getSelected();
     this.pickRoutesService.reset(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
-      if (succeeded) {
         this.clearCheckedItems();
-      }
     }, err => {
       this.onRerouteFailed(err);
     });
@@ -137,9 +135,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     const selected: string[] = this.getSelected();
     this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
-      if (succeeded) {
         this.clearCheckedItems();
-      }
     }, err => {
       this.onCloseFailed(err);
     });
@@ -215,7 +211,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
   displayError(uniqueId, title, message) {
     const properties = new PopupDialogProperties(uniqueId);
-    this.okButtonText$.subscribe((result) => { properties.primaryButtonText = result; });
+    this.okButtonText$.subscribe((result) => { () => properties.primaryButtonText = result });
+    console.log("Button Txt: " +   properties.primaryButtonText);
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;

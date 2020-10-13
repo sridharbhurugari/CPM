@@ -17,7 +17,7 @@ export class UnderfilledPicklistLinesComponent {
   _picklistLines: UnderfilledPicklistLine[];
 
   isHeaderCheckboxChecked: boolean;
-  currentSortPropertyName: string;
+  currentSortPropertyName: string = "fillDatePropertyName";
 
   @Input('picklistLines')
   set picklistLines(value: UnderfilledPicklistLine[]) {
@@ -33,7 +33,6 @@ export class UnderfilledPicklistLinesComponent {
   constructor(
     private windowService: WindowService,
   ) {
-    this.isHeaderCheckboxChecked = false;
    }
 
  onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>){
