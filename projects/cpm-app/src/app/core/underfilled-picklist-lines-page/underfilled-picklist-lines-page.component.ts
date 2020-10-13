@@ -72,7 +72,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         underfilled.forEach(element =>
         {
           let date = element.FillDate;
-          element.PrintFillDate = datePipe.transform(date, 'M/d/yy h:mm a');
+          element.PrintFillDate = datePipe.transform(date, 'M/d/yy   h:mm a');
           element.DisplayFillRequired = element.FillQuantity + ' / ' + element.OrderQuantity;
           if(element.PatientRoom && element.PatientRoom !== '')
             element.DisplayDestionationValue  = element.PatientRoom + ',';
@@ -95,6 +95,24 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
               element.ItemIdDescription =  parts.join('\n');
               element.ItemId = '';
             }
+            if(element.AreaDescription && element.AreaDescription.length > 21){
+              const reg = new RegExp(".{1," + 10 + "}","g");
+              const parts = element.AreaDescription.match(reg);
+              element.AreaDesctiptionForReport = parts.join('\n');
+              element.AreaDescription = '';
+            }
+            if(element.PatientName && element.PatientName.length > 21){
+              const reg = new RegExp(".{1," + 10 + "}","g");
+              const parts = element.PatientName.match(reg);
+              element.patientNameForReport = parts.join('\n');
+              element.PatientName = '';
+            }
+            if(element.DestinationOmni && element.DestinationOmni.length > 21){
+              const reg = new RegExp(".{1," + 10 + "}","g");
+              const parts = element.DestinationOmni.match(reg);
+              element.DestinationOmniForReport = parts.join('\n');
+              element.DestinationOmni = '';
+            }
         })
         return underfilled;
       })
@@ -107,7 +125,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     var colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
       { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormatedDescription','ItemBrandName','ItemBrandDescription','ItemId','ItemIdDescription'], headerResourceKey: this.itemHeaderKey, width: "auto" },
       { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'DisplayDestionationValue','AreaDescription','PatientName','DestinationOmni' ], headerResourceKey: this.destinationHeaderKey, width: "*" },
+      { cellPropertyNames: [ 'DisplayDestionationValue','AreaDescription','AreaDesctiptionForReport','PatientName','patientNameForReport','DestinationOmni','DestinationOmniForReport' ], headerResourceKey: this.destinationHeaderKey, width: "auto" },
       { cellPropertyNames: [ 'DisplayFillRequired','UnfilledReason' ], headerResourceKey: this.qtyFilledHeaderKey, width: "*" },
       { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: "auto" },
     ];

@@ -42,7 +42,10 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     DisplayDestionationValue: string; 
     ItemFormatedDescription: string;  
     ItemBrandDescription: string;     
-    ItemIdDescription: string;        
+    ItemIdDescription: string; 
+    AreaDesctiptionForReport: string;
+    patientNameForReport: string;
+    DestinationOmniForReport:string;       
 
     get DestinationSortValue(): string{
         if(this.DestinationType == 'P'){

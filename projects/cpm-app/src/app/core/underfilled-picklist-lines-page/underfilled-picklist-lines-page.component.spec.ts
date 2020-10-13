@@ -37,7 +37,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/10/2020",
     DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
-    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE"
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
+    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
   },
   {
     DestinationId:"1242", DestinationType:"P", PriorityCode:"Area", PicklistTypeDb:"P",ItemId:"8939",
@@ -46,7 +47,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/11/2020",
     DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
-    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE"
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
+    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
   },
   {
     DestinationId:"1243", DestinationType:"P", PriorityCode:"FirstDose", PicklistTypeDb:"P",ItemId:"8939",
@@ -55,7 +57,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/12/2020",
     DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
-    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE"
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
+    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
   },
 ];
   
