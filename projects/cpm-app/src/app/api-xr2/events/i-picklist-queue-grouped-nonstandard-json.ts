@@ -17,5 +17,5 @@ export interface IPicklistQueueGroupedNonstandardJson {
     NewCount: number;
     ReleasedCount: number;
     AreaCount: number;
-    UnsentPickListLines: Array<Guid>;
+    UnsentPickListLineIds: Array<Guid>;
   }

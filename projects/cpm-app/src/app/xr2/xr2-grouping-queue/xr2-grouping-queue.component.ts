@@ -16,6 +16,7 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
 import { Router } from '@angular/router';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -33,7 +34,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
   translationMap = {
     RELEASE: 'RELEASE',
     PRINT: 'PRINT',
-    REPRINT: 'REPRINT'
+    REPRINT: 'REPRINT',
+    PATIENT: 'PATIENT',
+    PATIENTS: 'PATIENTS',
+    ITEM: 'ITEM',
+    ITEMS: 'ITEMS',
+    CABINET: 'CABINET',
+    CABINETS: 'CABINETS',
+    AREA: 'AREA',
+    AREAS: 'AREAS',
   };
 
   readonly typePropertyName = nameof<PicklistQueueGrouped>('PriorityCodeDescription');
@@ -47,6 +56,13 @@ export class Xr2GroupingQueueComponent implements OnInit {
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
+
+
+  translatables = [
+    'OF'
+  ];
+  translations$: Observable<any>;
+
 
   @Input()
   set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
@@ -84,6 +100,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setTranslations();
   }
 
   back() {
@@ -143,8 +160,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
-    picklistQueueItem.OutputDeviceId = $event.value;
+  onOutputDeviceSelectionChanged($event, picklistQueueGrouped: PicklistQueueGrouped) {
+    picklistQueueGrouped.OutputDeviceId = $event.value;
   }
 
   columnSelected(event: IColHeaderSortChanged) {
@@ -155,5 +172,28 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   sort(picklistGrouped: PicklistQueueGrouped[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueGrouped[] {
     return _.orderBy(picklistGrouped, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  getCountLabel(itemCount: number, destinationType: string) {
+    let label = '';
+    switch (destinationType) {
+      case DestinationTypes.Patient: {
+          label = itemCount === 1 ? this.translationMap.PATIENT : this.translationMap.PATIENTS;
+          break;
+      }
+      case DestinationTypes.Omni: {
+        label = itemCount === 1 ? this.translationMap.CABINET : this.translationMap.CABINETS;
+        break;
+      }
+      case DestinationTypes.Area: {
+        label = itemCount === 1 ? this.translationMap.AREA : this.translationMap.AREAS;
+        break;
+      }
+    }
+    return label;
+  }
+
+  private setTranslations() {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 }

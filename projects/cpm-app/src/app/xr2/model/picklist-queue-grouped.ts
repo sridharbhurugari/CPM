@@ -10,7 +10,7 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
     this.TrackById = Guid.create();
   }
 
-  static fromNonstandardJson(picklistQueueGrouped: IPicklistQueueGroupedNonstandardJson){
+  static fromNonstandardJson(picklistQueueGrouped: IPicklistQueueGroupedNonstandardJson) {
     return new this({
       AvailableOutputDeviceList: picklistQueueGrouped.AvailableOutputDeviceList.$values,
       Destination: picklistQueueGrouped.Destination,
@@ -26,7 +26,7 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
       NewCount: picklistQueueGrouped.NewCount,
       ReleasedCount: picklistQueueGrouped.ReleasedCount,
       AreaCount: picklistQueueGrouped.AreaCount,
-      UnsentPickListLines : picklistQueueGrouped.UnsentPickListLines
+      UnsentPickListLineIds : picklistQueueGrouped.UnsentPickListLineIds
     });
   }
 
@@ -46,5 +46,5 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
   ReleasedCount: number;
   AreaCount: number;
   TrackById: Guid;
-  UnsentPickListLines: Array<Guid>;
+  UnsentPickListLineIds: Array<Guid>;
 }

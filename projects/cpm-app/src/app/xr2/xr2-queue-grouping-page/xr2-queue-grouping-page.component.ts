@@ -49,6 +49,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
+    picklistQueueGrouped.Saving = true;
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
         picklistQueueGrouped.Saving = false;
@@ -56,7 +57,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();
       });
-    // this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private configureEventHandlers(): void {
