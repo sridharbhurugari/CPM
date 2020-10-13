@@ -342,7 +342,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
     matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
     matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
-    this.itemUpdatedEvent.emit(matchingPicklistQueueItem);
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
@@ -350,12 +349,11 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
     const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
 
-    const matchingPicklistItem = _.remove(this.picklistQueueItems, (x) => {
-      return x.OrderId === xr2OrderGroupKey.OrderId && x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
+    _.remove(this.picklistQueueItems, (x) => {
+      return x.OrderId === xr2OrderGroupKey.OrderId &&
+      x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
       x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
     });
-
-    this.itemRemovedEvent.emit(matchingPicklistItem[0]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 

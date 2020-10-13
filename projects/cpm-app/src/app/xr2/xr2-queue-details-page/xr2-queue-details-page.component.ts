@@ -87,6 +87,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   processRelease(picklistQueueItems: PicklistQueueItem[]) {
     // TODO: release selected items
     this.sendToRobot(picklistQueueItems[0]); // For testing UI
+    this.clearMultiSelectedItems();
   }
 
   processPrint(picklistQueueItems: PicklistQueueItem[]) {
@@ -97,16 +98,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
   displayXr2QueueError() {
     this.displayFailedToSaveDialog();
-  }
-
-  onItemUpdate(picklistQueueItem: PicklistQueueItem) {
-    this.updateActionDisableMap(picklistQueueItem);
-    this.updateDisableSelectAllSubject.next(this.actionDisableMap);
-  }
-
-  onItemRemoved(picklistQueueItem: PicklistQueueItem) {
-    this.removeFromActionDisableMap(picklistQueueItem);
-    this.updateDisableSelectAllSubject.next(this.actionDisableMap);
   }
 
   onGridSelectionChanged(event: IGridSelectionChanged<PicklistQueueItem>) {
@@ -161,12 +152,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private clearActionDisableMap(): void {
-    for (const action in OutputDeviceAction) {
-      if (!isNaN(Number(action))) {
-        const currentSet = this.actionDisableMap.get(Number(action));
-        currentSet.clear();
-      }
-    }
+    this.actionDisableMap.forEach((picklistSet, action) => {
+      picklistSet.clear();
+    });
   }
 
   private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType) {
@@ -192,20 +180,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
          : currentSet.delete(item);
         this.actionDisableMap.set(OutputDeviceAction.Reroute, currentSet);
       }
-    });
-  }
-
-  private updateActionDisableMap(item) {
-    this.actionDisableMap.forEach((picklistSet, action) => {
-      picklistSet.delete(item);
-    });
-
-    this.addOrRemoveFromActionDisableMap([item], SelectionChangeType.selected);
-  }
-
-  private removeFromActionDisableMap(item) {
-    this.actionDisableMap.forEach((picklistSet, action) => {
-      picklistSet.delete(item);
     });
   }
 
@@ -279,8 +253,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
         // force the status to 2 at this point
         picklistQueueItem.Status = 2;
         picklistQueueItem.Saving = false;
-        this.updateActionDisableMap(picklistQueueItem);
-        this.updateDisableSelectAllSubject.next(this.actionDisableMap);
       }, result => {
         picklistQueueItem.Saving = false;
         this.displayFailedToSaveDialog();
