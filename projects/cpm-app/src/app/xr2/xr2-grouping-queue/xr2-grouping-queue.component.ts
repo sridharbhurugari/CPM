@@ -14,6 +14,7 @@ import { Many } from 'lodash';
 import { Router } from '@angular/router';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
