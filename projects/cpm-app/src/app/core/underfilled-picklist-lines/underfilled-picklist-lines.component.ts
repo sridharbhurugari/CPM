@@ -16,13 +16,8 @@ import * as _ from 'lodash';
 export class UnderfilledPicklistLinesComponent {
   _picklistLines: UnderfilledPicklistLine[];
 
-  descriptionPropertyName = nameof<UnderfilledPicklistLine>('DescriptionSortValue');
-  destinationPropertyName = nameof<UnderfilledPicklistLine>('DestinationSortValue');
-  qtyFillReqPropertyName = nameof<UnderfilledPicklistLine>('FillQuantity');
-  fillDatePropertyName = nameof<UnderfilledPicklistLine>('FillDate');
-  checkboxToggleAll: boolean;
-  currentSortPropertyName: string;
   isHeaderCheckboxChecked: boolean;
+  currentSortPropertyName: string;
 
   @Input('picklistLines')
   set picklistLines(value: UnderfilledPicklistLine[]) {
@@ -30,14 +25,6 @@ export class UnderfilledPicklistLinesComponent {
     if(this.windowService.nativeWindow){
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
-  }
-  onMassCheck(event){
-     CheckboxValues.ToggleAll;
-  }
-
-  onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>){
-  }
-  onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>){
   }
   get picklistLines(): UnderfilledPicklistLine[] {
     return this._picklistLines;
@@ -49,30 +36,40 @@ export class UnderfilledPicklistLinesComponent {
     this.isHeaderCheckboxChecked = false;
    }
 
-  columnSelected(event: IColHeaderSortChanged){
+ onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>){
+  }
+ onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>){
+  }
+
+ columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.picklistLines = _.orderBy(this._picklistLines, x => x[this.currentSortPropertyName], event.SortDirection)
   }
 
-  headerCheckboxChanged() {
-    this.isHeaderCheckboxChecked = !this.isHeaderCheckboxChecked;
-    if (this.isHeaderCheckboxChecked) {
-      this.checkAllRows();
-      return;
-    }
-
-    this.unCheckAllRows();
+  onHeaderCheck(e){
+    var checked = e.selectedState;
+    this.isHeaderCheckboxChecked = checked;
+    this.updateAllCheckboxValues(checked);
   }
 
-  checkAllRows() {
-    _.forEach(this._picklistLines, x => {
-      x.IsPicklistLineSelected = true;
-    });
+  updateAllCheckboxValues(checked: boolean)
+  {
+  this._picklistLines.forEach(l => l.IsChecked = checked);
   }
 
-  unCheckAllRows() {
-    _.forEach(this._picklistLines, x => {
-      x.IsPicklistLineSelected = false;
-    });
-  }
+ onSelect(e)
+{
+  var checked = e.selectedState;
+  var id = e.selectedValue;
+  this.updateCheckboxValue(id, checked);
+}
+
+updateCheckboxValue(id, checked: boolean)
+{
+var pl = this._picklistLines.find(l => l.PicklistLineId === id);
+if (Object.keys(pl).length)
+{
+  pl.IsChecked = checked;
+}
+}
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -17,7 +17,6 @@ import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DatePipe } from '@angular/common';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { fdatasync } from 'fs';
 import { HttpErrorResponse } from '@angular/common/http';
 import {   PopupDialogService,
   PopupDialogComponent,
@@ -25,6 +24,8 @@ import {   PopupDialogService,
   PopupDialogType, } from '@omnicell/webcorecomponents';
 import { pullAllWith } from 'lodash';
 import { stringify } from 'querystring';
+import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
+import { PickRoutesService } from '../../api-core/services/pick-routes.service';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -56,6 +57,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,
+    private pickRoutesService: PickRoutesService,
     private wpfActionControllerService: WpfActionControllerService,
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
@@ -64,7 +66,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
-
+  @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
     let orderId = this.route.snapshot.queryParamMap.get('orderId');
     let datePipe = new DatePipe("en-US");
@@ -105,47 +107,42 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     );
   }
 
-async getSelected(): Promise<string[]> {
-  const picklistLines = await this.picklistLines$.toPromise();
-  const checkedPicklistLines = _.filter(picklistLines, (picklistLine: UnderfilledPicklistLine) => {
-    return picklistLine.IsPicklistLineSelected;
-  });
-  const checkedPicklistLineIds = _.map(checkedPicklistLines, 'PicklistLineId');
-  return checkedPicklistLineIds;
-}
-
- clearCheckedItems()
-  {
-  //   this.picklistLines$ = this.picklistLines$.pipe(
-  //     map(f => {
-  //       f.forEach(function(p)
-  //       {
-  // if (p.IsChecked)
-  // {
-  //   f.re
-  // }
-  //       });
-  //       return f;
-  //     }));
+  getSelected(): string[] {
+    let selected: string[] = [];
+    var pll = this.child.picklistLines;
+    selected = _.filter(pll, { IsChecked: true }).map(f => f.PicklistLineId);
+    return selected;
   }
-
- close() {
+  clearCheckedItems()
+  {
+    var pll = this.child.picklistLines;
+    var keep = _.filter(pll, { IsChecked: false });
+    this.child.picklistLines = keep;
+  }
+  reroute() {
     this.requestStatus = 'complete';
-    this.getSelected().then(selected => {
-      this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
-        this.requestStatus = 'none';
-        if (!succeeded) {
-          this.displayPrintFailed();
-        } else {
-          this.clearCheckedItems();
-        }
-      }, err => {
-        this.requestStatus = 'none';
-      });
+    const selected: string[] = this.getSelected();
+    this.pickRoutesService.reset(selected).subscribe(succeeded => {
+      this.requestStatus = 'none';
+      if (succeeded) {
+        this.clearCheckedItems();
+      }
+    }, err => {
+      this.onRerouteFailed(err);
     });
   }
 
-  reroute() {
+  close() {
+    this.requestStatus = 'complete';
+    const selected: string[] = this.getSelected();
+    this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
+      this.requestStatus = 'none';
+      if (succeeded) {
+        this.clearCheckedItems();
+      }
+    }, err => {
+      this.onCloseFailed(err);
+    });
   }
 
   print() {

@@ -1,8 +1,5 @@
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 import { PicklistDestinationDescriptionHelper } from '../utilities/picklist-destination-description-helper';
-import { RestockTypes } from '../constants/restock-types';
-import { DispensePriorityCodes } from '../constants/dispense-priority-codes';
-import { PicklistTypeHelper } from '../utilities/picklist-type-helper';
 
 export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     constructor(data: IUnderfilledPicklistLine){
@@ -12,7 +9,6 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
         this.DisplayArea = PicklistDestinationDescriptionHelper.DisplayArea(1, 1, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayOmniName = PicklistDestinationDescriptionHelper.DisplayOmniName(1, 1, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayPatientNameSecondLine = PicklistDestinationDescriptionHelper.DisplayPatientNameSecondLine(1, this.PicklistTypeDb, this.PriorityCode);
-        this.IsPicklistLineSelected = data.IsPicklistLineSelected;
     }
     PicklistLineId: string;
     DestinationId: string;
@@ -31,7 +27,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     FillQuantity: number;
     OrderQuantity: number;
 
-    IsPicklistLineSelected: boolean;
+    IsChecked: boolean = false;
     DaveTest: string;
     DisplayPatientRoomAndArea: boolean;
     DisplayPatientRoom: boolean;

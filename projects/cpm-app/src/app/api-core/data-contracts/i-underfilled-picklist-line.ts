@@ -17,5 +17,4 @@ export interface IUnderfilledPicklistLine{
   PickItemLocationDescription: string;
   PharmacyQOH: number;
   UnfilledReason: string;
-  IsPicklistLineSelected: boolean;
 }

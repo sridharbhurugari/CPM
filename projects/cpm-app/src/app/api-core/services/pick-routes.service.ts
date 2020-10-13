@@ -58,7 +58,7 @@ export class PickRoutesService {
     return this.httpClient.delete(url, { headers: headers });
   }
 
-  reset(picklistLineIds: string) {
+  reset(picklistLineIds: string[]) {
     const url = this.ocapUrlBuilderService.buildUrl(`api/pickRoutes/Reset`);
     const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
     const data = {
