@@ -6,6 +6,7 @@ import { Input, Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
+import { Xr2QueueButtonPanelComponent } from '../xr2-queue-button-panel/xr2-queue-button-panel.component';
 
 @Component({
   selector: 'oc-search-box',
@@ -23,8 +24,8 @@ describe('Xr2QueueDetailsHeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueDetailsHeaderComponent, MockCpClickableIconComponent,
-        MockSearchBox, MockSearchPipe, MockTranslatePipe ]
+      declarations: [ Xr2QueueDetailsHeaderComponent, Xr2QueueButtonPanelComponent, MockCpClickableIconComponent,
+        MockSearchBox, MockSearchPipe, MockTranslatePipe]
     })
     .compileComponents();
   }));
@@ -35,7 +36,7 @@ describe('Xr2QueueDetailsHeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  fit('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

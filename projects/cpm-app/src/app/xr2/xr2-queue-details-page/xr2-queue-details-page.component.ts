@@ -24,14 +24,31 @@ import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-requ
   styleUrls: ['./xr2-queue-details-page.component.scss']
 })
 export class Xr2QueueDetailsPageComponent implements OnInit {
+
+  private _multiSelectMode = false;
+
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   selectedItems: PicklistQueueItem[];
   actionDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
-  updateDisableSelectAllSubject: Subject<Map<OutputDeviceAction, Set<PicklistQueueItem>>> = new Subject();
   updateMultiSelectModeSubject: Subject<boolean> = new Subject();
-  releaseAllDisabled: boolean;
-  printAllDisabled: boolean;
-  rerouteAllDisabled: boolean;
+  outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
+
+  selectAllActionsDisableMap = new Map([
+    [OutputDeviceAction.Release, true],
+    [OutputDeviceAction.Print, true],
+    [OutputDeviceAction.Reroute, true]
+  ]);
+
+  set multiSelectMode(value: boolean) {
+    this._multiSelectMode = value;
+    if (value === false) {
+      this.clearActionDisableMap();
+    }
+  }
+
+  get multiSelectMode(): boolean {
+    return this._multiSelectMode;
+  }
 
   searchTextFilter: string;
   translatables = [
@@ -106,27 +123,14 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     const itemsToProcess = singleItemSelected ? [singleItemSelected] : this.selectedItems;
 
     if (this.selectedItems.length === 0) {
-      this.updateMultiSelectModeSubject.next(false);
-      this.clearActionDisableMap();
-      this.updateDisableSelectAllSubject.next(this.actionDisableMap);
+      this.multiSelectMode = false;
+      this.updateDisableSelectAllActionButtons();
       return;
     }
 
-    this.updateMultiSelectModeSubject.next(true);
+    this.multiSelectMode = true;
     this.addOrRemoveFromActionDisableMap(itemsToProcess, event.changeType);
-    this.updateDisableSelectAllSubject.next(this.actionDisableMap);
-  }
-
-  private releasedIsDisabled(picklistQueueItem: PicklistQueueItem) {
-    return picklistQueueItem.Status !== 1;
-  }
-
-  private printIsDisabled(picklistQueueItem: PicklistQueueItem) {
-    return picklistQueueItem.Status <= 2 || !picklistQueueItem.IsPrintable;
-  }
-
-  private rerouteIsDisabled(picklistQueueItem: PicklistQueueItem) {
-    return false;
+    this.updateDisableSelectAllActionButtons();
   }
 
   private configureEventHandlers(): void {
@@ -139,16 +143,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
   private clearMultiSelectedItems(): void {
     this.clearActionDisableMap();
-    this.updateMultiSelectModeSubject.next(false);
-    this.updateDisableSelectAllSubject.next(this.actionDisableMap);
   }
 
   private initializeActionDisableMap(): void {
-    for (const action in OutputDeviceAction) {
-      if (!isNaN(Number(action))) {
-        this.actionDisableMap.set(Number(action), new Set<PicklistQueueItem>());
-      }
-    }
+    this.selectAllActionsDisableMap.forEach((isDisabled,  action) => {
+      this.actionDisableMap.set(action, new Set<PicklistQueueItem>());
+    });
   }
 
   private clearActionDisableMap(): void {
@@ -157,29 +157,37 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     });
   }
 
-  private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType) {
+  private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType): void {
 
     _.forEach(itemsToProcess, (item) => {
-      if (this.releasedIsDisabled(item)) {
+      if (!item.Releaseable) {
         const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Release);
         changeType === SelectionChangeType.selected ? currentSet.add(item)
          : currentSet.delete(item);
         this.actionDisableMap.set(OutputDeviceAction.Release, currentSet);
       }
 
-      if (this.printIsDisabled(item)) {
+      if (!item.Printable) {
         const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Print);
         changeType === SelectionChangeType.selected ? currentSet.add(item)
          : currentSet.delete(item);
         this.actionDisableMap.set(OutputDeviceAction.Print, currentSet);
       }
 
-      if (this.rerouteIsDisabled(item)) {
+      if (!item.Reroutable) {
         const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Reroute);
         changeType === SelectionChangeType.selected ? currentSet.add(item)
          : currentSet.delete(item);
         this.actionDisableMap.set(OutputDeviceAction.Reroute, currentSet);
       }
+    });
+  }
+
+  private updateDisableSelectAllActionButtons(): void {
+
+    this.selectAllActionsDisableMap.forEach((isDisabled,  action) => {
+      const updatedDisableState = this.actionDisableMap.get(action).size > 0 ? true : false;
+      this.selectAllActionsDisableMap.set(action, updatedDisableState);
     });
   }
 
@@ -194,7 +202,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     }), shareReplay(1));
   }
 
-  private setTranslations() {
+  private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
   }
 

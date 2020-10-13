@@ -22,6 +22,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { Xr2GroupingQueueComponent } from './xr2-grouping-queue.component';
 import { CPClickableIconComponent } from '../../shared/components/cp-clickable-icon/cp-clickable-icon.component';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 
 @Component({
   selector: 'oc-search-box',
@@ -50,7 +51,7 @@ describe('Xr2DetailsQueueComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ Xr2GroupingQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
-        MockColHeaderSortable, MockAppHeaderContainer, MockCpClickableIconComponent ],
+        MockColHeaderSortable, MockAppHeaderContainer, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [GridModule, ButtonActionModule,  SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
         FooterModule, LayoutModule, CheckboxModule],
       providers: [
@@ -74,9 +75,9 @@ describe('Xr2DetailsQueueComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  fit('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
   // describe('Action Sort by Column', () => {
   //   it('column selected ', () => {

@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SingleselectDropdownModule } from '@omnicell/webcorecomponents';
-
 import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header.component';
 import { Input, Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -24,7 +23,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
-      providers: [ SingleselectDropdownModule]
+      imports: [ SingleselectDropdownModule]
     })
     .compileComponents();
   }));
@@ -35,7 +34,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

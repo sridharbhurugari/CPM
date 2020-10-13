@@ -1,22 +1,24 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page.component';
 import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr2-queue-grouping-header.component';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { Subject, of, Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { Input, Component } from '@angular/core';
-import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
   FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
+import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 
 @Component({
   selector: 'oc-search-box',
@@ -52,8 +54,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
-        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchBox,
-         MockSearchPipe, MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent ],
+        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
+        MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistQueueService },
@@ -62,6 +64,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: Location, useValue: { go: () => {}} },
+        { provide: Router, useValue: { data: () => {}} },
       ]
     })
     .compileComponents();
@@ -73,7 +77,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //    expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+     expect(component).toBeTruthy();
+  });
 });
