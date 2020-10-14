@@ -2,6 +2,7 @@ import { Component, Input, EventEmitter } from '@angular/core';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { nameof } from '../../shared/functions/nameof';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { IGridOrderChanged } from '../../shared/events/i-grid-order-changed';
 import { Observable, Observer, Subject } from 'rxjs';
@@ -15,6 +16,11 @@ import * as _ from 'lodash';
 export class UnderfilledPicklistLinesComponent {
   _picklistLines: UnderfilledPicklistLine[];
 
+  descriptionPropertyName = nameof<UnderfilledPicklistLine>('DescriptionSortValue');
+  pharmacyQohPropertyName = nameof<UnderfilledPicklistLine>('PharmacyQOH');
+  destinationPropertyName = nameof<UnderfilledPicklistLine>('DestinationSortValue');
+  qtyFillReqPropertyName = nameof<UnderfilledPicklistLine>('FillQuantity');
+  fillDatePropertyName = nameof<UnderfilledPicklistLine>('FillDate');
   isHeaderCheckboxChecked: boolean;
   currentSortPropertyName = 'fillDatePropertyName';
 
@@ -44,8 +50,7 @@ export class UnderfilledPicklistLinesComponent {
 }
 
 public TotalItemCount(): number {
-  if ( this._picklistLines == null )
-   {
+  if ( this._picklistLines == null ) {
      return 0;
    }
   const countOf = this._picklistLines.length;
@@ -75,7 +80,7 @@ public TotalItemCount(): number {
 
  onSelect(e: { selectedState: boolean; selectedValue: any; }) {
   const checked = e.selectedState;
-  let id = e.selectedValue;
+  const id = e.selectedValue;
   this.updateCheckboxValue(id, checked);
   this.obs.next(this.SelectedItemCount());
   }
