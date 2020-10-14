@@ -36,11 +36,10 @@ export class UnderfilledPicklistLinesComponent {
   ) {
    }
 
-   private obs = new Subject();
-   public obs$ = this.obs.asObservable();
-public SelectedItemCountObserver: Observer<number>;
-public SelectedItemCount$: Observable<number>;
-public SelectedItemCount(): number
+   private obs = new Subject<number>();
+   public SelectedItemCount$: Observable<number> = this.obs.asObservable();
+
+   public SelectedItemCount(): number
 {
   if ( this._picklistLines == null )
   { return 0;
@@ -72,7 +71,7 @@ public TotalItemCount(): number
     var checked = e.selectedState;
     this.isHeaderCheckboxChecked = checked;
     this.updateAllCheckboxValues(checked);
-    this.SelectedItemCount$(next: this.SelectedItemCount());
+    this.obs.next(this.SelectedItemCount());
   }
 
   updateAllCheckboxValues(checked: boolean)
@@ -86,7 +85,6 @@ public TotalItemCount(): number
   var id = e.selectedValue;
   this.updateCheckboxValue(id, checked);
   this.obs.next(this.SelectedItemCount());
-  this.SelectedItemCount$.next(this.SelectedItemCount());
 }
 
 updateCheckboxValue(id, checked: boolean)

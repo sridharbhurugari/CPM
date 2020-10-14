@@ -81,6 +81,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       var result = _.orderBy(displayObjects, (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
     }));
+    // permission: are buttons visible
+    this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
+    // error message text
     this.errorGenericTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.errorGenericMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
     this.okButtonText$ = this.translateService.get('OK');
@@ -93,7 +96,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
   ngAfterViewInit() {
 //    this.c = this.ItemCountSelected$.pipe(v => v.).subscribe(this.child.SelectedItemCount$)
-this.child.obs$.subscribe(n => this.c = n);
+this.child.SelectedItemCount$.subscribe(n => this.currentItemCountSelected = n);
   }
   navigateBack(){
     this.wpfActionControllerService.ExecuteBackAction();
@@ -113,6 +116,19 @@ this.child.obs$.subscribe(n => this.c = n);
         return underfilled;
       })
     );
+  }
+
+getButtonEnabled(): boolean  {
+    var returnValue = true;
+  if (this.currentItemCountSelected == 0)
+  {
+     returnValue = false;
+  }
+  if (this.requestStatus != "none")
+  {
+   returnValue = false;
+  }
+  return returnValue;
   }
 
   getSelected(): string[] {

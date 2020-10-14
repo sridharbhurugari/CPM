@@ -29,13 +29,13 @@
 
 
                 <oc-button-action *ngIf="buttonVisible"
-                [disabled]="buttonEnabled"
+                [disabled]="!getButtonEnabled()"
                 [buttonIcon]="'reroute'"
                 [buttonText]="'REROUTE' | translate"
                 (click)="reroute()">
             </oc-button-action>
             <oc-button-action *ngIf="buttonVisible"
-            [disabled]="buttonEnabled"
+            [disabled]="!getButtonEnabled()"
             [buttonIcon]="'checkmark'"
             [buttonText]="'CLOSE' | translate"
             (click)="close()">
