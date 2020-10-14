@@ -148,6 +148,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   }
 
   private handlePickSuccess() {
+    this.itemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
     this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
     this.requestStatus = 'none';
   }
