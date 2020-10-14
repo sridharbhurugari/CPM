@@ -95,7 +95,7 @@
             [label]="'View'" (clickEvent)="view(picklist)">
           </app-cp-clickable-icon>
           <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'" [disabled]="picklist.Saving"
-          [label]="'Delete'" (clickEvent)="delete(picklist)">
+          [label]="'Delete'" (clickEvent)="delete(picklist)" [hidden]="!doesUserHaveDispensePermissions">
         </app-cp-clickable-icon>
         </div>
       </div>
