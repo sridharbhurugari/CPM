@@ -28,7 +28,6 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     OrderQuantity: number;
 
     IsChecked = false;
-    DaveTest: string;
     DisplayPatientRoomAndArea: boolean;
     DisplayPatientRoom: boolean;
     DisplayArea: boolean;

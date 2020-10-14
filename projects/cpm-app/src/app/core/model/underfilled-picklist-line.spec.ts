@@ -4,6 +4,7 @@ describe('UnderfilledPicklistLine', () => {
   var line: UnderfilledPicklistLine;
   beforeEach(() => {
     line = new UnderfilledPicklistLine({
+      PicklistLineId: 'pllid',
       AreaDescription: '',
       DestinationId: '',
       DestinationOmni: '',

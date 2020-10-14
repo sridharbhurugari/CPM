@@ -8,7 +8,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 describe('UnderfilledPicklistLinesComponent', () => {
   let component: UnderfilledPicklistLinesComponent;
   let fixture: ComponentFixture<UnderfilledPicklistLinesComponent>;
-  let event: IColHeaderSortChanged = {ColumnPropertyName: "DescriptionSortValue", SortDirection: "asc"};
+  const event: IColHeaderSortChanged = {ColumnPropertyName: 'DescriptionSortValue', SortDirection: 'asc'};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
