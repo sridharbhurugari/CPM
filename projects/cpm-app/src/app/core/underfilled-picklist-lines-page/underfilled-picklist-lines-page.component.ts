@@ -41,7 +41,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   picklistLines$: Observable<UnderfilledPicklistLine[]>;
   picklist$: Observable<IUnderfilledPicklist>;
   reportTitle$: Observable<string>;
-  requestStatus: 'none' | 'printing' | 'complete' = 'none';
+  requestStatus: 'none' | 'printing' | 'reroute' | 'complete' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
   errorGenericTitle$: Observable<string>;
   errorGenericMessage$: Observable<string>;
@@ -144,11 +144,12 @@ getButtonEnabled(): boolean  {
     this.child.picklistLines = keep;
   }
   reroute() {
-    this.requestStatus = 'complete';
+    this.requestStatus = 'reroute';
     const selected: string[] = this.getSelected();
     this.pickRoutesService.reset(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
         this.clearCheckedItems();
+        this.exitIfListIsEmpty();
     }, err => {
       this.onRerouteFailed(err);
     });
@@ -160,9 +161,18 @@ getButtonEnabled(): boolean  {
     this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
         this.clearCheckedItems();
+        this.exitIfListIsEmpty();
     }, err => {
       this.onCloseFailed(err);
     });
+  }
+
+  exitIfListIsEmpty()
+  {
+    if (this.child.TotalItemCount() === 0)
+    {
+      this.navigateBack();
+    }
   }
 
   print() {
