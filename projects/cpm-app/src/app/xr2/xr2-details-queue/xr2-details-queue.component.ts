@@ -28,7 +28,7 @@ import { SelectionChangeType } from '../../shared/constants/selection-change-typ
   templateUrl: './xr2-details-queue.component.html',
   styleUrls: ['./xr2-details-queue.component.scss']
 })
-export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
+export class Xr2DetailsQueueComponent implements OnInit {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() rerouteEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
@@ -39,8 +39,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Output() itemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
 
   private _picklistQueueItems: PicklistQueueItem[];
-  private updateMultiSelectMode$: Subscription;
-  private updateSelectedItems$: Subscription;
+  private clearSelectedItems$: Subscription;
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -73,7 +72,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   ];
   translations$: Observable<any>;
 
-  @Input() updateMultiSelectModeEvent: Observable<any>;
+  @Input() clearSelectedItemsEvent: Observable<any>;
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -120,40 +119,35 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
-    this.updateMultiSelectMode$ = this.updateMultiSelectModeEvent
-      .subscribe(message => this.onMultiSelectModeUpdate(message));
+    this.clearSelectedItems$ = this.clearSelectedItemsEvent
+    .subscribe(() => this.clearSelectedItems());
   }
 
-  ngOnDestroy(): void {
-    this.updateMultiSelectMode$.unsubscribe();
-  }
-
-
-  back() {
+  back(): void {
     this.wpfActionController.ExecuteContinueAction();
   }
 
-  onRerouteClick(picklistQueueItem: PicklistQueueItem) {
+  onRerouteClick(picklistQueueItem: PicklistQueueItem): void {
     this.rerouteEvent.emit([picklistQueueItem]);
   }
 
-  onReleaseClick(picklistQueueItem: PicklistQueueItem) {
+  onReleaseClick(picklistQueueItem: PicklistQueueItem): void {
     this.releaseEvent.emit([picklistQueueItem]);
   }
 
-  onPrintClick(picklistQueueItem: PicklistQueueItem) {
+  onPrintClick(picklistQueueItem: PicklistQueueItem): void {
     this.printEvent.emit([picklistQueueItem]);
   }
 
   /* istanbul ignore next */
-  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem) {
+  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem): Guid {
     if (!picklistQueueItem) {
       return null;
     }
     return picklistQueueItem.TrackById;
   }
 
-  getItemPriorityLabel(picklistQueueItem: PicklistQueueItem) {
+  getItemPriorityLabel(picklistQueueItem: PicklistQueueItem): string {
     let label = '';
 
     if (picklistQueueItem.ItemCount > 1) {
@@ -198,12 +192,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     }
 
     return {
-      disabled: picklistQueueItem.Status <= 2 || !picklistQueueItem.IsPrintable || picklistQueueItem.Saving,
+      disabled: !picklistQueueItem.Printable,
       text
     };
   }
 
-  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
+  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem): SingleselectRowItem {
     let selectedDevice = null;
     if (picklistQueueItem.Status === 1) {
       selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
@@ -222,7 +216,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
-  getOrderSplitDataString(picklistQueueItem: PicklistQueueItem) {
+  getOrderSplitDataString(picklistQueueItem: PicklistQueueItem): string {
     let dataString = '';
     let translatedLabel = '';
     this.translateService.get('OF').subscribe((res: string) => {
@@ -234,7 +228,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return dataString;
   }
 
-  getOrderSplitDataLabel(picklistQueueItem: PicklistQueueItem) {
+  getOrderSplitDataLabel(picklistQueueItem: PicklistQueueItem): string {
     let label = '';
     if (picklistQueueItem.OutputDeviceId === OutputDeviceTypeId.AutoPackagerCPM) {
       label = picklistQueueItem.BoxCount > 1 ? this.translationMap.BAGS : this.translationMap.BAG;
@@ -245,15 +239,19 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return label;
   }
 
-  onBackClick() {
+  onBackClick(): void {
     this.location.back();
   }
 
-  onSelectAllCheckBox(boxState: any) {
+  clearSelectedItems(): void {
+    this.selectedItems.clear();
+  }
+
+  onSelectAllCheckBox(boxState: any): void {
     if (boxState.selectedState) {
       this.picklistQueueItems.map((item) => this.selectedItems.add(item));
     } else {
-      this.selectedItems.clear();
+      this.clearSelectedItems();
     }
 
     this.selectionChangedEvent.emit({
@@ -264,7 +262,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem) {
+  onSelectItemCheckBox(boxState: any, picklistQueueItem: PicklistQueueItem): void {
     if (boxState.selectedState) {
       this.selectedItems.add(picklistQueueItem);
     } else {
@@ -279,7 +277,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     });
   }
 
-  isContainedInSelected(picklistQueueItem: PicklistQueueItem) {
+  isContainedInSelected(picklistQueueItem: PicklistQueueItem): boolean {
     return this.selectedItems.has(picklistQueueItem);
   }
 
@@ -288,7 +286,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     picklistQueueItem.OutputDeviceId = $event.value;
   }
 
-  columnSelected(event: IColHeaderSortChanged) {
+  columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
     this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
@@ -309,14 +307,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
 
-  private setTranslations() {
+  private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
-  }
-
-  private onMultiSelectModeUpdate(state: boolean) {
-    if (state === false) {
-      this.selectedItems.clear();
-    }
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
@@ -357,7 +349,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {
+  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem): void {
     picklistQueueItem.TrackById = Guid.create();
   }
 }

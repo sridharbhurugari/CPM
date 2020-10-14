@@ -41,7 +41,7 @@ export class Xr2QueueDetailsHeaderComponent implements OnInit, AfterViewInit {
       });
   }
 
-  onBackClick() {
+  onBackClick(): void {
     this.backEvent.emit();
   }
 }

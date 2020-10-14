@@ -15,7 +15,7 @@
   <app-xr2-details-queue
     [picklistQueueItems]="picklistsQueueItems | async"
     [searchTextFilter]="searchTextFilter"
-    [updateMultiSelectModeEvent] = "updateMultiSelectModeSubject.asObservable()"
+    [clearSelectedItemsEvent] = "clearSelectedItemsSubject.asObservable()"
     (failedEvent)="displayXr2QueueError()"
     (selectionChangedEvent)="onGridSelectionChanged($event)"
     (releaseEvent)="processRelease($event)"

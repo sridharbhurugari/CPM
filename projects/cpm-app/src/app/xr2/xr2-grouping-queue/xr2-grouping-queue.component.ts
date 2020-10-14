@@ -82,19 +82,19 @@ export class Xr2GroupingQueueComponent implements OnInit {
   ngOnInit() {
   }
 
-  back() {
+  back(): void {
     this.wpfActionController.ExecuteContinueAction();
   }
 
-  onRerouteClick() {
+  onRerouteClick(): void {
     this.rerouteEvent.emit();
   }
 
-  onReleaseClick() {
+  onReleaseClick(): void {
     this.releaseEvent.emit();
   }
 
-  onDetailsClick() {
+  onDetailsClick(): void {
     this.router.navigate(['/xr2Queue/details']);
   }
 
@@ -119,7 +119,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     };
   }
 
-  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem) {
+  getSelectedOutputDeviceRow(picklistQueueItem: PicklistQueueItem): SingleselectRowItem {
     let selectedDevice = null;
     if (picklistQueueItem.Status === 1) {
       selectedDevice = picklistQueueItem.AvailableOutputDeviceList.find(x => x.DeviceId === picklistQueueItem.OutputDeviceId
@@ -138,16 +138,16 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
-  onBackClick() {
+  onBackClick(): void {
     this.location.back();
   }
 
   /* istanbul ignore next */
-  onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem) {
+  onOutputDeviceSelectionChanged($event, picklistQueueItem: PicklistQueueItem): void {
     picklistQueueItem.OutputDeviceId = $event.value;
   }
 
-  columnSelected(event: IColHeaderSortChanged) {
+  columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
     this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
