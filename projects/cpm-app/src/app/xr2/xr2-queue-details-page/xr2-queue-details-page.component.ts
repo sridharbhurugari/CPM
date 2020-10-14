@@ -34,17 +34,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
   clearSelectedItemsSubject = new Subject();
 
-  selectAllActionsDisableMap = new Map([
-    [OutputDeviceAction.Release, true],
-    [OutputDeviceAction.Print, true],
-    [OutputDeviceAction.Reroute, true]
-  ]);
-
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
     if (value === false) {
       this.clearActionPicklistItemsDisableMap();
-      this.resetSelectAllActionsDisableMap();
     }
   }
 
@@ -126,13 +119,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
     if (this.selectedItems.length === 0) {
       this.multiSelectMode = false;
-      this.updateDisableSelectAllActionButtons();
       return;
     }
 
     this.multiSelectMode = true;
     this.addOrRemoveFromActionDisableMap(itemsToProcess, event.changeType);
-    this.updateDisableSelectAllActionButtons();
   }
 
   private configureEventHandlers(): void {
@@ -149,9 +140,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private initializeActionPicklistItemsDisableMap(): void {
-    this.selectAllActionsDisableMap.forEach((isDisabled,  action) => {
-      this.actionPicklistItemsDisableMap.set(action, new Set<PicklistQueueItem>());
-    });
+    this.actionPicklistItemsDisableMap = new Map([
+      [this.outputDeviceAction.Release, new Set<PicklistQueueItem>()],
+     [this.outputDeviceAction.Print, new Set<PicklistQueueItem>()],
+     [this.outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
+    ]);
   }
 
   private clearActionPicklistItemsDisableMap(): void {
@@ -162,12 +155,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
   private clearSelectedItems(): void {
     this.clearSelectedItemsSubject.next();
-  }
-
-  private resetSelectAllActionsDisableMap(): void {
-    this.selectAllActionsDisableMap.forEach((isDisabled,  action) => {
-      this.selectAllActionsDisableMap.set(action, true);
-    });
   }
 
   private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType): void {
@@ -193,14 +180,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
          : currentSet.delete(item);
         this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Reroute, currentSet);
       }
-    });
-  }
-
-  private updateDisableSelectAllActionButtons(): void {
-
-    this.selectAllActionsDisableMap.forEach((isDisabled,  action) => {
-      const updatedDisableState = this.actionPicklistItemsDisableMap.get(action).size > 0 ? true : false;
-      this.selectAllActionsDisableMap.set(action, updatedDisableState);
     });
   }
 
