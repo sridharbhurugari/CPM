@@ -50,6 +50,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   errorRerouteMessage$: Observable<string>;
   errorCloseTitle$: Observable<string>;
   errorCloseMessage$: Observable<string>;
+  ItemCountTotal$: Observable<number>;
+  ItemCountSelected$: Observable<number>;
+  currentItemCountSelected: number = 0;
+  buttonEnabled: boolean = false;
+  buttonVisible: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -86,7 +91,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
     this.getReportData(datePipe);
   }
-
+  ngAfterViewInit() {
+//    this.c = this.ItemCountSelected$.pipe(v => v.).subscribe(this.child.SelectedItemCount$)
+this.child.obs$.subscribe(n => this.c = n);
+  }
   navigateBack(){
     this.wpfActionControllerService.ExecuteBackAction();
   }
@@ -210,9 +218,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
 
   displayError(uniqueId, title, message) {
+    var okText;
+    this.okButtonText$.subscribe((result) => { () => okText = result });
     const properties = new PopupDialogProperties(uniqueId);
-    this.okButtonText$.subscribe((result) => { () => properties.primaryButtonText = result });
-    console.log("Button Txt: " +   properties.primaryButtonText);
+    properties.primaryButtonText = okText;
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;

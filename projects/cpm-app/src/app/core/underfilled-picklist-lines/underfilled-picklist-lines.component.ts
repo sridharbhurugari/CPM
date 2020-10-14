@@ -7,6 +7,7 @@ import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { IGridOrderChanged } from '../../shared/events/i-grid-order-changed';
 import * as _ from 'lodash';
+import { Observable, Observer, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-underfilled-picklist-lines',
@@ -35,6 +36,28 @@ export class UnderfilledPicklistLinesComponent {
   ) {
    }
 
+   private obs = new Subject();
+   public obs$ = this.obs.asObservable();
+public SelectedItemCountObserver: Observer<number>;
+public SelectedItemCount$: Observable<number>;
+public SelectedItemCount(): number
+{
+  if ( this._picklistLines == null )
+  { return 0;
+  }
+  const countOf = this._picklistLines.filter(l => l.IsChecked).length;
+  return countOf;
+}
+
+public TotalItemCount(): number
+{
+  if ( this._picklistLines == null )
+  { return 0;
+  }
+  const countOf = this._picklistLines.length;
+  return countOf;
+}
+
  onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>){
   }
  onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>){
@@ -49,6 +72,7 @@ export class UnderfilledPicklistLinesComponent {
     var checked = e.selectedState;
     this.isHeaderCheckboxChecked = checked;
     this.updateAllCheckboxValues(checked);
+    this.SelectedItemCount$(next: this.SelectedItemCount());
   }
 
   updateAllCheckboxValues(checked: boolean)
@@ -61,6 +85,8 @@ export class UnderfilledPicklistLinesComponent {
   var checked = e.selectedState;
   var id = e.selectedValue;
   this.updateCheckboxValue(id, checked);
+  this.obs.next(this.SelectedItemCount());
+  this.SelectedItemCount$.next(this.SelectedItemCount());
 }
 
 updateCheckboxValue(id, checked: boolean)
