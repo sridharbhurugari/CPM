@@ -79,7 +79,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
       this.failedToSavePopupTitle = res;});
     this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe((res: string) => {
         this.failedToSavePopupMessage = res;});
-    this.underfilledPicklistsService.doesUserHaveDispensePermissions().subscribe((res: boolean) => {
+    this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe((res: boolean) => {
       this.doesUserHaveDispensePermissions = res;});
   }
 
