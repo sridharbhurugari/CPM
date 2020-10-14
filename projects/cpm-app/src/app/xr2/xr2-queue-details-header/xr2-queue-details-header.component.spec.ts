@@ -36,7 +36,7 @@ describe('Xr2QueueDetailsHeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  fit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

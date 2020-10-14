@@ -84,14 +84,14 @@ describe('Xr2DetailsQueueComponent', () => {
     spyOn(picklistsQueueEventConnectionService.removePicklistQueueItemSubject, 'subscribe').and.callThrough();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  // describe('Action Sort by Column', () => {
-  //   it('column selected ', () => {
-  //     component.sort(component.picklistQueueItems, 'desc');
-  //     expect(component.columnSelected(event));
-  //   });
-  // });
+  describe('Action Sort by Column', () => {
+    it('column selected ', () => {
+      component.sort(component.picklistQueueItems, 'desc');
+      expect(component.columnSelected(event));
+    });
+  });
 });

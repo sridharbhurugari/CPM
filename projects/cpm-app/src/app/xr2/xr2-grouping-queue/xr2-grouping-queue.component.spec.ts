@@ -75,14 +75,14 @@ describe('Xr2DetailsQueueComponent', () => {
     fixture.detectChanges();
   });
 
-  fit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  // describe('Action Sort by Column', () => {
-  //   it('column selected ', () => {
-  //     component.sort(component.picklistQueueItems, 'desc');
-  //     expect(component.columnSelected(event));
-  //   });
-  // });
+  describe('Action Sort by Column', () => {
+    it('column selected ', () => {
+      component.sort(component.picklistQueueItems, 'desc');
+      expect(component.columnSelected(event));
+    });
+  });
 });

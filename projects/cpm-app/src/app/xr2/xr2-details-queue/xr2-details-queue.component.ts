@@ -34,12 +34,12 @@ export class Xr2DetailsQueueComponent implements OnInit {
   @Output() rerouteEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
-  @Output() selectionChangedEvent: EventEmitter<IGridSelectionChanged<PicklistQueueItem>> = new EventEmitter();
+  @Output() selectionChangedEvent: EventEmitter<any> = new EventEmitter();
   @Output() itemUpdatedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
   @Output() itemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
 
   private _picklistQueueItems: PicklistQueueItem[];
-  private clearSelectedItems$: Subscription;
+
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -119,8 +119,6 @@ export class Xr2DetailsQueueComponent implements OnInit {
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
-    this.clearSelectedItems$ = this.clearSelectedItemsEvent
-    .subscribe(() => this.clearSelectedItems());
   }
 
   back(): void {
@@ -257,8 +255,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
     this.selectionChangedEvent.emit({
       changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
       changedValue: null,
-      selectedValues: [...this.selectedItems],
-      unselectedValues: []
+      selectedValues: this.selectedItems
     });
   }
 
@@ -272,8 +269,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
     this.selectionChangedEvent.emit({
       changeType: boxState.selectedState ? SelectionChangeType.selected : SelectionChangeType.unselected,
       changedValue: picklistQueueItem,
-      selectedValues: [...this.selectedItems],
-      unselectedValues: []
+      selectedValues: this.selectedItems,
     });
   }
 

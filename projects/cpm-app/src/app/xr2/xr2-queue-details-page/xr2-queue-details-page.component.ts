@@ -28,7 +28,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   private _multiSelectMode = false;
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
-  selectedItems: PicklistQueueItem[];
+  selectedItems: Set<PicklistQueueItem>;
   actionPicklistItemsDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
   updateMultiSelectModeSubject: Subject<boolean> = new Subject();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
@@ -112,12 +112,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.displayFailedToSaveDialog();
   }
 
-  onGridSelectionChanged(event: IGridSelectionChanged<PicklistQueueItem>): void {
+  onGridSelectionChanged(event: any): void {
     this.selectedItems = event.selectedValues;
     const singleItemSelected = event.changedValue;
-    const itemsToProcess = singleItemSelected ? [singleItemSelected] : this.selectedItems;
+    const itemsToProcess = singleItemSelected ? [singleItemSelected] : [...this.selectedItems];
 
-    if (this.selectedItems.length === 0) {
+    if (this.selectedItems.size === 0) {
       this.multiSelectMode = false;
       return;
     }
@@ -154,7 +154,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private clearSelectedItems(): void {
-    this.clearSelectedItemsSubject.next();
+    this.selectedItems.clear();
   }
 
   private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType): void {
