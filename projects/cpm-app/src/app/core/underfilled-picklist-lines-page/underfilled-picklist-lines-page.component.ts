@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map, shareReplay } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { IUnderfilledPicklist } from '../../api-core/data-contracts/i-underfilled-picklist';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
@@ -16,16 +15,14 @@ import { ITableColumnDefintion } from '../../shared/services/printing/i-table-co
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DatePipe } from '@angular/common';
-import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { HttpErrorResponse } from '@angular/common/http';
 import {   PopupDialogService,
   PopupDialogComponent,
   PopupDialogProperties,
   PopupDialogType, } from '@omnicell/webcorecomponents';
-import { pullAllWith } from 'lodash';
-import { stringify } from 'querystring';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import { PickRoutesService } from '../../api-core/services/pick-routes.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -33,11 +30,11 @@ import { PickRoutesService } from '../../api-core/services/pick-routes.service';
   styleUrls: ['./underfilled-picklist-lines-page.component.scss']
 })
 export class UnderfilledPicklistLinesPageComponent implements OnInit {
-  itemHeaderKey: string = 'DESCRIPTION_ID';
-  qohHeaderKey: string = 'PHARMACY_QOH';
-  destinationHeaderKey: string = 'DESTINATION';
-  qtyFilledHeaderKey: string = 'QTY_FILLED_REQUESTED';
-  dateHeaderKey: string = 'DATE'
+  itemHeaderKey = 'DESCRIPTION_ID';
+  qohHeaderKey = 'PHARMACY_QOH';
+  destinationHeaderKey = 'DESTINATION';
+  qtyFilledHeaderKey = 'QTY_FILLED_REQUESTED';
+  dateHeaderKey = 'DATE';
   picklistLines$: Observable<UnderfilledPicklistLine[]>;
   picklist$: Observable<IUnderfilledPicklist>;
   reportTitle$: Observable<string>;
@@ -52,9 +49,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   errorCloseMessage$: Observable<string>;
   ItemCountTotal$: Observable<number>;
   ItemCountSelected$: Observable<number>;
-  currentItemCountSelected: number = 0;
-  buttonEnabled: boolean = false;
-  buttonVisible: boolean = false;
+  currentItemCountSelected = 0;
+  buttonEnabled = false;
+  buttonVisible = false;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -71,14 +68,16 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
+
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
-    let orderId = this.route.snapshot.queryParamMap.get('orderId');
-    let datePipe = new DatePipe("en-US");
+    const orderId = this.route.snapshot.queryParamMap.get('orderId');
+    const datePipe = new DatePipe('en-US');
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
     this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
-      var displayObjects = underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
-      var result = _.orderBy(displayObjects, (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
+      let displayObjects = underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
+      let result = _.orderBy(displayObjects,
+         (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
     }));
     // permission: are buttons visible
@@ -94,62 +93,62 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
     this.getReportData(datePipe);
   }
+
   ngAfterViewInit() {
-//    this.c = this.ItemCountSelected$.pipe(v => v.).subscribe(this.child.SelectedItemCount$)
-this.child.SelectedItemCount$.subscribe(n => this.currentItemCountSelected = n);
+    this.child.SelectedItemCount$.subscribe(n => this.currentItemCountSelected = n);
   }
-  navigateBack(){
+
+  navigateBack() {
     this.wpfActionControllerService.ExecuteBackAction();
   }
 
-  getReportData(datePipe: DatePipe){
+  getReportData(datePipe: DatePipe) {
     this.picklistLines$ = this.picklistLines$.pipe(
       map(underfilled => {
-        underfilled.forEach(function(element)
-        {
-          let date = element.FillDate;
+        underfilled.forEach(function(element) {
+          const date = element.FillDate;
           element.PrintFillDate = datePipe.transform(date, 'M/d/yyyy h:mm:ss a');
           element.DisplayFillRequired = element.FillQuantity + ' / ' + element.OrderQuantity;
-          if(element.PatientRoom && element.PatientRoom !== '')
+          if (element.PatientRoom && element.PatientRoom !== '') {
             element.DisplayDestionationValue  = element.PatientRoom + ',';
-        })
+          }
+        });
         return underfilled;
       })
     );
   }
 
 getButtonEnabled(): boolean  {
-    var returnValue = true;
-  if (this.currentItemCountSelected == 0)
-  {
+    let returnValue = true;
+    if (this.currentItemCountSelected == 0) {
      returnValue = false;
   }
-  if (this.requestStatus != "none")
-  {
+    if (this.requestStatus != 'none') {
    returnValue = false;
   }
-  return returnValue;
+    return returnValue;
   }
 
   getSelected(): string[] {
     let selected: string[] = [];
-    var pll = this.child.picklistLines;
+    let pll = this.child.picklistLines;
     selected = _.filter(pll, { IsChecked: true }).map(f => f.PicklistLineId);
     return selected;
   }
-  clearCheckedItems()
-  {
-    var pll = this.child.picklistLines;
-    var keep = _.filter(pll, { IsChecked: false });
+
+  clearCheckedItems() {
+    let pll = this.child.picklistLines;
+    let keep = _.filter(pll, { IsChecked: false });
     this.child.picklistLines = keep;
   }
+
   reroute() {
     this.requestStatus = 'reroute';
     const selected: string[] = this.getSelected();
     this.pickRoutesService.reset(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
-        this.clearCheckedItems();
-        this.exitIfListIsEmpty();
+      this.clearCheckedItems();
+      this.exitIfListIsEmpty();
     }, err => {
       this.onRerouteFailed(err);
     });
@@ -160,37 +159,38 @@ getButtonEnabled(): boolean  {
     const selected: string[] = this.getSelected();
     this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
-        this.clearCheckedItems();
-        this.exitIfListIsEmpty();
+      this.clearCheckedItems();
+      this.exitIfListIsEmpty();
     }, err => {
       this.onCloseFailed(err);
     });
   }
 
-  exitIfListIsEmpty()
-  {
-    if (this.child.TotalItemCount() === 0)
-    {
+  exitIfListIsEmpty() {
+    if (this.child.TotalItemCount() === 0) {
       this.navigateBack();
     }
   }
 
   print() {
     this.requestStatus = 'printing';
-    var colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ], headerResourceKey: this.itemHeaderKey, width: "auto" },
-      { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'DisplayDestionationValue','AreaDescription','PatientName','DestinationOmni' ], headerResourceKey: this.destinationHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'DisplayFillRequired','UnfilledReason' ], headerResourceKey: this.qtyFilledHeaderKey, width: "*" },
-      { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: "auto" },
+    let colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
+      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+        headerResourceKey: this.itemHeaderKey, width: 'auto' },
+      { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'DisplayDestionationValue', 'AreaDescription', 'PatientName', 'DestinationOmni' ],
+       headerResourceKey: this.destinationHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'DisplayFillRequired', 'UnfilledReason' ],
+       headerResourceKey: this.qtyFilledHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: 'auto' },
     ];
 
-    let sortedFilled$ = this.picklistLines$.pipe(map(underFill => {
+    const sortedFilled$ = this.picklistLines$.pipe(map(underFill => {
       return _.orderBy(underFill, x => x.ItemFormattedGenericName.toLowerCase(), 'asc');
     }));
 
     this.getDocumentData();
-    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
+    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
@@ -206,8 +206,8 @@ getButtonEnabled(): boolean  {
   private getDocumentData() {
     let pickList: IUnderfilledPicklist;
     let reportBasedata: IAngularReportBaseData;
-    this.picklist$.subscribe((listData)=> {pickList = listData});
-    this.reportBaseData$.subscribe((baseData) => { reportBasedata = baseData });
+    this.picklist$.subscribe((listData) => {pickList = listData;});
+    this.reportBaseData$.subscribe((baseData) => { reportBasedata = baseData; });
     reportBasedata.OrderId = pickList.OrderId;
     reportBasedata.PriorityCode = pickList.PriorityCode;
     this.reportBaseData$ = of(reportBasedata);
@@ -242,10 +242,9 @@ getButtonEnabled(): boolean  {
     }
   }
 
-
   displayError(uniqueId, title, message) {
-    var okText;
-    this.okButtonText$.subscribe((result) => { () => okText = result });
+    let okText;
+    this.okButtonText$.subscribe((result) => { () => okText = result; });
     const properties = new PopupDialogProperties(uniqueId);
     properties.primaryButtonText = okText;
     properties.titleElementText = title;
@@ -256,5 +255,4 @@ getButtonEnabled(): boolean  {
     properties.timeoutLength = 0;
     this.dialogService.showOnce(properties);
   }
-
 }
