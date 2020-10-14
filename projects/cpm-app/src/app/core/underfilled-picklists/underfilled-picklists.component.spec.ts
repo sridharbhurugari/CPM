@@ -34,7 +34,7 @@ describe('UnderfilledPicklistsComponent', () => {
       providers: [
         { provide: WpfActionControllerService, useValue: []},
         { provide: WindowService, useValue: [] },
-        { provide: UnderfilledPicklistsService, useValue: { delete: () => of([]) } },
+        { provide: UnderfilledPicklistsService, useValue: { delete: () => of([]),  doesUserHaveDeletePicklistPermissions: () => of([]) } },
         { provide: PopupWindowService, useValue: [] },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: PopupDialogService, useValue: [] },
