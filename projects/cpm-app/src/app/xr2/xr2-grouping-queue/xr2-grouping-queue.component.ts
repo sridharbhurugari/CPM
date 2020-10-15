@@ -100,6 +100,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
 
+
   onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
     console.log(picklistQueueGrouped);
     this.releaseEvent.emit(picklistQueueGrouped);
