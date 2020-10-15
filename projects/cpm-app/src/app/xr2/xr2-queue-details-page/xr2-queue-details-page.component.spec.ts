@@ -94,7 +94,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       item.ItemPicklistLines = [itemPicklistLine];
       component.selectedItems = new Set();
 
-      component.processRelease([item]);
+      component.processRelease(new Set([item]));
 
       expect(picklistsQueueService.sendToRobot).toHaveBeenCalledTimes(1);
       expect(item.Saving).toBeFalsy();
@@ -107,7 +107,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.selectedItems = new Set();
       const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
 
-      component.processReroute([item]);
+      component.processReroute(new Set([item]));
 
       expect(dialogueSpy).toHaveBeenCalledTimes(1);
       expect(picklistsQueueService.skip).toHaveBeenCalledTimes(1);
@@ -121,7 +121,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.selectedItems = new Set();
       const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
 
-      component.processReroute([item]);
+      component.processReroute(new Set([item]));
 
       expect(dialogueSpy).toHaveBeenCalledTimes(1);
       expect(picklistsQueueService.skip).toHaveBeenCalledTimes(0);
@@ -133,7 +133,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       item.ItemPicklistLines = [itemPicklistLine];
       component.selectedItems = new Set();
 
-      component.processPrint([item]);
+      component.processPrint(new Set([item]));
 
       expect(picklistsQueueService.printLabels).toHaveBeenCalledTimes(1);
     });

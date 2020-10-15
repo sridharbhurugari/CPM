@@ -83,27 +83,27 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.location.back();
   }
 
-  processReroute(picklistQueueItems: PicklistQueueItem[]): void {
+  processReroute(picklistQueueItems: Set<PicklistQueueItem>): void {
 
     this.displayRerouteDialog().subscribe(result => {
       if (!result) {
         return;
       }
       // TODO: reroute selected items
-      this.skip(picklistQueueItems[0]); // For testing UI
+      this.skip([...picklistQueueItems][0]); // For testing UI
       this.clearMultiSelect();
     });
   }
 
-  processRelease(picklistQueueItems: PicklistQueueItem[]): void {
+  processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
     // TODO: release selected items
-    this.sendToRobot(picklistQueueItems[0]); // For testing UI
+    this.sendToRobot([...picklistQueueItems][0]); // For testing UI
     this.clearMultiSelect();
   }
 
-  processPrint(picklistQueueItems: PicklistQueueItem[]): void {
+  processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
     // TODO: print selected items
-    this.printLabels(picklistQueueItems[0]); // For testing UI
+    this.printLabels([...picklistQueueItems][0]); // For testing UI
     this.clearMultiSelect();
   }
 
