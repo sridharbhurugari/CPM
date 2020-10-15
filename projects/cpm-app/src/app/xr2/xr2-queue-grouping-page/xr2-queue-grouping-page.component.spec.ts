@@ -36,7 +36,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let fixture: ComponentFixture<Xr2QueueGroupingPageComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistQueueService: Partial<PicklistsQueueService>;
-  let spyPicklistQueueServiceGet: jasmine.Spy;
+  let spyPicklistQueueServiceGetGrouped: jasmine.Spy;
 
 
   beforeEach(async(() => {
@@ -47,11 +47,11 @@ describe('Xr2QueueGroupingPageComponent', () => {
     };
 
     picklistQueueService = {
-      get: () => of()
+      getGrouped: () => of()
     };
 
     spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
-    spyPicklistQueueServiceGet = spyOn(picklistQueueService, 'get').and.returnValue(of());
+    spyPicklistQueueServiceGetGrouped = spyOn(picklistQueueService, 'getGrouped').and.returnValue(of());
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
@@ -84,10 +84,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
   describe('Services', () => {
     it('should call picklistQueueService', fakeAsync(() => {
-      const spy = picklistQueueService.get;
       component.ngOnInit();
       tick();
-      expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+      expect(spyPicklistQueueServiceGetGrouped).toHaveBeenCalled();
     }));
   });
 
@@ -100,11 +99,11 @@ describe('Xr2QueueGroupingPageComponent', () => {
     it('should reload on reloadPicklistQueueItemsSubject event', fakeAsync(() => {
       component.ngOnInit();
       tick();
-      expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
-      const currentCallCount = spyPicklistQueueServiceGet.calls.count();
+      expect(spyPicklistQueueServiceGetGrouped).toHaveBeenCalled();
+      const currentCallCount = spyPicklistQueueServiceGetGrouped.calls.count();
       picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
       tick();
-      expect(spyPicklistQueueServiceGet.calls.count()).toBeGreaterThan(currentCallCount);
+      expect(spyPicklistQueueServiceGetGrouped.calls.count()).toBeGreaterThan(currentCallCount);
     }));
 
     it('should update search filter text on search filter event', () => {
@@ -113,27 +112,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
       component.onSearchTextFilter(filter);
 
       expect(component.searchTextFilter).toBe(filter);
-    });
-  });
-
-  // TODO: update with API logic
-  describe('API actions', () => {
-    it('should reroute on true dialogue result', () => {
-      const reroutableItem = new PicklistQueueItem(null);
-      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
-
-      component.processReroute([reroutableItem]);
-
-      expect(dialogueSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should not reroute on false dialogue result', () => {
-      const reroutableItem = new PicklistQueueItem(null);
-      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
-
-      component.processReroute([reroutableItem]);
-
-      expect(dialogueSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

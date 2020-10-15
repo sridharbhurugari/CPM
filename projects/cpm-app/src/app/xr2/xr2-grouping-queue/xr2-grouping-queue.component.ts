@@ -55,12 +55,10 @@ export class Xr2GroupingQueueComponent implements OnInit {
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
 
-
   translatables = [
     'OF'
   ];
   translations$: Observable<any>;
-
 
   @Input()
   set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
@@ -88,7 +86,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @ViewChild('outputDeviceSingleSelect', { static: true })
   outputDeviceSingleSelect: OcSingleselectDropdownComponent;
 
-
   constructor(
     private windowService: WindowService,
     private translateService: TranslateService,
@@ -99,10 +96,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     this.setTranslations();
   }
 
-
-
   onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
-    console.log(picklistQueueGrouped);
     this.releaseEvent.emit(picklistQueueGrouped);
   }
 

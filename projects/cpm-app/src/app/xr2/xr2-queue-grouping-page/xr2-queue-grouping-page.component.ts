@@ -6,7 +6,6 @@ import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omn
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
-import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { TranslateService } from '@ngx-translate/core';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 
@@ -18,7 +17,6 @@ import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-q
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
-  buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
   searchTextFilter: string;
 
   translatables = [

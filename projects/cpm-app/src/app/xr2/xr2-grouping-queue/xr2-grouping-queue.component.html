@@ -40,16 +40,15 @@
             <span class="priority-description">{{picklistQueueGroup.PriorityCodeDescription}}</span>
             <app-cp-data-label
               [data]="picklistQueueGroup.AreaCount"
-              [label]="translationMap.AREA | translate"
+              [label]="getCountLabel(picklistQueueGroup.NewCount, picklistQueueGroup.DestinationType) | translate"
             ></app-cp-data-label> 
-
           </div>
         </div>
         <div class="col width-type" [attr.data-title]="'NEW' | translate">
           <span class="centered-content">
             <app-cp-data-label
             [data]="picklistQueueGroup.NewCount"
-            [label]="getCountLabel(picklistQueueGroup.NewCount, picklistQueueGroup.DestinationType)"
+            [label]="getCountLabel(picklistQueueGroup.NewCount, picklistQueueGroup.DestinationType) | translate"
             ></app-cp-data-label>
           </span>
         </div>
@@ -57,7 +56,7 @@
           <span class="centered-content">
             <app-cp-data-label
             [data]="picklistQueueGroup.ReleasedCount"
-            [label]="getCountLabel(picklistQueueGroup.ReleasedCount, picklistQueueGroup.DestinationType)"
+            [label]="getCountLabel(picklistQueueGroup.ReleasedCount, picklistQueueGroup.DestinationType) | translate"
             ></app-cp-data-label>
           </span>
         </div>
