@@ -21,8 +21,8 @@ import {   PopupDialogService,
   PopupDialogProperties,
   PopupDialogType, } from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
-import { PickRoutesService } from '../../api-core/services/pick-routes.service';
 import * as _ from 'lodash';
+import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -42,7 +42,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   reportBaseData$: Observable<IAngularReportBaseData>;
   errorGenericTitle$: Observable<string>;
   errorGenericMessage$: Observable<string>;
-  okButtonText$: Observable<string>;
+  okButtonText: string;
   errorRerouteTitle$: Observable<string>;
   errorRerouteMessage$: Observable<string>;
   errorCloseTitle$: Observable<string>;
@@ -59,7 +59,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,
-    private pickRoutesService: PickRoutesService,
+    private resetPickRoutesService: ResetPickRoutesService,
     private wpfActionControllerService: WpfActionControllerService,
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
@@ -85,7 +85,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     // error message text
     this.errorGenericTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.errorGenericMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
-    this.okButtonText$ = this.translateService.get('OK');
+    this.translateService.get('OK').subscribe(s => this.okButtonText = s);
     this.errorRerouteTitle$ = this.translateService.get('FAILEDTOREROUTE_HEADER_TEXT');
     this.errorRerouteMessage$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
     this.errorCloseTitle$ = this.translateService.get('FAILEDTOCLOSE_HEADER_TEXT');
@@ -145,7 +145,7 @@ getButtonEnabled(): boolean  {
   reroute() {
     this.requestStatus = 'reroute';
     const selected: string[] = this.getSelected();
-    this.pickRoutesService.reset(selected).subscribe(succeeded => {
+    this.resetPickRoutesService.reset(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
       this.clearCheckedItems();
       this.exitIfListIsEmpty();
@@ -243,10 +243,8 @@ getButtonEnabled(): boolean  {
   }
 
   displayError(uniqueId, title, message) {
-    let okText;
-    this.okButtonText$.subscribe((result) => { () => okText = result; });
     const properties = new PopupDialogProperties(uniqueId);
-    properties.primaryButtonText = okText;
+    properties.primaryButtonText = this.okButtonText;
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;
