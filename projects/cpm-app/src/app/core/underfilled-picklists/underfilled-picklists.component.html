@@ -91,11 +91,11 @@
       </div>
       <div class="col width-type">
         <div class="col-content-container">
-          <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'openv1-right'" [disabled]="picklist.Saving"
+          <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'search'" [disabled]="picklist.Saving"
             [label]="'View'" (clickEvent)="view(picklist)">
           </app-cp-clickable-icon>
           <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'" [disabled]="picklist.Saving"
-          [label]="'Delete'" (clickEvent)="delete(picklist)" [hidden]="!doesUserHaveDispensePermissions">
+          [label]="'Close'" (clickEvent)="delete(picklist)" [hidden]="!doesUserHaveDispensePermissions">
         </app-cp-clickable-icon>
         </div>
       </div>
