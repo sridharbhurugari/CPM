@@ -6,7 +6,8 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="426" data-colwrap="true"
+      <!-- 1280 px total-->
+      <div app-col-header-sortable class="col" ocGridColResize data-width="480" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
@@ -26,7 +27,7 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="300" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+      <div class="last width-type" data-width="250" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
