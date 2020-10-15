@@ -96,8 +96,6 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     }
   }
  
-
-
   ngAfterViewInit() {
     this.searchElement.searchOutput$
       .pipe(
