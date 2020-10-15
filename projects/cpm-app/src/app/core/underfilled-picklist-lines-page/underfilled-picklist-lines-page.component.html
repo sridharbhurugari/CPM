@@ -26,18 +26,21 @@
                     [buttonText]="'PRINT' | translate"
                     (click)="print()">
                 </oc-button-action>
-                <oc-button-action
-                [disabled]="requestStatus != 'none'"
+
+
+                <oc-button-action *ngIf="buttonVisible"
+                [disabled]="!getButtonEnabled()"
                 [buttonIcon]="'reroute'"
                 [buttonText]="'REROUTE' | translate"
                 (click)="reroute()">
             </oc-button-action>
-            <oc-button-action
-            [disabled]="requestStatus != 'none'"
+            <oc-button-action *ngIf="buttonVisible"
+            [disabled]="!getButtonEnabled()"
             [buttonIcon]="'checkmark'"
             [buttonText]="'CLOSE' | translate"
             (click)="close()">
         </oc-button-action>
+
             </div>
         </oc-footer>
     </ng-container>

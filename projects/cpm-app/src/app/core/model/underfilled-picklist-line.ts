@@ -2,7 +2,7 @@ import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underf
 import { PicklistDestinationDescriptionHelper } from '../utilities/picklist-destination-description-helper';
 
 export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
-    constructor(data: IUnderfilledPicklistLine){
+    constructor(data: IUnderfilledPicklistLine) {
         Object.assign(this, data);
         this.DisplayPatientRoomAndArea = PicklistDestinationDescriptionHelper.DisplayPatientRoomAndArea(1, this.PicklistTypeDb, this.PatientRoom, this.AreaDescription);
         this.DisplayPatientRoom = PicklistDestinationDescriptionHelper.DisplayPatientRoom(1, this.PicklistTypeDb, this.PatientRoom, this.AreaDescription);
@@ -27,8 +27,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     FillQuantity: number;
     OrderQuantity: number;
 
-    IsChecked: boolean = false;
-    DaveTest: string;
+    IsChecked = false;
     DisplayPatientRoomAndArea: boolean;
     DisplayPatientRoom: boolean;
     DisplayArea: boolean;
@@ -40,24 +39,24 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     DisplayFillRequired: string;
     DisplayDestionationValue: string;
 
-    get DestinationSortValue(): string{
-        if(this.DestinationType == 'P'){
+    get DestinationSortValue(): string {
+        if (this.DestinationType === 'P') {
             return this.PatientName;
         }
 
-        if(this.DestinationType == 'A'){
+        if (this.DestinationType === 'A') {
             return this.AreaDescription;
         }
 
-        if(this.DestinationType == 'O'){
+        if (this.DestinationType === 'O') {
             return this.DestinationOmni;
         }
 
         return this.DestinationId;
     }
 
-    get DescriptionSortValue(): string{
-        if(this.ItemFormattedGenericName){
+    get DescriptionSortValue(): string {
+        if (this.ItemFormattedGenericName) {
             return this.ItemFormattedGenericName.toLowerCase();
         }
     }
