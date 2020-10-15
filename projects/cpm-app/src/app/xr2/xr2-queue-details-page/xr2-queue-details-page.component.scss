@@ -4,3 +4,18 @@
   flex-direction: column;
   flex: 1;
 }
+
+.button-panel {
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  position: absolute;
+  z-index: 2;
+  right: 43%;
+  top: -100px;
+  transition: 200ms;
+  transition-property: transform;
+  transition-timing-function: ease-in;
+}
+
+.multi-select-mode {
+  transform: translateY(108px);
+}

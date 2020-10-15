@@ -9,7 +9,8 @@
             (selection)="onSelectAllCheckBox($event)">
           </oc-checkbox>
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+       <!-- 1280 px total-->
+      <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
         [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
@@ -19,13 +20,13 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="col width-type" data-width="186" data-colwrap="true">{{'STATUS' | translate}}</div>
+      <div class="col width-type" data-width="160" data-colwrap="true">{{'STATUS' | translate}}</div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
         [columnPropertyName]="deviceDescriptionPropertyName" headerResourceKey="DEVICE"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="270" data-colwrap="true">{{'ACTIONS' | translate}}</div>
+      <div class="last width-type" data-width="250" data-colwrap="true">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row" [ngStyle]="{'background-color': isContainedInSelected(picklistQueueItem) ? 'gainsboro': ''}"

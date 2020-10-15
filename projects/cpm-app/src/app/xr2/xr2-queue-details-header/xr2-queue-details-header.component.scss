@@ -3,7 +3,7 @@
   margin-right: 10px;
 }
 
-.header {
+.header-container {
   display: flex;
   flex-direction: row;
   flex: auto;
@@ -20,12 +20,4 @@
 
 #searchBox {
   margin-left: auto;
-}
-
-.button-panel-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 250px; // same as Actions column width - 20px for margin
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
 }

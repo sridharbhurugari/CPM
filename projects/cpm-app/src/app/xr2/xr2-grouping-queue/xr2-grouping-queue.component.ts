@@ -92,8 +92,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   constructor(
     private windowService: WindowService,
     private translateService: TranslateService,
-    private location: Location,
-    private wpfActionController: WpfActionControllerService,
     private router: Router) {
   }
 
@@ -101,16 +99,13 @@ export class Xr2GroupingQueueComponent implements OnInit {
     this.setTranslations();
   }
 
-  back() {
-    this.wpfActionController.ExecuteContinueAction();
-  }
 
   onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
     console.log(picklistQueueGrouped);
     this.releaseEvent.emit(picklistQueueGrouped);
   }
 
-  onDetailsClick() {
+  onDetailsClick(): void {
     this.router.navigate(['/xr2Queue/details']);
   }
 
@@ -153,16 +148,12 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
   }
 
-  onBackClick() {
-    this.location.back();
-  }
-
   /* istanbul ignore next */
   onOutputDeviceSelectionChanged($event, picklistQueueGrouped: PicklistQueueGrouped) {
     picklistQueueGrouped.OutputDeviceId = $event.value;
   }
 
-  columnSelected(event: IColHeaderSortChanged) {
+  columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
     this.picklistQueueGrouped = this.sort(this.picklistQueueGrouped, event.SortDirection);

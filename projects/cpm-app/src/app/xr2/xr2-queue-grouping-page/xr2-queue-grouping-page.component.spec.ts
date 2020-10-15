@@ -5,18 +5,21 @@ import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { Subject, of, Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { Input, Component } from '@angular/core';
-import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
-  FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+         FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
+import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'oc-search-box',
@@ -52,8 +55,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
-        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchBox,
-         MockSearchPipe, MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent ],
+        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
+        MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistQueueService },
@@ -62,6 +65,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
+        { provide: Location, useValue: { go: () => {}} },
+        { provide: Router, useValue: { data: () => {}} },
       ]
     })
     .compileComponents();
@@ -73,7 +78,62 @@ describe('Xr2QueueGroupingPageComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //    expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+     expect(component).toBeTruthy();
+  });
+
+  describe('Services', () => {
+    it('should call picklistQueueService', fakeAsync(() => {
+      const spy = picklistQueueService.get;
+      component.ngOnInit();
+      tick();
+      expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+    }));
+  });
+
+  describe('Eventing', () => {
+    it('should subscribe to events', () => {
+      expect(component).toBeTruthy();
+      expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
+    });
+
+    it('should reload on reloadPicklistQueueItemsSubject event', fakeAsync(() => {
+      component.ngOnInit();
+      tick();
+      expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+      const currentCallCount = spyPicklistQueueServiceGet.calls.count();
+      picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
+      tick();
+      expect(spyPicklistQueueServiceGet.calls.count()).toBeGreaterThan(currentCallCount);
+    }));
+
+    it('should update search filter text on search filter event', () => {
+      const filter = 'filter';
+
+      component.onSearchTextFilter(filter);
+
+      expect(component.searchTextFilter).toBe(filter);
+    });
+  });
+
+  // TODO: update with API logic
+  describe('API actions', () => {
+    it('should reroute on true dialogue result', () => {
+      const reroutableItem = new PicklistQueueItem(null);
+      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
+
+      component.processReroute([reroutableItem]);
+
+      expect(dialogueSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not reroute on false dialogue result', () => {
+      const reroutableItem = new PicklistQueueItem(null);
+      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
+
+      component.processReroute([reroutableItem]);
+
+      expect(dialogueSpy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
