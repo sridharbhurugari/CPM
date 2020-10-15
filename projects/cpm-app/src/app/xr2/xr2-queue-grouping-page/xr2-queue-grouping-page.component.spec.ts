@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page.component';
 import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr2-queue-grouping-header.component';
@@ -19,6 +19,7 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'oc-search-box',
@@ -79,5 +80,60 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
   it('should create', () => {
      expect(component).toBeTruthy();
+  });
+
+  describe('Services', () => {
+    it('should call picklistQueueService', fakeAsync(() => {
+      const spy = picklistQueueService.get;
+      component.ngOnInit();
+      tick();
+      expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+    }));
+  });
+
+  describe('Eventing', () => {
+    it('should subscribe to events', () => {
+      expect(component).toBeTruthy();
+      expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
+    });
+
+    it('should reload on reloadPicklistQueueItemsSubject event', fakeAsync(() => {
+      component.ngOnInit();
+      tick();
+      expect(spyPicklistQueueServiceGet).toHaveBeenCalled();
+      const currentCallCount = spyPicklistQueueServiceGet.calls.count();
+      picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.next();
+      tick();
+      expect(spyPicklistQueueServiceGet.calls.count()).toBeGreaterThan(currentCallCount);
+    }));
+
+    it('should update search filter text on search filter event', () => {
+      const filter = 'filter';
+
+      component.onSearchTextFilter(filter);
+
+      expect(component.searchTextFilter).toBe(filter);
+    });
+  });
+
+  // TODO: update with API logic
+  describe('API actions', () => {
+    it('should reroute on true dialogue result', () => {
+      const reroutableItem = new PicklistQueueItem(null);
+      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
+
+      component.processReroute([reroutableItem]);
+
+      expect(dialogueSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not reroute on false dialogue result', () => {
+      const reroutableItem = new PicklistQueueItem(null);
+      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
+
+      component.processReroute([reroutableItem]);
+
+      expect(dialogueSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });

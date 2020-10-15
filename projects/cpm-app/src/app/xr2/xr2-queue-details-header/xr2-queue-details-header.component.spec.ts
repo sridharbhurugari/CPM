@@ -39,4 +39,14 @@ describe('Xr2QueueDetailsHeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('Button Actions', () => {
+    it('should emit back event on back click', () => {
+      const backEventSpy = spyOn(component.backEvent, 'emit');
+
+      component.onBackClick();
+
+      expect(backEventSpy).toHaveBeenCalledTimes(1);
+    });
+  });
 });

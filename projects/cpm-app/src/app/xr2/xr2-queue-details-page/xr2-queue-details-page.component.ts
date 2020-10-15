@@ -10,7 +10,6 @@ import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.se
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omnicell/webcorecomponents';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
-import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';

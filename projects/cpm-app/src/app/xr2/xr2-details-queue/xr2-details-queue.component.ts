@@ -110,19 +110,13 @@ export class Xr2DetailsQueueComponent implements OnInit {
   constructor(
     private windowService: WindowService,
     private translateService: TranslateService,
-    private location: Location,
-    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-    private wpfActionController: WpfActionControllerService) {
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService) {
       this.configureEventHandlers();
   }
 
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
-  }
-
-  back(): void {
-    this.wpfActionController.ExecuteContinueAction();
   }
 
   onRerouteClick(picklistQueueItem: PicklistQueueItem): void {
@@ -237,14 +231,6 @@ export class Xr2DetailsQueueComponent implements OnInit {
     return label;
   }
 
-  onBackClick(): void {
-    this.location.back();
-  }
-
-  clearSelectedItems(): void {
-    this.selectedItems.clear();
-  }
-
   onSelectAllCheckBox(boxState: any): void {
     if (boxState.selectedState) {
       this.picklistQueueItems.map((item) => this.selectedItems.add(item));
@@ -290,6 +276,10 @@ export class Xr2DetailsQueueComponent implements OnInit {
 
   sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  private clearSelectedItems(): void {
+    this.selectedItems.clear();
   }
 
   private configureEventHandlers(): void {

@@ -74,20 +74,10 @@ export class Xr2GroupingQueueComponent implements OnInit {
   constructor(
     private windowService: WindowService,
     private translateService: TranslateService,
-    private location: Location,
-    private wpfActionController: WpfActionControllerService,
     private router: Router) {
   }
 
   ngOnInit() {
-  }
-
-  back(): void {
-    this.wpfActionController.ExecuteContinueAction();
-  }
-
-  onRerouteClick(): void {
-    this.rerouteEvent.emit();
   }
 
   onReleaseClick(): void {
@@ -114,7 +104,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
     return {
-      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem) || picklistQueueItem.Status > 1,
+      disabled : !picklistQueueItem.Releaseable ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
       text: this.translationMap.RELEASE
     };
   }
@@ -136,10 +126,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
     });
 
     return new SingleselectRowItem(translatedLabel, selectedDevice.DeviceId);
-  }
-
-  onBackClick(): void {
-    this.location.back();
   }
 
   /* istanbul ignore next */
