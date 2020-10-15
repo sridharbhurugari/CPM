@@ -40,7 +40,7 @@
             <span class="priority-description">{{picklistQueueGroup.PriorityCodeDescription}}</span>
             <app-cp-data-label
               [data]="picklistQueueGroup.AreaCount"
-              [label]="getCountLabel(picklistQueueGroup.NewCount, picklistQueueGroup.DestinationType) | translate"
+              [label]="getAreaCountLabel(picklistQueueGroup.AreaCount) | translate"
             ></app-cp-data-label> 
           </div>
         </div>

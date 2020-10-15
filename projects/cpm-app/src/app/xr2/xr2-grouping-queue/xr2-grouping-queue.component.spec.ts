@@ -188,7 +188,7 @@ describe('Xr2GroupingQueueComponent', () => {
       const patientItem1 = new PicklistQueueGrouped(null);
       const patientItem2 = new PicklistQueueGrouped(null);
       patientItem1.NewCount = 1;
-      patientItem1.NewCount = 2;
+      patientItem2.NewCount = 2;
       patientItem1.DestinationType = DestinationTypes.Patient;
       patientItem2.DestinationType = DestinationTypes.Patient;
 
@@ -199,14 +199,14 @@ describe('Xr2GroupingQueueComponent', () => {
       expect(label1).toBe(expectedLabel1);
       expect(label2).toBe(expectedLabel2);
     });
-    
+
     it('should display cabinet/cabinetss priority labels on patient destination type', () => {
       const expectedLabel1 = 'CABINET';
       const expectedLabel2 = 'CABINETS';
       const patientItem1 = new PicklistQueueGrouped(null);
       const patientItem2 = new PicklistQueueGrouped(null);
       patientItem1.NewCount = 1;
-      patientItem1.NewCount = 2;
+      patientItem2.NewCount = 2;
       patientItem1.DestinationType = DestinationTypes.Omni;
       patientItem2.DestinationType = DestinationTypes.Omni;
 
@@ -224,7 +224,7 @@ describe('Xr2GroupingQueueComponent', () => {
       const patientItem1 = new PicklistQueueGrouped(null);
       const patientItem2 = new PicklistQueueGrouped(null);
       patientItem1.NewCount = 1;
-      patientItem1.NewCount = 2;
+      patientItem2.NewCount = 2;
       patientItem1.DestinationType = DestinationTypes.Area;
       patientItem2.DestinationType = DestinationTypes.Area;
 

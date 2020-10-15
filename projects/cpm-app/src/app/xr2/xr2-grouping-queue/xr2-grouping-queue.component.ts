@@ -177,6 +177,13 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return label;
   }
 
+  getAreaCountLabel(areaCount: number) {
+    let label = '';
+
+    label = areaCount === 1 ? this.translationMap.AREA : this.translationMap.AREAS;
+    return label;
+  }
+
   private setTranslations() {
     this.translations$ = this.translateService.get(this.translatables);
   }
