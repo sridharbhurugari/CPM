@@ -131,8 +131,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   displayDeletePromptDialog(underfilledPicklist: UnderfilledPicklist) {
     const properties = new PopupWindowProperties();
     const data: IConfirmPopupData = {
-      headerResourceKey: 'UNFILLED_DELET_PICKLIST_PROMPT_TITLE',
-      confirmTextboxResourceKey: 'UNFILLED_DELET_PICKLIST_PROMPT_MESSAGE'
+      headerResourceKey: 'UNFILLED_DELETE_PICKLIST_PROMPT_TITLE',
+      confirmTextboxResourceKey: 'UNFILLED_DELETE_PICKLIST_PROMPT_MESSAGE'
     };
 
     properties.data = data;
