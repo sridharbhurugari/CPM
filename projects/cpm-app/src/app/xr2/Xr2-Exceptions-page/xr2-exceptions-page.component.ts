@@ -184,7 +184,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     this.showthedetailspageordialog();
   }
   navigatedetailspage(exceptions: IXr2ExceptionsItem) {
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`stocking/exceptiondetails`, { TrayID: exceptions.TrayID.toString(), DeviceID: exceptions.DeviceID, CompletedDateTime: exceptions.CompletedDateTime, DeviceName: exceptions.DeviceName, TrayDescription: exceptions.TrayDescription });
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`xr2/stocking/exceptiondetails`, { TrayID: exceptions.TrayID.toString(), DeviceID: exceptions.DeviceID, CompletedDateTime: exceptions.CompletedDateTime, DeviceName: exceptions.DeviceName, TrayDescription: exceptions.TrayDescription });
   }
   showthedetailspageordialog()
   {
