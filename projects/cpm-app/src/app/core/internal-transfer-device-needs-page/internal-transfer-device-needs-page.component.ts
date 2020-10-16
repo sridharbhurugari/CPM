@@ -16,11 +16,6 @@ import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
 import * as _ from 'lodash';
 import { findIndex } from 'lodash';
-import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-needs-operation-result';
-import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
-import { of } from 'rxjs/internal/observable/of';
-import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
-import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -34,15 +29,14 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   xferQtyHeaderKey = 'QTY_TO_XFER';
   qtyPendingHeaderKey = 'QTY_PENDING_PICK';
   itemNeeds$: Observable<IItemReplenishmentNeed[]>;
+  reportItemNeeds$: Observable<IItemReplenishmentNeed[]>;
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
   reportTitle$: Observable<string>;
-  requestStatus: 'none' | 'picking' | 'printing' = 'none';
+  requestStatus: 'none' | 'printing' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
   deviceId: number;
-  itemsToPick: IItemReplenishmentNeed[] = new Array();
-  sortedNeeds$: Observable<IItemReplenishmentNeed[]>;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -55,7 +49,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
   ) {
-    this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.deviceId = Number(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
@@ -66,70 +60,74 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     this.itemNeeds$.subscribe(needs => {
       this.isXr2Item = needs[0].Xr2Item;
     });
+
   }
 
   ngOnInit() {
+    this.reportItemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
+    this.reportItemNeeds$ = this.reportItemNeeds$.pipe(
+      map(need => {
+        need.forEach(element =>
+        {
+            element.SortFormattedName = element.ItemFormattedGenericName;
+            if(element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemFormattedGenericName.match(reg);
+              element.ItemFormattedDescription =  parts.join('\n');
+              element.ItemFormattedGenericName = '';
+            }
+            if(element.ItemBrandName && element.ItemBrandName.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemBrandNameDescription =  parts.join('\n');
+              element.ItemBrandName = '';
+            }  
+            if(element.ItemId && element.ItemId.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemIdDescription =  parts.join('\n');
+              element.ItemId = '';
+            }
+          })
+        return need;
+      })
+    );
   }
 
   goBack() {
     this.wpfActionControllerService.ExecuteBackAction();
   }
 
-  onSelect(items: IItemReplenishmentNeed[]) {
-    this.itemsToPick = items;
-  }
-
-  pick() {
-    if (this.itemsToPick.length > 0) {
-      this.requestStatus = 'picking';
-      var picksByItemId = _.groupBy(this.itemsToPick, x => x.ItemId);
-      const items: IInterDeviceTransferPickRequest[] = new Array<IInterDeviceTransferPickRequest>();
-      for(var itemId in picksByItemId){
-        const itemPicks = picksByItemId[itemId];
-        const item = {
-          ItemId: itemId,
-          QuantityToPick: itemPicks.map(x => x.DeviceQuantityNeeded).reduce((total, value) => total + value),
-          SourceDeviceLocationId: itemPicks[0].PickLocationDeviceLocationId
-        };
-        items.push(item);
-      }
-
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
-    } else {
-      this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
-    }
-  }
-
   print() {
+    this.requestStatus = 'printing';
     let colDefinitions: ITableColumnDefintion<IItemReplenishmentNeed>[];
 
     if (this.isXr2Item) {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'DisplayPackageSize' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormattedDescription', 'ItemBrandName','ItemBrandNameDescription', 'ItemId','ItemIdDescription', 'PackageSize' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'DisplayDeviceQuantityOnHand', 'DisplayQohNumberOfPackages' ],
+        { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'QohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'DisplayDeviceQuantityNeeded', 'DisplayNumberOfPackages' ],
+        { cellPropertyNames: [ 'DeviceQuantityNeeded', 'UnitOfIssue', 'NumberOfPackages' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
     } else {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormattedDescription', 'ItemBrandName','ItemBrandNameDescription', 'ItemId','ItemIdDescription' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
-        { cellPropertyNames: [ 'DisplayDeviceQuantityOnHand' ],
+        { cellPropertyNames: [ 'QohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
-        { cellPropertyNames: [ 'DisplayDeviceQuantityNeeded' ],
+        { cellPropertyNames: [ 'NumberOfPackages' ],
             headerResourceKey: this.xferQtyHeaderKey, width: '*' },
         { cellPropertyNames: [ 'PendingDevicePickQuantity' ], headerResourceKey: this.qtyPendingHeaderKey, width: '*' },
       ];
     }
 
-    this.requestStatus = 'printing';
-    this.sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-        return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
-      }));
-    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.sortedNeeds$);
+    const sortedNeeds$ = this.reportItemNeeds$.pipe(map(needs => {
+      return _.orderBy(needs, x => x.SortFormattedName.toLocaleLowerCase(), 'asc');
+    }));
+    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
@@ -145,16 +143,5 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
-  }
-
-  private handlePickSuccess() {
-    this.itemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
-    this.requestStatus = 'none';
-  }
-
-  private handlePickFailure() {
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE', 'INTERNAL_TRANS_PICKQUEUE_FAILED_MSG');
-    this.requestStatus = 'none';
   }
 }
