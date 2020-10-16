@@ -1,0 +1,28 @@
+<ng-container>
+  <app-xr2-queue-button-panel class="button-panel"
+    [ngClass]="{'multi-select-mode': multiSelectMode}"
+    [releaseDisabled]="this.actionPicklistItemsDisableMap.get(outputDeviceAction.Release).size > 0
+                      || !multiSelectMode"
+    [printDisabled]="this.actionPicklistItemsDisableMap.get(outputDeviceAction.Print).size > 0
+                    || !multiSelectMode"
+    [rerouteDisabled]="this.actionPicklistItemsDisableMap.get(outputDeviceAction.Reroute).size > 0
+                      || !multiSelectMode"
+    (rerouteEvent)="processReroute(selectedItems)"
+    (releaseEvent)="processRelease(selectedItems)"
+    (printEvent)="processPrint(selectedItems)">
+  </app-xr2-queue-button-panel>
+  <app-xr2-queue-details-header
+    (backEvent)="onBackClick()"
+    (searchTextFilterEvent)='onSearchTextFilter($event)'>
+  </app-xr2-queue-details-header>
+  <app-xr2-details-queue
+    [picklistQueueItems]="picklistsQueueItems | async"
+    [searchTextFilter]="searchTextFilter"
+    [clearSelectedItemsEvent] = "clearSelectedItemsSubject.asObservable()"
+    (failedEvent)="displayXr2QueueError()"
+    (selectionChangedEvent)="onGridSelectionChanged($event)"
+    (releaseEvent)="processRelease($event)"
+    (rerouteEvent)="processReroute($event)"
+    (printEvent)="processPrint($event)">
+  </app-xr2-details-queue>
+</ng-container>
