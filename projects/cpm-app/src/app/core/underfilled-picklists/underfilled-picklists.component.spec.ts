@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UnderfilledPicklistsComponent } from './underfilled-picklists.component';
-import { GridModule, PopupWindowModule, PopupDialogModule, ButtonActionModule, PopupWindowService, PopupDialogService } from '@omnicell/webcorecomponents';
+import { GridModule } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
@@ -9,12 +9,6 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
-import { HttpClientModule } from '@angular/common/http';
-import { WindowService } from '../../shared/services/window-service';
-import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
-import { of } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 describe('UnderfilledPicklistsComponent', () => {
   let component: UnderfilledPicklistsComponent;
   let fixture: ComponentFixture<UnderfilledPicklistsComponent>;
@@ -29,17 +23,11 @@ describe('UnderfilledPicklistsComponent', () => {
         MockSearchPipe,
         MockColHeaderSortable,
         MockAppHeaderContainer,
-        MockCpClickableIconComponent
       ],
       providers: [
-        { provide: WpfActionControllerService, useValue: []},
-        { provide: WindowService, useValue: [] },
-        { provide: UnderfilledPicklistsService, useValue: { delete: () => of([]),  doesUserHaveDeletePicklistPermissions: () => of([]) } },
-        { provide: PopupWindowService, useValue: [] },
-        { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: PopupDialogService, useValue: [] },
+        { provide: WpfActionControllerService, useVaule: { }}
       ],
-      imports: [ GridModule, HttpClientModule, PopupWindowModule, PopupDialogModule, ButtonActionModule ]
+      imports: [ GridModule ]
     })
     .compileComponents();
   }));
