@@ -1,10 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { FooterModule, LayoutModule, ButtonActionModule } from '@omnicell/webcorecomponents';
-
+import { FooterModule, LayoutModule, ButtonActionModule, PopupWindowService } from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
@@ -20,6 +18,9 @@ import { MockedDatePipe} from '../testing/mock-date-pipe.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { DatePipe } from '@angular/common';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
+import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
+import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
+import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
@@ -28,6 +29,11 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let printWithBaseData: jasmine.Spy;
+  let dialogService: any;
+  const popupDismissedSubject = new Subject<boolean>();
+  const popupResult: Partial<ConfirmPopupComponent> = { dismiss: popupDismissedSubject };
+  const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
+
   const date = new Date();
   const pickListLinesData: UnderfilledPicklistLine[] = [{
     IsChecked: false, PicklistLineId: 'pllid1241',
@@ -61,7 +67,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: () => { } };
     spyOn(wpfActionControllerService, 'ExecuteBackAction');
-    printWithBaseData = jasmine.createSpy('printWithBaseData');
+     printWithBaseData = jasmine.createSpy('printWithBaseData');
     const pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData
     };
@@ -70,6 +76,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       displayInfoOk: jasmine.createSpy('displayInfoOk'),
     };
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
+    const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
+    const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
+    dialogService = { show: showSpy };
 
     TestBed.configureTestingModule({
       declarations: [
@@ -82,13 +91,17 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       providers: [
         { provide: UnderfilledPicklistLinesService, useValue: { get: () => of([]) } },
         { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of() } },
+        { provide: UnderfilledPicklistsService, useValue: { doesUserHaveDeletePicklistPermissions: () => of(true) } },
+
+        { provide: ResetPickRoutesService, useValue: { reset: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
         { provide: PdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
-        { provide: WpfActionControllerService, useValue: wpfActionControllerService }
+        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
+        { provide: PopupWindowService, useValue: dialogService}
       ],
       imports: [
         FooterModule,
