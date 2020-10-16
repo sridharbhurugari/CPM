@@ -7,17 +7,19 @@ export interface IItemReplenishmentNeed {
     DeviceParLevel: number;
     DeviceRestockLevel: number;
     PendingDevicePickQuantity: number;
-    PackageSize: string;
-    NumberOfPackages: string;
-    QohNumberOfPackages: string;
+    DisplayPackageSize: string;
+    DisplayDeviceQuantityNeeded: string;
+    DisplayNumberOfPackages: string;
+    DisplayDeviceQuantityOnHand: string;
+    DisplayQohNumberOfPackages: string;
     PackSize: number;
     Xr2Item: boolean;
     UnitOfIssue: string;
     PickLocationDeviceLocationId: number;
     PickLocationDescription: string;
     PickLocationQoh: number;
-    ItemFormattedDescription: string;  
-    ItemBrandNameDescription: string; 
-    ItemIdDescription: string; 
-    SortFormattedName: string; 
+    ItemFormattedDescription: string;
+    ItemBrandNameDescription: string;
+    ItemIdDescription: string;
+    SortFormattedName: string;
 }
