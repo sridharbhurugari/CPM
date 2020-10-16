@@ -11,6 +11,43 @@ export class PicklistQueueItem implements IPicklistQueueItem {
     this.TrackById = Guid.create();
   }
 
+  PicklistId: string;
+  OrderId: string;
+  DeviceLocationId: number;
+  ItemPicklistLines: Array<IItemPicklistLine>;
+  PriorityCode: string;
+  PriorityCodeColor: string;
+  Destination: string;
+  OrderGroupDestinationId: string;
+  DestinationType: string;
+  PriorityCodeDescription: string;
+  BoxCount: number;
+  FilledBoxCount: number;
+  Status: number;
+  StatusDisplay: string;
+  DeviceDescription: string;
+  DeviceId: number;
+  OutputDeviceId: string;
+  AvailableOutputDeviceList: Array<OutputDevice>;
+  Saving: boolean;
+  TrackById: Guid;
+  ItemCount: number;
+  IsPrintable: boolean;
+  SequenceOrder: number;
+  RobotPickGroupId: Guid;
+
+  get Releaseable() {
+    return this.Status === 1 && !this.Saving;
+  }
+
+  get Printable() {
+    return this.Status > 2 && this.IsPrintable && !this.Saving;
+  }
+
+  get Reroutable() {
+    return true;
+  }
+
   static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson){
     return new this({
       AvailableOutputDeviceList: picklistQueueItem.AvailableOutputDeviceList.$values,
@@ -37,29 +74,4 @@ export class PicklistQueueItem implements IPicklistQueueItem {
       SequenceOrder: picklistQueueItem.SequenceOrder
     });
   }
-
-  PicklistId: string;
-  OrderId: string;
-  DeviceLocationId: number;
-  ItemPicklistLines: Array<IItemPicklistLine>;
-  PriorityCode: string;
-  PriorityCodeColor: string;
-  Destination: string;
-  OrderGroupDestinationId: string;
-  DestinationType: string;
-  PriorityCodeDescription: string;
-  BoxCount: number;
-  FilledBoxCount: number;
-  Status: number;
-  StatusDisplay: string;
-  DeviceDescription: string;
-  DeviceId: number;
-  OutputDeviceId: string;
-  AvailableOutputDeviceList: Array<OutputDevice>;
-  Saving: boolean;
-  TrackById: Guid;
-  ItemCount: number;
-  IsPrintable: boolean;
-  SequenceOrder: number;
-  RobotPickGroupId: Guid;
 }
