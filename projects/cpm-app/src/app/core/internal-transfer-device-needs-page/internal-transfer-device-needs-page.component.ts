@@ -29,38 +29,69 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   xferQtyHeaderKey = 'QTY_TO_XFER';
   qtyPendingHeaderKey = 'QTY_PENDING_PICK';
   itemNeeds$: Observable<IItemReplenishmentNeed[]>;
+  reportItemNeeds$: Observable<IItemReplenishmentNeed[]>;
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' = 'none';
   reportBaseData$: Observable<IAngularReportBaseData>;
   isXr2Item: boolean;
+  deviceId: number;
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
     private pdfGridReportService: PdfGridReportService,
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
+    private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
-    deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
   ) {
-    const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
-    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === deviceId)));
+    this.deviceId = Number(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));
-    this.itemNeeds$ = deviceReplenishmentNeedsService.getDeviceItemNeeds(deviceId).pipe(shareReplay(1));
+    this.itemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
 
     this.itemNeeds$.subscribe(needs => {
       this.isXr2Item = needs[0].Xr2Item;
     });
+
   }
 
   ngOnInit() {
+    this.reportItemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
+    this.reportItemNeeds$ = this.reportItemNeeds$.pipe(
+      map(need => {
+        need.forEach(element =>
+        {
+            element.SortFormattedName = element.ItemFormattedGenericName;
+            if(element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemFormattedGenericName.match(reg);
+              element.ItemFormattedDescription =  parts.join('\n');
+              element.ItemFormattedGenericName = '';
+            }
+            if(element.ItemBrandName && element.ItemBrandName.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemBrandNameDescription =  parts.join('\n');
+              element.ItemBrandName = '';
+            }  
+            if(element.ItemId && element.ItemId.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemIdDescription =  parts.join('\n');
+              element.ItemId = '';
+            }
+          })
+        return need;
+      })
+    );
   }
 
   goBack() {
@@ -73,7 +104,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
     if (this.isXr2Item) {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'PackageSize' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormattedDescription', 'ItemBrandName','ItemBrandNameDescription', 'ItemId','ItemIdDescription', 'PackageSize' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
         { cellPropertyNames: [ 'DeviceQuantityOnHand', 'UnitOfIssue', 'QohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
@@ -83,7 +114,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       ];
     } else {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormattedDescription', 'ItemBrandName','ItemBrandNameDescription', 'ItemId','ItemIdDescription' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
         { cellPropertyNames: [ 'QohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
@@ -93,8 +124,8 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       ];
     }
 
-    const sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-      return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
+    const sortedNeeds$ = this.reportItemNeeds$.pipe(map(needs => {
+      return _.orderBy(needs, x => x.SortFormattedName.toLocaleLowerCase(), 'asc');
     }));
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
