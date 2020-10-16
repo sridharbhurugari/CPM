@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
+import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -186,5 +187,17 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   private setTranslations() {
     this.translations$ = this.translateService.get(this.translatables);
+  }
+
+  updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
+    const grouping = new PicklistQueueGrouped(picklistGrouped);
+    let matchingGrouped = _.find(this.picklistQueueGrouped, (x) => {
+      return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
+     });
+    if (!matchingGrouped) {
+      this.picklistQueueGrouped.push(grouping);
+     } else {
+      matchingGrouped = grouping;
+     }
   }
 }

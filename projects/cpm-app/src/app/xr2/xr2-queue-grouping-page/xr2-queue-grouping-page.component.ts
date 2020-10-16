@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { map, flatMap, shareReplay } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
+import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -18,6 +19,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
+  @ViewChild(Xr2GroupingQueueComponent, null) chileGroupingQueueComponent: Xr2GroupingQueueComponent;
 
   translatables = [
     'YES',
@@ -50,11 +52,23 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     picklistQueueGrouped.Saving = true;
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
-        picklistQueueGrouped.Saving = false;
+        this.picklistsQueueService.getGroupedFiltered(
+          picklistQueueGrouped.DeviceId,
+          picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
+              this.UpdatePickListQueueGroupedList(getGroupedResult);
+              picklistQueueGrouped.Saving = false;
+          }, getGroupedResult => {
+              picklistQueueGrouped.Saving = false;
+              this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
+          });
       }, result => {
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();
       });
+  }
+
+  private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
+    this.chileGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {
