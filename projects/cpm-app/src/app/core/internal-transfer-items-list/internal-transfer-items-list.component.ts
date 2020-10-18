@@ -1,8 +1,10 @@
-import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { nameof } from '../../shared/functions/nameof';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
+import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
+import { CheckboxValues } from '../../shared/constants/checkbox-values';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -20,6 +22,12 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   readonly PickLocationDescriptionPropertyName: string = nameof<IItemReplenishmentNeed>('PickLocationDescription');
   readonly PickLocationQohPropertyName: string = nameof<IItemReplenishmentNeed>('PickLocationQoh');
   private _itemNeeds: IItemReplenishmentNeed[];
+
+  selectedItemNeeds: IItemReplenishmentNeed[] = new Array();
+
+  checkboxToggleAll: string = CheckboxValues.ToggleAll;
+
+  areAllValuesSelected: boolean;
 
   searchPropertyNames: string[] = [
     this.itemDescriptionPropertyName,
@@ -43,6 +51,14 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   })
   searchElement: SearchBoxComponent;
 
+  @ViewChild('headerCheckContainer', {
+    static: true
+  })
+  headerCheckContainer: ElementRef;
+
+  @Output()
+  selectionChanged: EventEmitter<IItemReplenishmentNeed[]> = new EventEmitter();
+
   constructor(
     private windowService: WindowService
   ) { }
@@ -53,5 +69,16 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
       this.searchTextFilter = data;
       this.windowService.dispatchResizeEvent();
     });
+    this.fixCheckAllNoneClass();
+  }
+
+  selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>) {
+    this.selectedItemNeeds = selectionEvent.selectedValues;
+    this.selectionChanged.next(this.selectedItemNeeds);
+    this.areAllValuesSelected = selectionEvent.areAllValuesSelected;
+  }
+
+  private fixCheckAllNoneClass() {
+    this.headerCheckContainer.nativeElement.className = 'first';
   }
 }
