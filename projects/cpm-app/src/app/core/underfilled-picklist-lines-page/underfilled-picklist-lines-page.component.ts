@@ -23,6 +23,9 @@ import {   PopupDialogService,
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import * as _ from 'lodash';
 import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
+import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
+import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
+import { OperationType } from '../../api-core/data-contracts/operation-type';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -52,6 +55,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   currentItemCountSelected = 0;
   buttonEnabled = false;
   buttonVisible = false;
+  orderId: string;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -64,6 +68,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
+    private workstationTrackerService: WorkstationTrackerService
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -72,6 +77,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
     const orderId = this.route.snapshot.queryParamMap.get('orderId');
+    this.orderId = orderId;
     const datePipe = new DatePipe('en-US');
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
     this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
@@ -143,26 +149,54 @@ getButtonEnabled(): boolean  {
   }
 
   reroute() {
-    this.requestStatus = 'reroute';
-    const selected: string[] = this.getSelected();
-    this.resetPickRoutesService.reset(selected).subscribe(succeeded => {
-      this.requestStatus = 'none';
-      this.clearCheckedItems();
-      this.exitIfListIsEmpty();
+    this.executeFunctionIfPicklistIsNotTracked(this.performReroute);
+  }
+
+  performReroute(scope) {
+    scope.requestStatus = 'reroute';
+    const selected: string[] = scope.getSelected();
+    scope.resetPickRoutesService.reset(selected).subscribe(succeeded => {
+      scope.requestStatus = 'none';
+      scope.clearCheckedItems();
+      scope.exitIfListIsEmpty();
     }, err => {
-      this.onRerouteFailed(err);
+      scope.onRerouteFailed(err);
     });
   }
 
   close() {
-    this.requestStatus = 'complete';
-    const selected: string[] = this.getSelected();
-    this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
-      this.requestStatus = 'none';
-      this.clearCheckedItems();
-      this.exitIfListIsEmpty();
+    this.executeFunctionIfPicklistIsNotTracked(this.performClose);
+  }
+
+  performClose(scope) {
+    scope.requestStatus = 'complete';
+    const selected: string[] = scope.getSelected();
+    scope.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
+      scope.requestStatus = 'none';
+      scope.clearCheckedItems();
+      scope.exitIfListIsEmpty();
     }, err => {
-      this.onCloseFailed(err);
+      scope.onCloseFailed(err);
+    });
+  }
+
+  executeFunctionIfPicklistIsNotTracked(callbackFunction) {
+    const workstationTrackerData: WorkstationTrackerData = {
+      Id: this.orderId,
+      Operation: OperationType.Pick,
+      ConnectionId: null,
+      WorkstationShortName: null
+    };
+    const scope = this;
+    this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(succeeded => {
+      if (succeeded.length === 0) {
+        callbackFunction(scope);
+        return;
+      }
+
+      alert('picklist is in use');
+    }, err => {
+      alert('failed to get workstations');
     });
   }
 

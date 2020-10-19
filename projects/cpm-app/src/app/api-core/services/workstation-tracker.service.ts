@@ -15,29 +15,30 @@ export class WorkstationTrackerService {
     private ocapHttpHeadersService: OcapHttpHeadersService
     ) { }
 
-    public GetWorkstationShortNames(workstationTrackerData: WorkstationTrackerData): Observable<string[]>{
-      var url = this.ocapUrlBuilderService.buildUrl('api/WorkstationTracker/GetWorkstationShortNames');
+    public GetWorkstationShortNames(workstationTrackerData: WorkstationTrackerData): Observable<string[]> {
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/GetWorkstationShortNames');
+      var headers = this.ocapHttpHeadersService.getHeaders();
       return this.httpClient.post<string[]>(url, workstationTrackerData, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
 
-    public GetAllWorkstationTrackerData(): Observable<string[]>{
-      var url = this.ocapUrlBuilderService.buildUrl('api/WorkstationTracker/GetAllWorkstationTrackerData');
-      return this.httpClient.post<string[]>(url, {
+    public GetAllWorkstationTrackerData(): Observable<string[]> {
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/GetAllWorkstationTrackerData');
+      return this.httpClient.post<string[]>(url, {}, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
 
-    public Track(workstationTrackerData: WorkstationTrackerData): Observable<string[]>{
-      var url = this.ocapUrlBuilderService.buildUrl('api/WorkstationTracker/Track');
+    public Track(workstationTrackerData: WorkstationTrackerData): Observable<string[]> {
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/Track');
       return this.httpClient.post<string[]>(url, workstationTrackerData, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
 
     public UnTrack(workstationTrackerData: WorkstationTrackerData): Observable<string[]>{
-      var url = this.ocapUrlBuilderService.buildUrl('api/WorkstationTracker/UnTrack');
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/UnTrack');
       return this.httpClient.post<string[]>(url, workstationTrackerData, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
