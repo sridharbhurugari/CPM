@@ -43,6 +43,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
+  _selectedDeviceInformation;
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -62,6 +63,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
   get searchTextFilter(): string {
     return this._searchTextFilter;
   }
+
+  @Input()
+  set selectedDeviceInformation(value: string) {
+    this._selectedDeviceInformation = value;
+  }
+  get selectedDeviceInformation(): string {
+    return this.selectedDeviceInformation;
+  }
+
 
   searchElement: SearchBoxComponent;
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('PriorityCodeDescription'),

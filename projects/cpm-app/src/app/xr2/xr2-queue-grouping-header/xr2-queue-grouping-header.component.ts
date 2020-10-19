@@ -1,11 +1,12 @@
 import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WindowService } from '../../shared/services/window-service';
 import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
 import { OcapHttpConfigurationService } from "../../shared/services/ocap-http-configuration.service";
-import { Xr2QuickPickQueueDeviceService } from "../../api-xr2/services/xr2-quick-pick-queue-device.service";
+import { DevicesService } from '../../api-core/services/devices.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-xr2-queue-grouping-header',
@@ -16,6 +17,7 @@ import { Xr2QuickPickQueueDeviceService } from "../../api-xr2/services/xr2-quick
 export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
+  @Output() selectionChanged: EventEmitter<SingleselectRowItem[]> = new EventEmitter<SingleselectRowItem[]>();
 
   selectedDeviceInformation: SelectableDeviceInfo;
   deviceInformationList: SelectableDeviceInfo[];
@@ -23,21 +25,23 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   defaultDeviceDisplyItem: SingleselectRowItem;
 
   @ViewChild('searchBox', {
-    static: true
-  })
+     static: true
+   }) searchElement: SearchBoxComponent;
+ 
+  @ViewChild('outputDevicesList', null) outputDevicesList: SingleselectComponent;
 
-  searchElement: SearchBoxComponent;
 
   constructor(private windowService: WindowService,
               private ocapHttpConfigurationService: OcapHttpConfigurationService,
-              private quickPickDeviceService: Xr2QuickPickQueueDeviceService) { }
+              private devicesService: DevicesService,
+              private translateService: TranslateService) { }
 
   ngOnInit() {
-    this.getXr2Devices();
+    this.getAllActiveXr2Devices();
   }
 
-  async getXr2Devices() {
-    this.deviceInformationList = await this.quickPickDeviceService.get().toPromise();
+  async getAllActiveXr2Devices() {
+    this.deviceInformationList = await this.devicesService.getallxr2devices().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
@@ -50,7 +54,11 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       );
       newList.push(defaultFound);
     } else {
-      const selectAll = new SingleselectRowItem("All", "All", true);
+      let translatedLabel = '';
+      this.translateService.get("XR2_ALL_DEVICES").subscribe((res: string) => {
+      translatedLabel = res;
+      });
+      const selectAll = new SingleselectRowItem(translatedLabel, "0", true);
       newList.push(selectAll);
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
@@ -79,7 +87,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       this.loadSelectedDeviceInformation(defaultFound.value);
     } else {
       this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(
-        (x) => x.value === "All"
+        (x) => x.value === "0"
        );
     }
   }
@@ -109,5 +117,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+
+
   }
 }

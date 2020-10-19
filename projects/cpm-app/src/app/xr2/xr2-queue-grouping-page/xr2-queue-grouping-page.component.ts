@@ -3,7 +3,7 @@ import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.se
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { map, flatMap, shareReplay } from 'rxjs/operators';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
@@ -20,6 +20,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
   searchTextFilter: string;
+  selectedDeviceInformation: string;
 
   translatables = [
     'YES',
@@ -46,6 +47,10 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   onSearchTextFilter(filterText: string) {
     this.searchTextFilter = filterText;
+  }
+
+  onDeviceSelectionChanged(selectedDevice: SingleselectRowItem){
+    this.selectedDeviceInformation = selectedDevice.value;
   }
 
   processReroute(picklistQueueItem: PicklistQueueItem[]) {
@@ -78,10 +83,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
   private loadPicklistsQueueItems(): void {
+    if(this.selectedDeviceInformation === "0"){
     this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
       return displayObjects;
     }), shareReplay(1));
+  } else{}
   }
 
   private setTranslations() {

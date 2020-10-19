@@ -225,5 +225,6 @@
   "INTERNAL_TRANS_PICKQUEUE_SENT_OK": "Selected internal transfer items have been sent to picking queues.",
   "INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED": "No items have been selected. Nothing sent to picking queues.",
   "INTERNAL_TRANS_PICKQUEUE_FAILED_MSG": "Failed to add items to picking queue.  Please try again.",
-  "INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE": "Add to Picking Queue Failed"
+  "INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE": "Add to Picking Queue Failed",
+   "XR2_ALL_DEVICES": "All Devices"
 }
