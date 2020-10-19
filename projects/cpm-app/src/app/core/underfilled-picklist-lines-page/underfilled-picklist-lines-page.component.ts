@@ -55,7 +55,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   currentItemCountSelected = 0;
   buttonEnabled = false;
   buttonVisible = false;
-  orderId: string;
+  workstationTrackerData: WorkstationTrackerData;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -77,7 +77,12 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
     const orderId = this.route.snapshot.queryParamMap.get('orderId');
-    this.orderId = orderId;
+    this.workstationTrackerData = {
+      Id: orderId,
+      Operation: OperationType.Pick,
+      ConnectionId: null,
+      WorkstationShortName: null
+    };
     const datePipe = new DatePipe('en-US');
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
     this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
@@ -105,7 +110,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   navigateBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
+    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe(success => {
+      this.wpfActionControllerService.ExecuteBackAction();
+    }, err => {
+      alert('failed to untrack picklist');
+    });
   }
 
   getReportData(datePipe: DatePipe) {
@@ -181,14 +190,8 @@ getButtonEnabled(): boolean  {
   }
 
   executeFunctionIfPicklistIsNotTracked(callbackFunction) {
-    const workstationTrackerData: WorkstationTrackerData = {
-      Id: this.orderId,
-      Operation: OperationType.Pick,
-      ConnectionId: null,
-      WorkstationShortName: null
-    };
     const scope = this;
-    this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(succeeded => {
+    this.workstationTrackerService.GetWorkstationShortNames(this.workstationTrackerData).subscribe(succeeded => {
       if (succeeded.length === 0) {
         callbackFunction(scope);
         return;

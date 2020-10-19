@@ -9,6 +9,9 @@ import { of } from 'rxjs';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import * as _ from 'lodash';
 import { SortDirection } from '../../shared/constants/sort-direction';
+import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
+import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
+import { OperationType } from '../../api-core/data-contracts/operation-type';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -58,6 +61,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   constructor(
     private windowService: WindowService,
     private wpfActionControllerService: WpfActionControllerService,
+    private workstationTrackerService: WorkstationTrackerService
   ) {
   }
 
@@ -77,7 +81,17 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   }
 
   navigate(orderId: string){
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
+    const workstationTrackerData: WorkstationTrackerData = {
+      Id: orderId,
+      Operation: OperationType.Pick,
+      ConnectionId: null,
+      WorkstationShortName: null
+    };
+    this.workstationTrackerService.Track(workstationTrackerData).subscribe(success => {
+      this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
+    }, err => {
+      alert('failed to track picklist');
+    });
   }
 
   columnSelected(event: IColHeaderSortChanged){
