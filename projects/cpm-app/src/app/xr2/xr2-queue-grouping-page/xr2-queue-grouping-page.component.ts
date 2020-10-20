@@ -1,27 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-<<<<<<< HEAD
-import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
-import { Observable, forkJoin, merge, of } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
-import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
-=======
-import { Observable, forkJoin, merge } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
-import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
->>>>>>> fe-595615-xr2-grouping-details-refreshing
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
-<<<<<<< HEAD
-import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
-import {filter} from 'rxjs/operators';
-=======
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
->>>>>>> fe-595615-xr2-grouping-details-refreshing
+import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -32,11 +20,9 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
-<<<<<<< HEAD
   selectedDeviceInformation: SelectableDeviceInfo;
-=======
-  @ViewChild(Xr2GroupingQueueComponent, null) chileGroupingQueueComponent: Xr2GroupingQueueComponent;
->>>>>>> fe-595615-xr2-grouping-details-refreshing
+
+  @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
   translatables = [
     'YES',
@@ -65,21 +51,11 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.searchTextFilter = filterText;
   }
 
-<<<<<<< HEAD
-  onDeviceSelectionChanged($event){
+  onDeviceSelectionChanged($event) {
     this.selectedDeviceInformation = $event;
-   // this.loadPicklistsQueueDeviceItems($event.value);
-     }
+    this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+  }
 
-  processReroute(picklistQueueItem: PicklistQueueItem[]) {
-
-    this.displayRerouteDialog().subscribe(result => {
-      if (!result) {
-        return;
-      }
-      // TODO: load in all items and reroute
-    });
-=======
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
     picklistQueueGrouped.Saving = true;
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
@@ -97,11 +73,10 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();
       });
->>>>>>> fe-595615-xr2-grouping-details-refreshing
   }
 
   private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
-    this.chileGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
+    this.childGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {
@@ -113,40 +88,32 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       .subscribe(() => this.loadPicklistsQueueGrouped());
   }
 
-<<<<<<< HEAD
-  private loadPicklistsQueueItems(): void {
-        this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
-      const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
-=======
   private loadPicklistsQueueGrouped(): void {
     this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
       const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
-      console.log(displayObjects);
->>>>>>> fe-595615-xr2-grouping-details-refreshing
       return displayObjects;
     }), shareReplay(1));
+
+    // if (this.selectedDeviceInformation) {
+    //   this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    // }
   }
-
-  // private loadPicklistsQueueDeviceItems(deviceId: string): Observable<IPicklistQueueItem[]> {
-
-  //      return this.picklistsQueueItems.pipe(map(picklistsQueueItems => picklistsQueueItems.filter(queueItem => queueItem.DeviceId.toString() === deviceId)));
-  // }
 
   private setTranslations() {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-    /* istanbul ignore next */
-    private displayFailedToSaveDialog(): void {
+  /* istanbul ignore next */
+  private displayFailedToSaveDialog(): void {
 
-      const properties = new PopupDialogProperties('Role-Status-Warning');
-      this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-      this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-      this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
-      properties.showPrimaryButton = true;
-      properties.showSecondaryButton = false;
-      properties.dialogDisplayType = PopupDialogType.Error;
-      properties.timeoutLength = 60;
-      this.dialogService.showOnce(properties);
-    }
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
+  }
 }

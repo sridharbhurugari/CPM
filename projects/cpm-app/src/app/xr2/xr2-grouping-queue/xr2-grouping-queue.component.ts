@@ -28,6 +28,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   private _picklistQueueGrouped: PicklistQueueGrouped[];
 
+
   translationMap = {
     RELEASE: 'RELEASE',
     PRINT: 'PRINT',
@@ -59,6 +60,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
     'OF'
   ];
   translations$: Observable<any>;
+
+  @Input() loadedPicklistQueueGrouped: PicklistQueueGrouped[];
 
   @Input()
   set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
@@ -103,6 +106,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
+    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
   }
 
   onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -194,7 +198,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   filterPicklistQueueGroupedByDeviceId(deviceId: number) {
-    this.picklistQueueGrouped = this.picklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
+    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {

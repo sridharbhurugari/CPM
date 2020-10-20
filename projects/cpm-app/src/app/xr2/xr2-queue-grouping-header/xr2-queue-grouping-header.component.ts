@@ -69,8 +69,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
         newList.push(selectRow);
 
-        if (
-          !defaultFound &&
+        if (!defaultFound &&
           selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId
         ) {
           defaultFound = selectRow;
@@ -107,7 +106,9 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   onDeviceSelectionChanged($event) {
     this.searchElement.clearSearch(null);
     this.loadSelectedDeviceInformation($event.value);
-    this.selectionChangedEvent.emit($event);
+    if (this.selectedDeviceInformation) {
+      this.selectionChangedEvent.emit(this.selectedDeviceInformation);
+    }
   }
 
   ngAfterViewInit() {
