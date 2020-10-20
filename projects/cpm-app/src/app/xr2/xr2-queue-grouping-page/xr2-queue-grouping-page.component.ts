@@ -53,7 +53,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   onDeviceSelectionChanged($event) {
     this.selectedDeviceInformation = $event;
-    this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    if (!this.selectedDeviceInformation) {
+      this.childGroupingQueueComponent.loadAllPicklistQueueGrouped();
+      return;
+    }
+
+    if (this.childGroupingQueueComponent.loadedPicklistQueueGrouped) {
+      this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    }
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -93,10 +100,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
       return displayObjects;
     }), shareReplay(1));
-
-    // if (this.selectedDeviceInformation) {
-    //   this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
-    // }
   }
 
   private setTranslations() {

@@ -92,6 +92,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   }
 
   private loadSelectedDeviceInformation(deviceId: string) {
+
     const indexToLoad = this.deviceInformationList.findIndex(
       (deviceInformation) => {
         return deviceInformation.DeviceId.toString() === deviceId;
@@ -100,15 +101,15 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
     if (indexToLoad !== -1) {
       this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
+    } else {
+      this.selectedDeviceInformation = null;
     }
   }
 
   onDeviceSelectionChanged($event) {
     this.searchElement.clearSearch(null);
     this.loadSelectedDeviceInformation($event.value);
-    if (this.selectedDeviceInformation) {
-      this.selectionChangedEvent.emit(this.selectedDeviceInformation);
-    }
+    this.selectionChangedEvent.emit(this.selectedDeviceInformation);
   }
 
   ngAfterViewInit() {

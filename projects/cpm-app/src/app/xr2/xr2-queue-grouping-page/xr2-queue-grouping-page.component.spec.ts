@@ -20,6 +20,7 @@ import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-click
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { DevicesService } from '../../api-core/services/devices.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -36,6 +37,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let fixture: ComponentFixture<Xr2QueueGroupingPageComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistQueueService: Partial<PicklistsQueueService>;
+  let devicesService: Partial<DevicesService>;
   let spyPicklistQueueServiceGetGrouped: jasmine.Spy;
 
 
@@ -48,6 +50,10 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     picklistQueueService = {
       getGrouped: () => of()
+    };
+
+    devicesService = {
+      getallxr2devices: () => of()
     };
 
     spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
@@ -63,6 +69,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
+        { provide: DevicesService, useValue: devicesService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
@@ -106,7 +113,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
       expect(spyPicklistQueueServiceGetGrouped.calls.count()).toBeGreaterThan(currentCallCount);
     }));
 
-    it('should update search filter text on search filter event', () => {
+    fit('should update search filter text on search filter event', () => {
       const filter = 'filter';
 
       component.onSearchTextFilter(filter);

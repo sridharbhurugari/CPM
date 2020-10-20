@@ -66,6 +66,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._loadedPicklistQueueGrouped = value;
     this.picklistQueueGrouped = value;
+    if (value && this.selectedDeviceInformation) {
+      this.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    }
   }
 
   get loadedPicklistQueueGrouped(): PicklistQueueGrouped[] {
@@ -208,6 +211,10 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   filterPicklistQueueGroupedByDeviceId(deviceId: number) {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
+  }
+
+  loadAllPicklistQueueGrouped() {
+    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
