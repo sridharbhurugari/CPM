@@ -12,6 +12,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
 import { Router } from '@angular/router';
+import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -43,7 +44,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
-  _selectedDeviceInformation;
+ _selectedDeviceInformation;
 
   @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
@@ -65,11 +66,11 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   @Input()
-  set selectedDeviceInformation(value: string) {
+  set selectedDeviceInformation(value: SelectableDeviceInfo) {
     this._selectedDeviceInformation = value;
   }
-  get selectedDeviceInformation(): string {
-    return this.selectedDeviceInformation;
+  get selectedDeviceInformation(): SelectableDeviceInfo {
+    return this._selectedDeviceInformation;
   }
 
 

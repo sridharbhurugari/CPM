@@ -1,7 +1,7 @@
 <ng-container>
   <app-xr2-queue-grouping-header
     (searchTextFilterEvent)='onSearchTextFilter($event)'
-    (selectionChanged)="onDeviceSelectionChanged($event)">
+    (selectionChangedEvent)="onDeviceSelectionChanged($event)">
   </app-xr2-queue-grouping-header>
   <app-xr2-grouping-queue
     [picklistQueueItems]="picklistsQueueItems | async"

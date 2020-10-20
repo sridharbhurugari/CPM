@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
-import { Observable, forkJoin, merge } from 'rxjs';
+import { Observable, forkJoin, merge, of } from 'rxjs';
 import { map, flatMap, shareReplay } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
@@ -9,6 +9,8 @@ import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { TranslateService } from '@ngx-translate/core';
+import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -20,7 +22,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
   searchTextFilter: string;
-  selectedDeviceInformation: string;
+  selectedDeviceInformation: SelectableDeviceInfo;
 
   translatables = [
     'YES',
@@ -49,9 +51,10 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.searchTextFilter = filterText;
   }
 
-  onDeviceSelectionChanged(selectedDevice: SingleselectRowItem){
-    this.selectedDeviceInformation = selectedDevice.value;
-  }
+  onDeviceSelectionChanged($event){
+    this.selectedDeviceInformation = $event;
+   // this.loadPicklistsQueueDeviceItems($event.value);
+     }
 
   processReroute(picklistQueueItem: PicklistQueueItem[]) {
 
@@ -83,13 +86,16 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
   private loadPicklistsQueueItems(): void {
-    if(this.selectedDeviceInformation === "0"){
-    this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
+        this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
       return displayObjects;
     }), shareReplay(1));
-  } else{}
   }
+
+  // private loadPicklistsQueueDeviceItems(deviceId: string): Observable<IPicklistQueueItem[]> {
+
+  //      return this.picklistsQueueItems.pipe(map(picklistsQueueItems => picklistsQueueItems.filter(queueItem => queueItem.DeviceId.toString() === deviceId)));
+  // }
 
   private setTranslations() {
     this.translations$ = this.translateService.get(this.translatables);

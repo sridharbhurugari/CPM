@@ -17,12 +17,12 @@ import { TranslateService } from '@ngx-translate/core';
 export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
-  @Output() selectionChanged: EventEmitter<SingleselectRowItem[]> = new EventEmitter<SingleselectRowItem[]>();
+  @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
 
   selectedDeviceInformation: SelectableDeviceInfo;
   deviceInformationList: SelectableDeviceInfo[];
   outputDeviceDisplayList: SingleselectRowItem[] = [];
-  defaultDeviceDisplyItem: SingleselectRowItem;
+  defaultDeviceDisplayItem: SingleselectRowItem;
 
   @ViewChild('searchBox', {
      static: true
@@ -81,12 +81,12 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     this.outputDeviceDisplayList = newList;
 
     if (defaultFound) {
-      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(
+      this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
         (x) => x.value === defaultFound.value
       );
       this.loadSelectedDeviceInformation(defaultFound.value);
     } else {
-      this.defaultDeviceDisplyItem = this.outputDeviceDisplayList.find(
+      this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
         (x) => x.value === "0"
        );
     }
@@ -103,6 +103,12 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
     }
   }
+
+  onDeviceSelectionChanged($event) {
+    this.searchElement.clearSearch(null);
+    this.loadSelectedDeviceInformation($event.value);
+    this.selectionChangedEvent.emit($event);
+  }
  
   ngAfterViewInit() {
     this.searchElement.searchOutput$
@@ -117,7 +123,5 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
-
-
   }
 }
