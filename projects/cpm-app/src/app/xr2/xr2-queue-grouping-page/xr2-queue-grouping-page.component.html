@@ -4,10 +4,8 @@
     (selectionChangedEvent)="onDeviceSelectionChanged($event)">
   </app-xr2-queue-grouping-header>
   <app-xr2-grouping-queue
-    [picklistQueueItems]="picklistsQueueItems | async"
-    [searchTextFilter]="searchTextFilter"
-    [selectedDeviceInformation]="selectedDeviceInformation"
-    (rerouteEvent)="processReroute($event)"
-    (releaseEvent)="processRelease($event)">
+      [picklistQueueGrouped]="picklistsQueueGrouped | async"
+      [searchTextFilter]="searchTextFilter"
+      (releaseEvent)="processRelease($event)">
   </app-xr2-grouping-queue>
 </ng-container>

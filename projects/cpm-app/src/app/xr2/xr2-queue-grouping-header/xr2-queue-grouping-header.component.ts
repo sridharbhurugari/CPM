@@ -3,8 +3,8 @@ import { SearchBoxComponent, SingleselectRowItem, SingleselectComponent } from '
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WindowService } from '../../shared/services/window-service';
-import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
-import { OcapHttpConfigurationService } from "../../shared/services/ocap-http-configuration.service";
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -27,7 +27,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBox', {
      static: true
    }) searchElement: SearchBoxComponent;
- 
+
   @ViewChild('outputDevicesList', null) outputDevicesList: SingleselectComponent;
 
 
@@ -58,7 +58,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       this.translateService.get("XR2_ALL_DEVICES").subscribe((res: string) => {
       translatedLabel = res;
       });
-      const selectAll = new SingleselectRowItem(translatedLabel, "0", true);
+      const selectAll = new SingleselectRowItem(translatedLabel, '0', true);
       newList.push(selectAll);
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
@@ -66,7 +66,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
           selectableDeviceInfo.DeviceId.toString(),
           selectableDeviceInfo.IsActive
         );
-        
+
         newList.push(selectRow);
 
         if (
@@ -77,7 +77,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
         }
       });
     }
-    
+
     this.outputDeviceDisplayList = newList;
 
     if (defaultFound) {
@@ -87,7 +87,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       this.loadSelectedDeviceInformation(defaultFound.value);
     } else {
       this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
-        (x) => x.value === "0"
+        (x) => x.value === '0'
        );
     }
   }
@@ -109,7 +109,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     this.loadSelectedDeviceInformation($event.value);
     this.selectionChangedEvent.emit($event);
   }
- 
+
   ngAfterViewInit() {
     this.searchElement.searchOutput$
       .pipe(

@@ -1,16 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
+<<<<<<< HEAD
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { map, flatMap, shareReplay } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+=======
+import { Observable, forkJoin, merge } from 'rxjs';
+import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
+import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
+>>>>>>> fe-595615-xr2-grouping-details-refreshing
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
-import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { TranslateService } from '@ngx-translate/core';
+<<<<<<< HEAD
 import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
 import {filter} from 'rxjs/operators';
+=======
+import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
+import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
+>>>>>>> fe-595615-xr2-grouping-details-refreshing
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -19,10 +30,13 @@ import {filter} from 'rxjs/operators';
 })
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
-  picklistsQueueItems: Observable<IPicklistQueueItem[]>;
-  buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
+  picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
+<<<<<<< HEAD
   selectedDeviceInformation: SelectableDeviceInfo;
+=======
+  @ViewChild(Xr2GroupingQueueComponent, null) chileGroupingQueueComponent: Xr2GroupingQueueComponent;
+>>>>>>> fe-595615-xr2-grouping-details-refreshing
 
   translatables = [
     'YES',
@@ -44,13 +58,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
-    this.loadPicklistsQueueItems();
+    this.loadPicklistsQueueGrouped();
   }
 
   onSearchTextFilter(filterText: string) {
     this.searchTextFilter = filterText;
   }
 
+<<<<<<< HEAD
   onDeviceSelectionChanged($event){
     this.selectedDeviceInformation = $event;
    // this.loadPicklistsQueueDeviceItems($event.value);
@@ -64,11 +79,29 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       }
       // TODO: load in all items and reroute
     });
+=======
+  processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
+    picklistQueueGrouped.Saving = true;
+    this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
+      result => {
+        this.picklistsQueueService.getGroupedFiltered(
+          picklistQueueGrouped.DeviceId,
+          picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
+              this.UpdatePickListQueueGroupedList(getGroupedResult);
+              picklistQueueGrouped.Saving = false;
+          }, getGroupedResult => {
+              picklistQueueGrouped.Saving = false;
+              this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
+          });
+      }, result => {
+        picklistQueueGrouped.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+>>>>>>> fe-595615-xr2-grouping-details-refreshing
   }
 
-
-  processRelease(picklistQueueItem: PicklistQueueItem[]) {
-      // TODO: load in all items and release
+  private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
+    this.chileGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {
@@ -77,17 +110,19 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .subscribe(() => this.onReloadPicklistQueueItems());
+      .subscribe(() => this.loadPicklistsQueueGrouped());
   }
 
-
-  private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueItems();
-  }
-
+<<<<<<< HEAD
   private loadPicklistsQueueItems(): void {
         this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
+=======
+  private loadPicklistsQueueGrouped(): void {
+    this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
+      const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
+      console.log(displayObjects);
+>>>>>>> fe-595615-xr2-grouping-details-refreshing
       return displayObjects;
     }), shareReplay(1));
   }
@@ -101,25 +136,17 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-   /* istanbul ignore next */
-   private displayRerouteDialog(): Observable<boolean> {
-    return forkJoin(this.translations$).pipe(flatMap(r => {
-      const translations = r[0];
-      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-      properties.titleElementText = translations.REROUTE;
-      properties.messageElementText = translations.XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE;
+    /* istanbul ignore next */
+    private displayFailedToSaveDialog(): void {
+
+      const properties = new PopupDialogProperties('Role-Status-Warning');
+      this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+      this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+      this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
       properties.showPrimaryButton = true;
-      properties.primaryButtonText = translations.YES;
-      properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.NO;
-      properties.primaryOnRight = false;
-      properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Info;
-      properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
-      return merge(primaryClick$, secondaryClick$);
-    }));
-  }
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Error;
+      properties.timeoutLength = 60;
+      this.dialogService.showOnce(properties);
+    }
 }
