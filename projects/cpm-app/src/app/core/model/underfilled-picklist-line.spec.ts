@@ -22,6 +22,9 @@ describe('UnderfilledPicklistLine', () => {
       PriorityCode: '',
       PharmacyQOH: 0,
       UnfilledReason: '',
+      ItemFoundInCPM: '',
+      ItemLocation: '',
+      InDeviceItem: ''
     });
   });
 
@@ -57,6 +60,38 @@ describe('UnderfilledPicklistLine', () => {
         line.DestinationId = '3892';
         expect(line.DestinationSortValue).toEqual(line.DestinationId);
       })
+    });
+    describe('canReroute when the item is legit and has a route', () => {
+      line.ItemFoundInCPM = '';
+      line.ItemLocation =   '';
+      line.InDeviceItem =   '';
+      it('should return true', () => {
+        expect(line.canReroute).toBe(false);
+      });
+      line.ItemFoundInCPM = 'known item identifier';
+      line.ItemLocation = 'assigned item identifier';
+      line.InDeviceItem = 'not missing the route';
+      it('should return true', () => {
+        expect(line.canReroute).toBe(true);
+      });
+      line.ItemFoundInCPM = '';
+      line.ItemLocation = 'assigned item identifier';
+      line.InDeviceItem = 'not missing the route';
+      it('should return true', () => {
+        expect(line.canReroute).toBe(false);
+      });
+      line.ItemFoundInCPM = 'known item identifier';
+      line.ItemLocation = '';
+      line.InDeviceItem = 'not missing the route';
+      it('should return true', () => {
+        expect(line.canReroute).toBe(false);
+      });
+      line.ItemFoundInCPM = 'known item identifier';
+      line.ItemLocation = 'assigned item identifier';
+      line.InDeviceItem = '';
+      it('should return true', () => {
+        expect(line.canReroute).toBe(false);
+      });
     });
   })
 });

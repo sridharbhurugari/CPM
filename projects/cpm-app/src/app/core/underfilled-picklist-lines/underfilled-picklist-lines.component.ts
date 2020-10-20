@@ -47,7 +47,14 @@ export class UnderfilledPicklistLinesComponent {
   }
   const countOf = this._picklistLines.filter(l => l.IsChecked).length;
   return countOf;
-}
+  }
+
+  public SelectedButCannotRerouteCount(): number {
+    if ( this._picklistLines == null ) { return 0;
+    }
+    const countOf = this._picklistLines.filter(l => l.IsChecked && !l.canReroute).length;
+    return countOf;
+    }
 
 public TotalItemCount(): number {
   if ( this._picklistLines == null ) {

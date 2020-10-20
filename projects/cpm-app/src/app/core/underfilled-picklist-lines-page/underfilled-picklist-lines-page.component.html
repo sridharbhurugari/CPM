@@ -5,7 +5,7 @@
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
             <app-header-container [title]="'ID' | translate">{{(picklist$ | async)?.OrderId}}</app-header-container>
-            <app-header-container [title]="'ROUTE' | translate">{{(picklist$ | async)?.RouteName}}</app-header-container>
+            <app-header-container></app-header-container>
             <app-header-container [title]="'DATE' | translate">
                 {{(picklist$ | async)?.OrderDate | date:'shortDate'}}
                 {{(picklist$ | async)?.OrderDate | date:'mediumTime'}}
@@ -27,13 +27,19 @@
                     (click)="print()">
                 </oc-button-action>
 
-
-                <oc-button-action *ngIf="buttonVisible"
+                <oc-button-action *ngIf="buttonVisible && child.SelectedButCannotRerouteCount() == 0"
                 [disabled]="!getButtonEnabled()"
-                [buttonIcon]="'reroute'"
+                [buttonIcon]= "'reroute'"
                 [buttonText]="'REROUTE' | translate"
                 (click)="reroute()">
             </oc-button-action>
+            <oc-button-action *ngIf="buttonVisible && child.SelectedButCannotRerouteCount() != 0"
+            [disabled]="!getButtonEnabled()"
+            [buttonIcon]= "'reroute'"
+            [mode]="'secondary'"
+            [buttonText]="'REROUTE' | translate"
+            (click)="reroute()">
+        </oc-button-action>
             <oc-button-action *ngIf="buttonVisible"
             [disabled]="!getButtonEnabled()"
             [buttonIcon]="'checkmark'"

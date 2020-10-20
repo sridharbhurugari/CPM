@@ -17,4 +17,7 @@ export interface IUnderfilledPicklistLine{
   PickItemLocationDescription: string;
   PharmacyQOH: number;
   UnfilledReason: string;
+  ItemFoundInCPM: string;  // unknown item identifier
+  ItemLocation: string; // unassigned item identifier
+  InDeviceItem: string; // missing route
 }

@@ -26,6 +26,9 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     PickItemLocationDescription: string;
     FillQuantity: number;
     OrderQuantity: number;
+    ItemFoundInCPM: string;  // unknown item identifier
+    ItemLocation: string; // unassigned item identifier
+    InDeviceItem: string; // missing route
 
     IsChecked = false;
     DisplayPatientRoomAndArea: boolean;
@@ -38,6 +41,16 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     PrintFillDate: string;
     DisplayFillRequired: string;
     DisplayDestionationValue: string;
+    ItemFormatedDescription: string;
+    ItemBrandDescription: string;
+    ItemIdDescription: string;
+    AreaDesctiptionForReport: string;
+    patientNameForReport: string;
+    DestinationOmniForReport: string;
+
+get canReroute(): boolean {
+  return !(!(this.ItemFoundInCPM) || !(this.ItemLocation) || !(this.InDeviceItem));
+}
 
     get DestinationSortValue(): string {
         if (this.DestinationType === 'P') {
