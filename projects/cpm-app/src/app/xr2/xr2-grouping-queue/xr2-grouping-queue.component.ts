@@ -26,6 +26,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
 
 
+  private _loadedPicklistQueueGrouped: PicklistQueueGrouped[];
   private _picklistQueueGrouped: PicklistQueueGrouped[];
 
 
@@ -61,7 +62,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
   ];
   translations$: Observable<any>;
 
-  @Input() loadedPicklistQueueGrouped: PicklistQueueGrouped[];
+  @Input()
+  set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
+    this._loadedPicklistQueueGrouped = value;
+    this.picklistQueueGrouped = value;
+  }
+
+  get loadedPicklistQueueGrouped(): PicklistQueueGrouped[] {
+    return this._loadedPicklistQueueGrouped;
+  }
 
   @Input()
   set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
