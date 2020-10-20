@@ -154,8 +154,12 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         return underfilled;
       })
     );
-
   }
+
+getRerouteButtonEnabled(): boolean  {
+  return (this.child.SelectedButCannotRerouteCount() === 0) && this.getButtonEnabled();
+  }
+
 getButtonEnabled(): boolean  {
     let returnValue = true;
     if (this.currentItemCountSelected === 0) {
@@ -213,9 +217,11 @@ getButtonEnabled(): boolean  {
   print() {
     this.requestStatus = 'printing';
     const colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemFormatedDescription', 'ItemBrandName', 'ItemBrandDescription', 'ItemId', 'ItemIdDescription'], headerResourceKey: this.itemHeaderKey, width: 'auto' },
+      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemFormatedDescription', 'ItemBrandName', 'ItemBrandDescription', 'ItemId', 'ItemIdDescription']
+        , headerResourceKey: this.itemHeaderKey, width: 'auto' },
       { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: '*' },
-      { cellPropertyNames: [ 'DisplayDestionationValue', 'AreaDescription', 'AreaDesctiptionForReport', 'PatientName', 'patientNameForReport', 'DestinationOmni', 'DestinationOmniForReport' ], headerResourceKey: this.destinationHeaderKey, width: 'auto' },
+      { cellPropertyNames: [ 'DisplayDestionationValue', 'AreaDescription', 'AreaDesctiptionForReport', 'PatientName', 'patientNameForReport', 'DestinationOmni', 'DestinationOmniForReport' ]
+        , headerResourceKey: this.destinationHeaderKey, width: 'auto' },
       { cellPropertyNames: [ 'DisplayFillRequired', 'UnfilledReason' ], headerResourceKey: this.qtyFilledHeaderKey, width: '*' },
       { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: 'auto' },
     ];
@@ -238,6 +244,7 @@ getButtonEnabled(): boolean  {
       this.displayPrintFailed();
     });
   }
+
   private getDocumentData() {
     let pickList: IUnderfilledPicklist;
     let reportBasedata: IAngularReportBaseData;
@@ -247,6 +254,7 @@ getButtonEnabled(): boolean  {
     reportBasedata.PriorityCode = pickList.PriorityCode;
     this.reportBaseData$ = of(reportBasedata);
   }
+
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
   }
