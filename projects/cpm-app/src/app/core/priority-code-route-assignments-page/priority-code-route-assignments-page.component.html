@@ -32,7 +32,7 @@
                 <oc-button-action [disabled]="saveInProgress" [buttonText]="'BACK' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
             <div class="ocrightalign">
-                <oc-button-action [routerLink]="['/pickRoutes', routerLinkPickRouteId]" [buttonText]="'MAINTENANCE' | translate"
+                <oc-button-action [routerLink]="['/core/pickRoutes', routerLinkPickRouteId]" [buttonText]="'MAINTENANCE' | translate"
                     [disabled]="saveInProgress || !isEditAvailable || !ocsIsHealthy " ></oc-button-action>
                 <oc-button-action [buttonIcon]="saveInProgress ? 'spin' : 'clear'" [buttonText]="'SAVE' | translate" [disabled]="saveInProgress || !canSave || !ocsIsHealthy || !isEditAvailable" (click)="save()"></oc-button-action>
             </div>

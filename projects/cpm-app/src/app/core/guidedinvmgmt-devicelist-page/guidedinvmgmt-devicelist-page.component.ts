@@ -56,11 +56,11 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
       currentDeviceLeaseOwner => {
         console.log('Current Device Lease Owner : ' + currentDeviceLeaseOwner);
         if (currentDeviceLeaseOwner === LeaseVerificationResult.Success) {
-           this.wpfActionControllerService.ExecuteContinueNavigationAction(`guidedinvmgmt/cyclecount`, {deviceId: deviceId.toString()});
+           this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/guidedinvmgmt/cyclecount`, {deviceId: deviceId.toString()});
         } else {
            this.wpfActionControllerService.ExecuteContinueNavigationAction(
-             `hardwareLease/requestLease`,
-             {deviceId, routeToPath: `guidedinvmgmt/cyclecount` });
+             `core/hardwareLease/requestLease`,
+             {deviceId, routeToPath: `core/guidedinvmgmt/cyclecount` });
         }
       });
   }
@@ -88,6 +88,6 @@ export class GuidedInvMgmtDevicelistPageComponent implements OnInit, AfterViewIn
       return _.orderBy(devices, x => x[this.currentSortPropertyName], sortDirection);
   }
   navigatemanualcyclecount(){
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`/guidedinvmgmt/manualcyclecount`);
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/guidedinvmgmt/manualcyclecount`);
   }
 }

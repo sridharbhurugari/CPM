@@ -106,6 +106,7 @@
   "PRINT_SUCCEEDED_DIALOG_TITLE": "Print Document",
   "PRINT_SUCCEEDED_DIALOG_MESSAGE": "Document printed successfully.",
   "RELEASE": "Release",
+  "PRINT_ALL": "Print All",
   "RELEASED": "Released",
   "PRINT": "Print",
   "QOH": "QOH",
@@ -219,8 +220,14 @@
   "PACKAGER_ASSIGNITEM_BODY_TEXT": "Cycle counting is not supported for Packager or XR2 assignments.<br />",
   "PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT": "{{itemId}} is assigned to {{deviceDescription}}<br />",
   "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count",
-  "CycleCount_Concurrency_UpdateConflictMsg": "The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
+  "CycleCount_Concurrency_UpdateConflictMsg":"The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
   "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information",
   "UNFILLED_DELETE_PICKLIST_PROMPT_TITLE": "Confirmation",
   "UNFILLED_DELETE_PICKLIST_PROMPT_MESSAGE": "Press Confirm to complete this order.  This action cannot be undone."
+  "INTERNAL_TRANS_PICKQUEUE_BUTTON": "Add to Picking Queue",
+  "INTERNAL_TRANS_PICKQUEUE_SENT_TITLE": "Internal Transfer Items",
+  "INTERNAL_TRANS_PICKQUEUE_SENT_OK": "Selected internal transfer items have been sent to picking queues.",
+  "INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED": "No items have been selected. Nothing sent to picking queues.",
+  "INTERNAL_TRANS_PICKQUEUE_FAILED_MSG": "Failed to add items to picking queue.  Please try again.",
+  "INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE": "Add to Picking Queue Failed"
 }

@@ -56,6 +56,6 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
   }
   navigate(priorityCodePickRouteId: number) {
     this.wpfActionControllerService.
-    ExecuteContinueNavigationAction(`priorityCode/RouteAssignments`, {priorityCodePickRouteId: priorityCodePickRouteId});
+    ExecuteContinueNavigationAction(`core/priorityCode/RouteAssignments`, {priorityCodePickRouteId: priorityCodePickRouteId});
   }
 }

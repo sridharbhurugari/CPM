@@ -3,4 +3,5 @@ export interface IGridSelectionChanged<T> {
     changedValue: T;
     selectedValues: T[];
     unselectedValues: T[];
+    areAllValuesSelected: boolean;
 }
