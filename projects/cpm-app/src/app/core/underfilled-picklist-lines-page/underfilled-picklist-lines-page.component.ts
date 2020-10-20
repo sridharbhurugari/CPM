@@ -81,7 +81,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       Id: orderId,
       Operation: OperationType.Pick,
       ConnectionId: null,
-      WorkstationShortName: null
+      WorkstationShortName: 'WKS0000003'
     };
     const datePipe = new DatePipe('en-US');
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));

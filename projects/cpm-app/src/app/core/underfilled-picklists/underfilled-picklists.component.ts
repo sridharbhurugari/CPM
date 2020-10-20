@@ -12,6 +12,7 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -85,12 +86,21 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
       Id: orderId,
       Operation: OperationType.Pick,
       ConnectionId: null,
-      WorkstationShortName: null
+      WorkstationShortName: 'WKS0000003'
     };
-    this.workstationTrackerService.Track(workstationTrackerData).subscribe(success => {
-      this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
+    this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(success => {
+      if (success.length > 0) {
+        alert('picklist in use');
+        return;
+      }
+
+      this.workstationTrackerService.Track(workstationTrackerData).subscribe(subsuccess => {
+        this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
+      }, err => {
+        // bury failed to track
+      });
     }, err => {
-      alert('failed to track picklist');
+      alert('failed retrieve workstations');
     });
   }
 
