@@ -47,6 +47,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
       displayInfoOk: jasmine.createSpy('displayInfoOk'),
     };
+
     TestBed.configureTestingModule({
       declarations: [
         InternalTransferDeviceNeedsPageComponent,
@@ -63,7 +64,9 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: DevicesService, useValue: { get: () => of([]) } },
-        { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceItemNeeds: () => of(needs) } },
+        { provide: DeviceReplenishmentNeedsService, 
+          useValue: { getDeviceItemNeeds: () => of(needs),
+             pickDeviceItemNeeds: () => of([]) }},
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
         { provide: PdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
@@ -100,4 +103,46 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
       });
     });
   });
+
+  describe('pick', () => {
+    describe('succeeded', () => {
+      it('should display info dialog', () => {
+        component.itemsToPick.push({
+          ItemBrandName: 'Brand Name',
+          ItemFormattedGenericName: ' Generic Name',
+          ItemId: 'MED01234',
+          DeviceParLevel: 8000,
+          DeviceQuantityNeeded: 1200,
+          DeviceQuantityOnHand: 0,
+          DeviceRestockLevel: 1200,
+          Xr2Item: true,
+          DisplayDeviceQuantityNeeded: '1220 EA',
+          DisplayDeviceQuantityOnHand: '0 EA',
+          DisplayNumberOfPackages: 'Packs: 1, 5, 10',
+          DisplayPackageSize: 'Package Size: 1, 5, 10',
+          DisplayQohNumberOfPackages: 'Packs: 0, 0, 0',
+          PackSize: 1,
+          PendingDevicePickQuantity: 0,
+          UnitOfIssue: 'EA',
+          PickLocationDeviceLocationId: 123455,
+          PickLocationDescription: 'Pick Location Description',
+          PickLocationQoh: 950,
+          ItemFormattedDescription: 'Item Formatted Description',
+          ItemBrandNameDescription: 'Item Brand Name Description',
+          ItemIdDescription: 'Item Id Description',
+          SortFormattedName: 'Sort Formatted Name'
+        });
+        component.pick();
+        expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();
+      });
+    });
+    describe('failed', () => {
+      it('should display error dialog', () => {
+        component.itemsToPick = new Array();
+        component.pick();
+        expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
+      });
+    });
+  });
+
 });

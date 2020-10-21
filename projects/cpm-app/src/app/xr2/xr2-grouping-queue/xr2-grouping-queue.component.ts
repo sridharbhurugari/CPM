@@ -102,7 +102,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   onDetailsClick(): void {
-    this.router.navigate(['/xr2Queue/details']);
+    this.router.navigate(['/xr2/xr2Queue/details']);
   }
 
   getActiveOutputDeviceList(picklistQueueGrouped: PicklistQueueGrouped) {
