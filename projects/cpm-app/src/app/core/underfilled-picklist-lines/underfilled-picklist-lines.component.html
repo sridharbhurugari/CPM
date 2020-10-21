@@ -40,7 +40,11 @@
         <span>{{picklistLine.ItemId}}</span>
       </div>
       <div class="col" [attr.data-title]="'PHARMACY_QOH' | translate" style="text-align: center;">
-        <span>{{picklistLine.PharmacyQOH}}</span>
+        <div *ngIf="!picklistLine.canReroute && picklistLine.IsChecked">
+          <oc-svgicon icon="alert-no-tail" (click)='showBadge($event)'></oc-svgicon>
+        </div>
+        {{picklistLine.PharmacyQOH}}
+
       </div>
       <div class="col" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklistLine.DisplayPatientRoomAndArea">
