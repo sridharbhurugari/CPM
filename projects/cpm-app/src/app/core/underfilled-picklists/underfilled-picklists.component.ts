@@ -84,7 +84,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   navigate(orderId: string){
     const workstationTrackerData: WorkstationTrackerData = {
       Id: orderId,
-      Operation: OperationType.Pick,
+      Operation: OperationType.Unfilled,
       ConnectionId: null,
       WorkstationShortName: 'WKS0000003'
     };
@@ -100,7 +100,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
         // bury failed to track
       });
     }, err => {
-      alert('failed retrieve workstations');
+      // bury failed to get workstations
     });
   }
 

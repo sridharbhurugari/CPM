@@ -80,7 +80,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     const orderId = this.route.snapshot.queryParamMap.get('orderId');
     this.workstationTrackerData = {
       Id: orderId,
-      Operation: OperationType.Pick,
+      Operation: OperationType.Unfilled,
       ConnectionId: null,
       WorkstationShortName: 'WKS0000003'
     };
@@ -114,7 +114,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe(success => {
       this.wpfActionControllerService.ExecuteBackAction();
     }, err => {
-      alert('failed to untrack picklist');
+      // bury
     });
   }
 
@@ -200,48 +200,26 @@ getButtonEnabled(): boolean  {
   }
 
   reroute() {
-    this.executeFunctionIfPicklistIsNotTracked(this.performReroute);
-  }
-
-  performReroute(scope) {
-    scope.requestStatus = 'reroute';
-    const selected: string[] = scope.getSelected();
-    scope.resetPickRoutesService.reset(selected).subscribe(succeeded => {
-      scope.requestStatus = 'none';
-      scope.clearCheckedItems();
-      scope.exitIfListIsEmpty();
+    this.requestStatus = 'reroute';
+    const selected: string[] = this.getSelected();
+    this.resetPickRoutesService.reset(selected).subscribe(succeeded => {
+      this.requestStatus = 'none';
+      this.clearCheckedItems();
+      this.exitIfListIsEmpty();
     }, err => {
-      scope.onRerouteFailed(err);
+      this.onRerouteFailed(err);
     });
   }
 
   close() {
-    this.executeFunctionIfPicklistIsNotTracked(this.performClose);
-  }
-
-  performClose(scope) {
-    scope.requestStatus = 'complete';
-    const selected: string[] = scope.getSelected();
-    scope.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
-      scope.requestStatus = 'none';
-      scope.clearCheckedItems();
-      scope.exitIfListIsEmpty();
+    this.requestStatus = 'complete';
+    const selected: string[] = this.getSelected();
+    this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
+      this.requestStatus = 'none';
+      this.clearCheckedItems();
+      this.exitIfListIsEmpty();
     }, err => {
-      scope.onCloseFailed(err);
-    });
-  }
-
-  executeFunctionIfPicklistIsNotTracked(callbackFunction) {
-    const scope = this;
-    this.workstationTrackerService.GetWorkstationShortNames(this.workstationTrackerData).subscribe(succeeded => {
-      if (succeeded.length === 0) {
-        callbackFunction(scope);
-        return;
-      }
-
-      alert('picklist is in use');
-    }, err => {
-      alert('failed to get workstations');
+      this.onCloseFailed(err);
     });
   }
 
