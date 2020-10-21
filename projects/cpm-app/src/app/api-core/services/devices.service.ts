@@ -25,7 +25,7 @@ export class DevicesService {
     });
   }
 
-   getallxr2devices(): Observable<SelectableDeviceInfo[]> {
+   getAllXr2Devices(): Observable<SelectableDeviceInfo[]> {
     var url = this.ocapUrlBuilderService.buildUrl('/api/xr2Devices');
     return this.httpClient.get<SelectableDeviceInfo[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()

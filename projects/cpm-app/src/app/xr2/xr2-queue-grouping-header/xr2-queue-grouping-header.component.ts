@@ -41,7 +41,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   }
 
   async getAllActiveXr2Devices() {
-    this.deviceInformationList = await this.devicesService.getallxr2devices().toPromise();
+    this.deviceInformationList = await this.devicesService.getAllXr2Devices().toPromise();
     const newList: SingleselectRowItem[] = [];
 
     const currentClientId = this.ocapHttpConfigurationService.get().clientId;
