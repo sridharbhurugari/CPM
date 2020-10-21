@@ -1,8 +1,8 @@
-import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, PopupDialogService } from '@omnicell/webcorecomponents';
 import { nameof } from '../../shared/functions/nameof';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -12,14 +12,15 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
-import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { PopupDialogProperties, PopupDialogType, } from '@omnicell/webcorecomponents';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-underfilled-picklists',
   templateUrl: './underfilled-picklists.component.html',
   styleUrls: ['./underfilled-picklists.component.scss']
 })
-export class UnderfilledPicklistsComponent implements AfterViewInit{
+export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   private _picklists: UnderfilledPicklist[];
 
   @ViewChild('searchBox', {
@@ -47,6 +48,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   currentSortPropertyName : string = this.datePropertyName;
   sortOrder: SortDirection = SortDirection.descending;
   workstation: string;
+  okButtonText: string;
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
@@ -64,10 +66,14 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
     private windowService: WindowService,
     private wpfActionControllerService: WpfActionControllerService,
     private workstationTrackerService: WorkstationTrackerService,
-    private ocapHttpConfigurationService: OcapHttpConfigurationService
+    private dialogService: PopupDialogService,
+    public translateService: TranslateService,
   ) {
-    const ocapHttpConfig = this.ocapHttpConfigurationService.get();
-    this.workstation =  ocapHttpConfig.clientId;
+  }
+
+  ngOnInit() {
+    this.translateService.get('OK').subscribe(s => this.okButtonText = s);
+    this.workstationTrackerService.GetWorkstationShortName().subscribe(s => this.workstation = s);
   }
 
   ngAfterViewInit(): void {
@@ -94,7 +100,12 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
     };
     this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(success => {
       if (success.length > 0) {
-        alert('picklist in use');
+        let workstationsInUse = '\n';
+        _.forEach(success, wk => {
+          workstationsInUse += wk + '\n';
+        });
+        this.displayInfo('Order In Use', 'This order is currently in use. Close it at the following workstations before deleting it:\
+        ' + workstationsInUse);
         return;
       }
 
@@ -111,5 +122,17 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], event.SortDirection)
+  }
+
+  displayInfo(title, message) {
+    const properties = new PopupDialogProperties();
+    properties.primaryButtonText = this.okButtonText;
+    properties.titleElementText = title;
+    properties.messageElementText = message;
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Info;
+    properties.timeoutLength = 0;
+    this.dialogService.showOnce(properties);
   }
 }

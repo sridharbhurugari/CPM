@@ -43,4 +43,11 @@ export class WorkstationTrackerService {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
+
+    public GetWorkstationShortName(): Observable<string>{
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/GetWorkstationShortName');
+      return this.httpClient.get<string>(url, {
+        headers: this.ocapHttpHeadersService.getHeaders()
+      });
+    }
 }
