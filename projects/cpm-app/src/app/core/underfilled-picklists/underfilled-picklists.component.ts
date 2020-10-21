@@ -101,8 +101,13 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(success => {
       if (success.length > 0) {
         let workstationsInUse = '\n';
+        let first = true;
         _.forEach(success, wk => {
-          workstationsInUse += wk + '\n';
+          if (!first) {
+            workstationsInUse += ', ';
+          }
+          workstationsInUse += wk;
+          first = false;
         });
         this.displayInfo('Order In Use', 'This order is currently in use. Close it at the following workstations before deleting it:\
         ' + workstationsInUse);
