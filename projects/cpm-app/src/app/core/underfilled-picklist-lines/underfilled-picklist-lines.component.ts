@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
