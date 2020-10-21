@@ -67,23 +67,11 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     picklistQueueGrouped.Saving = true;
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
-        this.picklistsQueueService.getGroupedFiltered(
-          picklistQueueGrouped.DeviceId,
-          picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
-              this.UpdatePickListQueueGroupedList(getGroupedResult);
-              picklistQueueGrouped.Saving = false;
-          }, getGroupedResult => {
-              picklistQueueGrouped.Saving = false;
-              this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
-          });
+        picklistQueueGrouped.Saving = false;
       }, result => {
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();
       });
-  }
-
-  private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
-    this.childGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {

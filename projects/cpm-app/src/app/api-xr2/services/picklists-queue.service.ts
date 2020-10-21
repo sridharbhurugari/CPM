@@ -36,13 +36,6 @@ export class PicklistsQueueService {
     });
   }
 
-  getGroupedFiltered(deviceId: number, priorityCode: string): Observable<IPicklistQueueGrouped> {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueuesgrouped' + deviceId + '/' + priorityCode);
-    return this.httpClient.get<IPicklistQueueGrouped>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
   sendToRobot(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
     console.log(GlobalDispenseSyncRequest);
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/SendToRobot');
