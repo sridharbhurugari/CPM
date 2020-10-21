@@ -28,7 +28,11 @@
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistLine of picklistLines">
       <div class="first">
-        <oc-checkbox [noLabel]="true" [isEnabled]="true" [valueField]="picklistLine.PicklistLineId" [selected]="picklistLine.IsChecked" (selection)="onSelect($event)"></oc-checkbox>
+        <oc-checkbox [noLabel]="true"
+        [isEnabled]="true"
+        [valueField]="picklistLine.PicklistLineId"
+        [selected]="picklistLine.IsChecked"
+        (selection)="onSelect($event)"></oc-checkbox>
     </div>
       <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
         <span>{{picklistLine.ItemFormattedGenericName}}</span>
@@ -57,7 +61,7 @@
         </div>
       </div>
       <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
-        <span>{{picklistLine.FillQuantity}} / {{picklistLine.OrderQuantity}}</span>
+        <span>{{(picklistLine.FillQuantity==null?'0':picklistLine.FillQuantity)}} / {{picklistLine.OrderQuantity}}</span>
         <span>{{picklistLine.UnfilledReason}}</span>
       </div>
       <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">

@@ -6,7 +6,7 @@
         <div class="cpmheaderrow">
             <app-header-container *ngIf="device$ | async as device" [title]="'DEVICE' | translate">{{device.Description}}</app-header-container>
         </div>
-        <app-internal-transfer-items-list [itemNeeds]="itemNeeds$ | async"></app-internal-transfer-items-list>
+        <app-internal-transfer-items-list [itemNeeds]="itemNeeds$ | async" (selectionChanged)="onSelect($event)"></app-internal-transfer-items-list>
     </ng-container>
     <ng-container class="ocactionfooter">
         <oc-footer>
@@ -18,8 +18,14 @@
                     *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
                     [disabled]="requestStatus != 'none'"
                     [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
-                    [buttonText]="'PRINT' | translate"
+                    [buttonText]="'PRINT_ALL' | translate"
                     (click)="print()">
+                </oc-button-action>
+                <oc-button-action 
+                    [disabled]="requestStatus != 'none'"
+                    [buttonIcon]="requestStatus == 'picking' ? 'spin' : 'clear'"
+                    [buttonText]="'INTERNAL_TRANS_PICKQUEUE_BUTTON' | translate"
+                    (click)="pick()">
                 </oc-button-action>
             </div>
         </oc-footer>

@@ -39,6 +39,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   qtyFilledHeaderKey = 'QTY_FILLED_REQUESTED';
   dateHeaderKey = 'DATE';
   picklistLines$: Observable<UnderfilledPicklistLine[]>;
+  reportPickListLines$: Observable<UnderfilledPicklistLine[]>;
   picklist$: Observable<IUnderfilledPicklist>;
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' | 'reroute' | 'complete' = 'none';
@@ -118,19 +119,60 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   getReportData(datePipe: DatePipe) {
-    this.picklistLines$ = this.picklistLines$.pipe(
+    this.reportPickListLines$ = this.picklistLines$.pipe(
       map(underfilled => {
         underfilled.forEach(element => {
           const date = element.FillDate;
-          element.PrintFillDate = datePipe.transform(date, 'M/d/yyyy h:mm:ss a');
+          element.PrintFillDate = datePipe.transform(date, 'M/d/yy   h:mm a');
           element.DisplayFillRequired = element.FillQuantity + ' / ' + element.OrderQuantity;
           if (element.PatientRoom && element.PatientRoom !== '') {
             element.DisplayDestionationValue  = element.PatientRoom + ',';
           }
+
+          if (element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
+              const reg = new RegExp('.{1,' + 18 + '}','g');
+              const parts = element.ItemFormattedGenericName.match(reg);
+              element.ItemFormatedDescription =  parts.join('\n');
+              element.ItemFormattedGenericName = '';
+            }
+          if (element.ItemBrandName && element.ItemBrandName.length > 40) {
+              const reg = new RegExp('.{1,' + 18 + '}','g');
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemBrandDescription =  parts.join('\n');
+              element.ItemBrandName = '';
+            }
+          if (element.ItemId && element.ItemId.length > 40) {
+              const reg = new RegExp('.{1,' + 18 + '}','g');
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemIdDescription =  parts.join('\n');
+              element.ItemId = '';
+            }
+          if (element.AreaDescription && element.AreaDescription.length > 21) {
+              const reg = new RegExp('.{1,' + 10 + '}','g');
+              const parts = element.AreaDescription.match(reg);
+              element.AreaDesctiptionForReport = parts.join('\n');
+              element.AreaDescription = '';
+            }
+          if (element.PatientName && element.PatientName.length > 21) {
+              const reg = new RegExp('.{1,' + 10 + '}','g');
+              const parts = element.PatientName.match(reg);
+              element.patientNameForReport = parts.join('\n');
+              element.PatientName = '';
+            }
+          if (element.DestinationOmni && element.DestinationOmni.length > 21) {
+              const reg = new RegExp('.{1,' + 10 + '}','g');
+              const parts = element.DestinationOmni.match(reg);
+              element.DestinationOmniForReport = parts.join('\n');
+              element.DestinationOmni = '';
+            }
         });
         return underfilled;
       })
     );
+  }
+
+getRerouteButtonEnabled(): boolean  {
+  return (this.child.SelectedButCannotRerouteCount() === 0) && this.getButtonEnabled();
   }
 
 getButtonEnabled(): boolean  {
@@ -212,18 +254,17 @@ getButtonEnabled(): boolean  {
   print() {
     this.requestStatus = 'printing';
     const colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
-        headerResourceKey: this.itemHeaderKey, width: 'auto' },
+      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemFormatedDescription', 'ItemBrandName', 'ItemBrandDescription', 'ItemId', 'ItemIdDescription']
+        , headerResourceKey: this.itemHeaderKey, width: 'auto' },
       { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: '*' },
-      { cellPropertyNames: [ 'DisplayDestionationValue', 'AreaDescription', 'PatientName', 'DestinationOmni' ],
-       headerResourceKey: this.destinationHeaderKey, width: '*' },
-      { cellPropertyNames: [ 'DisplayFillRequired', 'UnfilledReason' ],
-       headerResourceKey: this.qtyFilledHeaderKey, width: '*' },
+      { cellPropertyNames: [ 'DisplayDestionationValue', 'AreaDescription', 'AreaDesctiptionForReport', 'PatientName', 'patientNameForReport', 'DestinationOmni', 'DestinationOmniForReport' ]
+        , headerResourceKey: this.destinationHeaderKey, width: 'auto' },
+      { cellPropertyNames: [ 'DisplayFillRequired', 'UnfilledReason' ], headerResourceKey: this.qtyFilledHeaderKey, width: '*' },
       { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: 'auto' },
     ];
 
-    const sortedFilled$ = this.picklistLines$.pipe(map(underFill => {
-      return _.orderBy(underFill, x => x.ItemFormattedGenericName.toLowerCase(), 'asc');
+    const sortedFilled$ = this.reportPickListLines$.pipe(map(underFill => {
+      return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
     }));
 
     this.getDocumentData();
@@ -240,6 +281,7 @@ getButtonEnabled(): boolean  {
       this.displayPrintFailed();
     });
   }
+
   private getDocumentData() {
     let pickList: IUnderfilledPicklist;
     let reportBasedata: IAngularReportBaseData;
@@ -249,6 +291,7 @@ getButtonEnabled(): boolean  {
     reportBasedata.PriorityCode = pickList.PriorityCode;
     this.reportBaseData$ = of(reportBasedata);
   }
+
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
   }

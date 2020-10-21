@@ -23,6 +23,6 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
   }
 
   deviceSelected(deviceId: number){
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`/internalTransfer/deviceReplenishmentNeeds/${deviceId}`);
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/internalTransfer/deviceReplenishmentNeeds/${deviceId}`);
   }
 }

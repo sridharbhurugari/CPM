@@ -5,7 +5,7 @@
     <ng-container class="ocactiondetails">
         <div class="cpmheaderrow">
             <app-header-container [title]="'ID' | translate">{{(picklist$ | async)?.OrderId}}</app-header-container>
-            <app-header-container [title]="'ROUTE' | translate">{{(picklist$ | async)?.RouteName}}</app-header-container>
+            <app-header-container></app-header-container>
             <app-header-container [title]="'DATE' | translate">
                 {{(picklist$ | async)?.OrderDate | date:'shortDate'}}
                 {{(picklist$ | async)?.OrderDate | date:'mediumTime'}}
@@ -19,27 +19,27 @@
                 <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()"></oc-button-action>
             </div>
             <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
-                <oc-button-action
-                    *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
-                    [disabled]="requestStatus != 'none'"
-                    [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
-                    [buttonText]="'PRINT' | translate"
-                    (click)="print()">
-                </oc-button-action>
+             <oc-button-action
+              *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
+              [disabled]="requestStatus != 'none'"
+              [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
+              [buttonText]="'PRINT' | translate"
+              (click)="print()">
+             </oc-button-action>
 
+             <oc-button-action *ngIf="buttonVisible"
+              [disabled]="!getRerouteButtonEnabled()"
+              [buttonIcon]= "'reroute'"
+              [buttonText]="'REROUTE' | translate"
+              (click)="reroute()">
+             </oc-button-action>
 
-                <oc-button-action *ngIf="buttonVisible"
-                [disabled]="!getButtonEnabled()"
-                [buttonIcon]="'reroute'"
-                [buttonText]="'REROUTE' | translate"
-                (click)="reroute()">
-            </oc-button-action>
-            <oc-button-action *ngIf="buttonVisible"
-            [disabled]="!getButtonEnabled()"
-            [buttonIcon]="'checkmark'"
-            [buttonText]="'CLOSE' | translate"
-            (click)="close()">
-        </oc-button-action>
+             <oc-button-action *ngIf="buttonVisible"
+              [disabled]="!getButtonEnabled()"
+              [buttonIcon]="'checkmark'"
+              [buttonText]="'CLOSE' | translate"
+              (click)="close()">
+             </oc-button-action>
 
             </div>
         </oc-footer>
