@@ -12,7 +12,7 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
-import { ReactiveFormsModule } from '@angular/forms';
+import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -46,6 +46,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
 
   currentSortPropertyName : string = this.datePropertyName;
   sortOrder: SortDirection = SortDirection.descending;
+  workstation: string;
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
@@ -62,8 +63,11 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   constructor(
     private windowService: WindowService,
     private wpfActionControllerService: WpfActionControllerService,
-    private workstationTrackerService: WorkstationTrackerService
+    private workstationTrackerService: WorkstationTrackerService,
+    private ocapHttpConfigurationService: OcapHttpConfigurationService
   ) {
+    const ocapHttpConfig = this.ocapHttpConfigurationService.get();
+    this.workstation =  ocapHttpConfig.clientId;
   }
 
   ngAfterViewInit(): void {
@@ -86,7 +90,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
       Id: orderId,
       Operation: OperationType.Unfilled,
       ConnectionId: null,
-      WorkstationShortName: 'WKS0000003'
+      WorkstationShortName: this.workstation
     };
     this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(success => {
       if (success.length > 0) {

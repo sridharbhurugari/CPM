@@ -26,6 +26,7 @@ import { ResetPickRoutesService } from '../../api-core/services/reset-pick-route
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
+import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -57,6 +58,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   buttonEnabled = false;
   buttonVisible = false;
   workstationTrackerData: WorkstationTrackerData;
+  workstation: string;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -69,10 +71,13 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
-    private workstationTrackerService: WorkstationTrackerService
+    private workstationTrackerService: WorkstationTrackerService,
+    private ocapHttpConfigurationService: OcapHttpConfigurationService
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
+    const ocapHttpConfig = this.ocapHttpConfigurationService.get();
+    this.workstation =  ocapHttpConfig.clientId;
   }
 
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
@@ -82,7 +87,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       Id: orderId,
       Operation: OperationType.Unfilled,
       ConnectionId: null,
-      WorkstationShortName: 'WKS0000003'
+      WorkstationShortName: this.workstation
     };
     const datePipe = new DatePipe('en-US');
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
