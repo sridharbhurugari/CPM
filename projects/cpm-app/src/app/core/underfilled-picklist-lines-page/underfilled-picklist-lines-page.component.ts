@@ -133,37 +133,37 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
           }
 
           if (element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
-              const reg = new RegExp('.{1,' + 18 + '}','g');
+              const reg = new RegExp('.{1,' + 18 + '}', 'g');
               const parts = element.ItemFormattedGenericName.match(reg);
               element.ItemFormatedDescription =  parts.join('\n');
               element.ItemFormattedGenericName = '';
             }
           if (element.ItemBrandName && element.ItemBrandName.length > 40) {
-              const reg = new RegExp('.{1,' + 18 + '}','g');
+              const reg = new RegExp('.{1,' + 18 + '}', 'g');
               const parts = element.ItemBrandName.match(reg);
               element.ItemBrandDescription =  parts.join('\n');
               element.ItemBrandName = '';
             }
           if (element.ItemId && element.ItemId.length > 40) {
-              const reg = new RegExp('.{1,' + 18 + '}','g');
+              const reg = new RegExp('.{1,' + 18 + '}', 'g');
               const parts = element.ItemBrandName.match(reg);
               element.ItemIdDescription =  parts.join('\n');
               element.ItemId = '';
             }
           if (element.AreaDescription && element.AreaDescription.length > 21) {
-              const reg = new RegExp('.{1,' + 10 + '}','g');
+              const reg = new RegExp('.{1,' + 10 + '}', 'g');
               const parts = element.AreaDescription.match(reg);
               element.AreaDesctiptionForReport = parts.join('\n');
               element.AreaDescription = '';
             }
           if (element.PatientName && element.PatientName.length > 21) {
-              const reg = new RegExp('.{1,' + 10 + '}','g');
+              const reg = new RegExp('.{1,' + 10 + '}', 'g');
               const parts = element.PatientName.match(reg);
               element.patientNameForReport = parts.join('\n');
               element.PatientName = '';
             }
           if (element.DestinationOmni && element.DestinationOmni.length > 21) {
-              const reg = new RegExp('.{1,' + 10 + '}','g');
+              const reg = new RegExp('.{1,' + 10 + '}', 'g');
               const parts = element.DestinationOmni.match(reg);
               element.DestinationOmniForReport = parts.join('\n');
               element.DestinationOmni = '';

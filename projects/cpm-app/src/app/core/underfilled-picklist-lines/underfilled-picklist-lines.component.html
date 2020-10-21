@@ -40,7 +40,7 @@
         <span>{{picklistLine.ItemId}}</span>
       </div>
       <div class="col" [attr.data-title]="'PHARMACY_QOH' | translate" style="text-align: center;">
-        <span>{{picklistLine.PharmacyQOH}}</span>
+        {{picklistLine.PharmacyQOH}}
       </div>
       <div class="col" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklistLine.DisplayPatientRoomAndArea">
@@ -61,7 +61,9 @@
         </div>
       </div>
       <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
-        <span>{{(picklistLine.FillQuantity==null?'0':picklistLine.FillQuantity)}} / {{picklistLine.OrderQuantity}}</span>
+        <span>
+            <oc-svgicon  *ngIf="!picklistLine.canReroute && picklistLine.IsChecked" icon="alert-no-tail"></oc-svgicon>
+          {{(picklistLine.FillQuantity==null?'0':picklistLine.FillQuantity)}} / {{picklistLine.OrderQuantity}}</span>
         <span>{{picklistLine.UnfilledReason}}</span>
       </div>
       <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">
