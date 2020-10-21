@@ -53,7 +53,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     };
 
     devicesService = {
-      getallxr2devices: () => of()
+      getAllXr2Devices: () => of()
     };
 
     spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();

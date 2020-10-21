@@ -203,7 +203,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
 
     if (traytypeFound) {
       this.displayExceptionsList$.subscribe((exceptions: IXr2ExceptionsItem[]) =>
-      exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
+       exceptionData = exceptions.find(p => p.TrayID.toString().toUpperCase() === this.rawBarcodeMessage.toString().toUpperCase())
       );
       if (exceptionData)
       {
