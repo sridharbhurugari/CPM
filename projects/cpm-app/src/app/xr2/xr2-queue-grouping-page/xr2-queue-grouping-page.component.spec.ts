@@ -113,7 +113,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
       expect(spyPicklistQueueServiceGetGrouped.calls.count()).toBeGreaterThan(currentCallCount);
     }));
 
-    fit('should update search filter text on search filter event', () => {
+    it('should update search filter text on search filter event', () => {
       const filter = 'filter';
 
       component.onSearchTextFilter(filter);
