@@ -190,14 +190,27 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
+    console.log(picklistGrouped);
     const grouping = new PicklistQueueGrouped(picklistGrouped);
-    let matchingGrouped = _.find(this.picklistQueueGrouped, (x) => {
-      return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
+    const matchingGrouped = _.findIndex(this.picklistQueueGrouped, (x) => {
+      return x.PriorityCode === grouping.PriorityCode && x.DeviceId === grouping.DeviceId;
      });
-    if (!matchingGrouped) {
+    console.log(matchingGrouped);
+    if (matchingGrouped < 0) {
+      console.log('PickListGrouped Not Found. Adding Entry');
       this.picklistQueueGrouped.push(grouping);
      } else {
-      matchingGrouped = grouping;
+       console.log('match found updating record');
+       this.picklistQueueGrouped[matchingGrouped] = grouping;
      }
+  }
+
+  removePicklistQueueGroup(picklistGrouped: IPicklistQueueGrouped) {
+    const matchingGroupedIndex = _.findIndex(this.picklistQueueGrouped, (x) => {
+      return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
+     });
+    if (matchingGroupedIndex > -1) {
+      this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
+    }
   }
 }

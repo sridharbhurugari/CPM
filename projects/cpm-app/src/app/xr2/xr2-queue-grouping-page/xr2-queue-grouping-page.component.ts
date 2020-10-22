@@ -50,13 +50,24 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
     picklistQueueGrouped.Saving = true;
+    console.log('Sending PickList Group');
+    console.log(picklistQueueGrouped);
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
+        console.log('PickListGroup Sent. Refreshing Group Data');
         this.picklistsQueueService.getGroupedFiltered(
           picklistQueueGrouped.DeviceId,
           picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
-              this.UpdatePickListQueueGroupedList(getGroupedResult);
-              picklistQueueGrouped.Saving = false;
+              console.log('Data Refreshed. Updating UI');
+              if (!getGroupedResult) {
+                this.UpdatePickListQueueGroupedList(getGroupedResult);
+                picklistQueueGrouped.Saving = false;
+                console.log('Send Complete Item removed');
+              } else {
+                this.UpdatePickListQueueGroupedList(getGroupedResult);
+                picklistQueueGrouped.Saving = false;
+                console.log('Send and Refresh complete.');
+              }
           }, getGroupedResult => {
               picklistQueueGrouped.Saving = false;
               this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
