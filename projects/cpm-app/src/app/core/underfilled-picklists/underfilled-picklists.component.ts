@@ -49,6 +49,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   sortOrder: SortDirection = SortDirection.descending;
   workstation: string;
   okButtonText: string;
+  orderInUseTitle: string;
 
   @Input()
   set picklists(value: UnderfilledPicklist[]){
@@ -73,6 +74,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.translateService.get('OK').subscribe(s => this.okButtonText = s);
+    this.translateService.get('ORDER_IN_USE_TITLE').subscribe(s => this.orderInUseTitle = s);
     this.workstationTrackerService.GetWorkstationShortName().subscribe(s => this.workstation = s);
   }
 
@@ -100,28 +102,38 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     };
     this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(success => {
       if (success.length > 0) {
-        let workstationsInUse = '\n';
-        let first = true;
-        _.forEach(success, wk => {
-          if (!first) {
-            workstationsInUse += ', ';
-          }
-          workstationsInUse += wk;
-          first = false;
+        const workstationsInUse = this.buildWorkstationsInUseStringFromResult(success);
+        this.translateService
+        .get('ORDER_IN_USE_MSG', {
+          workstations: workstationsInUse
+        })
+        .subscribe((result) => {
+          this.displayInfo(this.orderInUseTitle, result);
+          return;
         });
-        this.displayInfo('Order In Use', 'This order is currently in use. Close it at the following workstations before deleting it:\
-        ' + workstationsInUse);
         return;
       }
 
-      this.workstationTrackerService.Track(workstationTrackerData).subscribe(subsuccess => {
-        this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
-      }, err => {
+      this.workstationTrackerService.Track(workstationTrackerData).subscribe().add(() => {
         this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
       });
     }, err => {
       this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
     });
+  }
+
+  buildWorkstationsInUseStringFromResult(result): string {
+    let workstationsInUse = '\n';
+    let first = true;
+    _.forEach(result, wk => {
+      if (!first) {
+        workstationsInUse += ', ';
+      }
+      workstationsInUse += wk;
+      first = false;
+    });
+
+    return workstationsInUse;
   }
 
   columnSelected(event: IColHeaderSortChanged){
