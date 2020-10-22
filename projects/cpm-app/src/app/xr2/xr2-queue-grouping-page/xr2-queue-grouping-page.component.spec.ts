@@ -1,16 +1,12 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-
 import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page.component';
-import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr2-queue-grouping-header.component';
-import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Subject, of, Observable} from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import {Input,  Component } from '@angular/core';
 import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
          FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,22 +16,9 @@ import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-click
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { DevicesService } from '../../api-core/services/devices.service';
-import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
-import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { Guid } from 'guid-typescript';
 import { MockXr2GroupingQueueComponent } from '../../shared/testing/mock-xr2-grouping-queue';
 import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component';
-
-@Component({
-  selector: 'oc-search-box',
-  template: ''
-})
-
-class MockSearchBox {
-  searchOutput$: Observable<string> = of();
-  @Input()placeHolderText: string;
-}
 
 describe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
@@ -44,36 +27,10 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let picklistQueueService: Partial<PicklistsQueueService>;
   let devicesService: Partial<DevicesService>;
   let spyPicklistQueueServiceGetGrouped: jasmine.Spy;
-  let ocapConfig: IOcapHttpConfiguration;
-  let selectableDeviceInfoList: SelectableDeviceInfo[];
   let selectedDeviceInformation: SelectableDeviceInfo;
 
 
   beforeEach(async(() => {
-    const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
-    const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
-
-    selectableDeviceInfo1.DeviceId = 1;
-    selectableDeviceInfo1.Description = 'DeviceXr21';
-    selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
-
-    selectableDeviceInfo2.DeviceId = 2;
-    selectableDeviceInfo2.Description = 'DeviceXr22';
-    selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
-
-    selectableDeviceInfoList = [selectableDeviceInfo1, selectableDeviceInfo2];
-
-    // Set OCAP config
-    ocapConfig = {
-      clientId: selectableDeviceInfo1.CurrentLeaseHolder.toString(),
-      apiKey: '39252',
-      machineName: 'machine329',
-      ocapServerIP: '127.0.0.1',
-      port: '3928',
-      useSecured: 'true',
-      userLocale: 'en-US',
-      clientName: 'client1'
-    };
 
     selectedDeviceInformation = new SelectableDeviceInfo(null);
     selectedDeviceInformation.DeviceId = 1;
@@ -97,20 +54,19 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, MockXr2GroupingQueueComponent,
-        MockXr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
+        MockXr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe,
         MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistQueueService },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: WpfActionControllerService, useVaule: { } },
+        { provide: WpfActionControllerService, useValue: { } },
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
         { provide: DevicesService, useValue: devicesService},
         { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
-        { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
       ]
     })
     .compileComponents();
