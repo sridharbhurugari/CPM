@@ -28,7 +28,6 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
   TrackById: Guid;
   UnsentPickListLineIds: Array<Guid>;
 
-
   static fromNonstandardJson(picklistQueueGrouped: IPicklistQueueGroupedNonstandardJson) {
     return new this({
       AvailableOutputDeviceList: picklistQueueGrouped.AvailableOutputDeviceList.$values,
