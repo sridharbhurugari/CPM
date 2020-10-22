@@ -25,43 +25,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
 
-
-  private _loadedPicklistQueueGrouped: PicklistQueueGrouped[];
-  private _picklistQueueGrouped: PicklistQueueGrouped[];
-
-
-  translationMap = {
-    RELEASE: 'RELEASE',
-    PRINT: 'PRINT',
-    REPRINT: 'REPRINT',
-    PATIENT: 'PATIENT',
-    PATIENTS: 'PATIENTS',
-    ITEM: 'ITEM',
-    ITEMS: 'ITEMS',
-    CABINET: 'CABINET',
-    CABINETS: 'CABINETS',
-    AREA: 'AREA',
-    AREAS: 'AREAS',
-  };
-
-  readonly typePropertyName = nameof<PicklistQueueGrouped>('PriorityCodeDescription');
-  readonly sequenceOrderPropertyName = nameof<PicklistQueueGrouped>('SequenceOrder');
-  readonly destinationPropertyName = nameof<PicklistQueueGrouped>('Destination');
-  readonly deviceDescriptionPropertyName = nameof<PicklistQueueGrouped>('DeviceDescription');
-  readonly newPropertyName = nameof<PicklistQueueGrouped>('NewCount');
-  readonly releasedPropertyName = nameof<PicklistQueueGrouped>('ReleasedCount');
-  firstTime = true;
-
-  currentSortPropertyName: string;
-  sortOrder: SortDirection = SortDirection.ascending;
-  _searchTextFilter;
- _selectedDeviceInformation;
-
-  translatables = [
-    'OF'
-  ];
-  translations$: Observable<any>;
-
   @Input()
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._loadedPicklistQueueGrouped = value;
@@ -101,6 +64,44 @@ export class Xr2GroupingQueueComponent implements OnInit {
   get selectedDeviceInformation(): SelectableDeviceInfo {
     return this._selectedDeviceInformation;
   }
+
+
+  private _loadedPicklistQueueGrouped: PicklistQueueGrouped[];
+  private _picklistQueueGrouped: PicklistQueueGrouped[];
+
+
+  translationMap = {
+    RELEASE: 'RELEASE',
+    PRINT: 'PRINT',
+    REPRINT: 'REPRINT',
+    PATIENT: 'PATIENT',
+    PATIENTS: 'PATIENTS',
+    ITEM: 'ITEM',
+    ITEMS: 'ITEMS',
+    CABINET: 'CABINET',
+    CABINETS: 'CABINETS',
+    AREA: 'AREA',
+    AREAS: 'AREAS',
+  };
+
+  readonly typePropertyName = nameof<PicklistQueueGrouped>('PriorityCodeDescription');
+  readonly sequenceOrderPropertyName = nameof<PicklistQueueGrouped>('SequenceOrder');
+  readonly destinationPropertyName = nameof<PicklistQueueGrouped>('Destination');
+  readonly deviceDescriptionPropertyName = nameof<PicklistQueueGrouped>('DeviceDescription');
+  readonly newPropertyName = nameof<PicklistQueueGrouped>('NewCount');
+  readonly releasedPropertyName = nameof<PicklistQueueGrouped>('ReleasedCount');
+  firstTime = true;
+
+  currentSortPropertyName: string;
+  sortOrder: SortDirection = SortDirection.ascending;
+  _searchTextFilter;
+ _selectedDeviceInformation;
+
+  translatables = [
+    'OF'
+  ];
+  translations$: Observable<any>;
+
 
 
   searchElement: SearchBoxComponent;

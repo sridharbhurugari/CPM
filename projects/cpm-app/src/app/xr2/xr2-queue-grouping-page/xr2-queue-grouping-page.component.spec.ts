@@ -19,12 +19,13 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-//import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Guid } from 'guid-typescript';
+import { MockXr2GroupingQueueComponent } from '../../shared/testing/mock-xr2-grouping-queue';
+import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component';
 
 @Component({
   selector: 'oc-search-box',
@@ -35,20 +36,6 @@ class MockSearchBox {
   searchOutput$: Observable<string> = of();
   @Input()placeHolderText: string;
 }
-// @Component({
-//   selector: 'app-xr2-queue-grouping-header',
-//   template: '<p>Mock Exercise Component</p>'
-// })
-// class MockXr2QueueGroupingHeaderComponent {
-// }
-
-// @Component({
-//   selector: 'app-xr2-grouping-queue',
-//   template: '<p>Mock User Component</p>'
-// })
-// class MockXr2GroupingQueueComponent {
-// }
-
 
 describe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
@@ -109,8 +96,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
     spyPicklistQueueServiceGetGrouped = spyOn(picklistQueueService, 'getGrouped').and.returnValue(of());
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
-        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, 
+      declarations: [ Xr2QueueGroupingPageComponent, MockXr2GroupingQueueComponent,
+        MockXr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
         MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [
@@ -126,15 +113,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
       ]
     })
-  .overrideComponent(Xr2QueueGroupingHeaderComponent, {
-    set: {
-      template: ''
-    }
-  }).overrideComponent(Xr2GroupingQueueComponent, {
-    set: {
-      template: ''
-    }
-  })
     .compileComponents();
   }));
 
@@ -147,7 +125,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
   it('should create', () => {
      expect(component).toBeTruthy();
   });
-
   describe('Services', () => {
     it('should call picklistQueueService', fakeAsync(() => {
       component.ngOnInit();
