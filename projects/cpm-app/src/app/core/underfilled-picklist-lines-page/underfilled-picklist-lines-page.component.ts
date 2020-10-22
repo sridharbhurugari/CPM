@@ -182,6 +182,7 @@ getButtonEnabled(): boolean  {
     const pll = this.child.picklistLines;
     const keep = _.filter(pll, { IsChecked: false });
     this.child.picklistLines = keep;
+    this.child.updateAllCheckboxValues(false);
   }
 
   reroute() {

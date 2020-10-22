@@ -83,6 +83,7 @@ public TotalItemCount(): number {
 
   updateAllCheckboxValues(checked: boolean) {
   this._picklistLines.forEach(l => l.IsChecked = checked);
+  this.obs.next(this.SelectedItemCount());
   }
 
  onSelect(e: { selectedState: boolean; selectedValue: any; }) {
