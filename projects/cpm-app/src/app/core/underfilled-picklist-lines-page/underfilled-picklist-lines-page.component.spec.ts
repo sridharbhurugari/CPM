@@ -1,10 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { FooterModule, LayoutModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
@@ -35,7 +36,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/10/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
+    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
   },
   {
     DestinationId:"1242", DestinationType:"P", PriorityCode:"Area", PicklistTypeDb:"P",ItemId:"8939",
@@ -43,7 +46,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/11/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
+    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
   },
   {
     DestinationId:"1243", DestinationType:"P", PriorityCode:"FirstDose", PicklistTypeDb:"P",ItemId:"8939",
@@ -51,7 +56,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
     DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
     DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/12/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint"
+    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
+    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
+    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
   },
 ];
   
@@ -111,10 +118,21 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.picklistLines$ = of(pickListLinesData);
+    component.reportPickListLines$ = component.picklistLines$;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Unfilled record selection', () => {
+    it('Should get report data ', fakeAsync(() => {
+      component.reportPickListLines$ = of(pickListLinesData);
+      const getReportFields = spyOn(component, 'getReportData').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getReportFields).toHaveBeenCalledTimes(1);
+    }));
   });
 
   describe('navigateBack', () => {
