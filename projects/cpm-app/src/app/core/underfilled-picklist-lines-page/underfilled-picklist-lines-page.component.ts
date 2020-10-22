@@ -118,6 +118,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       this.wpfActionControllerService.ExecuteBackAction();
     }, err => {
       // bury
+      this.wpfActionControllerService.ExecuteBackAction();
     });
   }
 

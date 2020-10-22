@@ -117,10 +117,10 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
       this.workstationTrackerService.Track(workstationTrackerData).subscribe(subsuccess => {
         this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
       }, err => {
-        // bury failed to track
+        this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
       });
     }, err => {
-      // bury failed to get workstations
+      this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
     });
   }
 
