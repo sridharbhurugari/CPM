@@ -73,6 +73,10 @@ describe('Xr2QueueGroupingPageComponent', () => {
       userLocale: 'en-US',
       clientName: 'client1'
     };
+
+    selectedDeviceInformation = new SelectableDeviceInfo(null);
+    selectedDeviceInformation.DeviceId = 1;
+
     picklistsQueueEventConnectionService = {
       addOrUpdatePicklistQueueItemSubject: new Subject(),
       removePicklistQueueItemSubject: new Subject(),
@@ -108,6 +112,15 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
       ]
     })
+  .overrideComponent(Xr2QueueGroupingHeaderComponent, {
+    set: {
+      template: ''
+    }
+  }).overrideComponent(Xr2GroupingQueueComponent, {
+    set: {
+      template: ''
+    }
+  })
     .compileComponents();
   }));
 

@@ -10,7 +10,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
-import { HttpClientModule } from '@angular/common/http';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Guid } from 'guid-typescript';
 
@@ -61,6 +60,10 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
       userLocale: 'en-US',
       clientName: 'client1'
     };
+
+    selectedDeviceInformation = new SelectableDeviceInfo(null);
+    selectedDeviceInformation.DeviceId = 1;
+
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
       imports: [ SingleselectDropdownModule],
