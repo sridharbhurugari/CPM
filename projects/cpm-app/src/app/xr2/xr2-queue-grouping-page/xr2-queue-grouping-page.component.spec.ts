@@ -21,6 +21,10 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { DevicesService } from '../../api-core/services/devices.service';
+import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
+import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'oc-search-box',
@@ -39,9 +43,36 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let picklistQueueService: Partial<PicklistsQueueService>;
   let devicesService: Partial<DevicesService>;
   let spyPicklistQueueServiceGetGrouped: jasmine.Spy;
+  let ocapConfig: IOcapHttpConfiguration;
+  let selectableDeviceInfoList: SelectableDeviceInfo[];
+  let selectedDeviceInformation: SelectableDeviceInfo;
 
 
   beforeEach(async(() => {
+    const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
+    const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
+
+    selectableDeviceInfo1.DeviceId = 1;
+    selectableDeviceInfo1.Description = 'DeviceXr21';
+    selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
+
+    selectableDeviceInfo2.DeviceId = 2;
+    selectableDeviceInfo2.Description = 'DeviceXr22';
+    selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
+
+    selectableDeviceInfoList = [selectableDeviceInfo1, selectableDeviceInfo2];
+
+    // Set OCAP config
+    ocapConfig = {
+      clientId: selectableDeviceInfo1.CurrentLeaseHolder.toString(),
+      apiKey: '39252',
+      machineName: 'machine329',
+      ocapServerIP: '127.0.0.1',
+      port: '3928',
+      useSecured: 'true',
+      userLocale: 'en-US',
+      clientName: 'client1'
+    };
     picklistsQueueEventConnectionService = {
       addOrUpdatePicklistQueueItemSubject: new Subject(),
       removePicklistQueueItemSubject: new Subject(),
@@ -74,6 +105,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
+        { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
       ]
     })
     .compileComponents();
