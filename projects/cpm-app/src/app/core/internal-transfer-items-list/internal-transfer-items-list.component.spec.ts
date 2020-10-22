@@ -4,7 +4,7 @@ import { InternalTransferItemsListComponent } from './internal-transfer-items-li
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
-import { GridModule } from '@omnicell/webcorecomponents';
+import { CheckboxModule, GridModule } from '@omnicell/webcorecomponents';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockGridSortCol } from '../../shared/testing/mock-grid-sort-col.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
@@ -26,6 +26,7 @@ describe('InternalTransferItemsListComponent', () => {
       ],
       imports: [
         GridModule,
+        CheckboxModule
       ]
     })
     .compileComponents();

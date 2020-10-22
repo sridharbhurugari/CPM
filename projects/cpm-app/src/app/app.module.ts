@@ -37,8 +37,6 @@ import { RouterModule } from '@angular/router';
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
-    CoreModule,
-    Xr2Module,
     ApiXr2Module,
     ApiCoreModule,
     TranslateModule.forRoot({

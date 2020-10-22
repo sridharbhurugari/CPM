@@ -77,7 +77,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   }
 
   navigate(orderId: string){
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`picklists/underfilled/picklistLines`, {orderId: orderId});
+    this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
   }
 
   columnSelected(event: IColHeaderSortChanged){

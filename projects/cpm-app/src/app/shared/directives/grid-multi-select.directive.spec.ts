@@ -13,21 +13,30 @@ describe('GridMultiSelectDirective', () => {
     expect(directive).toBeTruthy();
   });
 
-  describe('given checked and un-checked checkboxes', () => {
+  describe('given checked, un-checked, and disabled checkboxes', () => {
     var selectedCheckbox: Partial<CheckboxComponent>;
     var unselectedCheckbox: Partial<CheckboxComponent>;
+    var disabledCheckbox: Partial<CheckboxComponent>;
     beforeEach(() => {
       selectedCheckbox = {
         valueField: 'selectedValue',
         selected: true,
         selection: new EventEmitter<any>(),
+        isEnabled: true,
       };
       unselectedCheckbox = {
         valueField: 'unselectedValue',
         selected: false,
         selection: new EventEmitter<any>(),
+        isEnabled: true,
       };
-      var checkboxes = [selectedCheckbox, unselectedCheckbox];
+      disabledCheckbox = {
+        valueField: 'disabledValue',
+        selected: false,
+        selection: new EventEmitter<any>(),
+        isEnabled: false,
+      }
+      var checkboxes = [selectedCheckbox, unselectedCheckbox, disabledCheckbox];
       var rows = jasmine.createSpyObj('rows', ['map', 'filter', 'forEach']);
       rows.map.and.callFake((func) => checkboxes.map(func));
       rows.filter.and.callFake((func) => checkboxes.filter(func));
@@ -44,21 +53,43 @@ describe('GridMultiSelectDirective', () => {
     })
 
     describe('onRowCheckChanged given row changed to checked', () => {
-      it('should emit event with newly selected row in selectedValues', () => {
+      beforeEach(() => {
         spyOn(directive.selectionChanged, 'emit');
         directive.onRowCheckChanged({ selectedState: true, selectedValue: unselectedCheckbox.valueField });
+      });
+
+      it('should emit event with newly selected row in selectedValues', () => {
         expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({
           selectedValues: jasmine.arrayContaining([unselectedCheckbox.valueField])
+        }));
+      });
+
+      it('should exclude disabled checkbox from all selection logic', () => {
+        expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({
+          selectedValues: jasmine.arrayWithExactContents([selectedCheckbox.valueField, unselectedCheckbox.valueField]),
+          unselectedValues: jasmine.arrayWithExactContents([]),
+          areAllValuesSelected: true,
         }));
       });
     })
 
     describe('onRowCheckChanged given row changed to un-checked', () => {
-      it('should emit event with newly un-selected row in unselectedValues', () => {
+      beforeEach(() => {
         spyOn(directive.selectionChanged, 'emit');
         directive.onRowCheckChanged({ selectedState: false, selectedValue: selectedCheckbox.valueField });
+      });
+
+      it('should emit event with newly un-selected row in unselectedValues', () => {
         expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({
           unselectedValues: jasmine.arrayContaining([selectedCheckbox.valueField])
+        }));
+      });
+
+      it('should exclude disabled checkbox from all selection logic', () => {
+        expect(directive.selectionChanged.emit).toHaveBeenCalledWith(jasmine.objectContaining({
+          selectedValues: jasmine.arrayWithExactContents([]),
+          unselectedValues: jasmine.arrayWithExactContents([selectedCheckbox.valueField, unselectedCheckbox.valueField]),
+          areAllValuesSelected: false,
         }));
       });
     })

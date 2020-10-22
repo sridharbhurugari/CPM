@@ -2,48 +2,52 @@
     <app-header-container></app-header-container>
     <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
-<oc-grid #ocgrid ocgridfilter="false"
-    appGridSortCol
-    [initialSortPropertyName]="itemDescriptionPropertyName"
-    [orderableValues]="itemNeeds" 
-    (valuesReordered)="itemNeeds = $event">
-  <ng-container class="ocgridheader">
-    <div class="first" data-colwrap="true"></div>
-    <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
-        [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="ITEM">
-    </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
-         [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
-    </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
-         [columnPropertyName]="needPropertyName" headerResourceKey="QTY_TO_XFER">
-    </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
-         [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
-    </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
-         [columnPropertyName]="PickLocationDescriptionPropertyName" headerResourceKey="SOURCE_LOCACTION">
-    </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
-         [columnPropertyName]="PickLocationQohPropertyName" headerResourceKey="SOURCE_QOH">
-    </div>
-  </ng-container>
+<oc-grid #ocgrid ocgridfilter="false" 
+    appGridSortCol [initialSortPropertyName]="itemDescriptionPropertyName" [orderableValues]="itemNeeds" (valuesReordered)="itemNeeds = $event"
+    appGridMultiSelect (selectionChanged)="selectedItemsChanged($event)">
+    <ng-container class="ocgridheader">
+        <div #headerCheckContainer class="first" data-colwrap="true">
+            <oc-checkbox [selected]="areAllValuesSelected" [noLabel]="true" [valueField]="checkboxToggleAll" [isEnabled]="true">
+            </oc-checkbox>
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+            [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="ITEM">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="needPropertyName" headerResourceKey="QTY_TO_XFER">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="PickLocationDescriptionPropertyName" headerResourceKey="SOURCE_LOCACTION">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="PickLocationQohPropertyName" headerResourceKey="SOURCE_QOH">
+        </div>
+    </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
+        <div class="row" *ngFor="let itemNeed of (itemNeeds | searchPipe:searchTextFilter:searchPropertyNames)">
             <div class="first">
+                <oc-checkbox [selected]="selectedItemNeeds && selectedItemNeeds.includes(itemNeed)" [noLabel]="true"
+                    [valueField]="itemNeed" [isEnabled]="itemNeed.PickLocationDeviceLocationId == 0 ? false : true">
+                </oc-checkbox>
             </div>
             <div class="col" [attr.data-title]="'ITEM' | translate">
                 <div>{{itemNeed.ItemFormattedGenericName}}</div>
                 <div>{{itemNeed.ItemBrandName}}</div>
-                <div class="packSize" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.PackageSize}}</div>
+                <div class="packSize" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayPackageSize}}</div>
             </div>
             <div class="col" [attr.data-title]="'QOH' | translate">
-                <span>{{itemNeed.DeviceQuantityOnHand}} {{itemNeed.UnitOfIssue}}</span>
-                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.QohNumberOfPackages}}</div>
+                <span>{{itemNeed.DisplayDeviceQuantityOnHand}}</span>
+                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayQohNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
-                <span>{{itemNeed.DeviceQuantityNeeded}}  {{itemNeed.UnitOfIssue}}</span>
-                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.NumberOfPackages}}</div>
+                <span>{{itemNeed.DisplayDeviceQuantityNeeded}}</span>
+                <div class="packs" *ngIf="itemNeed.Xr2Item === true">{{itemNeed.DisplayNumberOfPackages}}</div>
             </div>
             <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
                 <span>{{itemNeed.PendingDevicePickQuantity}}</span>

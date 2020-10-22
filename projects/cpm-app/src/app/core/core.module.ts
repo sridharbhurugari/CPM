@@ -28,6 +28,8 @@ import { InternalTransferDeviceListComponent } from './internal-transfer-device-
 import { InternalTransferDeviceNeedsPageComponent } from './internal-transfer-device-needs-page/internal-transfer-device-needs-page.component';
 import { InternalTransferItemsListComponent } from './internal-transfer-items-list/internal-transfer-items-list.component';
 import { ItemManagementListComponent } from './item-management-list/item-management-list.component';
+import { CoreRoutingModule } from "./core-routing.module";
+
 @NgModule({
   declarations: [
     UnderfilledPicklistsPageComponent,
@@ -66,6 +68,7 @@ import { ItemManagementListComponent } from './item-management-list/item-managem
     SearchModule,
     SvgIconModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    CoreRoutingModule
   ],})
 export class CoreModule { }
