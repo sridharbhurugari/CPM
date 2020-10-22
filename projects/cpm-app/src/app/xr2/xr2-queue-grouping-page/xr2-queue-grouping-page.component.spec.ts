@@ -4,13 +4,13 @@ import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page.compone
 import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr2-queue-grouping-header.component';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Subject, of, Observable } from 'rxjs';
+import { Subject, of, Observable} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { Input, Component } from '@angular/core';
+import {Input,  Component } from '@angular/core';
 import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
          FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
+//import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
@@ -35,6 +35,20 @@ class MockSearchBox {
   searchOutput$: Observable<string> = of();
   @Input()placeHolderText: string;
 }
+// @Component({
+//   selector: 'app-xr2-queue-grouping-header',
+//   template: '<p>Mock Exercise Component</p>'
+// })
+// class MockXr2QueueGroupingHeaderComponent {
+// }
+
+// @Component({
+//   selector: 'app-xr2-grouping-queue',
+//   template: '<p>Mock User Component</p>'
+// })
+// class MockXr2GroupingQueueComponent {
+// }
+
 
 describe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
@@ -88,7 +102,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     };
 
     devicesService = {
-      getAllXr2Devices: () => of()
+      getAllXr2Devices: () => of([])
     };
 
     spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
@@ -96,7 +110,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
-        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
+        Xr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe, 
         MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [

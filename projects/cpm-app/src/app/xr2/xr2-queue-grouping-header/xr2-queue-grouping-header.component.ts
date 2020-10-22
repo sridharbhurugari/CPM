@@ -28,8 +28,6 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
      static: true
    }) searchElement: SearchBoxComponent;
 
-  @ViewChild('outputDevicesList', null) outputDevicesList: SingleselectComponent;
-
 
   constructor(private windowService: WindowService,
               private ocapHttpConfigurationService: OcapHttpConfigurationService,

@@ -31,10 +31,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   let selectableDeviceInfoList: SelectableDeviceInfo[];
   let selectedDeviceInformation: SelectableDeviceInfo;
 
-  devicesService = {
-    getAllXr2Devices: () => of()
-  };
-
+ 
   beforeEach(async(() => {
     const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
     const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
@@ -64,9 +61,14 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     selectedDeviceInformation = new SelectableDeviceInfo(null);
     selectedDeviceInformation.DeviceId = 1;
 
+    devicesService = {
+      getAllXr2Devices: () => of([])
+    };
+
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
-      imports: [ SingleselectDropdownModule],
+      imports: [ SingleselectDropdownModule]
+      ,
       providers: [ 
       { provide: DevicesService, useValue: devicesService},
       { provide: TranslateService, useValue: { get: () => of([]) } },
