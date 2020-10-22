@@ -3,9 +3,7 @@ import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
-import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
-import { IGridOrderChanged } from '../../shared/events/i-grid-order-changed';
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import * as _ from 'lodash';
 
 @Component({
@@ -62,11 +60,6 @@ public TotalItemCount(): number {
    }
   const countOf = this._picklistLines.length;
   return countOf;
-  }
-
- onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>) {
-  }
- onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>) {
   }
 
  columnSelected(event: IColHeaderSortChanged) {
