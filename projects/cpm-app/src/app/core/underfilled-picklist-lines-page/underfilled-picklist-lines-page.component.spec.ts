@@ -1,8 +1,8 @@
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { FooterModule, LayoutModule, ButtonActionModule, PopupWindowService } from '@omnicell/webcorecomponents';
+import { FooterModule, LayoutModule, ButtonActionModule, PopupWindowService, PopupDialogService } from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
-import { of, Subject, map } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
@@ -29,46 +29,58 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let printWithBaseData: jasmine.Spy;
-  let date = new Date();
-  let pickListLinesData: UnderfilledPicklistLine[] = [{
+  const date = new Date();
+  const pickListLinesData: UnderfilledPicklistLine[] = [{
     IsChecked: false, PicklistLineId: 'pllid1241',
-    DestinationId:"1241", DestinationType:"P", PriorityCode:"Patient", PicklistTypeDb:"P",ItemId:"8939",
-    ItemFormattedGenericName:"aectonla", ItemBrandName:"ace", PatientRoom:"2121", PatientName:"BIN",AreaDescription:"121",
-    DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
-    DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
-    DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/10/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
-    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
-    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
+    ItemFoundInCPM: 'unknown item identifier',
+    ItemLocation: 'unassigned item identifier',
+    InDeviceItem: 'missing route',
+    canReroute: true,
+    DestinationId: '1241', DestinationType: 'P', PriorityCode: 'Patient', PicklistTypeDb: 'P', ItemId: '8939',
+    ItemFormattedGenericName: 'aectonla', ItemBrandName: 'ace', PatientRoom: '2121', PatientName: 'BIN', AreaDescription: '121',
+    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderQuantity: 20,
+    DisplayPatientRoomAndArea: false, DisplayPatientRoom: false, DisplayArea: true, DisplayOmniName: true,
+    DisplayPatientNameSecondLine: true, PharmacyQOH: 10101, UnfilledReason: 'unfilled', PrintFillDate: '10/10/2020',
+    DisplayFillRequired: '10/20', DisplayDestionationValue: '134,', DescriptionSortValue: 'sort', DestinationSortValue: 'sorint',
+    ItemFormatedDescription: '5% dextrose in water 1000ml bag', ItemBrandDescription: 'Tylenol', ItemIdDescription: '001EEE',
+    AreaDesctiptionForReport: '#Childeren Hospital', patientNameForReport: 'Aaron, Derron', DestinationOmniForReport: 'POD 3B ext28270'
   },
   {
     IsChecked: false, PicklistLineId: 'pllid1242',
-    DestinationId:"1242", DestinationType:"P", PriorityCode:"Area", PicklistTypeDb:"P",ItemId:"8939",
-    ItemFormattedGenericName:"aectonla", ItemBrandName:"ace", PatientRoom:"2122", PatientName:"Jhon",AreaDescription:"122",
-    DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
-    DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
-    DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/11/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
-    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
-    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
+    ItemFoundInCPM: 'unknown item identifier',
+    ItemLocation: 'unassigned item identifier',
+    InDeviceItem: 'missing route',
+    canReroute: true,
+    DestinationId: '1242', DestinationType: 'P', PriorityCode: 'Area', PicklistTypeDb: 'P', ItemId: '8939',
+    ItemFormattedGenericName: 'aectonla', ItemBrandName: 'ace', PatientRoom: '2122', PatientName: 'Jhon', AreaDescription: '122',
+    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderQuantity: 20,
+    DisplayPatientRoomAndArea: false, DisplayPatientRoom: false, DisplayArea: true, DisplayOmniName: true,
+    DisplayPatientNameSecondLine: true, PharmacyQOH: 10101, UnfilledReason: 'unfilled', PrintFillDate: '10/11/2020',
+    DisplayFillRequired: '10/20', DisplayDestionationValue: '134,', DescriptionSortValue: 'sort', DestinationSortValue: 'sorint',
+    ItemFormatedDescription: '5% dextrose in water 1000ml bag', ItemBrandDescription: 'Tylenol', ItemIdDescription: '001EEE',
+    AreaDesctiptionForReport: '#Childeren Hospital', patientNameForReport: 'Aaron, Derron', DestinationOmniForReport: 'POD 3B ext28270'
   },
   {
     IsChecked: false, PicklistLineId: 'pllid1243',
-    DestinationId:"1243", DestinationType:"P", PriorityCode:"FirstDose", PicklistTypeDb:"P",ItemId:"8939",
-    ItemFormattedGenericName:"aectonla", ItemBrandName:"ace", PatientRoom:"2123", PatientName:"Jack",AreaDescription:"123",
-    DestinationOmni:"omni", FillDate: date, PickItemLocationDescription:"Picking", FillQuantity:10, OrderQuantity:20,
-    DisplayPatientRoomAndArea:false, DisplayPatientRoom:false, DisplayArea:true, DisplayOmniName:true,
-    DisplayPatientNameSecondLine:true,PharmacyQOH:10101, UnfilledReason:"unfilled", PrintFillDate:"10/12/2020",
-    DisplayFillRequired:"10/20", DisplayDestionationValue:"134,", DescriptionSortValue:"sort", DestinationSortValue:"sorint",
-    ItemFormatedDescription: "5% dextrose in water 1000ml bag", ItemBrandDescription:"Tylenol",ItemIdDescription:"001EEE",
-    AreaDesctiptionForReport: "#Childeren Hospital", patientNameForReport:"Aaron, Derron", DestinationOmniForReport:"POD 3B ext28270"
+    ItemFoundInCPM: 'unknown item identifier',
+    ItemLocation: 'unassigned item identifier',
+    InDeviceItem: 'missing route',
+    canReroute: true,
+    DestinationId: '1243', DestinationType: 'P', PriorityCode: 'FirstDose', PicklistTypeDb: 'P', ItemId: '8939',
+    ItemFormattedGenericName: 'aectonla', ItemBrandName: 'ace', PatientRoom: '2123', PatientName: 'Jack', AreaDescription: '123',
+    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderQuantity: 20,
+    DisplayPatientRoomAndArea: false, DisplayPatientRoom: false, DisplayArea: true, DisplayOmniName: true,
+    DisplayPatientNameSecondLine: true, PharmacyQOH: 10101, UnfilledReason: 'unfilled', PrintFillDate: '10/12/2020',
+    DisplayFillRequired: '10/20', DisplayDestionationValue: '134,', DescriptionSortValue: 'sort', DestinationSortValue: 'sorint',
+    ItemFormatedDescription: '5% dextrose in water 1000ml bag', ItemBrandDescription: 'Tylenol', ItemIdDescription: '001EEE',
+    AreaDesctiptionForReport: '#Childeren Hospital', patientNameForReport: 'Aaron, Derron', DestinationOmniForReport: 'POD 3B ext28270'
   },
 ];
 
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: () => { } };
     spyOn(wpfActionControllerService, 'ExecuteBackAction');
-     printWithBaseData = jasmine.createSpy('printWithBaseData');
+    printWithBaseData = jasmine.createSpy('printWithBaseData');
     const pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData
     };
@@ -76,10 +88,10 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
       displayInfoOk: jasmine.createSpy('displayInfoOk'),
     };
+    const popupDismissedSubject = new Subject<boolean>();
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
     const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
-    dialogService = { show: showSpy };
 
     TestBed.configureTestingModule({
       declarations: [
@@ -91,7 +103,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       ],
       providers: [
         { provide: UnderfilledPicklistLinesService, useValue: { get: () => of([]) } },
-        { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of() } },
+        { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of('') } },
         { provide: UnderfilledPicklistsService, useValue: { doesUserHaveDeletePicklistPermissions: () => of(true) } },
 
         { provide: ResetPickRoutesService, useValue: { reset: () => of() } },
@@ -102,7 +114,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
-        { provide: PopupWindowService, useValue: dialogService}
+        { provide: PopupDialogService, useValue: simpleDialogService }
       ],
       imports: [
         FooterModule,
