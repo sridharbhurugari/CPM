@@ -103,8 +103,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       ],
       providers: [
         { provide: UnderfilledPicklistLinesService, useValue: { get: () => of([]) } },
-        { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of('') } },
-        { provide: UnderfilledPicklistsService, useValue: { doesUserHaveDeletePicklistPermissions: () => of(true) } },
+        { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of(''),
+        doesUserHaveDeletePicklistPermissions: () => of(true) } },
 
         { provide: ResetPickRoutesService, useValue: { reset: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
