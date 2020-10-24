@@ -17,8 +17,8 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { MockXr2GroupingQueueComponent } from '../../shared/testing/mock-xr2-grouping-queue';
-import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component';
+import { MockXr2GroupingQueueComponent } from '../../shared/testing/mock-xr2-grouping-queue.spec';
+import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component.spec';
 
 describe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
