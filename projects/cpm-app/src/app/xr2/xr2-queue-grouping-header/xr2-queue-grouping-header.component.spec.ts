@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { SingleselectDropdownModule } from '@omnicell/webcorecomponents';
 import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header.component';
 import { Input, Component } from '@angular/core';
@@ -26,10 +26,10 @@ class MockSearchBox {
 describe('Xr2QueueGroupingHeaderComponent', () => {
   let component: Xr2QueueGroupingHeaderComponent;
   let fixture: ComponentFixture<Xr2QueueGroupingHeaderComponent>;
-  let devicesService: Partial<DevicesService>;
   let ocapConfig: IOcapHttpConfiguration;
   let selectableDeviceInfoList: SelectableDeviceInfo[];
   let selectedDeviceInformation: SelectableDeviceInfo;
+  let devicesService: Partial<DevicesService>;
 
  
   beforeEach(async(() => {
@@ -62,9 +62,9 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     selectedDeviceInformation.DeviceId = 1;
 
     devicesService = {
-      getAllXr2Devices: () => of([])
+      getAllXr2Devices: () => of(selectableDeviceInfoList)
     };
-
+    
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
       imports: [ SingleselectDropdownModule]
@@ -88,4 +88,37 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Should select device selection to default work station', fakeAsync(() => {
+    const expectedDeviceID = '1';
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
+    component.ngOnInit();
+    tick();
+    expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
+    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+  }));
+
+  it('Should default device if there is only one device', fakeAsync(() => {
+    const expectedDeviceID = '2';
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    selectableDeviceInfoList.shift();
+    expect(component.getAllActiveXr2Devices()).toBeTruthy();
+    tick();
+    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
+    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+  }));
+
+  it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
+    ocapConfig.clientId = '';
+    const expectedDeviceID = '0';
+    const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
+       
+    component.ngOnInit();
+    tick();
+    expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+    expect(component.selectedDeviceInformation).toBeUndefined();
+    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+  }));
 });
