@@ -105,6 +105,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity,
+        deviceId: picklistQueueGrouped.DeviceId
        },
       fragment: 'anchor'
     };

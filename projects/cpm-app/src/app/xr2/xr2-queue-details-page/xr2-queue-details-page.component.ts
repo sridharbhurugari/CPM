@@ -34,6 +34,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
   clearSelectedItemsSubject = new Subject();
   pickPriorityIdentity: string;
+  deviceId: string;
 
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
@@ -74,6 +75,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
 
   ngOnInit() {
     this.pickPriorityIdentity = this.activatedRoute.snapshot.queryParamMap.get('pickPriorityIdentity');
+    this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
 
     this.setTranslations();
     this.loadPicklistsQueueItems();
@@ -192,7 +194,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private loadPicklistsQueueItems(): void {
-    this.picklistsQueueItems = this.picklistsQueueService.getGroupDetails(this.pickPriorityIdentity).pipe(map(x => {
+    this.picklistsQueueItems = this.picklistsQueueService.getGroupDetails(this.pickPriorityIdentity, this.deviceId).pipe(map(x => {
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
       return displayObjects;
     }), shareReplay(1));
