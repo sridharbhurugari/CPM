@@ -17,4 +17,5 @@ export interface IPicklistQueueGrouped {
   AreaCount: number;
   DeviceLocationId: number;
   UnsentPickListLineIds: Array<Guid>;
+  PickPriorityIdentity: number;
 }
