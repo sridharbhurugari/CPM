@@ -213,12 +213,24 @@ export class Xr2GroupingQueueComponent implements OnInit {
      }
   }
 
-  removePicklistQueueGroup(picklistGrouped: IPicklistQueueGrouped) {
+  removePicklistQueueGroup(priorityCode: string, deviceId: number ) {
     const matchingGroupedIndex = _.findIndex(this.picklistQueueGrouped, (x) => {
-      return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
+      return x.PriorityCode === priorityCode && x.DeviceId === deviceId;
      });
     if (matchingGroupedIndex > -1) {
       this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
     }
+  }
+
+  refreshDataOnScreen(picklistGroupedList: IPicklistQueueGrouped[]) {
+      // Remove Items not in source list.
+      this.picklistQueueGrouped = _.filter(this.picklistQueueGrouped, (x) => {
+        return _.findIndex(picklistGroupedList, (y) => x.PriorityCode === y.PriorityCode && x.DeviceId === y.DeviceId) === -1;
+        });
+
+      // Add or Update
+      picklistGroupedList.forEach((x) => {
+        this.updatePickListQueueGroupedGrouping(x);
+      });
   }
 }

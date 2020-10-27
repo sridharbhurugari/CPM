@@ -95,6 +95,13 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
         const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
         this.UpdatePickListQueueGroupedList(pickListQueueGrouped);
       });
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .subscribe((x) => {
+        let picklistQueueGroupedList: IPicklistQueueGrouped[];
+        x.PicklistQueueGroupedList.forEach(y => picklistQueueGroupedList.push(PicklistQueueGrouped.fromNonstandardJson(y)));
+        this.childGroupingQueueComponent.refreshDataOnScreen(picklistQueueGroupedList);
+      });
   }
 
   private loadPicklistsQueueGrouped(): void {

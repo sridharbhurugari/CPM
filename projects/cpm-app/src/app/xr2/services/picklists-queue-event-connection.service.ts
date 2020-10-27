@@ -5,6 +5,7 @@ import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-p
 import { Guid } from 'guid-typescript';
 import { IPicklistQueueGroupedUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-update-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
+import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
 
 
 @Injectable({
@@ -16,6 +17,7 @@ export class PicklistsQueueEventConnectionService {
   public removePicklistQueueItemSubject = new Subject<IRemovePicklistQueueItemMessage>();
   public reloadPicklistQueueItemsSubject = new Subject<any>();
   public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
+  public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
 
   constructor(
       private eventConnectionService: EventConnectionService
@@ -64,6 +66,12 @@ export class PicklistsQueueEventConnectionService {
     if (message.EventId === 'PickListQueueGroupedUpdateMessage') {
       console.log(message);
       this.picklistQueueGroupedUpdateSubject.next(message);
+      return;
+    }
+
+    if (message.EventId === 'PickListQueueGroupedListUpdateMessage') {
+      console.log(message);
+      this.picklistQueueGroupedListUpdateSubject.next(message);
       return;
     }
   }
