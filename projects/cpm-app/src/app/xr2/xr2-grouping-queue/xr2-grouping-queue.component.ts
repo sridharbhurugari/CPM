@@ -14,7 +14,6 @@ import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
 
-
 @Component({
   selector: 'app-xr2-grouping-queue',
   templateUrl: './xr2-grouping-queue.component.html',
@@ -65,10 +64,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return this._selectedDeviceInformation;
   }
 
-
   private _loadedPicklistQueueGrouped: PicklistQueueGrouped[];
   private _picklistQueueGrouped: PicklistQueueGrouped[];
-
 
   translationMap = {
     RELEASE: 'RELEASE',
@@ -101,8 +98,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
     'OF'
   ];
   translations$: Observable<any>;
-
-
 
   searchElement: SearchBoxComponent;
   searchFields = [nameof<PicklistQueueGrouped>('Destination'), nameof<PicklistQueueGrouped>('PriorityCodeDescription'),
