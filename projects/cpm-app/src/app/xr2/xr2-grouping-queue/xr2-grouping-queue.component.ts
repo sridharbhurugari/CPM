@@ -197,6 +197,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
+    console.log('updatePickListQueueGroupedGrouping');
     console.log(picklistGrouped);
     const grouping = new PicklistQueueGrouped(picklistGrouped);
     const matchingGrouped = _.findIndex(this.picklistQueueGrouped, (x) => {
