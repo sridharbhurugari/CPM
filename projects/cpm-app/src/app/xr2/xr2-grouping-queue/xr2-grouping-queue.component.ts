@@ -11,7 +11,7 @@ import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
@@ -101,8 +101,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
     this.releaseEvent.emit(picklistQueueGrouped);
   }
 
-  onDetailsClick(): void {
-    this.router.navigate(['/xr2/xr2Queue/details']);
+  onDetailsClick(picklistQueueGrouped: PicklistQueueGrouped): void {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity,
+       },
+      fragment: 'anchor'
+    };
+
+    this.router.navigate(['/xr2/xr2Queue/details'], navigationExtras);
   }
 
   getActiveOutputDeviceList(picklistQueueGrouped: PicklistQueueGrouped) {

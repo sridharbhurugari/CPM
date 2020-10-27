@@ -29,6 +29,19 @@ export class PicklistsQueueService {
     });
   }
 
+  getGroupDetails(pickPriorityIdentity: string, deviceId?: string): Observable<IPicklistQueueItem[]> {
+    let url: string;
+    if (deviceId) {
+      url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueue/grouped/' + pickPriorityIdentity + '/' + deviceId);
+    } else {
+    url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueue/grouped/' + pickPriorityIdentity);
+    }
+
+    return this.httpClient.get<IPicklistQueueItem[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
   getGrouped(): Observable<IPicklistQueueGrouped[]> {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueuesgrouped');
     return this.httpClient.get<IPicklistQueueGrouped[]>(url, {
