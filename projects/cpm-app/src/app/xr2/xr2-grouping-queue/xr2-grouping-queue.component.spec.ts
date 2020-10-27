@@ -107,7 +107,12 @@ describe('Xr2GroupingQueueComponent', () => {
     });
 
     it('should navigate to details page on details click', () => {
-      component.onDetailsClick();
+      const picklistQueueGrouped = new PicklistQueueGrouped(null);
+      picklistQueueGrouped.OutputDeviceId = '2104';
+      picklistQueueGrouped.PickPriorityIdentity = 1;
+      picklistQueueGrouped.AvailableOutputDeviceList = [];
+
+      component.onDetailsClick(picklistQueueGrouped);
 
       expect(router.navigate).toHaveBeenCalledTimes(1);
     });
