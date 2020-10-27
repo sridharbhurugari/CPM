@@ -164,6 +164,45 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     });
   });
 
+  describe('Button Enabled', () => {
+    it('should be enabled', () => {
+      // Selected > 0
+      component.currentItemCountSelected = 1;
+      // request status == none
+      component.requestStatus = 'none';
+      expect(component.buttonEnabled === true);
+    });
+
+    it('should NOT be enabled for selected count', () => {
+      // Selected = 0 will fail
+      component.currentItemCountSelected = 0;
+      // request status == none will pass
+      component.requestStatus = 'none';
+      expect(component.buttonVisible === false);
+    });
+
+    it('should NOT be enabled for status', () => {
+      // Selected = 1 would pass
+      component.currentItemCountSelected = 1;
+      // request status !== none willfail
+      component.requestStatus = 'printing';
+      expect(component.buttonVisible === false);
+    });
+  });
+
+
+  describe('Close Button Visible', () => {
+    it('should be visible', () => {
+      expect(component.buttonVisible === true);
+    });
+
+    it('should NOT be visible', () => {
+      TestBed.overrideProvider(UnderfilledPicklistsService, {useValue: { getForOrder: () => of(''),
+      doesUserHaveDeletePicklistPermissions: () => of(true) }});
+      expect(component.buttonVisible === false);
+    });
+  });
+
   describe('print', () => {
     describe('succeeded', () => {
       const pickList: any = {};

@@ -95,8 +95,8 @@ describe('SplitResizeComponent', () => {
         const moveValue = component.sideLeftBasis + 20;
         const mouseEvent: Partial<MouseEvent> = {
           x: moveValue
-        }
-        component.onMouseMove(mouseEvent as any)
+        };
+        component.onMouseMove(mouseEvent as any);
         expect(component.sideLeftBasis).toBe(moveValue);
       });
     });
