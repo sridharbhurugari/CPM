@@ -43,7 +43,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
     picklistsQueueEventConnectionService = {
       addOrUpdatePicklistQueueItemSubject: new Subject(),
       removePicklistQueueItemSubject: new Subject(),
-      reloadPicklistQueueItemsSubject: new Subject()
+      reloadPicklistQueueItemsSubject: new Subject(),
+      picklistQueueGroupedListUpdateSubject: new Subject(),
+      picklistQueueGroupedUpdateSubject: new Subject()
     };
 
     picklistQueueService = {
@@ -51,6 +53,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     };
 
     spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
+    spyOn(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject, 'subscribe').and.callThrough();
     spyPicklistQueueServiceGetGrouped = spyOn(picklistQueueService, 'getGrouped').and.returnValue(of());
 
     TestBed.configureTestingModule({
