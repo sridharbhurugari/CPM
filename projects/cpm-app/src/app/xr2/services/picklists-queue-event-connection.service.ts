@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, from } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 import { Guid } from 'guid-typescript';
+import { IPicklistQueueGroupedUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-update-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
+import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +16,8 @@ export class PicklistsQueueEventConnectionService {
   public addOrUpdatePicklistQueueItemSubject = new Subject<IAddOrUpdatePicklistQueueItemMesssage>();
   public removePicklistQueueItemSubject = new Subject<IRemovePicklistQueueItemMessage>();
   public reloadPicklistQueueItemsSubject = new Subject<any>();
+  public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
+  public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
 
   constructor(
       private eventConnectionService: EventConnectionService
@@ -55,6 +60,18 @@ export class PicklistsQueueEventConnectionService {
     if (message.EventId === 'ReloadPicklistQueueItemsMessage') {
       console.log(message);
       this.reloadPicklistQueueItemsSubject.next(message);
+      return;
+    }
+
+    if (message.EventId === 'PickListQueueGroupedUpdateMessage') {
+      console.log(message);
+      this.picklistQueueGroupedUpdateSubject.next(message);
+      return;
+    }
+
+    if (message.EventId === 'PickListQueueGroupedListUpdateMessage') {
+      console.log(message);
+      this.picklistQueueGroupedListUpdateSubject.next(message);
       return;
     }
   }

@@ -19,7 +19,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
-  @ViewChild(Xr2GroupingQueueComponent, null) chileGroupingQueueComponent: Xr2GroupingQueueComponent;
+  @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
   translatables = [
     'YES',
@@ -79,7 +79,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
   private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
-    this.chileGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
+    this.childGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {
@@ -89,11 +89,25 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
       .subscribe(() => this.loadPicklistsQueueGrouped());
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
+      .subscribe((x) => {
+        const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
+        this.UpdatePickListQueueGroupedList(pickListQueueGrouped);
+      });
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .subscribe((x) => {
+        let picklistQueueGroupedList: IPicklistQueueGrouped[];
+        x.PicklistQueueGroupedList.forEach(y => picklistQueueGroupedList.push(PicklistQueueGrouped.fromNonstandardJson(y)));
+        this.childGroupingQueueComponent.refreshDataOnScreen(picklistQueueGroupedList);
+      });
   }
 
   private loadPicklistsQueueGrouped(): void {
     this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
       const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
+      console.log('loadPicklistsQueueGrouped : ');
       console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
