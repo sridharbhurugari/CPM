@@ -64,7 +64,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
                 picklistQueueGrouped.Saving = false;
                 console.log('Send Complete Item removed');
               } else {
-                this.UpdatePickListQueueGroupedList(getGroupedResult);
+                this.UpdatePickListQueueGroupedList(new PicklistQueueGrouped(getGroupedResult));
                 picklistQueueGrouped.Saving = false;
                 console.log('Send and Refresh complete.');
               }
@@ -92,15 +92,28 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
       .subscribe((x) => {
-        const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
-        this.UpdatePickListQueueGroupedList(pickListQueueGrouped);
+        if (!x.PicklistQueueGrouped) {
+          console.log('!picklistqueuegrouped removing using priority and device');
+          this.childGroupingQueueComponent.removePicklistQueueGroup(x.PriorityCode, x.DeviceId);
+        } else {
+          const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
+          this.UpdatePickListQueueGroupedList(pickListQueueGrouped);
+        }
       });
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
       .subscribe((x) => {
-        let picklistQueueGroupedList: IPicklistQueueGrouped[];
-        x.PicklistQueueGroupedList.forEach(y => picklistQueueGroupedList.push(PicklistQueueGrouped.fromNonstandardJson(y)));
-        this.childGroupingQueueComponent.refreshDataOnScreen(picklistQueueGroupedList);
+        console.log('picklistQueueGroupedListUpdateSubject called');
+        if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
+          console.log('Empty List just clear screen');
+          this.childGroupingQueueComponent.refreshDataOnScreen(null);
+        } else {
+          const picklistQueueGroupedList = x.PicklistQueueGroupedList.$values.map((picklistQueueGrouped) => {
+            return PicklistQueueGrouped.fromNonstandardJson(picklistQueueGrouped);
+          });
+
+          this.childGroupingQueueComponent.refreshDataOnScreen(picklistQueueGroupedList);
+        }
       });
   }
 

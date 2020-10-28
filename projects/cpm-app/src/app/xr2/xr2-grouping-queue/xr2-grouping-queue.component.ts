@@ -200,38 +200,67 @@ export class Xr2GroupingQueueComponent implements OnInit {
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
     console.log('updatePickListQueueGroupedGrouping');
     console.log(picklistGrouped);
-    const grouping = new PicklistQueueGrouped(picklistGrouped);
     const matchingGrouped = _.findIndex(this.picklistQueueGrouped, (x) => {
-      return x.PriorityCode === grouping.PriorityCode && x.DeviceId === grouping.DeviceId;
+      return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
      });
     console.log(matchingGrouped);
     if (matchingGrouped < 0) {
       console.log('PickListGrouped Not Found. Adding Entry');
-      this.picklistQueueGrouped.push(grouping);
+      this.picklistQueueGrouped.push(new PicklistQueueGrouped(picklistGrouped));
      } else {
        console.log('match found updating record');
-       this.picklistQueueGrouped[matchingGrouped] = grouping;
+       this.picklistQueueGrouped[matchingGrouped] = new PicklistQueueGrouped(picklistGrouped);
      }
   }
 
   removePicklistQueueGroup(priorityCode: string, deviceId: number ) {
+    console.log('looking to remove group ' + priorityCode + ' and deviceId : ' + deviceId);
     const matchingGroupedIndex = _.findIndex(this.picklistQueueGrouped, (x) => {
       return x.PriorityCode === priorityCode && x.DeviceId === deviceId;
      });
     if (matchingGroupedIndex > -1) {
-      this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
+      console.log('group exists removing it');
+      this.picklistQueueGrouped = this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
+      console.log(this.picklistQueueGrouped);
     }
   }
 
   refreshDataOnScreen(picklistGroupedList: IPicklistQueueGrouped[]) {
-      // Remove Items not in source list.
-      this.picklistQueueGrouped = _.filter(this.picklistQueueGrouped, (x) => {
-        return _.findIndex(picklistGroupedList, (y) => x.PriorityCode === y.PriorityCode && x.DeviceId === y.DeviceId) === -1;
+      console.log('refreshDataOnScreen');
+      console.log('Current List');
+      console.log(this.picklistQueueGrouped);
+      console.log('New List for screen');
+      console.log(picklistGroupedList);
+      if (!picklistGroupedList) {
+        console.log('No item in list clearing');
+        this.picklistQueueGrouped = [];
+        console.log(this.picklistQueueGrouped);
+      } else {
+        // Remove Items not in source list.
+        let indexesToRemove = [];
+        _.forEach(this.picklistQueueGrouped, (x) => {
+          const resIndex = _.findIndex(picklistGroupedList, (y) => x.PriorityCode === y.PriorityCode && x.DeviceId === y.DeviceId);
+          if (resIndex === -1) {
+            console.log('item below was not found adding to list to remove.');
+            indexesToRemove.push(this.picklistQueueGrouped.indexOf(x));
+          }
         });
 
-      // Add or Update
-      picklistGroupedList.forEach((x) => {
-        this.updatePickListQueueGroupedGrouping(x);
-      });
+        indexesToRemove.sort();
+        indexesToRemove.reverse();
+        _.forEach(indexesToRemove, (x) => {
+          console.log('removing priority' + this.picklistQueueGrouped[x].PriorityCode +
+            'and deviceid ' + this.picklistQueueGrouped[x].DeviceId);
+          this.picklistQueueGrouped.splice(x, 1);
+        });
+
+        console.log('Removed Non matching Items.');
+        console.log(this.picklistQueueGrouped);
+
+        // Add or Update
+        picklistGroupedList.forEach((x) => {
+          this.updatePickListQueueGroupedGrouping(x);
+        });
+      }
   }
 }

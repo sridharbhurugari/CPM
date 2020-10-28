@@ -1,6 +1,6 @@
-import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 import { IPicklistQueueGroupedNonstandardJson } from './i-picklist-queue-grouped-nonstandard-json';
+import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 
 export interface IPicklistQueueGroupedListUpdateMessage {
-    PicklistQueueGroupedList: IPicklistQueueGroupedNonstandardJson[];
+    PicklistQueueGroupedList: NonstandardJsonArray<IPicklistQueueGroupedNonstandardJson>;
 }
