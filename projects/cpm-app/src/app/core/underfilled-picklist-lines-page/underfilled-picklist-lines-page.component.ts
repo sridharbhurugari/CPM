@@ -128,7 +128,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         underfilled.forEach(element => {
           const date = element.FillDate;
           element.PrintFillDate = datePipe.transform(date, 'M/d/yy   h:mm a');
-          element.DisplayFillRequired = element.FillQuantity + ' / ' + element.OrderQuantity;
+          element.DisplayFillRequired = (element.FillQuantity ? element.FillQuantity.toString() : '0') + ' / ' + element.OrderQuantity;
           if (element.PatientRoom && element.PatientRoom !== '') {
             element.DisplayDestionationValue  = element.PatientRoom + ',';
           }
@@ -201,6 +201,7 @@ getButtonEnabled(): boolean  {
     const pll = this.child.picklistLines;
     const keep = _.filter(pll, { IsChecked: false });
     this.child.picklistLines = keep;
+    this.child.updateAllCheckboxValues(false);
   }
 
   reroute() {

@@ -404,7 +404,7 @@ describe('Xr2DetailsQueueComponent', () => {
     });
   });
 
-  describe('Diplay Text Labels', () => {
+  describe('Display Text Labels', () => {
     it('should display release button on new status', () => {
       const expectedText = 'RELEASE';
       const item = new PicklistQueueItem(null);

@@ -3,9 +3,7 @@ import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
-import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
-import { IGridOrderChanged } from '../../shared/events/i-grid-order-changed';
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import * as _ from 'lodash';
 
 @Component({
@@ -64,11 +62,6 @@ public TotalItemCount(): number {
   return countOf;
   }
 
- onSelectionChanged(gridSelectionChanged: IGridSelectionChanged<UnderfilledPicklistLine>) {
-  }
- onOrderChanged(gridOrderChanged: IGridOrderChanged<UnderfilledPicklistLine>) {
-  }
-
  columnSelected(event: IColHeaderSortChanged) {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.picklistLines = _.orderBy(this._picklistLines, x => x[this.currentSortPropertyName], event.SortDirection);
@@ -83,6 +76,7 @@ public TotalItemCount(): number {
 
   updateAllCheckboxValues(checked: boolean) {
   this._picklistLines.forEach(l => l.IsChecked = checked);
+  this.obs.next(this.SelectedItemCount());
   }
 
  onSelect(e: { selectedState: boolean; selectedValue: any; }) {

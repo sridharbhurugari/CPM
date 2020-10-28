@@ -22,25 +22,24 @@
              <oc-button-action
               *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
               [disabled]="requestStatus != 'none'"
-              [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'clear'"
-              [buttonText]="'PRINT' | translate"
+              [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'print'"
+              [buttonText]="'PRINT_ALL' | translate"
               (click)="print()">
              </oc-button-action>
 
-             <oc-button-action *ngIf="buttonVisible"
+             <oc-button-action
               [disabled]="!getRerouteButtonEnabled()"
-              [buttonIcon]= "'reroute'"
+              [buttonIcon]= "requestStatus == 'reroute' ? 'spin' : 'reroute'"
               [buttonText]="'REROUTE' | translate"
               (click)="reroute()">
              </oc-button-action>
 
              <oc-button-action *ngIf="buttonVisible"
               [disabled]="!getButtonEnabled()"
-              [buttonIcon]="'checkmark'"
+              [buttonIcon]= "requestStatus == 'complete' ? 'spin' : 'checkmark'"
               [buttonText]="'CLOSE' | translate"
               (click)="close()">
              </oc-button-action>
-
             </div>
         </oc-footer>
     </ng-container>
