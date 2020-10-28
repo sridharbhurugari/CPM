@@ -235,5 +235,6 @@
   "INTERNAL_TRANS_PICKQUEUE_FAILED_MSG": "Failed to add items to picking queue.  Please try again.",
   "INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE": "Add to Picking Queue Failed",
   "ORDER_IN_USE_MSG": "This order is currently being viewed at the following workstations: <br /> {{workstations}}",
-  "ORDER_IN_USE_TITLE": "Order In Use"
+  "ORDER_IN_USE_TITLE": "Order In Use",
+   "XR2_ALL_DEVICES": "All Devices"
 }
