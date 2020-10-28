@@ -130,7 +130,8 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
           ItemFormattedDescription: 'Item Formatted Description',
           ItemBrandNameDescription: 'Item Brand Name Description',
           ItemIdDescription: 'Item Id Description',
-          SortFormattedName: 'Sort Formatted Name'
+          SortFormattedName: 'Sort Formatted Name',
+          DestinationDeviceDescription: 'a device',
         });
         component.pick();
         expect(simpleDialogService.displayInfoOk).toHaveBeenCalled();

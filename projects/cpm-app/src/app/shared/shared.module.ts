@@ -21,6 +21,13 @@ import { SplitResizeComponent } from './components/split-resize/split-resize.com
 import { DropdownPopupComponent } from './components/dropdown-popup/dropdown-popup.component';
 import { GridSortColDirective } from './directives/grid-sort-col.directive';
 import { CPDataLabelComponent } from './components/cp-data-label/cp-data-label.component';
+import { GuidedItemHeaderComponent } from './components/guided-item-header/guided-item-header.component';
+import { HeaderedContentControlComponent } from './components/headered-content-control/headered-content-control.component';
+import { SplitFixedComponent } from './components/split-fixed/split-fixed.component';
+import { ScalableTextComponent } from './components/scalable-text/scalable-text.component';
+import { HorizontalTabsComponent } from './components/horizontal-tabs/horizontal-tabs.component';
+import { TabContentsComponent } from './components/tab-contents/tab-contents.component';
+import { ValidationIconComponent } from './components/validation-icon/validation-icon.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +48,13 @@ import { CPDataLabelComponent } from './components/cp-data-label/cp-data-label.c
     DropdownPopupComponent,
     GridSortColDirective,
     CPDataLabelComponent,
+    GuidedItemHeaderComponent,
+    HeaderedContentControlComponent,
+    SplitFixedComponent,
+    ScalableTextComponent,
+    HorizontalTabsComponent,
+    TabContentsComponent,
+    ValidationIconComponent,
   ],
   imports: [
     CommonModule,
@@ -73,6 +87,13 @@ import { CPDataLabelComponent } from './components/cp-data-label/cp-data-label.c
     SplitResizeComponent,
     DropdownPopupComponent,
     GridSortColDirective,
+    GuidedItemHeaderComponent,
+    SplitFixedComponent,
+    ScalableTextComponent,
+    HeaderedContentControlComponent,
+    HorizontalTabsComponent,
+    TabContentsComponent,
+    ValidationIconComponent,
   ],
   entryComponents: [
     TextResultPopupComponent,

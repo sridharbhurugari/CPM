@@ -1,0 +1,54 @@
+<oc-grid #ocgrid ocgridfilter="false" 
+    appGridMultiSelect (selectionChanged)="selectedPicksChanged($event)">
+    <ng-container class="ocgridheader">
+        <div #headerCheckContainer class="first" data-colwrap="true">
+            <oc-checkbox [selected]="areAllValuesSelected" [noLabel]="true" [valueField]="checkboxToggleAll" [isEnabled]="true">
+            </oc-checkbox>
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="destDevicePropertyName" headerResourceKey="DEST_DEVICE">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="needPropertyName" headerResourceKey="QTY_TO_XFER">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+            [columnPropertyName]="quantityToPick" headerResourceKey="PICK_QTY">
+        </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let itemNeed of itemNeeds">
+            <div class="first">
+                <oc-checkbox [selected]="itemNeed.IsSelected" [noLabel]="true" [valueField]="itemNeed">
+                </oc-checkbox>
+            </div>
+            <div class="col" [attr.data-title]="'DEST_DEVICE' | translate">
+                <div>{{itemNeed.DestinationDeviceDescription}}</div>
+                <div *ngIf="itemNeed.Xr2Item">{{itemNeed.DisplayPackageSize}}</div>
+            </div>
+            <div class="col" [attr.data-title]="'QOH' | translate">
+                <span>{{itemNeed.DisplayDeviceQuantityOnHand}}</span>
+                <div *ngIf="itemNeed.Xr2Item">{{itemNeed.DisplayQohNumberOfPackages}}</div>
+            </div>
+            <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
+                <span>{{itemNeed.PendingDevicePickQuantity}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'QTY_TO_XFER' | translate">
+                <span>{{itemNeed.DisplayDeviceQuantityNeeded}}</span>
+                <div *ngIf="itemNeed.Xr2Item">{{itemNeed.DisplayNumberOfPackages}}</div>
+            </div>
+            <div class="col" [attr.data-title]="'PICK_QTY' | translate">
+                <oc-numeric [units]="itemNeed.PackSize == 1 ? itemNeed.UnitOfIssue : ('PACKS' | translate)"
+                            [(ngModel)]="itemNeed.PacksToPick"
+                            [disabled]="itemNeed.IsSelected"
+                            (ngModelChange)="pickQtyChanged()">
+                </oc-numeric>
+            </div>
+        </div>
+    </ng-container>
+</oc-grid>
