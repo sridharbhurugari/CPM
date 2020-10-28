@@ -60,8 +60,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
           picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
               console.log('Data Refreshed. Updating UI');
               if (!getGroupedResult) {
-                this.UpdatePickListQueueGroupedList(getGroupedResult);
-                picklistQueueGrouped.Saving = false;
+                this.childGroupingQueueComponent.removePicklistQueueGroup(picklistQueueGrouped.PriorityCode, picklistQueueGrouped.DeviceId);
                 console.log('Send Complete Item removed');
               } else {
                 this.UpdatePickListQueueGroupedList(new PicklistQueueGrouped(getGroupedResult));

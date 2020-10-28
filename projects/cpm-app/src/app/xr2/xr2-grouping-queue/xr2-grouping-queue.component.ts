@@ -220,7 +220,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
      });
     if (matchingGroupedIndex > -1) {
       console.log('group exists removing it');
-      this.picklistQueueGrouped = this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
+      this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
       console.log(this.picklistQueueGrouped);
     }
   }
