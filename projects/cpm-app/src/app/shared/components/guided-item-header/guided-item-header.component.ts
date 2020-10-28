@@ -26,6 +26,8 @@ export class GuidedItemHeaderComponent implements OnInit {
   leaseBusyPopup$: Observable<PopupDialogComponent>;
   leaseBusyTitle$: Observable<string>;
 
+  deviceLocationAccessBusy: boolean;
+
   constructor(
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
