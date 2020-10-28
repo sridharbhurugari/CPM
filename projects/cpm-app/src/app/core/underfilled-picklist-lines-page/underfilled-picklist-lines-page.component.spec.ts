@@ -21,6 +21,8 @@ import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
+import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
@@ -91,7 +93,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const popupDismissedSubject = new Subject<boolean>();
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
     const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
+    const workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName: () => of(''), UnTrack: () => of() };
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
+    spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
 
     TestBed.configureTestingModule({
       declarations: [
@@ -114,6 +118,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
+        { provide: WorkstationTrackerService, useValue: workstationTrackerService },
         { provide: PopupDialogService, useValue: simpleDialogService }
       ],
       imports: [

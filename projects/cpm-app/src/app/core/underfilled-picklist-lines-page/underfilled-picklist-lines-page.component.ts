@@ -114,10 +114,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   navigateBack() {
-    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe(success => {
-      this.wpfActionControllerService.ExecuteBackAction();
-    }, err => {
-      // bury
+    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
       this.wpfActionControllerService.ExecuteBackAction();
     });
   }
