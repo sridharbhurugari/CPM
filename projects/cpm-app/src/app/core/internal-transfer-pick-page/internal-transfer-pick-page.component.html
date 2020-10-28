@@ -112,11 +112,11 @@
                 </oc-button-action>
                 <oc-button-action *ngIf="!(isLastLine$ | async)" [buttonText]="'NEXT' | translate"
                     [disabled]="(pickTotal$ | async) > (pickLocation$ | async)?.QuantityOnHand"
-                    (click)="completePick(false)">
+                    (click)="completePick()">
                 </oc-button-action>
                 <oc-button-action *ngIf="isLastLine$ | async" [buttonText]="'DONE' | translate"
                     [disabled]="(pickTotal$ | async) > (pickLocation$ | async)?.QuantityOnHand"
-                    (click)="completePick(true)">
+                    (click)="completePick()">
                 </oc-button-action>
             </div>
         </oc-footer>
