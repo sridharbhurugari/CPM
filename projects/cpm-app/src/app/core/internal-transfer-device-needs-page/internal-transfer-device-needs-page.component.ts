@@ -34,6 +34,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   xferQtyHeaderKey = 'QTY_TO_XFER';
   qtyPendingHeaderKey = 'QTY_PENDING_PICK';
   itemNeeds$: Observable<IItemReplenishmentNeed[]>;
+  reportItemNeeds$: Observable<IItemReplenishmentNeed[]>;
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
   reportTitle$: Observable<string>;
@@ -69,6 +70,34 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.reportItemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
+    this.reportItemNeeds$ = this.reportItemNeeds$.pipe(
+      map(need => {
+        need.forEach(element =>
+        {
+            element.SortFormattedName = element.ItemFormattedGenericName;
+            if(element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemFormattedGenericName.match(reg);
+              element.ItemFormattedDescription =  parts.join('\n');
+              element.ItemFormattedGenericName = '';
+            }
+            if(element.ItemBrandName && element.ItemBrandName.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemBrandNameDescription =  parts.join('\n');
+              element.ItemBrandName = '';
+            }
+            if(element.ItemId && element.ItemId.length > 40) {
+              const reg = new RegExp(".{1," + 18 + "}","g");
+              const parts = element.ItemBrandName.match(reg);
+              element.ItemIdDescription =  parts.join('\n');
+              element.ItemId = '';
+            }
+          })
+        return need;
+      })
+    );
   }
 
   goBack() {
@@ -105,7 +134,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
 
     if (this.isXr2Item) {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId', 'DisplayPackageSize' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormattedDescription', 'ItemBrandName','ItemBrandNameDescription', 'ItemId','ItemIdDescription', 'DisplayPackageSize' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
         { cellPropertyNames: [ 'DisplayDeviceQuantityOnHand', 'DisplayQohNumberOfPackages' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
@@ -115,7 +144,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       ];
     } else {
       colDefinitions = [
-        { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemBrandName', 'ItemId' ],
+        { cellPropertyNames: [ 'ItemFormattedGenericName','ItemFormattedDescription', 'ItemBrandName','ItemBrandNameDescription', 'ItemId','ItemIdDescription' ],
             headerResourceKey: this.itemHeaderKey, width: 'auto' },
         { cellPropertyNames: [ 'DisplayDeviceQuantityOnHand' ],
             headerResourceKey: this.qohHeaderKey, width: '*' },
@@ -126,8 +155,8 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     }
 
     this.requestStatus = 'printing';
-    this.sortedNeeds$ = this.itemNeeds$.pipe(map(needs => {
-        return _.orderBy(needs, x => x.ItemFormattedGenericName.toLocaleLowerCase(), 'asc');
+    this.sortedNeeds$ = this.reportItemNeeds$.pipe(map(needs => {
+        return _.orderBy(needs, x => x.SortFormattedName.toLocaleLowerCase(), 'asc');
       }));
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, this.sortedNeeds$);
     this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
