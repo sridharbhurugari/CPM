@@ -60,7 +60,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
     picklistsQueueEventConnectionService = {
       picklistQueueGroupedListUpdateSubject: new Subject(),
       picklistQueueGroupedUpdateSubject: new Subject(),
-      reloadPicklistQueueItemsSubject: new Subject()
     };
 
     spyOn(picklistQueueService, 'sendToRobotGrouped').and.returnValue(of(picklistQueueService));
@@ -69,7 +68,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     spyOn(picklistsQueueEventConnectionService.picklistQueueGroupedUpdateSubject, 'subscribe').and.callThrough();
     spyOn(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject, 'subscribe').and.callThrough();
-    spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
@@ -113,7 +111,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
       expect(component).toBeTruthy();
       expect(picklistsQueueEventConnectionService.picklistQueueGroupedUpdateSubject.subscribe).toHaveBeenCalled();
       expect(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject.subscribe).toHaveBeenCalled();
-      expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
     });
 
     it('should update on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {

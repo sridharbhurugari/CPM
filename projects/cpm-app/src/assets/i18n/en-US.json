@@ -53,6 +53,7 @@
   "ERROR_DUPLICATE_NAME_MESSAGE": "The given name is already in use.  A unique name must be entered.",
   "ERROR_ROUTE_MAINTENANCE_TITLE": "Route Maintenance Failed",
   "ERROR_ROUTE_MAINTENANCE_MESSAGE": "An error occurred.  Please try again.",
+  "FAILEDTREFRESH": "Failed to Refresh Data",
   "FAILEDTOSAVE_HEADER_TEXT": "Failed to Save",
   "FAILEDTOSAVE_BODY_TEXT": "Please try again.",
   "FAILEDTOPRINT_HEADER_TEXT": "Failed to Print",

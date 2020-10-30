@@ -57,7 +57,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
         console.log('PickListGroup Sent. Refreshing Group Data');
         this.picklistsQueueService.getGroupedFiltered(
           picklistQueueGrouped.DeviceId,
-          picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
+          picklistQueueGrouped.PickPriorityIdentity).subscribe(getGroupedResult => {
               console.log('Data Refreshed. Updating UI');
               if (!getGroupedResult) {
                 this.childGroupingQueueComponent.removePicklistQueueGroup(picklistQueueGrouped.PriorityCode, picklistQueueGrouped.DeviceId);
@@ -68,10 +68,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
                 console.log('Send and Refresh complete.');
               }
           }, getGroupedResult => {
+              console.log('Failed to refresh data');
               picklistQueueGrouped.Saving = false;
-              this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
+              this.displayFailedToRefresh();
           });
       }, result => {
+        console.log('Failed to save');
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();
       });
@@ -85,9 +87,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     if (!this.picklistQueueEventConnectionService) {
       return;
     }
-
-    this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .subscribe(() => this.loadPicklistsQueueGrouped());
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
       .subscribe((x) => {
@@ -135,6 +134,19 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       const properties = new PopupDialogProperties('Role-Status-Warning');
       this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
       this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+      this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Error;
+      properties.timeoutLength = 60;
+      this.dialogService.showOnce(properties);
+    }
+
+    /* istanbul ignore next */
+    private displayFailedToRefresh(): void {
+      const properties = new PopupDialogProperties('Role-Status-Warning');
+      this.translateService.get('FAILEDTREFRESH').subscribe(result => { properties.titleElementText = result; });
+      this.translateService.get('FAILEDTOSAVE').subscribe(result => { properties.messageElementText = result; });
       this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
