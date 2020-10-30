@@ -65,13 +65,35 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
     picklistQueueGrouped.Saving = true;
+    console.log('Sending PickList Group');
+    console.log(picklistQueueGrouped);
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
-        picklistQueueGrouped.Saving = false;
+        console.log('PickListGroup Sent. Refreshing Group Data');
+        this.picklistsQueueService.getGroupedFiltered(
+          picklistQueueGrouped.DeviceId,
+          picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
+              console.log('Data Refreshed. Updating UI');
+              if (!getGroupedResult) {
+                this.childGroupingQueueComponent.removePicklistQueueGroup(picklistQueueGrouped.PriorityCode, picklistQueueGrouped.DeviceId);
+                console.log('Send Complete Item removed');
+              } else {
+                this.UpdatePickListQueueGroupedList(new PicklistQueueGrouped(getGroupedResult));
+                picklistQueueGrouped.Saving = false;
+                console.log('Send and Refresh complete.');
+              }
+          }, getGroupedResult => {
+              picklistQueueGrouped.Saving = false;
+              this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
+          });
       }, result => {
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();
       });
+  }
+
+  private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
+    this.childGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {
@@ -81,11 +103,39 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
       .subscribe(() => this.loadPicklistsQueueGrouped());
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
+      .subscribe((x) => {
+        if (!x.PicklistQueueGrouped) {
+          console.log('!picklistqueuegrouped removing using priority and device');
+          this.childGroupingQueueComponent.removePicklistQueueGroup(x.PriorityCode, x.DeviceId);
+        } else {
+          const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
+          this.UpdatePickListQueueGroupedList(pickListQueueGrouped);
+        }
+      });
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .subscribe((x) => {
+        console.log('picklistQueueGroupedListUpdateSubject called');
+        if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
+          console.log('Empty List just clear screen');
+          this.childGroupingQueueComponent.refreshDataOnScreen(null);
+        } else {
+          const picklistQueueGroupedList = x.PicklistQueueGroupedList.$values.map((picklistQueueGrouped) => {
+            return PicklistQueueGrouped.fromNonstandardJson(picklistQueueGrouped);
+          });
+
+          this.childGroupingQueueComponent.refreshDataOnScreen(picklistQueueGroupedList);
+        }
+      });
   }
 
   private loadPicklistsQueueGrouped(): void {
     this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
       const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
+      console.log('loadPicklistsQueueGrouped : ');
+      console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
   }

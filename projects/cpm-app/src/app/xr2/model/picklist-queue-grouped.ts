@@ -10,6 +10,27 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
     this.TrackById = Guid.create();
   }
 
+  static fromNonstandardJson(picklistQueueGrouped: IPicklistQueueGroupedNonstandardJson) {
+    return new this({
+      AvailableOutputDeviceList: picklistQueueGrouped.AvailableOutputDeviceList.$values,
+      Destination: picklistQueueGrouped.Destination,
+      DestinationType: picklistQueueGrouped.DestinationType,
+      DeviceDescription: picklistQueueGrouped.DeviceDescription,
+      DeviceId: picklistQueueGrouped.DeviceId,
+      DeviceLocationId: picklistQueueGrouped.DeviceLocationId,
+      OutputDeviceId: picklistQueueGrouped.OutputDeviceId,
+      PriorityCode: picklistQueueGrouped.PriorityCode,
+      PriorityCodeColor: picklistQueueGrouped.PriorityCodeColor,
+      PriorityCodeDescription: picklistQueueGrouped.PriorityCodeDescription,
+      SequenceOrder: picklistQueueGrouped.SequenceOrder,
+      NewCount: picklistQueueGrouped.NewCount,
+      ReleasedCount: picklistQueueGrouped.ReleasedCount,
+      AreaCount: picklistQueueGrouped.AreaCount,
+      UnsentPickListLineIds : picklistQueueGrouped.UnsentPickListLineIds,
+      PickPriorityIdentity : picklistQueueGrouped.PickPriorityIdentity
+    });
+  }
+
   DeviceLocationId: number;
   PriorityCode: string;
   PriorityCodeColor: string;
@@ -27,25 +48,5 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
   AreaCount: number;
   TrackById: Guid;
   UnsentPickListLineIds: Array<Guid>;
-
-  static fromNonstandardJson(picklistQueueGrouped: IPicklistQueueGroupedNonstandardJson) {
-    return new this({
-      AvailableOutputDeviceList: picklistQueueGrouped.AvailableOutputDeviceList.$values,
-      Destination: picklistQueueGrouped.Destination,
-      DestinationType: picklistQueueGrouped.DestinationType,
-      DeviceDescription: picklistQueueGrouped.DeviceDescription,
-      DeviceId: picklistQueueGrouped.DeviceId,
-      DeviceLocationId: picklistQueueGrouped.DeviceLocationId,
-      OutputDeviceId: picklistQueueGrouped.OutputDeviceId,
-      PriorityCode: picklistQueueGrouped.PriorityCode,
-      PriorityCodeColor: picklistQueueGrouped.PriorityCodeColor,
-      PriorityCodeDescription: picklistQueueGrouped.PriorityCodeDescription,
-      SequenceOrder: picklistQueueGrouped.SequenceOrder,
-      NewCount: picklistQueueGrouped.NewCount,
-      ReleasedCount: picklistQueueGrouped.ReleasedCount,
-      AreaCount: picklistQueueGrouped.AreaCount,
-      UnsentPickListLineIds : picklistQueueGrouped.UnsentPickListLineIds
-    });
-  }
-
+  PickPriorityIdentity: number;
 }

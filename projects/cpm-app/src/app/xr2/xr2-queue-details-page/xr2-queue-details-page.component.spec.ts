@@ -53,7 +53,8 @@ describe('Xr2QueueDetailsPageComponent', () => {
       get: jasmine.createSpy('get').and.returnValue(of()),
       skip: jasmine.createSpy('skip').and.returnValue(of(PicklistsQueueService)),
       sendToRobot: jasmine.createSpy('sendToRobot').and.returnValue(of(PicklistsQueueService)),
-      printLabels: jasmine.createSpy('printLabels').and.returnValue(of(PicklistsQueueService))
+      printLabels: jasmine.createSpy('printLabels').and.returnValue(of(PicklistsQueueService)),
+      getGroupDetails: jasmine.createSpy('get').and.returnValue(of())
     };
 
     spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
