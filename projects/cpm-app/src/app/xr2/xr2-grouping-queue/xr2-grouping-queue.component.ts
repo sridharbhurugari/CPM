@@ -1,17 +1,15 @@
 import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from '@angular/core';
-import { Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import * as _ from 'lodash';
 import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
 import { NavigationExtras, Router } from '@angular/router';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
@@ -27,7 +25,47 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
 
+  @Input()
+  set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
+    this._loadedPicklistQueueGrouped = value;
+    this.picklistQueueGrouped = value;
+    if (value && this.selectedDeviceInformation) {
+      this.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    }
+  }
 
+  get loadedPicklistQueueGrouped(): PicklistQueueGrouped[] {
+    return this._loadedPicklistQueueGrouped;
+  }
+
+  @Input()
+  set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
+    this._picklistQueueGrouped = value;
+    if (this.windowService.nativeWindow) {
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    }
+  }
+  get picklistQueueGrouped(): PicklistQueueGrouped[] {
+    return this._picklistQueueGrouped;
+  }
+
+  @Input()
+  set searchTextFilter(value: string) {
+    this._searchTextFilter = value;
+  }
+  get searchTextFilter(): string {
+    return this._searchTextFilter;
+  }
+
+  @Input()
+  set selectedDeviceInformation(value: SelectableDeviceInfo) {
+    this._selectedDeviceInformation = value;
+  }
+  get selectedDeviceInformation(): SelectableDeviceInfo {
+    return this._selectedDeviceInformation;
+  }
+
+  private _loadedPicklistQueueGrouped: PicklistQueueGrouped[];
   private _picklistQueueGrouped: PicklistQueueGrouped[];
 
   translationMap = {
@@ -55,30 +93,12 @@ export class Xr2GroupingQueueComponent implements OnInit {
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
+ _selectedDeviceInformation;
 
   translatables = [
     'OF'
   ];
   translations$: Observable<any>;
-
-  @Input()
-  set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
-    this._picklistQueueGrouped = value;
-    if (this.windowService.nativeWindow) {
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-    }
-  }
-  get picklistQueueGrouped(): PicklistQueueGrouped[] {
-    return this._picklistQueueGrouped;
-  }
-
-  @Input()
-  set searchTextFilter(value: string) {
-    this._searchTextFilter = value;
-  }
-  get searchTextFilter(): string {
-    return this._searchTextFilter;
-  }
 
   searchElement: SearchBoxComponent;
   searchFields = [nameof<PicklistQueueGrouped>('Destination'), nameof<PicklistQueueGrouped>('PriorityCodeDescription'),
@@ -95,6 +115,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
+    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
   }
 
   onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -193,8 +214,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return label;
   }
 
-  private setTranslations() {
-    this.translations$ = this.translateService.get(this.translatables);
+  filterPicklistQueueGroupedByDeviceId(deviceId: number) {
+    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
@@ -232,35 +253,48 @@ export class Xr2GroupingQueueComponent implements OnInit {
       console.log('New List for screen');
       console.log(picklistGroupedList);
       if (!picklistGroupedList) {
-        console.log('No item in list clearing');
-        this.picklistQueueGrouped = [];
-        console.log(this.picklistQueueGrouped);
+          console.log('No item in list clearing');
+          this.picklistQueueGrouped = [];
+          console.log(this.picklistQueueGrouped);
       } else {
-        // Remove Items not in source list.
-        let indexesToRemove = [];
-        _.forEach(this.picklistQueueGrouped, (x) => {
-          const resIndex = _.findIndex(picklistGroupedList, (y) => x.PriorityCode === y.PriorityCode && x.DeviceId === y.DeviceId);
-          if (resIndex === -1) {
-            console.log('item below was not found adding to list to remove.');
-            indexesToRemove.push(this.picklistQueueGrouped.indexOf(x));
-          }
-        });
+          // Remove Items not in source list.
+          let indexesToRemove = [];
+          _.forEach(this.picklistQueueGrouped,
+              (x) => {
+                  const resIndex = _.findIndex(picklistGroupedList,
+                      (y) => x.PriorityCode === y.PriorityCode && x.DeviceId === y.DeviceId);
+                  if (resIndex === -1) {
+                      console.log('item below was not found adding to list to remove.');
+                      indexesToRemove.push(this.picklistQueueGrouped.indexOf(x));
+                  }
+              });
 
-        indexesToRemove.sort();
-        indexesToRemove.reverse();
-        _.forEach(indexesToRemove, (x) => {
-          console.log('removing priority' + this.picklistQueueGrouped[x].PriorityCode +
-            'and deviceid ' + this.picklistQueueGrouped[x].DeviceId);
-          this.picklistQueueGrouped.splice(x, 1);
-        });
+          indexesToRemove.sort();
+          indexesToRemove.reverse();
+          _.forEach(indexesToRemove,
+              (x) => {
+                  console.log('removing priority' +
+                      this.picklistQueueGrouped[x].PriorityCode +
+                      'and deviceid ' +
+                      this.picklistQueueGrouped[x].DeviceId);
+                  this.picklistQueueGrouped.splice(x, 1);
+              });
 
-        console.log('Removed Non matching Items.');
-        console.log(this.picklistQueueGrouped);
+          console.log('Removed Non matching Items.');
+          console.log(this.picklistQueueGrouped);
 
-        // Add or Update
-        picklistGroupedList.forEach((x) => {
-          this.updatePickListQueueGroupedGrouping(x);
-        });
+          // Add or Update
+          picklistGroupedList.forEach((x) => {
+              this.updatePickListQueueGroupedGrouping(x);
+          });
       }
+  }
+
+  loadAllPicklistQueueGrouped() {
+    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
+  }
+
+  private setTranslations() {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 }
