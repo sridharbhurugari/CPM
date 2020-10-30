@@ -25,6 +25,7 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
+import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 
 @Component({
   selector: 'oc-search-box',
@@ -240,6 +241,16 @@ describe('Xr2GroupingQueueComponent', () => {
       expect(label1).toBe(expectedLabel1);
       expect(label2).toBe(expectedLabel2);
     });
+
+    it('should display Area/Areass for area count label', () => {
+      const expectedLabel1 = 'AREA';
+      const expectedLabel2 = 'AREAS';
+      const label1 = component.getAreaCountLabel(1);
+      const label2 = component.getAreaCountLabel(2);
+
+      expect(label1).toBe(expectedLabel1);
+      expect(label2).toBe(expectedLabel2);
+    });
   });
 
   describe('Action Button Disable States', () => {
@@ -261,6 +272,124 @@ describe('Xr2GroupingQueueComponent', () => {
       ];
 
       expect(component.getReleaseButtonProperties(component.picklistQueueGrouped[0]).disabled).toBeFalsy();
+    });
+  });
+
+  describe('Queue Data Updates', () => {
+    it('should update if existss in picklistqueuegropued', () => {
+
+      let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
+      const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
+      const picklistQueueGrouped = new PicklistQueueGrouped(null);
+      picklistQueueGrouped.PriorityCode = 'Patient';
+      picklistQueueGrouped.DeviceId = 1;
+      picklistQueueGrouped.NewCount = 0;
+      picklistQueueGrouped.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const pickListQueueGroupedList = [picklistQueueGrouped] as PicklistQueueGrouped[];
+      component.picklistQueueGrouped = pickListQueueGroupedList;
+
+      const picklistQueueGroupedUpdate = new PicklistQueueGrouped(null);
+      picklistQueueGroupedUpdate.PriorityCode = 'Patient';
+      picklistQueueGroupedUpdate.DeviceId = 1;
+      picklistQueueGroupedUpdate.NewCount = 1;
+      component.updatePickListQueueGroupedGrouping(picklistQueueGroupedUpdate);
+
+      expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
+
+    });
+
+    it('should add on update picklistqueuegropued', () => {
+      const pickListQueueGroupedList = [] as PicklistQueueGrouped[];
+      component.picklistQueueGrouped = pickListQueueGroupedList;
+
+      const picklistQueueGroupedUpdate = new PicklistQueueGrouped(null);
+      picklistQueueGroupedUpdate.PriorityCode = 'Patient';
+      picklistQueueGroupedUpdate.DeviceId = 1;
+      picklistQueueGroupedUpdate.NewCount = 1;
+      component.updatePickListQueueGroupedGrouping(picklistQueueGroupedUpdate);
+
+      expect(component.picklistQueueGrouped.length).toBe(1);
+      expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
+    });
+
+    it('should remove group from picklistqueuegropued', () => {
+      let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
+      const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
+      const picklistQueueGrouped = new PicklistQueueGrouped(null);
+      picklistQueueGrouped.PriorityCode = 'Patient';
+      picklistQueueGrouped.DeviceId = 1;
+      picklistQueueGrouped.NewCount = 0;
+      picklistQueueGrouped.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const pickListQueueGroupedList = [picklistQueueGrouped] as PicklistQueueGrouped[];
+      component.picklistQueueGrouped = pickListQueueGroupedList;
+
+      component.removePicklistQueueGroup('Patient', 1);
+
+      expect(component.picklistQueueGrouped.length).toBe(0);
+
+    });
+
+    it('should add update and removed on refreshdataonscreen', () => {
+      let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
+      const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
+
+      // Create items for existing list
+      const picklistQueueGroupedToBeRemoved = new PicklistQueueGrouped(null);
+      picklistQueueGroupedToBeRemoved.PriorityCode = 'Patient';
+      picklistQueueGroupedToBeRemoved.DeviceId = 1;
+      picklistQueueGroupedToBeRemoved.NewCount = 0;
+      picklistQueueGroupedToBeRemoved.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const picklistQueueGroupedToBeUpdated = new PicklistQueueGrouped(null);
+      picklistQueueGroupedToBeUpdated.PriorityCode = 'Cabinet';
+      picklistQueueGroupedToBeUpdated.DeviceId = 1;
+      picklistQueueGroupedToBeUpdated.NewCount = 0;
+      picklistQueueGroupedToBeUpdated.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const pickListQueueGroupedList = [picklistQueueGroupedToBeRemoved, picklistQueueGroupedToBeUpdated] as PicklistQueueGrouped[];
+      component.picklistQueueGrouped = pickListQueueGroupedList;
+
+      // Create Refresh list wish will have an item to add and update.
+      const picklistQueueGroupedToBeAdded = new PicklistQueueGrouped(null);
+      picklistQueueGroupedToBeAdded.PriorityCode = 'Area';
+      picklistQueueGroupedToBeAdded.DeviceId = 1;
+      picklistQueueGroupedToBeAdded.NewCount = 0;
+      picklistQueueGroupedToBeAdded.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const picklistQueueGroupedUpdate = new PicklistQueueGrouped(null);
+      picklistQueueGroupedUpdate.PriorityCode = 'Cabinet';
+      picklistQueueGroupedUpdate.DeviceId = 1;
+      picklistQueueGroupedUpdate.NewCount = 1;
+      picklistQueueGroupedUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
+      const pickListQueueGroupedListUpdate = [picklistQueueGroupedToBeAdded, picklistQueueGroupedUpdate] as IPicklistQueueGrouped[];
+
+      component.refreshDataOnScreen(pickListQueueGroupedListUpdate);
+
+      expect(component.picklistQueueGrouped.length).toBe(2);
+      expect(component.picklistQueueGrouped[0].PriorityCode).toBe('Cabinet');
+      expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
+      expect(component.picklistQueueGrouped[1].PriorityCode).toBe('Area');
+
+    });
+
+    it('should clear grid on empty data for refreshdataonscreen', () => {
+      let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
+      const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
+      const picklistQueueGroupedToBeRemoved = new PicklistQueueGrouped(null);
+      picklistQueueGroupedToBeRemoved.PriorityCode = 'Patient';
+      picklistQueueGroupedToBeRemoved.DeviceId = 1;
+      picklistQueueGroupedToBeRemoved.NewCount = 0;
+      picklistQueueGroupedToBeRemoved.AvailableOutputDeviceList = availableOutputDeviceList;
+
+      const pickListQueueGroupedList = [picklistQueueGroupedToBeRemoved] as PicklistQueueGrouped[];
+      component.picklistQueueGrouped = pickListQueueGroupedList;
+
+      component.refreshDataOnScreen(null);
+
+      expect(component.picklistQueueGrouped.length).toBe(0);
+
     });
   });
 });
