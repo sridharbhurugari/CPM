@@ -17,12 +17,14 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {   PopupDialogService,
-  PopupDialogComponent,
   PopupDialogProperties,
   PopupDialogType, } from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import * as _ from 'lodash';
 import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
+import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
+import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
+import { OperationType } from '../../api-core/data-contracts/operation-type';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -53,6 +55,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   currentItemCountSelected = 0;
   buttonEnabled = false;
   buttonVisible = false;
+  workstationTrackerData: WorkstationTrackerData;
+  workstation: string;
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -65,6 +69,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
+    private workstationTrackerService: WorkstationTrackerService
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -91,6 +96,15 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     this.errorRerouteMessage$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
     this.errorCloseTitle$ = this.translateService.get('FAILEDTOCLOSE_HEADER_TEXT');
     this.errorCloseMessage$ = this.translateService.get('FAILEDTOCLOSE_BODY_TEXT');
+    this.workstationTrackerService.GetWorkstationShortName().subscribe(s => {
+      this.workstation = s;
+      this.workstationTrackerData = {
+        Id: orderId,
+        Operation: OperationType.Unfilled,
+        ConnectionId: null,
+        WorkstationShortName: this.workstation
+      };
+    });
 
     this.getReportData(datePipe);
   }
@@ -100,7 +114,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   navigateBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
+    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
+      this.wpfActionControllerService.ExecuteBackAction();
+    });
   }
 
   getReportData(datePipe: DatePipe) {
