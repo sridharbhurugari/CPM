@@ -45,12 +45,13 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private wpfActionControllerService: WpfActionControllerService,
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
-  ) { 
+  ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
 
   ngOnInit() {
+    try {
     let orderId = this.route.snapshot.queryParamMap.get('orderId');
     let datePipe = new DatePipe("en-US");
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
@@ -60,6 +61,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       return result;
     }));
     this.getReportData(datePipe);
+    } catch (e) {
+      console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR');
+      console.log(e);
+    }
   }
 
   navigateBack(){
@@ -76,7 +81,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
           element.DisplayFillRequired = element.FillQuantity + ' / ' + element.OrderQuantity;
           if(element.PatientRoom && element.PatientRoom !== '')
             element.DisplayDestionationValue  = element.PatientRoom + ',';
-            
+
             if(element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
               const reg = new RegExp(".{1," + 18 + "}","g");
               const parts = element.ItemFormattedGenericName.match(reg);
@@ -88,7 +93,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
               const parts = element.ItemBrandName.match(reg);
               element.ItemBrandDescription =  parts.join('\n');
               element.ItemBrandName = '';
-            }  
+            }
             if(element.ItemId && element.ItemId.length > 40) {
               const reg = new RegExp(".{1," + 18 + "}","g");
               const parts = element.ItemBrandName.match(reg);
@@ -117,7 +122,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         return underfilled;
       })
     );
-    
+
   }
 
   print() {
