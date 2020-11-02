@@ -14,6 +14,7 @@ import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -24,6 +25,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
+  @Output() detailsClickEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
 
   @Input()
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
@@ -123,15 +125,12 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   onDetailsClick(picklistQueueGrouped: PicklistQueueGrouped): void {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity,
-        deviceId: picklistQueueGrouped.DeviceId
-       },
-      fragment: 'anchor'
+    const params: IXr2QueueNavigationParameters = {
+      pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity.toString(),
+      deviceId: picklistQueueGrouped.DeviceId.toString()
     };
 
-    this.router.navigate(['/xr2/xr2Queue/details'], navigationExtras);
+    this.detailsClickEvent.emit(params);
   }
 
   getActiveOutputDeviceList(picklistQueueGrouped: PicklistQueueGrouped) {

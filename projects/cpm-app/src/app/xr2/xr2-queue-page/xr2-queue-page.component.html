@@ -1,0 +1,12 @@
+<div class="content">
+  <app-xr2-queue-grouping-page
+    *ngIf="!xr2QueueNavigationParameters"
+    [xr2QueueNavigationParameters]="xr2QueueNavigationParameters"
+    (navigationParameterUpdateEvent)="onNavigationParameterUpdateEvent($event)">
+  </app-xr2-queue-grouping-page>
+  <app-xr2-queue-details-queue-page
+    *ngIf="xr2QueueNavigationParameters"
+    [xr2QueueNavigationParameters]="xr2QueueNavigationParameters"
+    (navigationParameterUpdateEvent)="onNavigationParameterUpdateEvent($event)">
+  </app-xr2-queue-details-queue-page>
+</div>
