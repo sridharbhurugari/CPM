@@ -17,24 +17,13 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { MockXr2GroupingQueueComponent } from '../../shared/testing/mock-xr2-grouping-queue.spec';
 import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component.spec';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { IPicklistQueueGroupedNonstandardJson } from '../../api-xr2/events/i-picklist-queue-grouped-nonstandard-json';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
-import { Input, Component } from '@angular/core';
-
-@Component({
-  selector: 'oc-search-box',
-  template: ''
-})
-
-class MockSearchBox {
-  searchOutput$: Observable<string> = of();
-  @Input()placeHolderText: string;
-}
+import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 
 describe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
@@ -60,7 +49,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
   };
 
   beforeEach(async(() => {
-
     selectedDeviceInformation = new SelectableDeviceInfo(null);
     selectedDeviceInformation.DeviceId = 1;
 
@@ -81,7 +69,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     spyOn(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject, 'subscribe').and.callThrough();
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueGroupingPageComponent, MockXr2GroupingQueueComponent,
+      declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
         MockXr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe,
         MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
@@ -124,7 +112,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
       expect(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject.subscribe).toHaveBeenCalled();
     });
 
-    /* it('should update on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {
+    it('should update on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {
        spyChildchildGroupingQueueComponent =
          spyOn(component.childGroupingQueueComponent, 'updatePickListQueueGroupedGrouping');
        component.ngOnInit();
@@ -232,6 +220,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
       component.processRelease(fakePicklistQueueGrouped);
       tick();
       expect(picklistQueueService.getGroupedFiltered).toHaveBeenCalledTimes(1);
-    }));*/
+    }));
   });
 });

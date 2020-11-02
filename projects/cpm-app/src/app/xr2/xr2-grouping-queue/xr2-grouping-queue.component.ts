@@ -258,27 +258,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
           console.log(this.picklistQueueGrouped);
       } else {
           // Remove Items not in source list.
-          let indexesToRemove = [];
-          _.forEach(this.picklistQueueGrouped,
-              (x) => {
-                  const resIndex = _.findIndex(picklistGroupedList,
-                      (y) => x.PriorityCode === y.PriorityCode && x.DeviceId === y.DeviceId);
-                  if (resIndex === -1) {
-                      console.log('item below was not found adding to list to remove.');
-                      indexesToRemove.push(this.picklistQueueGrouped.indexOf(x));
-                  }
-              });
-
-          indexesToRemove.sort();
-          indexesToRemove.reverse();
-          _.forEach(indexesToRemove,
-              (x) => {
-                  console.log('removing priority' +
-                      this.picklistQueueGrouped[x].PriorityCode +
-                      'and deviceid ' +
-                      this.picklistQueueGrouped[x].DeviceId);
-                  this.picklistQueueGrouped.splice(x, 1);
-              });
+          for (let i = this.picklistQueueGrouped.length - 1; i >= 0; i--) {
+            const resIndex = _.findIndex(picklistGroupedList,
+               (y) => this.picklistQueueGrouped[i].PriorityCode === y.PriorityCode
+                &&  this.picklistQueueGrouped[i].DeviceId === y.DeviceId);
+            if (resIndex === -1) {
+                console.log('item below was not found adding to list to remove.');
+                this.picklistQueueGrouped.splice(i, 1);
+            }
+          }
 
           console.log('Removed Non matching Items.');
           console.log(this.picklistQueueGrouped);
