@@ -37,7 +37,7 @@ class MockSearchBox {
   @Input()placeHolderText: string;
 }
 
-fdescribe('Xr2GroupingQueueComponent', () => {
+describe('Xr2GroupingQueueComponent', () => {
   let component: Xr2GroupingQueueComponent;
   let fixture: ComponentFixture<Xr2GroupingQueueComponent>;
   let translateService: Partial<TranslateService>;
