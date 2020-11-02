@@ -19,10 +19,21 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
 
-  selectedDeviceInformation: SelectableDeviceInfo;
+  private _selectedDeviceInformation: SelectableDeviceInfo;
+
   deviceInformationList: SelectableDeviceInfo[];
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplayItem: SingleselectRowItem;
+
+  set selectedDeviceInformation(value: SelectableDeviceInfo) {
+    this._selectedDeviceInformation = value;
+    this.selectionChangedEvent.emit(value);
+  }
+
+  get selectedDeviceInformation(): SelectableDeviceInfo {
+    return this._selectedDeviceInformation;
+  }
+
 
   @ViewChild('searchBox', {
      static: true
@@ -107,7 +118,6 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   onDeviceSelectionChanged($event) {
     this.searchElement.clearSearch(null);
     this.loadSelectedDeviceInformation($event.value);
-    this.selectionChangedEvent.emit(this.selectedDeviceInformation);
   }
 
   ngAfterViewInit() {
