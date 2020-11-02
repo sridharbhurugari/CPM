@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
-import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
+import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -19,6 +20,8 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
+  selectedDeviceInformation: SelectableDeviceInfo;
+
   @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
   translatables = [
@@ -46,6 +49,18 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   onSearchTextFilter(filterText: string) {
     this.searchTextFilter = filterText;
+  }
+
+  onDeviceSelectionChanged($event) {
+    this.selectedDeviceInformation = $event;
+    if (!this.selectedDeviceInformation) {
+      this.childGroupingQueueComponent.loadAllPicklistQueueGrouped();
+      return;
+    }
+
+    if (this.childGroupingQueueComponent.loadedPicklistQueueGrouped) {
+      this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    }
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -128,8 +143,8 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-    /* istanbul ignore next */
-    private displayFailedToSaveDialog(): void {
+  /* istanbul ignore next */
+  private displayFailedToSaveDialog(): void {
 
       const properties = new PopupDialogProperties('Role-Status-Warning');
       this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
