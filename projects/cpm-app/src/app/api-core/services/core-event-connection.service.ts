@@ -117,7 +117,8 @@ export class CoreEventConnectionService {
         this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
       }
     } catch (e) {
-      console.log('CoreEventConnectionService.eventHandlers ERROR:', e);
+      console.log('CoreEventConnectionService.eventHandlers ERROR');
+      console.log(e);
     }
   }
 }

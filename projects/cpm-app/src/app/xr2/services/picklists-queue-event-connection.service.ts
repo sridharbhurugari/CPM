@@ -76,7 +76,8 @@ export class PicklistsQueueEventConnectionService {
         return;
       }
     } catch(e) {
-      console.log('PicklistsQueueEventConnectionService.configurePicklistEventHandlers ERROR:', e);
+      console.log('PicklistsQueueEventConnectionService.configurePicklistEventHandlers ERROR');
+      console.log(e);
     }
   }
 }

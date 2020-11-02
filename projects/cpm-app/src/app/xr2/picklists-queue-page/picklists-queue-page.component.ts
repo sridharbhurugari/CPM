@@ -36,7 +36,12 @@ export class PicklistsQueuePageComponent implements OnInit {
   }
 
   private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueItems();
+    try {
+      this.loadPicklistsQueueItems();
+    } catch (e) {
+      console.log('PicklistsQueuePageComponent.configurePicklistEventHandlers ERROR');
+      console.log(e);
+    }
   }
 
   private loadPicklistsQueueItems(): void {
