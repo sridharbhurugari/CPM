@@ -120,6 +120,7 @@
   "QTY": "Qty",
   "QTY_IN_RECV": "QTY in Receiving",
   "QTY_TO_XFER": "Transfer Qty",
+  "QTY_NEEDED": "QTY Needed",
   "QTY_PENDING": "QTY Pending",
   "QTY_PENDING_PICK": "Pending Pick Qty",
   "QTY_FILLED_REQUESTED": "Filled / Req",

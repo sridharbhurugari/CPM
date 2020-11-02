@@ -28,7 +28,7 @@
                                         {{ 'QTY_IN_RECV' | translate }}
                                     </div>
                                     <div style="flex: 1; text-align: right;">
-                                        {{ (orderItemPendingQtys$ | async)?.PendingPickQty }}
+                                        {{ (orderItemPendingQtys$ | async)?.PendingStockQty }}
                                     </div>
                                 </div>
                                 <div style="display: flex; font-size: 20px; padding-top: 20px; font-weight: 600;">
@@ -36,7 +36,7 @@
                                         {{ 'QTY_PENDING' | translate }}
                                     </div>
                                     <div style="flex: 1; text-align: right;">
-                                        {{ (orderItemPendingQtys$ | async)?.PendingStockQty }}
+                                        {{ (orderItemPendingQtys$ | async)?.PendingPickQty }}
                                     </div>
                                 </div>
                             </div>

@@ -51,6 +51,10 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
   }
 
   pickQtyChanged(){
+    if (!this.itemNeeds) {
+      return;
+    }
+
     this.pickTotalChanged.next(this.itemNeeds.map(x => x.QuantityToPick).reduce((total, sum) => total + sum));
   }
 

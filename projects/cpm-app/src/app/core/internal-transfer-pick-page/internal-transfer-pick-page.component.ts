@@ -94,13 +94,17 @@ export class InternalTransferPickPageComponent implements AfterViewInit {
       let line = results[0];
       let pickTotal = results[1];
       let isLast = results[2];
-      this.picklistLinesService.completePick(Guid.parse(line.PicklistLineId), pickTotal, line.SourceDeviceLocationId).subscribe(x => {
-        if (isLast) {
-          this.navigateContinue();
-        } else {
-          this.next();
-        }
-      });
+      this.pickItem(line, pickTotal, isLast);
+    });
+  }
+
+  private pickItem(line: IPicklistLine, pickTotal: number, isLast: boolean) {
+    this.picklistLinesService.completePick(Guid.parse(line.PicklistLineId), pickTotal, line.SourceDeviceLocationId).subscribe(x => {
+      if (isLast) {
+        this.navigateContinue();
+      } else {
+        this.next();
+      }
     });
   }
 
@@ -109,11 +113,31 @@ export class InternalTransferPickPageComponent implements AfterViewInit {
     this.updateCurrentLineDetails();
   }
 
+  private completeZeroPick() {
+    forkJoin(this.currentLine$, this.isLastLine$).subscribe(results => {
+      let line = results[0];
+      let pickTotal = 0;
+      let isLast = results[1];
+      this.pickItem(line, pickTotal, isLast);
+    });
+  }
+
   private updateCurrentLineDetails() {
     this.currentLine$ = this.picklistLineIds$.pipe(map(x => x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
+    this.isLastLine$ = this.totalLines$.pipe(map(x => x == this.picklistLineIndex + 1));
+    this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x => this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId)), shareReplay(1));
+    this.currentNeedsDetails$.subscribe(x => {
+      if (!x || !x.length) {
+        this.completeZeroPick();
+      } else {
+        this.continueLoadCurrentLineDetails();
+      }
+    });
+  }
+
+  private continueLoadCurrentLineDetails() {
     this.itemLocationDetails$ = this.currentLine$.pipe(switchMap(x => this.itemLocationDetailsService.get(x.ItemId)), shareReplay(1));
     this.orderItemPendingQtys$ = this.currentLine$.pipe(switchMap(x => this.orderItemPendingQuantitiesService.get(x.OrderId, x.ItemId)), shareReplay(1));
-    this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x => this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId)), shareReplay(1));
     this.itemNeedPicks$ = forkJoin(this.currentNeedsDetails$, this.currentLine$).pipe(map(results => {
       let itemNeeds = results[0];
       let line = results[1];
@@ -147,7 +171,6 @@ export class InternalTransferPickPageComponent implements AfterViewInit {
         LocationDescription: pickLocation.LocationDescription,
       };
     }))
-    this.isLastLine$ = this.totalLines$.pipe(map(x => x == this.picklistLineIndex + 1));
 
     this.expDateInPast$ = this.pickLocation$.pipe(map(pickLocation => {
       let today = dateTimeToday();
