@@ -87,10 +87,10 @@ export class QuickPickDrawerViewComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         deviceId: this.selectedDeviceInformation.DeviceId,
-        routeToPath: 'quickpick' } ,
+        routeToPath: 'xr2/quickpick' } ,
       fragment: 'anchor'
     };
-    this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+    this.router.navigate(['core/hardwareLease/requestLease'], navigationExtras );
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
