@@ -63,7 +63,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     devicesService = {
       getAllXr2Devices: () => of(selectableDeviceInfoList)
     };
-    
+
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
       imports: [ SingleselectDropdownModule],
@@ -112,7 +112,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     ocapConfig.clientId = '';
     const expectedDeviceID = '0';
     const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
-       
+
     component.ngOnInit();
     tick();
     expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);

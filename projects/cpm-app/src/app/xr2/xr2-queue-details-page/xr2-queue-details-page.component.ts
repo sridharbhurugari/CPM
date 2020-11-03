@@ -15,7 +15,6 @@ import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-d
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
-import { ActivatedRoute } from '@angular/router';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 
 
@@ -67,7 +66,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   constructor(
     private picklistsQueueService: PicklistsQueueService,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-    private location: Location,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private windowService: WindowService,
@@ -193,6 +191,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private loadPicklistsQueueItems(): void {
+    if (!this.xr2QueueNavigationParameters) {
+      return;
+    }
+
     this.picklistsQueueItems = this.picklistsQueueService.getGroupDetails(
       this.xr2QueueNavigationParameters.pickPriorityIdentity,
       this.xr2QueueNavigationParameters.deviceId).pipe(map(x => {

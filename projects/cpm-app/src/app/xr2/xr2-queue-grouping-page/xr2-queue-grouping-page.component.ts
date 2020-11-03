@@ -68,7 +68,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
   }
 
-  onDetailsClickEvent(params: IXr2QueueNavigationParameters) {
+  processDetailsNavigate(params: IXr2QueueNavigationParameters) {
     this.navigationParameterUpdateEvent.emit(params);
   }
 

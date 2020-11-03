@@ -25,7 +25,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
-  @Output() detailsClickEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() detailsEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
 
   @Input()
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
@@ -111,8 +111,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   constructor(
     private windowService: WindowService,
-    private translateService: TranslateService,
-    private router: Router) {
+    private translateService: TranslateService) {
   }
 
   ngOnInit() {
@@ -130,7 +129,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
       deviceId: picklistQueueGrouped.DeviceId.toString()
     };
 
-    this.detailsClickEvent.emit(params);
+    this.detailsEvent.emit(params);
   }
 
   getActiveOutputDeviceList(picklistQueueGrouped: PicklistQueueGrouped) {
