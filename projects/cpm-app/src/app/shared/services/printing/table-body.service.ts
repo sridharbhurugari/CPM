@@ -51,6 +51,7 @@ export class TableBodyService {
         layout: 'lightHorizontalLines',
         table: {
           headerRows: 1,
+          dontBreakRows: true,
           widths: widths,
           body: tableBody
         }

@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
-import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
-import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { TranslateService } from '@ngx-translate/core';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
+import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
+import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -17,9 +18,11 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
-  picklistsQueueItems: Observable<IPicklistQueueItem[]>;
-  buttonPanelDisableMap = new Map<OutputDeviceAction, number>();
+  picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
+  selectedDeviceInformation: SelectableDeviceInfo;
+
+  @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
   translatables = [
     'YES',
@@ -41,26 +44,56 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
-    this.loadPicklistsQueueItems();
+    this.loadPicklistsQueueGrouped();
   }
 
   onSearchTextFilter(filterText: string) {
     this.searchTextFilter = filterText;
   }
 
-  processReroute(picklistQueueItem: PicklistQueueItem[]) {
+  onDeviceSelectionChanged($event) {
+    this.selectedDeviceInformation = $event;
+    if (!this.selectedDeviceInformation) {
+      this.childGroupingQueueComponent.loadAllPicklistQueueGrouped();
+      return;
+    }
 
-    this.displayRerouteDialog().subscribe(result => {
-      if (!result) {
-        return;
-      }
-      // TODO: load in all items and reroute
-    });
+    if (this.childGroupingQueueComponent.loadedPicklistQueueGrouped) {
+      this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
+    }
   }
 
+  processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
+    picklistQueueGrouped.Saving = true;
+    console.log('Sending PickList Group');
+    console.log(picklistQueueGrouped);
+    this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
+      result => {
+        console.log('PickListGroup Sent. Refreshing Group Data');
+        this.picklistsQueueService.getGroupedFiltered(
+          picklistQueueGrouped.DeviceId,
+          picklistQueueGrouped.PriorityCode).subscribe(getGroupedResult => {
+              console.log('Data Refreshed. Updating UI');
+              if (!getGroupedResult) {
+                this.childGroupingQueueComponent.removePicklistQueueGroup(picklistQueueGrouped.PriorityCode, picklistQueueGrouped.DeviceId);
+                console.log('Send Complete Item removed');
+              } else {
+                this.UpdatePickListQueueGroupedList(new PicklistQueueGrouped(getGroupedResult));
+                picklistQueueGrouped.Saving = false;
+                console.log('Send and Refresh complete.');
+              }
+          }, getGroupedResult => {
+              picklistQueueGrouped.Saving = false;
+              this.displayFailedToSaveDialog(); //TODO: Change to failed to refresh dialog.
+          });
+      }, result => {
+        picklistQueueGrouped.Saving = false;
+        this.displayFailedToSaveDialog();
+      });
+  }
 
-  processRelease(picklistQueueItem: PicklistQueueItem[]) {
-      // TODO: load in all items and release
+  private UpdatePickListQueueGroupedList(picklistQueueGrouped: IPicklistQueueGrouped) {
+    this.childGroupingQueueComponent.updatePickListQueueGroupedGrouping(picklistQueueGrouped);
   }
 
   private configureEventHandlers(): void {
@@ -69,17 +102,40 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .subscribe(() => this.onReloadPicklistQueueItems());
+      .subscribe(() => this.loadPicklistsQueueGrouped());
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
+      .subscribe((x) => {
+        if (!x.PicklistQueueGrouped) {
+          console.log('!picklistqueuegrouped removing using priority and device');
+          this.childGroupingQueueComponent.removePicklistQueueGroup(x.PriorityCode, x.DeviceId);
+        } else {
+          const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
+          this.UpdatePickListQueueGroupedList(pickListQueueGrouped);
+        }
+      });
+
+    this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .subscribe((x) => {
+        console.log('picklistQueueGroupedListUpdateSubject called');
+        if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
+          console.log('Empty List just clear screen');
+          this.childGroupingQueueComponent.refreshDataOnScreen(null);
+        } else {
+          const picklistQueueGroupedList = x.PicklistQueueGroupedList.$values.map((picklistQueueGrouped) => {
+            return PicklistQueueGrouped.fromNonstandardJson(picklistQueueGrouped);
+          });
+
+          this.childGroupingQueueComponent.refreshDataOnScreen(picklistQueueGroupedList);
+        }
+      });
   }
 
-
-  private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueItems();
-  }
-
-  private loadPicklistsQueueItems(): void {
-    this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
-      const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
+  private loadPicklistsQueueGrouped(): void {
+    this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
+      const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
+      console.log('loadPicklistsQueueGrouped : ');
+      console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
   }
@@ -88,25 +144,17 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-   /* istanbul ignore next */
-   private displayRerouteDialog(): Observable<boolean> {
-    return forkJoin(this.translations$).pipe(flatMap(r => {
-      const translations = r[0];
-      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-      properties.titleElementText = translations.REROUTE;
-      properties.messageElementText = translations.XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE;
-      properties.showPrimaryButton = true;
-      properties.primaryButtonText = translations.YES;
-      properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.NO;
-      properties.primaryOnRight = false;
-      properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Info;
-      properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
-      return merge(primaryClick$, secondaryClick$);
-    }));
+  /* istanbul ignore next */
+  private displayFailedToSaveDialog(): void {
+
+    const properties = new PopupDialogProperties('Role-Status-Warning');
+    this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
+    this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
+    this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
+    properties.showPrimaryButton = true;
+    properties.showSecondaryButton = false;
+    properties.dialogDisplayType = PopupDialogType.Error;
+    properties.timeoutLength = 60;
+    this.dialogService.showOnce(properties);
   }
 }

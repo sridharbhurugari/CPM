@@ -177,7 +177,12 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   private connectToEvents() {
     this.configureEventHandlers();
     this.coreEventConnectionService.startedSubject.subscribe(() => {
-      this.ocsStatusService.requestStatus().subscribe();
+      try {
+        this.ocsStatusService.requestStatus().subscribe();
+      } catch (e) {
+        console.log('PriorityCodeRouteAssignmentsPageComponent.coreEventConnectionService.startedSubject ERROR');
+        console.log(e);
+      }
     });
   }
 
@@ -187,6 +192,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
   }
 
   public setOcsStatus(isHealthy: boolean): void {
-    this.ocsIsHealthy = isHealthy;
+    try {
+      this.ocsIsHealthy = isHealthy;
+    } catch (e) {
+      console.log('PriorityCodeRouteAssignmentsPageComponent.setOcsStatus ERROR');
+      console.log(e);
+    }
   }
 }

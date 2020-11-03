@@ -31,3 +31,16 @@
 .centered-content {
   align-items: center;
 }
+
+.priority-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: auto;
+  align-items: center;
+}
+
+.priority-description {
+  width: 75%; 
+  display: inline-block;
+}

@@ -12,13 +12,13 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="130" data-colwrap="true"
-        [columnPropertyName]="itemPropertyName" headerResourceKey="NEW"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="newPropertyName" headerResourceKey="NEW"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="170" data-colwrap="true"
-        [columnPropertyName]="itemPropertyName" headerResourceKey="RELEASED"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="releasedPropertyName" headerResourceKey="RELEASED"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
@@ -31,52 +31,54 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-       *ngFor="let picklistQueueItem of picklistQueueItems | searchPipe:searchTextFilter:searchFields">
+       *ngFor="let picklistQueueGroup of this.picklistQueueGrouped | searchPipe:searchTextFilter:searchFields">
         <div class="first" style="align-items: center;">
-          <div class="firstcolumncolorblock" [style.background-color]="picklistQueueItem.PriorityCodeColor"></div>
+          <div class="firstcolumncolorblock" [style.background-color]="picklistQueueGroup.PriorityCodeColor"></div>
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
           <div class=priority-container>
-            <div class=identifier-container>
-              <span>{{picklistQueueItem.PriorityCodeDescription}}</span>
-            </div>
+            <span class="priority-description">{{picklistQueueGroup.PriorityCodeDescription}}</span>
+            <app-cp-data-label
+              [data]="picklistQueueGroup.AreaCount"
+              [label]="getAreaCountLabel(picklistQueueGroup.AreaCount) | translate"
+            ></app-cp-data-label>
           </div>
         </div>
         <div class="col width-type" [attr.data-title]="'NEW' | translate">
           <span class="centered-content">
             <app-cp-data-label
-            [data]="picklistQueueItem.ItemCount"
-            [label]="'ITEMS' | translate"
+            [data]="picklistQueueGroup.NewCount"
+            [label]="getCountLabel(picklistQueueGroup.NewCount, picklistQueueGroup.DestinationType) | translate"
             ></app-cp-data-label>
           </span>
         </div>
         <div class="col width-type" [attr.data-title]="'RELEASED' | translate">
           <span class="centered-content">
             <app-cp-data-label
-            [data]="picklistQueueItem.ItemCount"
-            [label]="'ITEMS' | translate"
+            [data]="picklistQueueGroup.ReleasedCount"
+            [label]="getCountLabel(picklistQueueGroup.ReleasedCount, picklistQueueGroup.DestinationType) | translate"
             ></app-cp-data-label>
           </span>
         </div>
         <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
-          <span [ngStyle]="{'font-size': '18px'}">{{picklistQueueItem.DeviceDescription}}</span>
+          <span [ngStyle]="{'font-size': '18px'}">{{picklistQueueGroup.DeviceDescription}}</span>
           <oc-singleselect
             [popupDirection]="'AUTO'"
-            [tableData]="getActiveOutputDeviceList(picklistQueueItem)"
-            [selectedItem]="getSelectedOutputDeviceRow(picklistQueueItem)"
-            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueItem)">
+            [tableData]="getActiveOutputDeviceList(picklistQueueGroup)"
+            [selectedItem]="getSelectedOutputDeviceRow(picklistQueueGroup)"
+            (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueGroup)">
           </oc-singleselect>
         </div>
         <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
           <div class="btn-group">
             <app-cp-clickable-icon
-            [width]="35"
-            [height]="35"
-            [theme]="'dark'"
-            [label]="getReleaseButtonProperties(picklistQueueItem).text | translate"
-            [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
-            [icon]="'openv1-right'"
-            (clickEvent)="onReleaseClick()">
+              [width]="35"
+              [height]="35"
+              [theme]="'dark'"
+              [label]="getReleaseButtonProperties(picklistQueueGroup).text | translate"
+              [disabled]="getReleaseButtonProperties(picklistQueueGroup).disabled"
+              [icon]="'openv1-right'"
+              (clickEvent)="onReleaseClick(picklistQueueGroup)">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon
             [width]="35"
@@ -84,7 +86,7 @@
             [theme]="'dark'"
             [icon]="'search'"
             [label]="'DETAILS' | translate"
-            (clickEvent)="onDetailsClick()">
+            (clickEvent)="onDetailsClick(picklistQueueGroup)">
             </app-cp-clickable-icon>
           </div>
         </div>

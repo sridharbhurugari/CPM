@@ -319,32 +319,47 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   private onQuickPickQueueUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
-      return;
-    }
+    try {
+      if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
+        return;
+      }
 
-    this.loadPicklistsQueueItems();
+      this.loadPicklistsQueueItems();
+    } catch (e) {
+      console.log('QuickPickPageComponent.onQuickPickQueueUpdate ERROR');
+      console.log(e);
+    }
   }
 
   private onQuickPickErrorUpdate(event) {
-    if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
-      return;
-    }
+    try {
+      if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
+        return;
+      }
 
-    this.displayQuickPickError(QuickPickError.HardwareFailure, null, event.ErrorMessage);
+      this.displayQuickPickError(QuickPickError.HardwareFailure, null, event.ErrorMessage);
+    } catch (e) {
+      console.log('QuickPickPageComponent.onQuickPickErrorUpdate ERROR');
+      console.log(e);
+    }
   }
 
   private onQuickPickDeviceStatusUpdate(event) {
-    if (event.DeviceId === undefined) {
-      return;
-    }
+    try {
+      if (event.DeviceId === undefined) {
+        return;
+      }
 
-    const indexToUpdate =  this.deviceInformationList.findIndex((deviceInformation) => {
-      return deviceInformation.DeviceId === event.DeviceId;
-    });
+      const indexToUpdate =  this.deviceInformationList.findIndex((deviceInformation) => {
+        return deviceInformation.DeviceId === event.DeviceId;
+      });
 
-    if (indexToUpdate !== -1) {
-      this.deviceInformationList[indexToUpdate].IsActive = event.Status;
+      if (indexToUpdate !== -1) {
+        this.deviceInformationList[indexToUpdate].IsActive = event.Status;
+      }
+    } catch (e) {
+      console.log('QuickPickPageComponent.onQuickPickDeviceStatusUpdate ERROR');
+      console.log(e);
     }
   }
 
