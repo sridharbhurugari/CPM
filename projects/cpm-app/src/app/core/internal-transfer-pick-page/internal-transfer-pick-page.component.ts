@@ -13,6 +13,7 @@ import { OrderItemPendingQuantitiesService } from '../../api-core/services/order
 import { PicklistLineIdsService } from '../../api-core/services/picklist-line-ids.service';
 import { PicklistLinesService } from '../../api-core/services/picklist-lines.service';
 import { dateTimeToday } from '../../shared/functions/dateTimeToday';
+import { sumValues } from '../../shared/functions/sumValues';
 import { IItemHeaderInfo } from '../../shared/model/i-item-header-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
@@ -23,7 +24,7 @@ import { InternalTransferPick } from '../model/internal-transfer-pick';
   templateUrl: './internal-transfer-pick-page.component.html',
   styleUrls: ['./internal-transfer-pick-page.component.scss']
 })
-export class InternalTransferPickPageComponent implements AfterViewInit {
+export class InternalTransferPickPageComponent {
   orderId: string;
   picklistLineIds$: Observable<Guid[]>;
   totalLines$: Observable<number>;
@@ -66,15 +67,8 @@ export class InternalTransferPickPageComponent implements AfterViewInit {
     this.userLocale = ocapConfigService.get().userLocale;
   }
 
-  ngAfterViewInit() {
-  }
-
   pickTotalChanged(pickTotal: number) {
     this.pickTotal$ = of(pickTotal);
-  }
-
-  navigateBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
   }
 
   navigateContinue() {
@@ -144,7 +138,7 @@ export class InternalTransferPickPageComponent implements AfterViewInit {
       return itemNeeds.map(n => new InternalTransferPick(n, line.PickQuantity));
     }));
 
-    this.pharmacyQoh$ = this.itemLocationDetails$.pipe(map(x => x.map(loc => loc.QuantityOnHand).reduce((total, value) => total + value)));
+    this.pharmacyQoh$ = this.itemLocationDetails$.pipe(map(x => sumValues(x, il => il.QuantityOnHand)));
 
     this.pickLocation$ = forkJoin(this.currentLine$, this.itemLocationDetails$).pipe(map(results => {
       let currentLine: IPicklistLine = results[0];

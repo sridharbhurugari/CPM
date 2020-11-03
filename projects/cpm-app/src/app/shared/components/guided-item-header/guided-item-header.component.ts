@@ -15,6 +15,7 @@ import { SpinnerPopupComponent } from '../spinner-popup/spinner-popup.component'
 })
 export class GuidedItemHeaderComponent implements OnInit {
   private _leaseDeniedTitle$: Observable<string>;
+  private _okButtonText$: Observable<any>;
 
   @Input()
   itemHeaderInfo: IItemHeaderInfo;
@@ -34,6 +35,7 @@ export class GuidedItemHeaderComponent implements OnInit {
   ) {
     this.leaseBusyTitle$ = this.translateService.get('LEASE_BUSY_TITLE');
     this._leaseDeniedTitle$ = this.translateService.get('DEVICE_ACCESS');
+    this._okButtonText$ = this.translateService.get("OK");
   }
 
   ngOnInit() {
@@ -42,14 +44,14 @@ export class GuidedItemHeaderComponent implements OnInit {
   handleDeviceLocationAccessResult(deviceLocationAccessResult: DeviceLocationAccessResult) {
     if (deviceLocationAccessResult === DeviceLocationAccessResult.LeaseNotAvailable) {
       let leaseDeniedMessage$ = this.translateService.get('LEASE_DENIED_MESSAGE', { deviceDescription: this.itemHeaderInfo.DeviceDescription });
-      forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$).subscribe(r => {
-        let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1])
-        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.leaseDenied.next());
+      forkJoin(this._leaseDeniedTitle$, leaseDeniedMessage$, this._okButtonText$).subscribe(r => {
+        let leaseDeniedPopup = this.displayError('Lease-Denied', r[0], r[1], r[2]);
+        merge(leaseDeniedPopup.didClickCloseButton, leaseDeniedPopup.didClickPrimaryButton).subscribe(() => this.leaseDenied.emit());
       });
     }
 
     if (deviceLocationAccessResult === DeviceLocationAccessResult.LeaseNotRequested) {
-      this.leaseDenied.next();
+      this.leaseDenied.emit();
     }
 
     if (deviceLocationAccessResult === DeviceLocationAccessResult.Failed) {
@@ -80,11 +82,9 @@ export class GuidedItemHeaderComponent implements OnInit {
     return this.dialogService.showOnce(properties);
   }
 
-  displayError(uniqueId, title, message): PopupDialogComponent {
+  displayError(uniqueId, title, message, primaryButtonText): PopupDialogComponent {
     const properties = new PopupDialogProperties(uniqueId);
-    this.translateService.get("OK").subscribe((result) => {
-      properties.primaryButtonText = result;
-    });
+    properties.primaryButtonText = primaryButtonText;
     properties.titleElementText = title;
     properties.messageElementText = message;
     properties.showPrimaryButton = true;

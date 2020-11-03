@@ -18,10 +18,12 @@ export class HorizontalTabsComponent implements AfterViewInit {
   tabContentsComponents: QueryList<TabContentsComponent>;
 
   tabGroupName: string;
+  renderer: Renderer2;
 
   constructor(
-    private renderer: Renderer2,
+    renderer: Renderer2,
   ) {
+    this.renderer = renderer;
     this.tabGroupName = Guid.create().toString();
   }
 

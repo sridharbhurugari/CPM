@@ -5,6 +5,7 @@ import { SelectionChangeType } from '../../shared/constants/selection-change-typ
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
 import { nameof } from '../../shared/functions/nameof';
+import { sumValues } from '../../shared/functions/sumValues';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
 
 @Component({
@@ -55,24 +56,21 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       return;
     }
 
-    this.pickTotalChanged.next(this.itemNeeds.map(x => x.QuantityToPick).reduce((total, sum) => total + sum));
+    let pickTotal = sumValues(this.itemNeeds, x => x.QuantityToPick);
+    this.pickTotalChanged.emit(pickTotal);
   }
 
   selectedPicksChanged(selectionChanged: IGridSelectionChanged<IItemReplenishmentNeed | string>) {
     this.areAllValuesSelected = selectionChanged.areAllValuesSelected;
+    let selected = selectionChanged.changeType === SelectionChangeType.selected;
     if (selectionChanged.changedValue === CheckboxValues.ToggleAll) {
-      let selected = selectionChanged.changeType === SelectionChangeType.selected;
       this.itemNeeds.forEach(x => x.IsSelected = selected);
     }else{
       var toggledNeed = this.itemNeeds.find(x => x == selectionChanged.changedValue);
-      if (selectionChanged.changeType == SelectionChangeType.selected) {
-        toggledNeed.IsSelected = true;
-      } else {
-        toggledNeed.IsSelected = false;
-      }
+      toggledNeed.IsSelected = selected;
     }
 
-    this.pickTotalChanged.next(this.itemNeeds.map(x => x.QuantityToPick).reduce((total, sum) => total + sum));
+    let pickTotal = sumValues(this.itemNeeds, x => x.QuantityToPick);
+    this.pickTotalChanged.emit(pickTotal);
   }
-
 }

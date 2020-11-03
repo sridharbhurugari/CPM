@@ -58,6 +58,7 @@ export class HeaderedContentControlComponent implements AfterViewInit {
     private renderer: Renderer2,
   ) { }
 
+  /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.renderer.setStyle(this.headerElement.nativeElement, 'font-weight', this.headerFontWeight);
     this.renderer.setStyle(this.headerElement.nativeElement, 'font-size', `${this.headerFontSizePx}px`);
@@ -68,6 +69,7 @@ export class HeaderedContentControlComponent implements AfterViewInit {
     }
   }
 
+  /* istanbul ignore next */
   private resetIconLocation() {
     let iconOverlayBox: IBoundingBox = this.contentElement.nativeElement.getBoundingClientRect();
     this.renderer.setStyle(this.iconContainerElement.nativeElement, 'top', `${iconOverlayBox.y - 50}px`);
