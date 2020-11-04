@@ -7,7 +7,7 @@ import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcor
 import { ActivatedRoute } from '@angular/router';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DevicesService } from '../../api-core/services/devices.service';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { Input, Component } from '@angular/core';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
@@ -16,6 +16,7 @@ import { TableBodyService } from '../../shared/services/printing/table-body.serv
 import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
+import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -31,49 +32,59 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let printWithBaseData: jasmine.Spy;
+  let getDeviceItemNeeds: jasmine.Spy;
+  let coreEventConnectionService: Partial<CoreEventConnectionService>;
+  let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
+
   let deviceNeedData: IItemReplenishmentNeed[] = [ {ItemId: "39301",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
       DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
       DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
       PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
       ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
-      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET' 
+      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
     {ItemId: "8939",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
       DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
       DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
       PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
       ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
-      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET' 
+      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
     {ItemId: "5005",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
       DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
       DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
       PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
       ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
-      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET' 
+      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
     {ItemId: "39301",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
       DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
       DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
       PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
       ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
-      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET' 
+      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
     {ItemId: "1029",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
       DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
       DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
       PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
       ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
-      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET' 
+      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
     {ItemId: "677373",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
       DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
       DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
       PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
       ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
-      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET' 
+      SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
   ]
+    const needs = [
+      {
+        Xr2Item: true,
+        
+      }
+    ];
 
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: () => { } };
@@ -82,17 +93,21 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     let pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData: printWithBaseData
     };
+    coreEventConnectionService = {
+      refreshDeviceNeedsSubject: new Subject(),
+    };
 
-    const needs = [
-      {
-        Xr2Item: true
-      }
-    ];
 
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
       displayInfoOk: jasmine.createSpy('displayInfoOk'),
     };
+
+    getDeviceItemNeeds = jasmine.createSpy('getDeviceItemNeeds');
+    deviceReplenishmentNeedsService = {
+      getDeviceItemNeeds: getDeviceItemNeeds,
+      pickDeviceItemNeeds: () => of([])
+    }
 
     TestBed.configureTestingModule({
       declarations: [
@@ -110,20 +125,21 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: DevicesService, useValue: { get: () => of([]) } },
-        { provide: DeviceReplenishmentNeedsService, 
-          useValue: { getDeviceItemNeeds: () => of(needs),
-             pickDeviceItemNeeds: () => of([]) }},
+        { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
         { provide: PdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
+        { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
+    spyOn(coreEventConnectionService.refreshDeviceNeedsSubject, 'subscribe').and.callThrough();
+    getDeviceItemNeeds.and.returnValue(of(needs));
     fixture = TestBed.createComponent(InternalTransferDeviceNeedsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -133,6 +149,13 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Connect to Events', () => {
+    it('Connects to events on creation', () => {
+      expect(component).toBeTruthy();
+      expect(coreEventConnectionService.refreshDeviceNeedsSubject.subscribe).toHaveBeenCalled();
+    });
   });
 
   describe('goBack', () => {
@@ -201,4 +224,11 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     });
   });
 
+  describe('Refresh Device Needs', () => {
+    it('should reload data',
+      () => {
+        coreEventConnectionService.refreshDeviceNeedsSubject.next();
+        expect(deviceReplenishmentNeedsService.getDeviceItemNeeds).toHaveBeenCalled();
+      });
+  });
 });
