@@ -1,17 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ConfigurationService, HubConnectionBase, LoggerService, DeferredUtility, LogVerbosity } from 'oal-core';
 import { OcapUrlBuilderService } from './ocap-url-builder.service';
 import { HubConfigurationService } from './hub-configuration.service';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class EventConnectionService extends HubConnectionBase {
+export class EventConnectionService extends HubConnectionBase implements OnDestroy {
   private isConnectedStarted: boolean;
 
   public startedSubject = new ReplaySubject(1);
+  public ngUnsubscribe = new Subject();
 
   public get isConnected(): boolean {
     return this.isConnectedStarted;
@@ -23,6 +25,11 @@ export class EventConnectionService extends HubConnectionBase {
 
       this.isConnectedStarted = false;
       this.SubscribeToConnectionEvents();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   public async startUp(): Promise<void> {
@@ -66,7 +73,9 @@ export class EventConnectionService extends HubConnectionBase {
   }
 
   SubscribeToConnectionEvents() {
-    this.connectionStartedSubject.subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
-    this.disconnectedSubject.subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
+    this.connectionStartedSubject.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
+    this.disconnectedSubject.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
   }
 }
