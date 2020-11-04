@@ -11,6 +11,8 @@ import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-q
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -20,12 +22,15 @@ import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-que
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
   @Output() navigationParameterUpdateEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() xr2PageConfigurationUpdateEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
   selectedDeviceInformation: SelectableDeviceInfo;
+  colHeaderSort: IColHeaderSortChanged;
 
   @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
@@ -52,8 +57,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.loadPicklistsQueueGrouped();
   }
 
-  onSearchTextFilter(filterText: string) {
+  onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
+  }
+
+  onSortEvent(event: IColHeaderSortChanged) {
+    this.colHeaderSort = event;
   }
 
   onDeviceSelectionChanged($event) {
@@ -69,7 +78,9 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
   processDetailsNavigate(params: IXr2QueueNavigationParameters) {
+    const savedConfiguration = this.createSavedConfiguration();
     this.navigationParameterUpdateEvent.emit(params);
+    this.xr2PageConfigurationUpdateEvent.emit(savedConfiguration);
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -147,6 +158,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
+  }
+
+  private createSavedConfiguration() {
+    return {
+      selectedDevice: this.selectedDeviceInformation,
+      searchTextFilter: this.searchTextFilter,
+      colHeaderSort: this.colHeaderSort
+    } as IXr2QueuePageConfiguration;
   }
 
   private setTranslations() {

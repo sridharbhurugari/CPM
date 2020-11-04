@@ -1,13 +1,16 @@
 <ng-container>
   <app-xr2-queue-grouping-header
-    (searchTextFilterEvent)='onSearchTextFilter($event)'
+    [savedPageConfiguration]="savedPageConfiguration"
+    (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
     (selectionChangedEvent)="onDeviceSelectionChanged($event)">
   </app-xr2-queue-grouping-header>
   <app-xr2-grouping-queue
       [selectedDeviceInformation]="selectedDeviceInformation"
       [loadedPicklistQueueGrouped]="picklistsQueueGrouped | async"
+      [savedPageConfiguration]="savedPageConfiguration"
       [searchTextFilter]="searchTextFilter"
-      (releaseClickEvent)="processRelease($event)"
-      (detailsClickEvent)="processDetailsNavigate($event)">
+      (releaseEvent)="processRelease($event)"
+      (detailsEvent)="processDetailsNavigate($event)"
+      (sortEvent)="onSortEvent($event)">
   </app-xr2-grouping-queue>
 </ng-container>

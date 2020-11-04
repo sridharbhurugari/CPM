@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { SearchBoxComponent, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { TranslateService } from '@ngx-translate/core';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
   selector: 'app-xr2-queue-grouping-header',
@@ -18,6 +19,8 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
+
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
 
   private _selectedDeviceInformation: SelectableDeviceInfo;
 
@@ -46,7 +49,8 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
               private translateService: TranslateService) { }
 
   ngOnInit() {
-    this.getAllActiveXr2Devices();
+      this.getAllActiveXr2Devices();
+      this.loadSavedPageConfigurations();
   }
 
   async getAllActiveXr2Devices() {
@@ -88,15 +92,16 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
     this.outputDeviceDisplayList = newList;
 
+
+    if (this.savedPageConfiguration) {
+      defaultFound = this.getSingleSelectRowItem(this.savedPageConfiguration.selectedDevice.DeviceId.toString());
+    }
+
     if (defaultFound) {
-      this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
-        (x) => x.value === defaultFound.value
-      );
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
       this.loadSelectedDeviceInformation(defaultFound.value);
     } else {
-      this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
-        (x) => x.value === '0'
-       );
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
     }
   }
 
@@ -121,6 +126,17 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.configureSearchHandler();
+  }
+
+  private onSearchDataEvent(data: string) {
+    this.searchTextFilterEvent.emit(data);
+    if (this.windowService.nativeWindow) {
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    }
+  }
+
+  private configureSearchHandler() {
     this.searchElement.searchOutput$
       .pipe(
         switchMap((searchData: string) => {
@@ -128,10 +144,26 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe(data => {
-        this.searchTextFilterEvent.emit(data);
-        if (this.windowService.nativeWindow) {
-          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-        }
+        this.onSearchDataEvent(data);
       });
+  }
+
+  private loadSavedPageConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    const savedSearchFilter = this.savedPageConfiguration.searchTextFilter;
+
+    if (savedSearchFilter) {
+      this.searchElement.sendSearchData(savedSearchFilter);
+      this.onSearchDataEvent(savedSearchFilter);
+    }
+  }
+
+  private getSingleSelectRowItem(deviceId: string) {
+    return this.outputDeviceDisplayList.find(
+      (x) => x.value === deviceId
+    );
   }
 }

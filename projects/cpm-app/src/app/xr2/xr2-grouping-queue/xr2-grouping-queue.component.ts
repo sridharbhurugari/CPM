@@ -15,6 +15,7 @@ import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -26,7 +27,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
   @Output() detailsEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   @Input()
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._loadedPicklistQueueGrouped = value;
@@ -53,6 +56,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Input()
   set searchTextFilter(value: string) {
+    if (!this.picklistQueueGrouped) {
+      return;
+    }
     this._searchTextFilter = value;
   }
   get searchTextFilter(): string {
@@ -116,6 +122,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
+    this.loadSavedConfigurations();
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
   }
 
@@ -180,6 +187,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
     this.picklistQueueGrouped = this.sort(this.picklistQueueGrouped, event.SortDirection);
+    this.sortEvent.emit(event);
   }
 
   sort(picklistGrouped: PicklistQueueGrouped[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueGrouped[] {
@@ -290,6 +298,16 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   loadAllPicklistQueueGrouped() {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
+  }
+
+  private loadSavedConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    if (this.savedPageConfiguration.colHeaderSort) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
+    }
   }
 
   private setTranslations() {
