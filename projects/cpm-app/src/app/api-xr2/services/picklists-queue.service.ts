@@ -29,9 +29,24 @@ export class PicklistsQueueService {
     });
   }
 
+  getGroupDetails(pickPriorityIdentity: string, deviceId: string): Observable<IPicklistQueueItem[]> {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueue/grouped/' + pickPriorityIdentity + '/' + deviceId);
+
+    return this.httpClient.get<IPicklistQueueItem[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
   getGrouped(): Observable<IPicklistQueueGrouped[]> {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueuesgrouped');
     return this.httpClient.get<IPicklistQueueGrouped[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  getGroupedFiltered(deviceId: number, pickPriorityIdentity: string): Observable<IPicklistQueueGrouped> {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueuesgrouped/' + deviceId + '/' + pickPriorityIdentity);
+    return this.httpClient.get<IPicklistQueueGrouped>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
@@ -44,9 +59,9 @@ export class PicklistsQueueService {
     });
   }
 
-  sendToRobotGrouped(pickListQueueGrouped: PicklistQueueGrouped) {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + pickListQueueGrouped.DeviceId + '/SendToRobotGrouped');
-    return this.httpClient.post(url, pickListQueueGrouped, {
+  sendToRobotGrouped(picklistQueueGrouped: PicklistQueueGrouped) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueue/SendToRobotGrouped');
+    return this.httpClient.post(url, picklistQueueGrouped, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

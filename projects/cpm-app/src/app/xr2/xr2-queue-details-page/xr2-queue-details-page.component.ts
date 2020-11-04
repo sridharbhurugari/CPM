@@ -15,6 +15,7 @@ import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-d
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -32,6 +33,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   updateMultiSelectModeSubject: Subject<boolean> = new Subject();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
   clearSelectedItemsSubject = new Subject();
+  pickPriorityIdentity: string;
+  deviceId: string;
 
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
@@ -65,11 +68,15 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private windowService: WindowService,
+    private activatedRoute: ActivatedRoute,
     ) {
       this.configureEventHandlers();
   }
 
   ngOnInit() {
+    this.pickPriorityIdentity = this.activatedRoute.snapshot.queryParamMap.get('pickPriorityIdentity');
+    this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
+
     this.setTranslations();
     this.loadPicklistsQueueItems();
     this.initializeActionPicklistItemsDisableMap();
@@ -183,11 +190,16 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueItems();
+    try {
+      this.loadPicklistsQueueItems();
+    } catch (e) {
+      console.log('Xr2QueueDetailsPageComponent.onReloadPicklistQueueItems ERROR');
+      console.log(e);
+    }
   }
 
   private loadPicklistsQueueItems(): void {
-    this.picklistsQueueItems = this.picklistsQueueService.get().pipe(map(x => {
+    this.picklistsQueueItems = this.picklistsQueueService.getGroupDetails(this.pickPriorityIdentity, this.deviceId).pipe(map(x => {
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
       return displayObjects;
     }), shareReplay(1));

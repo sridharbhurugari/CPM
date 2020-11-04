@@ -18,4 +18,5 @@ export interface IPicklistQueueGroupedNonstandardJson {
     ReleasedCount: number;
     AreaCount: number;
     UnsentPickListLineIds: Array<Guid>;
+    PickPriorityIdentity: number;
   }

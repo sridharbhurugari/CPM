@@ -77,8 +77,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
+    try {
     const orderId = this.route.snapshot.queryParamMap.get('orderId');
-    const datePipe = new DatePipe('en-US');
+    const datePipe = new DatePipe("en-US");
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
     this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
       const displayObjects = underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
@@ -107,6 +108,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     });
 
     this.getReportData(datePipe);
+    } catch (e) {
+      console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR');
+      console.log(e);
+    }
   }
 
   ngAfterViewInit() {
