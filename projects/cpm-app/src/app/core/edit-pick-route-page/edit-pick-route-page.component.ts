@@ -37,7 +37,7 @@ export class EditPickRoutePageComponent implements OnInit {
   genericErrorMessage$: Observable<string>;
   okButtonText$: Observable<string>;
 
-  newDeviceSequence: IDeviceSequenceOrder[];  
+  newDeviceSequence: IDeviceSequenceOrder[];
 
   newRouteName: string;
   routeNameChanged: boolean;
@@ -87,16 +87,16 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = pickRouteDevice.SequenceOrder;                           
-        
+        const sequenceOrder = pickRouteDevice.SequenceOrder;
+
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,
-          DeviceOutput: this.provideDeviceOutput(pickRouteDevice.DeviceOutput.DeviceOutputType, pickRouteDevice.DeviceOutput.IsAutoFill, x.DeviceType),          
-          SequenceOrder: sequenceOrder          
-        };        
+          DeviceOutput: this.provideDeviceOutput(pickRouteDevice.DeviceOutput.DeviceOutputType, pickRouteDevice.DeviceOutput.IsAutoFill, x.DeviceType),
+          SequenceOrder: sequenceOrder
+        };
       });
 
       return enabledDevices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
@@ -112,13 +112,13 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = 999;         
+        const sequenceOrder = 999;
 
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
-          OutputDevices: x.OutputDevices,          
+          OutputDevices: x.OutputDevices,
           DeviceOutput: this.provideDeviceOutput('0', false, x.DeviceType),
           SequenceOrder: sequenceOrder
         };
@@ -258,7 +258,12 @@ export class EditPickRoutePageComponent implements OnInit {
   private connectToEvents() {
     this.configureEventHandlers();
     this.coreEventConnectionService.startedSubject.subscribe(() => {
-      this.ocsStatusService.requestStatus().subscribe();
+      try {
+        this.ocsStatusService.requestStatus().subscribe();
+      } catch (e) {
+        console.log('EditPickRoutePageComponent.coreEventConnectionService.startedSubject ERROR');
+        console.log(e);
+      }
     });
   }
 
@@ -268,7 +273,12 @@ export class EditPickRoutePageComponent implements OnInit {
   }
 
   private setOcsStatus(isHealthy: boolean): void {
-    this.ocsIsHealthy = isHealthy;
+    try {
+      this.ocsIsHealthy = isHealthy;
+    } catch (e) {
+      console.log('EditPickRoutePageComponent.setOcsStatus ERROR');
+      console.log(e);
+    }
   }
 
   private provideDeviceOutput(knownOutputDevice: string, knownAutofill: boolean, deviceType: string): DeviceOutput {
@@ -276,19 +286,19 @@ export class EditPickRoutePageComponent implements OnInit {
     let outputTypeDefault = '0';
 
     if (deviceType === this.xr2Id){
-      
+
       if (String(knownOutputDevice) === '0'){
         return {
           DeviceOutputType: this.cartModuleId,
           IsAutoFill: autofillDefault
         }
-      }        
+      }
 
       return {
         DeviceOutputType: knownOutputDevice,
         IsAutoFill: knownAutofill
       }
-    }    
+    }
 
     return {
       DeviceOutputType: outputTypeDefault,

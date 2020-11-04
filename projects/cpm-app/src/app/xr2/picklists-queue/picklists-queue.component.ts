@@ -111,40 +111,50 @@ export class PicklistsQueueComponent implements AfterViewInit, OnDestroy {
   }
 
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
-    const picklistQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
-    const matchingRobotGroupLine = _.find(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId != null && x.RobotPickGroupId == picklistQueueItem.RobotPickGroupId;
-    });
-    const matchingPicklistQueueItem = matchingRobotGroupLine || _.find(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId === null && x.OrderId === picklistQueueItem.OrderId && x.OrderGroupDestinationId === picklistQueueItem.OrderGroupDestinationId &&
-      x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
-    });
+    try {
+      const picklistQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
+      const matchingRobotGroupLine = _.find(this.picklistQueueItems, (x) => {
+        return x.RobotPickGroupId != null && x.RobotPickGroupId == picklistQueueItem.RobotPickGroupId;
+      });
+      const matchingPicklistQueueItem = matchingRobotGroupLine || _.find(this.picklistQueueItems, (x) => {
+        return x.RobotPickGroupId === null && x.OrderId === picklistQueueItem.OrderId && x.OrderGroupDestinationId === picklistQueueItem.OrderGroupDestinationId &&
+        x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
+      });
 
-    if (matchingPicklistQueueItem == null) {
-      this.picklistQueueItems.push(picklistQueueItem);
+      if (matchingPicklistQueueItem == null) {
+        this.picklistQueueItems.push(picklistQueueItem);
+        this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+        return;
+      }
+
+      matchingPicklistQueueItem.ItemCount = picklistQueueItem.ItemCount;
+      matchingPicklistQueueItem.Status = picklistQueueItem.Status;
+      matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
+      matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
+      matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
+      matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
+      matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
+
+      this.resyncPickListQueueItem(picklistQueueItem);
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-      return;
+    } catch (e) {
+      console.log('PicklistsQueueComponent.onAddOrUpdatePicklistQueueItem ERROR');
+      console.log(e);
     }
-
-    matchingPicklistQueueItem.ItemCount = picklistQueueItem.ItemCount;
-    matchingPicklistQueueItem.Status = picklistQueueItem.Status;
-    matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
-    matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
-    matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
-    matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
-    matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
-
-    this.resyncPickListQueueItem(picklistQueueItem);
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
-    const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
-    _.remove(this.picklistQueueItems, (x) => {
-      return x.OrderId === xr2OrderGroupKey.OrderId && x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
-      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
-    });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    try {
+      const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
+      _.remove(this.picklistQueueItems, (x) => {
+        return x.OrderId === xr2OrderGroupKey.OrderId && x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
+        x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
+      });
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    } catch (e) {
+      console.log('PicklistsQueueComponent.onRemovePicklistQueueItem ERROR');
+      console.log(e);
+    }
   }
 
   private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem) {

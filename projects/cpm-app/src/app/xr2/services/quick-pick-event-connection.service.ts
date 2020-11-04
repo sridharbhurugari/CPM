@@ -21,38 +21,43 @@ export class QuickPickEventConnectionService {
    }
 
   private configurePicklistEventHandlers(message: any): void {
-    const messageTypeName: string = message.$type;
+    try {
+      const messageTypeName: string = message.$type;
 
-    if (message === undefined) {
-      return;
-    }
-    if (message.EventId === undefined) {
-      return;
-    }
-    if (message.EventId === 'QuickPickReloadDrawersEvent') {
-      console.log(message);
-      this.QuickPickReloadDrawersSubject.next(message);
-      return;
-    }
-    if (message.EventId === 'QuickPickDrawerUpdateEvent') {
-      console.log(message);
-      this.QuickPickDrawerUpdateSubject.next(message);
-      return;
-    }
-    if (message.EventId === 'QuickPickQueueUpdateEvent') {
-      console.log(message);
-      this.QuickPickQueueUpdateSubject.next(message);
-      return;
-    }
-    if (message.EventId === 'QuickPickErrorUpdateEvent') {
-      console.log(message);
-      this.QuickPickErrorUpdateSubject.next(message);
-      return;
-    }
-    if (message.EventId === 'QuickPickDeviceStatusUpdateEvent') {
-      console.log(message);
-      this.QuickPickDeviceStatusUpdateSubject.next(message);
-      return;
+      if (message === undefined) {
+        return;
+      }
+      if (message.EventId === undefined) {
+        return;
+      }
+      if (message.EventId === 'QuickPickReloadDrawersEvent') {
+        console.log(message);
+        this.QuickPickReloadDrawersSubject.next(message);
+        return;
+      }
+      if (message.EventId === 'QuickPickDrawerUpdateEvent') {
+        console.log(message);
+        this.QuickPickDrawerUpdateSubject.next(message);
+        return;
+      }
+      if (message.EventId === 'QuickPickQueueUpdateEvent') {
+        console.log(message);
+        this.QuickPickQueueUpdateSubject.next(message);
+        return;
+      }
+      if (message.EventId === 'QuickPickErrorUpdateEvent') {
+        console.log(message);
+        this.QuickPickErrorUpdateSubject.next(message);
+        return;
+      }
+      if (message.EventId === 'QuickPickDeviceStatusUpdateEvent') {
+        console.log(message);
+        this.QuickPickDeviceStatusUpdateSubject.next(message);
+        return;
+      }
+    } catch (e) {
+      console.log('QuickPickEventConnectionService.configurePicklistEventHandlers ERROR');
+      console.log(e);
     }
   }
 }
