@@ -161,7 +161,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     private displayFailedToRefresh(): void {
       const properties = new PopupDialogProperties('Role-Status-Warning');
       this.translateService.get('FAILEDTREFRESH').subscribe(result => { properties.titleElementText = result; });
-      this.translateService.get('FAILEDTOSAVE').subscribe(result => { properties.messageElementText = result; });
+      this.translateService.get('FAILEDTREFRESH').subscribe(result => { properties.messageElementText = result; });
       this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
