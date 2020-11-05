@@ -3,12 +3,12 @@
     *ngIf="!xr2QueueNavigationParameters"
     [xr2QueueNavigationParameters]="xr2QueueNavigationParameters"
     [savedPageConfiguration]="savedPageConfiguration"
-    (navigationParameterUpdateEvent)="onNavigationParameterUpdateEvent($event)"
+    (detailsPageContinueEvent)="onDetailsPageContinueNavigation($event)"
     (xr2PageConfigurationUpdateEvent)="onXr2PageConfigurationUpdateEvent($event)">
   </app-xr2-queue-grouping-page>
   <app-xr2-queue-details-queue-page
     *ngIf="xr2QueueNavigationParameters"
     [xr2QueueNavigationParameters]="xr2QueueNavigationParameters"
-    (navigationParameterUpdateEvent)="onNavigationParameterUpdateEvent($event)">
+    (detailsPageBackButtonEvent)="onDetailsPageBackNavigation()">
   </app-xr2-queue-details-queue-page>
 </div>

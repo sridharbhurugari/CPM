@@ -12,18 +12,20 @@ export class Xr2QueuePageComponent implements OnInit {
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
 
-
   constructor() { }
 
   ngOnInit() {
   }
 
-  onNavigationParameterUpdateEvent(event: IXr2QueueNavigationParameters) {
+  onDetailsPageBackNavigation() {
+    this.xr2QueueNavigationParameters = null;
+  }
+
+  onDetailsPageContinueNavigation(event: IXr2QueueNavigationParameters) {
     this.xr2QueueNavigationParameters = event;
   }
 
-  onXr2PageConfigurationUpdateEvent($event: IXr2QueuePageConfiguration) {
-    this.savedPageConfiguration = $event;
+  onXr2PageConfigurationUpdateEvent(event: IXr2QueuePageConfiguration) {
+    this.savedPageConfiguration = event;
   }
-
 }

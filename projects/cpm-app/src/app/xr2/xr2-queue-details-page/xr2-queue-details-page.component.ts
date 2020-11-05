@@ -25,7 +25,7 @@ import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-que
 })
 export class Xr2QueueDetailsPageComponent implements OnInit {
 
-  @Output() navigationParameterUpdateEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() detailsPageBackButtonEvent = new EventEmitter<void>();
 
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
 
@@ -84,7 +84,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   onBackClick(): void {
-    this.navigationParameterUpdateEvent.emit(null);
+    this.detailsPageBackButtonEvent.emit();
   }
 
   processReroute(picklistQueueItems: Set<PicklistQueueItem>): void {

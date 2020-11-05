@@ -21,7 +21,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 })
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
-  @Output() navigationParameterUpdateEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() detailsPageContinueEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
   @Output() xr2PageConfigurationUpdateEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
@@ -79,7 +79,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   processDetailsNavigate(params: IXr2QueueNavigationParameters) {
     const savedConfiguration = this.createSavedConfiguration();
-    this.navigationParameterUpdateEvent.emit(params);
+    this.detailsPageContinueEvent.emit(params);
     this.xr2PageConfigurationUpdateEvent.emit(savedConfiguration);
   }
 
