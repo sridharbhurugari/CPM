@@ -30,6 +30,7 @@ export class EventConnectionService extends HubConnectionBase implements OnDestr
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    console.log('EventConnectionService destroyed, current connection alive: ' + this.isConnectionAlive().toString());
   }
 
   public async startUp(): Promise<void> {
