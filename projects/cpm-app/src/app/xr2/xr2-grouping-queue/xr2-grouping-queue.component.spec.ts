@@ -276,7 +276,7 @@ describe('Xr2GroupingQueueComponent', () => {
   });
 
   describe('Queue Data Updates', () => {
-    fit('should update if existss in picklistqueuegropued', () => {
+    it('should update if existss in picklistqueuegropued', () => {
 
       let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
       const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
