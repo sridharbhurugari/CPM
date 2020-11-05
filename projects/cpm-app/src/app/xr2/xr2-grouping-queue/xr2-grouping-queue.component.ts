@@ -230,6 +230,14 @@ export class Xr2GroupingQueueComponent implements OnInit {
       this.picklistQueueGrouped.push(new PicklistQueueGrouped(picklistGrouped));
      } else {
        console.log('match found updating record');
+       const newPickListQueueGrouped = new PicklistQueueGrouped(picklistGrouped);
+       if (!_.isEqual(
+         this.picklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList,
+         newPickListQueueGrouped.AvailableOutputDeviceList )) {
+          console.log('available output device list changed updating.');
+          this.picklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList =
+            newPickListQueueGrouped.AvailableOutputDeviceList;
+       }
        this.picklistQueueGrouped[matchingGrouped].NewCount = picklistGrouped.NewCount;
        this.picklistQueueGrouped[matchingGrouped].ReleasedCount = picklistGrouped.ReleasedCount;
        this.picklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
