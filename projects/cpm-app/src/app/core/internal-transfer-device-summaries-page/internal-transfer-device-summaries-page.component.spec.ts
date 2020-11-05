@@ -17,7 +17,7 @@ class MockDeviceNeedsList {
   @Input()deviceNeeds: IDeviceReplenishmentNeed[];
 }
 
-fdescribe('InternalTransferDeviceSummariesPageComponent', () => {
+describe('InternalTransferDeviceSummariesPageComponent', () => {
   let component: InternalTransferDeviceSummariesPageComponent;
   let fixture: ComponentFixture<InternalTransferDeviceSummariesPageComponent>;
   let getDeviceItemNeeds: jasmine.Spy;
