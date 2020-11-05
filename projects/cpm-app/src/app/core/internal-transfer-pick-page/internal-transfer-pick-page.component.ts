@@ -75,6 +75,10 @@ export class InternalTransferPickPageComponent {
     this.wpfActionControllerService.ExecuteActionName('Continue');
   }
 
+  navigateBack() {
+    this.wpfActionControllerService.ExecuteActionName('Back');
+  }
+
   hold(isLast: boolean) {
     if (isLast) {
       this.navigateContinue();
