@@ -67,7 +67,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
 
   onDeviceSelectionChanged($event) {
     this.selectedDeviceInformation = $event;
-    if (!this.selectedDeviceInformation) {
+    if (this.selectedDeviceInformation.DeviceId === 0) {
       this.childGroupingQueueComponent.loadAllPicklistQueueGrouped();
       return;
     }

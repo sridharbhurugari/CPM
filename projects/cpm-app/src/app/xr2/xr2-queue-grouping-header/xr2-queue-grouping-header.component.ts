@@ -8,6 +8,7 @@ import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-co
 import { DevicesService } from '../../api-core/services/devices.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-xr2-queue-grouping-header',
@@ -50,7 +51,6 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
       this.getAllActiveXr2Devices();
-      this.loadSavedPageConfigurations();
   }
 
   async getAllActiveXr2Devices() {
@@ -67,12 +67,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       );
       newList.push(defaultFound);
     } else {
-      let translatedLabel = '';
-      this.translateService.get("XR2_ALL_DEVICES").subscribe((res: string) => {
-      translatedLabel = res;
-      });
-      const selectAll = new SingleselectRowItem(translatedLabel, '0', true);
-      newList.push(selectAll);
+      this.getAllDevicesInfo();
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
           selectableDeviceInfo.Description,
@@ -91,8 +86,8 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     }
 
     this.outputDeviceDisplayList = newList;
-
-
+    this.loadSavedPageConfigurations();
+     
     if (this.savedPageConfiguration) {
       defaultFound = this.getSingleSelectRowItem(this.savedPageConfiguration.selectedDevice.DeviceId.toString());
     }
@@ -100,9 +95,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     if (defaultFound) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
       this.loadSelectedDeviceInformation(defaultFound.value);
-    } else {
-      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
-    }
+    } 
   }
 
   private loadSelectedDeviceInformation(deviceId: string) {
@@ -115,9 +108,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
     if (indexToLoad !== -1) {
       this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
-    } else {
-      this.selectedDeviceInformation = null;
-    }
+    } 
   }
 
   onDeviceSelectionChanged($event) {
@@ -165,5 +156,22 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     return this.outputDeviceDisplayList.find(
       (x) => x.value === deviceId
     );
+  }
+
+  private getAllDevicesInfo(){
+    let translatedLabel = '';
+    this.translateService.get("XR2_ALL_DEVICES").subscribe((res: string) => {
+    translatedLabel = res;
+    });
+    let allDevicesInfo: SelectableDeviceInfo;
+    allDevicesInfo = {
+      DeviceId: 0,
+      Description: translatedLabel,
+      DefaultOwnerName: '',
+      DeviceTypeId: '',
+      CurrentLeaseHolder:undefined,
+      IsActive: true
+    }
+    this.deviceInformationList.push(allDevicesInfo);
   }
 }

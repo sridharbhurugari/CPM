@@ -34,7 +34,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._loadedPicklistQueueGrouped = value;
     this.picklistQueueGrouped = value;
-    if (value && this.selectedDeviceInformation) {
+    if (value && this.selectedDeviceInformation && this.selectedDeviceInformation.DeviceId !== 0) {
       this.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
     }
   }
@@ -222,6 +222,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   filterPicklistQueueGroupedByDeviceId(deviceId: number) {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
+    if(this.picklistQueueGrouped){
+      this.loadSavedConfigurations();
+    }
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
@@ -298,6 +301,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   loadAllPicklistQueueGrouped() {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
+    if(this.picklistQueueGrouped){
+      this.loadSavedConfigurations();
+    }
   }
 
   private loadSavedConfigurations() {
@@ -305,7 +311,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
       return;
     }
 
-    if (this.savedPageConfiguration.colHeaderSort) {
+    if (this.savedPageConfiguration.colHeaderSort && this.picklistQueueGrouped) {
       this.columnSelected(this.savedPageConfiguration.colHeaderSort);
     }
   }
