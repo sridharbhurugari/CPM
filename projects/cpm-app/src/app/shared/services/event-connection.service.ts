@@ -30,7 +30,6 @@ export class EventConnectionService extends HubConnectionBase implements OnDestr
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    console.log('EventConnectionService destroyed, current connection alive: ' + this.isConnectionAlive().toString());
   }
 
   public async startUp(): Promise<void> {
@@ -74,9 +73,11 @@ export class EventConnectionService extends HubConnectionBase implements OnDestr
   }
 
   SubscribeToConnectionEvents() {
-    this.connectionStartedSubject.pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
-    this.disconnectedSubject.pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
+    this.connectionStartedSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
+    this.disconnectedSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
   }
 }

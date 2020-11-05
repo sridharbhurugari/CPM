@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { Observable, forkJoin, merge, Subject } from 'rxjs';
+import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
 import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
@@ -36,6 +36,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   searchTextFilter: string;
   translations$: Observable<any>;
   ngUnsubscribe = new Subject();
+
+  // For testing
+  httpSub: Subscription;
+  translateSub: Subscription;
+  eventSub: Subscription;
 
 
   set multiSelectMode(value: boolean) {
@@ -141,7 +146,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     if (!this.picklistQueueEventConnectionService) {
       return;
     }
-    this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject.pipe(takeUntil(this.ngUnsubscribe))
+    this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.onReloadPicklistQueueItems());
   }
 
@@ -165,6 +171,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private clearSelectedItems(): void {
+    if (!this.selectedItems) {
+      return;
+    }
+
     this.selectedItems.clear();
   }
 
@@ -259,7 +269,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
       globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
     });
-    this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+    this.httpSub = this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
         // force the status to 2 at this point
         picklistQueueItem.Status = 2;

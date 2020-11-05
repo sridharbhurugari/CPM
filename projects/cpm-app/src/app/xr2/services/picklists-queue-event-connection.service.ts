@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, from } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
@@ -6,24 +6,33 @@ import { Guid } from 'guid-typescript';
 import { IPicklistQueueGroupedUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-update-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PicklistsQueueEventConnectionService {
+export class PicklistsQueueEventConnectionService implements OnDestroy {
 
   public addOrUpdatePicklistQueueItemSubject = new Subject<IAddOrUpdatePicklistQueueItemMesssage>();
   public removePicklistQueueItemSubject = new Subject<IRemovePicklistQueueItemMessage>();
   public reloadPicklistQueueItemsSubject = new Subject<any>();
   public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
   public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
+  public ngUnsubscribe = new Subject();
 
   constructor(
       private eventConnectionService: EventConnectionService
     ) {
-      this.eventConnectionService.receivedSubject.subscribe(message => this.configurePicklistEventHandlers(message));
+      this.eventConnectionService.receivedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => this.configurePicklistEventHandlers(message));
    }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   private configurePicklistEventHandlers(message: any): void {
     const messageTypeName: string = message.$type;

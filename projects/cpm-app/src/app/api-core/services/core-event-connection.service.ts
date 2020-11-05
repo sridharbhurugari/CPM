@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IDeviceOperationResultEvent } from '../events/i-device-operation-result-event';
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
   providedIn: 'root'
 })
 
-export class CoreEventConnectionService implements OnDestroy {
+export class CoreEventConnectionService {
   public ocsIsHealthySubject = new Subject<boolean>();
   public deviceOperationResultEventSubject = new Subject<IDeviceOperationResultEvent>();
   public deviceLeaseGrantedSubject = new Subject<IDeviceLeaseGrantedEvent>();
@@ -21,20 +21,12 @@ export class CoreEventConnectionService implements OnDestroy {
   public carouselReadySubject = new Subject<ICarouselReadyEvent>();
 
   public startedSubject = new ReplaySubject(1);
-  public ngUnsubscribe = new Subject();
 
   constructor(
     private eventConnectionService: EventConnectionService
     ) {
-    this.eventConnectionService.receivedSubject.pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(message => this.eventHandlers(message));
-    this.eventConnectionService.startedSubject.pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(() => this.startedSubject.next());
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    this.eventConnectionService.receivedSubject.subscribe(message => this.eventHandlers(message));
+    this.eventConnectionService.startedSubject.subscribe(() => this.startedSubject.next());
   }
 
   private eventHandlers(message: any): void {
