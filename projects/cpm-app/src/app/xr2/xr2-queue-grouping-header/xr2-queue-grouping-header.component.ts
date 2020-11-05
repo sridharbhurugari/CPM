@@ -95,7 +95,10 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     if (defaultFound) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
       this.loadSelectedDeviceInformation(defaultFound.value);
-    } 
+    } else{
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
+      this.loadSelectedDeviceInformation('0');
+    }
   }
 
   private loadSelectedDeviceInformation(deviceId: string) {
