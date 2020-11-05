@@ -87,10 +87,10 @@ export class QuickPickDrawerViewComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         deviceId: this.selectedDeviceInformation.DeviceId,
-        routeToPath: 'quickpick' } ,
+        routeToPath: 'xr2/quickpick' } ,
       fragment: 'anchor'
     };
-    this.router.navigate(['hardwareLease/requestLease'], navigationExtras );
+    this.router.navigate(['core/hardwareLease/requestLease'], navigationExtras );
   }
 
   onShowQuickPickDrawerDetails(drawerIndex: number) {
@@ -176,27 +176,32 @@ export class QuickPickDrawerViewComponent implements OnInit {
 
   /* istanbul ignore next */
   private onUpdateQuickPickDrawer(quickPickDrawerUpdateMessage): void {
-    if (quickPickDrawerUpdateMessage.DeviceId !== undefined
-      && quickPickDrawerUpdateMessage.DeviceId !== this.selectedDeviceInformation.DeviceId) {
-      return;
-    }
+    try {
+      if (quickPickDrawerUpdateMessage.DeviceId !== undefined
+        && quickPickDrawerUpdateMessage.DeviceId !== this.selectedDeviceInformation.DeviceId) {
+        return;
+      }
 
-    const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
-    quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
-    let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
-      return x.Id === quickPickDrawerData.Id;
-    });
+      const quickPickDrawerData = new QuickPickDrawerData(quickPickDrawerUpdateMessage.QuickPickDrawerData);
+      quickPickDrawerData.MedsWithCounts = quickPickDrawerUpdateMessage.QuickPickDrawerData.MedsWithCounts.$values;
+      let matchingQuickPickDrawerDataIndex = _.findIndex(this.quickpickDrawers, (x) => {
+        return x.Id === quickPickDrawerData.Id;
+      });
 
-    this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
+      this.quickpickDrawers[matchingQuickPickDrawerDataIndex] = quickPickDrawerData;
 
-    if (this.detailedDrawer !== undefined) {
-      if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
-        this.detailedDrawer = quickPickDrawerData;
-        if (quickPickDrawerData.Status < 2) {
-          this.detailedDrawer = undefined;
-          this.quickPickActive.emit(false);
+      if (this.detailedDrawer !== undefined) {
+        if (this.detailedDrawer.Id === quickPickDrawerData.Id) {
+          this.detailedDrawer = quickPickDrawerData;
+          if (quickPickDrawerData.Status < 2) {
+            this.detailedDrawer = undefined;
+            this.quickPickActive.emit(false);
+          }
         }
       }
+    } catch (e) {
+      console.log('QuickPickDrawerViewComponent.onUpdateQuickPickDrawer ERROR');
+      console.log(e);
     }
   }
 
