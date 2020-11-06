@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewChecked, HostListener, ElementRe
 import { map, shareReplay, filter, catchError, takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge, throwError, Subscription, Subject, Subject } from 'rxjs';
+import { Observable, forkJoin, merge, throwError, Subscription, Subject } from 'rxjs';
 import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType, ToastModule, ToastService } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
