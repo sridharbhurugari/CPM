@@ -40,22 +40,22 @@ export class CarouselLocationAccessService implements IDeviceLocationAccessServi
 
   accessLocation(deviceLocation: IDeviceLocationAccessData, carouselDisplay: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {
     return this.coreEventConnectionService.startedSubject
-      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.accessLocationConnected(deviceLocation, carouselDisplay)));
+      .pipe(flatMap(x => this.accessLocationConnected(deviceLocation, carouselDisplay)), takeUntil(this.ngUnsubscribe));
   }
 
   moveToShelf(deviceId: number, shelfNumber: number): Observable<DeviceLocationAccessResult> {
     return this.coreEventConnectionService.startedSubject
-      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.moveToShelfConnected(deviceId, shelfNumber)));
+      .pipe(flatMap(x => this.moveToShelfConnected(deviceId, shelfNumber)), takeUntil(this.ngUnsubscribe));
   }
 
   clearLightbar(deviceId: number): Observable<DeviceLocationAccessResult> {
     return this.coreEventConnectionService.startedSubject
-      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.clearLightbarConnected(deviceId)));
+      .pipe(flatMap(x => this.clearLightbarConnected(deviceId)), takeUntil(this.ngUnsubscribe));
   }
 
   displayLocationLightbar(deviceLocation: IDeviceLocationAccessData, carouselDisplay: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {
     return this.coreEventConnectionService.startedSubject
-      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.displayLocationLightbarConnected(deviceLocation, carouselDisplay)));
+      .pipe(flatMap(x => this.displayLocationLightbarConnected(deviceLocation, carouselDisplay)), takeUntil(this.ngUnsubscribe), );
   }
 
   private accessLocationConnected(deviceLocation: IDeviceLocationAccessData, carouselDisplay: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {
