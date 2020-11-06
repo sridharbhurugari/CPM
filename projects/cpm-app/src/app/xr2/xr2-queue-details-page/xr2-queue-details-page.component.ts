@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 import { Observable, forkJoin, merge, Subject } from 'rxjs';
 import { map, flatMap, shareReplay } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-d
 import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
-import { ActivatedRoute } from '@angular/router';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 
 
 @Component({
@@ -25,6 +25,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class Xr2QueueDetailsPageComponent implements OnInit {
 
+  @Output() detailsPageBackButtonEvent = new EventEmitter<void>();
+
+  @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
+
   private _multiSelectMode = false;
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
@@ -33,8 +37,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   updateMultiSelectModeSubject: Subject<boolean> = new Subject();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
   clearSelectedItemsSubject = new Subject();
-  pickPriorityIdentity: string;
-  deviceId: string;
 
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
@@ -64,19 +66,14 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   constructor(
     private picklistsQueueService: PicklistsQueueService,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-    private location: Location,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private windowService: WindowService,
-    private activatedRoute: ActivatedRoute,
     ) {
       this.configureEventHandlers();
   }
 
   ngOnInit() {
-    this.pickPriorityIdentity = this.activatedRoute.snapshot.queryParamMap.get('pickPriorityIdentity');
-    this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
-
     this.setTranslations();
     this.loadPicklistsQueueItems();
     this.initializeActionPicklistItemsDisableMap();
@@ -87,7 +84,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   onBackClick(): void {
-    this.location.back();
+    this.detailsPageBackButtonEvent.emit();
   }
 
   processReroute(picklistQueueItems: Set<PicklistQueueItem>): void {
@@ -199,7 +196,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private loadPicklistsQueueItems(): void {
-    this.picklistsQueueItems = this.picklistsQueueService.getGroupDetails(this.pickPriorityIdentity, this.deviceId).pipe(map(x => {
+    if (!this.xr2QueueNavigationParameters) {
+      return;
+    }
+
+    this.picklistsQueueItems = this.picklistsQueueService.getGroupDetails(
+      this.xr2QueueNavigationParameters.pickPriorityIdentity,
+      this.xr2QueueNavigationParameters.deviceId).pipe(map(x => {
       const displayObjects = x.map(picklistQueueItem => new PicklistQueueItem(picklistQueueItem));
       return displayObjects;
     }), shareReplay(1));
