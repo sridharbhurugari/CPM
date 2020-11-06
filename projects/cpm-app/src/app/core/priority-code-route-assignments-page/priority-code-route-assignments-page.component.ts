@@ -184,10 +184,15 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
   private connectToEvents() {
     this.configureEventHandlers();
     this.coreEventConnectionService.startedSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => {
+      try {
         this.ocsStatusService.requestStatus().subscribe();
-      });
+      } catch (e) {
+        console.log('PriorityCodeRouteAssignmentsPageComponent.coreEventConnectionService.startedSubject ERROR');
+        console.log(e);
+      }
+    });
   }
 
   private configureEventHandlers(): void {
@@ -197,6 +202,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
   }
 
   public setOcsStatus(isHealthy: boolean): void {
-    this.ocsIsHealthy = isHealthy;
+    try {
+      this.ocsIsHealthy = isHealthy;
+    } catch (e) {
+      console.log('PriorityCodeRouteAssignmentsPageComponent.setOcsStatus ERROR');
+      console.log(e);
+    }
   }
 }

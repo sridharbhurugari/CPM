@@ -199,7 +199,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private onReloadPicklistQueueItems(): void {
-    this.loadPicklistsQueueItems();
+    try {
+      this.loadPicklistsQueueItems();
+    } catch (e) {
+      console.log('Xr2QueueDetailsPageComponent.onReloadPicklistQueueItems ERROR');
+      console.log(e);
+    }
   }
 
   private loadPicklistsQueueItems(): void {

@@ -265,10 +265,15 @@ export class EditPickRoutePageComponent implements OnInit, OnDestroy {
   private connectToEvents() {
     this.configureEventHandlers();
     this.coreEventConnectionService.startedSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => {
+      try {
         this.ocsStatusService.requestStatus().subscribe();
-      });
+      } catch (e) {
+        console.log('EditPickRoutePageComponent.coreEventConnectionService.startedSubject ERROR');
+        console.log(e);
+      }
+    });
   }
 
   private configureEventHandlers(): void {
@@ -278,7 +283,12 @@ export class EditPickRoutePageComponent implements OnInit, OnDestroy {
   }
 
   private setOcsStatus(isHealthy: boolean): void {
-    this.ocsIsHealthy = isHealthy;
+    try {
+      this.ocsIsHealthy = isHealthy;
+    } catch (e) {
+      console.log('EditPickRoutePageComponent.setOcsStatus ERROR');
+      console.log(e);
+    }
   }
 
   private provideDeviceOutput(knownOutputDevice: string, knownAutofill: boolean, deviceType: string): DeviceOutput {
