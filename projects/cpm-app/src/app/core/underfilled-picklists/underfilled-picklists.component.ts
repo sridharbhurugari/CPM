@@ -9,6 +9,9 @@ import { of } from 'rxjs';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import * as _ from 'lodash';
 import { SortDirection } from '../../shared/constants/sort-direction';
+import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
+import { IUnfilledPicklistCreatedEvent } from '../../api-core/events/i-unfilled-picklist-created-event';
+import { IUnfilledPicklistRemovedEvent } from '../../api-core/events/i-unfilled-picklist-removed-event';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -58,7 +61,9 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
   constructor(
     private windowService: WindowService,
     private wpfActionControllerService: WpfActionControllerService,
-  ) {
+    private pickingEventConnectionService: PickingEventConnectionService,
+  ) {    
+      this.configureEventHandlers();    
   }
 
   ngAfterViewInit(): void {
@@ -74,6 +79,44 @@ export class UnderfilledPicklistsComponent implements AfterViewInit{
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.pickingEventConnectionService) {
+      return;
+    }
+
+    this.pickingEventConnectionService.newUnfilledPicklistSubject
+      .subscribe(message => this.onAddUnfilledPicklist(message));
+    this.pickingEventConnectionService.removedUnfilledPicklistSubject
+      .subscribe(message => this.onRemoveUnfilledPicklist(message));
+  }
+
+  private onAddUnfilledPicklist(unfilledPicklistCreatedEvent: IUnfilledPicklistCreatedEvent): void {
+    try {
+      const newUnfilledPicklist = unfilledPicklistCreatedEvent.NewUnfilledPicklist;
+      
+      this.picklists.push(newUnfilledPicklist);
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+      return;
+            
+    } catch (e) {
+      console.log('PicklistsQueueComponent.onAddOrUpdatePicklistQueueItem ERROR');
+      console.log(e);
+    }
+  }
+
+  private onRemoveUnfilledPicklist(unfilledPicklistRemovedEvent: IUnfilledPicklistRemovedEvent): void {
+    try {
+      const orderId = unfilledPicklistRemovedEvent.RemovedUnfilledPicklistId;
+      _.remove(this.picklists, (x) => {
+        return x.OrderId === orderId;
+      });
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    } catch (e) {
+      console.log('UnderfilledPicklistsComponent.onRemoveUnfilledPicklist ERROR');
+      console.log(e);
+    }
   }
 
   navigate(orderId: string){
