@@ -77,7 +77,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
         newList.push(selectRow);
 
-        if (!defaultFound &&
+        if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder !== undefined &&
           selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId
         ) {
           defaultFound = selectRow;

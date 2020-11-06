@@ -34,8 +34,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   beforeEach(async(() => {
     const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
     const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
-    const selectableDeviceInfo3 = new SelectableDeviceInfo(null);
-
+   
     selectableDeviceInfo1.DeviceId = 1;
     selectableDeviceInfo1.Description = 'DeviceXr21';
     selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
@@ -43,10 +42,6 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     selectableDeviceInfo2.DeviceId = 2;
     selectableDeviceInfo2.Description = 'DeviceXr22';
     selectableDeviceInfo2.CurrentLeaseHolder = Guid.create();
-
-    // selectableDeviceInfo3.DeviceId = 0;
-    // selectableDeviceInfo3.Description = 'All Devices';
-    // selectableDeviceInfo3.CurrentLeaseHolder = undefined;
 
     selectableDeviceInfoList = [selectableDeviceInfo1, selectableDeviceInfo2];
 
@@ -113,15 +108,15 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
   }));
 
-  // it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
-  //   ocapConfig.clientId = undefined;
-  //   const expectedDeviceID = '0';
-  //   component.selectedDeviceInformation = selectedDeviceInformation;
-  //   const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
-  //   component.ngOnInit();
-  //   tick();
-  //   expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-  //   expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
-  //   expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
-  // }));
+  it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
+    ocapConfig.clientId = '';
+    const expectedDeviceID = '0';
+    component.selectedDeviceInformation = selectedDeviceInformation;
+    const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
+    component.ngOnInit();
+    tick();
+    expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
+    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+  }));
 });
