@@ -8,7 +8,6 @@ import { takeUntil } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-
 export class EventConnectionService extends HubConnectionBase implements OnDestroy {
   private isConnectedStarted: boolean;
 

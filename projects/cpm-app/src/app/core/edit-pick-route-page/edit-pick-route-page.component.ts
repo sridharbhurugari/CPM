@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, Subject } from 'rxjs';
 import { IPickRouteDetail } from '../../api-core/data-contracts/i-pickroute-detail';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { PickRoutesService } from '../../api-core/services/pick-routes.service';
 import { ActivatedRoute } from '@angular/router';
-import { map, shareReplay, take } from 'rxjs/operators';
+import { map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { PopupDialogService, PopupDialogProperties, PopupWindowService,
          PopupWindowProperties, PopupDialogType } from '@omnicell/webcorecomponents';
@@ -24,7 +24,7 @@ import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
   templateUrl: './edit-pick-route-page.component.html',
   styleUrls: ['./edit-pick-route-page.component.scss']
 })
-export class EditPickRoutePageComponent implements OnInit {
+export class EditPickRoutePageComponent implements OnInit, OnDestroy {
 
   pickRoute$: Observable<IPickRouteDetail>;
 
@@ -37,7 +37,7 @@ export class EditPickRoutePageComponent implements OnInit {
   genericErrorMessage$: Observable<string>;
   okButtonText$: Observable<string>;
 
-  newDeviceSequence: IDeviceSequenceOrder[];  
+  newDeviceSequence: IDeviceSequenceOrder[];
 
   newRouteName: string;
   routeNameChanged: boolean;
@@ -49,6 +49,8 @@ export class EditPickRoutePageComponent implements OnInit {
 
   xr2Id: string = '2100';
   cartModuleId: string = '2104';
+
+  ngUnsubscribe = new Subject();
 
   constructor(
     private route: ActivatedRoute,
@@ -87,16 +89,16 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = pickRouteDevice.SequenceOrder;                           
-        
+        const sequenceOrder = pickRouteDevice.SequenceOrder;
+
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
           OutputDevices: x.OutputDevices,
-          DeviceOutput: this.provideDeviceOutput(pickRouteDevice.DeviceOutput.DeviceOutputType, pickRouteDevice.DeviceOutput.IsAutoFill, x.DeviceType),          
-          SequenceOrder: sequenceOrder          
-        };        
+          DeviceOutput: this.provideDeviceOutput(pickRouteDevice.DeviceOutput.DeviceOutputType, pickRouteDevice.DeviceOutput.IsAutoFill, x.DeviceType),
+          SequenceOrder: sequenceOrder
+        };
       });
 
       return enabledDevices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
@@ -112,13 +114,13 @@ export class EditPickRoutePageComponent implements OnInit {
           return null;
         }
 
-        const sequenceOrder = 999;         
+        const sequenceOrder = 999;
 
         return {
           DeviceId: x.Id,
           DeviceDescription: x.Description,
           DeviceType: x.DeviceType,
-          OutputDevices: x.OutputDevices,          
+          OutputDevices: x.OutputDevices,
           DeviceOutput: this.provideDeviceOutput('0', false, x.DeviceType),
           SequenceOrder: sequenceOrder
         };
@@ -128,6 +130,11 @@ export class EditPickRoutePageComponent implements OnInit {
     }));
 
     this.connectToEvents();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   navigateBack() {
@@ -257,13 +264,16 @@ export class EditPickRoutePageComponent implements OnInit {
 
   private connectToEvents() {
     this.configureEventHandlers();
-    this.coreEventConnectionService.startedSubject.subscribe(() => {
-      this.ocsStatusService.requestStatus().subscribe();
-    });
+    this.coreEventConnectionService.startedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.ocsStatusService.requestStatus().subscribe();
+      });
   }
 
   private configureEventHandlers(): void {
     this.coreEventConnectionService.ocsIsHealthySubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => this.setOcsStatus(message));
   }
 
@@ -276,19 +286,19 @@ export class EditPickRoutePageComponent implements OnInit {
     let outputTypeDefault = '0';
 
     if (deviceType === this.xr2Id){
-      
+
       if (String(knownOutputDevice) === '0'){
         return {
           DeviceOutputType: this.cartModuleId,
           IsAutoFill: autofillDefault
         }
-      }        
+      }
 
       return {
         DeviceOutputType: knownOutputDevice,
         IsAutoFill: knownAutofill
       }
-    }    
+    }
 
     return {
       DeviceOutputType: outputTypeDefault,

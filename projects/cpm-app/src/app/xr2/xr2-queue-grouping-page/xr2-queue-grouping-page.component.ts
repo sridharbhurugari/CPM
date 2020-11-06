@@ -21,6 +21,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
   selectedDeviceInformation: SelectableDeviceInfo;
+
   ngUnsubscribe = new Subject();
 
   @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
@@ -35,11 +36,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   ];
   translations$: Observable<any>;
 
-  constructor(private picklistsQueueService: PicklistsQueueService,
-              private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-              private translateService: TranslateService,
-              private dialogService: PopupDialogService
-    ) {
+  constructor(
+    private picklistsQueueService: PicklistsQueueService,
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService
+  ) {
       this.configureEventHandlers();
    }
 

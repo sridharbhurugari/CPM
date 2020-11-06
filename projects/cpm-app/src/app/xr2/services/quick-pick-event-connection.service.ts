@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
@@ -13,11 +14,14 @@ export class QuickPickEventConnectionService {
   public QuickPickQueueUpdateSubject = new Subject<any>();
   public QuickPickErrorUpdateSubject = new Subject<any>();
   public QuickPickDeviceStatusUpdateSubject = new Subject<any>();
+  public ngUnsubscribe = new Subject();
 
   constructor(
       private eventConnectionService: EventConnectionService
     ) {
-      this.eventConnectionService.receivedSubject.subscribe(message => this.configurePicklistEventHandlers(message));
+      this.eventConnectionService.receivedSubject
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(message => this.configurePicklistEventHandlers(message));
    }
 
   private configurePicklistEventHandlers(message: any): void {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { IDeviceLocationAccessService } from './i-device-location-access-service';
 import { DeviceLocationTypeId } from '../../constants/device-location-type-id';
 import { IDeviceLocationAccessData } from '../../model/i-device-location-access-data';
@@ -10,39 +10,52 @@ import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { IDeviceOperationResultEvent } from '../../../api-core/events/i-device-operation-result-event';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { CoreEventConnectionService } from '../../../api-core/services/core-event-connection.service';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, takeUntil } from 'rxjs/operators';
 import { DeviceOperationOutcomeMapperService } from './device-operation-outcome-mapper.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CarouselLocationAccessService implements IDeviceLocationAccessService {
+export class CarouselLocationAccessService implements IDeviceLocationAccessService, OnDestroy {
   private _deviceOperationResultSubjects: Record<string, ReplaySubject<DeviceLocationAccessResult>> = {};
 
   deviceLocationTypeId: string = DeviceLocationTypeId.Carousel;
+
+  ngUnsubscribe = new Subject();
 
   constructor(
     private carouselCommandsService: CarouselCommandsService,
     private coreEventConnectionService: CoreEventConnectionService,
     private deviceOperationOutcomeMapperService: DeviceOperationOutcomeMapperService,
   ) {
-    this.coreEventConnectionService.deviceOperationResultEventSubject.subscribe(x => this.handleDeviceOperationResultEvent(x));
+    this.coreEventConnectionService.deviceOperationResultEventSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.handleDeviceOperationResultEvent(x));
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   accessLocation(deviceLocation: IDeviceLocationAccessData, carouselDisplay: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {
-    return this.coreEventConnectionService.startedSubject.pipe(flatMap(x => this.accessLocationConnected(deviceLocation, carouselDisplay)));
+    return this.coreEventConnectionService.startedSubject
+      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.accessLocationConnected(deviceLocation, carouselDisplay)));
   }
 
   moveToShelf(deviceId: number, shelfNumber: number): Observable<DeviceLocationAccessResult> {
-    return this.coreEventConnectionService.startedSubject.pipe(flatMap(x => this.moveToShelfConnected(deviceId, shelfNumber)));
+    return this.coreEventConnectionService.startedSubject
+      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.moveToShelfConnected(deviceId, shelfNumber)));
   }
 
   clearLightbar(deviceId: number): Observable<DeviceLocationAccessResult> {
-    return this.coreEventConnectionService.startedSubject.pipe(flatMap(x => this.clearLightbarConnected(deviceId)));
+    return this.coreEventConnectionService.startedSubject
+      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.clearLightbarConnected(deviceId)));
   }
 
   displayLocationLightbar(deviceLocation: IDeviceLocationAccessData, carouselDisplay: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {
-    return this.coreEventConnectionService.startedSubject.pipe(flatMap(x => this.displayLocationLightbarConnected(deviceLocation, carouselDisplay)));
+    return this.coreEventConnectionService.startedSubject
+      .pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.displayLocationLightbarConnected(deviceLocation, carouselDisplay)));
   }
 
   private accessLocationConnected(deviceLocation: IDeviceLocationAccessData, carouselDisplay: IDeviceLocationAccessDisplayData): Observable<DeviceLocationAccessResult> {

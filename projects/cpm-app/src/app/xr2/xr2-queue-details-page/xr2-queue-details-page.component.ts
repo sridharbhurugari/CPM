@@ -37,12 +37,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   translations$: Observable<any>;
   ngUnsubscribe = new Subject();
 
-  // For testing
-  httpSub: Subscription;
-  translateSub: Subscription;
-  eventSub: Subscription;
-
-
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
     if (value === false) {
@@ -269,7 +263,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
       globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
     });
-    this.httpSub = this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+    this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
       result => {
         // force the status to 2 at this point
         picklistQueueItem.Status = 2;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
@@ -12,13 +12,15 @@ import { QuickPickError } from '../model/quick-pick-error';
 import { NavigationExtras, Router } from '@angular/router';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
   templateUrl: './quick-pick-drawer-view.component.html',
   styleUrls: ['./quick-pick-drawer-view.component.scss']
 })
-export class QuickPickDrawerViewComponent implements OnInit {
+export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
 
   @Output() quickPickActive: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() rerouteQuickPick: EventEmitter<Guid> = new EventEmitter<Guid>();
@@ -27,6 +29,8 @@ export class QuickPickDrawerViewComponent implements OnInit {
   private _scanMessage: BarcodeScanMessage;
   private _quickpickDrawers: QuickPickDrawerData[];
   detailedDrawer: QuickPickDrawerData;
+
+  ngUnsubscribe = new Subject();
 
   @Input() selectedDeviceInformation: SelectableDeviceInfo;
 
@@ -70,6 +74,11 @@ export class QuickPickDrawerViewComponent implements OnInit {
     this.configureEventHandlers();
   }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
   checkForHardwareLease(success: () => void) {
     return this.hardwareLeaseService.HasDeviceLease(this.selectedDeviceInformation.DeviceId).subscribe(leaseVerificationResults => {
       console.log('Lease Verification Results : ' + LeaseVerificationResult[leaseVerificationResults]);
@@ -81,7 +90,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
         this.navigateToDeviceLeasePage();
       }
     });
-  };
+  }
 
   navigateToDeviceLeasePage() {
     const navigationExtras: NavigationExtras = {
@@ -247,6 +256,7 @@ export class QuickPickDrawerViewComponent implements OnInit {
     }
 
     this.quickPickEventConnectionService.QuickPickDrawerUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => this.onUpdateQuickPickDrawer(message));
   }
 }
