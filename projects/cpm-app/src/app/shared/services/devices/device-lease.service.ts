@@ -35,7 +35,7 @@ export class DeviceLeaseService implements OnDestroy {
 
   requestLease(deviceId: number): Observable<boolean> {
     return this.coreEventConnectionService.startedSubject.
-      pipe(takeUntil(this.ngUnsubscribe), flatMap(x => this.requestLeaseConnected(deviceId)));
+      pipe(flatMap(x => this.requestLeaseConnected(deviceId)), takeUntil(this.ngUnsubscribe));
   }
 
   private requestLeaseConnected(deviceId: number): Observable<boolean> {
