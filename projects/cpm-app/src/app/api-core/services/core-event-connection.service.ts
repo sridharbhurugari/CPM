@@ -11,7 +11,6 @@ import { takeUntil } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-
 export class CoreEventConnectionService implements OnDestroy {
   public ocsIsHealthySubject = new Subject<boolean>();
   public deviceOperationResultEventSubject = new Subject<IDeviceOperationResultEvent>();

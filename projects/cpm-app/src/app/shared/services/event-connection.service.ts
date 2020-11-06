@@ -73,10 +73,10 @@ export class EventConnectionService extends HubConnectionBase implements OnDestr
 
   SubscribeToConnectionEvents() {
     this.connectionStartedSubject
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => { this.startedSubject.next(); this.isConnectedStarted = true; });
     this.disconnectedSubject
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => { this.startedSubject = new ReplaySubject(1); this.isConnectedStarted = false; });
   }
 }

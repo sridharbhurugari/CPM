@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewChecked, HostListener, ElementRef } from '@angular/core';
-import { map, shareReplay, filter, catchError } from 'rxjs/operators';
+import { map, shareReplay, filter, catchError, takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge, throwError, Subscription } from 'rxjs';
+import { Observable, forkJoin, merge, throwError, Subscription, Subject, Subject } from 'rxjs';
 import { NumericComponent, DatepickerComponent, ButtonActionComponent, DateFormat, Util, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType, ToastModule, ToastService } from '@omnicell/webcorecomponents';
 import { IGuidedCycleCount } from '../../api-core/data-contracts/i-guided-cycle-count';
 import { GuidedCycleCountService } from '../../api-core/services/guided-cycle-count-service';
@@ -106,6 +106,7 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
   isPopupVisible = false;
   oldQunatityOnHand: number;
   oldExpirationDate: Date;
+  ngUnsubscribe = new Subject();
   constructor(
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastService,
@@ -140,8 +141,12 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
 
   ngOnInit() {
     this.deviceId = this.activatedRoute.snapshot.queryParamMap.get('deviceId');
-    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = false);
-    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() == this.deviceId)).subscribe(x => this.carouselFaulted = true);
+    this.coreEventConnectionService.carouselReadySubject
+      .pipe(filter(x => x.DeviceId.toString() == this.deviceId), takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject
+      .pipe(filter(x => x.DeviceId.toString() == this.deviceId), takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.carouselFaulted = true);
 
     this.hardwareLeaseService.getDeviceConfiguration(this.deviceId).subscribe(res => {
       console.log(res);
@@ -852,6 +857,9 @@ export class GuidedInvMgmtCycleCountPageComponent implements OnInit, AfterViewCh
     }
   }
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
     if (this.popupDialogClose$) {
       this.popupDialogClose$.unsubscribe();
     }

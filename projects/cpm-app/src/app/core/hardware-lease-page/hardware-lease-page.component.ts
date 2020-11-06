@@ -175,13 +175,13 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
       });
 
     this.hardwareLeaseEventConnectionService.hardwareLeaseDeniedSubject
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(message => {
-          clearTimeout(this.timeoutPending);
-          this.resetPageAfterResults();
-          console.log('Received Denied Event');
-          console.log(message);
-          this.displayRequestLeaseDialog('HardwareLease_Access_Denied');
-        });
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => {
+        clearTimeout(this.timeoutPending);
+        this.resetPageAfterResults();
+        console.log('Received Denied Event');
+        console.log(message);
+        this.displayRequestLeaseDialog('HardwareLease_Access_Denied');
+      });
   }
 }
