@@ -25,8 +25,8 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
       private eventConnectionService: EventConnectionService
     ) {
       this.eventConnectionService.receivedSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(message => this.configurePicklistEventHandlers(message));
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(message => this.configurePicklistEventHandlers(message));
    }
 
   ngOnDestroy(): void {

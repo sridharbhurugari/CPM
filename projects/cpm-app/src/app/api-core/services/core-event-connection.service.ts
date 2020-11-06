@@ -38,7 +38,6 @@ export class CoreEventConnectionService implements OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-
   private eventHandlers(message: any): void {
     if (message === undefined) {
       return;
