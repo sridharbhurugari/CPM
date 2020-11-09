@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { SearchBoxComponent, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { TranslateService } from '@ngx-translate/core';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-xr2-queue-grouping-header',
@@ -19,10 +21,23 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
 
-  selectedDeviceInformation: SelectableDeviceInfo;
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
+
+  private _selectedDeviceInformation: SelectableDeviceInfo;
+
   deviceInformationList: SelectableDeviceInfo[];
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplayItem: SingleselectRowItem;
+
+  set selectedDeviceInformation(value: SelectableDeviceInfo) {
+    this._selectedDeviceInformation = value;
+    this.selectionChangedEvent.emit(value);
+  }
+
+  get selectedDeviceInformation(): SelectableDeviceInfo {
+    return this._selectedDeviceInformation;
+  }
+
 
   @ViewChild('searchBox', {
      static: true
@@ -35,7 +50,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
               private translateService: TranslateService) { }
 
   ngOnInit() {
-    this.getAllActiveXr2Devices();
+      this.getAllActiveXr2Devices();
   }
 
   async getAllActiveXr2Devices() {
@@ -52,12 +67,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       );
       newList.push(defaultFound);
     } else {
-      let translatedLabel = '';
-      this.translateService.get("XR2_ALL_DEVICES").subscribe((res: string) => {
-      translatedLabel = res;
-      });
-      const selectAll = new SingleselectRowItem(translatedLabel, '0', true);
-      newList.push(selectAll);
+      this.getAllDevicesInfo();
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
           selectableDeviceInfo.Description,
@@ -67,7 +77,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
         newList.push(selectRow);
 
-        if (!defaultFound &&
+        if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder !== undefined &&
           selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId
         ) {
           defaultFound = selectRow;
@@ -76,16 +86,18 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     }
 
     this.outputDeviceDisplayList = newList;
+    this.loadSavedPageConfigurations();
+     
+    if (this.savedPageConfiguration) {
+      defaultFound = this.getSingleSelectRowItem(this.savedPageConfiguration.selectedDevice.DeviceId.toString());
+    }
 
     if (defaultFound) {
-      this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
-        (x) => x.value === defaultFound.value
-      );
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
       this.loadSelectedDeviceInformation(defaultFound.value);
-    } else {
-      this.defaultDeviceDisplayItem = this.outputDeviceDisplayList.find(
-        (x) => x.value === '0'
-       );
+    } else{
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
+      this.loadSelectedDeviceInformation('0');
     }
   }
 
@@ -99,18 +111,26 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
     if (indexToLoad !== -1) {
       this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
-    } else {
-      this.selectedDeviceInformation = null;
-    }
+    } 
   }
 
   onDeviceSelectionChanged($event) {
     this.searchElement.clearSearch(null);
     this.loadSelectedDeviceInformation($event.value);
-    this.selectionChangedEvent.emit(this.selectedDeviceInformation);
   }
 
   ngAfterViewInit() {
+    this.configureSearchHandler();
+  }
+
+  private onSearchDataEvent(data: string) {
+    this.searchTextFilterEvent.emit(data);
+    if (this.windowService.nativeWindow) {
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    }
+  }
+
+  private configureSearchHandler() {
     this.searchElement.searchOutput$
       .pipe(
         switchMap((searchData: string) => {
@@ -118,10 +138,43 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe(data => {
-        this.searchTextFilterEvent.emit(data);
-        if (this.windowService.nativeWindow) {
-          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-        }
+        this.onSearchDataEvent(data);
       });
+  }
+
+  private loadSavedPageConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    const savedSearchFilter = this.savedPageConfiguration.searchTextFilter;
+
+    if (savedSearchFilter) {
+      this.searchElement.sendSearchData(savedSearchFilter);
+      this.onSearchDataEvent(savedSearchFilter);
+    }
+  }
+
+  private getSingleSelectRowItem(deviceId: string) {
+    return this.outputDeviceDisplayList.find(
+      (x) => x.value === deviceId
+    );
+  }
+
+  private getAllDevicesInfo(){
+    let translatedLabel = '';
+    this.translateService.get("XR2_ALL_DEVICES").subscribe((res: string) => {
+    translatedLabel = res;
+    });
+    let allDevicesInfo: SelectableDeviceInfo;
+    allDevicesInfo = {
+      DeviceId: 0,
+      Description: translatedLabel,
+      DefaultOwnerName: '',
+      DeviceTypeId: '',
+      CurrentLeaseHolder:undefined,
+      IsActive: true
+    }
+    this.deviceInformationList.push(allDevicesInfo);
   }
 }
