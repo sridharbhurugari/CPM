@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
@@ -10,6 +10,10 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
+import { loggerServiceToken, windowLoggerToken } from '../../core/constants/logging-token';
+import { ILogger, ILoggerService, LoggerService, LogSeverity, LogVerbosity } from 'oal-core';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { LogService } from '../../api-core/services/log-service';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -18,6 +22,7 @@ import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 })
 export class Xr2QueueGroupingPageComponent implements OnInit {
 
+  loggingComponentName = 'Xr2QueueGroupingPageComponent';
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
   selectedDeviceInformation: SelectableDeviceInfo;
@@ -37,9 +42,15 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   constructor(private picklistsQueueService: PicklistsQueueService,
               private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
               private translateService: TranslateService,
-              private dialogService: PopupDialogService
+              private dialogService: PopupDialogService,
+              private logService: LogService,
     ) {
       this.configureEventHandlers();
+      // this.logService.LogMessage(LogVerbosity.Normal, LogSeverity.Information,
+      //   LoggingCategory.CPMAPP, 'albaugh Constructor').subscribe(() => {
+      //   console.log('logged');
+      // }, fail => {console.log(fail);
+      // });
    }
 
   ngOnInit() {
@@ -64,11 +75,19 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
+    const dataDetailsForLog = 'PriorityCode: ' +
+      picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
+    console.log(this.processRelease);
+    this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+      this.constructor.name + ' processRelease() - sendToRobotGrouped for: ' + dataDetailsForLog);
+
     picklistQueueGrouped.Saving = true;
     console.log('Sending PickList Group');
     console.log(picklistQueueGrouped);
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
+        this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+          this.constructor.name + ' processRelease() - sendToRobotGrouped returned for: ' + dataDetailsForLog);
         console.log('PickListGroup Sent. Refreshing Group Data');
         this.picklistsQueueService.getGroupedFiltered(
           picklistQueueGrouped.DeviceId,
@@ -83,12 +102,16 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
                 this.UpdatePickListQueueGroupedList(new PicklistQueueGrouped(getGroupedResult));
                 console.log('Send and Refresh complete.');
               }
-          }, getGroupedResult => {
-              console.log('Failed to refresh data');
-              picklistQueueGrouped.Saving = false;
-              this.displayFailedToRefresh();
+          }, (error) => {
+            this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
+                this.constructor.name + 'processRelease() - Failed To Refresh Data');
+            console.log('Failed to refresh data');
+            picklistQueueGrouped.Saving = false;
+            this.displayFailedToRefresh();
           });
-      }, result => {
+      }, error => {
+        this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
+          this.constructor.name + 'processRelease() - Failed To Save');
         console.log('Failed to save');
         picklistQueueGrouped.Saving = false;
         this.displayFailedToSaveDialog();

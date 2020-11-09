@@ -8,7 +8,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
-         FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+         FooterModule, LayoutModule, LoggingService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
@@ -24,13 +24,21 @@ import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-arr
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
+import { WindowLoggerService } from '../../shared/services/override-logging';
+import { loggerServiceToken, windowLoggerToken } from '../../core/constants/logging-token';
+import { ILogger, ILoggerService, LoggerService } from 'oal-core';
+import { LogService } from '../../api-core/services/log-service';
 
-describe('Xr2QueueGroupingPageComponent', () => {
+
+fdescribe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
   let fixture: ComponentFixture<Xr2QueueGroupingPageComponent>;
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistQueueService: Partial<PicklistsQueueService>;
   let devicesService: Partial<DevicesService>;
+  let loggingService: Partial<LoggerService>;
+  let logService: Partial<LogService>;
+  let windowsLoggerService: Partial<ILogger>;
   let spyChildchildGroupingQueueComponent: jasmine.Spy;
   let selectedDeviceInformation: SelectableDeviceInfo;
 
@@ -46,6 +54,14 @@ describe('Xr2QueueGroupingPageComponent', () => {
     sendToRobotGrouped: () => of(),
     getGrouped: () => of(),
     getGroupedFiltered: () => of()
+  };
+
+  loggingService = {
+    override: () => {}
+  };
+
+  logService = {
+    logMessage: () => of()
   };
 
   beforeEach(async(() => {
@@ -83,6 +99,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
+        // { provide: windowLoggerToken, useValue: {} },
+        // { provide: loggerServiceToken, useValue: { override: () => {} }
+        { provide: LogService, useValue: { logService }}
       ]
     })
     .compileComponents();
@@ -208,6 +227,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
   describe('Queue API Actions', () => {
     it('should call PicklistQueue service to send to robot grouped on release click', fakeAsync(() => {
       const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
+      fakePicklistQueueGrouped.DeviceId = 1;
+      fakePicklistQueueGrouped.PriorityCode = 'Patient';
       component.processRelease(fakePicklistQueueGrouped);
       tick();
       expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(1);
