@@ -14,6 +14,8 @@ import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { Observable } from 'rxjs';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -24,12 +26,15 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() releaseEvent: EventEmitter<PicklistQueueGrouped> = new EventEmitter<PicklistQueueGrouped>();
+  @Output() detailsEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   @Input()
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._loadedPicklistQueueGrouped = value;
     this.picklistQueueGrouped = value;
-    if (value && this.selectedDeviceInformation) {
+    if (value && this.selectedDeviceInformation && this.selectedDeviceInformation.DeviceId !== 0) {
       this.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
     }
   }
@@ -51,6 +56,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Input()
   set searchTextFilter(value: string) {
+    if (!this.picklistQueueGrouped) {
+      return;
+    }
     this._searchTextFilter = value;
   }
   get searchTextFilter(): string {
@@ -109,12 +117,12 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   constructor(
     private windowService: WindowService,
-    private translateService: TranslateService,
-    private router: Router) {
+    private translateService: TranslateService) {
   }
 
   ngOnInit() {
     this.setTranslations();
+    this.loadSavedConfigurations();
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
   }
 
@@ -123,15 +131,12 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   onDetailsClick(picklistQueueGrouped: PicklistQueueGrouped): void {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity,
-        deviceId: picklistQueueGrouped.DeviceId
-       },
-      fragment: 'anchor'
+    const params: IXr2QueueNavigationParameters = {
+      pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity.toString(),
+      deviceId: picklistQueueGrouped.DeviceId.toString()
     };
 
-    this.router.navigate(['/xr2/xr2Queue/details'], navigationExtras);
+    this.detailsEvent.emit(params);
   }
 
   getActiveOutputDeviceList(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -182,6 +187,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
     this.picklistQueueGrouped = this.sort(this.picklistQueueGrouped, event.SortDirection);
+    this.sortEvent.emit(event);
   }
 
   sort(picklistGrouped: PicklistQueueGrouped[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueGrouped[] {
@@ -216,6 +222,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   filterPicklistQueueGroupedByDeviceId(deviceId: number) {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
+    if(this.picklistQueueGrouped){
+      this.loadSavedConfigurations();
+    }
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
@@ -290,6 +299,19 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   loadAllPicklistQueueGrouped() {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
+    if(this.picklistQueueGrouped){
+      this.loadSavedConfigurations();
+    }
+  }
+
+  private loadSavedConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    if (this.savedPageConfiguration.colHeaderSort && this.picklistQueueGrouped) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
+    }
   }
 
   private setTranslations() {
