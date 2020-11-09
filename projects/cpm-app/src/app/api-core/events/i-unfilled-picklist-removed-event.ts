@@ -1,3 +1,3 @@
 export interface IUnfilledPicklistRemovedEvent {
-    RemovedUnfilledPicklistId: string;
+    OrderId: string;
 }

@@ -4,6 +4,8 @@ import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import * as _ from 'lodash';
+import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
+import { IUnfilledPicklistlineAddedEvent } from '../../api-core/events/i-unfilled-picklistline-added-event';
 
 @Component({
   selector: 'app-underfilled-picklist-lines',
@@ -34,7 +36,33 @@ export class UnderfilledPicklistLinesComponent {
 
   constructor(
     private windowService: WindowService,
-  ) { }
+    private pickingEventConnectionService: PickingEventConnectionService
+  ) { 
+    this.configureEventHandlers();
+  }
+
+  private configureEventHandlers(): void {
+    if (!this.pickingEventConnectionService) {
+      return;
+    }
+
+    this.pickingEventConnectionService.addedUnfilledPicklistLineSubject
+      .subscribe(message => this.onAddedUnfilledPicklistLine(message));    
+  }
+
+  private onAddedUnfilledPicklistLine(unfilledPicklistLineAddedEvent: IUnfilledPicklistlineAddedEvent): void {
+    try {
+      const addedUnfilledPicklistLine = unfilledPicklistLineAddedEvent.UnderfilledPicklistLine;
+      
+      this.picklistLines.push(addedUnfilledPicklistLine);
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+      return;
+            
+    } catch (e) {
+      console.log('PicklistsQueueComponent.onAddedUnfilledPicklistLine ERROR');
+      console.log(e);
+    }
+  }
 
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;

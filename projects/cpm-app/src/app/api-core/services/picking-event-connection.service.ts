@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
-import { IUnfilledPicklistCreatedEvent } from '../events/i-unfilled-picklist-created-event';
+import { IUnfilledPicklistAddedOrUpdatedEvent } from '../events/i-unfilled-picklist-added-or-updated-event';
 import { IUnfilledPicklistRemovedEvent } from '../events/i-unfilled-picklist-removed-event';
+import { IUnfilledPicklistlineAddedEvent } from '../events/i-unfilled-picklistline-added-event';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PickingEventConnectionService {
-  public newUnfilledPicklistSubject = new Subject<IUnfilledPicklistCreatedEvent>();
+  public updatedUnfilledPicklistSubject = new Subject<IUnfilledPicklistAddedOrUpdatedEvent>();
   public removedUnfilledPicklistSubject = new Subject<IUnfilledPicklistRemovedEvent>();
+  public addedUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedEvent>();  
 
   public startedSubject = new ReplaySubject(1);
 
@@ -25,14 +27,19 @@ export class PickingEventConnectionService {
         {
           if (message === undefined) 
             { return; }    
+
+          if (message.EventId === 'AddOrUpdateUnderfilledPicklistEvent') {            
+            this.updatedUnfilledPicklistSubject.next(message);
+            return;
+          }
             
-          if (message.EventId === 'NewUnfilledPicklistCreated') {            
-            this.newUnfilledPicklistSubject.next(message);
+          if (message.EventId === 'RemoveUnderfilledPicklistEvent') {            
+            this.removedUnfilledPicklistSubject.next(message);
             return;
           }
 
-          if (message.EventId === 'UnfilledPicklistRemoved') {            
-            this.removedUnfilledPicklistSubject.next(message);
+          if (message.EventId === 'AddUnderfilledPicklistLineEvent') {            
+            this.addedUnfilledPicklistLineSubject.next(message);
             return;
           }
         }
