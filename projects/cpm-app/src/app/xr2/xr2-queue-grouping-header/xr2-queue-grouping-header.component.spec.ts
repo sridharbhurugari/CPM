@@ -34,7 +34,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   beforeEach(async(() => {
     const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
     const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
-
+   
     selectableDeviceInfo1.DeviceId = 1;
     selectableDeviceInfo1.Description = 'DeviceXr21';
     selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
@@ -63,7 +63,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     devicesService = {
       getAllXr2Devices: () => of(selectableDeviceInfoList)
     };
-    
+
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
       imports: [ SingleselectDropdownModule],
@@ -111,12 +111,12 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
     ocapConfig.clientId = '';
     const expectedDeviceID = '0';
+    component.selectedDeviceInformation = selectedDeviceInformation;
     const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
-       
     component.ngOnInit();
     tick();
     expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-    expect(component.selectedDeviceInformation).toBeUndefined();
+    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
     expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
   }));
 });

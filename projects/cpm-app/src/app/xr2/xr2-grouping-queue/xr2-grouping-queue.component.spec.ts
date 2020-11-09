@@ -107,15 +107,18 @@ describe('Xr2GroupingQueueComponent', () => {
       expect(releaseSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should navigate to details page on details click', () => {
-      const picklistQueueGrouped = new PicklistQueueGrouped(null);
-      picklistQueueGrouped.OutputDeviceId = '2104';
-      picklistQueueGrouped.PickPriorityIdentity = 1;
-      picklistQueueGrouped.AvailableOutputDeviceList = [];
+    it('should navigate to details page on details click with params', () => {
+      const picklistQueueGroupedItem = new PicklistQueueGrouped(null);
+      picklistQueueGroupedItem.OutputDeviceId = '2104';
+      picklistQueueGroupedItem.DeviceId = 1;
+      picklistQueueGroupedItem.PickPriorityIdentity = 1;
+      picklistQueueGroupedItem.AvailableOutputDeviceList = [];
+      component.picklistQueueGrouped = [picklistQueueGroupedItem];
+      const detailsSpy = spyOn(component.detailsEvent, 'emit');
 
-      component.onDetailsClick(picklistQueueGrouped);
+      component.onDetailsClick(picklistQueueGroupedItem);
 
-      expect(router.navigate).toHaveBeenCalledTimes(1);
+      expect(detailsSpy).toHaveBeenCalledTimes(1);
     });
   });
 

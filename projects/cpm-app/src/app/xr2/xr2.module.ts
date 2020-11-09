@@ -29,6 +29,7 @@ import { Xr2DetailsQueueComponent } from './xr2-details-queue/xr2-details-queue.
 import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2-queue-grouping-header.component';
 import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
+import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
 @NgModule({
   declarations: [
     PicklistsQueueComponent,
@@ -50,6 +51,7 @@ import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue
     Xr2QueueGroupingHeaderComponent,
     Xr2QueueDetailsHeaderComponent,
     Xr2QueueButtonPanelComponent,
+    Xr2QueuePageComponent,
   ],
   imports: [
     CommonModule,
