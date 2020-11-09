@@ -7,37 +7,37 @@
       <div app-col-header-sortable class="first" data-colwrap="true"
                                [columnPropertyName]='sequencePropertyName'
                                headerResourceKey=''
-                               [currentSortPropertyName]="currentSortPropertyName"
+                               [currentSortPropertyName]="currentSortPropertyName" [customColumnSortOrder]="sortOrder"
                                (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="205" data-colwrap="true"
                                [columnPropertyName]='typePropertyName'
                                headerResourceKey='TYPE'
-                               [currentSortPropertyName]="currentSortPropertyName"
+                               [currentSortPropertyName]="currentSortPropertyName" [customColumnSortOrder]="sortOrder"
                                (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
                                [columnPropertyName]='orderPropertyName'
                                headerResourceKey='ORDER_ID'
-                               [currentSortPropertyName]="currentSortPropertyName"
+                               [currentSortPropertyName]="currentSortPropertyName" [customColumnSortOrder]="sortOrder"
                                (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="380" data-colwrap="true"
                                [columnPropertyName]='descriptionPropertyName'
                                headerResourceKey='DESCRIPTION'
-                               [currentSortPropertyName]="currentSortPropertyName"
+                               [currentSortPropertyName]="currentSortPropertyName" [customColumnSortOrder]="sortOrder"
                                (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
                                [columnPropertyName]='destinationPropertyName'
                                headerResourceKey='DESTINATION'
-                               [currentSortPropertyName]="currentSortPropertyName"
+                               [currentSortPropertyName]="currentSortPropertyName" [customColumnSortOrder]="sortOrder"
                                (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="last" ocGridColResize data-width="125" data-colwrap="true"
                                [columnPropertyName]='datePropertyName'
                                headerResourceKey='DATE'
-                               [currentSortPropertyName]="currentSortPropertyName"
+                               [currentSortPropertyName]="currentSortPropertyName" [customColumnSortOrder]="sortOrder"
                                (columnSelected)="columnSelected($event)">
       </div>
   </ng-container>
