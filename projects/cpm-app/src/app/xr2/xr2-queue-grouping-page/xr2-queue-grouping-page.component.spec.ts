@@ -26,6 +26,9 @@ import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-q
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { LogService } from '../../api-core/services/log-service';
 import { Mock } from 'protractor/built/driverProviders';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { Guid } from 'guid-typescript';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
 
 describe('Xr2QueueGroupingPageComponent', () => {
@@ -227,5 +230,49 @@ describe('Xr2QueueGroupingPageComponent', () => {
       tick();
       expect(picklistQueueService.getGroupedFiltered).toHaveBeenCalledTimes(1);
     }));
+
+    it('should call filterPicklistQueueGroupedByDeviceId  when onDeviceSelectionChanged', () => {
+      spyChildchildGroupingQueueComponent =
+      spyOn(component.childGroupingQueueComponent, 'filterPicklistQueueGroupedByDeviceId');
+      let selectedDeviceInfo = new SelectableDeviceInfo(null);
+      selectedDeviceInfo.DeviceId = 0;
+      selectedDeviceInfo.Description = '';
+      selectedDeviceInfo.DefaultOwnerName = '';
+      selectedDeviceInfo.IsActive = true;
+      selectedDeviceInfo.CurrentLeaseHolder = Guid.create();
+
+      component.selectedDeviceInformation = selectedDeviceInfo;
+
+      let selectedDeviceInfoNew = new SelectableDeviceInfo(null);
+      selectedDeviceInfo.DeviceId = 1;
+      selectedDeviceInfo.Description = '';
+      selectedDeviceInfo.DefaultOwnerName = '';
+      selectedDeviceInfo.IsActive = true;
+      selectedDeviceInfo.CurrentLeaseHolder = Guid.create();
+
+      component.onDeviceSelectionChanged(selectedDeviceInfoNew);
+
+      expect(spyChildchildGroupingQueueComponent).toHaveBeenCalledTimes(1);
+    });
+
+    it('should save config and emit on processDetailsNavigate', () => {
+      const continueSpy = spyOn(component.detailsPageContinueEvent, 'emit');
+      const configUpdateSpy = spyOn(component.xr2PageConfigurationUpdateEvent, 'emit');
+      const navparams = {} as IXr2QueueNavigationParameters;
+      navparams.deviceId = '1';
+      navparams.pickPriorityIdentity = 'dummy';
+      component.processDetailsNavigate(navparams);
+      expect(continueSpy).toHaveBeenCalledTimes(1);
+      expect(configUpdateSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set columnHeaderSort on event', () => {
+      const fakeEvent = {} as IColHeaderSortChanged;
+      fakeEvent.ColumnPropertyName = 'Test';
+      fakeEvent.SortDirection = 'asc';
+      component.onSortEvent(fakeEvent);
+      expect(component.colHeaderSort.ColumnPropertyName).toBe('Test');
+      expect(component.colHeaderSort.SortDirection).toBe('asc');
+    });
   });
 });
