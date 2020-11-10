@@ -19,8 +19,9 @@ export class LogService {
   logMessage(verbosity: LogVerbosity, severity: LogSeverity, category: LoggingCategory, message: string) {
     console.log(message);
     const url = this.ocapUrlBuilderService.buildUrl('/api/logging/logsingleevent');
-    return this.httpClient.post(url, { TimeStamp: new Date().toISOString() ,
-       Message: 'test', Verbosity: 0, LogLevel: 0, CategoryName: 'category', ApplicationPrefix: 'CPMAPP' } , {
+    message = severity.toString().substr(0, 1) + ' ' + category.toString() + ' ' + message;
+    return this.httpClient.post(url, { TimeStamp: new Date().toLocaleString() ,
+       Message: message, Verbosity: verbosity, LogLevel: severity, CategoryName: category, ApplicationPrefix: '' } , {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

@@ -56,11 +56,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
               private logService: LogService,
     ) {
       this.configureEventHandlers();
-      // this.logService.LogMessage(LogVerbosity.Normal, LogSeverity.Information,
-      //   LoggingCategory.CPMAPP, 'albaugh Constructor').subscribe(() => {
-      //   console.log('logged');
-      // }, fail => {console.log(fail);
-      // });
    }
 
   ngOnInit() {
@@ -97,7 +92,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
     const dataDetailsForLog = 'PriorityCode: ' +
       picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
-    console.log(this.processRelease);
     this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
       this.constructor.name + ' processRelease() - sendToRobotGrouped for: ' + dataDetailsForLog);
 
