@@ -17,6 +17,7 @@ import { LogService } from '../../api-core/services/log-service';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
@@ -48,6 +49,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     'FAILEDTOREROUTE_BODY_TEXT',
   ];
   translations$: Observable<any>;
+  private _loggingCategory: string;
 
   constructor(private picklistsQueueService: PicklistsQueueService,
               private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
@@ -56,18 +58,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
               private logService: LogService,
     ) {
       this.configureEventHandlers();
-      // this.logService.LogMessage(LogVerbosity.Normal, LogSeverity.Information,
-      //   LoggingCategory.CPMAPP, 'albaugh Constructor').subscribe(() => {
-      //   console.log('logged');
-      // }, fail => {console.log(fail);
-      // });
    }
 
   ngOnInit() {
     this.setTranslations();
     this.loadPicklistsQueueGrouped();
-    this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
-      this.constructor.name + ' ngOnInit');
+    this._loggingCategory = LoggingCategory.Xr2Queue;
   }
 
   onSearchTextFilterEvent(filterText: string) {
@@ -100,7 +96,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     const dataDetailsForLog = 'PriorityCode: ' +
       picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
     console.log(this.processRelease);
-    this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this.constructor.name + ' processRelease() - sendToRobotGrouped for: ' + dataDetailsForLog);
 
     picklistQueueGrouped.Saving = true;
@@ -108,7 +104,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     console.log(picklistQueueGrouped);
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
-        this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
           this.constructor.name + ' processRelease() - sendToRobotGrouped returned for: ' + dataDetailsForLog);
         console.log('PickListGroup Sent. Refreshing Group Data');
         this.picklistsQueueService.getGroupedFiltered(
@@ -125,14 +121,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
                 console.log('Send and Refresh complete.');
               }
           }, (error) => {
-            this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
+            this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
                 this.constructor.name + 'processRelease() - Failed To Refresh Data');
             console.log('Failed to refresh data');
             picklistQueueGrouped.Saving = false;
             this.displayFailedToRefresh();
           });
       }, error => {
-        this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
           this.constructor.name + 'processRelease() - Failed To Save');
         console.log('Failed to save');
         picklistQueueGrouped.Saving = false;

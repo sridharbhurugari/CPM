@@ -1,4 +1,4 @@
 export class LoggingCategory {
-  public static readonly CPMAPP: string = 'CPM-APP';
+  public static readonly Xr2Queue: string = 'Xr2Queue';
 
 }
