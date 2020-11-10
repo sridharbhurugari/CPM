@@ -16,11 +16,15 @@ export class LogService {
     private ocapHttpHeadersService: OcapHttpHeadersService
   ) { }
 
-  logMessage(verbosity: LogVerbosity, severity: LogSeverity, category: LoggingCategory, message: string) {
+  logMessageAsync(verbosity: LogVerbosity, severity: LogSeverity, category: string, message: string) {
+    this.logMessage(verbosity, severity, category, message).subscribe();
+  }
+
+  private logMessage(verbosity: LogVerbosity, severity: LogSeverity, category: string, message: string) {
     console.log(message);
-    const url = this.ocapUrlBuilderService.buildUrl('/api/logging/logsingleevent');
-    return this.httpClient.post(url, { TimeStamp: new Date().toISOString() ,
-       Message: 'test', Verbosity: 0, LogLevel: 0, CategoryName: 'category', ApplicationPrefix: 'CPMAPP' } , {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/AngularLogging/logsingleevent');
+    return this.httpClient.post(url, { TimeStamp: new Date(),
+       Message: message, Verbosity: verbosity, LogLevel: severity, CategoryName: category, ApplicationPrefix: 'CPMAPP' } , {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

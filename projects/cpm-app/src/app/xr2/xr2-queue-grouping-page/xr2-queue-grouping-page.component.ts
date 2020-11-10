@@ -66,6 +66,8 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   ngOnInit() {
     this.setTranslations();
     this.loadPicklistsQueueGrouped();
+    this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+      this.constructor.name + ' ngOnInit');
   }
 
   onSearchTextFilterEvent(filterText: string) {
@@ -98,7 +100,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     const dataDetailsForLog = 'PriorityCode: ' +
       picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
     console.log(this.processRelease);
-    this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+    this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
       this.constructor.name + ' processRelease() - sendToRobotGrouped for: ' + dataDetailsForLog);
 
     picklistQueueGrouped.Saving = true;
@@ -106,7 +108,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     console.log(picklistQueueGrouped);
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
-        this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
+        this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Information, LoggingCategory.CPMAPP,
           this.constructor.name + ' processRelease() - sendToRobotGrouped returned for: ' + dataDetailsForLog);
         console.log('PickListGroup Sent. Refreshing Group Data');
         this.picklistsQueueService.getGroupedFiltered(
@@ -123,14 +125,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
                 console.log('Send and Refresh complete.');
               }
           }, (error) => {
-            this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
+            this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
                 this.constructor.name + 'processRelease() - Failed To Refresh Data');
             console.log('Failed to refresh data');
             picklistQueueGrouped.Saving = false;
             this.displayFailedToRefresh();
           });
       }, error => {
-        this.logService.logMessage(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
+        this.logService.logMessageAsync(LogVerbosity.Normal, LogSeverity.Error, LoggingCategory.CPMAPP,
           this.constructor.name + 'processRelease() - Failed To Save');
         console.log('Failed to save');
         picklistQueueGrouped.Saving = false;
