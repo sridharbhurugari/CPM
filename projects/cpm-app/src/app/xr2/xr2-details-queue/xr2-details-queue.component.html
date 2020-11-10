@@ -98,8 +98,9 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [icon]="'reroute'"
             [label]="'REROUTE' | translate"
+            [disabled]="multiSelectMode"
+            [icon]="'reroute'"
             (clickEvent)="onRerouteClick(picklistQueueItem)">
             </app-cp-clickable-icon>
           </div>

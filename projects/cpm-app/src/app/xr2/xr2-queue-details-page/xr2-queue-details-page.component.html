@@ -12,15 +12,18 @@
     (printEvent)="processPrint(selectedItems)">
   </app-xr2-queue-button-panel>
   <app-xr2-queue-details-header
+    [priorityDescriptionHeader]="xr2QueueNavigationParameters.priorityCodeDescription"
     (backEvent)="onBackClick()"
     (searchTextFilterEvent)='onSearchTextFilter($event)'>
   </app-xr2-queue-details-header>
   <app-xr2-details-queue
     [picklistQueueItems]="picklistsQueueItems | async"
     [searchTextFilter]="searchTextFilter"
-    [clearSelectedItemsEvent] = "clearSelectedItemsSubject.asObservable()"
+    [multiSelectMode]="multiSelectMode"
     (failedEvent)="displayXr2QueueError()"
     (selectionChangedEvent)="onGridSelectionChanged($event)"
+    (picklistQueueItemAddorUpdatedEvent)="onPicklistQueueItemAddorUpdated($event)"
+    (picklistQueueItemRemovedEvent)="onPicklistQueueItemRemoved($event)"
     (releaseEvent)="processRelease($event)"
     (rerouteEvent)="processReroute($event)"
     (printEvent)="processPrint($event)">

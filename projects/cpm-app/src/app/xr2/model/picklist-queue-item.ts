@@ -48,7 +48,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
     return true;
   }
 
-  static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson){
+  static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson) {
     return new this({
       AvailableOutputDeviceList: picklistQueueItem.AvailableOutputDeviceList.$values,
       BoxCount: picklistQueueItem.BoxCount,

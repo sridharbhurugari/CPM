@@ -5,11 +5,9 @@ import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Observable, Subscription } from 'rxjs';
 import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
@@ -35,11 +33,33 @@ export class Xr2DetailsQueueComponent implements OnInit {
   @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() selectionChangedEvent: EventEmitter<any> = new EventEmitter();
-  @Output() itemUpdatedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
-  @Output() itemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
+  @Output() picklistQueueItemAddorUpdatedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
+  @Output() picklistQueueItemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
+
+  @Input() multiSelectMode: boolean;
+
+  @Input() clearSelectedItemsEvent: Observable<any>;
+
+  @Input()
+  set picklistQueueItems(value: PicklistQueueItem[]) {
+    this._picklistQueueItems = value;
+    if (this.windowService.nativeWindow) {
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    }
+  }
+  get picklistQueueItems(): PicklistQueueItem[] {
+    return this._picklistQueueItems;
+  }
+
+  @Input()
+  set searchTextFilter(value: string) {
+    this._searchTextFilter = value;
+  }
+  get searchTextFilter(): string {
+    return this._searchTextFilter;
+  }
 
   private _picklistQueueItems: PicklistQueueItem[];
-
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -72,34 +92,9 @@ export class Xr2DetailsQueueComponent implements OnInit {
   ];
   translations$: Observable<any>;
 
-  @Input() clearSelectedItemsEvent: Observable<any>;
-
-  @Input()
-  set picklistQueueItems(value: PicklistQueueItem[]) {
-    this._picklistQueueItems = value;
-    if (this.windowService.nativeWindow) {
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-    }
-  }
-  get picklistQueueItems(): PicklistQueueItem[] {
-    return this._picklistQueueItems;
-  }
-
-  @Input()
-  set searchTextFilter(value: string) {
-    this._searchTextFilter = value;
-  }
-  get searchTextFilter(): string {
-    return this._searchTextFilter;
-  }
 
   @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
 
-  @ViewChild('searchBox', {
-    static: true
-  })
-
-  searchElement: SearchBoxComponent;
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('OrderId'),
     , nameof<PicklistQueueItem>('DeviceDescription')];
 
@@ -169,7 +164,9 @@ export class Xr2DetailsQueueComponent implements OnInit {
 
   getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
     return {
-      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
+      disabled : picklistQueueItem.Saving
+      ||  !this.getSelectedOutputDeviceRow(picklistQueueItem)
+      || this.multiSelectMode,
       text: this.translationMap.RELEASE
     };
   }
@@ -184,7 +181,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
     }
 
     return {
-      disabled: !picklistQueueItem.Printable,
+      disabled: !picklistQueueItem.Printable || this.multiSelectMode,
       text
     };
   }
@@ -300,7 +297,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
   private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
     const picklistQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
     const matchingRobotGroupLine = _.find(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId != null && x.RobotPickGroupId == picklistQueueItem.RobotPickGroupId;
+      return x.RobotPickGroupId != null && x.RobotPickGroupId === picklistQueueItem.RobotPickGroupId;
     });
     const matchingPicklistQueueItem = matchingRobotGroupLine || _.find(this.picklistQueueItems, (x) => {
       return x.RobotPickGroupId === null &&
@@ -320,6 +317,8 @@ export class Xr2DetailsQueueComponent implements OnInit {
     matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
     matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
     matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
+
+    this.picklistQueueItemAddorUpdatedEvent.emit(picklistQueueItem);
     this.resyncPickListQueueItem(picklistQueueItem);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
@@ -327,11 +326,13 @@ export class Xr2DetailsQueueComponent implements OnInit {
   private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
     const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
 
-    _.remove(this.picklistQueueItems, (x) => {
+    const removedItem = _.remove(this.picklistQueueItems, (x) => {
       return x.OrderId === xr2OrderGroupKey.OrderId &&
       x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
-      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
+      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId === xr2OrderGroupKey.RobotPickGroupId;
     });
+
+    this.picklistQueueItemRemovedEvent.emit(removedItem[0]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 

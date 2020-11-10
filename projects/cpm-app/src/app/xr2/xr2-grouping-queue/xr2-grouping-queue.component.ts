@@ -133,7 +133,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
   onDetailsClick(picklistQueueGrouped: PicklistQueueGrouped): void {
     const params: IXr2QueueNavigationParameters = {
       pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity.toString(),
-      deviceId: picklistQueueGrouped.DeviceId.toString()
+      deviceId: picklistQueueGrouped.DeviceId.toString(),
+      priorityCodeDescription: picklistQueueGrouped.PriorityCodeDescription
     };
 
     this.detailsEvent.emit(params);
