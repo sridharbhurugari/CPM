@@ -24,10 +24,8 @@ import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-arr
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
-import { WindowLoggerService } from '../../shared/services/override-logging';
-import { loggerServiceToken, windowLoggerToken } from '../../core/constants/logging-token';
-import { ILogger, ILoggerService, LoggerService } from 'oal-core';
 import { LogService } from '../../api-core/services/log-service';
+import { Mock } from 'protractor/built/driverProviders';
 
 
 describe('Xr2QueueGroupingPageComponent', () => {
@@ -36,12 +34,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistQueueService: Partial<PicklistsQueueService>;
   let devicesService: Partial<DevicesService>;
-  let loggingService: Partial<LoggerService>;
-  let logService: Partial<LogService>;
-  let windowsLoggerService: Partial<ILogger>;
+
   let spyChildchildGroupingQueueComponent: jasmine.Spy;
   let selectedDeviceInformation: SelectableDeviceInfo;
-
   let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
   const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
   const picklistQueueGrouped = new PicklistQueueGrouped(null);
@@ -54,14 +49,6 @@ describe('Xr2QueueGroupingPageComponent', () => {
     sendToRobotGrouped: () => of(),
     getGrouped: () => of(),
     getGroupedFiltered: () => of()
-  };
-
-  loggingService = {
-    override: () => {}
-  };
-
-  logService = {
-    logMessageAsync: () => of()
   };
 
   beforeEach(async(() => {
@@ -99,9 +86,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
-        // { provide: windowLoggerToken, useValue: {} },
-        // { provide: loggerServiceToken, useValue: { override: () => {} }
-        { provide: LogService, useValue: { logService }}
+        { provide: LogService, useValue: { logMessageAsync: () => null } }
       ]
     })
     .compileComponents();
@@ -215,32 +200,32 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     }));
 
-    // it('should update search filter text on search filter event', () => {
-    //   const filter = 'filter';
+    it('should update search filter text on search filter event', () => {
+      const filter = 'filter';
 
-    //   component.onSearchTextFilter(filter);
+      component.onSearchTextFilterEvent(filter);
 
-    //   expect(component.searchTextFilter).toBe(filter);
-    // });
+      expect(component.searchTextFilter).toBe(filter);
+    });
   });
 
-  // describe('Queue API Actions', () => {
-  //   it('should call PicklistQueue service to send to robot grouped on release click', fakeAsync(() => {
-  //     const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
-  //     fakePicklistQueueGrouped.DeviceId = 1;
-  //     fakePicklistQueueGrouped.PriorityCode = 'Patient';
-  //     component.processRelease(fakePicklistQueueGrouped);
-  //     tick();
-  //     expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(1);
-  //   }));
+  describe('Queue API Actions', () => {
+    it('should call PicklistQueue service to send to robot grouped on release click', fakeAsync(() => {
+      const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
+      fakePicklistQueueGrouped.DeviceId = 1;
+      fakePicklistQueueGrouped.PriorityCode = 'Patient';
+      component.processRelease(fakePicklistQueueGrouped);
+      tick();
+      expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(1);
+    }));
 
-  //   it('should call picklistqueue service and refresh data on specific grouping', fakeAsync(() => {
-  //     const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
-  //     fakePicklistQueueGrouped.PriorityCode = 'Patient';
-  //     fakePicklistQueueGrouped.DeviceId  = 1;
-  //     component.processRelease(fakePicklistQueueGrouped);
-  //     tick();
-  //     expect(picklistQueueService.getGroupedFiltered).toHaveBeenCalledTimes(1);
-  //   }));
-  // });
+    it('should call picklistqueue service and refresh data on specific grouping', fakeAsync(() => {
+      const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
+      fakePicklistQueueGrouped.PriorityCode = 'Patient';
+      fakePicklistQueueGrouped.DeviceId  = 1;
+      component.processRelease(fakePicklistQueueGrouped);
+      tick();
+      expect(picklistQueueService.getGroupedFiltered).toHaveBeenCalledTimes(1);
+    }));
+  });
 });

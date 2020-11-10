@@ -30,9 +30,7 @@ import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2
 import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
-import { LoggerService } from 'oal-core';
-import { loggerServiceToken, windowLoggerToken } from '../core/constants/logging-token';
-import { WindowLoggerService } from '../shared/services/override-logging';
+
 @NgModule({
   declarations: [
     PicklistsQueueComponent,
@@ -76,10 +74,5 @@ import { WindowLoggerService } from '../shared/services/override-logging';
     DaterangeModule,
     Xr2RoutingModule
   ],
-  providers: [
-    LoggerService,
-    { provide: loggerServiceToken, useClass: LoggerService },
-    { provide: windowLoggerToken, useClass: WindowLoggerService }
-  ]
 })
 export class Xr2Module { }

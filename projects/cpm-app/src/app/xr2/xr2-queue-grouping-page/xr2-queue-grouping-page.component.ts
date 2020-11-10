@@ -10,8 +10,7 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
-import { loggerServiceToken, windowLoggerToken } from '../../core/constants/logging-token';
-import { ILogger, ILoggerService, LoggerService, LogSeverity, LogVerbosity } from 'oal-core';
+import { LogVerbosity } from 'oal-core';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { LogService } from '../../api-core/services/log-service';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
@@ -95,7 +94,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
     const dataDetailsForLog = 'PriorityCode: ' +
       picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
-    console.log(this.processRelease);
+    console.log(dataDetailsForLog);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this.constructor.name + ' processRelease() - sendToRobotGrouped for: ' + dataDetailsForLog);
 
