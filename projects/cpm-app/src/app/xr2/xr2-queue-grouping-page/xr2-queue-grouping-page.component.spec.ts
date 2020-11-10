@@ -61,7 +61,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
   };
 
   logService = {
-    logMessage: () => of()
+    logMessageAsync: () => of()
   };
 
   beforeEach(async(() => {
