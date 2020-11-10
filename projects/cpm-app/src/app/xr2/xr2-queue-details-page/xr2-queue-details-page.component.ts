@@ -14,6 +14,7 @@ import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-d
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { pick } from 'lodash';
 
 
 @Component({
@@ -99,7 +100,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
     // TODO: release selected items
     this.sendToRobot([...picklistQueueItems][0]); // For testing UI
-    this.clearMultiSelect();
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
@@ -123,7 +123,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     }
 
     this.multiSelectMode = true;
-    this.addOrRemoveFromActionDisableMap(itemsToProcess, event.changeType);
+
+    if (event.changeType === SelectionChangeType.selected) {
+      this.addToActionDisableMap(itemsToProcess);
+    } else {
+      this.removeFromActionDisableMap(itemsToProcess);
+    }
   }
 
   sendToRobot(picklistQueueItem: PicklistQueueItem): void {
@@ -172,7 +177,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   onPicklistQueueItemRemoved(picklistQueueItem: PicklistQueueItem) {
-    this.addOrRemoveFromActionDisableMap([picklistQueueItem], SelectionChangeType.unselected);
+    this.removeFromActionDisableMap([picklistQueueItem]);
+    this.selectedItems.delete(picklistQueueItem);
   }
 
   private configureEventHandlers(): void {
@@ -188,11 +194,15 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.clearSelectedItems();
   }
 
+  private clearSelectedItems(): void {
+    this.selectedItems.clear();
+  }
+
   private initializeActionPicklistItemsDisableMap(): void {
     this.actionPicklistItemsDisableMap = new Map([
       [this.outputDeviceAction.Release, new Set<PicklistQueueItem>()],
-     [this.outputDeviceAction.Print, new Set<PicklistQueueItem>()],
-     [this.outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
+    [this.outputDeviceAction.Print, new Set<PicklistQueueItem>()],
+    [this.outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
     ]);
   }
 
@@ -203,37 +213,34 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private updateActionPicklistItemDisableMap(picklistQueueItems: PicklistQueueItem[]): void {
-    this.addOrRemoveFromActionDisableMap(picklistQueueItems, SelectionChangeType.unselected);
-    this.addOrRemoveFromActionDisableMap(picklistQueueItems, SelectionChangeType.selected);
+    this.removeFromActionDisableMap(picklistQueueItems);
+    this.addToActionDisableMap(picklistQueueItems);
   }
 
-  private clearSelectedItems(): void {
-    this.selectedItems.clear();
-  }
-
-  private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType: SelectionChangeType): void {
-
+  private addToActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
     _.forEach(itemsToProcess, (item) => {
       if (!item.Releaseable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release);
-        changeType === SelectionChangeType.selected ? currentSet.add(item)
-         : currentSet.delete(item);
-        this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Release, currentSet);
+        currentSet.add(item);
       }
 
       if (!item.Printable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print);
-        changeType === SelectionChangeType.selected ? currentSet.add(item)
-         : currentSet.delete(item);
-        this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Print, currentSet);
+        currentSet.add(item);
       }
 
       if (!item.Reroutable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute);
-        changeType === SelectionChangeType.selected ? currentSet.add(item)
-         : currentSet.delete(item);
-        this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Reroute, currentSet);
+        currentSet.add(item);
       }
+    });
+  }
+
+  private removeFromActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
+    _.forEach(itemsToProcess, (item) => {
+      this.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
+        picklistSet.delete(item);
+      });
     });
   }
 
