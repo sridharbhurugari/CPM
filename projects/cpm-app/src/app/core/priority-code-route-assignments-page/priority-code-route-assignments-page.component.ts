@@ -1,11 +1,11 @@
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
-import { map, shareReplay, filter, single, pluck } from 'rxjs/operators';
+import { map, shareReplay, filter, single, pluck, takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, Subject } from 'rxjs';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
@@ -23,11 +23,13 @@ import { CoreEventConnectionService } from '../../api-core/services/core-event-c
   templateUrl: './priority-code-route-assignments-page.component.html',
   styleUrls: ['./priority-code-route-assignments-page.component.scss']
 })
-export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
+export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDestroy {
   pickrouteDevices$: Observable<IPickRouteDevice[]>;
   priorityCode$: Observable<IPriorityCodePickRoute>;
   routeList: Observable<Map<IPickRouteDevice, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
+
+  ngUnsubscribe = new Subject();
 
   priorityCode: string;
 
@@ -85,6 +87,11 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
     this.genericErrorTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
     this.genericErrorMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
     this.connectToEvents();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   navigateBack() {
@@ -176,7 +183,9 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   private connectToEvents() {
     this.configureEventHandlers();
-    this.coreEventConnectionService.startedSubject.subscribe(() => {
+    this.coreEventConnectionService.startedSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(() => {
       try {
         this.ocsStatusService.requestStatus().subscribe();
       } catch (e) {
@@ -188,6 +197,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit {
 
   private configureEventHandlers(): void {
     this.coreEventConnectionService.ocsIsHealthySubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => this.setOcsStatus(message));
   }
 
