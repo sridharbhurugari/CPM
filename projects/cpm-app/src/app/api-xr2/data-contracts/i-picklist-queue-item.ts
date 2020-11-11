@@ -25,4 +25,6 @@ export interface IPicklistQueueItem {
   IsPrintable: boolean;
   SequenceOrder: number;
   RobotPickGroupId: Guid;
+  OrderDate: Date;
+  PatientCount: number;
 }

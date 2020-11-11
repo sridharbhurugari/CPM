@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnInit, OnDestroy, ElementRef, EventEmitter, Output } from '@angular/core';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -337,5 +337,11 @@ export class Xr2DetailsQueueComponent implements OnInit {
 
   private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem): void {
     picklistQueueItem.TrackById = Guid.create();
+  }
+
+  getOrderDate(picklistQueueItem: PicklistQueueItem): string {
+    let datePipe = new DatePipe("en-US");
+    let orderDate = datePipe.transform(picklistQueueItem.OrderDate, 'M/d/yy   h:mm a');
+    return orderDate;
   }
 }
