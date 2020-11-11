@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
@@ -25,7 +25,7 @@ import { IPicklistQueueGroupedUpdateMessage } from '../../api-xr2/events/i-pickl
   templateUrl: './xr2-queue-grouping-page.component.html',
   styleUrls: ['./xr2-queue-grouping-page.component.scss']
 })
-export class Xr2QueueGroupingPageComponent implements OnInit {
+export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   @Output() detailsPageContinueEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
   @Output() xr2PageConfigurationUpdateEvent: EventEmitter<any> = new EventEmitter();
@@ -38,6 +38,8 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   searchTextFilter: string;
   selectedDeviceInformation: SelectableDeviceInfo;
   colHeaderSort: IColHeaderSortChanged;
+
+  ngUnsubscribe = new Subject();
 
   @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
@@ -69,6 +71,11 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     } catch (e) {
       console.log('Xr2QueueGroupingPageComponent Failed in ngOnInit');
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   onSearchTextFilterEvent(filterText: string) {
@@ -187,6 +194,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         try {
           this.handlePicklistQueueGroupedUpdateSubject(x);
@@ -197,6 +205,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       });
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         try {
           this.handlepicklistQueueGroupedListUpdateSubject(x);

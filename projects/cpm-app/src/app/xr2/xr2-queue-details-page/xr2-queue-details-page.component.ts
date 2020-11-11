@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
-import { Observable, forkJoin, merge, Subject } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
+import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
@@ -23,7 +23,7 @@ import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-que
   templateUrl: './xr2-queue-details-page.component.html',
   styleUrls: ['./xr2-queue-details-page.component.scss']
 })
-export class Xr2QueueDetailsPageComponent implements OnInit {
+export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   @Output() detailsPageBackButtonEvent = new EventEmitter<void>();
 
@@ -34,9 +34,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   selectedItems: Set<PicklistQueueItem>;
   actionPicklistItemsDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
-  updateMultiSelectModeSubject: Subject<boolean> = new Subject();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
-  clearSelectedItemsSubject = new Subject();
+  pickPriorityIdentity: string;
+  deviceId: string;
+  searchTextFilter: string;
+  translations$: Observable<any>;
+  ngUnsubscribe = new Subject();
 
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
@@ -49,7 +52,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     return this._multiSelectMode;
   }
 
-  searchTextFilter: string;
   translatables = [
     'OK',
     'FAILEDTOSAVE_HEADER_TEXT',
@@ -61,7 +63,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     'FAILEDTOREROUTE_HEADER_TEXT',
     'FAILEDTOREROUTE_BODY_TEXT',
   ];
-  translations$: Observable<any>;
 
   constructor(
     private picklistsQueueService: PicklistsQueueService,
@@ -81,6 +82,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     } catch (e) {
       console.log('Xr2QueueDetailsPageComponent Failed in ngOnInit');
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   onSearchTextFilter(filterText: string): void {
@@ -138,6 +144,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
       return;
     }
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.onReloadPicklistQueueItems());
   }
 
@@ -161,6 +168,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   }
 
   private clearSelectedItems(): void {
+    if (!this.selectedItems) {
+      return;
+    }
+
     this.selectedItems.clear();
   }
 

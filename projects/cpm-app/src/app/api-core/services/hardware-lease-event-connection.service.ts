@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class HardwareLeaseEventConnectionService {
+export class HardwareLeaseEventConnectionService implements OnDestroy {
 
   public hardwareLeaseDeniedSubject = new Subject();
   public hardwareLeaseGrantedSubject = new Subject();
+  ngUnsubscribe = new Subject();
   clientId: string;
 
   constructor(
@@ -18,7 +20,14 @@ export class HardwareLeaseEventConnectionService {
     private ocapConfigurationService: OcapHttpConfigurationService
     ) {
       this.setClientId();
-      this.eventConnectionService.receivedSubject.subscribe(message => this.configureHardwareLeaseHandlers(message));
+      this.eventConnectionService.receivedSubject
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(message => this.configureHardwareLeaseHandlers(message));
+   }
+
+   ngOnDestroy() {
+     this.ngUnsubscribe.next();
+     this.ngUnsubscribe.complete();
    }
 
    private setClientId() {
