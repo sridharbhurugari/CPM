@@ -35,6 +35,8 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   IsPrintable: boolean;
   SequenceOrder: number;
   RobotPickGroupId: Guid;
+  OrderDate: Date;
+  PatientCount: number;
 
   get Releaseable() {
     return this.Status === 1 && !this.Saving;
@@ -71,7 +73,9 @@ export class PicklistQueueItem implements IPicklistQueueItem {
       RobotPickGroupId: picklistQueueItem.RobotPickGroupId,
       Status: picklistQueueItem.Status,
       StatusDisplay: picklistQueueItem.StatusDisplay,
-      SequenceOrder: picklistQueueItem.SequenceOrder
+      SequenceOrder: picklistQueueItem.SequenceOrder,
+      OrderDate: picklistQueueItem.OrderDate,
+      PatientCount: picklistQueueItem.PatientCount
     });
   }
 }

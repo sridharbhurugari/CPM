@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnInit, OnDestroy, ElementRef, EventEmitter, Output } from '@angular/core';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -137,7 +137,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
   getItemPriorityLabel(picklistQueueItem: PicklistQueueItem): string {
     let label = '';
 
-    if (picklistQueueItem.ItemCount > 1) {
+    if (picklistQueueItem.PatientCount > 1) {
       label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
         this.translationMap.PATIENTS : this.translationMap.ITEMS;
     } else {
@@ -338,5 +338,10 @@ export class Xr2DetailsQueueComponent implements OnInit {
 
   private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem): void {
     picklistQueueItem.TrackById = Guid.create();
+  }
+
+  getOrderDate(picklistQueueItem: PicklistQueueItem): string {
+   var orderDate = new Date(picklistQueueItem.OrderDate).toLocaleString(this.translateService.getDefaultLang());
+   return orderDate;
   }
 }
