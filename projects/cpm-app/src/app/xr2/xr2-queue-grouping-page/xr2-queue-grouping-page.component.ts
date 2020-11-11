@@ -62,9 +62,13 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
    }
 
   ngOnInit() {
+    try {
     this.setTranslations();
     this.loadPicklistsQueueGrouped();
     this._loggingCategory = LoggingCategory.Xr2Queue;
+    } catch (e) {
+      console.log('Xr2QueueGroupingPageComponent Failed in ngOnInit');
+    }
   }
 
   onSearchTextFilterEvent(filterText: string) {
