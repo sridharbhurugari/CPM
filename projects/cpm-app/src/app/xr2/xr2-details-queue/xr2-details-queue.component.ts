@@ -340,8 +340,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
   }
 
   getOrderDate(picklistQueueItem: PicklistQueueItem): string {
-    let datePipe = new DatePipe("en-US");
-    let orderDate = datePipe.transform(picklistQueueItem.OrderDate, 'M/d/yy   h:mm a');
-    return orderDate;
+   var orderDate = new Date(picklistQueueItem.OrderDate).toLocaleString(this.translateService.getDefaultLang());
+   return orderDate;
   }
 }
