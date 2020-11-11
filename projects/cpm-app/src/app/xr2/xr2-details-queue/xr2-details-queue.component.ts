@@ -142,7 +142,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
   getItemPriorityLabel(picklistQueueItem: PicklistQueueItem): string {
     let label = '';
 
-    if (picklistQueueItem.ItemCount > 1) {
+    if (picklistQueueItem.PatientCount > 1) {
       label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
         this.translationMap.PATIENTS : this.translationMap.ITEMS;
     } else {
