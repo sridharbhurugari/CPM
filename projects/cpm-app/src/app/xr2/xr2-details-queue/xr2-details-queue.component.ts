@@ -286,10 +286,24 @@ export class Xr2DetailsQueueComponent implements OnInit {
     if (!this.picklistQueueEventConnectionService) {
       return;
     }
+
     this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
-      .subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+      .subscribe(message => {
+        try {
+          this.onAddOrUpdatePicklistQueueItem(message);
+        } catch (exception) {
+          console.log('addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed!');
+        }
+      });
+
     this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
-      .subscribe(message => this.onRemovePicklistQueueItem(message));
+      .subscribe(message => {
+        try {
+          this.onRemovePicklistQueueItem(message);
+        } catch (exception) {
+          console.log('removePicklistQueueItemSubject - onRemovePicklistQueueItem failed!');
+        }
+      });
   }
 
 
