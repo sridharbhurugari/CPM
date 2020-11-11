@@ -29,9 +29,7 @@ export class PickingEventConnectionService {
             { return; }    
 
           if (message.EventId === 'AddOrUpdateUnderfilledPicklistEvent') {            
-            this.updatedUnfilledPicklistSubject.next({
-              UnderfilledPicklist: message.PicklistUnderfilled
-            });
+            this.updatedUnfilledPicklistSubject.next(message);
             return;
           }
             

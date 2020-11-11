@@ -14,9 +14,6 @@ import { WorkstationTrackerData } from '../../api-core/data-contracts/workstatio
 import { OperationType } from '../../api-core/data-contracts/operation-type';
 import { PopupDialogProperties, PopupDialogType, } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
-import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
-import { IUnfilledPicklistAddedOrUpdatedEvent } from '../../api-core/events/i-unfilled-picklist-added-or-updated-event';
-import { IUnfilledPicklistRemovedEvent } from '../../api-core/events/i-unfilled-picklist-removed-event';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -71,10 +68,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     private wpfActionControllerService: WpfActionControllerService,
     private workstationTrackerService: WorkstationTrackerService,
     private dialogService: PopupDialogService,
-    public translateService: TranslateService,
-    private pickingEventConnectionService: PickingEventConnectionService    
-  ) {
-    this.configureEventHandlers();
+    public translateService: TranslateService
+  ) {    
   }
 
   ngOnInit() {
@@ -96,45 +91,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
-  }
-
-  private configureEventHandlers(): void {
-    if (!this.pickingEventConnectionService) {
-      return;
-    }
-
-    this.pickingEventConnectionService.updatedUnfilledPicklistSubject
-      .subscribe(message => this.onUpdatedUnfilledPicklist(message));
-    this.pickingEventConnectionService.removedUnfilledPicklistSubject
-      .subscribe(message => this.onRemoveUnfilledPicklist(message));
-  }
-
-  private onUpdatedUnfilledPicklist(unfilledPicklistAddedOrUpdatedEvent: IUnfilledPicklistAddedOrUpdatedEvent): void {
-    try {
-      const updatedUnfilledPicklist = unfilledPicklistAddedOrUpdatedEvent.UnderfilledPicklist;
-      
-      this.picklists.push(updatedUnfilledPicklist);
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-      return;
-            
-    } catch (e) {
-      console.log('PicklistsQueueComponent.onAddOrUpdatePicklistQueueItem ERROR');
-      console.log(e);
-    }
-  }
-
-  private onRemoveUnfilledPicklist(unfilledPicklistRemovedEvent: IUnfilledPicklistRemovedEvent): void {
-    try {
-      const orderId = unfilledPicklistRemovedEvent.OrderId;
-      _.remove(this.picklists, (x) => {
-        return x.OrderId === orderId;
-      });
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-    } catch (e) {
-      console.log('UnderfilledPicklistsComponent.onRemoveUnfilledPicklist ERROR');
-      console.log(e);
-    }
-  }
+  }  
 
   navigate(orderId: string){
     const workstationTrackerData: WorkstationTrackerData = {
