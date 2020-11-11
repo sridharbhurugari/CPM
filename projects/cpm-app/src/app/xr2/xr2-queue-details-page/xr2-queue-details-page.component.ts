@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Observable, forkJoin, merge, Subject } from 'rxjs';
-import { map, flatMap, shareReplay } from 'rxjs/operators';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
+import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import * as _ from 'lodash';
@@ -14,7 +14,6 @@ import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-d
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
-import { pick } from 'lodash';
 
 
 @Component({
@@ -22,7 +21,7 @@ import { pick } from 'lodash';
   templateUrl: './xr2-queue-details-page.component.html',
   styleUrls: ['./xr2-queue-details-page.component.scss']
 })
-export class Xr2QueueDetailsPageComponent implements OnInit {
+export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   @Output() detailsPageBackButtonEvent = new EventEmitter<void>();
 
@@ -33,8 +32,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   selectedItems: Set<PicklistQueueItem>;
   actionPicklistItemsDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
-  updateMultiSelectModeSubject: Subject<boolean> = new Subject();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
+  pickPriorityIdentity: string;
+  deviceId: string;
+  searchTextFilter: string;
+  translations$: Observable<any>;
+  ngUnsubscribe = new Subject();
 
   set multiSelectMode(value: boolean) {
     this._multiSelectMode = value;
@@ -47,7 +50,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     return this._multiSelectMode;
   }
 
-  searchTextFilter: string;
   translatables = [
     'OK',
     'FAILEDTOSAVE_HEADER_TEXT',
@@ -59,7 +61,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     'FAILEDTOREROUTE_HEADER_TEXT',
     'FAILEDTOREROUTE_BODY_TEXT',
   ];
-  translations$: Observable<any>;
 
   constructor(
     private picklistsQueueService: PicklistsQueueService,
@@ -75,6 +76,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
     this.setTranslations();
     this.loadPicklistsQueueItems();
     this.initializeActionPicklistItemsDisableMap();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   onSearchTextFilter(filterText: string): void {
@@ -186,16 +192,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
       return;
     }
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.onReloadPicklistQueueItems());
   }
 
   private clearMultiSelect(): void {
     this.multiSelectMode = false;
     this.clearSelectedItems();
-  }
-
-  private clearSelectedItems(): void {
-    this.selectedItems.clear();
   }
 
   private initializeActionPicklistItemsDisableMap(): void {
@@ -215,6 +218,14 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
   private updateActionPicklistItemDisableMap(picklistQueueItems: PicklistQueueItem[]): void {
     this.removeFromActionDisableMap(picklistQueueItems);
     this.addToActionDisableMap(picklistQueueItems);
+  }
+
+  private clearSelectedItems(): void {
+    if (!this.selectedItems) {
+      return;
+    }
+
+    this.selectedItems.clear();
   }
 
   private addToActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
@@ -298,9 +309,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit {
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Info;
       properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      const component = this.dialogService.showOnce(properties);
+      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
       return merge(primaryClick$, secondaryClick$);
     }));
   }

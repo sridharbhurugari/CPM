@@ -3,7 +3,7 @@ import { DatePipe, Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,6 +19,7 @@ import { DestinationTypes } from '../../shared/constants/destination-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -26,7 +27,7 @@ import { SelectionChangeType } from '../../shared/constants/selection-change-typ
   templateUrl: './xr2-details-queue.component.html',
   styleUrls: ['./xr2-details-queue.component.scss']
 })
-export class Xr2DetailsQueueComponent implements OnInit {
+export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   @Output() failedEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() rerouteEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
@@ -91,6 +92,7 @@ export class Xr2DetailsQueueComponent implements OnInit {
     'OF'
   ];
   translations$: Observable<any>;
+  ngUnsubscribe = new Subject();
 
 
   @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
@@ -112,6 +114,11 @@ export class Xr2DetailsQueueComponent implements OnInit {
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   onRerouteClick(picklistQueueItem: PicklistQueueItem): void {
@@ -284,8 +291,10 @@ export class Xr2DetailsQueueComponent implements OnInit {
       return;
     }
     this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
     this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => this.onRemovePicklistQueueItem(message));
   }
 
