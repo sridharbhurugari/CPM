@@ -275,8 +275,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
-  updatePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
-    console.log('updatePickListQueueItem');
+  addOrUpdatePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
+    console.log('addOrUpdatePickListQueueItem');
     console.log(messagedPicklistQueueItem);
     let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       return x.RobotPickGroupId != null && x.RobotPickGroupId === messagedPicklistQueueItem.RobotPickGroupId;
@@ -352,7 +352,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
         // Add or Update
         picklistQueueItemList.forEach((x) => {
-            this.updatePicklistQueueItem(x);
+            this.addOrUpdatePicklistQueueItem(x);
         });
     }
   }

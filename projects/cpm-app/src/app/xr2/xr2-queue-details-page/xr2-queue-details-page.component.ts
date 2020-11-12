@@ -20,6 +20,7 @@ import { LogService } from '../../api-core/services/log-service';
 import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
 import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue.component';
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 
 
 @Component({
@@ -207,15 +208,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     if (!this.picklistQueueEventConnectionService) {
       return;
     }
-    this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.onReloadPicklistQueueItems());
 
-    this.picklistQueueEventConnectionService.picklistQueueItemUpdateSubject
+    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(x => {
       try {
-        this.handlePicklistQueueItemUpdateSubject(x);
+        this.handlePicklistQueueItemAddorUpdateSubject(x);
       } catch (e) {
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
           this.constructor.name + ' picklistQueueItemUpdateSubject - handlePicklistQueueItemUpdateSubject failed: ' + e);
@@ -274,15 +272,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.displayFailedToSaveDialog();
   }
 
-  private handlePicklistQueueItemUpdateSubject(x: IPicklistQueueItemUpdateMessage) {
-    if (!x.PicklistQueueItem) {
-      console.log('!picklistqueueitem removing using xr2groupkey, priority and device');
-      const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
-      this.childDetailsQueueComponent.removePicklistQueueItem(pickListQueueItem);
-    } else {
-      const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
-      this.childDetailsQueueComponent.updatePicklistQueueItem(pickListQueueItem);
-    }
+  private handlePicklistQueueItemAddorUpdateSubject(x: IAddOrUpdatePicklistQueueItemMesssage) {
+    const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
+    this.childDetailsQueueComponent.addOrUpdatePicklistQueueItem(pickListQueueItem);
   }
 
   private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
@@ -356,15 +348,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         picklistSet.delete(item);
       });
     });
-  }
-
-  private onReloadPicklistQueueItems(): void {
-    try {
-      this.loadPicklistsQueueItems();
-    } catch (e) {
-      console.log('Xr2QueueDetailsPageComponent.onReloadPicklistQueueItems ERROR');
-      console.log(e);
-    }
   }
 
   private loadPicklistsQueueItems(): void {
