@@ -138,6 +138,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
 
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
+    this.sortOrder = event.SortDirection;
     this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], event.SortDirection)
   }
 

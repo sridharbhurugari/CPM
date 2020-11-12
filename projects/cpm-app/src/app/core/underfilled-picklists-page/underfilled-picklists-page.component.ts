@@ -58,10 +58,10 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
         var translatedCabinets = results[3];
         var displayObjects = underfilledPicklists.map(p => new UnderfilledPicklist(p, this.locale, translatedItems, translatedPatients, translatedCabinets));
         var sorted = displayObjects.sort(function (a,b) {
-          if (a.SequenceOrder < b.SequenceOrder) return -1;
-          if (a.SequenceOrder > b.SequenceOrder) return 1;
           if (a.CompletedDate > b.CompletedDate) return -1;
           if (a.CompletedDate < b.CompletedDate) return 1;
+          if (a.SequenceOrder < b.SequenceOrder) return -1;
+          if (a.SequenceOrder > b.SequenceOrder) return 1;
         return 0;}
         );
         return sorted;
