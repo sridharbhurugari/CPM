@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
@@ -19,7 +19,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
   templateUrl: './xr2-queue-grouping-page.component.html',
   styleUrls: ['./xr2-queue-grouping-page.component.scss']
 })
-export class Xr2QueueGroupingPageComponent implements OnInit {
+export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   @Output() detailsPageContinueEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
   @Output() xr2PageConfigurationUpdateEvent: EventEmitter<any> = new EventEmitter();
@@ -31,6 +31,8 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   searchTextFilter: string;
   selectedDeviceInformation: SelectableDeviceInfo;
   colHeaderSort: IColHeaderSortChanged;
+
+  ngUnsubscribe = new Subject();
 
   @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
@@ -44,17 +46,23 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   ];
   translations$: Observable<any>;
 
-  constructor(private picklistsQueueService: PicklistsQueueService,
-              private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-              private translateService: TranslateService,
-              private dialogService: PopupDialogService
-    ) {
+  constructor(
+    private picklistsQueueService: PicklistsQueueService,
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService
+  ) {
       this.configureEventHandlers();
    }
 
   ngOnInit() {
     this.setTranslations();
     this.loadPicklistsQueueGrouped();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   onSearchTextFilterEvent(filterText: string) {
@@ -122,9 +130,11 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.loadPicklistsQueueGrouped());
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         if (!x.PicklistQueueGrouped) {
           console.log('!picklistqueuegrouped removing using priority and device');
@@ -136,6 +146,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       });
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         console.log('picklistQueueGroupedListUpdateSubject called');
         if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {

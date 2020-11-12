@@ -2,11 +2,11 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
 import { nameof } from '../../shared/functions/nameof';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 import { DeviceConfigurationList } from '../model/device-configuration-list';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { IDeviceConfiguration } from '../../api-core/data-contracts/i-device-configuration';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogType,
   PopupDialogService, PopupDialogComponent } from '@omnicell/webcorecomponents';
@@ -31,6 +31,8 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
 
   pageDescription$;
   @Input() displayDeviceConfigurationList: DeviceConfigurationList[] = [];
+
+  ngUnsubscribe = new Subject();
 
   public time: Date = new Date();
   deviceId: any;
@@ -94,6 +96,8 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   navigateBack() {
@@ -162,6 +166,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
     }
 
     this.hardwareLeaseEventConnectionService.hardwareLeaseGrantedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => {
         clearTimeout(this.timeoutPending);
         console.log('Received Granted Event');
@@ -170,6 +175,7 @@ export class HardwareLeasePageComponent implements OnInit, OnDestroy {
       });
 
     this.hardwareLeaseEventConnectionService.hardwareLeaseDeniedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(message => {
         clearTimeout(this.timeoutPending);
         this.resetPageAfterResults();
