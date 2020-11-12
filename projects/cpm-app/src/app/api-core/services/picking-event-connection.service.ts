@@ -11,7 +11,7 @@ import { IUnfilledPicklistlineAddedEvent } from '../events/i-unfilled-picklistli
 export class PickingEventConnectionService {
   public updatedUnfilledPicklistSubject = new Subject<IUnfilledPicklistAddedOrUpdatedEvent>();
   public removedUnfilledPicklistSubject = new Subject<IUnfilledPicklistRemovedEvent>();
-  public addedUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedEvent>();  
+  public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedEvent>();  
 
   public startedSubject = new ReplaySubject(1);
 
@@ -38,8 +38,8 @@ export class PickingEventConnectionService {
             return;
           }
 
-          if (message.EventId === 'AddUnderfilledPicklistLineEvent') {            
-            this.addedUnfilledPicklistLineSubject.next(message);
+          if (message.EventId === 'AddOrUpdateUnderfilledPicklistLineEvent') {            
+            this.updateUnfilledPicklistLineSubject.next(message);
             return;
           }
         }

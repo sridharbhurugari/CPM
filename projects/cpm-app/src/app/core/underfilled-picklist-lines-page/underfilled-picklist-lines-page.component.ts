@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute } from '@angular/router';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, merge } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, switchMap, scan } from 'rxjs/operators';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { IUnderfilledPicklist } from '../../api-core/data-contracts/i-underfilled-picklist';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
@@ -25,6 +25,9 @@ import { ResetPickRoutesService } from '../../api-core/services/reset-pick-route
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
+import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
+import { IUnfilledPicklistlineAddedEvent } from '../../api-core/events/i-unfilled-picklistline-added-event';
+import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -69,7 +72,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
-    private workstationTrackerService: WorkstationTrackerService
+    private workstationTrackerService: WorkstationTrackerService,
+    private pickingEventConnectionService: PickingEventConnectionService
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -81,12 +85,25 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     const orderId = this.route.snapshot.queryParamMap.get('orderId');
     const datePipe = new DatePipe("en-US");
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
-    this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(map(underfilledPicklistLines => {
+
+    var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
+
+    var allPicklistLines$ = initialPicklistLines$.pipe(switchMap(x => {
+      return this.pickingEventConnectionService.updateUnfilledPicklistLineSubject.pipe(scan<IUnfilledPicklistlineAddedEvent, IUnderfilledPicklistLine[]>((picklistlines, newPicklistline) => {
+        picklistlines.push(newPicklistline.PicklistLineUnderfilled)
+        return picklistlines;          
+      }, x));        
+    }));
+
+    var combinedPicklistLines$ = merge(initialPicklistLines$, allPicklistLines$);
+
+    this.picklistLines$ = combinedPicklistLines$.pipe(map(underfilledPicklistLines => {
       const displayObjects = underfilledPicklistLines.map(l => new UnderfilledPicklistLine(l));
       const result = _.orderBy(displayObjects,
          (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
-    }));
+    }));    
+
     // permission: are buttons visible
     this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
     // error message text
