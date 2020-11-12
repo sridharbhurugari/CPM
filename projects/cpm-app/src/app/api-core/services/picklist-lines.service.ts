@@ -26,6 +26,6 @@ export class PicklistLinesService {
   completePick(pickItems: IPicklistLineFillData): Observable<boolean> {
     const url = this.ocapUrlBuilderService.buildUrl(`api/picklistLines/picklistLineFills`);
     const headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.put<boolean>(url, pickItems, { headers: headers });
+    return this.httpClient.post<boolean>(url, pickItems, { headers: headers });
   }
 }

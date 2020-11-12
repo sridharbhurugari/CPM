@@ -45,6 +45,7 @@ export class InternalTransferPickPageComponent {
   expDateIcon: string;
   expDateInPast$: Observable<boolean>;
   orderItemPendingQtys$: Observable<IOrderItemPendingQuantity>;
+  pickItemTotals: InternalTransferPick[] = new Array();
 
   constructor(
     activatedRoute: ActivatedRoute,
@@ -69,7 +70,9 @@ export class InternalTransferPickPageComponent {
     this.userLocale = ocapConfigService.get().userLocale;
   }
 
-  pickTotalChanged(pickTotal: number) {
+  pickTotalChanged(pickTotals: InternalTransferPick[]) {
+    this.pickItemTotals = pickTotals;
+    let pickTotal = sumValues(this.pickItemTotals, x => x.QuantityToPick);
     this.pickTotal$ = of(pickTotal);
   }
 
@@ -107,15 +110,13 @@ export class InternalTransferPickPageComponent {
       PackSizeFills: new Array()
     };
 
-    this.currentNeedsDetails$.subscribe( needsDetails => {
-      needsDetails.forEach(need => {
-        const packFill: IPicklistLinePackSizeFillData = {
-            PackSize: need.PackSize,
-            FillQuantityInPacks:  need.DeviceQuantityNeeded / need.PackSize
-          };
-  
-          packPicks.PackSizeFills.push(packFill);
-      })
+    this.pickItemTotals.forEach(pick => {
+      const packFill: IPicklistLinePackSizeFillData = {
+          PackSize: pick.PackSize,
+          FillQuantityInPacks:  pick.DeviceQuantityNeeded / pick.PackSize
+        };
+
+        packPicks.PackSizeFills.push(packFill);
     });
 
     this.picklistLinesService.completePick(packPicks).subscribe(x => {
@@ -146,7 +147,7 @@ export class InternalTransferPickPageComponent {
        x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
     this.isLastLine$ = this.totalLines$.pipe(map(x => x === this.picklistLineIndex + 1));
     this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x =>
-       this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId)), shareReplay(1));
+       this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId, x.OrderId)), shareReplay(1));
     this.currentNeedsDetails$.subscribe(x => {
       if (!x || !x.length) {
         this.completeZeroPick();

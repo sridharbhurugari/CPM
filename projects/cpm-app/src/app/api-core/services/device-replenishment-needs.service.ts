@@ -31,9 +31,8 @@ export class DeviceReplenishmentNeedsService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
-
-  getDeviceNeedsForItem(deviceId: number, itemId: string): Observable<IItemReplenishmentNeed[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}`);
+  getDeviceNeedsForItem(deviceId: number, itemId: string, orderId: string): Observable<IItemReplenishmentNeed[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}?itemId=${itemId}&orderId=${orderId}`);
     return this.httpClient.get<IItemReplenishmentNeed[]>(url, {
       params: { itemId },
       headers: this.ocapHttpHeadersService.getHeaders(),

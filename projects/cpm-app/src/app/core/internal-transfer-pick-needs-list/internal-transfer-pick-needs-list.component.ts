@@ -28,7 +28,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
   }
 
   @Output()
-  pickTotalChanged: EventEmitter<number> = new EventEmitter<number>();
+  pickTotalChanged: EventEmitter<InternalTransferPick[]> = new EventEmitter<InternalTransferPick[]>();
 
   @ViewChild('headerCheckContainer', {
     static: true
@@ -56,8 +56,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       return;
     }
 
-    let pickTotal = sumValues(this.itemNeeds, x => x.QuantityToPick);
-    this.pickTotalChanged.emit(pickTotal);
+    this.pickTotalChanged.emit(this.itemNeeds);
   }
 
   selectedPicksChanged(selectionChanged: IGridSelectionChanged<IItemReplenishmentNeed | string>) {
@@ -70,7 +69,6 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       toggledNeed.IsSelected = selected;
     }
 
-    let pickTotal = sumValues(this.itemNeeds, x => x.QuantityToPick);
-    this.pickTotalChanged.emit(pickTotal);
+    this.pickTotalChanged.emit(this.itemNeeds);
   }
 }
