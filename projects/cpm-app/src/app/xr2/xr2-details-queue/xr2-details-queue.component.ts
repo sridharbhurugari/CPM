@@ -306,6 +306,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  messagedPicklistQueueItem.ItemPicklistLines;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  messagedPicklistQueueItem.IsPrintable;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  messagedPicklistQueueItem.RobotPickGroupId;
+    this.picklistQueueItemAddorUpdatedEvent.emit(this.picklistQueueItems[matchingPicklistQueueItemIndex]);
   }
 
   removePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
@@ -327,6 +328,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     if (matchingItemIndex > -1) {
       console.log('group exists removing it');
       this.picklistQueueItems.splice(matchingItemIndex, 1);
+      this.picklistQueueItemRemovedEvent.emit(this.picklistQueueItems[matchingItemIndex]);
       console.log(this.picklistQueueItems);
     }
   }
