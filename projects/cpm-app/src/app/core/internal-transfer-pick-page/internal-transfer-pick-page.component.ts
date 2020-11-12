@@ -103,22 +103,19 @@ export class InternalTransferPickPageComponent {
     const packPicks: IPicklistLineFillData = {
       PicklistLineId: line.PicklistLineId,
       PickDeviceLocationId: line.SourceDeviceLocationId,
-      TotalPickQuantity: line.PickQuantity,
+      TotalPickQuantity: pickTotal,
       PackSizeFills: new Array()
     };
 
     this.currentNeedsDetails$.subscribe( needsDetails => {
-      const needsDetail: IItemReplenishmentNeed[] = new Array();
-      needsDetail.push(needsDetails.find(detail => detail.ItemId === line.ItemId));
-      if (needsDetail[0].Xr2Item) {
-
+      needsDetails.forEach(need => {
         const packFill: IPicklistLinePackSizeFillData = {
-          PackSize: needsDetail[0].PackSize,
-          FillQuantityInPacks:  line.PickQuantity / needsDetail[0].PackSize
-        };
-
-        packPicks.PackSizeFills.push(packFill);
-      }
+            PackSize: need.PackSize,
+            FillQuantityInPacks:  need.DeviceQuantityNeeded / need.PackSize
+          };
+  
+          packPicks.PackSizeFills.push(packFill);
+      })
     });
 
     this.picklistLinesService.completePick(packPicks).subscribe(x => {
