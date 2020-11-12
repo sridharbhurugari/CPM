@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
 import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
@@ -14,6 +14,12 @@ import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-d
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { LogService } from '../../api-core/services/log-service';
+import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
+import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue.component';
+import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
 
 
 @Component({
@@ -28,6 +34,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
 
   private _multiSelectMode = false;
+  private _loggingCategory: string;
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   selectedItems: Set<PicklistQueueItem>;
@@ -62,12 +69,15 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     'FAILEDTOREROUTE_BODY_TEXT',
   ];
 
+  @ViewChild(Xr2DetailsQueueComponent, null) childDetailsQueueComponent: Xr2DetailsQueueComponent;
+
   constructor(
     private picklistsQueueService: PicklistsQueueService,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private windowService: WindowService,
+    private logService: LogService
     ) {
       this.configureEventHandlers();
   }
@@ -198,6 +208,52 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.onReloadPicklistQueueItems());
+
+    this.picklistQueueEventConnectionService.picklistQueueItemUpdateSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(x => {
+      try {
+        this.handlePicklistQueueItemUpdateSubject(x);
+      } catch (e) {
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this.constructor.name + ' picklistQueueItemUpdateSubject - handlePicklistQueueItemUpdateSubject failed: ' + e);
+      }
+  });
+
+    this.picklistQueueEventConnectionService.picklistQueueItemListUpdateSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(x => {
+      try {
+        this.handlePicklistQueueItemListUpdateSubject(x);
+      } catch (exception) {
+        console.log('addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed!');
+      }
+    });
+  }
+
+  private handlePicklistQueueItemUpdateSubject(x: IPicklistQueueItemUpdateMessage) {
+    if (!x.PicklistQueueItem) {
+      console.log('!picklistqueueitem removing using xr2groupkey, priority and device');
+      const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
+      this.childDetailsQueueComponent.removePicklistQueueItem(pickListQueueItem);
+    } else {
+      const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
+      this.childDetailsQueueComponent.updatePicklistQueueItem(pickListQueueItem);
+    }
+  }
+
+  private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
+    console.log('picklistQueueItemListUpdateSubject called');
+    if (!x.PicklistQueueItems.$values || x.PicklistQueueItems.$values.length === 0) {
+      console.log('Empty List just clear screen');
+      this.childDetailsQueueComponent.refreshDataOnScreen(null);
+    } else {
+      const picklistQueueItemList = x.PicklistQueueItems.$values.map((picklistQueueItem) => {
+        return PicklistQueueItem.fromNonstandardJson(picklistQueueItem);
+      });
+
+      this.childDetailsQueueComponent.refreshDataOnScreen(picklistQueueItemList);
+    }
   }
 
   private clearMultiSelect(): void {

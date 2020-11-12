@@ -223,7 +223,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   filterPicklistQueueGroupedByDeviceId(deviceId: number) {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
-    if(this.picklistQueueGrouped){
+    if (this.picklistQueueGrouped) {
       this.loadSavedConfigurations();
     }
   }
@@ -300,7 +300,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   loadAllPicklistQueueGrouped() {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
-    if(this.picklistQueueGrouped){
+    if (this.picklistQueueGrouped){
       this.loadSavedConfigurations();
     }
   }

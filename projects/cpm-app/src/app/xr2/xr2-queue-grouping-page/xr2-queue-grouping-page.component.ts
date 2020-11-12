@@ -208,7 +208,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         try {
-          this.handlepicklistQueueGroupedListUpdateSubject(x);
+          this.handlePicklistQueueGroupedListUpdateSubject(x);
         } catch (exception) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             `${this.constructor.name} picklistQueueGroupedListUpdateSubject - handlepicklistQueueGroupedListUpdateSubject failed: ${exception}`);
@@ -227,7 +227,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handlepicklistQueueGroupedListUpdateSubject(x: IPicklistQueueGroupedListUpdateMessage) {
+  private handlePicklistQueueGroupedListUpdateSubject(x: IPicklistQueueGroupedListUpdateMessage) {
     console.log('picklistQueueGroupedListUpdateSubject called');
     if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
       console.log('Empty List just clear screen');

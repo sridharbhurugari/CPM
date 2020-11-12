@@ -7,6 +7,8 @@ import { IPicklistQueueGroupedUpdateMessage } from '../../api-xr2/events/i-pickl
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
 import { takeUntil } from 'rxjs/operators';
+import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
+import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
 
 
 @Injectable({
@@ -19,6 +21,8 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
   public reloadPicklistQueueItemsSubject = new Subject<any>();
   public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
   public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
+  public picklistQueueItemUpdateSubject = new Subject<IPicklistQueueItemUpdateMessage>();
+  public picklistQueueItemListUpdateSubject = new Subject<IPicklistQueueItemListUpdateMessage>();
   public ngUnsubscribe = new Subject();
 
   constructor(
@@ -80,6 +84,18 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
       }
 
       if (message.EventId === 'PickListQueueGroupedListUpdateMessage') {
+        console.log(message);
+        this.picklistQueueGroupedListUpdateSubject.next(message);
+        return;
+      }
+
+      if (message.EventId === 'PickListQueueItemUpdateMessage') {
+        console.log(message);
+        this.picklistQueueGroupedUpdateSubject.next(message);
+        return;
+      }
+
+      if (message.EventId === 'PickListQueueItemListUpdateMessage') {
         console.log(message);
         this.picklistQueueGroupedListUpdateSubject.next(message);
         return;
