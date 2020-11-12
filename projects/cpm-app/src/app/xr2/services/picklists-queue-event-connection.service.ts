@@ -95,12 +95,12 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
         return;
       }
 
-      if (message.EventId === 'PickListQueueItemListUpdateMessage') {
+      if (message.EventId === 'PicklistQueueItemListUpdateMessage') {
         console.log(message);
         this.picklistQueueGroupedListUpdateSubject.next(message);
         return;
       }
-    } catch(e) {
+    } catch (e) {
       console.log('PicklistsQueueEventConnectionService.configurePicklistEventHandlers ERROR');
       console.log(e);
     }
