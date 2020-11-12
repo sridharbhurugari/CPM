@@ -101,6 +101,7 @@
             [label]="'REROUTE' | translate"
             [disabled]="multiSelectMode"
             [icon]="'reroute'"
+            [disabled]='picklistQueueItem.Reroutable'
             (clickEvent)="onRerouteClick(picklistQueueItem)">
             </app-cp-clickable-icon>
           </div>

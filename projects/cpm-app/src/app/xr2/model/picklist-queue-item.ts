@@ -47,7 +47,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   }
 
   get Reroutable() {
-    return true;
+    return !this.Saving;
   }
 
   static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson) {
