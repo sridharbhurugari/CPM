@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, AfterViewChecked, OnDestroy, AfterViewInit } from '@angular/core';
 import * as _ from 'lodash';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
-import { Observable, of, Subscription, forkJoin, merge } from 'rxjs';
+import { Observable, of, Subscription, forkJoin, merge, Subject } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { switchMap, map, flatMap, } from 'rxjs/operators';
+import { switchMap, map, flatMap, takeUntil, } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,13 +31,15 @@ import { resolve } from 'url';
   styleUrls: ['./quick-pick-page.component.scss']
 })
 
-export class QuickPickPageComponent implements OnInit {
+export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentChecked {
 
   private barcodeScannedSubscription: Subscription;
 
   quickpickDrawers: Observable<QuickPickDrawerData[]>;
   quickPickQueueItems: Observable<QuickPickQueueItem[]>;
   searchTextFilter: Observable<string>;
+
+  ngUnsubscribe = new Subject();
 
   robotSelectionDisabled = false;
   activeQuickPickDevice: boolean;
@@ -107,14 +109,22 @@ export class QuickPickPageComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
     this.unhookEventHandlers();
   }
 
   /* istanbul ignore next */
   ngAfterViewInit(): void {
-    this.quickPickEventConnectionService.QuickPickQueueUpdateSubject.subscribe(event => this.onQuickPickQueueUpdate(event));
-    this.quickPickEventConnectionService.QuickPickErrorUpdateSubject.subscribe(event => this.onQuickPickErrorUpdate(event));
-    this.quickPickEventConnectionService.QuickPickDeviceStatusUpdateSubject.subscribe(event => this.onQuickPickDeviceStatusUpdate(event));
+    this.quickPickEventConnectionService.QuickPickQueueUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(event => this.onQuickPickQueueUpdate(event));
+    this.quickPickEventConnectionService.QuickPickErrorUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(event => this.onQuickPickErrorUpdate(event));
+    this.quickPickEventConnectionService.QuickPickDeviceStatusUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(event => this.onQuickPickDeviceStatusUpdate(event));
 
     this.searchElement.searchOutput$
       .pipe(

@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
@@ -10,17 +10,29 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
 @Component({
   selector: 'app-xr2-queue-grouping-page',
   templateUrl: './xr2-queue-grouping-page.component.html',
   styleUrls: ['./xr2-queue-grouping-page.component.scss']
 })
-export class Xr2QueueGroupingPageComponent implements OnInit {
+export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
+
+  @Output() detailsPageContinueEvent: EventEmitter<IXr2QueueNavigationParameters> = new EventEmitter();
+  @Output() xr2PageConfigurationUpdateEvent: EventEmitter<any> = new EventEmitter();
+
+  @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
 
   picklistsQueueGrouped: Observable<IPicklistQueueGrouped[]>;
   searchTextFilter: string;
   selectedDeviceInformation: SelectableDeviceInfo;
+  colHeaderSort: IColHeaderSortChanged;
+
+  ngUnsubscribe = new Subject();
 
   @ViewChild(Xr2GroupingQueueComponent, null) childGroupingQueueComponent: Xr2GroupingQueueComponent;
 
@@ -34,11 +46,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
   ];
   translations$: Observable<any>;
 
-  constructor(private picklistsQueueService: PicklistsQueueService,
-              private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
-              private translateService: TranslateService,
-              private dialogService: PopupDialogService
-    ) {
+  constructor(
+    private picklistsQueueService: PicklistsQueueService,
+    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
+    private translateService: TranslateService,
+    private dialogService: PopupDialogService
+  ) {
       this.configureEventHandlers();
    }
 
@@ -47,13 +60,22 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     this.loadPicklistsQueueGrouped();
   }
 
-  onSearchTextFilter(filterText: string) {
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
+  }
+
+  onSortEvent(event: IColHeaderSortChanged) {
+    this.colHeaderSort = event;
   }
 
   onDeviceSelectionChanged($event) {
     this.selectedDeviceInformation = $event;
-    if (!this.selectedDeviceInformation) {
+    if (this.selectedDeviceInformation.DeviceId === 0) {
       this.childGroupingQueueComponent.loadAllPicklistQueueGrouped();
       return;
     }
@@ -61,6 +83,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     if (this.childGroupingQueueComponent.loadedPicklistQueueGrouped) {
       this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
     }
+  }
+
+  processDetailsNavigate(params: IXr2QueueNavigationParameters) {
+    const savedConfiguration = this.createSavedConfiguration();
+    this.detailsPageContinueEvent.emit(params);
+    this.xr2PageConfigurationUpdateEvent.emit(savedConfiguration);
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -102,9 +130,11 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
     }
 
     this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.loadPicklistsQueueGrouped());
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         if (!x.PicklistQueueGrouped) {
           console.log('!picklistqueuegrouped removing using priority and device');
@@ -116,6 +146,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       });
 
     this.picklistQueueEventConnectionService.picklistQueueGroupedListUpdateSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((x) => {
         console.log('picklistQueueGroupedListUpdateSubject called');
         if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
@@ -138,6 +169,14 @@ export class Xr2QueueGroupingPageComponent implements OnInit {
       console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
+  }
+
+  private createSavedConfiguration() {
+    return {
+      selectedDevice: this.selectedDeviceInformation,
+      searchTextFilter: this.searchTextFilter,
+      colHeaderSort: this.colHeaderSort
+    } as IXr2QueuePageConfiguration;
   }
 
   private setTranslations() {

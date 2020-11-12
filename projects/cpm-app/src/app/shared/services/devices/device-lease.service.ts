@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subject, of, ReplaySubject } from 'rxjs';
 import { HardwareLeaseService } from '../../../api-core/services/hardware-lease-service';
 import { IDeviceOperationResult } from '../../../api-core/data-contracts/i-device-operation-result';
@@ -6,24 +6,36 @@ import { CoreEventConnectionService } from '../../../api-core/services/core-even
 import { Guid } from 'guid-typescript';
 import { IDeviceLeaseGrantedEvent } from '../../../api-core/events/i-device-lease-granted-event';
 import { IDeviceLeaseDeniedEvent } from '../../../api-core/events/i-device-lease-denied-event';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceLeaseService {
+export class DeviceLeaseService implements OnDestroy {
   private _deviceLeaseRequestSubjects: Record<string, ReplaySubject<boolean>> = {};
+
+  public ngUnsubscribe = new Subject();
 
   constructor(
     private hardwareLeaseService: HardwareLeaseService,
     private coreEventConnectionService: CoreEventConnectionService,
-  ) { 
-    this.coreEventConnectionService.deviceLeaseGrantedSubject.subscribe(x => this.handleGrantedEvent(x));
-    this.coreEventConnectionService.deviceLeaseDeniedSubject.subscribe(x => this.handleDeniedEvent(x));
+  ) {
+    this.coreEventConnectionService.deviceLeaseGrantedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.handleGrantedEvent(x));
+    this.coreEventConnectionService.deviceLeaseDeniedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.handleDeniedEvent(x));
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   requestLease(deviceId: number): Observable<boolean> {
-    return this.coreEventConnectionService.startedSubject.pipe(flatMap(x => this.requestLeaseConnected(deviceId)));
+    return this.coreEventConnectionService.startedSubject.
+      pipe(flatMap(x => this.requestLeaseConnected(deviceId)), takeUntil(this.ngUnsubscribe));
   }
 
   private requestLeaseConnected(deviceId: number): Observable<boolean> {
