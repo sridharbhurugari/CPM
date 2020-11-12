@@ -51,10 +51,19 @@ export class PicklistsQueueService {
     });
   }
 
+  // TODO: Xr2- Clean up
   sendToRobot(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
-    console.log(GlobalDispenseSyncRequest);
+    console.log(globalDispenseSyncRequest);
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/SendToRobot');
     return this.httpClient.post(url, globalDispenseSyncRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  sendQueueItemsToRobot(globalDispenseSyncRequests: Array<GlobalDispenseSyncRequest>) {
+    console.log(globalDispenseSyncRequests);
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot');
+    return this.httpClient.post(url, globalDispenseSyncRequests, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
@@ -66,6 +75,7 @@ export class PicklistsQueueService {
     });
   }
 
+  // TODO: Xr2- Clean up
   skip(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/Skip');
     return this.httpClient.post(url, globalDispenseSyncRequest, {
@@ -73,9 +83,24 @@ export class PicklistsQueueService {
     });
   }
 
+  rerouteQueueItems(globalDispenseSyncRequest: Array<GlobalDispenseSyncRequest>) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/RerouteQueueItems');
+    return this.httpClient.post(url, globalDispenseSyncRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  // TODO: Xr2- Clean up
   printLabels(deviceId: number, robotPrintRequest: RobotPrintRequest) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
     return this.httpClient.post(url, robotPrintRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  printQueueItemsLabels(robotPrintRequests: Array<RobotPrintRequest>) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/PrintQueueItemsLabels');
+    return this.httpClient.post(url, robotPrintRequests, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

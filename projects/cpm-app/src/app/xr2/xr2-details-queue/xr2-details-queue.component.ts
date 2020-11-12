@@ -355,13 +355,18 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
             this.updatePicklistQueueItem(x);
         });
     }
-}
+  }
 
-private clearSelectedItems(): void {
-  this.selectedItems.clear();
-}
+  getOrderDate(picklistQueueItem: PicklistQueueItem): string {
+    const orderDate = new Date(picklistQueueItem.OrderDate).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+   }
 
-private setTranslations(): void {
-  this.translations$ = this.translateService.get(this.translatables);
-}
+  private clearSelectedItems(): void {
+    this.selectedItems.clear();
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
+  }
 }

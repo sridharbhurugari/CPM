@@ -111,20 +111,18 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       if (!result) {
         return;
       }
-      // TODO: reroute selected items
-      this.skip([...picklistQueueItems][0]); // For testing UI
+
+      this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
   }
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
-    // TODO: release selected items
-    this.sendToRobot([...picklistQueueItems][0]); // For testing UI
+    this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
-    // TODO: print selected items
-    this.printLabels([...picklistQueueItems][0]); // For testing UI
+    this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
 
@@ -151,44 +149,48 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  sendToRobot(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.Saving = true;
-    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest(picklistQueueItem);
-    this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+  sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
+    const globalDispenseSyncRequestList = new Array<GlobalDispenseSyncRequest>();
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = true;
+      globalDispenseSyncRequestList.push(new GlobalDispenseSyncRequest(item));
+    });
+    this.picklistsQueueService.sendQueueItemsToRobot(globalDispenseSyncRequestList).subscribe(
       success => {
-        // force the status to 2 at this point
-        picklistQueueItem.Status = 2;
-        picklistQueueItem.Saving = false;
+        this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
       }, error => {
-        picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
+        this.handleSendQueueItemsToRobotError(picklistQueueItems);
       });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  skip(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.Saving = true;
-    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest(picklistQueueItem);
-    this.picklistsQueueService.skip(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
+  rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
+    const globalDispenseSyncRequestList = new Array<GlobalDispenseSyncRequest>();
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = true;
+      globalDispenseSyncRequestList.push(new GlobalDispenseSyncRequest(item));
+    });
+    this.picklistsQueueService.rerouteQueueItems(globalDispenseSyncRequestList).subscribe(
       success => {
-        picklistQueueItem.Saving = false;
+        this.handleRerouteQueueItemsSuccess(picklistQueueItems);
       }, error => {
-        picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
+        this.handleRerouteQueueItemsError(picklistQueueItems);
       });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  printLabels(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.Saving = true;
-    // TODO: Xr2 Cleanup - clean robot print request when we remove old queue
-    const robotPrintRequest = new RobotPrintRequest(picklistQueueItem.PicklistId, picklistQueueItem.RobotPickGroupId, picklistQueueItem);
-    this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, robotPrintRequest).subscribe(
+  printQueueItemsLabels(picklistQueueItems: Array<PicklistQueueItem>): void {
+    const robotPrintRequestList = new Array<RobotPrintRequest>();
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = true;
+       // TODO: Xr2 Cleanup - clean robot print request when we remove old queue
+      robotPrintRequestList.push(new RobotPrintRequest(item.PicklistId, item.RobotPickGroupId, item));
+    });
+    this.picklistsQueueService.printQueueItemsLabels(robotPrintRequestList).subscribe(
       success => {
-        picklistQueueItem.Saving = false;
+        this.handlePrintQueueItemsLabelsSuccess(picklistQueueItems);
       }, error => {
-        picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
+        this.handlePrintQueueItemsLabelsError(picklistQueueItems);
       });
   }
 
@@ -229,6 +231,47 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         console.log('addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed!');
       }
     });
+  }
+
+  private handleSendQueueItemsToRobotSuccess(picklistQueueItems: PicklistQueueItem[]) {
+    // force the status to 2 at this point
+    _.forEach(picklistQueueItems, (item) => {
+      item.Status = 2;
+      item.Saving = false;
+    });
+  }
+
+  private handleSendQueueItemsToRobotError(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.displayFailedToSaveDialog();
+  }
+
+  private handleRerouteQueueItemsSuccess(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+  }
+
+  private handleRerouteQueueItemsError(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.displayFailedToSaveDialog();
+  }
+
+  private handlePrintQueueItemsLabelsSuccess(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+  }
+
+  private handlePrintQueueItemsLabelsError(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.displayFailedToSaveDialog();
   }
 
   private handlePicklistQueueItemUpdateSubject(x: IPicklistQueueItemUpdateMessage) {

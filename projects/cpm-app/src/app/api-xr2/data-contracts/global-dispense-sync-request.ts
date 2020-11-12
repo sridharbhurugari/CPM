@@ -11,6 +11,7 @@ export class GlobalDispenseSyncRequest {
       this.PickListIdentifier = picklistQueueItem.PicklistId;
       this.DestinationType = picklistQueueItem.DestinationType;
       this.OutputDeviceId = picklistQueueItem.OutputDeviceId;
+      this.DeviceId = picklistQueueItem.DeviceId;
       _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
         const pickListLineDetail = new PickListLineDetail();
         pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
@@ -27,4 +28,5 @@ export class GlobalDispenseSyncRequest {
   DestinationType: string;
   PickListLineDetails: Array<PickListLineDetail>;
   OutputDeviceId: string;
+  DeviceId: number;
 }
