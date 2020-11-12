@@ -35,7 +35,7 @@ export class DeviceReplenishmentNeedsService {
   getDeviceNeedsForItem(deviceId: number, itemId: string): Observable<IItemReplenishmentNeed[]> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}`);
     return this.httpClient.get<IItemReplenishmentNeed[]>(url, {
-      params: { itemId: itemId },
+      params: { itemId },
       headers: this.ocapHttpHeadersService.getHeaders(),
     });
   }

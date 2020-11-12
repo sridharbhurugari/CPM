@@ -18,6 +18,8 @@ import { IItemHeaderInfo } from '../../shared/model/i-item-header-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
+import { IPicklistLineFillData } from '../../api-core/data-contracts/i-picklist-line-fill-data';
+import { IPicklistLinePackSizeFillData } from '../../api-core/data-contracts/i-picklist-line-pack-size-fill-data';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -97,7 +99,28 @@ export class InternalTransferPickPageComponent {
   }
 
   private pickItem(line: IPicklistLine, pickTotal: number, isLast: boolean) {
-    this.picklistLinesService.completePick(Guid.parse(line.PicklistLineId), pickTotal, line.SourceDeviceLocationId).subscribe(x => {
+
+    const packPicks: IPicklistLineFillData = {
+      PicklistLineId: line.PicklistLineId,
+      PickDeviceLocationId: line.SourceDeviceLocationId,
+      TotalPickQuantity: line.PickQuantity,
+      PackSizeFills: new Array()
+    };
+
+    this.currentNeedsDetails$.subscribe(needsDetails => {
+      const needsDetail = needsDetails.find(() => needsDetail.ItemId === line.ItemId);
+      if (needsDetail.Xr2Item) {
+
+        const packFill: IPicklistLinePackSizeFillData = {
+          PackSize: needsDetail.PackSize,
+          FillQuantityInPacks:  line.PickQuantity / needsDetail.PackSize
+        };
+
+        packPicks.PackSizeFills.push(packFill);
+      }
+    });
+
+    this.picklistLinesService.completePick(packPicks).subscribe(x => {
       if (isLast) {
         this.navigateContinue();
       } else {
@@ -121,9 +144,11 @@ export class InternalTransferPickPageComponent {
   }
 
   private updateCurrentLineDetails() {
-    this.currentLine$ = this.picklistLineIds$.pipe(map(x => x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
-    this.isLastLine$ = this.totalLines$.pipe(map(x => x == this.picklistLineIndex + 1));
-    this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x => this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId)), shareReplay(1));
+    this.currentLine$ = this.picklistLineIds$.pipe(map(x =>
+       x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
+    this.isLastLine$ = this.totalLines$.pipe(map(x => x === this.picklistLineIndex + 1));
+    this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x =>
+       this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId)), shareReplay(1));
     this.currentNeedsDetails$.subscribe(x => {
       if (!x || !x.length) {
         this.completeZeroPick();
