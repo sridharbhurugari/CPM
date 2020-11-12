@@ -20,7 +20,7 @@ import { MockHorizontalTabsComponent } from '../../shared/testing/mock-hornizont
 import { MockSplitFixedComponent } from '../../shared/testing/mock-spit-fixed.spec';
 import { MockTabContentsComponent } from '../../shared/testing/mock-tab-contents.spec';
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
-import { InternalTransferPick } from '../model/internal-transfer-pick';
+import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 import { MockInternalTransferPickNeedsListComponent } from '../testing/mock-internal-transfer-pick-needs-list.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
@@ -32,35 +32,11 @@ describe('InternalTransferPickPageComponent', () => {
   let picklistLinesService: Partial<PicklistLinesService>;
   let wpfActionController: Partial<WpfActionControllerService>;
 
-  let picktotals: InternalTransferPick[] = [{
-    ItemId: "998877", ItemFormattedGenericName: "morPHINE 10mg/1ml 1ml inj", ItemBrandName: "",
-    DeviceQuantityOnHand: 0, DeviceQuantityNeeded: 800, DeviceParLevel: 800, DeviceRestockLevel: 4, PendingDevicePickQuantity: 0,
-    DisplayPackageSize: "Package Size: 1", DisplayDeviceQuantityNeeded: "800 EACH", DisplayNumberOfPackages: "Packs: 800",
-    DisplayDeviceQuantityOnHand: "0 EACH", DisplayQohNumberOfPackages: "Packs: 0", PackSize: 1, Xr2Item: true,
-    UnitOfIssue: "EACH", PickLocationDeviceLocationId: 70022, PickLocationDescription: "Shelf 1 Medications",
-    PickLocationQoh: 1000, DestinationDeviceDescription: "Jim XR2", _isSelected: true, PacksNeeded: 800, _packsToPick: 800, 
-    ItemBrandNameDescription: "", ItemFormattedDescription: "", ItemIdDescription: "", SortFormattedName: "", 
-    IsSelected: true, PacksToPick: 800, QuantityToPick: 800, SelectionStateChanged:
-  }, {
-    ItemId: "998877", ItemFormattedGenericName: "morPHINE 10mg/1ml 1ml inj", ItemBrandName: "",
-    DeviceQuantityOnHand: 0, DeviceQuantityNeeded: 75, DeviceParLevel: 15, DeviceRestockLevel: 2, PendingDevicePickQuantity: 0,
-    DisplayPackageSize: "Package Size: 5", DisplayDeviceQuantityNeeded: "75 EACH", DisplayNumberOfPackages: "Packs: 15",
-    DisplayDeviceQuantityOnHand: "0 EACH", DisplayQohNumberOfPackages: "Packs: 0", PackSize: 5, Xr2Item: true,
-    UnitOfIssue: "EACH", PickLocationDeviceLocationId: 70022, PickLocationDescription: "Shelf 1 Medications", PickLocationQoh: 1000,
-    DestinationDeviceDescription: "Jim XR2", _isSelected: true, PacksNeeded: 15, _packsToPick: 15,
-    ItemBrandNameDescription: "", ItemFormattedDescription: "", ItemIdDescription: "", SortFormattedName: "", 
-    IsSelected: true, PacksToPick: 15, QuantityToPick: 75, SelectionStateChanged:
-  }, {
-    ItemId: "998877", ItemFormattedGenericName: "morPHINE 10mg/1ml 1ml inj", ItemBrandName: "",
-    DeviceQuantityOnHand: 0, DeviceQuantityNeeded: 100, DeviceParLevel: 10, DeviceRestockLevel: 2, PendingDevicePickQuantity: 0,
-    DisplayPackageSize: "Package Size: 10", DisplayDeviceQuantityNeeded: "100 EACH", DisplayNumberOfPackages: "Packs: 10",
-    DisplayDeviceQuantityOnHand: "0 EACH", DisplayQohNumberOfPackages: "Packs: 0", PackSize: 10, Xr2Item: true,
-    UnitOfIssue: "EACH", PickLocationDeviceLocationId: 70022, PickLocationDescription: "Shelf 1 Medications", PickLocationQoh: 1000,
-    DestinationDeviceDescription: "Jim XR2", _isSelected: true, PacksNeeded: 10, _packsToPick: 10,  
-    ItemBrandNameDescription: "", ItemFormattedDescription: "", ItemIdDescription: "", SortFormattedName: "", 
-    IsSelected: true, PacksToPick: 10, QuantityToPick: 100, SelectionStateChanged:
- }];
-
+  let picktotals: IInternalTransferPackSizePick[] = [
+    { PackSize: 1, PacksToPick: 800, QuantityToPick: 800 },
+    { PackSize: 5, PacksToPick: 15, QuantityToPick: 75 },
+    { PackSize: 10, PacksToPick: 10, QuantityToPick: 100 },
+  ];
 
   beforeEach(async(() => {
     let deviceLocationId = 3290;
@@ -139,14 +115,14 @@ describe('InternalTransferPickPageComponent', () => {
 
   describe('completePick', () => {
     it('should call PicklistLinesService completePick', () => {
-      component.pickTotalChanged(5);
+      component.pickTotalChanged(picktotals);
       component.completePick();
       expect(picklistLinesService.completePick).toHaveBeenCalled();
     });
 
     describe('for last item', () => {
       it('should call ExecuteActionName continue', () => {
-        component.pickTotalChanged(5);
+        component.pickTotalChanged(picktotals);
         component.completePick();
         expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
       });

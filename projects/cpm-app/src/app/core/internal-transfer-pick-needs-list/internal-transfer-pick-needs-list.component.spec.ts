@@ -78,7 +78,7 @@ describe('InternalTransferPickNeedsListComponent', () => {
       });
 
       it('pickTotalChanged should emit', () => {
-        expect(component.pickTotalChanged.emit).toHaveBeenCalledWith(7);
+        expect(component.pickTotalChanged.emit).toHaveBeenCalledWith(itemNeeds);
       });
     });
 

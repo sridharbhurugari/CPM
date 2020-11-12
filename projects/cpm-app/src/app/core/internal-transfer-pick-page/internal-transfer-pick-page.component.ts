@@ -20,6 +20,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { InternalTransferPick } from '../model/internal-transfer-pick';
 import { IPicklistLineFillData } from '../../api-core/data-contracts/i-picklist-line-fill-data';
 import { IPicklistLinePackSizeFillData } from '../../api-core/data-contracts/i-picklist-line-pack-size-fill-data';
+import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -45,7 +46,7 @@ export class InternalTransferPickPageComponent {
   expDateIcon: string;
   expDateInPast$: Observable<boolean>;
   orderItemPendingQtys$: Observable<IOrderItemPendingQuantity>;
-  pickItemTotals: InternalTransferPick[] = new Array();
+  pickItemTotals: IInternalTransferPackSizePick[] = new Array();
 
   constructor(
     activatedRoute: ActivatedRoute,
@@ -70,7 +71,7 @@ export class InternalTransferPickPageComponent {
     this.userLocale = ocapConfigService.get().userLocale;
   }
 
-  pickTotalChanged(pickTotals: InternalTransferPick[]) {
+  pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
     this.pickItemTotals = pickTotals;
     let pickTotal = sumValues(this.pickItemTotals, x => x.QuantityToPick);
     this.pickTotal$ = of(pickTotal);
@@ -113,7 +114,7 @@ export class InternalTransferPickPageComponent {
     this.pickItemTotals.forEach(pick => {
       const packFill: IPicklistLinePackSizeFillData = {
           PackSize: pick.PackSize,
-          FillQuantityInPacks:  pick.DeviceQuantityNeeded / pick.PackSize
+          FillQuantityInPacks:  pick.PacksToPick,
         };
 
         packPicks.PackSizeFills.push(packFill);
