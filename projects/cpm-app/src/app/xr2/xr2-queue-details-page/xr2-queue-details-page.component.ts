@@ -73,9 +73,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.setTranslations();
-    this.loadPicklistsQueueItems();
-    this.initializeActionPicklistItemsDisableMap();
+    try {
+      this.setTranslations();
+      this.loadPicklistsQueueItems();
+      this.initializeActionPicklistItemsDisableMap();
+    } catch (e) {
+      console.log('Xr2QueueDetailsPageComponent Failed in ngOnInit');
+    }
   }
 
   ngOnDestroy() {

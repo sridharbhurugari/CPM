@@ -290,12 +290,26 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     if (!this.picklistQueueEventConnectionService) {
       return;
     }
+
     this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(message => this.onAddOrUpdatePicklistQueueItem(message));
+      .subscribe(message => {
+        try {
+          this.onAddOrUpdatePicklistQueueItem(message);
+        } catch (exception) {
+          console.log('addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed!');
+        }
+      });
+
     this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(message => this.onRemovePicklistQueueItem(message));
+      .subscribe(message => {
+        try {
+          this.onRemovePicklistQueueItem(message);
+        } catch (exception) {
+          console.log('removePicklistQueueItemSubject - onRemovePicklistQueueItem failed!');
+        }
+      });
   }
 
 
