@@ -1,6 +1,6 @@
 <oc-grid  #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div class="first" ocGridColResize data-width="86">
+    <div class="first" ocGridCol data-width="86" minlength = 86 data-colwrap="false">
       <oc-checkbox [noLabel]="true" [isEnabled]="true" [selected]="isHeaderCheckboxChecked"
       (selection)="onHeaderCheck($event)"></oc-checkbox>
   </div>
