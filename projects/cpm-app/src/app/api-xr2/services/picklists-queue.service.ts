@@ -44,7 +44,7 @@ export class PicklistsQueueService {
     });
   }
 
-  getGroupedFiltered(deviceId: number, pickPriorityIdentity: string): Observable<IPicklistQueueGrouped> {
+  getGroupedFiltered(deviceId: number, pickPriorityIdentity: number): Observable<IPicklistQueueGrouped> {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueuesgrouped/' + deviceId + '/' + pickPriorityIdentity);
     return this.httpClient.get<IPicklistQueueGrouped>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()

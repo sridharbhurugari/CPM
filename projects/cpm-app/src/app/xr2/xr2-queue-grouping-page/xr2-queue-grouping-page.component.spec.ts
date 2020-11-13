@@ -8,7 +8,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { ButtonActionModule, SingleselectDropdownModule, GridModule, PopupDialogService, PopupDialogModule,
-         FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+         FooterModule, LayoutModule, LoggingService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
@@ -17,24 +17,19 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { MockXr2GroupingQueueComponent } from '../../shared/testing/mock-xr2-grouping-queue.spec';
 import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component.spec';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { IPicklistQueueGroupedNonstandardJson } from '../../api-xr2/events/i-picklist-queue-grouped-nonstandard-json';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
-import { Input, Component } from '@angular/core';
+import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
+import { LogService } from '../../api-core/services/log-service';
+import { Mock } from 'protractor/built/driverProviders';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { Guid } from 'guid-typescript';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
-@Component({
-  selector: 'oc-search-box',
-  template: ''
-})
-
-class MockSearchBox {
-  searchOutput$: Observable<string> = of();
-  @Input()placeHolderText: string;
-}
 
 describe('Xr2QueueGroupingPageComponent', () => {
   let component: Xr2QueueGroupingPageComponent;
@@ -42,9 +37,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistQueueService: Partial<PicklistsQueueService>;
   let devicesService: Partial<DevicesService>;
+
   let spyChildchildGroupingQueueComponent: jasmine.Spy;
   let selectedDeviceInformation: SelectableDeviceInfo;
-
   let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
   const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
   const picklistQueueGrouped = new PicklistQueueGrouped(null);
@@ -60,14 +55,12 @@ describe('Xr2QueueGroupingPageComponent', () => {
   };
 
   beforeEach(async(() => {
-
     selectedDeviceInformation = new SelectableDeviceInfo(null);
     selectedDeviceInformation.DeviceId = 1;
 
     picklistsQueueEventConnectionService = {
       picklistQueueGroupedListUpdateSubject: new Subject(),
       picklistQueueGroupedUpdateSubject: new Subject(),
-      reloadPicklistQueueItemsSubject: new Subject()
     };
 
     spyOn(picklistQueueService, 'sendToRobotGrouped').and.returnValue(of(picklistQueueService));
@@ -80,10 +73,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     spyOn(picklistsQueueEventConnectionService.picklistQueueGroupedUpdateSubject, 'subscribe').and.callThrough();
     spyOn(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject, 'subscribe').and.callThrough();
-    spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueGroupingPageComponent, MockXr2GroupingQueueComponent,
+      declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
         MockXr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe,
         MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
@@ -97,6 +89,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
+        { provide: LogService, useValue: { logMessageAsync: () => null } }
       ]
     })
     .compileComponents();
@@ -124,10 +117,9 @@ describe('Xr2QueueGroupingPageComponent', () => {
       expect(component).toBeTruthy();
       expect(picklistsQueueEventConnectionService.picklistQueueGroupedUpdateSubject.subscribe).toHaveBeenCalled();
       expect(picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject.subscribe).toHaveBeenCalled();
-      expect(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject.subscribe).toHaveBeenCalled();
     });
 
-    /* it('should update on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {
+    it('should update on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {
        spyChildchildGroupingQueueComponent =
          spyOn(component.childGroupingQueueComponent, 'updatePickListQueueGroupedGrouping');
        component.ngOnInit();
@@ -214,7 +206,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     it('should update search filter text on search filter event', () => {
       const filter = 'filter';
 
-      component.onSearchTextFilter(filter);
+      component.onSearchTextFilterEvent(filter);
 
       expect(component.searchTextFilter).toBe(filter);
     });
@@ -223,6 +215,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
   describe('Queue API Actions', () => {
     it('should call PicklistQueue service to send to robot grouped on release click', fakeAsync(() => {
       const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
+      fakePicklistQueueGrouped.DeviceId = 1;
+      fakePicklistQueueGrouped.PriorityCode = 'Patient';
       component.processRelease(fakePicklistQueueGrouped);
       tick();
       expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(1);
@@ -235,6 +229,50 @@ describe('Xr2QueueGroupingPageComponent', () => {
       component.processRelease(fakePicklistQueueGrouped);
       tick();
       expect(picklistQueueService.getGroupedFiltered).toHaveBeenCalledTimes(1);
-    }));*/
+    }));
+
+    it('should call filterPicklistQueueGroupedByDeviceId  when onDeviceSelectionChanged', () => {
+      spyChildchildGroupingQueueComponent =
+      spyOn(component.childGroupingQueueComponent, 'filterPicklistQueueGroupedByDeviceId');
+      let selectedDeviceInfo = new SelectableDeviceInfo(null);
+      selectedDeviceInfo.DeviceId = 0;
+      selectedDeviceInfo.Description = '';
+      selectedDeviceInfo.DefaultOwnerName = '';
+      selectedDeviceInfo.IsActive = true;
+      selectedDeviceInfo.CurrentLeaseHolder = Guid.create();
+
+      component.selectedDeviceInformation = selectedDeviceInfo;
+
+      let selectedDeviceInfoNew = new SelectableDeviceInfo(null);
+      selectedDeviceInfo.DeviceId = 1;
+      selectedDeviceInfo.Description = '';
+      selectedDeviceInfo.DefaultOwnerName = '';
+      selectedDeviceInfo.IsActive = true;
+      selectedDeviceInfo.CurrentLeaseHolder = Guid.create();
+
+      component.onDeviceSelectionChanged(selectedDeviceInfoNew);
+
+      expect(spyChildchildGroupingQueueComponent).toHaveBeenCalledTimes(1);
+    });
+
+    it('should save config and emit on processDetailsNavigate', () => {
+      const continueSpy = spyOn(component.detailsPageContinueEvent, 'emit');
+      const configUpdateSpy = spyOn(component.xr2PageConfigurationUpdateEvent, 'emit');
+      const navparams = {} as IXr2QueueNavigationParameters;
+      navparams.deviceId = '1';
+      navparams.pickPriorityIdentity = 'dummy';
+      component.processDetailsNavigate(navparams);
+      expect(continueSpy).toHaveBeenCalledTimes(1);
+      expect(configUpdateSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set columnHeaderSort on event', () => {
+      const fakeEvent = {} as IColHeaderSortChanged;
+      fakeEvent.ColumnPropertyName = 'Test';
+      fakeEvent.SortDirection = 'asc';
+      component.onSortEvent(fakeEvent);
+      expect(component.colHeaderSort.ColumnPropertyName).toBe('Test');
+      expect(component.colHeaderSort.SortDirection).toBe('asc');
+    });
   });
 });
