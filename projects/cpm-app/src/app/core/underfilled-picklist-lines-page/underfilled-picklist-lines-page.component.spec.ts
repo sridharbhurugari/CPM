@@ -30,6 +30,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let fixture: ComponentFixture<UnderfilledPicklistLinesPageComponent>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
+  let pickingEventConnectionService: Partial<PickingEventConnectionService>;
   let printWithBaseData: jasmine.Spy;
   const date = new Date();
   const pickListLinesData: UnderfilledPicklistLine[] = [{
@@ -97,6 +98,10 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
     spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
 
+    pickingEventConnectionService = {
+      updateUnfilledPicklistLineSubject: new Subject()
+    };
+
     TestBed.configureTestingModule({
       declarations: [
         UnderfilledPicklistLinesPageComponent,
@@ -120,7 +125,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
         { provide: PopupDialogService, useValue: simpleDialogService },
-        { provide: PickingEventConnectionService, useValue: { }}
+        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService}
       ],
       imports: [
         FooterModule,
