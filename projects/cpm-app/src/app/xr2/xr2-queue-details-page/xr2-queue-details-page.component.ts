@@ -288,7 +288,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
     console.log('picklistQueueItemListUpdateSubject called');
 
-    if (!this.hasValidGroupKey(x.AvailablePicklistQueueGroupKeys)) {
+    if (!x.AvailablePicklistQueueGroupKeys || !this.hasValidGroupKey(x.AvailablePicklistQueueGroupKeys)) {
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
       return;
     }
@@ -339,6 +339,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private updateActionPicklistItemDisableMap(picklistQueueItems: PicklistQueueItem[]): void {
+    console.log('updateActionPicklistItemDisableMap');
     this.removeFromActionDisableMap(picklistQueueItems);
     this.addToActionDisableMap(picklistQueueItems);
   }
@@ -353,6 +354,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   private addToActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
     _.forEach(itemsToProcess, (item) => {
+      console.log(item);
       if (!item.Releaseable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release);
         currentSet.add(item);
@@ -367,10 +369,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute);
         currentSet.add(item);
       }
+      console.log(this.actionPicklistItemsDisableMap);
     });
   }
 
   private removeFromActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
+    console.log(this.actionPicklistItemsDisableMap);
     _.forEach(itemsToProcess, (item) => {
       this.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
         picklistSet.delete(item);

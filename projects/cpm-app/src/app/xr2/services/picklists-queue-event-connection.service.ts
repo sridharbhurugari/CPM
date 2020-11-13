@@ -21,7 +21,6 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
   public reloadPicklistQueueItemsSubject = new Subject<any>();
   public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
   public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
-  public picklistQueueItemUpdateSubject = new Subject<IPicklistQueueItemUpdateMessage>();
   public picklistQueueItemListUpdateSubject = new Subject<IPicklistQueueItemListUpdateMessage>();
   public ngUnsubscribe = new Subject();
 
@@ -89,15 +88,9 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
         return;
       }
 
-      if (message.EventId === 'PickListQueueItemUpdateMessage') {
-        console.log(message);
-        this.picklistQueueGroupedUpdateSubject.next(message);
-        return;
-      }
-
       if (message.EventId === 'PicklistQueueItemListUpdateMessage') {
         console.log(message);
-        this.picklistQueueGroupedListUpdateSubject.next(message);
+        this.picklistQueueItemListUpdateSubject.next(message);
         return;
       }
     } catch (e) {
