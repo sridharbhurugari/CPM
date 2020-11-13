@@ -55,6 +55,7 @@
   "ERROR_ROUTE_MAINTENANCE_MESSAGE": "An error occurred.  Please try again.",
   "FAILEDTOCLOSE_HEADER_TEXT": "Failed to Close",
   "FAILEDTOCLOSE_BODY_TEXT": "Please try again.",
+  "FAILEDTREFRESH": "Failed to Refresh Data",
   "FAILEDTOSAVE_HEADER_TEXT": "Failed to Save",
   "FAILEDTOSAVE_BODY_TEXT": "Please try again.",
   "FAILEDTOPRINT_HEADER_TEXT": "Failed to Print",

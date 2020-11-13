@@ -296,6 +296,7 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGroupedUpdate.PriorityCode = 'Patient';
       picklistQueueGroupedUpdate.DeviceId = 1;
       picklistQueueGroupedUpdate.NewCount = 1;
+      picklistQueueGroupedUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
       component.updatePickListQueueGroupedGrouping(picklistQueueGroupedUpdate);
 
       expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
@@ -361,11 +362,14 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGroupedToBeAdded.NewCount = 0;
       picklistQueueGroupedToBeAdded.AvailableOutputDeviceList = availableOutputDeviceList;
 
+      let newOtputDevice: OutputDevice = {DeviceId: '1', IsActive: false, Label: 'XR2'};
+      const newAvailableOutputDeviceList = [ newOtputDevice ] as Array<OutputDevice>;
+
       const picklistQueueGroupedUpdate = new PicklistQueueGrouped(null);
       picklistQueueGroupedUpdate.PriorityCode = 'Cabinet';
       picklistQueueGroupedUpdate.DeviceId = 1;
       picklistQueueGroupedUpdate.NewCount = 1;
-      picklistQueueGroupedUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
+      picklistQueueGroupedUpdate.AvailableOutputDeviceList = newAvailableOutputDeviceList;
       const pickListQueueGroupedListUpdate = [picklistQueueGroupedToBeAdded, picklistQueueGroupedUpdate] as IPicklistQueueGrouped[];
 
       component.refreshDataOnScreen(pickListQueueGroupedListUpdate);
@@ -373,6 +377,7 @@ describe('Xr2GroupingQueueComponent', () => {
       expect(component.picklistQueueGrouped.length).toBe(2);
       expect(component.picklistQueueGrouped[0].PriorityCode).toBe('Cabinet');
       expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
+      expect(component.picklistQueueGrouped[0].AvailableOutputDeviceList[0].IsActive).toBe(false);
       expect(component.picklistQueueGrouped[1].PriorityCode).toBe('Area');
 
     });
