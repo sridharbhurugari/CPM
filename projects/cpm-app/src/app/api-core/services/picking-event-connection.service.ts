@@ -1,27 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IUnfilledPicklistAddedOrUpdatedEvent } from '../events/i-unfilled-picklist-added-or-updated-event';
 import { IUnfilledPicklistRemovedEvent } from '../events/i-unfilled-picklist-removed-event';
 import { IUnfilledPicklistlineAddedEvent } from '../events/i-unfilled-picklistline-added-event';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PickingEventConnectionService {
+export class PickingEventConnectionService implements OnDestroy {
   public updatedUnfilledPicklistSubject = new Subject<IUnfilledPicklistAddedOrUpdatedEvent>();
   public removedUnfilledPicklistSubject = new Subject<IUnfilledPicklistRemovedEvent>();
-  public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedEvent>();  
+  public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedEvent>();
+  public ngUnsubscribe = new Subject();  
 
   public startedSubject = new ReplaySubject(1);
 
   constructor(private eventConnectionService: EventConnectionService) 
     {
-      this.eventConnectionService.receivedSubject.subscribe(message => this.eventHandlers(message));
-      this.eventConnectionService.startedSubject.subscribe(() => this.startedSubject.next());
+      this.eventConnectionService.receivedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(message => this.eventHandlers(message));
+      this.eventConnectionService.startedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.startedSubject.next());
     }
 
-   private eventHandlers(message: any): void 
+    ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
+    }
+
+    private eventHandlers(message: any): void 
     {
       try 
         {

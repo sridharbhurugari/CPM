@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { Component, Input } from '@angular/core';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
+import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -30,8 +31,9 @@ describe('UnderfilledPicklistsPageComponent', () => {
       ],
       providers: [
         { provide: UnderfilledPicklistsService, useValue: { get: () => of([]) } },
-        { provide: WpfActionControllerService, useVaule: { }},
-        { provide: TranslateService, useValue: { get: (k: any) => of(k) }}
+        { provide: WpfActionControllerService, useValue: { }},
+        { provide: TranslateService, useValue: { get: (k: any) => of(k) }},
+        { provide: PickingEventConnectionService, useValue: { }}
       ]
     })
     .compileComponents();

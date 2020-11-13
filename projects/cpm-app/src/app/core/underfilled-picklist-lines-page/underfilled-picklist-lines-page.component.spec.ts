@@ -23,7 +23,7 @@ import { ResetPickRoutesService } from '../../api-core/services/reset-pick-route
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
-
+import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
   let component: UnderfilledPicklistLinesPageComponent;
@@ -119,7 +119,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
-        { provide: PopupDialogService, useValue: simpleDialogService }
+        { provide: PopupDialogService, useValue: simpleDialogService },
+        { provide: PickingEventConnectionService, useValue: { }}
       ],
       imports: [
         FooterModule,
@@ -194,7 +195,6 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       expect(component.buttonVisible === false);
     });
   });
-
 
   describe('Close Button Visible', () => {
     it('should be visible', () => {
