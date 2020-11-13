@@ -27,4 +27,5 @@ export interface IPicklistQueueItem {
   RobotPickGroupId: Guid;
   OrderDate: Date;
   PatientCount: number;
+  PickPriorityIdentity: number;
 }

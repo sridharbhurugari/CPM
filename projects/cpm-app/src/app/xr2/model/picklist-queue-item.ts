@@ -37,6 +37,7 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   RobotPickGroupId: Guid;
   OrderDate: Date;
   PatientCount: number;
+  PickPriorityIdentity: number;
 
   get Releaseable() {
     return this.Status === 1 && !this.Saving;
@@ -75,7 +76,8 @@ export class PicklistQueueItem implements IPicklistQueueItem {
       StatusDisplay: picklistQueueItem.StatusDisplay,
       SequenceOrder: picklistQueueItem.SequenceOrder,
       OrderDate: picklistQueueItem.OrderDate,
-      PatientCount: picklistQueueItem.PatientCount
+      PatientCount: picklistQueueItem.PatientCount,
+      PickPriorityIdentity: picklistQueueItem.PickPriorityIdentity
     });
   }
 }

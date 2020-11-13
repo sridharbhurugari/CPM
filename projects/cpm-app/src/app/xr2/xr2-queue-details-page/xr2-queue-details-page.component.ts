@@ -21,6 +21,7 @@ import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist
 import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue.component';
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
+import { PicklistQueueGroupKey } from '../model/picklist-queue-group-key';
 
 
 @Component({
@@ -274,7 +275,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   private handlePicklistQueueItemAddorUpdateSubject(x: IAddOrUpdatePicklistQueueItemMesssage) {
     console.log('picklistQueueItemAddorUpdateSubject called');
-    if (!this.isValidMessageClient(x.PicklistQueueItem.DeviceId.toString(), x.PicklistQueueItem.PriorityCode)) {
+    if (!this.isValidMessageClient(x.PicklistQueueItem.DeviceId.toString(),
+    x.PicklistQueueItem.PickPriorityIdentity.toString())) {
       console.log('Add or update queue item event recieved but not a valid client');
       return;
     }
@@ -285,27 +287,36 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
     console.log('picklistQueueItemListUpdateSubject called');
-    if (!this.isValidMessageClient(x.PicklistQueueItems[0].DeviceId.toString(), x.PicklistQueueItems[0].PriorityCode)) {
+
+    if (!this.hasValidGroupKey(x.AvailablePicklistQueueGroupKeys)) {
+      this.childDetailsQueueComponent.refreshDataOnScreen(null);
+      return;
+    }
+    if (!this.isValidMessageClient(x.DeviceId.toString(), x.PickPriorityIdentity.toString())) {
       console.log('Queue item List update recieved but not a valid client');
       return;
     }
-
     if (!x.PicklistQueueItems.$values || x.PicklistQueueItems.$values.length === 0) {
       console.log('Empty List just clear screen');
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
     } else {
-      const picklistQueueItemList = x.PicklistQueueItems.$values.map((picklistQueueItem) => {
-        return PicklistQueueItem.fromNonstandardJson(picklistQueueItem);
-      });
-
-      // check for priority and device ID here
-      this.childDetailsQueueComponent.refreshDataOnScreen(picklistQueueItemList);
+        const picklistQueueItemList = x.PicklistQueueItems.$values.map((picklistQueueItem) => {
+          return PicklistQueueItem.fromNonstandardJson(picklistQueueItem);
+        });
+        this.childDetailsQueueComponent.refreshDataOnScreen(picklistQueueItemList);
     }
   }
 
-  private isValidMessageClient(deviceId: string, priorityCode: string) {
+  private hasValidGroupKey(availablePicklistQueueGroupKeys: PicklistQueueGroupKey[]): boolean {
+    return availablePicklistQueueGroupKeys.some((key) => {
+      return key.DeviceId.toString() === this.xr2QueueNavigationParameters.deviceId &&
+      key.PickPriorityIdentifier.toString() === this.xr2QueueNavigationParameters.pickPriorityIdentity;
+    });
+  }
+
+  private isValidMessageClient(deviceId: string, pickPriorityIdentity: string) {
     return this.xr2QueueNavigationParameters.deviceId === deviceId
-    && this.xr2QueueNavigationParameters.pickPriorityIdentity === priorityCode;
+    && this.xr2QueueNavigationParameters.pickPriorityIdentity === pickPriorityIdentity;
   }
 
   private clearMultiSelect(): void {
