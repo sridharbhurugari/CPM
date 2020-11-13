@@ -35,21 +35,30 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
   ) {       
     this.translatedItems$ = translateService.get(this._itemsResourceKey);
     this.translatedPatients$ = translateService.get(this._patientsResourceKey);
-    this.translatedCabinets$ = translateService.get(this._cabinetsResourceKey);    
+    this.translatedCabinets$ = translateService.get(this._cabinetsResourceKey);   
+    /*this.configureEventHandlers(); */
   }
 
   ngOnInit() {
     try {
-      var initialPicklists$ = this.underfilledPicklistsService.get();
+      var initialPicklists$ = this.underfilledPicklistsService.get();     
 
-      var allPicklists$ = initialPicklists$.pipe(switchMap(x => {
-        return this.pickingEventConnectionService.updatedUnfilledPicklistSubject.pipe(scan<IUnfilledPicklistAddedOrUpdatedEvent, IUnderfilledPicklist[]>((picklists, newPicklist) => {
-          picklists.push(newPicklist.PicklistUnderfilled)
-          return picklists;          
+      var picklistsWithNewAdds$ = initialPicklists$.pipe(switchMap(x => {
+        return this.pickingEventConnectionService.updatedUnfilledPicklistSubject.pipe(scan<IUnfilledPicklistAddedOrUpdatedEvent, IUnderfilledPicklist[]>((currentPicklists, newPicklist) => {
+          currentPicklists.push(newPicklist.PicklistUnderfilled)                    
+          return currentPicklists;          
+        }, x));        
+      }));      
+
+      var picklistsWithRemoves$ = initialPicklists$.pipe(switchMap(x => {
+        return this.pickingEventConnectionService.removedUnfilledPicklistSubject.pipe(scan<IUnfilledPicklistRemovedEvent, IUnderfilledPicklist[]>((currentPicklists, removeId) => {
+          var index = currentPicklists.findIndex((r) => r.OrderId === removeId.OrderId);
+          currentPicklists.splice(index, 1)                    
+          return currentPicklists;          
         }, x));        
       }));
 
-      allPicklists$ = merge(initialPicklists$, allPicklists$);
+      var allPicklists$ = merge(initialPicklists$, picklistsWithNewAdds$, picklistsWithRemoves$);
 
       this.picklists = combineLatest(allPicklists$, this.translatedItems$, this.translatedPatients$, this.translatedCabinets$).pipe(map(results => {      
         var underfilledPicklists = results[0]
@@ -71,4 +80,29 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
       console.log(e);
     }
   }   
+
+  /*private configureEventHandlers(): void {
+    if (!this.pickingEventConnectionService) {
+      return;
+    }
+    
+    this.pickingEventConnectionService.removedUnfilledPicklistSubject
+      .subscribe(message => this.onRemoveUnfilledPicklist(message));
+  }
+
+  private onRemoveUnfilledPicklist(unfilledPicklistRemovedEvent: IUnfilledPicklistRemovedEvent): void {
+    try {
+      const orderId = unfilledPicklistRemovedEvent.OrderId;
+
+      this.picklists = this.picklists.pipe(map(x => x.pop()));
+
+      _.remove(this.picklists, (x) => {
+        return x.OrderId === orderId;
+
+      });      
+    } catch (e) {
+      console.log('UnderfilledPicklistsPageComponent.onRemoveUnfilledPicklist ERROR');
+      console.log(e);
+    }
+  }*/
 }
