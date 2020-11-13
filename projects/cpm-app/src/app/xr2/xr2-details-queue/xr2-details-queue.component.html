@@ -98,10 +98,9 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
-            [label]="'REROUTE' | translate"
-            [disabled]="multiSelectMode"
+            [label]="getRerouteButtonProperties(picklistQueueItem).text | translate"
+            [disabled]="getRerouteButtonProperties(picklistQueueItem).disabled"
             [icon]="'reroute'"
-            [disabled]='picklistQueueItem.Reroutable'
             (clickEvent)="onRerouteClick(picklistQueueItem)">
             </app-cp-clickable-icon>
           </div>

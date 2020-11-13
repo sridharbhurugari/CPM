@@ -216,7 +216,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         this.handlePicklistQueueItemAddorUpdateSubject(x);
       } catch (e) {
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-          this.constructor.name + ' picklistQueueItemUpdateSubject - handlePicklistQueueItemUpdateSubject failed: ' + e);
+          this.constructor.name + ' addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed: ' + e);
       }
   });
 
@@ -226,7 +226,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       try {
         this.handlePicklistQueueItemListUpdateSubject(x);
       } catch (exception) {
-        console.log('addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed!');
+        console.log('picklistQueueItemListUpdateSubject - picklistQueueItemListUpdateSubject failed!');
       }
     });
   }
@@ -273,12 +273,23 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private handlePicklistQueueItemAddorUpdateSubject(x: IAddOrUpdatePicklistQueueItemMesssage) {
+    console.log('picklistQueueItemAddorUpdateSubject called');
+    if (!this.isValidMessageClient(x.PicklistQueueItem.DeviceId.toString(), x.PicklistQueueItem.PriorityCode)) {
+      console.log('Add or update queue item event recieved but not a valid client');
+      return;
+    }
+
     const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
     this.childDetailsQueueComponent.addOrUpdatePicklistQueueItem(pickListQueueItem);
   }
 
   private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
     console.log('picklistQueueItemListUpdateSubject called');
+    if (!this.isValidMessageClient(x.PicklistQueueItems[0].DeviceId.toString(), x.PicklistQueueItems[0].PriorityCode)) {
+      console.log('Queue item List update recieved but not a valid client');
+      return;
+    }
+
     if (!x.PicklistQueueItems.$values || x.PicklistQueueItems.$values.length === 0) {
       console.log('Empty List just clear screen');
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
@@ -287,8 +298,14 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         return PicklistQueueItem.fromNonstandardJson(picklistQueueItem);
       });
 
+      // check for priority and device ID here
       this.childDetailsQueueComponent.refreshDataOnScreen(picklistQueueItemList);
     }
+  }
+
+  private isValidMessageClient(deviceId: string, priorityCode: string) {
+    return this.xr2QueueNavigationParameters.deviceId === deviceId
+    && this.xr2QueueNavigationParameters.pickPriorityIdentity === priorityCode;
   }
 
   private clearMultiSelect(): void {

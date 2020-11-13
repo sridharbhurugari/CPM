@@ -73,6 +73,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     RELEASE: 'RELEASE',
     PRINT: 'PRINT',
     REPRINT: 'REPRINT',
+    REROUTE: 'REROUTE',
     PATIENT: 'PATIENT',
     PATIENTS: 'PATIENTS',
     ITEM: 'ITEM',
@@ -183,6 +184,13 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return {
       disabled: !picklistQueueItem.Printable || this.multiSelectMode,
       text
+    };
+  }
+
+  getRerouteButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    return {
+      disabled: !picklistQueueItem.Reroutable || this.multiSelectMode,
+      text: this.translationMap.REROUTE
     };
   }
 
