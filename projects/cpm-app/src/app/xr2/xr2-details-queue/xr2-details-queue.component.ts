@@ -356,10 +356,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   private RemovePicklistQueueItemAtIndex(matchingItemIndex: number) {
     if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
-      var matchingQueueItem = this.picklistQueueItems[matchingItemIndex];
       console.log('group exists removing it');
+      this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
       this.picklistQueueItems.splice(matchingItemIndex, 1);
-      this.picklistQueueItemRemovedEvent.emit([matchingQueueItem]);
       console.log(this.picklistQueueItems);
     }
     else {
