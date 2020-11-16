@@ -4,7 +4,7 @@ import { IPicklistQueueItemNonstandardJson } from './i-picklist-queue-item-nonst
 
 export interface IPicklistQueueItemListUpdateMessage {
     PicklistQueueItems: NonstandardJsonArray<IPicklistQueueItemNonstandardJson>;
-    AvailablePicklistQueueGroupKeys: Array<PicklistQueueGroupKey>;
+    AvailablePicklistQueueGroupKeys: NonstandardJsonArray<PicklistQueueGroupKey>;
     DeviceId: number;
     PickPriorityIdentity: number;
 }
