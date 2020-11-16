@@ -1,5 +1,6 @@
   <span [ngClass]="(wrap==true)?'headertextwrapped':'headertext'">
-    <div *ngIf="headerResourceKey">{{headerResourceKey | translate}}</div>
+    <div *ngIf="headerResourceKey" 
+         [ngClass]="bold ? 'boldheader' :  ''">{{headerResourceKey | translate}}</div>
   </span>
   <span class="headericon">
     <div *ngIf="currentSortPropertyName == columnPropertyName">

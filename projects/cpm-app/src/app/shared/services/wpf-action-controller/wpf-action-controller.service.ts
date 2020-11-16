@@ -67,4 +67,11 @@ export class WpfActionControllerService {
       this.wpfActionController.executeWpfContinueNavigationAction(action);
     }
   }
+
+  ExecuteActionName(actionName: string) {
+    if (this.wpfActionController != null) {
+      this.eventConnectionService.stop();
+      this.wpfActionController.executeActionName(actionName);
+    }
+  }
 }
