@@ -1,10 +1,10 @@
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
-import { PicklistQueueGroupKey } from '../../xr2/model/picklist-queue-group-key';
+import { IPicklistQueueGroupKeyNonStandardJson } from './i-picklist-queue-group-key-nonstandard.json';
 import { IPicklistQueueItemNonstandardJson } from './i-picklist-queue-item-nonstandard-json';
 
 export interface IPicklistQueueItemListUpdateMessage {
     PicklistQueueItems: NonstandardJsonArray<IPicklistQueueItemNonstandardJson>;
-    AvailablePicklistQueueGroupKeys: NonstandardJsonArray<PicklistQueueGroupKey>;
+    AvailablePicklistQueueGroupKeys: NonstandardJsonArray<IPicklistQueueGroupKeyNonStandardJson>;
     DeviceId: number;
     PickPriorityIdentity: number;
 }

@@ -30,8 +30,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() selectionChangedEvent: EventEmitter<any> = new EventEmitter();
-  @Output() picklistQueueItemAddorUpdatedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
-  @Output() picklistQueueItemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
+  @Output() picklistQueueItemAddorUpdatedEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() picklistQueueItemRemovedEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
 
   @Input() multiSelectMode: boolean;
 
@@ -331,7 +331,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  messagedPicklistQueueItem.ItemPicklistLines;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  messagedPicklistQueueItem.IsPrintable;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  messagedPicklistQueueItem.RobotPickGroupId;
-    this.picklistQueueItemAddorUpdatedEvent.emit(this.picklistQueueItems[matchingPicklistQueueItemIndex]);
+    this.picklistQueueItemAddorUpdatedEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
@@ -359,7 +359,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       var matchingQueueItem = this.picklistQueueItems[matchingItemIndex];
       console.log('group exists removing it');
       this.picklistQueueItems.splice(matchingItemIndex, 1);
-      this.picklistQueueItemRemovedEvent.emit(matchingQueueItem);
+      this.picklistQueueItemRemovedEvent.emit([matchingQueueItem]);
       console.log(this.picklistQueueItems);
     }
     else {
@@ -378,6 +378,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     if (!picklistQueueItemList) {
         console.log('No item in list clearing');
         this.picklistQueueItems = [];
+        // Clear event
         console.log(this.picklistQueueItems);
     } else {
         // Remove Items not in source list.

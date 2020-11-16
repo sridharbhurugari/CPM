@@ -3,7 +3,7 @@
     <ng-container class="ocgridheader">
       <div data-colwrap="true">
           <oc-checkbox
-            [selected]="picklistQueueItems && selectedItems.size === picklistQueueItems.length"
+            [selected]="picklistQueueItems && picklistQueueItems.length > 0 && selectedItems.size === picklistQueueItems.length"
             [noLabel]="true"
             [valueField]="checkboxToggleAll"
             (selection)="onSelectAllCheckBox($event)">
