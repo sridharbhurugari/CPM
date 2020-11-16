@@ -208,10 +208,14 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   onPicklistQueueItemsRemoved(picklistQueueItems: Array<PicklistQueueItem>) {
-    this.removeFromActionDisableMap(picklistQueueItems);
     _.forEach(picklistQueueItems, (item) => {
       this.selectedItems.delete(item);
     });
+    this.removeFromActionDisableMap(picklistQueueItems);
+
+    if (this.selectedItems.size === 0) {
+      this.multiSelectMode = false;
+    }
   }
 
   private configureEventHandlers(): void {
