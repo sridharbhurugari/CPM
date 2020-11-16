@@ -59,12 +59,17 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
 
       if (message.EventId === 'RemovePicklistQueueItemMessage') {
         console.log(message);
+        let robotPickGroupId = null;
+        if(message.Xr2OrderGroupKey.RobotPickGroupId) {
+          robotPickGroupId = Guid.parse(message.Xr2OrderGroupKey.RobotPickGroupId)
+        }
+
         this.removePicklistQueueItemSubject.next({
           Xr2OrderGroupKey: {
             OrderId: message.Xr2OrderGroupKey.OrderId,
             OrderGroupDestinationId: message.Xr2OrderGroupKey.OrderGroupDestinationId,
             DeviceLocationId: message.Xr2OrderGroupKey.DeviceLocationId,
-            RobotPickGroupId: Guid.parse(message.Xr2OrderGroupKey.RobotPickGroupId),
+            RobotPickGroupId: robotPickGroupId,
           }
         });
         return;

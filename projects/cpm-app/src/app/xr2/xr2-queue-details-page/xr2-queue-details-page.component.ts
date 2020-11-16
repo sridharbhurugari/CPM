@@ -152,12 +152,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
-    const globalDispenseSyncRequestList = new Array<GlobalDispenseSyncRequest>();
-    _.forEach(picklistQueueItems, (item) => {
-      item.Saving = true;
-      globalDispenseSyncRequestList.push(new GlobalDispenseSyncRequest(item));
-    });
-    this.picklistsQueueService.sendQueueItemsToRobot(globalDispenseSyncRequestList).subscribe(
+    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems)
+    .subscribe(
       success => {
         this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
       }, error => {

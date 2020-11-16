@@ -10,6 +10,7 @@ import { RobotPrintRequest } from '../data-contracts/robot-print-request';
 import { ReroutePickListLine } from '../data-contracts/reroute-pick-list-line';
 import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 import { PicklistQueueGrouped } from '../../xr2/model/picklist-queue-grouped';
+import { PicklistQueueItem } from '../../xr2/model/picklist-queue-item';
 
 @Injectable({
   providedIn: 'root'
@@ -60,10 +61,10 @@ export class PicklistsQueueService {
     });
   }
 
-  sendQueueItemsToRobot(globalDispenseSyncRequests: Array<GlobalDispenseSyncRequest>) {
-    console.log(globalDispenseSyncRequests);
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot');
-    return this.httpClient.post(url, globalDispenseSyncRequests, {
+  sendQueueItemsToRobot(pickPriorityIdentity: string, picklistQueueItems: Array<PicklistQueueItem>) {
+    console.log(GlobalDispenseSyncRequest);
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot/' + pickPriorityIdentity);
+    return this.httpClient.post(url, picklistQueueItems, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
