@@ -15,6 +15,7 @@ import { DestinationTypes } from '../../shared/constants/destination-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
+import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
 
 
 @Component({
@@ -283,11 +284,27 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
+  removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey: IXr2OrderGroupKey): void {
+    console.log('removePicklistQueueItemByOrderGroupKey: looking to remove xr2 item with order id:' + xr2OrderGroupKey.OrderId +
+    'OrderGroupDestinationId' + xr2OrderGroupKey.OrderGroupDestinationId +
+    'DeviceLocationId' + xr2OrderGroupKey.DeviceLocationId,
+    'RobotPickGroupId' + xr2OrderGroupKey.RobotPickGroupId
+    );
+
+    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+      return x.OrderId === xr2OrderGroupKey.OrderId &&
+      x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
+      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
+    });
+
+    this.RemovePicklistQueueItemAtIndex(matchingItemIndex);
+  }
+
   addOrUpdatePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
     console.log('addOrUpdatePickListQueueItem');
     console.log(messagedPicklistQueueItem);
     let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId != null && x.RobotPickGroupId === messagedPicklistQueueItem.RobotPickGroupId;
+      return x.RobotPickGroupId != null && x.RobotPickGroupId == messagedPicklistQueueItem.RobotPickGroupId;
     });
 
     if (matchingPicklistQueueItemIndex < 0) {
@@ -315,10 +332,11 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  messagedPicklistQueueItem.IsPrintable;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  messagedPicklistQueueItem.RobotPickGroupId;
     this.picklistQueueItemAddorUpdatedEvent.emit(this.picklistQueueItems[matchingPicklistQueueItemIndex]);
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   removePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
-    console.log('looking to remove xr2 item with order id:' + messagedPicklistQueueItem.OrderId +
+    console.log('removePicklistQueueItem: looking to remove xr2 item with order id:' + messagedPicklistQueueItem.OrderId +
     'device ID:' + messagedPicklistQueueItem.DeviceId + 'priority code: ' + messagedPicklistQueueItem.PriorityCode +
     'OrderGroupDestinationId' + messagedPicklistQueueItem.OrderGroupDestinationId +
     'DeviceLocationId' + messagedPicklistQueueItem.DeviceLocationId,
@@ -329,16 +347,26 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       return x.OrderId === messagedPicklistQueueItem.OrderId &&
       x.OrderGroupDestinationId === messagedPicklistQueueItem.OrderGroupDestinationId &&
       x.DeviceLocationId === messagedPicklistQueueItem.DeviceLocationId &&
-      x.RobotPickGroupId === messagedPicklistQueueItem.RobotPickGroupId &&
+      x.RobotPickGroupId == messagedPicklistQueueItem.RobotPickGroupId &&
       x.DeviceId === messagedPicklistQueueItem.DeviceId && x.PriorityCode === messagedPicklistQueueItem.PriorityCode;
     });
 
-    if (matchingItemIndex > -1) {
+    this.RemovePicklistQueueItemAtIndex(matchingItemIndex);
+  }
+
+  private RemovePicklistQueueItemAtIndex(matchingItemIndex: number) {
+    if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
+      var matchingQueueItem = this.picklistQueueItems[matchingItemIndex];
       console.log('group exists removing it');
       this.picklistQueueItems.splice(matchingItemIndex, 1);
-      this.picklistQueueItemRemovedEvent.emit(this.picklistQueueItems[matchingItemIndex]);
+      this.picklistQueueItemRemovedEvent.emit(matchingQueueItem);
       console.log(this.picklistQueueItems);
     }
+    else {
+      console.log('Matching Index not found in queue to remove');
+    }
+
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   refreshDataOnScreen(picklistQueueItemList: IPicklistQueueItem[]) {
@@ -365,6 +393,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
             this.addOrUpdatePicklistQueueItem(x);
         });
     }
+
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   getOrderDate(picklistQueueItem: PicklistQueueItem): string {
