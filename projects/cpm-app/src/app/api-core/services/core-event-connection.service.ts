@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IDeviceOperationResultEvent } from '../events/i-device-operation-result-event';
@@ -7,11 +7,12 @@ import { IDeviceLeaseGrantedEvent } from '../events/i-device-lease-granted-event
 import { ICarouselFaultedEvent } from '../events/i-carousel.faulted-event';
 import { ICarouselReadyEvent } from '../events/i-carousel-ready-event';
 import { IRefreshDeviceNeedsEvent } from "../events/i-refresh-device-needs";
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CoreEventConnectionService {
+export class CoreEventConnectionService implements OnDestroy {
   public ocsIsHealthySubject = new Subject<boolean>();
   public deviceOperationResultEventSubject = new Subject<IDeviceOperationResultEvent>();
   public deviceLeaseGrantedSubject = new Subject<IDeviceLeaseGrantedEvent>();
@@ -19,15 +20,25 @@ export class CoreEventConnectionService {
   public carouselFaultedSubject = new Subject<ICarouselFaultedEvent>();
   public carouselReadySubject = new Subject<ICarouselReadyEvent>();
   public refreshDeviceNeedsSubject = new Subject<IRefreshDeviceNeedsEvent>();
+  public ngUnsubscribe = new Subject();
 
   public startedSubject = new ReplaySubject(1);
 
   constructor(
     private eventConnectionService: EventConnectionService
     ) {
-    this.eventConnectionService.receivedSubject.subscribe(message => this.eventHandlers(message));
-    this.eventConnectionService.startedSubject.subscribe(() => this.startedSubject.next());
-   }
+    this.eventConnectionService.receivedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => this.eventHandlers(message));
+    this.eventConnectionService.startedSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.startedSubject.next());
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   private eventHandlers(message: any): void {
     try {
@@ -105,14 +116,14 @@ export class CoreEventConnectionService {
         this.deviceLeaseGrantedSubject.next({
           DeviceId: message.DeviceId,
           RequestId: message.RequestId,
-        })
+        });
       }
 
       if (message.EventId === 'HardwareLeaseDeniedEvent') {
         this.deviceLeaseDeniedSubject.next({
           DeviceId: message.DeviceId,
           RequestId: message.RequestId,
-        })
+        });
       }
 
       if (message.EventId === 'CarouselIsReadyEvent') {

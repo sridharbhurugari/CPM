@@ -6,11 +6,12 @@ import {
   AfterViewChecked,
   HostListener,
   ElementRef,
+  OnDestroy,
 } from "@angular/core";
 import * as _ from "lodash";
 import { WpfActionControllerService } from "../../shared/services/wpf-action-controller/wpf-action-controller.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, forkJoin, merge } from "rxjs";
+import { Observable, forkJoin, merge, Subject } from "rxjs";
 import {
   NumericComponent,
   DatepickerComponent,
@@ -34,7 +35,7 @@ import { IGuidedManualCycleCountItems } from "../../api-core/data-contracts/i-gu
 import { GuidedManualCycleCountItems } from "../../api-core/data-contracts/guided-manual-cycle-count-items";
 import { IGuidedManualCycleCountItemid } from "../../api-core/data-contracts/i-guided-manual-cycle-count-itemid";
 import { GuidedManualCycleCountItemid } from "../../api-core/data-contracts/guided-manual-cycle-count-itemid";
-import { map, switchMap, shareReplay, filter } from "rxjs/operators";
+import { map, switchMap, shareReplay, filter, takeUntil } from "rxjs/operators";
 import { GuidedManualCycleCountServiceService } from "../../api-core/services/guided-manual-cycle-count-service.service";
 import { DeviceLocationAccessResult } from "../../shared/enums/device-location-access-result";
 import { CarouselLocationAccessService } from "../../shared/services/devices/carousel-location-access.service";
@@ -59,7 +60,7 @@ import { GuidedManualCycleCountScanItem } from "../../api-core/data-contracts/Gu
   styleUrls: ["./guidedinvmgmt-manualcyclecount-page.component.scss"],
 })
 export class GuidedinvmgmtManualcyclecountPageComponent
-  implements OnInit, AfterViewInit, AfterViewChecked {
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   private _leaseDeniedTitle$: Observable<string>;
 
   @ViewChild(NumericComponent, null) numericElement: NumericComponent;
@@ -144,6 +145,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   ItemBrandNameOverlap: boolean;
   itemDescriptionWidth: any = 0;
   itemDescriptionWidthScroll: any = 0;
+  ngUnsubscribe = new Subject();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -253,6 +255,9 @@ export class GuidedinvmgmtManualcyclecountPageComponent
   }
 
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
     if (this.timeIntervalId) {
       clearInterval(this.timeIntervalId);
     }
@@ -384,7 +389,7 @@ export class GuidedinvmgmtManualcyclecountPageComponent
                         ? date.getDate()
                         : "0" + date.getDate()) +
                       "/" +
-                      (date.getFullYear() === 1 ? 1900 : date.getFullYear());               
+                      (date.getFullYear() === 1 ? 1900 : date.getFullYear());
           this.CycleCountValidation();
         }
       }
@@ -496,8 +501,12 @@ export class GuidedinvmgmtManualcyclecountPageComponent
       )
         this.DisableActionButtons(true);
     }
-    this.coreEventConnectionService.carouselReadySubject.pipe(filter(x => x.DeviceId.toString() === this.deviceId)).subscribe(x => this.carouselFaulted = false);
-    this.coreEventConnectionService.carouselFaultedSubject.pipe(filter(x => x.DeviceId.toString() === this.deviceId)).subscribe(x => this.carouselFaulted = true);
+    this.coreEventConnectionService.carouselReadySubject
+      .pipe(filter(x => x.DeviceId.toString() === this.deviceId), takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject
+      .pipe(filter(x => x.DeviceId.toString() === this.deviceId), takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.carouselFaulted = true);
   }
 
   DisableActionButtons(value: boolean) {

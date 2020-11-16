@@ -36,55 +36,61 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
 
-  let deviceNeedData: IItemReplenishmentNeed[] = [ {ItemId: "39301",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
-      PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
-      ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
+  let deviceNeedData: IItemReplenishmentNeed[] = [{
+      ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+      DeviceQuantityOnHand: 10, DeviceQuantityNeeded: 5, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityNeeded: "20", DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+      PickLocationDeviceLocationId: 10, PickLocationDescription: 'Patient', PickLocationQoh: 20,
+      ItemFormattedDescription: 'abacavir-lamivudine', ItemBrandNameDescription: 'EPZICOM', ItemIdDescription: '39301',
       SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
-    {ItemId: "8939",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
-      PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
-      ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
+    {
+      ItemId: "8939", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+      DeviceQuantityOnHand: 10, DeviceQuantityNeeded: 5, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityNeeded: "20", DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+      PickLocationDeviceLocationId: 10, PickLocationDescription: 'Patient', PickLocationQoh: 20,
+      ItemFormattedDescription: 'abacavir-lamivudine', ItemBrandNameDescription: 'EPZICOM', ItemIdDescription: '39301',
       SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
-    {ItemId: "5005",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
-      PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
-      ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
+    {
+      ItemId: "5005", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+      DeviceQuantityOnHand: 10, DeviceQuantityNeeded: 5, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityNeeded: "20", DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+      PickLocationDeviceLocationId: 10, PickLocationDescription: 'Patient', PickLocationQoh: 20,
+      ItemFormattedDescription: 'abacavir-lamivudine', ItemBrandNameDescription: 'EPZICOM', ItemIdDescription: '39301',
       SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
-    {ItemId: "39301",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
-      PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
-      ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
+    {
+      ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+      DeviceQuantityOnHand: 10, DeviceQuantityNeeded: 5, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityNeeded: "20", DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+      PickLocationDeviceLocationId: 10, PickLocationDescription: 'Patient', PickLocationQoh: 20,
+      ItemFormattedDescription: 'abacavir-lamivudine', ItemBrandNameDescription: 'EPZICOM', ItemIdDescription: '39301',
       SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
-    {ItemId: "1029",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
-      PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
-      ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
+    {
+      ItemId: "1029", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+      DeviceQuantityOnHand: 10, DeviceQuantityNeeded: 5, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityNeeded: "20", DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+      PickLocationDeviceLocationId: 10, PickLocationDescription: 'Patient', PickLocationQoh: 20,
+      ItemFormattedDescription: 'abacavir-lamivudine', ItemBrandNameDescription: 'EPZICOM', ItemIdDescription: '39301',
       SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
-    {ItemId: "677373",ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET",ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10,DeviceQuantityNeeded: 5,DeviceParLevel: 10,DeviceRestockLevel: 200,PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10',DisplayNumberOfPackages: '4',DisplayDeviceQuantityNeeded:"20",DisplayDeviceQuantityOnHand:"10",DisplayQohNumberOfPackages:'10',PackSize: 5,Xr2Item: true,UnitOfIssue:'EA',
-      PickLocationDeviceLocationId: 10,PickLocationDescription: 'Patient', PickLocationQoh: 20,
-      ItemFormattedDescription: 'abacavir-lamivudine',ItemBrandNameDescription: 'EPZICOM',ItemIdDescription: '39301',
+    {
+      ItemId: "677373", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+      DeviceQuantityOnHand: 10, DeviceQuantityNeeded: 5, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityNeeded: "20", DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+      PickLocationDeviceLocationId: 10, PickLocationDescription: 'Patient', PickLocationQoh: 20,
+      ItemFormattedDescription: 'abacavir-lamivudine', ItemBrandNameDescription: 'EPZICOM', ItemIdDescription: '39301',
       SortFormattedName: 'abacavir-lamivudine 600-300 mg TABLET', DestinationDeviceDescription: 'XR2'
     },
-  ]
-    const needs = [
+  ];
+
+  const needs = [
       {
-        Xr2Item: true,
-        
+        Xr2Item: true
       }
-    ];
+  ];
 
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: () => { } };
