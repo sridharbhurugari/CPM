@@ -1,9 +1,9 @@
 export class PicklistQueueGroupKey {
-  constructor(deviceId: number, pickPriorityIdentifier: number) {
+  constructor(deviceId: number, pickPriorityIdentity: number) {
     this.DeviceId = deviceId;
-    this.PickPriorityIdentifier = pickPriorityIdentifier;
+    this.PickPriorityIdentity = pickPriorityIdentity;
   }
 
   DeviceId: number;
-  PickPriorityIdentifier: number;
+  PickPriorityIdentity: number;
 }
