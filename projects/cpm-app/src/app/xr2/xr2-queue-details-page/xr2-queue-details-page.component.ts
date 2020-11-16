@@ -22,6 +22,7 @@ import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { PicklistQueueGroupKey } from '../model/picklist-queue-group-key';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 
 
 @Component({
@@ -224,6 +225,18 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         this.handlePicklistQueueItemListUpdateSubject(x);
       } catch (exception) {
         console.log('picklistQueueItemListUpdateSubject - picklistQueueItemListUpdateSubject failed!');
+        console.log(exception);
+      }
+    });
+
+    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(x => {
+      try {
+        this.handleRemovePicklistQueueItemSubject(x);
+      } catch (exception) {
+        console.log('picklistQueueItemListUpdateSubject - handleRemovePicklistQueueItemSubject failed!');
+        console.log(exception);
       }
     });
   }
@@ -270,7 +283,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private handlePicklistQueueItemAddorUpdateSubject(x: IAddOrUpdatePicklistQueueItemMesssage) {
-    console.log('picklistQueueItemAddorUpdateSubject called');
+    console.log('handlePicklistQueueItemAddorUpdateSubject called');
     if (!this.isValidMessageClient(x.PicklistQueueItem.DeviceId.toString(),
     x.PicklistQueueItem.PickPriorityIdentity.toString())) {
       console.log('Add or update queue item event recieved but not a valid client');
@@ -281,10 +294,16 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.childDetailsQueueComponent.addOrUpdatePicklistQueueItem(pickListQueueItem);
   }
 
-  private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
-    console.log('picklistQueueItemListUpdateSubject called');
+  private handleRemovePicklistQueueItemSubject(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage) {
+    console.log('handleRemovePicklistQueueItemSubject called');
+      const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
+      this.childDetailsQueueComponent.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
+  }
 
-    if (!x.AvailablePicklistQueueGroupKeys || !this.hasValidGroupKey(x.AvailablePicklistQueueGroupKeys)) {
+  private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
+    console.log('handlePicklistQueueItemListUpdateSubject called');
+
+    if (!x.AvailablePicklistQueueGroupKeys || !this.hasValidGroupKey(x.AvailablePicklistQueueGroupKeys.$values)) {
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
       return;
     }
@@ -306,7 +325,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   private hasValidGroupKey(availablePicklistQueueGroupKeys: PicklistQueueGroupKey[]): boolean {
     return availablePicklistQueueGroupKeys.some((key) => {
       return key.DeviceId.toString() === this.xr2QueueNavigationParameters.deviceId &&
-      key.PickPriorityIdentifier.toString() === this.xr2QueueNavigationParameters.pickPriorityIdentity;
+      key.PickPriorityIdentity.toString() === this.xr2QueueNavigationParameters.pickPriorityIdentity;
     });
   }
 
