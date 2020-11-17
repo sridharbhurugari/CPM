@@ -13,11 +13,13 @@ describe('Xr2QueuePageComponent', () => {
   let fixture: ComponentFixture<Xr2QueuePageComponent>;
   let translateService: Partial<TranslateService>;
   let xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
- 
+
   beforeEach(async(() => {
     xr2QueueNavigationParameters = {
       pickPriorityIdentity: '1',
-      deviceId: '1'};
+      deviceId: '1',
+      priorityCodeDescription: 'description'
+    };
 
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
@@ -49,11 +51,11 @@ describe('Xr2QueuePageComponent', () => {
       expect(component.xr2QueueNavigationParameters).toBe(null);
     });
 
-    it('should set xr2QueueNavigationParameters on details page continue', () => {
-      component.xr2QueueNavigationParameters = xr2QueueNavigationParameters;
-      component.onDetailsPageContinueNavigation(xr2QueueNavigationParameters);
+  it('should set xr2QueueNavigationParameters on details page continue', () => {
+    component.xr2QueueNavigationParameters = xr2QueueNavigationParameters;
+    component.onDetailsPageContinueNavigation(xr2QueueNavigationParameters);
 
-      expect(component.xr2QueueNavigationParameters).not.toBeNull();
-      });
+    expect(component.xr2QueueNavigationParameters).not.toBeNull();
     });
+  });
 
