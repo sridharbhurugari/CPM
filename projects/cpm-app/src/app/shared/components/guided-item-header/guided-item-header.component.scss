@@ -1,0 +1,48 @@
+@import "../../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host {
+  height:209px;
+}
+.guidedItemHeader { 
+    border-bottom: solid  #c8c8c8 1px;    
+    min-height: 122px;
+}
+.itemNames{
+    font-size: 40px;
+    font-family: $font-family-sans-serif;
+    color:$text-color;
+    margin: 4px 15px 0px 15px;
+    border-bottom: solid  #c8c8c8 1px;    
+    padding-bottom: 15px;
+}
+.genericName {
+    font-weight: bold;
+    margin-bottom: -5px;
+}
+.brandName {
+  min-height: 53px;
+}
+.itemIdBox{     
+  box-sizing: border-box;
+  width: 360px;  
+  border-right: solid  #c8c8c8 1px; 
+  padding-left: 15px;
+  margin: 10px 0px 10px 0px;
+}
+
+
+  .panelContainer1 {
+    display: flex;
+    flex-direction: row;
+  }
+  .devicelocationaccess{
+    margin-top:14px;
+    margin-left: auto;
+    margin-right: 15px;
+  }
+  .DeviceLocation{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0px 10px 15px;
+  }

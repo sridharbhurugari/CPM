@@ -13,6 +13,7 @@ import { EditPickRoutePageComponent } from "./edit-pick-route-page/edit-pick-rou
 import { GuidedInvMgmtCycleCountPageComponent } from "./guidedinvmgmt-cyclecount-page/guidedinvmgmt-cyclecount-page.component";
 import { UnderfilledPicklistsPageComponent } from "./underfilled-picklists-page/underfilled-picklists-page.component";
 import { UnderfilledPicklistLinesPageComponent } from "./underfilled-picklist-lines-page/underfilled-picklist-lines-page.component";
+import { InternalTransferPickPageComponent } from './internal-transfer-pick-page/internal-transfer-pick-page.component';
 
 const routes: Routes = [
   { path: 'internalTransfer/deviceReplenishmentNeeds', component: InternalTransferDeviceSummariesPageComponent },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'guidedinvmgmt/cyclecount', component: GuidedInvMgmtCycleCountPageComponent },
   { path: 'picklists/underfilled', component: UnderfilledPicklistsPageComponent },
   { path: 'picklists/underfilled/picklistLines', component: UnderfilledPicklistLinesPageComponent },
+  { path: 'internalTransfer/guidedpicking', component: InternalTransferPickPageComponent },
 ];
 
 @NgModule({

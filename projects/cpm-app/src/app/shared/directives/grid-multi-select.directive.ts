@@ -4,6 +4,7 @@ import { IGridSelectionChanged } from '../events/i-grid-selection-changed';
 import { SelectionChangeType } from '../constants/selection-change-type';
 import { Subscription } from 'rxjs';
 import { CheckboxValues } from '../constants/checkbox-values';
+import { ISelectable } from '../model/i-selectable';
 
 
 @Directive({
@@ -27,7 +28,10 @@ export class GridMultiSelectDirective {
       this._subscriptions = [];
     }
 
-    values && values.forEach(x => this._subscriptions.push(x.selection && x.selection.subscribe(x => this.onRowCheckChanged(x))));
+    values && values.forEach(x => this._subscriptions.push(x.selection && x.selection.subscribe(s => this.onRowCheckChanged(s))));
+    if (this._possibleValues && this._possibleValues.length && this._possibleValues[0].SelectionStateChanged) {
+      this._possibleValues.forEach(x => this._subscriptions.push(x.SelectionStateChanged.subscribe(s => this.onRowCheckChanged(s))));
+    }
   }
 
   constructor() { }

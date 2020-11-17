@@ -1,0 +1,11 @@
+<div class="tabRow">
+    <div class="tab" [class.selected]="selectedTab == headerResourceKey"
+        *ngFor="let headerResourceKey of tabHeaderResourceKeys" (click)="tabSelected(headerResourceKey)">
+        <span>
+            {{headerResourceKey | translate}}
+        </span>
+    </div>
+</div>
+<div class="tabContents">
+    <ng-content></ng-content>
+</div>

@@ -21,4 +21,7 @@ export class MockColHeaderSortable {
 
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
+
+  @Input()
+  bold: boolean;
 }

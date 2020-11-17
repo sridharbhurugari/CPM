@@ -5,6 +5,7 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
+import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -69,7 +70,7 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
       this.searchTextFilter = data;
       this.windowService.dispatchResizeEvent();
     });
-    this.fixCheckAllNoneClass();
+    fixCheckAllNoneClass(this.headerCheckContainer);
   }
 
   selectedItemsChanged(selectionEvent: IGridSelectionChanged<IItemReplenishmentNeed>) {
@@ -78,7 +79,4 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
     this.areAllValuesSelected = selectionEvent.areAllValuesSelected;
   }
 
-  private fixCheckAllNoneClass() {
-    this.headerCheckContainer.nativeElement.className = 'first';
-  }
 }

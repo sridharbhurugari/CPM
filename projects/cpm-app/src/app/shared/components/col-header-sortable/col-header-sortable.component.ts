@@ -25,6 +25,9 @@ export class ColHeaderSortableComponent implements OnInit {
   @Input()
   wrap: boolean;
 
+  @Input()
+  bold: boolean = false
+
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 

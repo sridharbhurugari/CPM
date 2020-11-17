@@ -200,3 +200,59 @@ $light-blue: #97C0E6;
 
 // Global Fonts
 $grid-title-font: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+
+.ocbtn:disabled {
+  pointer-events: none;
+}
+
+.ocbtn {
+  line-height: 1.5;
+  position: relative;
+  cursor: pointer;
+  box-sizing: border-box;
+  pointer-events: auto;
+  outline: none;
+  color: #fff;
+  border: none;
+  overflow: hidden;
+  min-width: 160px;
+  margin: 0;
+  height: 50px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 25px;
+  padding-right: 25px;
+  display: inline-flex;
+  justify-content: center;
+  font-weight: 500;
+  font-family: "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+  font-size: 20px;
+  text-align: center;
+  white-space: nowrap;
+  align-items: center;
+  -webkit-appearance: none;
+}
+.ocbtn oc-svgicon {
+  display: inline-block;
+  position: absolute;
+  top: 13px;
+  line-height: 1;
+}
+
+.ocbtn:disabled {
+  cursor: default;
+  opacity: 0.4;
+  color: #cccccc;
+}
+
+.secondary {
+  border-radius: 5px;
+  background-color: #69c;
+}
+.secondary.iconOnly {
+  border-radius: 25px;
+  min-width: 50px;
+}
+.secondary oc-svgicon {
+  left: 10px;
+}
