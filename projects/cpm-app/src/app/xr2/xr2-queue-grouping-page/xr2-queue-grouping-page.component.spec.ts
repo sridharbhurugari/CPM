@@ -38,7 +38,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
   let picklistQueueService: Partial<PicklistsQueueService>;
   let devicesService: Partial<DevicesService>;
 
-  let spyChildchildGroupingQueueComponent: jasmine.Spy;
+  let spyChildGroupingQueueComponent: jasmine.Spy;
   let selectedDeviceInformation: SelectableDeviceInfo;
   let outputDevice: OutputDevice = {DeviceId: '1', IsActive: true, Label: 'XR2'};
   const availableOutputDeviceList = [ outputDevice ] as Array<OutputDevice>;
@@ -120,7 +120,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     });
 
     it('should update on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {
-       spyChildchildGroupingQueueComponent =
+       spyChildGroupingQueueComponent =
          spyOn(component.childGroupingQueueComponent, 'updatePickListQueueGroupedGrouping');
        component.ngOnInit();
        tick();
@@ -137,11 +137,11 @@ describe('Xr2QueueGroupingPageComponent', () => {
        const fakeUpdateEvent = {PicklistQueueGrouped: pickListQueueGroupedUpdate, PriorityCode: priorityCode, DeviceId: deviceId};
        picklistsQueueEventConnectionService.picklistQueueGroupedUpdateSubject.next(fakeUpdateEvent);
        tick(500);
-       expect(spyChildchildGroupingQueueComponent).toHaveBeenCalled();
+       expect(spyChildGroupingQueueComponent).toHaveBeenCalled();
     }));
 
     it('should remove on picklistQueueGroupedUpdateSubject event', fakeAsync(() => {
-      spyChildchildGroupingQueueComponent =
+      spyChildGroupingQueueComponent =
         spyOn(component.childGroupingQueueComponent, 'removePicklistQueueGroup');
 
       component.ngOnInit();
@@ -154,11 +154,11 @@ describe('Xr2QueueGroupingPageComponent', () => {
       const fakeUpdateEvent = {PicklistQueueGrouped: null, PriorityCode: priorityCode, DeviceId: deviceId};
       picklistsQueueEventConnectionService.picklistQueueGroupedUpdateSubject.next(fakeUpdateEvent);
       tick(500);
-      expect(spyChildchildGroupingQueueComponent).toHaveBeenCalled();
+      expect(spyChildGroupingQueueComponent).toHaveBeenCalled();
     }));
 
     it('should refreshDataOnScreen with list on picklistQueueGroupedListUpdateSubject event', fakeAsync(() => {
-      spyChildchildGroupingQueueComponent =
+      spyChildGroupingQueueComponent =
         spyOn(component.childGroupingQueueComponent, 'refreshDataOnScreen');
 
       component.ngOnInit();
@@ -179,12 +179,12 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
       picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject.next(fakeListUpdateEvent);
       tick(500);
-      expect(spyChildchildGroupingQueueComponent).toHaveBeenCalled();
+      expect(spyChildGroupingQueueComponent).toHaveBeenCalled();
 
     }));
 
     it('should refreshDataOnScreen with empty list on picklistQueueGroupedListUpdateSubject event', fakeAsync(() => {
-      spyChildchildGroupingQueueComponent =
+      spyChildGroupingQueueComponent =
         spyOn(component.childGroupingQueueComponent, 'refreshDataOnScreen');
 
       component.ngOnInit();
@@ -199,7 +199,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
       picklistsQueueEventConnectionService.picklistQueueGroupedListUpdateSubject.next(fakeListUpdateEvent);
       tick(500);
-      expect(spyChildchildGroupingQueueComponent).toHaveBeenCalled();
+      expect(spyChildGroupingQueueComponent).toHaveBeenCalled();
 
     }));
 
@@ -232,7 +232,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
     }));
 
     it('should call filterPicklistQueueGroupedByDeviceId  when onDeviceSelectionChanged', () => {
-      spyChildchildGroupingQueueComponent =
+      spyChildGroupingQueueComponent =
       spyOn(component.childGroupingQueueComponent, 'filterPicklistQueueGroupedByDeviceId');
       let selectedDeviceInfo = new SelectableDeviceInfo(null);
       selectedDeviceInfo.DeviceId = 0;
@@ -252,7 +252,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
       component.onDeviceSelectionChanged(selectedDeviceInfoNew);
 
-      expect(spyChildchildGroupingQueueComponent).toHaveBeenCalledTimes(1);
+      expect(spyChildGroupingQueueComponent).toHaveBeenCalledTimes(1);
     });
 
     it('should save config and emit on processDetailsNavigate', () => {

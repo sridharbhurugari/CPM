@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 
 import { Xr2QueuePageComponent } from './xr2-queue-page.component';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
-import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 
 describe('Xr2QueuePageComponent', () => {
@@ -16,9 +15,9 @@ describe('Xr2QueuePageComponent', () => {
 
   beforeEach(async(() => {
     xr2QueueNavigationParameters = {
+      priorityCodeDescription: 'code',
       pickPriorityIdentity: '1',
       deviceId: '1',
-      priorityCodeDescription: 'description'
     };
 
     translateService = {
