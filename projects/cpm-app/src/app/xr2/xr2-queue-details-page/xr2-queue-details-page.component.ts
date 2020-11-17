@@ -227,8 +227,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       try {
         this.handlePicklistQueueItemAddorUpdateSubject(x);
       } catch (e) {
+        console.log(e);
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-          this.constructor.name + ' addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed: ' + e);
+          this.constructor.name + ' addOrUpdatePicklistQueueItemSubject - handlePicklistQueueItemAddorUpdateSubject failed: ' + e);
       }
     });
 
@@ -237,9 +238,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     .subscribe(x => {
       try {
         this.handlePicklistQueueItemListUpdateSubject(x);
-      } catch (exception) {
-        console.log('picklistQueueItemListUpdateSubject - picklistQueueItemListUpdateSubject failed!');
-        console.log(exception);
+      } catch (e) {
+        console.log(e);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this.constructor.name + ' picklistQueueItemListUpdateSubject - handlePicklistQueueItemListUpdateSubject failed: ' + e);
       }});
 
     this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
@@ -247,9 +249,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     .subscribe(x => {
       try {
         this.handleRemovePicklistQueueItemSubject(x);
-      } catch (exception) {
-        console.log('picklistQueueItemListUpdateSubject - handleRemovePicklistQueueItemSubject failed!');
-        console.log(exception);
+      } catch (e) {
+        console.log(e);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this.constructor.name + ' removePicklistQueueItemSubject - handleRemovePicklistQueueItemSubject failed: ' + e);
       }
     });
   }
@@ -301,43 +304,43 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.displayFailedToSaveDialog();
   }
 
-  private handlePicklistQueueItemAddorUpdateSubject(x: IAddOrUpdatePicklistQueueItemMesssage) {
+  private handlePicklistQueueItemAddorUpdateSubject(addOrUpdateMessage: IAddOrUpdatePicklistQueueItemMesssage) {
     console.log('handlePicklistQueueItemAddorUpdateSubject called');
-    if (!this.isValidMessageClient(x.PicklistQueueItem.DeviceId.toString(),
-    x.PicklistQueueItem.PickPriorityIdentity.toString())) {
+    if (!this.isValidMessageClient(addOrUpdateMessage.PicklistQueueItem.DeviceId.toString(),
+    addOrUpdateMessage.PicklistQueueItem.PickPriorityIdentity.toString())) {
       console.log('Add or update queue item event recieved but not a valid client');
       return;
     }
 
-    const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(x.PicklistQueueItem);
+    const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdateMessage.PicklistQueueItem);
     this.childDetailsQueueComponent.addOrUpdatePicklistQueueItem(pickListQueueItem);
   }
 
-  private handleRemovePicklistQueueItemSubject(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage) {
+  private handleRemovePicklistQueueItemSubject(removeMessage: IRemovePicklistQueueItemMessage) {
     console.log('handleRemovePicklistQueueItemSubject called');
-      const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
-      this.childDetailsQueueComponent.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
+    const xr2OrderGroupKey = removeMessage.Xr2OrderGroupKey;
+    this.childDetailsQueueComponent.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
   }
 
-  private handlePicklistQueueItemListUpdateSubject(x: IPicklistQueueItemListUpdateMessage) {
+  private handlePicklistQueueItemListUpdateSubject(listUpdateMessage: IPicklistQueueItemListUpdateMessage) {
     console.log('handlePicklistQueueItemListUpdateSubject called');
 
-    const availablePicklistQueueGroupKeys = x.AvailablePicklistQueueGroupKeys.$values
+    const availablePicklistQueueGroupKeys = listUpdateMessage.AvailablePicklistQueueGroupKeys.$values
     .map((key) => PicklistQueueGroupKey.fromNonstandardJson(key));
 
     if (!availablePicklistQueueGroupKeys || !this.hasValidGroupKey(availablePicklistQueueGroupKeys)) {
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
       return;
     }
-    if (!this.isValidMessageClient(x.DeviceId.toString(), x.PickPriorityIdentity.toString())) {
+    if (!this.isValidMessageClient(listUpdateMessage.DeviceId.toString(), listUpdateMessage.PickPriorityIdentity.toString())) {
       console.log('Queue item List update recieved but not a valid client');
       return;
     }
-    if (!x.PicklistQueueItems.$values || x.PicklistQueueItems.$values.length === 0) {
+    if (!listUpdateMessage.PicklistQueueItems.$values || listUpdateMessage.PicklistQueueItems.$values.length === 0) {
       console.log('Empty List just clear screen');
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
     } else {
-        const picklistQueueItemList = x.PicklistQueueItems.$values.map((picklistQueueItem) => {
+        const picklistQueueItemList = listUpdateMessage.PicklistQueueItems.$values.map((picklistQueueItem) => {
           return PicklistQueueItem.fromNonstandardJson(picklistQueueItem);
         });
         this.childDetailsQueueComponent.refreshDataOnScreen(picklistQueueItemList);

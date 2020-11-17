@@ -139,12 +139,10 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   getItemPriorityLabel(picklistQueueItem: PicklistQueueItem): string {
     let label = '';
 
-    if (picklistQueueItem.PatientCount > 1) {
-      label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
-        this.translationMap.PATIENTS : this.translationMap.ITEMS;
+    if (picklistQueueItem.DestinationType === DestinationTypes.Patient) {
+      label = picklistQueueItem.PatientCount > 1 ? this.translationMap.PATIENTS : this.translationMap.PATIENT;
     } else {
-      label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
-        this.translationMap.PATIENT : this.translationMap.ITEM;
+      label = picklistQueueItem.ItemCount > 1 ? this.translationMap.ITEMS : this.translationMap.ITEM;
     }
 
     return label;

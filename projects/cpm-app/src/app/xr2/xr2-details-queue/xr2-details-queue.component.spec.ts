@@ -306,104 +306,6 @@ describe('Xr2DetailsQueueComponent', () => {
     });
   });
 
-  describe('Queue Eventing', () => {
-    // it('should add picklist queue item on add or update event', () => {
-    //   const fakeRobotGroupId = Guid.create();
-    //   const pickListItemUpdate = new PicklistQueueItem(null);
-    //   const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
-    //   const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
-    //   component.picklistQueueItems = [];
-
-    //   const picklistItemAdd = {} as IPicklistQueueItemNonstandardJson;
-    //   picklistItemAdd.RobotPickGroupId = fakeRobotGroupId;
-    //   picklistItemAdd.ItemPicklistLines = itemPicklistLines;
-    //   picklistItemAdd.AvailableOutputDeviceList = availableOutputDeviceList;
-    //   const fakeAddEvent = {PicklistQueueItem: picklistItemAdd};
-
-    //   picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeAddEvent);
-
-    //   expect(component.picklistQueueItems.length).toBe(1);
-    // });
-
-    // it('should update picklist queue item on add or update event by robot group ID', () => {
-    //   const fakeRobotGroupId = Guid.create();
-    //   const existingQueueItem = new PicklistQueueItem(null);
-    //   const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
-    //   const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
-
-    //   existingQueueItem.Status = 1;
-    //   existingQueueItem.RobotPickGroupId = fakeRobotGroupId;
-    //   component.picklistQueueItems = [
-    //     existingQueueItem
-    //   ]
-
-    //   const pickListItemUpdate = {} as IPicklistQueueItemNonstandardJson;
-    //   pickListItemUpdate.Status = 2;
-    //   pickListItemUpdate.ItemPicklistLines = itemPicklistLines;
-    //   pickListItemUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
-    //   pickListItemUpdate.RobotPickGroupId = fakeRobotGroupId;
-    //   const fakeUpdateEvent = {PicklistQueueItem: pickListItemUpdate};
-
-    //   picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeUpdateEvent);
-
-    //   expect(existingQueueItem.Status).toBe(pickListItemUpdate.Status);
-    // });
-
-  //   it('should update picklist queue item on add or update event by order and order destination IDs', () => {
-  //     const existingQueueItem = new PicklistQueueItem(null);
-  //     const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
-  //     const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
-
-  //     existingQueueItem.Status = 1;
-  //     existingQueueItem.OrderId = 'orderId';
-  //     existingQueueItem.DeviceLocationId = 1;
-  //     existingQueueItem.OrderGroupDestinationId = '1';
-  //     existingQueueItem.RobotPickGroupId = null;
-  //     component.picklistQueueItems = [
-  //       existingQueueItem
-  //     ];
-
-  //     const pickListItemUpdate = {} as IPicklistQueueItemNonstandardJson;
-  //     pickListItemUpdate.Status = 2;
-  //     pickListItemUpdate.OrderId = 'orderId';
-  //     pickListItemUpdate.DeviceLocationId = 1;
-  //     pickListItemUpdate.OrderGroupDestinationId = '1';
-  //     pickListItemUpdate.ItemPicklistLines = itemPicklistLines;
-  //     pickListItemUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
-
-  //     const fakeUpdateEvent = {PicklistQueueItem: pickListItemUpdate};
-
-  //     picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeUpdateEvent);
-
-  //     expect(existingQueueItem.Status).toBe(pickListItemUpdate.Status);
-  //   });
-
-  //   it('should remove picklist queue item on remove event', () => {
-  //     const fakeRobotGroupId = Guid.create();
-  //     const existingQueueItem = new PicklistQueueItem(null);
-
-  //     existingQueueItem.OrderId = 'orderId';
-  //     existingQueueItem.OrderGroupDestinationId = 'destinationId';
-  //     existingQueueItem.DeviceLocationId = 1;
-  //     existingQueueItem.RobotPickGroupId = fakeRobotGroupId;
-  //     component.picklistQueueItems = [
-  //       existingQueueItem
-  //     ]
-
-  //     const xr2OrderGroupKey: IXr2OrderGroupKey = {
-  //       OrderId: 'orderId',
-  //       OrderGroupDestinationId: 'destinationId',
-  //       DeviceLocationId: 1,
-  //       RobotPickGroupId: fakeRobotGroupId
-  //     };
-  //     const fakeEvent = {Xr2OrderGroupKey: xr2OrderGroupKey};
-
-  //     picklistsQueueEventConnectionService.removePicklistQueueItemSubject.next(fakeEvent);
-
-  //     expect(component.picklistQueueItems.length).toBe(0);
-  //   });
-  });
-
   describe('Display Text Labels', () => {
     it('should display release button on new status', () => {
       const expectedText = 'RELEASE';
@@ -501,41 +403,41 @@ describe('Xr2DetailsQueueComponent', () => {
       expect(label2).toBe(expectedLabel2);
     });
 
-    // it('should display patient/patients priority labels on patient destination type', () => {
-    //   const expectedLabel1 = 'PATIENT';
-    //   const expectedLabel2 = 'PATIENTS';
-    //   const patientItem1 = new PicklistQueueItem(null);
-    //   const patientItem2 = new PicklistQueueItem(null);
-    //   patientItem1.ItemCount = 1;
-    //   patientItem2.ItemCount = 2;
-    //   patientItem1.DestinationType = DestinationTypes.Patient;
-    //   patientItem2.DestinationType = DestinationTypes.Patient;
+    it('should display patient/patients priority labels on patient destination type', () => {
+      const expectedLabel1 = 'PATIENT';
+      const expectedLabel2 = 'PATIENTS';
+      const patientItem1 = new PicklistQueueItem(null);
+      const patientItem2 = new PicklistQueueItem(null);
+      patientItem1.PatientCount = 1;
+      patientItem2.PatientCount = 2;
+      patientItem1.DestinationType = DestinationTypes.Patient;
+      patientItem2.DestinationType = DestinationTypes.Patient;
 
 
-    //   const label1 = component.getItemPriorityLabel(patientItem1);
-    //   const label2 = component.getItemPriorityLabel(patientItem2);
+      const label1 = component.getItemPriorityLabel(patientItem1);
+      const label2 = component.getItemPriorityLabel(patientItem2);
 
-    //   expect(label1).toBe(expectedLabel1);
-    //   expect(label2).toBe(expectedLabel2);
-    // });
+      expect(label1).toBe(expectedLabel1);
+      expect(label2).toBe(expectedLabel2);
+    });
 
-    // it('should display item/items priority labels on omni/area destination types', () => {
-    //   const expectedLabel1 = 'ITEM';
-    //   const expectedLabel2 = 'ITEMS';
-    //   const omniItem = new PicklistQueueItem(null);
-    //   const areaItem = new PicklistQueueItem(null);
-    //   omniItem.ItemCount = 1;
-    //   areaItem.ItemCount = 2;
-    //   omniItem.DestinationType = DestinationTypes.Omni;
-    //   areaItem.DestinationType = DestinationTypes.Area;
+    it('should display item/items priority labels on omni/area destination types', () => {
+      const expectedLabel1 = 'ITEM';
+      const expectedLabel2 = 'ITEMS';
+      const omniItem = new PicklistQueueItem(null);
+      const areaItem = new PicklistQueueItem(null);
+      omniItem.ItemCount = 1;
+      areaItem.ItemCount = 2;
+      omniItem.DestinationType = DestinationTypes.Omni;
+      areaItem.DestinationType = DestinationTypes.Area;
 
 
-    //   const label1 = component.getItemPriorityLabel(omniItem);
-    //   const label2 = component.getItemPriorityLabel(areaItem);
+      const label1 = component.getItemPriorityLabel(omniItem);
+      const label2 = component.getItemPriorityLabel(areaItem);
 
-    //   expect(label1).toBe(expectedLabel1);
-    //   expect(label2).toBe(expectedLabel2);
-    // });
+      expect(label1).toBe(expectedLabel1);
+      expect(label2).toBe(expectedLabel2);
+    });
 
     it('should display order split data', () => {
       const item = new PicklistQueueItem(null);
