@@ -26,7 +26,7 @@ import { WorkstationTrackerService } from '../../api-core/services/workstation-t
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
 import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
-import { IUnfilledPicklistlineAddedEvent } from '../../api-core/events/i-unfilled-picklistline-added-event';
+import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../../api-core/events/i-unfilled-picklistline-added-or-updated-event';
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 
 @Component({
@@ -89,7 +89,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
 
     var allPicklistLines$ = initialPicklistLines$.pipe(switchMap(x => {
-      return this.pickingEventConnectionService.updateUnfilledPicklistLineSubject.pipe(scan<IUnfilledPicklistlineAddedEvent, IUnderfilledPicklistLine[]>((picklistlines, newPicklistline) => {
+      return this.pickingEventConnectionService.updateUnfilledPicklistLineSubject.pipe(scan<IUnfilledPicklistlineAddedOrUpdatedEvent, IUnderfilledPicklistLine[]>((picklistlines, newPicklistline) => {
         picklistlines.push(newPicklistline.PicklistLineUnderfilled)
         return picklistlines;          
       }, x));        

@@ -3,7 +3,7 @@ import { Subject, ReplaySubject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IUnfilledPicklistAddedOrUpdatedEvent } from '../events/i-unfilled-picklist-added-or-updated-event';
 import { IUnfilledPicklistRemovedEvent } from '../events/i-unfilled-picklist-removed-event';
-import { IUnfilledPicklistlineAddedEvent } from '../events/i-unfilled-picklistline-added-event';
+import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../events/i-unfilled-picklistline-added-or-updated-event';
 import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 export class PickingEventConnectionService implements OnDestroy {
   public updatedUnfilledPicklistSubject = new Subject<IUnfilledPicklistAddedOrUpdatedEvent>();
   public removedUnfilledPicklistSubject = new Subject<IUnfilledPicklistRemovedEvent>();
-  public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedEvent>();
+  public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedOrUpdatedEvent>();
   public ngUnsubscribe = new Subject();  
 
   public startedSubject = new ReplaySubject(1);
