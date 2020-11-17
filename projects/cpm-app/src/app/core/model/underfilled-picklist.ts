@@ -77,6 +77,7 @@ export class UnderfilledPicklist implements IUnderfilledPicklist{
     DescriptionSearchValue: string;
     DesintationSearchValue: string;
     DateSearchValue: string;
+    Saving: boolean;
 
     private getDateSearchValue(locale: string): string {
         var searchValues = [];

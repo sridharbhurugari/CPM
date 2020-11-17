@@ -1,0 +1,14 @@
+@import "../../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+.header{
+    font-family: $font-family-sans-serif;
+    // color:$text-color;
+    color: #000000;
+    margin-bottom: -5px;
+}
+.content{
+    font-size: 40px;
+    font-weight: bold;
+    font-family: $font-family-sans-serif;
+    color: #000000;
+    // color: $text-color;
+}

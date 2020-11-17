@@ -32,6 +32,14 @@ export class DeviceReplenishmentNeedsService {
     });
   }
 
+  getDeviceNeedsForItem(deviceId: number, itemId: string): Observable<IItemReplenishmentNeed[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}`);
+    return this.httpClient.get<IItemReplenishmentNeed[]>(url, {
+      params: { itemId: itemId },
+      headers: this.ocapHttpHeadersService.getHeaders(),
+    });
+  }
+
   pickDeviceItemNeeds(deviceId: number, items: IInterDeviceTransferPickRequest[]): Observable<any> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/picklists`);
     return this.httpClient.post(url, items, {

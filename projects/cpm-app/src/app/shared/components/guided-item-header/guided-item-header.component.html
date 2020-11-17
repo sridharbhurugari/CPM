@@ -1,0 +1,33 @@
+<div class="guidedItemHeader" *ngIf="itemHeaderInfo">
+    <div class="itemNames">
+        <div class="genericName">
+            <app-scalable-text [textValue]="itemHeaderInfo?.ItemGenericNameFormatted">
+            </app-scalable-text>
+        </div>
+        <div class="brandName">
+            <app-scalable-text [textValue]="itemHeaderInfo?.ItemTradeName">
+            </app-scalable-text>
+        </div>
+    </div>
+    <div class="panelContainer1">
+        <div app-headered-content-control [headerResourceKey]="'ITEM_ID'" class="itemIdBox">
+            <ng-container part="content">
+                <app-scalable-text [textValue]="itemHeaderInfo?.ItemId">
+                </app-scalable-text>
+            </ng-container>
+        </div> 
+        <div class="DeviceLocation">
+            <div app-headered-content-control [headerResourceKey]="'LOCATION'" style="margin-right: 15px;">
+                <ng-container part="content">
+                    <app-scalable-text [textValue]="itemHeaderInfo?.LocationDescription">
+                    </app-scalable-text>
+                </ng-container>
+            </div>
+            <div class="devicelocationaccess">
+                <app-device-location-access [deviceLocationAccessData]="itemHeaderInfo" [disabled]="carouselFaulted"
+                    (isLeaseBusy)="handleLeaseBusyChanged($event)" (isAccessBusy)="deviceLocationAccessBusy = $event"
+                    (accessResult)="handleDeviceLocationAccessResult($event)"></app-device-location-access>
+            </div>
+        </div>
+    </div>
+</div>

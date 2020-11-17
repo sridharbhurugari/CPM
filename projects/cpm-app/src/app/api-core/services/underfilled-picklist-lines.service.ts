@@ -21,4 +21,14 @@ export class UnderfilledPicklistLinesService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
+  public close(picklistLineIds: string[]) {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/picklists/underfilled/picklistLines/close`);
+    const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
+    const data = {
+      PicklistLineIds: picklistLineIds
+    };
+    return this.httpClient.post(url, data, { headers: serviceHeaders });
+  }
+
 }

@@ -29,6 +29,8 @@ import { InternalTransferDeviceNeedsPageComponent } from './internal-transfer-de
 import { InternalTransferItemsListComponent } from './internal-transfer-items-list/internal-transfer-items-list.component';
 import { ItemManagementListComponent } from './item-management-list/item-management-list.component';
 import { CoreRoutingModule } from "./core-routing.module";
+import { InternalTransferPickPageComponent } from './internal-transfer-pick-page/internal-transfer-pick-page.component';
+import { InternalTransferPickNeedsListComponent } from './internal-transfer-pick-needs-list/internal-transfer-pick-needs-list.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,8 @@ import { CoreRoutingModule } from "./core-routing.module";
     InternalTransferDeviceNeedsPageComponent,
     InternalTransferItemsListComponent,
     ItemManagementListComponent,
+    InternalTransferPickPageComponent,
+    InternalTransferPickNeedsListComponent,
   ],
   imports: [
     CommonModule,
