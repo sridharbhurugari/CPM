@@ -30,6 +30,15 @@ import { ProgressAnimationModule,
 import { SharedModule } from './shared/shared.module';
 import { RouterModule } from '@angular/router';
 
+import localeEn from '@angular/common/locales/en';
+import localeEnExtra from '@angular/common/locales/extra/en';
+import localeFr from '@angular/common/locales/fr';
+import localeFrExtra from '@angular/common/locales/extra/fr';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeEn, 'en-US', localeEnExtra);
+registerLocaleData(localeFr, 'fr-CA', localeFrExtra);
+
 @NgModule({
   declarations: [
     AppComponent

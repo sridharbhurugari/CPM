@@ -30,4 +30,21 @@ export class UnderfilledPicklistsService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
+  public delete(orderId: string) : Observable<object> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/picklists/underfilled/delete`);
+    var data = {
+      OrderId: orderId
+    }
+    return this.httpClient.post(url, data, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  doesUserHaveDeletePicklistPermissions() : Observable<boolean> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/picklists/underfilled/doesUserHaveDeletePicklistPermissions`);
+    return this.httpClient.get<boolean>(url ,{
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+   }
 }

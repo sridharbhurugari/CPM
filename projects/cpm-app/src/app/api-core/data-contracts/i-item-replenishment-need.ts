@@ -22,4 +22,5 @@ export interface IItemReplenishmentNeed {
     ItemBrandNameDescription: string;
     ItemIdDescription: string;
     SortFormattedName: string;
+    DestinationDeviceDescription: string;
 }
