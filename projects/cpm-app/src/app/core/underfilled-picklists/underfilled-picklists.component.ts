@@ -68,7 +68,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     private wpfActionControllerService: WpfActionControllerService,
     private workstationTrackerService: WorkstationTrackerService,
     private dialogService: PopupDialogService,
-    public translateService: TranslateService
+    public translateService: TranslateService,
   ) {    
   }
 

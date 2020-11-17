@@ -34,9 +34,8 @@ export class UnderfilledPicklistLinesComponent {
   }
 
   constructor(
-    private windowService: WindowService
-  ) {     
-  }
+    private windowService: WindowService,
+  ) {}
 
    private obs = new Subject<number>();
    public SelectedItemCount$: Observable<number> = this.obs.asObservable();
