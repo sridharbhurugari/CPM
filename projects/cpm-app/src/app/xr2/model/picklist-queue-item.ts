@@ -3,8 +3,10 @@ import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-
 import { Guid } from 'guid-typescript';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
+import { IReroutablePicklistQueueItem } from '../../api-xr2/data-contracts/i-reroutable-picklist-queue-item';
+import { IReleaseablePicklistQueueItem } from '../../api-xr2/data-contracts/i-releaseable-picklist-queue-item';
 
-export class PicklistQueueItem implements IPicklistQueueItem {
+export class PicklistQueueItem implements IPicklistQueueItem, IReroutablePicklistQueueItem, IReleaseablePicklistQueueItem {
 
   constructor(picklistQueueItem: IPicklistQueueItem) {
     Object.assign(this, picklistQueueItem);

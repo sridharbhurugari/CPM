@@ -7,10 +7,10 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-sync-request';
 import { catchError } from 'rxjs/operators';
 import { RobotPrintRequest } from '../data-contracts/robot-print-request';
-import { ReroutePickListLine } from '../data-contracts/reroute-pick-list-line';
 import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 import { PicklistQueueGrouped } from '../../xr2/model/picklist-queue-grouped';
-import { PicklistQueueItem } from '../../xr2/model/picklist-queue-item';
+import { IReleaseablePicklistQueueItem } from '../data-contracts/i-releaseable-picklist-queue-item';
+import { IReroutablePicklistQueueItem } from '../data-contracts/i-reroutable-picklist-queue-item';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +61,7 @@ export class PicklistsQueueService {
     });
   }
 
-  sendQueueItemsToRobot(pickPriorityIdentity: string, picklistQueueItems: Array<PicklistQueueItem>) {
+  sendQueueItemsToRobot(pickPriorityIdentity: string, picklistQueueItems: Array<IReleaseablePicklistQueueItem>) {
     console.log(GlobalDispenseSyncRequest);
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot/' + pickPriorityIdentity);
     return this.httpClient.post(url, picklistQueueItems, {
@@ -84,9 +84,9 @@ export class PicklistsQueueService {
     });
   }
 
-  rerouteQueueItems(globalDispenseSyncRequest: Array<GlobalDispenseSyncRequest>) {
+  rerouteQueueItems(picklistQueueItems: Array<IReroutablePicklistQueueItem>) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/RerouteQueueItems');
-    return this.httpClient.post(url, globalDispenseSyncRequest, {
+    return this.httpClient.post(url, picklistQueueItems, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
