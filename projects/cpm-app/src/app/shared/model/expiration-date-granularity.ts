@@ -1,0 +1,1 @@
+export type ExpirationDateGranularity = 'None' | 'Month' | 'Day';

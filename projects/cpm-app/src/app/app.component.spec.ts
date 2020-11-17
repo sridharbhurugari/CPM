@@ -1,13 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { ProgressbarModule, LayoutModule, ProgressAnimationModule, ProgressbarService } from '@omnicell/webcorecomponents';
+import { ProgressbarModule, LayoutModule, ProgressAnimationModule, ProgressbarService, ToastModule, ToastService } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { WindowService } from './shared/services/window-service';
 import { EventConnectionService } from './shared/services/event-connection.service';
 import { ConfigurationService, OcapHttpClientService } from 'oal-core';
+import { MockToastComponent } from './mock-toast.spec';
 
 describe('AppComponent', () => {
   let eventConnectionService: Partial<EventConnectionService>;
@@ -32,7 +33,8 @@ describe('AppComponent', () => {
         ProgressAnimationModule,
       ],
       declarations: [
-        AppComponent
+        AppComponent,
+        MockToastComponent,
       ],
       providers: [
         { provide: TranslateService, useValue: translateService },

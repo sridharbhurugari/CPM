@@ -1,0 +1,17 @@
+@import "../../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    box-sizing: border-box;
+}
+.sideLeft {
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #c8c8c8;
+}
+.sideRight {
+    flex: 1;
+}
