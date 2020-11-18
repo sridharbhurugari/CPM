@@ -246,6 +246,30 @@ describe('Xr2QueueDetailsPageComponent', () => {
       expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(0);
     });
 
+    it('should call child component to clear data on empty list update as a valid client', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
+
+      const picklistItemsUpdate = {} as IPicklistQueueItemListUpdateMessage;
+      const ItemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const AvailableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+      picklistItemsUpdate.DeviceId = 1;
+      picklistItemsUpdate.PickPriorityIdentity = 1;
+      picklistItemsUpdate.AvailablePicklistQueueGroupKeys = {$values: [
+        {
+          DeviceId: 1,
+          PickPriorityIdentity: 1
+        }
+      ]};
+
+      picklistItemsUpdate.PicklistQueueItems = {$values: [
+      ]};
+
+      picklistsQueueEventConnectionService.picklistQueueItemListUpdateSubject.next(picklistItemsUpdate);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(1);
+    });
+
+
     it('should call child component to refresh data on list update as a valid client', () => {
       childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
 
@@ -367,6 +391,43 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
         expect(picklistSet.size).toBe(0);
       });
+    });
+
+    it('remove item from action disable map and deselect item on remove event', () => {
+      const item = new PicklistQueueItem(null);
+      component.selectedItems = new Set<PicklistQueueItem>();
+      component.selectedItems.add(item);
+      component.actionPicklistItemsDisableMap = new Map([
+        [OutputDeviceAction.Release, new Set<PicklistQueueItem>([item])],
+       [OutputDeviceAction.Print, new Set<PicklistQueueItem>([item])],
+       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>([item])],
+      ]);
+
+      component.onPicklistQueueItemsRemoved([item]);
+
+      expect(component.selectedItems.has(item)).toBeFalsy();
+      component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
+        expect(picklistSet.size).toBe(0);
+      });
+    });
+
+    it('add item from action disable map and select item on add event', () => {
+      const item = new PicklistQueueItem(null);
+      item.Status = 1;
+      item.Saving = false;
+      component.selectedItems = new Set<PicklistQueueItem>();
+      component.selectedItems.add(item);
+      component.actionPicklistItemsDisableMap = new Map([
+        [OutputDeviceAction.Release, new Set<PicklistQueueItem>()],
+       [OutputDeviceAction.Print, new Set<PicklistQueueItem>()],
+       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
+      ]);
+
+      component.onPicklistQueueItemsAddorUpdated([item]);
+
+      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release).size).toBe(0);
+      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print).size).toBe(1);
+      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute).size).toBe(0);
     });
 
     it('add item to action disable map on select event', () => {

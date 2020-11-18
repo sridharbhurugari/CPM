@@ -164,7 +164,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems.map(x => new ReleasablePicklistQueueItem(x))).subscribe(
+    this.picklistsQueueService.sendQueueItemsToRobot(
+      this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems.map(x => new ReleasablePicklistQueueItem(x))).subscribe(
       success => {
         this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
       }, error => {
