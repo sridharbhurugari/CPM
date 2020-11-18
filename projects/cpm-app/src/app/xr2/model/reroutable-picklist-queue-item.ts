@@ -4,11 +4,19 @@ import { IReroutablePicklistQueueItem } from '../../api-xr2/data-contracts/i-rer
 
 export class ReroutablePicklistQueueItem implements IReroutablePicklistQueueItem {
 
-  constructor(picklistQueueItem: IPicklistQueueItem) {
+  constructor(picklistQueueItem: IReroutablePicklistQueueItem) {
     Object.assign(this, picklistQueueItem);
   }
 
   PicklistId: string;
   ItemPicklistLines: IItemPicklistLine[];
   DeviceId: number;
+
+  static fromPicklistQueueItem(picklistQueueItem: IPicklistQueueItem) {
+    return new this({
+      PicklistId: picklistQueueItem.PicklistId,
+      ItemPicklistLines: picklistQueueItem.ItemPicklistLines,
+      DeviceId: picklistQueueItem.DeviceId,
+    });
+  }
 }

@@ -158,7 +158,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems.map(x => new ReleasablePicklistQueueItem(x))).subscribe(
+    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems.map(x => ReleasablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
       success => {
         this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
       }, error => {
@@ -170,7 +170,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => new ReroutablePicklistQueueItem(x))).subscribe(
+    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => ReroutablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
       success => {
         this.handleRerouteQueueItemsSuccess(picklistQueueItems);
       }, error => {
