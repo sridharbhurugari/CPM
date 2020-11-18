@@ -66,7 +66,16 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       this.isXr2Item = needs[0].Xr2Item;
     });
 
-    coreEventConnectionService.refreshDeviceNeedsSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(message => this.onRefreshDeviceNeeds());
+    coreEventConnectionService.refreshDeviceNeedsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => {
+        try {
+          this.onRefreshDeviceNeeds();
+        }
+        catch (e) {
+          console.log(e);
+        }
+      });
   }
 
   ngOnInit() {

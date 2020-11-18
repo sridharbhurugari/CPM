@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
+import { CpmLogLevel } from "../../shared/enums/cpm-log-level";
 
 @Component({
   selector: 'app-internal-transfer-device-summaries-page',
@@ -20,7 +21,15 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
     private wpfActionControllerService: WpfActionControllerService,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
   ) {
-    coreEventConnectionService.refreshDeviceNeedsSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(message => this.onRefreshDeviceNeeds());
+    coreEventConnectionService.refreshDeviceNeedsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => {
+        try {
+          this.onRefreshDeviceNeeds();
+        }
+        catch (e) {
+          console.log(e);
+      });
     this.loadDeviceNeeds();
   }
 
