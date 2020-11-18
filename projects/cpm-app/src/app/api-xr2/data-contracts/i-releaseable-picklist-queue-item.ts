@@ -1,5 +1,4 @@
 import { Guid } from 'guid-typescript';
-import { IItemPicklistLine } from './i-item-picklist-line';
 
 
 export interface IReleaseablePicklistQueueItem {
