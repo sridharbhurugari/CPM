@@ -3,6 +3,8 @@ import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
 import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { ReroutablePicklistQueueItem } from "../model/reroutable-picklist-queue-item";
+import { ReleasablePicklistQueueItem } from "../model/releasable-picklist-queue-item";
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
@@ -162,7 +164,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems).subscribe(
+    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems.map(x => new ReleasablePicklistQueueItem(x))).subscribe(
       success => {
         this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
       }, error => {
@@ -172,14 +174,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
-    const globalDispenseSyncRequestList = new Array<GlobalDispenseSyncRequest>();
-    _.forEach(picklistQueueItems, (item) => {
-      item.Saving = true;
-      globalDispenseSyncRequestList.push(new GlobalDispenseSyncRequest(item));
-    });
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.rerouteQueueItems(globalDispenseSyncRequestList).subscribe(
+    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => new ReroutablePicklistQueueItem(x))).subscribe(
       success => {
         this.handleRerouteQueueItemsSuccess(picklistQueueItems);
       }, error => {
