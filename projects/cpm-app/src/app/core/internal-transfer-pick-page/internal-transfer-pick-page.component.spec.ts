@@ -2,7 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
-import { of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IDeviceLocation } from '../../api-core/data-contracts/i-device-location';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
@@ -12,7 +13,13 @@ import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaito
 import { OrderItemPendingQuantitiesService } from '../../api-core/services/order-item-pending-quantities.service';
 import { PicklistLineIdsService } from '../../api-core/services/picklist-line-ids.service';
 import { PicklistLinesService } from '../../api-core/services/picklist-lines.service';
+import { ConfigValues } from '../../shared/constants/config-values';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { BarcodeOverrideService } from '../../shared/services/barcode-override.service';
+import { BarcodeParsingService } from '../../shared/services/barcode-parsing.service';
+import { BarcodeSafetyStockService } from '../../shared/services/barcode-safety-stock.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockGuidedItemHeaderComponent } from '../../shared/testing/mock-guided-item-header.spec';
 import { MockHeaderedContentControlComponent } from '../../shared/testing/mock-headered-content-control.spec';
@@ -31,6 +38,8 @@ describe('InternalTransferPickPageComponent', () => {
   let fixture: ComponentFixture<InternalTransferPickPageComponent>;
   let picklistLinesService: Partial<PicklistLinesService>;
   let wpfActionController: Partial<WpfActionControllerService>;
+  let productBarcodeParsed$: Observable<IBarcodeData> = new Subject<IBarcodeData>();
+  let productScannedSuccessfully$: Observable<IBarcodeData> = new Subject<IBarcodeData>();
 
   let picktotals: IInternalTransferPackSizePick[] = [
     { PackSize: 1, PacksToPick: 800, QuantityToPick: 800 },
@@ -63,6 +72,12 @@ describe('InternalTransferPickPageComponent', () => {
       ExecuteBackAction: jasmine.createSpy('ExecuteBackAction'), 
       ExecuteActionName: jasmine.createSpy('ExecuteActionName'), 
     };
+    let safetyStockConfig: Partial<IConfigurationValue> = {
+      Value: ConfigValues.No,
+    }
+    let quickAdvanceConfig: Partial<IConfigurationValue> = {
+      Value: ConfigValues.No,
+    }
     TestBed.configureTestingModule({
       declarations: [ 
         InternalTransferPickPageComponent,
@@ -84,6 +99,7 @@ describe('InternalTransferPickPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: PicklistLineIdsService, useValue: { getLineIdsForWorkstation: () => { return of(picklistLineIds); } } },
         { provide: OcapHttpConfigurationService, useValue: { get: () => { return { clientId: '' } } } },
+        { provide: SystemConfigurationService, useValue: { getPickingSafetyStockConfig: () => of(safetyStockConfig), getSafetyStockQuickAdvanceConfig: () => of(quickAdvanceConfig) } },
         { provide: PicklistLinesService, useValue: picklistLinesService }, 
         { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceNeedsForItem: () => { return of([ itemNeed ]) } } },
         { provide: WpfActionControllerService, useValue: wpfActionController },
@@ -91,6 +107,14 @@ describe('InternalTransferPickPageComponent', () => {
         { provide: OrderItemPendingQuantitiesService, useValue: { get: () => { return of(null) } } },
       ]
     })
+    .overrideComponent(
+      InternalTransferPickPageComponent,
+      { set: { providers: [
+        { provide: BarcodeParsingService, useValue: { productBarcodeParsed$: productBarcodeParsed$ } },
+        { provide: BarcodeOverrideService, useValue: { initialize: () => { } } },
+        { provide: BarcodeSafetyStockService, useValue: { productScannedSuccessfully: productScannedSuccessfully$ } },
+      ]}},
+    )
     .compileComponents();
   }));
 

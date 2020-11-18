@@ -44,26 +44,27 @@
                     </app-horizontal-tabs>
                 </div>
                 <div class="leftPanelRow" app-headered-content-control headerResourceKey="PICK_TOTAL"
-                    [headerFontWeight]="600" [headerFontSizePx]="20" contentBackgroundColor="white"
-                    [showIcon]="(pickTotal$ | async) > (pickLocation$ | async)?.QuantityOnHand">
+                    [headerFontWeight]="600" [headerFontSizePx]="20" contentBackgroundColor="white">
                     <ng-container part="content">
                         <div style="padding: 15px;">
                             <div style="text-align: center">
-                                {{ pickTotal$ | async }}
+                                {{ pickTotal }}
                             </div>
                         </div>
                     </ng-container>
                     <ng-container part="icon">
                         <app-validation-icon 
+                            [style.visibility]="pickTotal <= (pickLocation$ | async)?.QuantityOnHand ? 'hidden' : 'visible'"
                             iconString="alert"
                             toastTileResourceKey=""
                             toastMsgResourceKey="PICK_ITEM_TOTAL_MSG"
-                            toastType="error"></app-validation-icon>
+                            toastType="error">
+                        </app-validation-icon>
                     </ng-container>
                 </div>
                 <div *ngIf="(pickLocation$ | async)?.ExpirationDateGranularity != 'None'" class="leftPanelRow"
                     app-headered-content-control headerResourceKey="EARLIEST_EXP_DATE" [headerFontWeight]="600"
-                    [headerFontSizePx]="20" [showIcon]="(expDateInPast$ | async)" iconToastTitleResourceKey="TITLE"
+                    [headerFontSizePx]="20" iconToastTitleResourceKey="TITLE"
                     iconToastMsgResourceKey="MSG">
                     <ng-container part="content">
                         <div style="text-align: center; margin-top: 15px;">
@@ -77,10 +78,12 @@
                     </ng-container>
                     <ng-container part="icon">
                         <app-validation-icon 
+                            [style.visibility]="(expDateInPast$ | async) ? 'visible' : 'hidden'"
                             iconString="alert"
                             toastTileResourceKey=""
                             toastMsgResourceKey="PICK_ITEM_EXPIRED_MSG"
-                            toastType="warn"></app-validation-icon>
+                            toastType="warn">
+                        </app-validation-icon>
                     </ng-container>
                 </div>
                 <div class="leftPanelRow lastRow" app-headered-content-control [headerResourceKey]="'TOTAL_REQUESTED'"
@@ -111,11 +114,11 @@
                 <oc-button-action *ngIf="isLastLine$ | async" [buttonText]="'HOLD' | translate" (click)="hold(true)">
                 </oc-button-action>
                 <oc-button-action *ngIf="!(isLastLine$ | async)" [buttonText]="'NEXT' | translate"
-                    [disabled]="(pickTotal$ | async) > (pickLocation$ | async)?.QuantityOnHand"
+                    [disabled]="pickTotal > (pickLocation$ | async)?.QuantityOnHand || !pickTotal || (pickTotal > 0 && awaitingProductScan)"
                     (click)="completePick()">
                 </oc-button-action>
                 <oc-button-action *ngIf="isLastLine$ | async" [buttonText]="'DONE' | translate"
-                    [disabled]="(pickTotal$ | async) > (pickLocation$ | async)?.QuantityOnHand"
+                    [disabled]="pickTotal > (pickLocation$ | async)?.QuantityOnHand || !pickTotal || (pickTotal > 0 && awaitingProductScan)"
                     (click)="completePick()">
                 </oc-button-action>
             </div>

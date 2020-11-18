@@ -5,7 +5,7 @@ import { forkJoin, merge, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { IItemHeaderInfo } from '../../model/i-item-header-info';
-import { SimpleDialogService } from '../../services/dialogs/simple-dialog.service';
+import { ISafetyStockProductData } from '../../model/i-safety-stock-product-data';
 import { SpinnerPopupComponent } from '../spinner-popup/spinner-popup.component';
 
 @Component({
@@ -13,12 +13,31 @@ import { SpinnerPopupComponent } from '../spinner-popup/spinner-popup.component'
   templateUrl: './guided-item-header.component.html',
   styleUrls: ['./guided-item-header.component.scss']
 })
-export class GuidedItemHeaderComponent implements OnInit {
+export class GuidedItemHeaderComponent {
   private _leaseDeniedTitle$: Observable<string>;
   private _okButtonText$: Observable<any>;
+  private _itemHeaderInfo: IItemHeaderInfo;
+  safetyStockProductData: ISafetyStockProductData;
 
   @Input()
-  itemHeaderInfo: IItemHeaderInfo;
+  set itemHeaderInfo(value: IItemHeaderInfo) {
+    this._itemHeaderInfo = value;
+    if (this._itemHeaderInfo) {
+      this.safetyStockProductData = {
+        itemId: this._itemHeaderInfo.ItemId,
+        dispenseIds: [],
+        requireProductScan: this._itemHeaderInfo.RequireItemProductScan,
+        requireDispenseScan: this._itemHeaderInfo.RequireDispenseScan,
+        requireBinScan: this._itemHeaderInfo.RequireBinScan,
+      };
+    } else {
+      this.safetyStockProductData = null;
+    }
+  }
+
+  get itemHeaderInfo(): IItemHeaderInfo {
+    return this._itemHeaderInfo;
+  }
 
   @Output()
   leaseDenied: EventEmitter<any> = new EventEmitter();
@@ -36,9 +55,6 @@ export class GuidedItemHeaderComponent implements OnInit {
     this.leaseBusyTitle$ = this.translateService.get('LEASE_BUSY_TITLE');
     this._leaseDeniedTitle$ = this.translateService.get('DEVICE_ACCESS');
     this._okButtonText$ = this.translateService.get("OK");
-  }
-
-  ngOnInit() {
   }
 
   handleDeviceLocationAccessResult(deviceLocationAccessResult: DeviceLocationAccessResult) {

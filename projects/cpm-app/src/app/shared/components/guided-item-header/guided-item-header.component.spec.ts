@@ -7,7 +7,9 @@ import { DeviceLocationAccessResult } from '../../enums/device-location-access-r
 import { IItemHeaderInfo } from '../../model/i-item-header-info';
 import { MockDeviceLocationAccessComponent } from '../../testing/mock-device-location-access.spec';
 import { MockHeaderedContentControlComponent } from '../../testing/mock-headered-content-control.spec';
+import { MockSafetyStockProductComponent } from '../../testing/mock-safety-stock-product.spec';
 import { MockScalableTextComponent } from '../../testing/mock-scalable-text.spec';
+import { MockValidationContanerComponent } from '../../testing/mock-validation-container.spec';
 
 import { GuidedItemHeaderComponent } from './guided-item-header.component';
 
@@ -30,6 +32,8 @@ describe('GuidedItemHeaderComponent', () => {
         MockScalableTextComponent,
         MockDeviceLocationAccessComponent,
         MockHeaderedContentControlComponent,
+        MockValidationContanerComponent,
+        MockSafetyStockProductComponent,
       ],
       providers: [
         { provide: TranslateService, useValue: { get: (x: string) => of(`${x}_TRANSLATED`) } },

@@ -19,7 +19,4 @@ export class MockHeaderedContentControlComponent {
 
   @Input()
   contentBackgroundColor: string;
-
-  @Input()
-  showIcon: boolean;
 }
