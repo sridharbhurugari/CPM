@@ -231,38 +231,38 @@ export class Xr2GroupingQueueComponent implements OnInit {
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
     console.log('updatePickListQueueGroupedGrouping');
     console.log(picklistGrouped);
-    const matchingGrouped = _.findIndex(this.picklistQueueGrouped, (x) => {
+    const matchingGrouped = _.findIndex(this.loadedPicklistQueueGrouped, (x) => {
       return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
      });
     console.log(matchingGrouped);
     if (matchingGrouped < 0) {
       console.log('PickListGrouped Not Found. Adding Entry');
-      this.picklistQueueGrouped.push(new PicklistQueueGrouped(picklistGrouped));
+      this.loadedPicklistQueueGrouped.push(new PicklistQueueGrouped(picklistGrouped));
      } else {
        console.log('match found updating record');
        const newPickListQueueGrouped = new PicklistQueueGrouped(picklistGrouped);
        if (!_.isEqual(
-         this.picklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList,
+         this.loadedPicklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList,
          newPickListQueueGrouped.AvailableOutputDeviceList )) {
           console.log('available output device list changed updating.');
-          this.picklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList =
+          this.loadedPicklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList =
             newPickListQueueGrouped.AvailableOutputDeviceList;
        }
-       this.picklistQueueGrouped[matchingGrouped].NewCount = picklistGrouped.NewCount;
-       this.picklistQueueGrouped[matchingGrouped].ReleasedCount = picklistGrouped.ReleasedCount;
-       this.picklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
+       this.loadedPicklistQueueGrouped[matchingGrouped].NewCount = picklistGrouped.NewCount;
+       this.loadedPicklistQueueGrouped[matchingGrouped].ReleasedCount = picklistGrouped.ReleasedCount;
+       this.loadedPicklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
      }
   }
 
   removePicklistQueueGroup(priorityCode: string, deviceId: number ) {
     console.log('looking to remove group ' + priorityCode + ' and deviceId : ' + deviceId);
-    const matchingGroupedIndex = _.findIndex(this.picklistQueueGrouped, (x) => {
+    const matchingGroupedIndex = _.findIndex(this.loadedPicklistQueueGrouped, (x) => {
       return x.PriorityCode === priorityCode && x.DeviceId === deviceId;
      });
     if (matchingGroupedIndex > -1) {
       console.log('group exists removing it');
-      this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
-      console.log(this.picklistQueueGrouped);
+      this.loadedPicklistQueueGrouped.splice(matchingGroupedIndex, 1);
+      console.log(this.loadedPicklistQueueGrouped);
     }
   }
 
@@ -274,22 +274,22 @@ export class Xr2GroupingQueueComponent implements OnInit {
       console.log(picklistGroupedList);
       if (!picklistGroupedList) {
           console.log('No item in list clearing');
-          this.picklistQueueGrouped = [];
-          console.log(this.picklistQueueGrouped);
+          this.loadedPicklistQueueGrouped = [];
+          console.log(this.loadedPicklistQueueGrouped);
       } else {
           // Remove Items not in source list.
-          for (let i = this.picklistQueueGrouped.length - 1; i >= 0; i--) {
+          for (let i = this.loadedPicklistQueueGrouped.length - 1; i >= 0; i--) {
             const resIndex = _.findIndex(picklistGroupedList,
-               (y) => this.picklistQueueGrouped[i].PriorityCode === y.PriorityCode
-                &&  this.picklistQueueGrouped[i].DeviceId === y.DeviceId);
+               (y) => this.loadedPicklistQueueGrouped[i].PriorityCode === y.PriorityCode
+                &&  this.loadedPicklistQueueGrouped[i].DeviceId === y.DeviceId);
             if (resIndex === -1) {
                 console.log('item below was not found adding to list to remove.');
-                this.picklistQueueGrouped.splice(i, 1);
+                this.loadedPicklistQueueGrouped.splice(i, 1);
             }
           }
 
           console.log('Removed Non matching Items.');
-          console.log(this.picklistQueueGrouped);
+          console.log(this.loadedPicklistQueueGrouped);
 
           // Add or Update
           picklistGroupedList.forEach((x) => {
