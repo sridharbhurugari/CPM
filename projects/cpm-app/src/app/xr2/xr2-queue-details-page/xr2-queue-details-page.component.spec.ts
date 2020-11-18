@@ -7,7 +7,7 @@ import { Input, Component } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { Xr2QueueButtonPanelComponent } from '../xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { ButtonActionModule, CheckboxModule, ComponentTypes, GridModule, PopupDialogModule, PopupDialogService,
+import { ButtonActionModule, CheckboxModule, GridModule, PopupDialogModule, PopupDialogService,
          SingleselectDropdownModule } from '@omnicell/webcorecomponents';
 import { Location } from '@angular/common';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
@@ -18,10 +18,18 @@ import { TranslateService } from '@ngx-translate/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
+import { HttpClientModule } from '@angular/common/http';
+import { LogService } from '../../api-core/services/log-service';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
-import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
+import { SelectionChangeType } from '../../shared/constants/selection-change-type';
+import { Guid } from 'guid-typescript';
+import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
+import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
+import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
+import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 
 @Component({
   selector: 'oc-search-box',
@@ -40,30 +48,28 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
+  let childDetailsQueueComponentSpy: jasmine.Spy;
 
   beforeEach(async(() => {
 
     picklistsQueueEventConnectionService = {
       addOrUpdatePicklistQueueItemSubject: new Subject(),
-      removePicklistQueueItemSubject: new Subject(),
-      reloadPicklistQueueItemsSubject: new Subject()
+      picklistQueueItemListUpdateSubject: new Subject(),
+      removePicklistQueueItemSubject: new Subject()
     };
 
     picklistsQueueService = {
-      get: jasmine.createSpy('get').and.returnValue(of()),
-      skip: jasmine.createSpy('skip').and.returnValue(of(PicklistsQueueService)),
-      sendToRobot: jasmine.createSpy('sendToRobot').and.returnValue(of(PicklistsQueueService)),
-      printLabels: jasmine.createSpy('printLabels').and.returnValue(of(PicklistsQueueService)),
-      getGroupDetails: jasmine.createSpy('get').and.returnValue(of())
+      rerouteQueueItems: jasmine.createSpy('rerouteQueueItems').and.returnValue(of(PicklistsQueueService)),
+      sendQueueItemsToRobot: jasmine.createSpy('sendQueueItemsToRobot').and.returnValue(of(PicklistsQueueService)),
+      printQueueItemsLabels: jasmine.createSpy('printQueueItemsLabels').and.returnValue(of(PicklistsQueueService)),
+      getGroupDetails: jasmine.createSpy('getGroupDetails').and.returnValue(of())
     };
-
-    spyOn(picklistsQueueEventConnectionService.reloadPicklistQueueItemsSubject, 'subscribe').and.callThrough();
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueDetailsPageComponent, Xr2QueueDetailsHeaderComponent, Xr2DetailsQueueComponent,
         Xr2QueueButtonPanelComponent, MockCpClickableIconComponent, MockSearchBox, MockTranslatePipe,
         MockColHeaderSortable, MockSearchPipe, MockCpDataLabelComponent],
-      imports: [SingleselectDropdownModule, CheckboxModule, GridModule, ButtonActionModule, PopupDialogModule],
+      imports: [SingleselectDropdownModule, CheckboxModule, GridModule, ButtonActionModule, PopupDialogModule, HttpClientModule],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistsQueueService },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
@@ -73,6 +79,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
+        { provide: LogService, useValue: { logMessageAsync: () => {}}}
       ]
     })
     .compileComponents();
@@ -81,6 +88,13 @@ describe('Xr2QueueDetailsPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2QueueDetailsPageComponent);
     component = fixture.componentInstance;
+
+    component.xr2QueueNavigationParameters = {
+      priorityCodeDescription: 'code',
+      pickPriorityIdentity: '1',
+      deviceId: '1'
+    };
+
     fixture.detectChanges();
   });
 
@@ -97,7 +111,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
       component.processRelease(new Set([item]));
 
-      expect(picklistsQueueService.sendToRobot).toHaveBeenCalledTimes(1);
+      expect(picklistsQueueService.sendQueueItemsToRobot).toHaveBeenCalledTimes(1);
       expect(item.Saving).toBeFalsy();
     });
 
@@ -111,7 +125,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.processReroute(new Set([item]));
 
       expect(dialogueSpy).toHaveBeenCalledTimes(1);
-      expect(picklistsQueueService.skip).toHaveBeenCalledTimes(1);
+      expect(picklistsQueueService.rerouteQueueItems).toHaveBeenCalledTimes(1);
       expect(item.Saving).toBeFalsy();
     });
 
@@ -125,7 +139,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.processReroute(new Set([item]));
 
       expect(dialogueSpy).toHaveBeenCalledTimes(1);
-      expect(picklistsQueueService.skip).toHaveBeenCalledTimes(0);
+      expect(picklistsQueueService.rerouteQueueItems).toHaveBeenCalledTimes(0);
     });
 
     it('should call PicklistQueue service to print label on print click', () => {
@@ -136,11 +150,135 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
       component.processPrint(new Set([item]));
 
-      expect(picklistsQueueService.printLabels).toHaveBeenCalledTimes(1);
+      expect(picklistsQueueService.printQueueItemsLabels).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('Eventing', () => {
+  describe('Subscription Eventing', () => {
+    it('should ignore add or update event as an invalid client', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'addOrUpdatePicklistQueueItem');
+
+      const fakeRobotGroupId = Guid.create();
+      const pickListItemUpdate = {} as IPicklistQueueItemNonstandardJson;
+      pickListItemUpdate.DeviceId = 2; // Different Device ID
+      pickListItemUpdate.PickPriorityIdentity = 2; // Different PPID
+      const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+
+      pickListItemUpdate.RobotPickGroupId = fakeRobotGroupId;
+      pickListItemUpdate.ItemPicklistLines = itemPicklistLines;
+      pickListItemUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
+      const fakeAddEvent = {PicklistQueueItem: pickListItemUpdate};
+
+
+      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeAddEvent);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call child component to add or update data on update as a valid client', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'addOrUpdatePicklistQueueItem');
+
+      const fakeRobotGroupId = Guid.create();
+      const pickListItemUpdate = {} as IPicklistQueueItemNonstandardJson;
+      pickListItemUpdate.DeviceId = 1;
+      pickListItemUpdate.PickPriorityIdentity = 1;
+      const itemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const availableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+
+      pickListItemUpdate.RobotPickGroupId = fakeRobotGroupId;
+      pickListItemUpdate.ItemPicklistLines = itemPicklistLines;
+      pickListItemUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
+      const fakeAddEvent = {PicklistQueueItem: pickListItemUpdate};
+
+
+      picklistsQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject.next(fakeAddEvent);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call child component to refresh/clear data on screen on list update with invalid group keys', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
+
+      const picklistItemsUpdate = {} as IPicklistQueueItemListUpdateMessage;
+      picklistItemsUpdate.DeviceId = 1;
+      picklistItemsUpdate.PickPriorityIdentity = 1;
+      picklistItemsUpdate.AvailablePicklistQueueGroupKeys = {$values: [
+        {
+          DeviceId: 2,
+          PickPriorityIdentity: 2
+        }
+      ]};
+      picklistItemsUpdate.PicklistQueueItems = {$values: [
+        {} as IPicklistQueueItemNonstandardJson
+      ]};
+
+      picklistsQueueEventConnectionService.picklistQueueItemListUpdateSubject.next(picklistItemsUpdate);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should ignore list update event as an invalid client', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
+
+      const picklistItemsUpdate = {} as IPicklistQueueItemListUpdateMessage;
+      picklistItemsUpdate.DeviceId = 2;
+      picklistItemsUpdate.PickPriorityIdentity = 2;
+      picklistItemsUpdate.AvailablePicklistQueueGroupKeys = {$values: [
+        {
+          DeviceId: 1,
+          PickPriorityIdentity: 1
+        }
+      ]};
+      picklistItemsUpdate.PicklistQueueItems = {$values: [
+        {} as IPicklistQueueItemNonstandardJson
+      ]};
+
+      picklistsQueueEventConnectionService.picklistQueueItemListUpdateSubject.next(picklistItemsUpdate);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call child component to refresh data on list update as a valid client', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
+
+      const picklistItemsUpdate = {} as IPicklistQueueItemListUpdateMessage;
+      const ItemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const AvailableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+      picklistItemsUpdate.DeviceId = 1;
+      picklistItemsUpdate.PickPriorityIdentity = 1;
+      picklistItemsUpdate.AvailablePicklistQueueGroupKeys = {$values: [
+        {
+          DeviceId: 1,
+          PickPriorityIdentity: 1
+        }
+      ]};
+
+      picklistItemsUpdate.PicklistQueueItems = {$values: [
+        {
+          ItemPicklistLines,
+          AvailableOutputDeviceList
+        } as IPicklistQueueItemNonstandardJson
+      ]};
+
+      picklistsQueueEventConnectionService.picklistQueueItemListUpdateSubject.next(picklistItemsUpdate);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(1);
+    });
+
+
+    it('should call child component to remove item on remove event', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'removePicklistQueueItemByOrderGroupKey');
+
+      const removeMessage = {} as IRemovePicklistQueueItemMessage;
+
+      picklistsQueueEventConnectionService.removePicklistQueueItemSubject.next(removeMessage);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Output Eventing', () => {
     it('should set filter text on filter event', () => {
       const filterText = 'filter';
 

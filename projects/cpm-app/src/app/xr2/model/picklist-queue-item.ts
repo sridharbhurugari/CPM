@@ -3,8 +3,10 @@ import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-
 import { Guid } from 'guid-typescript';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
+import { IReroutablePicklistQueueItem } from '../../api-xr2/data-contracts/i-reroutable-picklist-queue-item';
+import { IReleaseablePicklistQueueItem } from '../../api-xr2/data-contracts/i-releaseable-picklist-queue-item';
 
-export class PicklistQueueItem implements IPicklistQueueItem {
+export class PicklistQueueItem implements IPicklistQueueItem, IReroutablePicklistQueueItem, IReleaseablePicklistQueueItem {
 
   constructor(picklistQueueItem: IPicklistQueueItem) {
     Object.assign(this, picklistQueueItem);
@@ -35,6 +37,9 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   IsPrintable: boolean;
   SequenceOrder: number;
   RobotPickGroupId: Guid;
+  OrderDate: Date;
+  PatientCount: number;
+  PickPriorityIdentity: number;
 
   get Releaseable() {
     return this.Status === 1 && !this.Saving;
@@ -45,10 +50,10 @@ export class PicklistQueueItem implements IPicklistQueueItem {
   }
 
   get Reroutable() {
-    return true;
+    return !this.Saving;
   }
 
-  static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson){
+  static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson) {
     return new this({
       AvailableOutputDeviceList: picklistQueueItem.AvailableOutputDeviceList.$values,
       BoxCount: picklistQueueItem.BoxCount,
@@ -71,7 +76,10 @@ export class PicklistQueueItem implements IPicklistQueueItem {
       RobotPickGroupId: picklistQueueItem.RobotPickGroupId,
       Status: picklistQueueItem.Status,
       StatusDisplay: picklistQueueItem.StatusDisplay,
-      SequenceOrder: picklistQueueItem.SequenceOrder
+      SequenceOrder: picklistQueueItem.SequenceOrder,
+      OrderDate: picklistQueueItem.OrderDate,
+      PatientCount: picklistQueueItem.PatientCount,
+      PickPriorityIdentity: picklistQueueItem.PickPriorityIdentity
     });
   }
 }

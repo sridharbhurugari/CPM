@@ -10,6 +10,25 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
     this.TrackById = Guid.create();
   }
 
+  DeviceLocationId: number;
+  PriorityCode: string;
+  PriorityCodeColor: string;
+  Destination: string;
+  DestinationType: string;
+  PriorityCodeDescription: string;
+  DeviceDescription: string;
+  DeviceId: number;
+  OutputDeviceId: string;
+  AvailableOutputDeviceList: Array<OutputDevice>;
+  Saving: boolean;
+  SequenceOrder: number;
+  NewCount: number;
+  ReleasedCount: number;
+  AreaCount: number;
+  TrackById: Guid;
+  UnsentPickListLineIds: Array<Guid>;
+  PickPriorityIdentity: number;
+
   static fromNonstandardJson(picklistQueueGrouped: IPicklistQueueGroupedNonstandardJson) {
     return new this({
       AvailableOutputDeviceList: picklistQueueGrouped.AvailableOutputDeviceList.$values,
@@ -31,22 +50,4 @@ export class PicklistQueueGrouped implements IPicklistQueueGrouped {
     });
   }
 
-  DeviceLocationId: number;
-  PriorityCode: string;
-  PriorityCodeColor: string;
-  Destination: string;
-  DestinationType: string;
-  PriorityCodeDescription: string;
-  DeviceDescription: string;
-  DeviceId: number;
-  OutputDeviceId: string;
-  AvailableOutputDeviceList: Array<OutputDevice>;
-  Saving: boolean;
-  SequenceOrder: number;
-  NewCount: number;
-  ReleasedCount: number;
-  AreaCount: number;
-  TrackById: Guid;
-  UnsentPickListLineIds: Array<Guid>;
-  PickPriorityIdentity: number;
 }

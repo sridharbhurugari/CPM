@@ -3,6 +3,7 @@ import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WindowService } from '../../shared/services/window-service';
+import { PicklistQueueItem } from '../model/picklist-queue-item';
 
 @Component({
   selector: 'app-xr2-queue-details-header',
@@ -13,6 +14,8 @@ export class Xr2QueueDetailsHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() backEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
+
+  @Input() priorityDescriptionHeader: string;
 
   @ViewChild('searchBox', {
     static: true

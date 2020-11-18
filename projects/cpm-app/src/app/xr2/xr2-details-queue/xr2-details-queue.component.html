@@ -3,7 +3,7 @@
     <ng-container class="ocgridheader">
       <div data-colwrap="true">
           <oc-checkbox
-            [selected]="picklistQueueItems && selectedItems.size === picklistQueueItems.length"
+            [selected]="picklistQueueItems && picklistQueueItems.length > 0 && selectedItems.size === picklistQueueItems.length"
             [noLabel]="true"
             [valueField]="checkboxToggleAll"
             (selection)="onSelectAllCheckBox($event)">
@@ -42,12 +42,12 @@
           <span>{{picklistQueueItem.Destination}}</span>
           <div class="destination-details">
             <span [ngStyle]="{'font-size': '14px'}">{{picklistQueueItem.OrderId}}</span>
-            <span [ngStyle]="{'font-size': '14px'}">10/9/2020 | 11:14:31 AM</span>
+            <span [ngStyle]="{'font-size': '14px'}">{{getOrderDate(picklistQueueItem)}}</span>
           </div>
         </div>
         <div class="col width-type" [attr.data-title]="'ITEMS' | translate">
           <app-cp-data-label
-            [data]="picklistQueueItem.ItemCount"
+            [data]="picklistQueueItem.PatientCount"
             [label]="getItemPriorityLabel(picklistQueueItem) | translate">
           </app-cp-data-label>
         </div>
@@ -98,8 +98,9 @@
             [width]="35"
             [height]="35"
             [theme]="'dark'"
+            [label]="getRerouteButtonProperties(picklistQueueItem).text | translate"
+            [disabled]="getRerouteButtonProperties(picklistQueueItem).disabled"
             [icon]="'reroute'"
-            [label]="'REROUTE' | translate"
             (clickEvent)="onRerouteClick(picklistQueueItem)">
             </app-cp-clickable-icon>
           </div>

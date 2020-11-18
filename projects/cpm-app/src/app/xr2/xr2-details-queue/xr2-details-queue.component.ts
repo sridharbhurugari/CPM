@@ -1,27 +1,21 @@
 import { Component, Input, ViewChild, OnInit, OnDestroy, ElementRef, EventEmitter, Output } from '@angular/core';
-import { Location } from '@angular/common';
 import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
-import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
-import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
-import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
-import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
-import { takeUntil } from 'rxjs/operators';
+import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
+import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
 
 
 @Component({
@@ -36,43 +30,10 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() selectionChangedEvent: EventEmitter<any> = new EventEmitter();
-  @Output() itemUpdatedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
-  @Output() itemRemovedEvent: EventEmitter<PicklistQueueItem> = new EventEmitter();
+  @Output() picklistQueueItemAddorUpdatedEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() picklistQueueItemRemovedEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
 
-  private _picklistQueueItems: PicklistQueueItem[];
-
-
-  selectedItems = new Set<PicklistQueueItem>();
-
-  readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
-  readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
-  readonly itemPropertyName = nameof<PicklistQueueItem>('ItemCount');
-  readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
-  firstTime = true;
-  checkboxToggleAll: string = CheckboxValues.ToggleAll;
-  currentSortPropertyName: string;
-  sortOrder: SortDirection = SortDirection.ascending;
-  _searchTextFilter;
-
-  translationMap = {
-    RELEASE: 'RELEASE',
-    PRINT: 'PRINT',
-    REPRINT: 'REPRINT',
-    PATIENT: 'PATIENT',
-    PATIENTS: 'PATIENTS',
-    ITEM: 'ITEM',
-    ITEMS: 'ITEMS',
-    BIN: 'BIN',
-    BINS: 'BINS',
-    BAG: 'BAG',
-    BAGS: 'BAGS',
-  };
-
-  translatables = [
-    'OF'
-  ];
-  translations$: Observable<any>;
-  ngUnsubscribe = new Subject();
+  @Input() multiSelectMode: boolean;
 
   @Input() clearSelectedItemsEvent: Observable<any>;
 
@@ -95,13 +56,44 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return this._searchTextFilter;
   }
 
+  private _picklistQueueItems: PicklistQueueItem[];
+
+  selectedItems = new Set<PicklistQueueItem>();
+
+  readonly sequenceOrderPropertyName = nameof<PicklistQueueItem>('SequenceOrder');
+  readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
+  readonly itemPropertyName = nameof<PicklistQueueItem>('ItemCount');
+  readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
+  firstTime = true;
+  checkboxToggleAll: string = CheckboxValues.ToggleAll;
+  currentSortPropertyName: string;
+  sortOrder: SortDirection = SortDirection.ascending;
+  _searchTextFilter;
+
+  translationMap = {
+    RELEASE: 'RELEASE',
+    PRINT: 'PRINT',
+    REPRINT: 'REPRINT',
+    REROUTE: 'REROUTE',
+    PATIENT: 'PATIENT',
+    PATIENTS: 'PATIENTS',
+    ITEM: 'ITEM',
+    ITEMS: 'ITEMS',
+    BIN: 'BIN',
+    BINS: 'BINS',
+    BAG: 'BAG',
+    BAGS: 'BAGS',
+  };
+
+  translatables = [
+    'OF'
+  ];
+  translations$: Observable<any>;
+  ngUnsubscribe = new Subject();
+
+
   @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
 
-  @ViewChild('searchBox', {
-    static: true
-  })
-
-  searchElement: SearchBoxComponent;
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('OrderId'),
     , nameof<PicklistQueueItem>('DeviceDescription')];
 
@@ -111,10 +103,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   constructor(
     private windowService: WindowService,
-    private translateService: TranslateService,
-    private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService) {
-      this.configureEventHandlers();
-  }
+    private translateService: TranslateService
+    ) {}
 
   ngOnInit(): void {
     this.setTranslations();
@@ -149,12 +139,10 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   getItemPriorityLabel(picklistQueueItem: PicklistQueueItem): string {
     let label = '';
 
-    if (picklistQueueItem.ItemCount > 1) {
-      label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
-        this.translationMap.PATIENTS : this.translationMap.ITEMS;
+    if (picklistQueueItem.DestinationType === DestinationTypes.Patient) {
+      label = picklistQueueItem.PatientCount > 1 ? this.translationMap.PATIENTS : this.translationMap.PATIENT;
     } else {
-      label = picklistQueueItem.DestinationType === DestinationTypes.Patient ?
-        this.translationMap.PATIENT : this.translationMap.ITEM;
+      label = picklistQueueItem.ItemCount > 1 ? this.translationMap.ITEMS : this.translationMap.ITEM;
     }
 
     return label;
@@ -176,7 +164,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   getReleaseButtonProperties(picklistQueueItem: PicklistQueueItem) {
     return {
-      disabled : picklistQueueItem.Saving ||  !this.getSelectedOutputDeviceRow(picklistQueueItem),
+      disabled : picklistQueueItem.Saving
+      ||  !this.getSelectedOutputDeviceRow(picklistQueueItem)
+      || this.multiSelectMode,
       text: this.translationMap.RELEASE
     };
   }
@@ -191,8 +181,15 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     }
 
     return {
-      disabled: !picklistQueueItem.Printable,
+      disabled: !picklistQueueItem.Printable || this.multiSelectMode,
       text
+    };
+  }
+
+  getRerouteButtonProperties(picklistQueueItem: PicklistQueueItem) {
+    return {
+      disabled: !picklistQueueItem.Reroutable || this.multiSelectMode,
+      text: this.translationMap.REROUTE
     };
   }
 
@@ -285,80 +282,129 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return _.orderBy(picklistItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
-  private clearSelectedItems(): void {
-    this.selectedItems.clear();
-  }
+  removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey: IXr2OrderGroupKey): void {
+    console.log('removePicklistQueueItemByOrderGroupKey: looking to remove xr2 item with order id:' + xr2OrderGroupKey.OrderId +
+    'OrderGroupDestinationId' + xr2OrderGroupKey.OrderGroupDestinationId +
+    'DeviceLocationId' + xr2OrderGroupKey.DeviceLocationId,
+    'RobotPickGroupId' + xr2OrderGroupKey.RobotPickGroupId
+    );
 
-  private configureEventHandlers(): void {
-    if (!this.picklistQueueEventConnectionService) {
-      return;
-    }
-
-    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(message => {
-        try {
-          this.onAddOrUpdatePicklistQueueItem(message);
-        } catch (exception) {
-          console.log('addOrUpdatePicklistQueueItemSubject - onAddOrUpdatePicklistQueueItem failed!');
-        }
-      });
-
-    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(message => {
-        try {
-          this.onRemovePicklistQueueItem(message);
-        } catch (exception) {
-          console.log('removePicklistQueueItemSubject - onRemovePicklistQueueItem failed!');
-        }
-      });
-  }
-
-
-  private setTranslations(): void {
-    this.translations$ = this.translateService.get(this.translatables);
-  }
-
-  private onAddOrUpdatePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IAddOrUpdatePicklistQueueItemMesssage): void {
-    const picklistQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdatePicklistQueueItemMessage.PicklistQueueItem);
-    const matchingRobotGroupLine = _.find(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId != null && x.RobotPickGroupId == picklistQueueItem.RobotPickGroupId;
-    });
-    const matchingPicklistQueueItem = matchingRobotGroupLine || _.find(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId === null &&
-      x.OrderId === picklistQueueItem.OrderId &&
-      x.OrderGroupDestinationId === picklistQueueItem.OrderGroupDestinationId &&
-      x.DeviceLocationId === picklistQueueItem.DeviceLocationId;
-    });
-    if (matchingPicklistQueueItem == null) {
-      this.picklistQueueItems.push(picklistQueueItem);
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-      return;
-    }
-    matchingPicklistQueueItem.ItemCount = picklistQueueItem.ItemCount;
-    matchingPicklistQueueItem.Status = picklistQueueItem.Status;
-    matchingPicklistQueueItem.FilledBoxCount = picklistQueueItem.FilledBoxCount;
-    matchingPicklistQueueItem.BoxCount = picklistQueueItem.BoxCount;
-    matchingPicklistQueueItem.ItemPicklistLines = picklistQueueItem.ItemPicklistLines;
-    matchingPicklistQueueItem.IsPrintable = picklistQueueItem.IsPrintable;
-    matchingPicklistQueueItem.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
-    this.resyncPickListQueueItem(picklistQueueItem);
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-  }
-
-  private onRemovePicklistQueueItem(addOrUpdatePicklistQueueItemMessage: IRemovePicklistQueueItemMessage): void {
-    const xr2OrderGroupKey = addOrUpdatePicklistQueueItemMessage.Xr2OrderGroupKey;
-
-    _.remove(this.picklistQueueItems, (x) => {
+    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       return x.OrderId === xr2OrderGroupKey.OrderId &&
       x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
       x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
     });
+
+    this.RemovePicklistQueueItemAtIndex(matchingItemIndex);
+  }
+
+  addOrUpdatePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
+    console.log('addOrUpdatePickListQueueItem');
+    console.log(messagedPicklistQueueItem);
+    let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+      return x.RobotPickGroupId != null && x.RobotPickGroupId == messagedPicklistQueueItem.RobotPickGroupId;
+    });
+
+    if (matchingPicklistQueueItemIndex < 0) {
+      matchingPicklistQueueItemIndex =  _.findIndex(this.picklistQueueItems, (x) => {
+        return x.RobotPickGroupId === null &&
+        x.OrderId === messagedPicklistQueueItem.OrderId &&
+        x.OrderGroupDestinationId === messagedPicklistQueueItem.OrderGroupDestinationId &&
+        x.DeviceLocationId === messagedPicklistQueueItem.DeviceLocationId;
+      });
+    }
+
+    console.log(matchingPicklistQueueItemIndex);
+
+    if ((matchingPicklistQueueItemIndex < 0)) {
+      console.log('PicklistItem Not Found. Adding Entry');
+      this.picklistQueueItems.push(new PicklistQueueItem(messagedPicklistQueueItem));
+      return;
+    }
+
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemCount =  messagedPicklistQueueItem.ItemCount;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].Status =  messagedPicklistQueueItem.Status;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  messagedPicklistQueueItem.FilledBoxCount;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].BoxCount =  messagedPicklistQueueItem.BoxCount;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  messagedPicklistQueueItem.ItemPicklistLines;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  messagedPicklistQueueItem.IsPrintable;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  messagedPicklistQueueItem.RobotPickGroupId;
+    this.picklistQueueItemAddorUpdatedEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  private resyncPickListQueueItem(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.TrackById = Guid.create();
+  removePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
+    console.log('removePicklistQueueItem: looking to remove xr2 item with order id:' + messagedPicklistQueueItem.OrderId +
+    'device ID:' + messagedPicklistQueueItem.DeviceId + 'priority code: ' + messagedPicklistQueueItem.PriorityCode +
+    'OrderGroupDestinationId' + messagedPicklistQueueItem.OrderGroupDestinationId +
+    'DeviceLocationId' + messagedPicklistQueueItem.DeviceLocationId,
+    'RobotPickGroupId' + messagedPicklistQueueItem.RobotPickGroupId
+    );
+
+    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+      return x.OrderId === messagedPicklistQueueItem.OrderId &&
+      x.OrderGroupDestinationId === messagedPicklistQueueItem.OrderGroupDestinationId &&
+      x.DeviceLocationId === messagedPicklistQueueItem.DeviceLocationId &&
+      x.RobotPickGroupId == messagedPicklistQueueItem.RobotPickGroupId &&
+      x.DeviceId === messagedPicklistQueueItem.DeviceId && x.PriorityCode === messagedPicklistQueueItem.PriorityCode;
+    });
+
+    this.RemovePicklistQueueItemAtIndex(matchingItemIndex);
+  }
+
+  private RemovePicklistQueueItemAtIndex(matchingItemIndex: number) {
+    if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
+      console.log('group exists removing it');
+      this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
+      this.picklistQueueItems.splice(matchingItemIndex, 1);
+      console.log(this.picklistQueueItems);
+    }
+    else {
+      console.log('Matching Index not found in queue to remove');
+    }
+
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
+  refreshDataOnScreen(picklistQueueItemList: IPicklistQueueItem[]) {
+    console.log('refreshDataOnScreen');
+    console.log('Current List');
+    console.log(this.picklistQueueItems);
+    console.log('New List for screen');
+    console.log(picklistQueueItemList);
+    if (!picklistQueueItemList) {
+        console.log('No item in list clearing');
+        this.picklistQueueItems = [];
+        // Clear event
+        console.log(this.picklistQueueItems);
+    } else {
+        // Remove Items not in source list.
+        for (let i = this.picklistQueueItems.length - 1; i >= 0; i--) {
+          this.removePicklistQueueItem(this.picklistQueueItems[i]);
+        }
+
+        console.log('Removed Non matching Items.');
+        console.log(this.picklistQueueItems);
+
+        // Add or Update
+        picklistQueueItemList.forEach((x) => {
+            this.addOrUpdatePicklistQueueItem(x);
+        });
+    }
+
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
+  getOrderDate(picklistQueueItem: PicklistQueueItem): string {
+    const orderDate = new Date(picklistQueueItem.OrderDate).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+   }
+
+  private clearSelectedItems(): void {
+    this.selectedItems.clear();
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 }
