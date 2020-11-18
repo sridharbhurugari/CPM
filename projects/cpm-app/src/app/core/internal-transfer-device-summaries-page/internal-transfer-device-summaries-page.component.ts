@@ -29,6 +29,7 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
         }
         catch (e) {
           console.log(e);
+        }
       });
     this.loadDeviceNeeds();
   }
