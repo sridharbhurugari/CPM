@@ -6,6 +6,7 @@ import { IDeviceLeaseDeniedEvent } from '../events/i-device-lease-denied-event';
 import { IDeviceLeaseGrantedEvent } from '../events/i-device-lease-granted-event';
 import { ICarouselFaultedEvent } from '../events/i-carousel.faulted-event';
 import { ICarouselReadyEvent } from '../events/i-carousel-ready-event';
+import { IRefreshDeviceNeedsEvent } from "../events/i-refresh-device-needs";
 import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
@@ -18,6 +19,7 @@ export class CoreEventConnectionService implements OnDestroy {
   public deviceLeaseDeniedSubject = new Subject<IDeviceLeaseDeniedEvent>();
   public carouselFaultedSubject = new Subject<ICarouselFaultedEvent>();
   public carouselReadySubject = new Subject<ICarouselReadyEvent>();
+  public refreshDeviceNeedsSubject = new Subject<IRefreshDeviceNeedsEvent>();
   public ngUnsubscribe = new Subject();
 
   public startedSubject = new ReplaySubject(1);
@@ -84,6 +86,10 @@ export class CoreEventConnectionService implements OnDestroy {
           this.ocsIsHealthySubject.next(false);
         }
 
+        if (message.$type.includes('RefreshDeviceNeeds')) {
+          this.refreshDeviceNeedsSubject.next();
+        }
+
         return;
       }
 
@@ -126,6 +132,10 @@ export class CoreEventConnectionService implements OnDestroy {
 
       if (message.EventId === 'CarouselFaultedEvent') {
         this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
+      }
+
+      if (message.EventId === 'RefreshDeviceNeeds') {
+        this.refreshDeviceNeedsSubject.next();
       }
     } catch (e) {
       console.log('CoreEventConnectionService.eventHandlers ERROR');

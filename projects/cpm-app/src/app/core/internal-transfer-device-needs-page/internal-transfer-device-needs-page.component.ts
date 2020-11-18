@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DevicesService } from '../../api-core/services/devices.service';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';
 import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,12 +15,8 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
 import * as _ from 'lodash';
-import { findIndex } from 'lodash';
-import { IItemNeedsOperationResult } from '../../api-core/data-contracts/i-item-needs-operation-result';
-import { INeedsItemQuantity } from '../../shared/events/i-needs-item-quantity';
-import { of } from 'rxjs/internal/observable/of';
 import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
-import { HttpResponse } from '@angular/common/http';
+import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -44,6 +40,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   deviceId: number;
   itemsToPick: IItemReplenishmentNeed[] = new Array();
   sortedNeeds$: Observable<IItemReplenishmentNeed[]>;
+  ngUnsubscribe = new Subject();
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -55,21 +52,51 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     devicesService: DevicesService,
     translateService: TranslateService,
     pdfPrintService: PdfPrintService,
+    coreEventConnectionService: CoreEventConnectionService
   ) {
     this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));
-    this.itemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
+    this.loadNeeds();
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
 
     this.itemNeeds$.subscribe(needs => {
       this.isXr2Item = needs[0].Xr2Item;
     });
+
+    coreEventConnectionService.refreshDeviceNeedsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => {
+        try {
+          this.onRefreshDeviceNeeds();
+        }
+        catch (e) {
+          console.log(e);
+        }
+      });
   }
 
   ngOnInit() {
+    this.loadNeedsReport();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  private onRefreshDeviceNeeds() {
+    this.loadNeeds();
+    this.loadNeedsReport();
+  }
+
+  private loadNeeds(): void {
+    this.itemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
+  }
+
+  private loadNeedsReport(): void {
     this.reportItemNeeds$ = this.deviceReplenishmentNeedsService.getDeviceItemNeeds(this.deviceId).pipe(shareReplay(1));
     this.reportItemNeeds$ = this.reportItemNeeds$.pipe(
       map(need => {
