@@ -30,6 +30,9 @@ import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
 import { DestinationTypes } from '../../shared/constants/destination-types';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+import { update } from 'lodash';
+import { last } from 'rxjs/operators';
 
 @Component({
   selector: 'oc-search-box',
@@ -446,6 +449,138 @@ describe('Xr2DetailsQueueComponent', () => {
 
       const label = component.getOrderSplitDataString(item);
       expect(label.length).toBeGreaterThan(0);
+    });
+  });
+  describe('Queue data updates', () => {
+    it('should remove picklist queue item by order key', () => {
+      const mockGuid = Guid.create();
+      const DeviceLocationId = 1;
+      const OrderGroupDestinationId = '1';
+      const OrderId = '1';
+      const RobotPickGroupId = mockGuid;
+      const xr2OrderGroupKey = {
+        DeviceLocationId,
+        OrderGroupDestinationId,
+        OrderId,
+        RobotPickGroupId,
+      } as IXr2OrderGroupKey;
+      const queueItem = new PicklistQueueItem(null);
+      queueItem.DeviceLocationId = 1;
+      queueItem.OrderGroupDestinationId = '1';
+      queueItem.OrderId = '1';
+      queueItem.RobotPickGroupId = mockGuid;
+
+      component.picklistQueueItems = [queueItem];
+
+      component.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
+
+      expect(component.picklistQueueItems.length).toBe(0);
+    });
+    it('should clear list on null input for refresh', () => {
+      component.picklistQueueItems = [];
+      for (let i = 0; i < 4; i++) {
+        const mockGuid = Guid.create();
+        const queueItem = new PicklistQueueItem(null);
+        queueItem.DeviceLocationId = i;
+        queueItem.OrderGroupDestinationId = i.toString();
+        queueItem.OrderId = i.toString();
+        queueItem.DeviceId = i;
+        queueItem.PriorityCode = i.toString();
+        queueItem.RobotPickGroupId = mockGuid;
+        queueItem.Status = 1;
+        component.picklistQueueItems.push(queueItem);
+      }
+
+      component.refreshDataOnScreen(null);
+
+      expect(component.picklistQueueItems.length).toBe(0);
+    });
+    it('should refresh data on screen and remove/update items', () => {
+      const updatedList: PicklistQueueItem[] = [];
+      component.picklistQueueItems = [];
+      for (let i = 0; i < 4; i++) {
+        const mockGuid = Guid.create();
+        const queueItem = new PicklistQueueItem(null);
+        queueItem.DeviceLocationId = i;
+        queueItem.OrderGroupDestinationId = i.toString();
+        queueItem.OrderId = i.toString();
+        queueItem.DeviceId = i;
+        queueItem.PriorityCode = i.toString();
+        queueItem.RobotPickGroupId = mockGuid;
+        queueItem.Status = 1;
+        component.picklistQueueItems.push(queueItem);
+        updatedList.push(new PicklistQueueItem(queueItem));
+      }
+
+      updatedList.splice(0, 1);
+      updatedList[0].Status = 2;
+      updatedList[1].Status = 3;
+      updatedList[2].Status = 4;
+
+      component.refreshDataOnScreen(updatedList);
+
+      expect(component.picklistQueueItems.length).toBe(updatedList.length);
+
+      for (let i = 0; i < component.picklistQueueItems.length - 1; i++) {
+        expect(component.picklistQueueItems[i].Status).toBe(updatedList[i].Status);
+      }
+    });
+    it('should add picklist queue item to queue', () => {
+      component.picklistQueueItems = [];
+      for (let i = 0; i < 4; i++) {
+        const mockGuid = Guid.create();
+        const queueItem = new PicklistQueueItem(null);
+        queueItem.DeviceLocationId = i;
+        queueItem.OrderGroupDestinationId = i.toString();
+        queueItem.OrderId = i.toString();
+        queueItem.DeviceId = i;
+        queueItem.PriorityCode = i.toString();
+        queueItem.RobotPickGroupId = mockGuid;
+        queueItem.Status = 1;
+        component.picklistQueueItems.push(queueItem);
+      }
+
+      const previousLength = component.picklistQueueItems.length;
+
+      const addedItem = new PicklistQueueItem(null);
+      addedItem.DeviceLocationId = 4;
+      addedItem.OrderGroupDestinationId = '4';
+      addedItem.OrderId = '4';
+      addedItem.DeviceId = 4;
+      addedItem.PriorityCode = '4';
+      addedItem.RobotPickGroupId = Guid.create();
+
+
+      component.addOrUpdatePicklistQueueItem(addedItem);
+
+      expect(component.picklistQueueItems.length).toBe(previousLength + 1);
+    });
+    it('should update picklist queue item', () => {
+      component.picklistQueueItems = [];
+      for (let i = 0; i < 4; i++) {
+        const mockGuid = Guid.create();
+        const queueItem = new PicklistQueueItem(null);
+        queueItem.DeviceLocationId = i;
+        queueItem.OrderGroupDestinationId = i.toString();
+        queueItem.OrderId = i.toString();
+        queueItem.DeviceId = i;
+        queueItem.PriorityCode = i.toString();
+        queueItem.RobotPickGroupId = mockGuid;
+        queueItem.Status = 1;
+        component.picklistQueueItems.push(queueItem);
+      }
+
+      const previousLength = component.picklistQueueItems.length;
+      const lastIndex = component.picklistQueueItems.length - 1;
+      const lastItem = component.picklistQueueItems[lastIndex];
+      const updatedItem = new PicklistQueueItem(lastItem);
+      updatedItem.Status = 4;
+
+
+      component.addOrUpdatePicklistQueueItem(updatedItem);
+
+      expect(component.picklistQueueItems.length).toBe(previousLength);
+      expect(component.picklistQueueItems[lastIndex].Status).toBe(updatedItem.Status);
     });
   });
 });

@@ -292,25 +292,25 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       return x.OrderId === xr2OrderGroupKey.OrderId &&
       x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
-      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId == xr2OrderGroupKey.RobotPickGroupId;
+      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId === xr2OrderGroupKey.RobotPickGroupId;
     });
 
-    this.RemovePicklistQueueItemAtIndex(matchingItemIndex);
+    this.removePicklistQueueItemAtIndex(matchingItemIndex);
   }
 
-  addOrUpdatePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
+  addOrUpdatePicklistQueueItem(updatedQueueItem: IPicklistQueueItem) {
     console.log('addOrUpdatePickListQueueItem');
-    console.log(messagedPicklistQueueItem);
+    console.log(updatedQueueItem);
     let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
-      return x.RobotPickGroupId != null && x.RobotPickGroupId == messagedPicklistQueueItem.RobotPickGroupId;
+      return x.RobotPickGroupId != null && x.RobotPickGroupId === updatedQueueItem.RobotPickGroupId;
     });
 
     if (matchingPicklistQueueItemIndex < 0) {
       matchingPicklistQueueItemIndex =  _.findIndex(this.picklistQueueItems, (x) => {
         return x.RobotPickGroupId === null &&
-        x.OrderId === messagedPicklistQueueItem.OrderId &&
-        x.OrderGroupDestinationId === messagedPicklistQueueItem.OrderGroupDestinationId &&
-        x.DeviceLocationId === messagedPicklistQueueItem.DeviceLocationId;
+        x.OrderId === updatedQueueItem.OrderId &&
+        x.OrderGroupDestinationId === updatedQueueItem.OrderGroupDestinationId &&
+        x.DeviceLocationId === updatedQueueItem.DeviceLocationId;
       });
     }
 
@@ -318,48 +318,47 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
     if ((matchingPicklistQueueItemIndex < 0)) {
       console.log('PicklistItem Not Found. Adding Entry');
-      this.picklistQueueItems.push(new PicklistQueueItem(messagedPicklistQueueItem));
+      this.picklistQueueItems.push(new PicklistQueueItem(updatedQueueItem));
       return;
     }
 
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemCount =  messagedPicklistQueueItem.ItemCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].Status =  messagedPicklistQueueItem.Status;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  messagedPicklistQueueItem.FilledBoxCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].BoxCount =  messagedPicklistQueueItem.BoxCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  messagedPicklistQueueItem.ItemPicklistLines;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  messagedPicklistQueueItem.IsPrintable;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  messagedPicklistQueueItem.RobotPickGroupId;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemCount =  updatedQueueItem.ItemCount;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].Status =  updatedQueueItem.Status;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  updatedQueueItem.FilledBoxCount;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].BoxCount =  updatedQueueItem.BoxCount;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  updatedQueueItem.ItemPicklistLines;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  updatedQueueItem.IsPrintable;
+    this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  updatedQueueItem.RobotPickGroupId;
     this.picklistQueueItemAddorUpdatedEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
-  removePicklistQueueItem(messagedPicklistQueueItem: IPicklistQueueItem) {
-    console.log('removePicklistQueueItem: looking to remove xr2 item with order id:' + messagedPicklistQueueItem.OrderId +
-    'device ID:' + messagedPicklistQueueItem.DeviceId + 'priority code: ' + messagedPicklistQueueItem.PriorityCode +
-    'OrderGroupDestinationId' + messagedPicklistQueueItem.OrderGroupDestinationId +
-    'DeviceLocationId' + messagedPicklistQueueItem.DeviceLocationId,
-    'RobotPickGroupId' + messagedPicklistQueueItem.RobotPickGroupId
+  removePicklistQueueItem(removedQueueItem: IPicklistQueueItem) {
+    console.log('removePicklistQueueItem: looking to remove xr2 item with order id:' + removedQueueItem.OrderId +
+    'device ID:' + removedQueueItem.DeviceId + 'priority code: ' + removedQueueItem.PriorityCode +
+    'OrderGroupDestinationId: ' + removedQueueItem.OrderGroupDestinationId +
+    'DeviceLocationId: ' + removedQueueItem.DeviceLocationId,
+    'RobotPickGroupId: ' + removedQueueItem.RobotPickGroupId
     );
 
     const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
-      return x.OrderId === messagedPicklistQueueItem.OrderId &&
-      x.OrderGroupDestinationId === messagedPicklistQueueItem.OrderGroupDestinationId &&
-      x.DeviceLocationId === messagedPicklistQueueItem.DeviceLocationId &&
-      x.RobotPickGroupId == messagedPicklistQueueItem.RobotPickGroupId &&
-      x.DeviceId === messagedPicklistQueueItem.DeviceId && x.PriorityCode === messagedPicklistQueueItem.PriorityCode;
+      return x.OrderId === removedQueueItem.OrderId &&
+      x.OrderGroupDestinationId === removedQueueItem.OrderGroupDestinationId &&
+      x.DeviceLocationId === removedQueueItem.DeviceLocationId &&
+      x.RobotPickGroupId === removedQueueItem.RobotPickGroupId &&
+      x.DeviceId === removedQueueItem.DeviceId && x.PriorityCode === removedQueueItem.PriorityCode;
     });
 
-    this.RemovePicklistQueueItemAtIndex(matchingItemIndex);
+    this.removePicklistQueueItemAtIndex(matchingItemIndex);
   }
 
-  private RemovePicklistQueueItemAtIndex(matchingItemIndex: number) {
+  private removePicklistQueueItemAtIndex(matchingItemIndex: number) {
     if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
       console.log('group exists removing it');
       this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
       this.picklistQueueItems.splice(matchingItemIndex, 1);
       console.log(this.picklistQueueItems);
-    }
-    else {
+    } else {
       console.log('Matching Index not found in queue to remove');
     }
 
