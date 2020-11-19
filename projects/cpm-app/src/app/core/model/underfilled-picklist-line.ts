@@ -1,11 +1,8 @@
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 import { PicklistDestinationDescriptionHelper } from '../utilities/picklist-destination-description-helper';
-import { RestockTypes } from '../constants/restock-types';
-import { DispensePriorityCodes } from '../constants/dispense-priority-codes';
-import { PicklistTypeHelper } from '../utilities/picklist-type-helper';
 
 export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
-    constructor(data: IUnderfilledPicklistLine){
+    constructor(data: IUnderfilledPicklistLine) {
         Object.assign(this, data);
         this.DisplayPatientRoomAndArea = PicklistDestinationDescriptionHelper.DisplayPatientRoomAndArea(1, this.PicklistTypeDb, this.PatientRoom, this.AreaDescription);
         this.DisplayPatientRoom = PicklistDestinationDescriptionHelper.DisplayPatientRoom(1, this.PicklistTypeDb, this.PatientRoom, this.AreaDescription);
@@ -13,7 +10,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
         this.DisplayOmniName = PicklistDestinationDescriptionHelper.DisplayOmniName(1, 1, this.PicklistTypeDb, this.PriorityCode, this.PatientRoom, this.AreaDescription);
         this.DisplayPatientNameSecondLine = PicklistDestinationDescriptionHelper.DisplayPatientNameSecondLine(1, this.PicklistTypeDb, this.PriorityCode);
     }
-
+    PicklistLineId: string;
     DestinationId: string;
     DestinationType: string;
     PriorityCode: string;
@@ -29,7 +26,11 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     PickItemLocationDescription: string;
     FillQuantity: number;
     OrderQuantity: number;
+    ItemFoundInCPM: string;  // unknown item identifier
+    ItemLocation: string; // unassigned item identifier
+    InDeviceItem: string; // missing route
 
+    IsChecked = false;
     DisplayPatientRoomAndArea: boolean;
     DisplayPatientRoom: boolean;
     DisplayArea: boolean;
@@ -38,33 +39,37 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     PharmacyQOH: number;
     UnfilledReason: string;
     PrintFillDate: string;
-    DisplayFillRequired: string;      
-    DisplayDestionationValue: string; 
-    ItemFormatedDescription: string;  
-    ItemBrandDescription: string;     
-    ItemIdDescription: string; 
+    DisplayFillRequired: string;
+    DisplayDestionationValue: string;
+    ItemFormatedDescription: string;
+    ItemBrandDescription: string;
+    ItemIdDescription: string;
     AreaDesctiptionForReport: string;
     patientNameForReport: string;
-    DestinationOmniForReport:string;       
+    DestinationOmniForReport: string;
 
-    get DestinationSortValue(): string{
-        if(this.DestinationType == 'P'){
+get canReroute(): boolean {
+  return !(!(this.ItemFoundInCPM) || !(this.ItemLocation) || !(this.InDeviceItem));
+}
+
+    get DestinationSortValue(): string {
+        if (this.DestinationType === 'P') {
             return this.PatientName;
         }
 
-        if(this.DestinationType == 'A'){
+        if (this.DestinationType === 'A') {
             return this.AreaDescription;
         }
 
-        if(this.DestinationType == 'O'){
+        if (this.DestinationType === 'O') {
             return this.DestinationOmni;
         }
 
         return this.DestinationId;
     }
 
-    get DescriptionSortValue(): string{
-        if(this.ItemFormattedGenericName){
+    get DescriptionSortValue(): string {
+        if (this.ItemFormattedGenericName) {
             return this.ItemFormattedGenericName.toLowerCase();
         }
     }

@@ -1,38 +1,46 @@
-<oc-grid #ocgrid ocgridfilter="false">
+<oc-grid  #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div class="first" data-colwrap="true"></div>
+    <div class="first" ocGridCol data-width="86" minlength = 86 data-colwrap="false">
+      <oc-checkbox [noLabel]="true" [isEnabled]="true" [selected]="isHeaderCheckboxChecked"
+      (selection)="onHeaderCheck($event)"></oc-checkbox>
+  </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
-      [columnPropertyName]='descriptionPropertyName' headerResourceKey='DESCRIPTION_ID'
+      [columnPropertyName]="descriptionPropertyName" headerResourceKey='DESCRIPTION_ID'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="194" data-colwrap="true"
-      [columnPropertyName]='descriptionPropertyName' headerResourceKey='PHARMACY_QOH'
+      [columnPropertyName]="pharmacyQohPropertyName" headerResourceKey='PHARMACY_QOH'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
-      [columnPropertyName]='destinationPropertyName' headerResourceKey='DESTINATION'
+      [columnPropertyName]="destinationPropertyName" headerResourceKey='DESTINATION'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
-      [columnPropertyName]='qtyFillReqPropertyName' headerResourceKey='QTY_FILLED_REQUESTED'
+      [columnPropertyName]="qtyFillReqPropertyName" headerResourceKey='QTY_FILLED_REQUESTED'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
     <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
-      [columnPropertyName]='fillDatePropertyName' headerResourceKey='DATE_COMPLETED'
+      [columnPropertyName]="fillDatePropertyName" headerResourceKey='DATE_COMPLETED'
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
   </ng-container>
   <ng-container class="ocgridbody">
     <div class="row" *ngFor="let picklistLine of picklistLines">
       <div class="first">
-      </div>
+        <oc-checkbox [noLabel]="true"
+        [isEnabled]="true"
+        [valueField]="picklistLine.PicklistLineId"
+        [selected]="picklistLine.IsChecked"
+        (selection)="onSelect($event)"></oc-checkbox>
+    </div>
       <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
         <span>{{picklistLine.ItemFormattedGenericName}}</span>
         <span>{{picklistLine.ItemBrandName}}</span>
         <span>{{picklistLine.ItemId}}</span>
       </div>
       <div class="col" [attr.data-title]="'PHARMACY_QOH' | translate" style="text-align: center;">
-        <span>{{picklistLine.PharmacyQOH}}</span>
+        {{picklistLine.PharmacyQOH}}
       </div>
       <div class="col" [attr.data-title]="'DESTINATION' | translate">
         <div *ngIf="picklistLine.DisplayPatientRoomAndArea">
@@ -53,7 +61,9 @@
         </div>
       </div>
       <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
-        <span>{{picklistLine.FillQuantity}} / {{picklistLine.OrderQuantity}}</span>
+        <span>
+            <oc-svgicon  *ngIf="!picklistLine.canReroute && picklistLine.IsChecked" icon="alert-no-tail"></oc-svgicon>
+          {{(picklistLine.FillQuantity==null?'0':picklistLine.FillQuantity)}} / {{picklistLine.OrderQuantity}}</span>
         <span>{{picklistLine.UnfilledReason}}</span>
       </div>
       <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">
