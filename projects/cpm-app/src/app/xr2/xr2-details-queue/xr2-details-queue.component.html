@@ -47,7 +47,7 @@
         </div>
         <div class="col width-type" [attr.data-title]="'ITEMS' | translate">
           <app-cp-data-label
-            [data]="picklistQueueItem.PatientCount"
+            [data]="getItemCountForDisplay(picklistQueueItem)"
             [label]="getItemPriorityLabel(picklistQueueItem) | translate">
           </app-cp-data-label>
         </div>
