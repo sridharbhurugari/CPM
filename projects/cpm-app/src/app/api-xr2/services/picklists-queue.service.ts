@@ -62,7 +62,7 @@ export class PicklistsQueueService {
   }
 
   sendQueueItemsToRobot(pickPriorityIdentity: string, picklistQueueItems: Array<IReleaseablePicklistQueueItem>) {
-    console.log(GlobalDispenseSyncRequest);
+    console.log(picklistQueueItems);
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot/' + pickPriorityIdentity);
     return this.httpClient.post(url, picklistQueueItems, {
       headers: this.ocapHttpHeadersService.getHeaders()

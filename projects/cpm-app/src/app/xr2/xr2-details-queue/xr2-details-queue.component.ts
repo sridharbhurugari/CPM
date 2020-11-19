@@ -148,6 +148,14 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return label;
   }
 
+  getItemCountForDisplay(picklistQueueItem: PicklistQueueItem): number {
+    if (picklistQueueItem.DestinationType === DestinationTypes.Patient) {
+      return picklistQueueItem.PatientCount
+    } 
+  
+    return picklistQueueItem.ItemCount
+  }
+
   getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
     const outputDeviceDisplayList = [];
     _.forEach(picklistQueueItem.AvailableOutputDeviceList, (outputDevice) => {
