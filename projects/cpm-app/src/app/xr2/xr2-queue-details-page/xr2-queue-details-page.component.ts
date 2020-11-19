@@ -118,16 +118,22 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         return;
       }
 
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+        this.constructor.name + 'Reroute clicked - rerouting current selected item/items');
       this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
   }
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + 'Release clicked - releasing current selected item/items');
     this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + 'Print clicked - printing current selected item/items');
     this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
@@ -158,19 +164,21 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems.map(x => new ReleasablePicklistQueueItem(x))).subscribe(
-      success => {
-        this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
-      }, error => {
-        this.handleSendQueueItemsToRobotError(picklistQueueItems);
-      });
+    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems
+      .map(x => ReleasablePicklistQueueItem.fromPicklistQueueItem(x)))
+      .subscribe(
+        success => {
+          this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
+        }, error => {
+          this.handleSendQueueItemsToRobotError(picklistQueueItems);
+        });
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => new ReroutablePicklistQueueItem(x))).subscribe(
+    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => ReroutablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
       success => {
         this.handleRerouteQueueItemsSuccess(picklistQueueItems);
       }, error => {

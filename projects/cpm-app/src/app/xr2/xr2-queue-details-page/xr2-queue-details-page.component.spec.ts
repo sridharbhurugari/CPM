@@ -4,7 +4,7 @@ import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-click
 import { Xr2QueueDetailsHeaderComponent } from '../xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue.component';
 import { Input, Component } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { Xr2QueueButtonPanelComponent } from '../xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { ButtonActionModule, CheckboxModule, GridModule, PopupDialogModule, PopupDialogService,
@@ -62,7 +62,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       rerouteQueueItems: jasmine.createSpy('rerouteQueueItems').and.returnValue(of(PicklistsQueueService)),
       sendQueueItemsToRobot: jasmine.createSpy('sendQueueItemsToRobot').and.returnValue(of(PicklistsQueueService)),
       printQueueItemsLabels: jasmine.createSpy('printQueueItemsLabels').and.returnValue(of(PicklistsQueueService)),
-      getGroupDetails: jasmine.createSpy('getGroupDetails').and.returnValue(of())
+      getGroupDetails: jasmine.createSpy('getGroupDetails').and.returnValue(of([]))
     };
 
     TestBed.configureTestingModule({
@@ -94,7 +94,6 @@ describe('Xr2QueueDetailsPageComponent', () => {
       pickPriorityIdentity: '1',
       deviceId: '1'
     };
-
     fixture.detectChanges();
   });
 
@@ -104,6 +103,8 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
   describe('Queue API Actions', () => {
     it('should call PicklistQueue service to send to robot on release click', () => {
+      const failedDialogSpy = spyOn<any>(component, 'displayFailedToSaveDialog');
+
       const item = new PicklistQueueItem(null);
       const itemPicklistLine = {} as IItemPicklistLine;
       item.ItemPicklistLines = [itemPicklistLine];
@@ -113,36 +114,42 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
       expect(picklistsQueueService.sendQueueItemsToRobot).toHaveBeenCalledTimes(1);
       expect(item.Saving).toBeFalsy();
+      expect(failedDialogSpy).toHaveBeenCalledTimes(0);
     });
+    it('should call PicklistQueue service to reroute on reroute click on true dialog result', () => {
+      spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
+      const failedDialogSpy = spyOn<any>(component, 'displayFailedToSaveDialog');
 
-    it('should call PicklistQueue service to reroute on reroute click on true dialogue result', () => {
       const item = new PicklistQueueItem(null);
       const itemPicklistLine = {} as IItemPicklistLine;
       item.ItemPicklistLines = [itemPicklistLine];
       component.selectedItems = new Set();
-      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(true));
 
       component.processReroute(new Set([item]));
 
-      expect(dialogueSpy).toHaveBeenCalledTimes(1);
       expect(picklistsQueueService.rerouteQueueItems).toHaveBeenCalledTimes(1);
       expect(item.Saving).toBeFalsy();
+      expect(failedDialogSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('should not reroute on false dialogue result', () => {
+    it('should not reroute on false dialog result', () => {
+      const rerouteDialogSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
+      const failedDialogSpy = spyOn<any>(component, 'displayFailedToSaveDialog');
+
       const item = new PicklistQueueItem(null);
       const itemPicklistLine = {} as IItemPicklistLine;
       item.ItemPicklistLines = [itemPicklistLine];
       component.selectedItems = new Set();
-      const dialogueSpy = spyOn<any>(component, 'displayRerouteDialog').and.returnValue(of(false));
 
       component.processReroute(new Set([item]));
 
-      expect(dialogueSpy).toHaveBeenCalledTimes(1);
+      expect(rerouteDialogSpy).toHaveBeenCalledTimes(1);
       expect(picklistsQueueService.rerouteQueueItems).toHaveBeenCalledTimes(0);
+      expect(failedDialogSpy).toHaveBeenCalledTimes(0);
     });
-
     it('should call PicklistQueue service to print label on print click', () => {
+      const failedDialogSpy = spyOn<any>(component, 'displayFailedToSaveDialog');
+
       const item = new PicklistQueueItem(null);
       const itemPicklistLine = {} as IItemPicklistLine;
       item.ItemPicklistLines = [itemPicklistLine];
@@ -151,9 +158,9 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.processPrint(new Set([item]));
 
       expect(picklistsQueueService.printQueueItemsLabels).toHaveBeenCalledTimes(1);
+      expect(failedDialogSpy).toHaveBeenCalledTimes(0);
     });
   });
-
   describe('Subscription Eventing', () => {
     it('should ignore add or update event as an invalid client', () => {
       childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'addOrUpdatePicklistQueueItem');
@@ -238,6 +245,30 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
       expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(0);
     });
+
+    it('should call child component to clear data on empty list update as a valid client', () => {
+      childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
+
+      const picklistItemsUpdate = {} as IPicklistQueueItemListUpdateMessage;
+      const ItemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
+      const AvailableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
+      picklistItemsUpdate.DeviceId = 1;
+      picklistItemsUpdate.PickPriorityIdentity = 1;
+      picklistItemsUpdate.AvailablePicklistQueueGroupKeys = {$values: [
+        {
+          DeviceId: 1,
+          PickPriorityIdentity: 1
+        }
+      ]};
+
+      picklistItemsUpdate.PicklistQueueItems = {$values: [
+      ]};
+
+      picklistsQueueEventConnectionService.picklistQueueItemListUpdateSubject.next(picklistItemsUpdate);
+
+      expect(childDetailsQueueComponentSpy).toHaveBeenCalledTimes(1);
+    });
+
 
     it('should call child component to refresh data on list update as a valid client', () => {
       childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
@@ -360,6 +391,43 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
         expect(picklistSet.size).toBe(0);
       });
+    });
+
+    it('remove item from action disable map and deselect item on remove event', () => {
+      const item = new PicklistQueueItem(null);
+      component.selectedItems = new Set<PicklistQueueItem>();
+      component.selectedItems.add(item);
+      component.actionPicklistItemsDisableMap = new Map([
+        [OutputDeviceAction.Release, new Set<PicklistQueueItem>([item])],
+       [OutputDeviceAction.Print, new Set<PicklistQueueItem>([item])],
+       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>([item])],
+      ]);
+
+      component.onPicklistQueueItemsRemoved([item]);
+
+      expect(component.selectedItems.has(item)).toBeFalsy();
+      component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
+        expect(picklistSet.size).toBe(0);
+      });
+    });
+
+    it('add item from action disable map and select item on add event', () => {
+      const item = new PicklistQueueItem(null);
+      item.Status = 1;
+      item.Saving = false;
+      component.selectedItems = new Set<PicklistQueueItem>();
+      component.selectedItems.add(item);
+      component.actionPicklistItemsDisableMap = new Map([
+        [OutputDeviceAction.Release, new Set<PicklistQueueItem>()],
+       [OutputDeviceAction.Print, new Set<PicklistQueueItem>()],
+       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
+      ]);
+
+      component.onPicklistQueueItemsAddorUpdated([item]);
+
+      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release).size).toBe(0);
+      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print).size).toBe(1);
+      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute).size).toBe(0);
     });
 
     it('add item to action disable map on select event', () => {
