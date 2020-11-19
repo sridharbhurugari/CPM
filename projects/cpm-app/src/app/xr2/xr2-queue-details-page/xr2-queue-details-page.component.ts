@@ -329,9 +329,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   private handlePicklistQueueItemListUpdateSubject(listUpdateMessage: IPicklistQueueItemListUpdateMessage) {
     console.log('handlePicklistQueueItemListUpdateSubject called');
+    let availablePicklistQueueGroupKeys: PicklistQueueGroupKey[];
 
-    const availablePicklistQueueGroupKeys = listUpdateMessage.AvailablePicklistQueueGroupKeys.$values
-    .map((key) => PicklistQueueGroupKey.fromNonstandardJson(key));
+    if(listUpdateMessage.AvailablePicklistQueueGroupKeys.$values)
+    {
+      availablePicklistQueueGroupKeys = listUpdateMessage.AvailablePicklistQueueGroupKeys.$values
+      .map((key) => PicklistQueueGroupKey.fromNonstandardJson(key));
+    }
 
     if (!availablePicklistQueueGroupKeys || !this.hasValidGroupKey(availablePicklistQueueGroupKeys)) {
       this.childDetailsQueueComponent.refreshDataOnScreen(null);
