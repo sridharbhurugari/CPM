@@ -33,7 +33,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Input()
   set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._loadedPicklistQueueGrouped = value;
-    this.picklistQueueGrouped = value;
+    this.picklistQueueGrouped = this._loadedPicklistQueueGrouped;
     if (value && this.selectedDeviceInformation && this.selectedDeviceInformation.DeviceId !== 0) {
       this.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
     }
@@ -268,8 +268,10 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   refreshDataOnScreen(picklistGroupedList: IPicklistQueueGrouped[]) {
       console.log('refreshDataOnScreen');
-      console.log('Current List');
+      console.log('Current List filtered');
       console.log(this.picklistQueueGrouped);
+      console.log('Current List unfiltered');
+      console.log(this.loadedPicklistQueueGrouped);
       console.log('New List for screen');
       console.log(picklistGroupedList);
       if (!picklistGroupedList) {
