@@ -55,7 +55,8 @@ describe('Xr2DetailsQueueComponent', () => {
 
   beforeEach(async(() => {
     translateService = {
-      get: jasmine.createSpy('get').and.returnValue(of(translateService))
+      get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+      getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
     };
 
     popupDialogService = {
@@ -210,6 +211,34 @@ describe('Xr2DetailsQueueComponent', () => {
       expect(component.selectedItems.has(checkedItem)).toBeTruthy();
       expect(selectionChangedSpy).toHaveBeenCalledTimes(1);
     });
+  });
+
+  describe('Selection', () => {
+    it('should return false if there are no items', () => {
+      component.selectedItems = new Set();
+      component.picklistQueueItems = [];
+
+      expect(component.isEveryItemSelected(component.picklistQueueItems)).toBeFalsy();
+    });
+
+    it('should return false if any item is not in selected', () => {
+      const item1 = new PicklistQueueItem(null);
+      const item2 = new PicklistQueueItem(null);
+      component.picklistQueueItems = [item1, item2];
+      component.selectedItems = new Set([item1]);
+
+      expect(component.isEveryItemSelected(component.picklistQueueItems)).toBeFalsy();
+    });
+
+    it('should return true if every item is in selected', () => {
+      const item1 = new PicklistQueueItem(null);
+      const item2 = new PicklistQueueItem(null);
+      component.picklistQueueItems = [item1, item2];
+      component.selectedItems = new Set([item1, item2]);
+
+      expect(component.isEveryItemSelected(component.picklistQueueItems)).toBeTruthy();
+    });
+
   });
 
   describe('Output Device Selection', () => {
@@ -442,6 +471,24 @@ describe('Xr2DetailsQueueComponent', () => {
       expect(label2).toBe(expectedLabel2);
     });
 
+    it('should display patient count for patient destination', () => {
+      const item = new PicklistQueueItem(null);
+      item.PatientCount = 1;
+      item.ItemCount = 2;
+      item.DestinationType = DestinationTypes.Patient;
+
+      expect(component.getItemCountForDisplay(item)).toBe(1);
+    });
+
+    it('should display item count for item destination', () => {
+      const item = new PicklistQueueItem(null);
+      item.PatientCount = 1;
+      item.ItemCount = 2;
+      item.DestinationType = DestinationTypes.Omni;
+
+      expect(component.getItemCountForDisplay(item)).toBe(2);
+    });
+
     it('should display order split data', () => {
       const item = new PicklistQueueItem(null);
       item.FilledBoxCount = 1;
@@ -450,7 +497,16 @@ describe('Xr2DetailsQueueComponent', () => {
       const label = component.getOrderSplitDataString(item);
       expect(label.length).toBeGreaterThan(0);
     });
+
+    it('should display order date', () => {
+      const orderDate = new Date();
+      const item = new PicklistQueueItem(null);
+      item.OrderDate = orderDate;
+
+      expect(component.getOrderDate(item)).toBeDefined();
+    });
   });
+
   describe('Queue data updates', () => {
     it('should remove picklist queue item by order key', () => {
       const mockGuid = Guid.create();
