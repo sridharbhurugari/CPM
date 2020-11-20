@@ -47,10 +47,16 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
       var alteredPicklist$ = initialPicklists$.pipe(switchMap(x => {        
         return unfilledEvents$.pipe(scan<IUnfilledPicklistAddedOrUpdatedEvent|IUnfilledPicklistRemovedEvent, IUnderfilledPicklist[]>((picklists, picklistEvent) => {          
           if ('OrderId' in picklistEvent) {
-            var index = picklists.findIndex((r) => r.OrderId === picklistEvent.OrderId);;
-            picklists.splice(index, 1)
+            let index = picklists.findIndex((r) => r.OrderId === picklistEvent.OrderId);
+            if (index != -1){
+              picklists.splice(index, 1)
+            }
             return picklists;
           } else {
+            let index = picklists.findIndex((r) => r.OrderId === picklistEvent.PicklistUnderfilled.OrderId);
+            if (index != -1){
+              picklists.splice(index, 1)
+            }
             picklists.push(picklistEvent.PicklistUnderfilled)
             return picklists;
           }
