@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { Many } from 'lodash';
+import { Many, remove } from 'lodash';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
@@ -373,28 +373,33 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
   }
 
-  refreshDataOnScreen(picklistQueueItemList: IPicklistQueueItem[]) {
+  refreshDataOnScreen(updatedItemList: IPicklistQueueItem[]) {
     console.log('refreshDataOnScreen');
     console.log('Current List');
     console.log(this.picklistQueueItems);
     console.log('New List for screen');
-    console.log(picklistQueueItemList);
-    if (!picklistQueueItemList) {
+    console.log(updatedItemList);
+    if (!updatedItemList) {
         console.log('No item in list clearing');
         this.picklistQueueItems = [];
         // Clear event
         console.log(this.picklistQueueItems);
+        this.picklistQueueItemRemovedEvent.emit(this.picklistQueueItems);
     } else {
         // Remove Items not in source list.
         for (let i = this.picklistQueueItems.length - 1; i >= 0; i--) {
-          this.removePicklistQueueItem(this.picklistQueueItems[i]);
+          const itemFoundIndex = this.findNonExistingPicklistQueueItemIndex(this.picklistQueueItems[i], updatedItemList);
+          if (itemFoundIndex === -1) {
+            console.log('Removing item in current picklist at index ' + i + '. Item:' + this.picklistQueueItems[i]);
+            this.removePicklistQueueItemAtIndex(i);
+          }
         }
 
         console.log('Removed Non matching Items.');
         console.log(this.picklistQueueItems);
 
         // Add or Update
-        picklistQueueItemList.forEach((x) => {
+        updatedItemList.forEach((x) => {
             this.addOrUpdatePicklistQueueItem(x);
         });
     }
@@ -412,9 +417,24 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    return items.every((item) => {
+    return this.picklistQueueItems.every((item) => {
       return this.isContainedInSelected(item);
     });
+  }
+
+  private findNonExistingPicklistQueueItemIndex(itemToRemove: IPicklistQueueItem, sourceList: IPicklistQueueItem[]) {
+    console.log('Finding non existing items - Item to Remove: ' + itemToRemove.OrderId);
+    const matchingItemIndex = _.findIndex(sourceList, (x) => {
+      return x.OrderId === itemToRemove.OrderId &&
+      x.OrderGroupDestinationId === itemToRemove.OrderGroupDestinationId &&
+      x.DeviceLocationId === itemToRemove.DeviceLocationId &&
+      x.RobotPickGroupId === itemToRemove.RobotPickGroupId &&
+      x.DeviceId === itemToRemove.DeviceId && x.PriorityCode === itemToRemove.PriorityCode;
+    });
+
+    console.log('Matching index in source list: ' + matchingItemIndex);
+
+    return matchingItemIndex;
   }
 
   private removePicklistQueueItemAtIndex(matchingItemIndex: number) {

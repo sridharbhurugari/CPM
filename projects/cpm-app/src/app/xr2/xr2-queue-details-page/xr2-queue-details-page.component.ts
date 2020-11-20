@@ -43,7 +43,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   private _loggingCategory: string;
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
-  selectedItems: Set<PicklistQueueItem>;
+  selectedItems: Set<PicklistQueueItem> = new Set<PicklistQueueItem>();
   actionPicklistItemsDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
   pickPriorityIdentity: string;
@@ -209,6 +209,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   onPicklistQueueItemsRemoved(picklistQueueItems: Array<PicklistQueueItem>) {
+    if (picklistQueueItems === null || picklistQueueItems.length === 0) {
+      this.clearMultiSelect();
+      return;
+    }
+
     _.forEach(picklistQueueItems, (item) => {
       if (this.selectedItems) {
         this.selectedItems.delete(item);
@@ -404,6 +409,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   private addToActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
     _.forEach(itemsToProcess, (item) => {
+      console.log('Adding to action disable map:');
       console.log(item);
       if (!item.Releaseable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release);
