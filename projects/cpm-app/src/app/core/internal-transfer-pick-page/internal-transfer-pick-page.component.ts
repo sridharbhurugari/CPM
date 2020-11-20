@@ -1,78 +1,60 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Guid } from 'guid-typescript';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import { map, shareReplay, switchMap, take } from 'rxjs/operators';
-import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
+import { forkJoin, Observable  } from 'rxjs';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
-import { IOrderItemPendingQuantity } from '../../api-core/data-contracts/i-order-item-pending-quantity';
 import { IPicklistLine } from '../../api-core/data-contracts/i-picklist-line';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
 import { OrderItemPendingQuantitiesService } from '../../api-core/services/order-item-pending-quantities.service';
 import { PicklistLineIdsService } from '../../api-core/services/picklist-line-ids.service';
 import { PicklistLinesService } from '../../api-core/services/picklist-lines.service';
-import { dateTimeToday } from '../../shared/functions/dateTimeToday';
 import { sumValues } from '../../shared/functions/sumValues';
-import { IItemHeaderInfo } from '../../shared/model/i-item-header-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
 import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { ConfigValues } from '../../shared/constants/config-values';
-import { BarcodeParsingService } from '../../shared/services/barcode-parsing.service';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 import { ItemHeaderInfo } from '../../shared/model/item-header-info';
-import { BarcodeOverrideService } from '../../shared/services/barcode-override.service';
-import { BarcodeSafetyStockService } from '../../shared/services/barcode-safety-stock.service';
-import { BarcodeOverrideDataPicking } from '../../shared/model/barcode-override-data-picking';
-import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { PicklistLineFillData } from '../../api-core/data-contracts/picking/picklist-line-fill-data';
+import { IGuidedPickData } from '../model/i-guided-pick-data';
+import { ICompletePickData } from '../model/i-completed-pick-data';
+import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
+import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
+import { DeviceTypeId } from '../../shared/constants/device-type-id';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
   templateUrl: './internal-transfer-pick-page.component.html',
   styleUrls: ['./internal-transfer-pick-page.component.scss'],
-  providers: [ 
-    BarcodeParsingService,
-    BarcodeOverrideService,
-    BarcodeSafetyStockService,
-  ]
+  providers: [
+    QuantityTrackingService
+  ],
 })
-export class InternalTransferPickPageComponent implements OnDestroy {
-  private _subscriptions: Subscription[] = [];
-
+export class InternalTransferPickPageComponent {
+  private _pickTotal: number;
   orderId: string;
+
   picklistLineIds$: Observable<Guid[]>;
   totalLines$: Observable<number>;
   picklistLineIndex = 0;
+
   currentLine$: Observable<IPicklistLine>;
-  currentNeedsDetails$: Observable<IItemReplenishmentNeed[]>;
   isLastLine$: Observable<boolean>;
-  itemHeaderInfo$: Observable<IItemHeaderInfo>;
-  userLocale: string;
-  itemLocationDetails$: Observable<IItemLocationDetail[]>;
-  pickLocation$: Observable<IItemLocationDetail>;
-  pharmacyQoh$: Observable<number>;
-  pickTotal: number;
+
   itemNeedPicks$: Observable<InternalTransferPick[]>;
-  pickTotalIcon: string;
-  expDateIcon: string;
-  expDateInPast$: Observable<boolean>;
-  orderItemPendingQtys$: Observable<IOrderItemPendingQuantity>;
+  currentNeedsDetails$: Observable<IItemReplenishmentNeed[]>;
+  guidedPickData$: Observable<IGuidedPickData>;
 
   pickItemTotals: IInternalTransferPackSizePick[] = new Array();
 
-  safetyStockScanInfo: IBarcodeData;
-  secondaryScanInfo: IBarcodeData;
   safetyStockScanConfig$: Observable<IConfigurationValue>;
   safetyStockQuickAdvanceConfig$: Observable<IConfigurationValue>;
-  productScanRequired$: Observable<boolean>;
+  guidedPickData: IGuidedPickData;
 
-  get awaitingProductScan(): boolean {
-    return this.barcodeSafetyStockService.awaitingProductScan;
-  }
 
   constructor(
     activatedRoute: ActivatedRoute,
@@ -84,9 +66,8 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     private wpfActionControllerService: WpfActionControllerService,
     private itemLocationDetailsService: ItemLocaitonDetailsService,
     private orderItemPendingQuantitiesService: OrderItemPendingQuantitiesService,
-    private barcodeParsingService: BarcodeParsingService,
-    private barcodeOverrideService: BarcodeOverrideService,
-    private barcodeSafetyStockService: BarcodeSafetyStockService,
+    private quantityTrackingService: QuantityTrackingService,
+    private carouselLocationAccessService: CarouselLocationAccessService,
   ) {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
     const allDevices = activatedRoute.snapshot.queryParamMap.get('allDevices');
@@ -97,27 +78,24 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     }
 
     this.totalLines$ = this.picklistLineIds$.pipe(map(x => x.length));
-    this.userLocale = ocapConfigService.get().userLocale;
     this.safetyStockScanConfig$ = systemConfiguraitonsService.getPickingSafetyStockConfig();
     this.safetyStockQuickAdvanceConfig$ = systemConfiguraitonsService.getSafetyStockQuickAdvanceConfig();
 
     this.updateCurrentLineDetails();
   }
 
-  ngOnDestroy() {
-    this.barcodeOverrideService.dispose();
-  }
-
   pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
     this.pickItemTotals = pickTotals;
-    this.pickTotal = sumValues(this.pickItemTotals, x => x.QuantityToPick);
+    this._pickTotal = this.quantityTrackingService.quantity;
   }
 
   navigateContinue() {
+    this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Continue');
   }
 
   navigateBack() {
+    this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Back');
   }
 
@@ -129,38 +107,20 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     }
   }
 
-  completePick() {
-    forkJoin(this.currentLine$, this.isLastLine$, this.productScanRequired$).pipe(take(1)).subscribe(results => {
-      const line = results[0];
-      const isLast = results[1];
-      const productScanRequired = results[2];
-      this.pickItem(line, this.pickTotal, isLast, productScanRequired);
-    });
+  completePick(completePickData: ICompletePickData) {
+    this.pickItem(completePickData);
   }
 
-  safetyStockProductScanCompleted(barcodeData: IBarcodeData) {
-    this.safetyStockScanInfo = barcodeData;
-    forkJoin(this.safetyStockQuickAdvanceConfig$, this.pickLocation$).pipe(take(1)).subscribe(results => {
-      let quickAdvanceConfig = results[0];
-      let qoh = results[1].QuantityOnHand;
-      if (quickAdvanceConfig.Value == ConfigValues.Yes && this.pickTotal <= qoh) {
-        this.completePick();
-      } else {
-        this.tryCompletePickOnScan(qoh);
-      }
-    });
-  }
-
-  private pickItem(line: IPicklistLine, pickTotal: number, isLast: boolean, productScanRequired: boolean) {
-    let scanInfo = this.safetyStockScanInfo;
-    if (!scanInfo && this.secondaryScanInfo && this.secondaryScanInfo.ItemId == line.ItemId) {
-      scanInfo = this.secondaryScanInfo;
+  private pickItem(completePickData: ICompletePickData) {
+    let scanInfo = completePickData.safetyStockScanInfo;
+    if (!scanInfo && completePickData.secondaryScanInfo && completePickData.secondaryScanInfo.ItemId == completePickData.line.ItemId) {
+      scanInfo = completePickData.secondaryScanInfo;
     }
 
-    let packPicks = new PicklistLineFillData(line, this.pickItemTotals, pickTotal, scanInfo, productScanRequired);
+    let packPicks = new PicklistLineFillData(completePickData.line, this.pickItemTotals, this._pickTotal, scanInfo, completePickData.productScanRequired);
 
-    this.picklistLinesService.completePick(packPicks).subscribe(x => {
-      if (isLast) {
+    this.picklistLinesService.completePick(packPicks).pipe(take(1)).subscribe(x => {
+      if (completePickData.isLast) {
         this.navigateContinue();
       } else {
         this.next();
@@ -170,23 +130,27 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   private next() {
     this.picklistLineIndex = this.picklistLineIndex + 1;
+    this.clearLightbar();
     this.updateCurrentLineDetails();
   }
 
   private completeZeroPick() {
-    forkJoin(this.currentLine$, this.isLastLine$, this.productScanRequired$).pipe(take(1)).subscribe(results => {
+    forkJoin(this.currentLine$, this.isLastLine$).pipe(take(1)).subscribe(results => {
+      this._pickTotal = 0;
       const line = results[0];
-      const pickTotal = 0;
       const isLast = results[1];
-      const productScanRequired = results[2];
-      this.pickItem(line, pickTotal, isLast, productScanRequired);
+      this.pickItem({
+        isLast: isLast,
+        line: line,
+        pickTotal: this._pickTotal,
+        productScanRequired: false,
+        safetyStockScanInfo: null,
+        secondaryScanInfo: null,
+      });
     });
   }
 
   private updateCurrentLineDetails() {
-    this.safetyStockScanInfo = null;
-    this.secondaryScanInfo = null;
-    this.clearSubscriptions();
     this.currentLine$ = this.picklistLineIds$.pipe(map(x =>
        x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
     this.isLastLine$ = this.totalLines$.pipe(map(x => x === this.picklistLineIndex + 1));
@@ -202,70 +166,49 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   }
 
   private continueLoadCurrentLineDetails() {
-    this.itemLocationDetails$ = this.currentLine$.pipe(switchMap(x => this.itemLocationDetailsService.get(x.ItemId)), shareReplay(1));
-    this.orderItemPendingQtys$ = this.currentLine$.pipe(switchMap(x => this.orderItemPendingQuantitiesService.get(x.OrderId, x.ItemId)), shareReplay(1));
+    let itemLocationDetails$ = this.currentLine$.pipe(switchMap(x => this.itemLocationDetailsService.get(x.ItemId)), shareReplay(1));
+    let orderItemPendingQtys$ = this.currentLine$.pipe(switchMap(x => this.orderItemPendingQuantitiesService.get(x.OrderId, x.ItemId)), shareReplay(1));
+
     this.itemNeedPicks$ = forkJoin(this.currentNeedsDetails$, this.currentLine$).pipe(map(results => {
       const itemNeeds = results[0];
       const line = results[1];
       return itemNeeds.map(n => new InternalTransferPick(n, line.PickQuantity));
     }));
 
-    this.pharmacyQoh$ = this.itemLocationDetails$.pipe(map(x => sumValues(x, il => il.QuantityOnHand)));
+    this.guidedPickData$ = forkJoin(this.currentLine$, itemLocationDetails$, orderItemPendingQtys$, this.totalLines$, this.safetyStockScanConfig$, this.safetyStockQuickAdvanceConfig$).pipe(map(results => {
+      let currentLine = results[0];
+      let itemLocationDetails = results[1];
+      let orderItemPendingQtys = results[2];
+      let totalLines = results[3];
+      let safetyStockScanConfig = results[4];
+      let safetyStockQuickAdvanceConfig = results[5];
+      let pickLocation = itemLocationDetails.find(x => x.DeviceLocationId == currentLine.SourceDeviceLocationId);
+      let isProductScanRequired = safetyStockScanConfig.Value == ConfigValues.Yes && pickLocation.SafetyStockIssueScan;
 
-    this.pickLocation$ = forkJoin(this.currentLine$, this.itemLocationDetails$).pipe(map(results => {
-      const currentLine: IPicklistLine = results[0];
-      const itemLocationDetails: IItemLocationDetail[] = results[1];
-      return itemLocationDetails.find(x => x.DeviceLocationId == currentLine.SourceDeviceLocationId);
-    }));
+      let guidedPickData: IGuidedPickData = {
+        isProductScanRequired: isProductScanRequired,
+        itemHeaderInfo: new ItemHeaderInfo(pickLocation, currentLine, isProductScanRequired, false, false),
+        orderItemPendingQtys: orderItemPendingQtys,
+        pharmacyQoh: sumValues(itemLocationDetails, il => il.QuantityOnHand),
+        pickLocation: pickLocation,
+        picklistLineIndex: this.picklistLineIndex,
+        totalLines: totalLines,
+        quickAdvanceOnScan: safetyStockQuickAdvanceConfig.Value == ConfigValues.Yes,
+        isLastLine: this.picklistLineIndex == (totalLines - 1),
+        picklistLine: currentLine,
+      };
 
-    this.productScanRequired$ = forkJoin(this.safetyStockScanConfig$, this.pickLocation$).pipe(map(results => {
-      let safetyStockScanConfig = results[0];
-      let pickLocation = results[1];
-      return safetyStockScanConfig.Value === ConfigValues.Yes && pickLocation.SafetyStockIssueScan;
-    }), shareReplay(1));
-
-    this.itemHeaderInfo$ = forkJoin(this.currentLine$, this.pickLocation$, this.productScanRequired$).pipe(map(results => {
-      const currentLine: IPicklistLine = results[0];
-      const pickLocation: IItemLocationDetail = results[1];
-      const productScanRequired = results[2];
-      return new ItemHeaderInfo(pickLocation, currentLine, productScanRequired, false, false);
-    }));
-
-    this.expDateInPast$ = this.pickLocation$.pipe(map(pickLocation => {
-      const today = dateTimeToday();
-      const expDate = new Date(pickLocation.ExpirationDate);
-      return pickLocation.ExpirationDateGranularity != 'None' && pickLocation.QuantityOnHand > 0 && expDate < today;
-    }));
-
-    forkJoin(this.pickLocation$, this.productScanRequired$).pipe(take(1)).subscribe(x => {
-      let pickLocation = x[0];
-      let productScanRequired = x[1];
-      if (!productScanRequired) {
-        this.tryCompletePickOnScan(pickLocation.QuantityOnHand);
-      } else {
-        this.barcodeOverrideService.initialize(new BarcodeOverrideDataPicking(pickLocation.ItemId, []));
-        let scanSubscription = this.barcodeSafetyStockService.productScannedSuccessfully.pipe(take(1)).subscribe(x => this.safetyStockProductScanCompleted(x));
-        this._subscriptions.push(scanSubscription);
-      }
-    });
+      return guidedPickData;
+    })).pipe(tap(x => this.guidedPickData = x));
   }
 
-  private tryCompletePickOnScan(qoh: number) {
-    let scanSubscription = this.barcodeParsingService.productBarcodeParsed$.subscribe(x => {
-      this.secondaryScanInfo = x;
-      if (this.pickTotal <= qoh) {
-        this.completePick();
-      }
-    });
-    this._subscriptions.push(scanSubscription);
-  }
-
-  private clearSubscriptions(){
-    if(!this._subscriptions.length){
+  private clearLightbar() {
+    if (!this.guidedPickData) {
       return;
     }
 
-    this._subscriptions.forEach(x => x.unsubscribe());
-    this._subscriptions = [];
+    if (this.guidedPickData.pickLocation.DeviceType == DeviceTypeId.CarouselDeviceTypeId) {
+      this.carouselLocationAccessService.clearLightbar(this.guidedPickData.pickLocation.DeviceId).pipe(take(1)).subscribe();
+    }
   }
 }

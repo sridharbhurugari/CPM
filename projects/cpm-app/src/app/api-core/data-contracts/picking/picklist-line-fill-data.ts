@@ -22,17 +22,31 @@ export class PicklistLineFillData implements IPicklistLineFillData {
         });
         
         if(barcodeData){
-            this.PickTransactionScanDetails = {
-                IsIssueScanRequired: productScanRequired,
-                IsScanOverride: barcodeData.IsBarcodeOverride,
-                IsScanVerified: barcodeData.IsProductBarcode,
-                IsTransactionLabelBarcodeScanVerified: false,
-                ItemId: barcodeData.ItemId,
-                ScannedBarcode: barcodeData.BarCodeScanned,
-                TransactionScannedBarcodeFormat: barcodeData.BarCodeFormat,
-                TransactionScannedBarcodeProductId: barcodeData.ProductId,
-                TransactionScannedRawBarcode: barcodeData.BarCodeScanned,
-            };
+            if (barcodeData.IsBarcodeOverride) {
+                this.PickTransactionScanDetails = {
+                    IsIssueScanRequired: productScanRequired,
+                    IsScanOverride: barcodeData.IsBarcodeOverride,
+                    IsScanVerified: false,
+                    IsTransactionLabelBarcodeScanVerified: false,
+                    ItemId: line.ItemId,
+                    ScannedBarcode: null,
+                    TransactionScannedBarcodeFormat: null,
+                    TransactionScannedBarcodeProductId: null,
+                    TransactionScannedRawBarcode: null,
+                };;
+            } else {
+                this.PickTransactionScanDetails = {
+                    IsIssueScanRequired: productScanRequired,
+                    IsScanOverride: barcodeData.IsBarcodeOverride,
+                    IsScanVerified: productScanRequired && barcodeData.IsProductBarcode,
+                    IsTransactionLabelBarcodeScanVerified: false,
+                    ItemId: barcodeData.ItemId,
+                    ScannedBarcode: barcodeData.BarCodeScanned,
+                    TransactionScannedBarcodeFormat: barcodeData.BarCodeFormat,
+                    TransactionScannedBarcodeProductId: barcodeData.ProductId,
+                    TransactionScannedRawBarcode: barcodeData.BarCodeScanned,
+                };
+            }
         }
     }
 

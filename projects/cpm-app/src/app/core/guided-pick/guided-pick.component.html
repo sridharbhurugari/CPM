@@ -1,0 +1,111 @@
+<oc-action-layout>
+    <ng-container class="ocactionheader">
+        <div class="splitactiontitle">
+            <div style="flex: 1">
+                {{guidedPickData?.picklistLine?.PriorityDescription}}
+            </div>
+            <div style="flex: 1; text-align: right;">
+                {{guidedPickData?.picklistLineIndex + 1}} {{'of' | translate}} {{guidedPickData?.totalLines}}
+            </div>
+        </div>
+    </ng-container>
+    <ng-container class="ocactiondetails">
+        <app-guided-item-header [itemHeaderInfo]="guidedPickData?.itemHeaderInfo"></app-guided-item-header>
+        <app-split-fixed>
+            <ng-container side="left">
+                <div class="leftPanelHeader">
+                    <app-horizontal-tabs [tabHeaderResourceKeys]="['IN_STOCK','DETAILS']" [selectedTab]="'IN_STOCK'">
+                        <ng-container>
+                            <div app-tab-contents [tabKey]="'IN_STOCK'"
+                                style="text-align: center; font-size: 40px; font-weight: bold;">
+                                <div>{{ guidedPickData?.pickLocation?.QuantityOnHand }} / {{ guidedPickData?.pharmacyQoh }}</div>
+                                <!-- <button class="ocbtn secondary">{{ 'ADJUST' | translate }}</button> -->
+                            </div>
+                            <div app-tab-contents [tabKey]="'DETAILS'" style="font-size: 40px; font-weight: bold;">
+                                <div style="display: flex; font-size: 20px; padding-top: 20px; font-weight: 600;">
+                                    <div style="flex: 2; text-align: left;">
+                                        {{ 'QTY_IN_RECV' | translate }}
+                                    </div>
+                                    <div style="flex: 1; text-align: right;">
+                                        {{ guidedPickData?.orderItemPendingQtys?.PendingStockQty }}
+                                    </div>
+                                </div>
+                                <div style="display: flex; font-size: 20px; padding-top: 20px; font-weight: 600;">
+                                    <div style="flex: 2; text-align: left;">
+                                        {{ 'QTY_PENDING' | translate }}
+                                    </div>
+                                    <div style="flex: 1; text-align: right;">
+                                        {{ guidedPickData?.orderItemPendingQtys?.PendingPickQty }}
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </app-horizontal-tabs>
+                </div>
+                <div class="leftPanelRow" app-headered-content-control headerResourceKey="PICK_TOTAL"
+                    [headerFontWeight]="600" [headerFontSizePx]="20" contentBackgroundColor="white">
+                    <ng-container part="content">
+                        <div style="padding: 15px;">
+                            <div style="text-align: center">
+                                {{ pickTotal }}
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container part="icon">
+                        <app-validation-icon
+                            [style.visibility]="!pickTotal || !guidedPickData || pickTotal <= guidedPickData?.pickLocation?.QuantityOnHand ? 'hidden' : 'visible'"
+                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_TOTAL_MSG"
+                            toastType="error">
+                        </app-validation-icon>
+                    </ng-container>
+                </div>
+                <div *ngIf="guidedPickData?.pickLocation?.ExpirationDateGranularity != 'None'" class="leftPanelRow"
+                    app-headered-content-control headerResourceKey="EARLIEST_EXP_DATE" [headerFontWeight]="600"
+                    [headerFontSizePx]="20" iconToastTitleResourceKey="TITLE" iconToastMsgResourceKey="MSG">
+                    <ng-container part="content">
+                        <div style="text-align: center; margin-top: 15px;">
+                            <span *ngIf="guidedPickData?.pickLocation?.ExpirationDateGranularity == 'Day'">
+                                {{guidedPickData?.pickLocation?.ExpirationDate | date:'shortDate':undefined:userLocale}}
+                            </span>
+                            <span *ngIf="guidedPickData?.pickLocation?.ExpirationDateGranularity == 'Month'">
+                                {{guidedPickData?.pickLocation?.ExpirationDate | date:'M/yyyy':undefined:userLocale}}
+                            </span>
+                        </div>
+                    </ng-container>
+                    <ng-container part="icon">
+                        <app-validation-icon [style.visibility]="expDateInPast ? 'visible' : 'hidden'"
+                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_EXPIRED_MSG"
+                            toastType="warn">
+                        </app-validation-icon>
+                    </ng-container>
+                </div>
+                <div class="leftPanelRow lastRow" app-headered-content-control [headerResourceKey]="'TOTAL_REQUESTED'"
+                    [headerFontWeight]="600" [headerFontSizePx]="20">
+                    <ng-container part="content">
+                        <div style="text-align: center; margin-top: 15px;">
+                            {{guidedPickData?.picklistLine?.PickQuantity}}
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-container side="right">
+                <ng-content select="[part=itemPicks]"></ng-content>
+            </ng-container>
+        </app-split-fixed>
+    </ng-container>
+    <ng-container class="ocactionfooter">
+        <oc-footer>
+            <div class="ocleftalign">
+                <oc-button-action [buttonText]="'PAUSE' | translate" (click)="pauseClicked.next()">}</oc-button-action>
+            </div>
+            <div class="ocrightalign">
+                <oc-button-action [buttonText]="'HOLD' | translate" (click)="holdClicked.next(guidedPickData?.isLastLine)">
+                </oc-button-action>
+                <oc-button-action [buttonText]="guidedPickData?.isLastLine ? ('DONE' | translate) : ('NEXT' | translate)"
+                    [disabled]="pickTotal > guidedPickData?.pickLocation?.QuantityOnHand || awaitingProductScan"
+                    (click)="pickCompleted.next(getCompletePickData())">
+                </oc-button-action>
+            </div>
+        </oc-footer>
+    </ng-container>
+</oc-action-layout>

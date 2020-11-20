@@ -13,6 +13,7 @@ export class BarcodeParsingService {
   dispenseBarcodeParsed$: Observable<IBarcodeData>;
   unrecognizedBarcodeParsed$: Observable<IBarcodeData>;
 
+  /* istanbul ignore next */
   constructor(
     barcodeScanService: BarcodeScanService,
     barcodeDataService: BarcodeDataService,

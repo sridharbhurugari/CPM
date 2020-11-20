@@ -8,6 +8,8 @@ import { DeviceLeaseService } from '../../services/devices/device-lease.service'
 import { of } from 'rxjs';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { EventEmitter } from '@angular/core';
+import { CarouselLocationAccessService } from '../../services/devices/carousel-location-access.service';
+import { DeviceLocationTypeId } from '../../constants/device-location-type-id';
 
 describe('DeviceLocationAccessComponent', () => {
   let component: DeviceLocationAccessComponent;
@@ -21,6 +23,10 @@ describe('DeviceLocationAccessComponent', () => {
   beforeEach(async(() => {
     primaryButtonEventEmitter = new EventEmitter<string>();
     secondaryButtonEventEmitter = new EventEmitter<string>();
+    let carouselServiceMock: Partial<CarouselLocationAccessService> = {
+      deviceLocationTypeId: DeviceLocationTypeId.Carousel,
+      accessLocation: () => { return of(DeviceLocationAccessResult.Succeeded); },
+    };
     TestBed.configureTestingModule({
       declarations: [ DeviceLocationAccessComponent ],
       imports: [
@@ -31,6 +37,7 @@ describe('DeviceLocationAccessComponent', () => {
         { provide: DeviceLeaseService, useValue: { } },
         { provide: PopupDialogService, useValue: { } },
         { provide: TranslateService, useValue: { get: (x: string) => of(`${x}_translated`) } },
+        { provide: CarouselLocationAccessService, useValue: carouselServiceMock },
       ],
     })
     .compileComponents();

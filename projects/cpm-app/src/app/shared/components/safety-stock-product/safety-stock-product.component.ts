@@ -1,18 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { merge, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../../api-core/data-contracts/i-barcode-data';
 import { ISafetyStockProductData } from '../../model/i-safety-stock-product-data';
-import { IScannedBarcodeData } from '../../model/i-scanned-barcode-data';
 import { BarcodeOverrideService } from '../../services/barcode-override.service';
 import { BarcodeParsingService } from '../../services/barcode-parsing.service';
 import { BarcodeSafetyStockService } from '../../services/barcode-safety-stock.service';
+import { QuantityTrackingService } from '../../services/quantity-tracking.service';
 
 @Component({
   selector: 'app-safety-stock-product',
   templateUrl: './safety-stock-product.component.html',
   styleUrls: ['./safety-stock-product.component.scss']
 })
-export class SafetyStockProductComponent implements OnInit {
+export class SafetyStockProductComponent {
   private _safetyStockProductData: ISafetyStockProductData;
   private _subscription: Subscription;
   private _scanNeeded: boolean;
@@ -25,11 +25,22 @@ export class SafetyStockProductComponent implements OnInit {
       this.clearSubscription();
     }
 
-    if (this._safetyStockProductData && this._safetyStockProductData.requireProductScan) {
+    if (this._safetyStockProductData && this._safetyStockProductData.requireProductScan && this.quantityTrackingService.quantity > 0) {
       this.scanNeeded = true;
       let eligibleScans = merge(this.barcodeParsingService.productBarcodeParsed$, this.barcodeOverrideService.overrideBarcodeParsed$);
       this._subscription = eligibleScans.subscribe(x => {
         this.handleBarcodeData(x);
+      });
+      this.quantityTrackingService.quantitySubject.subscribe(qty => {
+        if (!this._safetyStockProductData || !this._safetyStockProductData.requireProductScan) {
+          return;
+        }
+  
+        if (qty === 0) {
+          this.scanNeeded = false;
+        } else {
+          this.scanNeeded = true;
+        }
       });
     }else{
       this.scanNeeded = false;
@@ -53,13 +64,11 @@ export class SafetyStockProductComponent implements OnInit {
     private barcodeParsingService: BarcodeParsingService,
     private barcodeOverrideService: BarcodeOverrideService,
     private barcodeSafetyStockService: BarcodeSafetyStockService,
+    private quantityTrackingService: QuantityTrackingService,
   ) {
   }
 
-  ngOnInit() {
-  }
-
-  handleBarcodeData(barcodeData: IBarcodeData) {
+  private handleBarcodeData(barcodeData: IBarcodeData) {
     if (barcodeData.IsProductBarcode && barcodeData.ItemId == this.safetyStockProductData.itemId) {
       this.onSuccessfulScan();
       this.barcodeSafetyStockService.productScanAccepted(barcodeData);

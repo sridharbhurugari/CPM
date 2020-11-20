@@ -31,6 +31,7 @@ import { ItemManagementListComponent } from './item-management-list/item-managem
 import { CoreRoutingModule } from "./core-routing.module";
 import { InternalTransferPickPageComponent } from './internal-transfer-pick-page/internal-transfer-pick-page.component';
 import { InternalTransferPickNeedsListComponent } from './internal-transfer-pick-needs-list/internal-transfer-pick-needs-list.component';
+import { GuidedPickComponent } from './guided-pick/guided-pick.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { InternalTransferPickNeedsListComponent } from './internal-transfer-pick
     ItemManagementListComponent,
     InternalTransferPickPageComponent,
     InternalTransferPickNeedsListComponent,
+    GuidedPickComponent,
   ],
   imports: [
     CommonModule,
