@@ -16,6 +16,7 @@ import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
+import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 
 @Component({
@@ -38,6 +39,15 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Input() clearSelectedItemsEvent: Observable<any>;
 
   @Input()
+  set loadedPicklistQueueItems(value: PicklistQueueItem[]) {
+    this._loadedPicklistQueueItems = value;
+    this._picklistQueueItems = value;
+  }
+  get loadedPicklistQueueItems(): PicklistQueueItem[] {
+    return this._loadedPicklistQueueItems;
+  }
+
+  @Input()
   set picklistQueueItems(value: PicklistQueueItem[]) {
     this._picklistQueueItems = value;
     if (this.windowService.nativeWindow) {
@@ -51,12 +61,14 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Input()
   set searchTextFilter(value: string) {
     this._searchTextFilter = value;
+    this.picklistQueueItems = this.searchPipe.transform(this.loadedPicklistQueueItems, value, this.searchFields);
   }
   get searchTextFilter(): string {
     return this._searchTextFilter;
   }
 
   private _picklistQueueItems: PicklistQueueItem[];
+  private _loadedPicklistQueueItems: PicklistQueueItem[];
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -68,6 +80,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   checkboxToggleAll: string = CheckboxValues.ToggleAll;
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
+  searchPipe: SearchPipe = new SearchPipe();
   _searchTextFilter;
 
   translationMap = {
@@ -103,7 +116,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   constructor(
     private windowService: WindowService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
     ) {}
 
   ngOnInit(): void {
@@ -151,8 +164,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   getItemCountForDisplay(picklistQueueItem: PicklistQueueItem): number {
     if (picklistQueueItem.DestinationType === DestinationTypes.Patient) {
       return picklistQueueItem.PatientCount
-    } 
-  
+    }
+
     return picklistQueueItem.ItemCount
   }
 
@@ -360,19 +373,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
   }
 
-  private removePicklistQueueItemAtIndex(matchingItemIndex: number) {
-    if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
-      console.log('group exists removing it');
-      this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
-      this.picklistQueueItems.splice(matchingItemIndex, 1);
-      console.log(this.picklistQueueItems);
-    } else {
-      console.log('Matching Index not found in queue to remove');
-    }
-
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-  }
-
   refreshDataOnScreen(picklistQueueItemList: IPicklistQueueItem[]) {
     console.log('refreshDataOnScreen');
     console.log('Current List');
@@ -407,8 +407,33 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return orderDate;
    }
 
+  isEveryItemSelected(items: PicklistQueueItem[]) {
+    if (!items) {
+      return false;
+    }
+
+    return items.every((item) => {
+      return this.isContainedInSelected(item);
+    });
+  }
+
+  private removePicklistQueueItemAtIndex(matchingItemIndex: number) {
+    if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
+      console.log('group exists removing it');
+      this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
+      this.picklistQueueItems.splice(matchingItemIndex, 1);
+      console.log(this.picklistQueueItems);
+    } else {
+      console.log('Matching Index not found in queue to remove');
+    }
+
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
   private clearSelectedItems(): void {
-    this.selectedItems.clear();
+    _.forEach(this.picklistQueueItems, (item) => {
+      this.selectedItems.delete(item);
+    });
   }
 
   private setTranslations(): void {
