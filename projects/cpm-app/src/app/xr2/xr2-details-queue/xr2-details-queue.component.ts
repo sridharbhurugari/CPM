@@ -414,7 +414,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
    }
 
   isEveryItemSelected(items: PicklistQueueItem[]) {
-    if (!items) {
+    if (!items || items.length == 0) {
       return false;
     }
 
