@@ -69,7 +69,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     private workstationTrackerService: WorkstationTrackerService,
     private dialogService: PopupDialogService,
     public translateService: TranslateService,
-  ) {    
+  ) {
   }
 
   ngOnInit() {
@@ -91,7 +91,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
-  }  
+  }
 
   navigate(orderId: string){
     const workstationTrackerData: WorkstationTrackerData = {
@@ -125,7 +125,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   buildWorkstationsInUseStringFromResult(result): string {
     let workstationsInUse = '\n';
     let first = true;
-    _.forEach(result, wk => {
+    let uniqueWorkstations = _.uniq(result);
+    _.forEach(uniqueWorkstations, wk => {
       if (!first) {
         workstationsInUse += ', ';
       }
