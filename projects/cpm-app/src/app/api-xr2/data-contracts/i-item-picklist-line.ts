@@ -1,5 +1,3 @@
-import { TranslationChangeEvent } from "@ngx-translate/core";
-
 export interface IItemPicklistLine {
   DestinationId: string;
   ItemId: string;
@@ -8,3 +6,4 @@ export interface IItemPicklistLine {
   PickLocationDeviceLocationId: number;
   PickLocationDescription: string;
 }
+

@@ -1,5 +1,6 @@
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
+import { ItemPicklistLine } from "../../api-xr2/data-contracts/item-picklist-line";
 import { Guid } from 'guid-typescript';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
@@ -53,9 +54,9 @@ export class PicklistQueueItem implements IPicklistQueueItem, IReroutablePicklis
     return !this.Saving;
   }
 
-  static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson) {
+  static fromNonstandardJson(picklistQueueItem: IPicklistQueueItemNonstandardJson) : PicklistQueueItem {
     return new this({
-      AvailableOutputDeviceList: picklistQueueItem.AvailableOutputDeviceList.$values,
+      AvailableOutputDeviceList: picklistQueueItem.AvailableOutputDeviceList.$values.map((x) => { return OutputDevice.fromNonStandard(x); }),
       BoxCount: picklistQueueItem.BoxCount,
       Destination: picklistQueueItem.Destination,
       OrderGroupDestinationId: picklistQueueItem.OrderGroupDestinationId,
@@ -66,7 +67,7 @@ export class PicklistQueueItem implements IPicklistQueueItem, IReroutablePicklis
       FilledBoxCount: picklistQueueItem.FilledBoxCount,
       IsPrintable: picklistQueueItem.IsPrintable,
       ItemCount: picklistQueueItem.ItemCount,
-      ItemPicklistLines: picklistQueueItem.ItemPicklistLines.$values,
+      ItemPicklistLines: picklistQueueItem.ItemPicklistLines.$values.map((x) => { return ItemPicklistLine.fromNonStandard(x); }),
       OrderId: picklistQueueItem.OrderId,
       OutputDeviceId: picklistQueueItem.OutputDeviceId,
       PicklistId: picklistQueueItem.PicklistId,
