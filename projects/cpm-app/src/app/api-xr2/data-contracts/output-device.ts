@@ -1,6 +1,6 @@
 export class OutputDevice {
 
-  constructor(outputDevice: OutputDevice) {
+  constructor(outputDevice?: OutputDevice) {
     Object.assign(this, outputDevice);
   }
 
