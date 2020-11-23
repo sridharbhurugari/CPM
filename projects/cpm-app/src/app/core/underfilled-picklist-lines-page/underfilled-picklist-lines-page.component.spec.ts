@@ -99,7 +99,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
 
     pickingEventConnectionService = {
-      updateUnfilledPicklistLineSubject: new Subject()
+      updateUnfilledPicklistLineSubject: new Subject(),
+      removedUnfilledPicklistLineSubject: new Subject()
     };
 
     TestBed.configureTestingModule({

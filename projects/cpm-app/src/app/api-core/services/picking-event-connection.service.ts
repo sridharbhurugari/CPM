@@ -4,6 +4,7 @@ import { EventConnectionService } from '../../shared/services/event-connection.s
 import { IUnfilledPicklistAddedOrUpdatedEvent } from '../events/i-unfilled-picklist-added-or-updated-event';
 import { IUnfilledPicklistRemovedEvent } from '../events/i-unfilled-picklist-removed-event';
 import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../events/i-unfilled-picklistline-added-or-updated-event';
+import { IUnfilledPicklistlineRemovedEvent } from '../events/i-unfilled-picklistline-removed-event';
 import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
@@ -13,6 +14,7 @@ export class PickingEventConnectionService implements OnDestroy {
   public updatedUnfilledPicklistSubject = new Subject<IUnfilledPicklistAddedOrUpdatedEvent>();
   public removedUnfilledPicklistSubject = new Subject<IUnfilledPicklistRemovedEvent>();
   public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedOrUpdatedEvent>();
+  public removedUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineRemovedEvent>();
   public ngUnsubscribe = new Subject();  
 
   public startedSubject = new ReplaySubject(1);
@@ -47,6 +49,11 @@ export class PickingEventConnectionService implements OnDestroy {
 
           if (message.EventId === 'AddOrUpdateUnderfilledPicklistLineEvent') {            
             this.updateUnfilledPicklistLineSubject.next(message);
+            return;
+          }
+
+          if (message.EventId === 'RemoveUnderfilledPicklistLineEvent') {            
+            this.removedUnfilledPicklistLineSubject.next(message);
             return;
           }
         }

@@ -27,6 +27,7 @@ import { WorkstationTrackerData } from '../../api-core/data-contracts/workstatio
 import { OperationType } from '../../api-core/data-contracts/operation-type';
 import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
 import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../../api-core/events/i-unfilled-picklistline-added-or-updated-event';
+import { IUnfilledPicklistlineRemovedEvent } from '../../api-core/events/i-unfilled-picklistline-removed-event';
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 
 @Component({
@@ -88,16 +89,26 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
     var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
 
+    var unfilledEvents$ = merge(this.pickingEventConnectionService.updateUnfilledPicklistLineSubject, this.pickingEventConnectionService.removedUnfilledPicklistLineSubject);
+
     var allPicklistLines$ = initialPicklistLines$.pipe(switchMap(x => {
-      return this.pickingEventConnectionService.updateUnfilledPicklistLineSubject.pipe(scan<IUnfilledPicklistlineAddedOrUpdatedEvent, IUnderfilledPicklistLine[]>((picklistlines, newPicklistline) => {
-        if (newPicklistline.PicklistLineUnderfilled.OrderId === picklistlines[0].OrderId){
-          let index = picklistlines.findIndex((r) => r.PicklistLineId === newPicklistline.PicklistLineUnderfilled.PicklistLineId);
+      return unfilledEvents$.pipe(scan<IUnfilledPicklistlineAddedOrUpdatedEvent|IUnfilledPicklistlineRemovedEvent, IUnderfilledPicklistLine[]>((picklistlines, picklistLineEvent) => {
+        if ('PicklistLineId' in picklistLineEvent) {
+          let index = picklistlines.findIndex((r) => r.PicklistLineId === picklistLineEvent.PicklistLineId.toString());
           if (index != -1){
             picklistlines.splice(index, 1)
           }
-          picklistlines.push(newPicklistline.PicklistLineUnderfilled)
-        }       
-        return picklistlines;          
+          return picklistlines;
+        } else {
+          if (picklistLineEvent.PicklistLineUnderfilled.OrderId === picklistlines[0].OrderId){
+            let index = picklistlines.findIndex((r) => r.PicklistLineId === picklistLineEvent.PicklistLineUnderfilled.PicklistLineId);
+            if (index != -1){
+              picklistlines.splice(index, 1)
+            }
+            picklistlines.push(picklistLineEvent.PicklistLineUnderfilled)
+          }       
+          return picklistlines;
+        }                  
       }, x));        
     }));
 
