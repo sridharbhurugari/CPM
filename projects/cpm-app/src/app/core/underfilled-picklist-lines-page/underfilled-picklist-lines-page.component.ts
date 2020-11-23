@@ -90,7 +90,13 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
     var allPicklistLines$ = initialPicklistLines$.pipe(switchMap(x => {
       return this.pickingEventConnectionService.updateUnfilledPicklistLineSubject.pipe(scan<IUnfilledPicklistlineAddedOrUpdatedEvent, IUnderfilledPicklistLine[]>((picklistlines, newPicklistline) => {
-        picklistlines.push(newPicklistline.PicklistLineUnderfilled)
+        if (newPicklistline.PicklistLineUnderfilled.OrderId === picklistlines[0].OrderId){
+          let index = picklistlines.findIndex((r) => r.PicklistLineId === newPicklistline.PicklistLineUnderfilled.PicklistLineId);
+          if (index != -1){
+            picklistlines.splice(index, 1)
+          }
+          picklistlines.push(newPicklistline.PicklistLineUnderfilled)
+        }       
         return picklistlines;          
       }, x));        
     }));
