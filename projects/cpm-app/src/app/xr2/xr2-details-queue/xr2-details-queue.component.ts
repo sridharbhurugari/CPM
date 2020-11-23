@@ -304,16 +304,17 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey: IXr2OrderGroupKey): void {
-    console.log('removePicklistQueueItemByOrderGroupKey: looking to remove xr2 item with order id:' + xr2OrderGroupKey.OrderId +
-    'OrderGroupDestinationId' + xr2OrderGroupKey.OrderGroupDestinationId +
-    'DeviceLocationId' + xr2OrderGroupKey.DeviceLocationId,
-    'RobotPickGroupId' + xr2OrderGroupKey.RobotPickGroupId
+    console.log('removePicklistQueueItemByOrderGroupKey: looking to remove xr2 item with order id: ' + xr2OrderGroupKey.OrderId +
+    ' OrderGroupDestinationId ' + xr2OrderGroupKey.OrderGroupDestinationId +
+    ' DeviceLocationId ' + xr2OrderGroupKey.DeviceLocationId,
+    ' RobotPickGroupId ' + xr2OrderGroupKey.RobotPickGroupId
     );
 
     const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       return x.OrderId === xr2OrderGroupKey.OrderId &&
       x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
-      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && x.RobotPickGroupId === xr2OrderGroupKey.RobotPickGroupId;
+      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && 
+      x.RobotPickGroupId.toString() === xr2OrderGroupKey.RobotPickGroupId.toString()
     });
 
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
@@ -438,6 +439,10 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   private removePicklistQueueItemAtIndex(matchingItemIndex: number) {
+    console.log('matchingItemIdex');
+    console.log(matchingItemIndex);
+    console.log('picklistqueue length : ');
+    console.log(this.picklistQueueItems.length)
     if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
       console.log('group exists removing it');
       this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
