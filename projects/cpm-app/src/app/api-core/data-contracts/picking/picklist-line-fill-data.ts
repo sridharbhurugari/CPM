@@ -1,4 +1,5 @@
 import { IInternalTransferPackSizePick } from '../../../core/model/i-internal-transfer-pack-size-pick';
+import { sumValues } from '../../../shared/functions/sumValues';
 import { IBarcodeData } from '../i-barcode-data';
 import { IPicklistLine } from '../i-picklist-line';
 import { IPicklistLineFillData } from '../i-picklist-line-fill-data';
@@ -10,6 +11,7 @@ export class PicklistLineFillData implements IPicklistLineFillData {
         this.PicklistLineId = line.PicklistLineId;
         this.PickDeviceLocationId = line.SourceDeviceLocationId;
         this.TotalPickQuantity = pickTotal;
+        this.TotalNeededQuantity = sumValues(packSizeFills, x => x.DeviceQuantityNeeded);
         this.PackSizeFills = new Array<IPicklistLinePackSizeFillData>();
 
         packSizeFills.forEach(pick => {
@@ -55,4 +57,5 @@ export class PicklistLineFillData implements IPicklistLineFillData {
     TotalPickQuantity: number;
     PackSizeFills: IPicklistLinePackSizeFillData[];
     PickTransactionScanDetails: IPickTransactionScanDetails;
+    TotalNeededQuantity: number;
 }
