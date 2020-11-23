@@ -30,9 +30,9 @@ describe('InternalTransferPickPageComponent', () => {
   let wpfActionController: Partial<WpfActionControllerService>;
 
   let picktotals: IInternalTransferPackSizePick[] = [
-    { PackSize: 1, PacksToPick: 800, QuantityToPick: 800 },
-    { PackSize: 5, PacksToPick: 15, QuantityToPick: 75 },
-    { PackSize: 10, PacksToPick: 10, QuantityToPick: 100 },
+    { PackSize: 1, PacksToPick: 800, QuantityToPick: 800, DeviceQuantityNeeded: 800, },
+    { PackSize: 5, PacksToPick: 15, QuantityToPick: 75, DeviceQuantityNeeded: 75, },
+    { PackSize: 10, PacksToPick: 10, QuantityToPick: 100, DeviceQuantityNeeded: 100, },
   ];
 
   beforeEach(async(() => {
