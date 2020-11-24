@@ -311,10 +311,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     );
 
     const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+      const queueRobotPickGroup = x.RobotPickGroupId  != null ? x.RobotPickGroupId.toString() : null;
+      const orderGroupKeyPickGroupId = xr2OrderGroupKey.RobotPickGroupId != null ? xr2OrderGroupKey.RobotPickGroupId.toString() : null;
       return x.OrderId === xr2OrderGroupKey.OrderId &&
       x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
       x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && 
-      x.RobotPickGroupId.toString() === xr2OrderGroupKey.RobotPickGroupId.toString()
+      queueRobotPickGroup === orderGroupKeyPickGroupId
     });
 
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
