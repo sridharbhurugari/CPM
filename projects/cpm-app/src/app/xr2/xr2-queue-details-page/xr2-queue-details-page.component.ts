@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
 import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
+import { ReroutablePicklistQueueItem } from "../model/reroutable-picklist-queue-item";
+import { ReleasablePicklistQueueItem } from "../model/releasable-picklist-queue-item";
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
@@ -12,10 +13,19 @@ import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omn
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
 import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
-import { PickListLineDetail } from '../../api-xr2/data-contracts/pick-list-line-detail';
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { LogService } from '../../api-core/services/log-service';
+import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
+import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue.component';
+import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
+import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
+import { PicklistQueueGroupKey } from '../model/picklist-queue-group-key';
+import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { forEach } from 'lodash';
 
 
 @Component({
@@ -30,9 +40,10 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
 
   private _multiSelectMode = false;
+  private _loggingCategory: string;
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
-  selectedItems: Set<PicklistQueueItem>;
+  selectedItems: Set<PicklistQueueItem> = new Set<PicklistQueueItem>();
   actionPicklistItemsDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
   pickPriorityIdentity: string;
@@ -64,12 +75,15 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     'FAILEDTOREROUTE_BODY_TEXT',
   ];
 
+  @ViewChild(Xr2DetailsQueueComponent, null) childDetailsQueueComponent: Xr2DetailsQueueComponent;
+
   constructor(
     private picklistsQueueService: PicklistsQueueService,
     private picklistQueueEventConnectionService: PicklistsQueueEventConnectionService,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private windowService: WindowService,
+    private logService: LogService
     ) {
       this.configureEventHandlers();
   }
@@ -103,21 +117,24 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       if (!result) {
         return;
       }
-      // TODO: reroute selected items
-      this.skip([...picklistQueueItems][0]); // For testing UI
+
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+        this.constructor.name + 'Reroute clicked - rerouting current selected item/items');
+      this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
   }
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
-    // TODO: release selected items
-    this.sendToRobot([...picklistQueueItems][0]); // For testing UI
-    this.clearMultiSelect();
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + 'Release clicked - releasing current selected item/items');
+    this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
-    // TODO: print selected items
-    this.printLabels([...picklistQueueItems][0]); // For testing UI
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + 'Print clicked - printing current selected item/items');
+    this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
 
@@ -136,16 +153,225 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     }
 
     this.multiSelectMode = true;
-    this.addOrRemoveFromActionDisableMap(itemsToProcess, event.changeType);
+
+    if (event.changeType === SelectionChangeType.selected) {
+      this.addToActionDisableMap(itemsToProcess);
+    } else {
+      this.removeFromActionDisableMap(itemsToProcess);
+    }
+  }
+
+  sendQueueItemsToRobot(picklistQueueItems: Array<PicklistQueueItem>): void {
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+
+    this.picklistsQueueService.sendQueueItemsToRobot(this.xr2QueueNavigationParameters.pickPriorityIdentity, picklistQueueItems
+      .map(x => ReleasablePicklistQueueItem.fromPicklistQueueItem(x)))
+      .subscribe(
+        success => {
+          this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
+        }, error => {
+          this.handleSendQueueItemsToRobotError(picklistQueueItems);
+        });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
+  rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+
+    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => ReroutablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
+      success => {
+        this.handleRerouteQueueItemsSuccess(picklistQueueItems);
+      }, error => {
+        this.handleRerouteQueueItemsError(picklistQueueItems);
+      });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  }
+
+  printQueueItemsLabels(picklistQueueItems: Array<PicklistQueueItem>): void {
+    const robotPrintRequestList = new Array<RobotPrintRequest>();
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = true;
+       // TODO: Xr2 Cleanup - clean robot print request when we remove old queue
+      robotPrintRequestList.push(new RobotPrintRequest(item.PicklistId, item.RobotPickGroupId, item));
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+
+    this.picklistsQueueService.printQueueItemsLabels(robotPrintRequestList).subscribe(
+      success => {
+        this.handlePrintQueueItemsLabelsSuccess(picklistQueueItems);
+      }, error => {
+        this.handlePrintQueueItemsLabelsError(picklistQueueItems);
+      });
+  }
+
+  onPicklistQueueItemsAddorUpdated(picklistQueueItems: Array<PicklistQueueItem>) {
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+  }
+
+  onPicklistQueueItemsRemoved(picklistQueueItems: Array<PicklistQueueItem>) {
+    if (picklistQueueItems === null || picklistQueueItems.length === 0) {
+      this.clearMultiSelect();
+      return;
+    }
+
+    _.forEach(picklistQueueItems, (item) => {
+      if (this.selectedItems) {
+        this.selectedItems.delete(item);
+      }
+    });
+    this.removeFromActionDisableMap(picklistQueueItems);
+
+    if (this.selectedItems.size === 0) {
+      this.multiSelectMode = false;
+    }
   }
 
   private configureEventHandlers(): void {
     if (!this.picklistQueueEventConnectionService) {
       return;
     }
-    this.picklistQueueEventConnectionService.reloadPicklistQueueItemsSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.onReloadPicklistQueueItems());
+
+    this.picklistQueueEventConnectionService.addOrUpdatePicklistQueueItemSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(x => {
+      try {
+        this.handlePicklistQueueItemAddorUpdateSubject(x);
+      } catch (e) {
+        console.log(e);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this.constructor.name + ' addOrUpdatePicklistQueueItemSubject - handlePicklistQueueItemAddorUpdateSubject failed: ' + e);
+      }
+    });
+
+    this.picklistQueueEventConnectionService.picklistQueueItemListUpdateSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(x => {
+      try {
+        this.handlePicklistQueueItemListUpdateSubject(x);
+      } catch (e) {
+        console.log(e);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this.constructor.name + ' picklistQueueItemListUpdateSubject - handlePicklistQueueItemListUpdateSubject failed: ' + e);
+      }});
+
+    this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(x => {
+      try {
+        this.handleRemovePicklistQueueItemSubject(x);
+      } catch (e) {
+        console.log(e);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this.constructor.name + ' removePicklistQueueItemSubject - handleRemovePicklistQueueItemSubject failed: ' + e);
+      }
+    });
+  }
+
+  private handleSendQueueItemsToRobotSuccess(picklistQueueItems: PicklistQueueItem[]) {
+    // force the status to 2 at this point
+    _.forEach(picklistQueueItems, (item) => {
+      item.Status = 2;
+      item.Saving = false;
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+  }
+
+  private handleSendQueueItemsToRobotError(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+    this.displayFailedToSaveDialog();
+  }
+
+  private handleRerouteQueueItemsSuccess(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+  }
+
+  private handleRerouteQueueItemsError(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+    this.displayFailedToSaveDialog();
+  }
+
+  private handlePrintQueueItemsLabelsSuccess(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+  }
+
+  private handlePrintQueueItemsLabelsError(picklistQueueItems: PicklistQueueItem[]) {
+    _.forEach(picklistQueueItems, (item) => {
+      item.Saving = false;
+    });
+    this.updateActionPicklistItemDisableMap(picklistQueueItems);
+    this.displayFailedToSaveDialog();
+  }
+
+  private handlePicklistQueueItemAddorUpdateSubject(addOrUpdateMessage: IAddOrUpdatePicklistQueueItemMesssage) {
+    console.log('handlePicklistQueueItemAddorUpdateSubject called');
+    if (!this.isValidMessageClient(addOrUpdateMessage.PicklistQueueItem.DeviceId.toString(),
+    addOrUpdateMessage.PicklistQueueItem.PickPriorityIdentity.toString())) {
+      console.log('Add or update queue item event recieved but not a valid client');
+      return;
+    }
+
+    const pickListQueueItem = PicklistQueueItem.fromNonstandardJson(addOrUpdateMessage.PicklistQueueItem);
+    this.childDetailsQueueComponent.addOrUpdatePicklistQueueItem(pickListQueueItem);
+  }
+
+  private handleRemovePicklistQueueItemSubject(removeMessage: IRemovePicklistQueueItemMessage) {
+    console.log('handleRemovePicklistQueueItemSubject called');
+    const xr2OrderGroupKey = removeMessage.Xr2OrderGroupKey;
+    this.childDetailsQueueComponent.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
+  }
+
+  private handlePicklistQueueItemListUpdateSubject(listUpdateMessage: IPicklistQueueItemListUpdateMessage) {
+    console.log('handlePicklistQueueItemListUpdateSubject called');
+    let availablePicklistQueueGroupKeys: PicklistQueueGroupKey[];
+
+    if(listUpdateMessage.AvailablePicklistQueueGroupKeys != null && listUpdateMessage.AvailablePicklistQueueGroupKeys.$values.length > 0 )
+    {
+      availablePicklistQueueGroupKeys = listUpdateMessage.AvailablePicklistQueueGroupKeys.$values
+      .map((key) => PicklistQueueGroupKey.fromNonstandardJson(key));
+    }
+
+    if (!availablePicklistQueueGroupKeys || !this.hasValidGroupKey(availablePicklistQueueGroupKeys)) {
+      this.childDetailsQueueComponent.refreshDataOnScreen(null);
+      return;
+    }
+    if (!this.isValidMessageClient(listUpdateMessage.DeviceId.toString(), listUpdateMessage.PickPriorityIdentity.toString())) {
+      console.log('Queue item List update recieved but not a valid client');
+      return;
+    }
+    if (!listUpdateMessage.PicklistQueueItems.$values || listUpdateMessage.PicklistQueueItems.$values.length === 0) {
+      console.log('Empty List just clear screen');
+      this.childDetailsQueueComponent.refreshDataOnScreen(null);
+    } else {
+        const picklistQueueItemList = listUpdateMessage.PicklistQueueItems.$values.map((picklistQueueItem) => {
+          return PicklistQueueItem.fromNonstandardJson(picklistQueueItem);
+        });
+        this.childDetailsQueueComponent.refreshDataOnScreen(picklistQueueItemList);
+    }
+  }
+
+  private hasValidGroupKey(availablePicklistQueueGroupKeys: Array<PicklistQueueGroupKey>): boolean {
+    console.log(availablePicklistQueueGroupKeys);
+
+    return availablePicklistQueueGroupKeys.some((key) => {
+      return this.isValidMessageClient(key.DeviceId.toString(), key.PickPriorityIdentity.toString());
+    });
+  }
+
+  private isValidMessageClient(deviceId: string, pickPriorityIdentity: string) {
+    return this.xr2QueueNavigationParameters.deviceId === deviceId
+    && this.xr2QueueNavigationParameters.pickPriorityIdentity === pickPriorityIdentity;
   }
 
   private clearMultiSelect(): void {
@@ -156,8 +382,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   private initializeActionPicklistItemsDisableMap(): void {
     this.actionPicklistItemsDisableMap = new Map([
       [this.outputDeviceAction.Release, new Set<PicklistQueueItem>()],
-     [this.outputDeviceAction.Print, new Set<PicklistQueueItem>()],
-     [this.outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
+    [this.outputDeviceAction.Print, new Set<PicklistQueueItem>()],
+    [this.outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
     ]);
   }
 
@@ -165,6 +391,12 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
       picklistSet.clear();
     });
+  }
+
+  private updateActionPicklistItemDisableMap(picklistQueueItems: PicklistQueueItem[]): void {
+    console.log('updateActionPicklistItemDisableMap');
+    this.removeFromActionDisableMap(picklistQueueItems);
+    this.addToActionDisableMap(picklistQueueItems);
   }
 
   private clearSelectedItems(): void {
@@ -175,39 +407,35 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.selectedItems.clear();
   }
 
-  private addOrRemoveFromActionDisableMap(itemsToProcess: PicklistQueueItem[], changeType): void {
-
+  private addToActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
     _.forEach(itemsToProcess, (item) => {
+      console.log('Adding to action disable map:');
+      console.log(item);
       if (!item.Releaseable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release);
-        changeType === SelectionChangeType.selected ? currentSet.add(item)
-         : currentSet.delete(item);
-        this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Release, currentSet);
+        currentSet.add(item);
       }
 
       if (!item.Printable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print);
-        changeType === SelectionChangeType.selected ? currentSet.add(item)
-         : currentSet.delete(item);
-        this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Print, currentSet);
+        currentSet.add(item);
       }
 
       if (!item.Reroutable) {
         const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute);
-        changeType === SelectionChangeType.selected ? currentSet.add(item)
-         : currentSet.delete(item);
-        this.actionPicklistItemsDisableMap.set(OutputDeviceAction.Reroute, currentSet);
+        currentSet.add(item);
       }
+      console.log(this.actionPicklistItemsDisableMap);
     });
   }
 
-  private onReloadPicklistQueueItems(): void {
-    try {
-      this.loadPicklistsQueueItems();
-    } catch (e) {
-      console.log('Xr2QueueDetailsPageComponent.onReloadPicklistQueueItems ERROR');
-      console.log(e);
-    }
+  private removeFromActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
+    console.log(this.actionPicklistItemsDisableMap);
+    _.forEach(itemsToProcess, (item) => {
+      this.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
+        picklistSet.delete(item);
+      });
+    });
   }
 
   private loadPicklistsQueueItems(): void {
@@ -255,85 +483,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Info;
       properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      const component = this.dialogService.showOnce(properties);
+      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
       return merge(primaryClick$, secondaryClick$);
     }));
   }
 
-  sendToRobot(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.Saving = true;
-    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
-    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
-    globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
-    globalDispenseSyncRequest.OutputDeviceId = picklistQueueItem.OutputDeviceId;
-    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
-      const pickListLineDetail = new PickListLineDetail();
-      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
-      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
-      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
-      pickListLineDetail.Quantity = itemPicklistLine.Qty;
-      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
-      globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
-    });
-    this.picklistsQueueService.sendToRobot(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
-      result => {
-        // force the status to 2 at this point
-        picklistQueueItem.Status = 2;
-        picklistQueueItem.Saving = false;
-      }, result => {
-        picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
-      });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-  }
-
-  skip(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.Saving = true;
-    const globalDispenseSyncRequest = new GlobalDispenseSyncRequest();
-    globalDispenseSyncRequest.PickListIdentifier = picklistQueueItem.PicklistId;
-    globalDispenseSyncRequest.DestinationType = picklistQueueItem.DestinationType;
-    globalDispenseSyncRequest.OutputDeviceId = picklistQueueItem.OutputDeviceId;
-    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
-      const pickListLineDetail = new PickListLineDetail();
-      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
-      pickListLineDetail.DestinationId = itemPicklistLine.DestinationId;
-      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
-      pickListLineDetail.Quantity = itemPicklistLine.Qty;
-      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
-      globalDispenseSyncRequest.PickListLineDetails.push(pickListLineDetail);
-    });
-    this.picklistsQueueService.skip(picklistQueueItem.DeviceId, globalDispenseSyncRequest).subscribe(
-      result => {
-        picklistQueueItem.Saving = false;
-      }, result => {
-        picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
-      });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-  }
-
-  printLabels(picklistQueueItem: PicklistQueueItem): void {
-    picklistQueueItem.Saving = true;
-    const robotPrintRequest = new RobotPrintRequest(picklistQueueItem.PicklistId, picklistQueueItem.RobotPickGroupId);
-
-    _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
-      const pickListLineDetail = new PickListLineDetail();
-      pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;
-      pickListLineDetail.ItemId = itemPicklistLine.ItemId;
-      pickListLineDetail.Quantity = itemPicklistLine.Qty;
-      pickListLineDetail.DestinationType = picklistQueueItem.DestinationType;
-      pickListLineDetail.PickLocationDeviceLocationId = itemPicklistLine.PickLocationDeviceLocationId;
-      pickListLineDetail.PickLocationDescription = itemPicklistLine.PickLocationDescription;
-      robotPrintRequest.PickListLineDetails.push(pickListLineDetail);
-    });
-    this.picklistsQueueService.printLabels(picklistQueueItem.DeviceId, robotPrintRequest).subscribe(
-      result => {
-        picklistQueueItem.Saving = false;
-      }, result => {
-        picklistQueueItem.Saving = false;
-        this.displayFailedToSaveDialog();
-      });
-  }
 }

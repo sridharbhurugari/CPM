@@ -1,13 +1,20 @@
 <div class="cpmheaderrow header-container">
-  <app-cp-clickable-icon
-      [width]="35"
-      [height]="35"
-      [theme]="'dark'"
-      [icon]="'back'"
-      (clickEvent)="onBackClick()">
-  </app-cp-clickable-icon>
-  <div class="title">
-      {{'PATIENT' | translate}} - {{'DETAILS' | translate}}
+  <div class= "back-button">
+    <app-cp-clickable-icon
+        [width]="35"
+        [height]="35"
+        [theme]="'dark'"
+        [icon]="'back'"
+        (clickEvent)="onBackClick()">
+    </app-cp-clickable-icon>
   </div>
+    <div class="title-content">
+      <span class="ellipsis">
+        {{priorityDescriptionHeader}}
+      </span>
+      <span class="details-text">
+        &nbsp;- {{'DETAILS' | translate}}
+      </span>
+    </div>
   <oc-search-box #searchBox id="searchBox" [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>

@@ -133,7 +133,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
   onDetailsClick(picklistQueueGrouped: PicklistQueueGrouped): void {
     const params: IXr2QueueNavigationParameters = {
       pickPriorityIdentity: picklistQueueGrouped.PickPriorityIdentity.toString(),
-      deviceId: picklistQueueGrouped.DeviceId.toString()
+      deviceId: picklistQueueGrouped.DeviceId.toString(),
+      priorityCodeDescription: picklistQueueGrouped.PriorityCodeDescription
     };
 
     this.detailsEvent.emit(params);
@@ -222,7 +223,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   filterPicklistQueueGroupedByDeviceId(deviceId: number) {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
-    if(this.picklistQueueGrouped){
+    if (this.picklistQueueGrouped) {
       this.loadSavedConfigurations();
     }
   }
@@ -299,7 +300,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   loadAllPicklistQueueGrouped() {
     this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
-    if(this.picklistQueueGrouped){
+    if (this.picklistQueueGrouped){
       this.loadSavedConfigurations();
     }
   }
