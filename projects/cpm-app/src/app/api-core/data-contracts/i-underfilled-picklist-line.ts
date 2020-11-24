@@ -13,6 +13,7 @@ export interface IUnderfilledPicklistLine{
   DestinationOmni: string;
   FillDate: Date;
   FillQuantity: number;
+  OrderId: string;
   OrderQuantity: number;
   PickItemLocationDescription: string;
   PharmacyQOH: number;

@@ -23,13 +23,14 @@ import { ResetPickRoutesService } from '../../api-core/services/reset-pick-route
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
-
+import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
   let component: UnderfilledPicklistLinesPageComponent;
   let fixture: ComponentFixture<UnderfilledPicklistLinesPageComponent>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let simpleDialogService: Partial<SimpleDialogService>;
+  let pickingEventConnectionService: Partial<PickingEventConnectionService>;
   let printWithBaseData: jasmine.Spy;
   const date = new Date();
   const pickListLinesData: UnderfilledPicklistLine[] = [{
@@ -40,7 +41,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     canReroute: true,
     DestinationId: '1241', DestinationType: 'P', PriorityCode: 'Patient', PicklistTypeDb: 'P', ItemId: '8939',
     ItemFormattedGenericName: 'aectonla', ItemBrandName: 'ace', PatientRoom: '2121', PatientName: 'BIN', AreaDescription: '121',
-    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderQuantity: 20,
+    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderId: '1234', OrderQuantity: 20,
     DisplayPatientRoomAndArea: false, DisplayPatientRoom: false, DisplayArea: true, DisplayOmniName: true,
     DisplayPatientNameSecondLine: true, PharmacyQOH: 10101, UnfilledReason: 'unfilled', PrintFillDate: '10/10/2020',
     DisplayFillRequired: '10/20', DisplayDestionationValue: '134,', DescriptionSortValue: 'sort', DestinationSortValue: 'sorint',
@@ -55,7 +56,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     canReroute: true,
     DestinationId: '1242', DestinationType: 'P', PriorityCode: 'Area', PicklistTypeDb: 'P', ItemId: '8939',
     ItemFormattedGenericName: 'aectonla', ItemBrandName: 'ace', PatientRoom: '2122', PatientName: 'Jhon', AreaDescription: '122',
-    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderQuantity: 20,
+    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderId: '1234', OrderQuantity: 20,
     DisplayPatientRoomAndArea: false, DisplayPatientRoom: false, DisplayArea: true, DisplayOmniName: true,
     DisplayPatientNameSecondLine: true, PharmacyQOH: 10101, UnfilledReason: 'unfilled', PrintFillDate: '10/11/2020',
     DisplayFillRequired: '10/20', DisplayDestionationValue: '134,', DescriptionSortValue: 'sort', DestinationSortValue: 'sorint',
@@ -70,7 +71,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     canReroute: true,
     DestinationId: '1243', DestinationType: 'P', PriorityCode: 'FirstDose', PicklistTypeDb: 'P', ItemId: '8939',
     ItemFormattedGenericName: 'aectonla', ItemBrandName: 'ace', PatientRoom: '2123', PatientName: 'Jack', AreaDescription: '123',
-    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderQuantity: 20,
+    DestinationOmni: 'omni', FillDate: date, PickItemLocationDescription: 'Picking', FillQuantity: 10, OrderId: '1234', OrderQuantity: 20,
     DisplayPatientRoomAndArea: false, DisplayPatientRoom: false, DisplayArea: true, DisplayOmniName: true,
     DisplayPatientNameSecondLine: true, PharmacyQOH: 10101, UnfilledReason: 'unfilled', PrintFillDate: '10/12/2020',
     DisplayFillRequired: '10/20', DisplayDestionationValue: '134,', DescriptionSortValue: 'sort', DestinationSortValue: 'sorint',
@@ -97,6 +98,11 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
     spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
 
+    pickingEventConnectionService = {
+      updateUnfilledPicklistLineSubject: new Subject(),
+      removedUnfilledPicklistLineSubject: new Subject()
+    };
+
     TestBed.configureTestingModule({
       declarations: [
         UnderfilledPicklistLinesPageComponent,
@@ -119,7 +125,8 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
         { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
-        { provide: PopupDialogService, useValue: simpleDialogService }
+        { provide: PopupDialogService, useValue: simpleDialogService },
+        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService}
       ],
       imports: [
         FooterModule,
@@ -194,7 +201,6 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       expect(component.buttonVisible === false);
     });
   });
-
 
   describe('Close Button Visible', () => {
     it('should be visible', () => {

@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IPicklistLine } from '../data-contracts/i-picklist-line';
+import { IPicklistLineFillData } from '../data-contracts/i-picklist-line-fill-data';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +19,13 @@ export class PicklistLinesService {
   ) { }
 
   get(picklistLineId: Guid): Observable<IPicklistLine> {
-    let url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLines/${picklistLineId}`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLines/${picklistLineId}`);
     return this.httpClient.get<IPicklistLine>(url, { headers: this.ocapHttpHeadersService.getHeaders() });
   }
 
-  completePick(picklistLineId: Guid, pickQuantity: number, pickDeviceLocationId: number): Observable<boolean> {
-    let url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLines/${picklistLineId}?quantityPicked=${pickQuantity}&pickDeviceLocationId=${pickDeviceLocationId}`);
-    let headers = this.ocapHttpHeadersService.getHeaders();
-    return this.httpClient.put<boolean>(url, null, { headers: headers });
+  completePick(pickItems: IPicklistLineFillData): Observable<boolean> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLineFills`);
+    const headers = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.post<boolean>(url, pickItems, { headers: headers });
   }
 }
