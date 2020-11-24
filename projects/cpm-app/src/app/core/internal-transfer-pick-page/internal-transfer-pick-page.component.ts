@@ -18,6 +18,9 @@ import { IItemHeaderInfo } from '../../shared/model/i-item-header-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
+import { IPicklistLineFillData } from '../../api-core/data-contracts/i-picklist-line-fill-data';
+import { IPicklistLinePackSizeFillData } from '../../api-core/data-contracts/i-picklist-line-pack-size-fill-data';
+import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -28,7 +31,7 @@ export class InternalTransferPickPageComponent {
   orderId: string;
   picklistLineIds$: Observable<Guid[]>;
   totalLines$: Observable<number>;
-  picklistLineIndex: number = 0;
+  picklistLineIndex = 0;
   currentLine$: Observable<IPicklistLine>;
   currentNeedsDetails$: Observable<IItemReplenishmentNeed[]>;
   isLastLine$: Observable<boolean>;
@@ -43,6 +46,7 @@ export class InternalTransferPickPageComponent {
   expDateIcon: string;
   expDateInPast$: Observable<boolean>;
   orderItemPendingQtys$: Observable<IOrderItemPendingQuantity>;
+  pickItemTotals: IInternalTransferPackSizePick[] = new Array();
 
   constructor(
     activatedRoute: ActivatedRoute,
@@ -55,7 +59,7 @@ export class InternalTransferPickPageComponent {
     private orderItemPendingQuantitiesService: OrderItemPendingQuantitiesService
   ) {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
-    let allDevices = activatedRoute.snapshot.queryParamMap.get('allDevices');
+    const allDevices = activatedRoute.snapshot.queryParamMap.get('allDevices');
     if (allDevices) {
       this.picklistLineIds$ = picklistLineIdsService.getLineIds(this.orderId).pipe(shareReplay(1));
     } else {
@@ -67,7 +71,9 @@ export class InternalTransferPickPageComponent {
     this.userLocale = ocapConfigService.get().userLocale;
   }
 
-  pickTotalChanged(pickTotal: number) {
+  pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
+    this.pickItemTotals = pickTotals;
+    let pickTotal = sumValues(this.pickItemTotals, x => x.QuantityToPick);
     this.pickTotal$ = of(pickTotal);
   }
 
@@ -89,15 +95,32 @@ export class InternalTransferPickPageComponent {
 
   completePick() {
     forkJoin(this.currentLine$, this.pickTotal$, this.isLastLine$).subscribe(results => {
-      let line = results[0];
-      let pickTotal = results[1];
-      let isLast = results[2];
+      const line = results[0];
+      const pickTotal = results[1];
+      const isLast = results[2];
       this.pickItem(line, pickTotal, isLast);
     });
   }
 
   private pickItem(line: IPicklistLine, pickTotal: number, isLast: boolean) {
-    this.picklistLinesService.completePick(Guid.parse(line.PicklistLineId), pickTotal, line.SourceDeviceLocationId).subscribe(x => {
+
+    const packPicks: IPicklistLineFillData = {
+      PicklistLineId: line.PicklistLineId,
+      PickDeviceLocationId: line.SourceDeviceLocationId,
+      TotalPickQuantity: pickTotal,
+      PackSizeFills: new Array()
+    };
+
+    this.pickItemTotals.forEach(pick => {
+      const packFill: IPicklistLinePackSizeFillData = {
+          PackSize: pick.PackSize,
+          FillQuantityInPacks:  pick.PacksToPick,
+        };
+
+        packPicks.PackSizeFills.push(packFill);
+    });
+
+    this.picklistLinesService.completePick(packPicks).subscribe(x => {
       if (isLast) {
         this.navigateContinue();
       } else {
@@ -113,17 +136,19 @@ export class InternalTransferPickPageComponent {
 
   private completeZeroPick() {
     forkJoin(this.currentLine$, this.isLastLine$).subscribe(results => {
-      let line = results[0];
-      let pickTotal = 0;
-      let isLast = results[1];
+      const line = results[0];
+      const pickTotal = 0;
+      const isLast = results[1];
       this.pickItem(line, pickTotal, isLast);
     });
   }
 
   private updateCurrentLineDetails() {
-    this.currentLine$ = this.picklistLineIds$.pipe(map(x => x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
-    this.isLastLine$ = this.totalLines$.pipe(map(x => x == this.picklistLineIndex + 1));
-    this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x => this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId)), shareReplay(1));
+    this.currentLine$ = this.picklistLineIds$.pipe(map(x =>
+       x[this.picklistLineIndex]), switchMap(x => this.picklistLinesService.get(x)), shareReplay(1));
+    this.isLastLine$ = this.totalLines$.pipe(map(x => x === this.picklistLineIndex + 1));
+    this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x =>
+       this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId, x.OrderId)), shareReplay(1));
     this.currentNeedsDetails$.subscribe(x => {
       if (!x || !x.length) {
         this.completeZeroPick();
@@ -137,22 +162,22 @@ export class InternalTransferPickPageComponent {
     this.itemLocationDetails$ = this.currentLine$.pipe(switchMap(x => this.itemLocationDetailsService.get(x.ItemId)), shareReplay(1));
     this.orderItemPendingQtys$ = this.currentLine$.pipe(switchMap(x => this.orderItemPendingQuantitiesService.get(x.OrderId, x.ItemId)), shareReplay(1));
     this.itemNeedPicks$ = forkJoin(this.currentNeedsDetails$, this.currentLine$).pipe(map(results => {
-      let itemNeeds = results[0];
-      let line = results[1];
+      const itemNeeds = results[0];
+      const line = results[1];
       return itemNeeds.map(n => new InternalTransferPick(n, line.PickQuantity));
     }));
 
     this.pharmacyQoh$ = this.itemLocationDetails$.pipe(map(x => sumValues(x, il => il.QuantityOnHand)));
 
     this.pickLocation$ = forkJoin(this.currentLine$, this.itemLocationDetails$).pipe(map(results => {
-      let currentLine: IPicklistLine = results[0];
-      let itemLocationDetails: IItemLocationDetail[] = results[1];
+      const currentLine: IPicklistLine = results[0];
+      const itemLocationDetails: IItemLocationDetail[] = results[1];
       return itemLocationDetails.find(x => x.DeviceLocationId == currentLine.SourceDeviceLocationId);
     }));
 
     this.itemHeaderInfo$ = forkJoin(this.currentLine$, this.pickLocation$).pipe(map(results => {
-      let currentLine: IPicklistLine = results[0];
-      let pickLocation: IItemLocationDetail = results[1];
+      const currentLine: IPicklistLine = results[0];
+      const pickLocation: IItemLocationDetail = results[1];
       return {
         DeviceDescription: pickLocation.DeviceDescription,
         ShelfNumber: pickLocation.DeviceLocation.Shelf,
@@ -168,11 +193,11 @@ export class InternalTransferPickPageComponent {
         ItemId: currentLine.ItemId,
         LocationDescription: pickLocation.LocationDescription,
       };
-    }))
+    }));
 
     this.expDateInPast$ = this.pickLocation$.pipe(map(pickLocation => {
-      let today = dateTimeToday();
-      let expDate = new Date(pickLocation.ExpirationDate);
+      const today = dateTimeToday();
+      const expDate = new Date(pickLocation.ExpirationDate);
       return pickLocation.ExpirationDateGranularity != 'None' && pickLocation.QuantityOnHand > 0 && expDate < today;
     }));
   }

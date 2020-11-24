@@ -2,8 +2,9 @@ import { EventEmitter } from '@angular/core';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { ISelectable } from '../../shared/model/i-selectable';
 import { ISelectionStateChanged } from '../../shared/model/i-selection-state-changed';
+import { IInternalTransferPackSizePick } from './i-internal-transfer-pack-size-pick';
 
-export class InternalTransferPick implements IItemReplenishmentNeed, ISelectable<InternalTransferPick> {
+export class InternalTransferPick implements IItemReplenishmentNeed, ISelectable<InternalTransferPick>, IInternalTransferPackSizePick {
     private _isSelected: boolean;
     private _packsToPick: number;
 
