@@ -69,12 +69,12 @@ public TotalItemCount(): number {
 
   onHeaderCheck(e: { selectedState: boolean; }) {
     const checked = e.selectedState;
-    this.isHeaderCheckboxChecked = checked;
     this.updateAllCheckboxValues(checked);
     this.obs.next(this.SelectedItemCount());
   }
 
   updateAllCheckboxValues(checked: boolean) {
+  this.isHeaderCheckboxChecked = checked;
   this._picklistLines.forEach(l => l.IsChecked = checked);
   this.obs.next(this.SelectedItemCount());
   }
@@ -91,5 +91,7 @@ updateCheckboxValue(id: string, checked: boolean) {
   if (Object.keys(pl).length) {
     pl.IsChecked = checked;
   }
+  const c = this._picklistLines.filter(x => x.IsChecked === false).length;
+  this.isHeaderCheckboxChecked = (c === 0);
  }
 }

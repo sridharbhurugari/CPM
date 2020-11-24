@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DevicesService } from '../../api-core/services/devices.service';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';
 import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,6 +40,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   deviceId: number;
   itemsToPick: IItemReplenishmentNeed[] = new Array();
   sortedNeeds$: Observable<IItemReplenishmentNeed[]>;
+  ngUnsubscribe = new Subject();
 
   constructor(
     private wpfActionControllerService: WpfActionControllerService,
@@ -65,11 +66,25 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
       this.isXr2Item = needs[0].Xr2Item;
     });
 
-    coreEventConnectionService.refreshDeviceNeedsSubject.subscribe(message => this.onRefreshDeviceNeeds());
+    coreEventConnectionService.refreshDeviceNeedsSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(message => {
+        try {
+          this.onRefreshDeviceNeeds();
+        }
+        catch (e) {
+          console.log(e);
+        }
+      });
   }
 
   ngOnInit() {
     this.loadNeedsReport();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   private onRefreshDeviceNeeds() {
