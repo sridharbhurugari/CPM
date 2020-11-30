@@ -3,8 +3,8 @@ import { Observable, forkJoin, merge, Subject, Subscription } from 'rxjs';
 import { map, flatMap, shareReplay, takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
-import { ReroutablePicklistQueueItem } from "../model/reroutable-picklist-queue-item";
-import { ReleasablePicklistQueueItem } from "../model/releasable-picklist-queue-item";
+import { ReroutablePicklistQueueItem } from '../model/reroutable-picklist-queue-item';
+import { ReleasablePicklistQueueItem } from '../model/releasable-picklist-queue-item';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
@@ -12,20 +12,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omnicell/webcorecomponents';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
-import { GlobalDispenseSyncRequest } from '../../api-xr2/data-contracts/global-dispense-sync-request';
 import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { LogService } from '../../api-core/services/log-service';
-import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
 import { Xr2DetailsQueueComponent } from '../xr2-details-queue/xr2-details-queue.component';
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { PicklistQueueGroupKey } from '../model/picklist-queue-group-key';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
-import { forEach } from 'lodash';
 
 
 @Component({
@@ -178,7 +175,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
 
-    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems.map(x => ReroutablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
+    this.picklistsQueueService.rerouteQueueItems(picklistQueueItems
+      .map(x => ReroutablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
       success => {
         this.handleRerouteQueueItemsSuccess(picklistQueueItems);
       }, error => {
@@ -204,11 +202,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  onPicklistQueueItemsAddorUpdated(picklistQueueItems: Array<PicklistQueueItem>) {
+  onAddOrUpdateMultiSelectEvent(picklistQueueItems: Array<PicklistQueueItem>) {
     this.updateActionPicklistItemDisableMap(picklistQueueItems);
   }
 
-  onPicklistQueueItemsRemoved(picklistQueueItems: Array<PicklistQueueItem>) {
+  onRemoveMultiSelectEvent(picklistQueueItems: Array<PicklistQueueItem>) {
     if (picklistQueueItems === null || picklistQueueItems.length === 0) {
       this.clearMultiSelect();
       return;
