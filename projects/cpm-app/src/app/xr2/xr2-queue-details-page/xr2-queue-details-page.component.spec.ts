@@ -30,6 +30,7 @@ import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-pickli
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
+import { Xr2QueueMultiSelectService } from '../services/xr2-queue-multi-select.service';
 
 @Component({
   selector: 'oc-search-box',
@@ -48,7 +49,9 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
+  let xr2QueueMultiSelectService: Partial<Xr2QueueMultiSelectService>;
   let childDetailsQueueComponentSpy: jasmine.Spy;
+  const outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
 
   beforeEach(async(() => {
 
@@ -65,6 +68,19 @@ describe('Xr2QueueDetailsPageComponent', () => {
       getGroupDetails: jasmine.createSpy('getGroupDetails').and.returnValue(of([]))
     };
 
+    xr2QueueMultiSelectService = {
+      actionDisableMap: new Map([
+        [outputDeviceAction.Release, new Set<PicklistQueueItem>()],
+      [outputDeviceAction.Print, new Set<PicklistQueueItem>()],
+      [outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
+      ]),
+      createActionDisableMap: jasmine.createSpy('createActionDisableMap').and.callThrough(),
+      clearActionDisableMap: jasmine.createSpy('clearActionDisableMap'),
+      updateActionDisableMap: jasmine.createSpy('updateActionDisableMap'),
+      addToActionDisableMap: jasmine.createSpy('addToActionDisableMap'),
+      removeFromActionDisableMap: jasmine.createSpy('removeFromActionDisableMap')
+    };
+
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueDetailsPageComponent, Xr2QueueDetailsHeaderComponent, Xr2DetailsQueueComponent,
         Xr2QueueButtonPanelComponent, MockCpClickableIconComponent, MockSearchBox, MockTranslatePipe,
@@ -72,6 +88,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       imports: [SingleselectDropdownModule, CheckboxModule, GridModule, ButtonActionModule, PopupDialogModule, HttpClientModule],
       providers: [
         { provide: PicklistsQueueService, useValue: picklistsQueueService },
+        { provide: Xr2QueueMultiSelectService, useValue: xr2QueueMultiSelectService },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
@@ -249,6 +266,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
     it('should call child component to clear data on empty list update as a valid client', () => {
       childDetailsQueueComponentSpy = spyOn(component.childDetailsQueueComponent, 'refreshDataOnScreen');
 
+
       const picklistItemsUpdate = {} as IPicklistQueueItemListUpdateMessage;
       const ItemPicklistLines: NonstandardJsonArray<IItemPicklistLine> = {$values: []};
       const AvailableOutputDeviceList: NonstandardJsonArray<OutputDevice> = {$values: []};
@@ -318,13 +336,8 @@ describe('Xr2QueueDetailsPageComponent', () => {
       expect(component.searchTextFilter).toBe(filterText);
     });
 
-    it('should set muli-select mode off and clear action disable map on unselect all event', () => {
+    it('should set muli-select mode off and call multi-select service to clear items on unselect all event', () => {
       const item = new PicklistQueueItem(null);
-      component.actionPicklistItemsDisableMap = new Map([
-        [OutputDeviceAction.Release, new Set<PicklistQueueItem>([item])],
-       [OutputDeviceAction.Print, new Set<PicklistQueueItem>([item])],
-       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>([item])],
-      ]);
       const deselectEvent = {
         selectedValues: new Set(),
         changedValue: null,
@@ -334,17 +347,10 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.onGridSelectionChanged(deselectEvent);
 
       expect(component.multiSelectMode).toBe(false);
-      component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
-        expect(picklistSet.size).toBe(0);
-      });
+      expect(xr2QueueMultiSelectService.clearActionDisableMap).toHaveBeenCalled();
     });
 
-    it('should set muli-select mode on and add selected picklist items to action disable map on select all event', () => {
-      component.actionPicklistItemsDisableMap = new Map([
-        [OutputDeviceAction.Release, new Set<PicklistQueueItem>()],
-       [OutputDeviceAction.Print, new Set<PicklistQueueItem>()],
-       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
-      ]);
+    it('should call multi-select service to add all items on select all event', () => {
       const nonReleasableItem = new PicklistQueueItem(null);
       const nonPrintableItem = new PicklistQueueItem(null);
       nonReleasableItem.Status = 3;
@@ -366,19 +372,11 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.onGridSelectionChanged(selectEvent);
 
       expect(component.multiSelectMode).toBe(true);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release).size).toBe(1);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print).size).toBe(1);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute).size).toBe(0);
+      expect(xr2QueueMultiSelectService.addToActionDisableMap).toHaveBeenCalled();
     });
 
-    it('remove item from action disable map on deselect event', () => {
+    it('should turn multi-select mode off when deselecting 1 selected item', () => {
       const item = new PicklistQueueItem(null);
-      component.actionPicklistItemsDisableMap = new Map([
-        [OutputDeviceAction.Release, new Set<PicklistQueueItem>([item])],
-       [OutputDeviceAction.Print, new Set<PicklistQueueItem>([item])],
-       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>([item])],
-      ]);
-
       const unselectEvent = {
         selectedValues: new Set(),
         changedValue: item,
@@ -388,58 +386,52 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.onGridSelectionChanged(unselectEvent);
 
       expect(component.multiSelectMode).toBe(false);
-      component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
-        expect(picklistSet.size).toBe(0);
-      });
     });
 
-    it('remove item from action disable map and deselect item on remove event', () => {
+    it('should call multi-select service to remove item on deselect event', () => {
+      const item1 = new PicklistQueueItem(null);
+      const item2 = new PicklistQueueItem(null);
+      const unselectEvent = {
+        selectedValues: new Set([item1, item2]),
+        changedValue: item1,
+        changeType: SelectionChangeType.unselected
+      };
+
+      component.onGridSelectionChanged(unselectEvent);
+
+      expect(component.multiSelectMode).toBe(true);
+      expect(xr2QueueMultiSelectService.removeFromActionDisableMap).toHaveBeenCalled();
+    });
+
+    it('should call multi-select service to remove item and deselect item on remove event', () => {
       const item = new PicklistQueueItem(null);
       component.selectedItems = new Set<PicklistQueueItem>();
       component.selectedItems.add(item);
-      component.actionPicklistItemsDisableMap = new Map([
-        [OutputDeviceAction.Release, new Set<PicklistQueueItem>([item])],
-       [OutputDeviceAction.Print, new Set<PicklistQueueItem>([item])],
-       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>([item])],
-      ]);
+      component.picklistsQueueItems = of([item]);
 
-      component.onPicklistQueueItemsRemoved([item]);
+      component.onRemoveMultiSelectEvent([item]);
 
       expect(component.selectedItems.has(item)).toBeFalsy();
-      component.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
-        expect(picklistSet.size).toBe(0);
-      });
+      expect(xr2QueueMultiSelectService.removeFromActionDisableMap).toHaveBeenCalled();
+      expect(component.multiSelectMode).toBeFalsy();
     });
 
-    it('add item from action disable map and select item on add event', () => {
+    it('should call multi-select service to add item and select item on add event', () => {
       const item = new PicklistQueueItem(null);
       item.Status = 1;
       item.Saving = false;
       component.selectedItems = new Set<PicklistQueueItem>();
       component.selectedItems.add(item);
-      component.actionPicklistItemsDisableMap = new Map([
-        [OutputDeviceAction.Release, new Set<PicklistQueueItem>()],
-       [OutputDeviceAction.Print, new Set<PicklistQueueItem>()],
-       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
-      ]);
 
-      component.onPicklistQueueItemsAddorUpdated([item]);
+      component.onAddOrUpdateMultiSelectEvent([item]);
 
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release).size).toBe(0);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print).size).toBe(1);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute).size).toBe(0);
+      expect(xr2QueueMultiSelectService.updateActionDisableMap).toHaveBeenCalled();
     });
 
-    it('add item to action disable map on select event', () => {
+    it('should call multi-select service to add item on select event', () => {
       const item = new PicklistQueueItem(null);
       item.Status = 1;
       item.Saving = false;
-      component.actionPicklistItemsDisableMap = new Map([
-        [OutputDeviceAction.Release, new Set<PicklistQueueItem>()],
-       [OutputDeviceAction.Print, new Set<PicklistQueueItem>()],
-       [OutputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
-      ]);
-
       const selectEvent = {
         selectedValues: new Set([
           item
@@ -451,9 +443,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       component.onGridSelectionChanged(selectEvent);
 
       expect(component.multiSelectMode).toBe(true);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release).size).toBe(0);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print).size).toBe(1);
-      expect(component.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute).size).toBe(0);
+      expect(xr2QueueMultiSelectService.addToActionDisableMap).toHaveBeenCalled();
     });
   });
 });

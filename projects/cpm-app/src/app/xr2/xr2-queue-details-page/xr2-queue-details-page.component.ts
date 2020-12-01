@@ -226,17 +226,17 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   getReleaseDisableState() {
-    return this.xr2QueueMultiSelectService.actionPicklistItemsDisableMap.get(this.outputDeviceAction.Release).size > 0
+    return this.xr2QueueMultiSelectService.actionDisableMap.get(this.outputDeviceAction.Release).size > 0
     || !this.multiSelectMode;
   }
 
   getPrintDisableState() {
-    return this.xr2QueueMultiSelectService.actionPicklistItemsDisableMap.get(this.outputDeviceAction.Print).size > 0
+    return this.xr2QueueMultiSelectService.actionDisableMap.get(this.outputDeviceAction.Print).size > 0
      || !this.multiSelectMode;
   }
 
   getRerouteDisableState() {
-    return this.xr2QueueMultiSelectService.actionPicklistItemsDisableMap.get(this.outputDeviceAction.Reroute).size > 0
+    return this.xr2QueueMultiSelectService.actionDisableMap.get(this.outputDeviceAction.Reroute).size > 0
     || !this.multiSelectMode;
   }
 

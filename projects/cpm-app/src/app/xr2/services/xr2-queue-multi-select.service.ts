@@ -8,13 +8,13 @@ import { PicklistQueueItem } from '../model/picklist-queue-item';
 })
 export class Xr2QueueMultiSelectService {
 
-  public actionPicklistItemsDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
+  public actionDisableMap: Map<OutputDeviceAction, Set<PicklistQueueItem>> = new Map();
   outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
 
   constructor() { }
 
   createActionDisableMap(): void {
-    this.actionPicklistItemsDisableMap = new Map([
+    this.actionDisableMap = new Map([
       [this.outputDeviceAction.Release, new Set<PicklistQueueItem>()],
     [this.outputDeviceAction.Print, new Set<PicklistQueueItem>()],
     [this.outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
@@ -22,43 +22,59 @@ export class Xr2QueueMultiSelectService {
   }
 
   clearActionDisableMap(): void {
-    this.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
+    if (!this.actionDisableMap) {
+      return;
+    }
+
+    this.actionDisableMap.forEach((picklistSet, action) => {
       picklistSet.clear();
     });
   }
 
   updateActionDisableMap(picklistQueueItems: PicklistQueueItem[]): void {
+    if (!this.actionDisableMap) {
+      return;
+    }
+
     console.log('updateActionPicklistItemDisableMap');
     this.removeFromActionDisableMap(picklistQueueItems);
     this.addToActionDisableMap(picklistQueueItems);
   }
 
   addToActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
+    if (!this.actionDisableMap) {
+      return;
+    }
+
     _.forEach(itemsToProcess, (item) => {
       console.log('Adding to action disable map:');
       console.log(item);
       if (!item.Releaseable) {
-        const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Release);
+        const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Release);
         currentSet.add(item);
       }
 
       if (!item.Printable) {
-        const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Print);
+        const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Print);
         currentSet.add(item);
       }
 
       if (!item.Reroutable) {
-        const currentSet  = this.actionPicklistItemsDisableMap.get(OutputDeviceAction.Reroute);
+        const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Reroute);
         currentSet.add(item);
       }
-      console.log(this.actionPicklistItemsDisableMap);
+      console.log(this.actionDisableMap);
     });
   }
 
   removeFromActionDisableMap(itemsToProcess: PicklistQueueItem[]) {
-    console.log(this.actionPicklistItemsDisableMap);
+    if (!this.actionDisableMap) {
+      return;
+    }
+
+    console.log(this.actionDisableMap);
     _.forEach(itemsToProcess, (item) => {
-      this.actionPicklistItemsDisableMap.forEach((picklistSet, action) => {
+      this.actionDisableMap.forEach((picklistSet, action) => {
         picklistSet.delete(item);
       });
     });
