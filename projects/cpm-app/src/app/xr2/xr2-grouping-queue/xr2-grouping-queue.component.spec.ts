@@ -290,7 +290,7 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGrouped.AvailableOutputDeviceList = availableOutputDeviceList;
 
       const pickListQueueGroupedList = [picklistQueueGrouped] as PicklistQueueGrouped[];
-      component.picklistQueueGrouped = pickListQueueGroupedList;
+      component.loadedPicklistQueueGrouped = pickListQueueGroupedList;
 
       const picklistQueueGroupedUpdate = new PicklistQueueGrouped(null);
       picklistQueueGroupedUpdate.PriorityCode = 'Patient';
@@ -299,13 +299,13 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGroupedUpdate.AvailableOutputDeviceList = availableOutputDeviceList;
       component.updatePickListQueueGroupedGrouping(picklistQueueGroupedUpdate);
 
-      expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
+      expect(component.loadedPicklistQueueGrouped[0].NewCount).toBe(1);
 
     });
 
     it('should add on update picklistqueuegropued', () => {
       const pickListQueueGroupedList = [] as PicklistQueueGrouped[];
-      component.picklistQueueGrouped = pickListQueueGroupedList;
+      component.loadedPicklistQueueGrouped = pickListQueueGroupedList;
 
       const picklistQueueGroupedUpdate = new PicklistQueueGrouped(null);
       picklistQueueGroupedUpdate.PriorityCode = 'Patient';
@@ -313,8 +313,8 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGroupedUpdate.NewCount = 1;
       component.updatePickListQueueGroupedGrouping(picklistQueueGroupedUpdate);
 
-      expect(component.picklistQueueGrouped.length).toBe(1);
-      expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
+      expect(component.loadedPicklistQueueGrouped.length).toBe(1);
+      expect(component.loadedPicklistQueueGrouped[0].NewCount).toBe(1);
     });
 
     it('should remove group from picklistqueuegropued', () => {
@@ -327,11 +327,11 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGrouped.AvailableOutputDeviceList = availableOutputDeviceList;
 
       const pickListQueueGroupedList = [picklistQueueGrouped] as PicklistQueueGrouped[];
-      component.picklistQueueGrouped = pickListQueueGroupedList;
+      component.loadedPicklistQueueGrouped = pickListQueueGroupedList;
 
       component.removePicklistQueueGroup('Patient', 1);
 
-      expect(component.picklistQueueGrouped.length).toBe(0);
+      expect(component.loadedPicklistQueueGrouped.length).toBe(0);
 
     });
 
@@ -353,7 +353,7 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGroupedToBeUpdated.AvailableOutputDeviceList = availableOutputDeviceList;
 
       const pickListQueueGroupedList = [picklistQueueGroupedToBeRemoved, picklistQueueGroupedToBeUpdated] as PicklistQueueGrouped[];
-      component.picklistQueueGrouped = pickListQueueGroupedList;
+      component.loadedPicklistQueueGrouped = pickListQueueGroupedList;
 
       // Create Refresh list wish will have an item to add and update.
       const picklistQueueGroupedToBeAdded = new PicklistQueueGrouped(null);
@@ -374,11 +374,11 @@ describe('Xr2GroupingQueueComponent', () => {
 
       component.refreshDataOnScreen(pickListQueueGroupedListUpdate);
 
-      expect(component.picklistQueueGrouped.length).toBe(2);
-      expect(component.picklistQueueGrouped[0].PriorityCode).toBe('Cabinet');
-      expect(component.picklistQueueGrouped[0].NewCount).toBe(1);
-      expect(component.picklistQueueGrouped[0].AvailableOutputDeviceList[0].IsActive).toBe(false);
-      expect(component.picklistQueueGrouped[1].PriorityCode).toBe('Area');
+      expect(component.loadedPicklistQueueGrouped.length).toBe(2);
+      expect(component.loadedPicklistQueueGrouped[0].PriorityCode).toBe('Cabinet');
+      expect(component.loadedPicklistQueueGrouped[0].NewCount).toBe(1);
+      expect(component.loadedPicklistQueueGrouped[0].AvailableOutputDeviceList[0].IsActive).toBe(false);
+      expect(component.loadedPicklistQueueGrouped[1].PriorityCode).toBe('Area');
 
     });
 
@@ -392,11 +392,11 @@ describe('Xr2GroupingQueueComponent', () => {
       picklistQueueGroupedToBeRemoved.AvailableOutputDeviceList = availableOutputDeviceList;
 
       const pickListQueueGroupedList = [picklistQueueGroupedToBeRemoved] as PicklistQueueGrouped[];
-      component.picklistQueueGrouped = pickListQueueGroupedList;
+      component.loadedPicklistQueueGrouped = pickListQueueGroupedList;
 
       component.refreshDataOnScreen(null);
 
-      expect(component.picklistQueueGrouped.length).toBe(0);
+      expect(component.loadedPicklistQueueGrouped.length).toBe(0);
 
     });
   });
