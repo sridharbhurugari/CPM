@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PopupDialogComponent } from '@omnicell/webcorecomponents';
-import { combineLatest, Subject, Subscription } from 'rxjs';
+import { combineLatest, merge, Subject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IBarcodeOverrideData } from '../model/i-barcode-override-data';
@@ -11,11 +11,36 @@ import { UserPermissionsCacheService } from './user-permissions-cache.service';
 
 @Injectable()
 export class BarcodeOverrideService {
-  private _subscription: Subscription;
+  private _subscriptions: Subscription[] = [];
   private _overrideEnabled: boolean;
   private _overridePopup: PopupDialogComponent;
   private _warningPopup: PopupDialogComponent;
   private _barcodeOverrideData: IBarcodeOverrideData;
+
+  private set overridePopup(value: PopupDialogComponent) {
+    this._overridePopup = value;
+    let closed$ = merge(this._overridePopup.didClickCloseButton, this._overridePopup.didClickPrimaryButton);
+    closed$.pipe(take(1)).subscribe(() => {
+      this._overridePopup = null;
+      this.disableOverride();
+    });
+  }
+
+  private get overridePopup(): PopupDialogComponent {
+    return this._overridePopup;
+  }
+  
+  private set warningPopup(value: PopupDialogComponent) {
+    this._warningPopup = value;
+    let closed$ = merge(this._warningPopup.didClickCloseButton, this._warningPopup.didClickPrimaryButton);
+    closed$.pipe(take(1)).subscribe(() => {
+      this._warningPopup = null;
+    });
+  }
+
+  private get warningPopup(): PopupDialogComponent {
+    return this._warningPopup;
+  }
 
   overrideBarcodeParsed$: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
@@ -46,16 +71,27 @@ export class BarcodeOverrideService {
   initialize(value: IBarcodeOverrideData) {
     this.disableOverride();
     this._barcodeOverrideData = value;
-    this.detachSubscription();
+    this.clearSubscriptions();
 
     if (this._barcodeOverrideData) {
-      this._subscription = combineLatest(this.barcodeParsingService.barcodeParsed$, this.userPermissionsCacheService.canOverrideBarcode())
+      let scanSubscription = combineLatest(this.barcodeParsingService.barcodeParsed$, this.userPermissionsCacheService.canOverrideBarcode())
         .subscribe(x => this.handleBarcodeData(x[0], x[1]));
+      let productSubscription = this.barcodeSafetyStockService.productScannedSuccessfully.subscribe(x => {
+        if(this.warningPopup) {
+          this.warningPopup.onCloseClicked();
+        }
+
+        if(this.overridePopup) {
+          this.overridePopup.onCloseClicked();
+        }
+      });
+
+      this._subscriptions.push(scanSubscription, productSubscription);
     }
   }
 
   dispose() {
-    this.detachSubscription();
+    this.clearSubscriptions();
   }
 
   handleBarcodeData(barcodeData: IBarcodeData, userCanOverride: boolean) {
@@ -63,8 +99,8 @@ export class BarcodeOverrideService {
       return;
     }
 
-    if(this._warningPopup) {
-      this._warningPopup.onCloseClicked();
+    if(this.warningPopup) {
+      this.warningPopup.onCloseClicked();
     }
 
     if (this._overrideEnabled) {
@@ -78,7 +114,7 @@ export class BarcodeOverrideService {
       } else {
         this.simpleDialogService.getWarningOkPopup('BARCODESCAN_DIALOGWARNING_TITLE', 'BARCODESCAN_DIALOGWARNING_MESSAGE')
           .pipe(take(1))
-          .subscribe(x => this._warningPopup = x);
+          .subscribe(x => this.warningPopup = x);
       }
     }
   }
@@ -88,10 +124,10 @@ export class BarcodeOverrideService {
       this.overrideBarcodeParsed$.next(barcodeData);
       this.disableOverride();
     } else {
-      this._overridePopup.onCloseClicked();
+      this._overridePopup.onSecondaryClicked();
       this.simpleDialogService.getWarningOkPopup('BARCODESCAN_OVERRIDEPASSCODEDOESNOTMATCH_TITLE', 'BARCODESCAN_OVERRIDEPASSCODEDOESNOTMATCH_MESSAGE')
         .pipe(take(1))
-        .subscribe(x => this._overridePopup = x);
+        .subscribe(x => this.overridePopup = x);
     }
   }
 
@@ -132,7 +168,7 @@ export class BarcodeOverrideService {
     let barcodeMsg = this.getOverrideText();
     this.simpleDialogService.getWarningCancelPopup('BARCODESCAN_OVERRIDEBARCODETITLE', barcodeMsg)
       .pipe(take(1))
-      .subscribe(x => this._overridePopup = x);
+      .subscribe(x => this.overridePopup = x);
   }
 
   private disableOverride() {
@@ -143,11 +179,12 @@ export class BarcodeOverrideService {
     this._overrideEnabled = false;
   }
 
-  private detachSubscription() {
-    if(!this._subscription){
+  private clearSubscriptions() {
+    if (!this._subscriptions || !this._subscriptions.length) {
       return;
     }
 
-    this._subscription.unsubscribe();
+    this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = [];
   }
 }

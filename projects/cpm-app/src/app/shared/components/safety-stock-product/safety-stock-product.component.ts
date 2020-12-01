@@ -14,24 +14,24 @@ import { QuantityTrackingService } from '../../services/quantity-tracking.servic
 })
 export class SafetyStockProductComponent {
   private _safetyStockProductData: ISafetyStockProductData;
-  private _subscription: Subscription;
+  private _subscriptions: Subscription[] = [];
   private _scanNeeded: boolean;
+  private _productScannedSuccessfully: boolean;
 
   @Input()
   set safetyStockProductData(value: ISafetyStockProductData) {
     this._safetyStockProductData = value;
+    this._productScannedSuccessfully = false;
 
-    if(this._subscription){
-      this.clearSubscription();
-    }
+    this.clearSubscriptions();
 
     if (this._safetyStockProductData && this._safetyStockProductData.requireProductScan && this.quantityTrackingService.quantity > 0) {
       this.scanNeeded = true;
       let eligibleScans = merge(this.barcodeParsingService.productBarcodeParsed$, this.barcodeOverrideService.overrideBarcodeParsed$);
-      this._subscription = eligibleScans.subscribe(x => {
+      let scanSubscription = eligibleScans.subscribe(x => {
         this.handleBarcodeData(x);
       });
-      this.quantityTrackingService.quantitySubject.subscribe(qty => {
+      let qtySubscription = this.quantityTrackingService.quantitySubject.subscribe(qty => {
         if (!this._safetyStockProductData || !this._safetyStockProductData.requireProductScan) {
           return;
         }
@@ -39,9 +39,11 @@ export class SafetyStockProductComponent {
         if (qty === 0) {
           this.scanNeeded = false;
         } else {
-          this.scanNeeded = true;
+          this.scanNeeded = !this._productScannedSuccessfully;
         }
       });
+
+      this._subscriptions.push(scanSubscription, qtySubscription);
     }else{
       this.scanNeeded = false;
     }
@@ -81,16 +83,17 @@ export class SafetyStockProductComponent {
   }
 
   private onSuccessfulScan() {
-    this.clearSubscription();
+    this.clearSubscriptions();
+    this._productScannedSuccessfully = true
     this.scanNeeded = false;
   }
 
-  private clearSubscription() {
-    if (!this._subscription) {
+  private clearSubscriptions() {
+    if (!this._subscriptions || !this._subscriptions.length) {
       return;
     }
 
-    this._subscription.unsubscribe();
-    this._subscription = null;
+    this._subscriptions.forEach(s => s.unsubscribe());
+    this._subscriptions = [];
   }
 }

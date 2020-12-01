@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { PopupDialogComponent } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
@@ -21,10 +22,18 @@ describe('BarcodeOverrideService', () => {
   beforeEach(() => {
     barcodeParsed$ = new Subject<IBarcodeData>();;
     spyOn(barcodeParsed$, 'subscribe').and.callThrough();
-    warningOkPopup = jasmine.createSpyObj('warningOkPopup', [ 'onCloseClicked' ]);
+    warningOkPopup = jasmine.createSpyObj('warningOkPopup', [ 'onCloseClicked', 'onSecondaryClicked', ]);
+    warningOkPopup.didClickCloseButton = new EventEmitter();
+    warningOkPopup.didClickPrimaryButton = new EventEmitter();
+    let warningCancelPopup = { 
+      onCloseClicked: () => { },
+      didClickCloseButton: new EventEmitter(),
+      didClickPrimaryButton: new EventEmitter(),
+      onSecondaryClicked: () => { },
+    };
     simpleDialogService = { 
       getWarningOkPopup: jasmine.createSpy('getWarningOkPopup').and.returnValue(of(warningOkPopup)),
-      getWarningCancelPopup: jasmine.createSpy('getWarningCancelPopup').and.returnValue(of({ onCloseClicked: () => { } })),
+      getWarningCancelPopup: jasmine.createSpy('getWarningCancelPopup').and.returnValue(of(warningCancelPopup)),
     };
     barcodeOverrideData = {
       acceptParsedDates: false,
@@ -46,6 +55,7 @@ describe('BarcodeOverrideService', () => {
     service = TestBed.get(BarcodeOverrideService);
     spyOn(service.overrideBarcodeParsed$, 'next');
     safetyStockService = TestBed.get(BarcodeSafetyStockService);
+    safetyStockService.productScannedSuccessfully = new EventEmitter<IBarcodeData>();
     userPermissionsCacheService = TestBed.get(UserPermissionsCacheService);
   });
 
