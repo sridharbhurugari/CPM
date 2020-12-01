@@ -14,6 +14,7 @@ describe('UnderfilledPicklistLine', () => {
       ItemBrandName: '',
       ItemFormattedGenericName: '',
       ItemId: '',
+      OrderId: '',
       OrderQuantity: 5,
       PatientName: '',
       PatientRoom: '',

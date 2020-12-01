@@ -25,6 +25,7 @@ export class UnderfilledPicklistLine implements IUnderfilledPicklistLine {
     FillDate: Date;
     PickItemLocationDescription: string;
     FillQuantity: number;
+    OrderId: string;
     OrderQuantity: number;
     ItemFoundInCPM: string;  // unknown item identifier
     ItemLocation: string; // unassigned item identifier

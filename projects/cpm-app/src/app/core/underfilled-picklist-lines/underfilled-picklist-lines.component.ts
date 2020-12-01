@@ -61,7 +61,7 @@ public TotalItemCount(): number {
   const countOf = this._picklistLines.length;
   return countOf;
   }
-
+  
  columnSelected(event: IColHeaderSortChanged) {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.picklistLines = _.orderBy(this._picklistLines, x => x[this.currentSortPropertyName], event.SortDirection);

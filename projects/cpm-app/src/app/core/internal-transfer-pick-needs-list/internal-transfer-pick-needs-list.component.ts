@@ -6,6 +6,7 @@ import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-chan
 import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
 import { nameof } from '../../shared/functions/nameof';
 import { sumValues } from '../../shared/functions/sumValues';
+import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
 
 @Component({
@@ -28,7 +29,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
   }
 
   @Output()
-  pickTotalChanged: EventEmitter<number> = new EventEmitter<number>();
+  pickTotalChanged: EventEmitter<IInternalTransferPackSizePick[]> = new EventEmitter<IInternalTransferPackSizePick[]>();
 
   @ViewChild('headerCheckContainer', {
     static: true
@@ -56,8 +57,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       return;
     }
 
-    let pickTotal = sumValues(this.itemNeeds, x => x.QuantityToPick);
-    this.pickTotalChanged.emit(pickTotal);
+    this.pickTotalChanged.emit(this.itemNeeds);
   }
 
   selectedPicksChanged(selectionChanged: IGridSelectionChanged<IItemReplenishmentNeed | string>) {
@@ -70,7 +70,6 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       toggledNeed.IsSelected = selected;
     }
 
-    let pickTotal = sumValues(this.itemNeeds, x => x.QuantityToPick);
-    this.pickTotalChanged.emit(pickTotal);
+    this.pickTotalChanged.emit(this.itemNeeds);
   }
 }

@@ -20,6 +20,7 @@ import { MockHorizontalTabsComponent } from '../../shared/testing/mock-hornizont
 import { MockSplitFixedComponent } from '../../shared/testing/mock-spit-fixed.spec';
 import { MockTabContentsComponent } from '../../shared/testing/mock-tab-contents.spec';
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
+import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 import { MockInternalTransferPickNeedsListComponent } from '../testing/mock-internal-transfer-pick-needs-list.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
@@ -30,6 +31,12 @@ describe('InternalTransferPickPageComponent', () => {
   let fixture: ComponentFixture<InternalTransferPickPageComponent>;
   let picklistLinesService: Partial<PicklistLinesService>;
   let wpfActionController: Partial<WpfActionControllerService>;
+
+  let picktotals: IInternalTransferPackSizePick[] = [
+    { PackSize: 1, PacksToPick: 800, QuantityToPick: 800 },
+    { PackSize: 5, PacksToPick: 15, QuantityToPick: 75 },
+    { PackSize: 10, PacksToPick: 10, QuantityToPick: 100 },
+  ];
 
   beforeEach(async(() => {
     let deviceLocationId = 3290;
@@ -47,6 +54,7 @@ describe('InternalTransferPickPageComponent', () => {
     };
     let picklistLines = [ picklistLine ];
     let picklistLineIds = picklistLines.map(x => x.PicklistLineId);
+  
     picklistLinesService = { 
       get: (plid: Guid) => { return of(picklistLines.find(x => x.PicklistLineId == plid.toString()) as IPicklistLine) },
       completePick: jasmine.createSpy('completePick').and.returnValue(of(true)),
@@ -107,14 +115,14 @@ describe('InternalTransferPickPageComponent', () => {
 
   describe('completePick', () => {
     it('should call PicklistLinesService completePick', () => {
-      component.pickTotalChanged(5);
+      component.pickTotalChanged(picktotals);
       component.completePick();
       expect(picklistLinesService.completePick).toHaveBeenCalled();
     });
 
     describe('for last item', () => {
       it('should call ExecuteActionName continue', () => {
-        component.pickTotalChanged(5);
+        component.pickTotalChanged(picktotals);
         component.completePick();
         expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
       });
