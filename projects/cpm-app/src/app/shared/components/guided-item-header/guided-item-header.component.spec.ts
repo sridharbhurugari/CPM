@@ -2,7 +2,8 @@ import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogService } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { CoreEventConnectionService } from '../../../api-core/services/core-event-connection.service';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { IItemHeaderInfo } from '../../model/i-item-header-info';
 import { MockDeviceLocationAccessComponent } from '../../testing/mock-device-location-access.spec';
@@ -26,6 +27,10 @@ describe('GuidedItemHeaderComponent', () => {
       onCloseClicked: jasmine.createSpy('onCloseClicked'),
     };
     popupDialogService = { showOnce: jasmine.createSpy('showOnce').and.returnValue(popupDialogComponent) };
+    let coreEventConnectionService = {
+      carouselReadySubject: new Subject(),
+      carouselFaultedSubject: new Subject(),
+    };
     TestBed.configureTestingModule({
       declarations: [ 
         GuidedItemHeaderComponent,
@@ -38,6 +43,7 @@ describe('GuidedItemHeaderComponent', () => {
       providers: [
         { provide: TranslateService, useValue: { get: (x: string) => of(`${x}_TRANSLATED`) } },
         { provide: PopupDialogService, useValue: popupDialogService },
+        { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
       ]
     })
     .compileComponents();
