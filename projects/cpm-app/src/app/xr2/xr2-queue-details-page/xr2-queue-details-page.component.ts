@@ -209,7 +209,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   onRemoveMultiSelectEvent(picklistQueueItems: Array<PicklistQueueItem>) {
     if (picklistQueueItems === null || picklistQueueItems.length === 0) {
-      this.clearMultiSelect();
+      this.multiSelectMode = false;
       return;
     }
 
