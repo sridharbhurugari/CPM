@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, merge } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map, shareReplay, switchMap, scan } from 'rxjs/operators';
@@ -74,7 +74,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
     private workstationTrackerService: WorkstationTrackerService,
-    private pickingEventConnectionService: PickingEventConnectionService
+    private pickingEventConnectionService: PickingEventConnectionService,
+    private router: Router
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -106,10 +107,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
               picklistlines.splice(index, 1)
             }
             picklistlines.push(picklistLineEvent.PicklistLineUnderfilled)
-          }       
+          }
           return picklistlines;
-        }                  
-      }, x));        
+        }
+      }, x));
     }));
 
     var combinedPicklistLines$ = merge(initialPicklistLines$, allPicklistLines$);
@@ -119,7 +120,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       const result = _.orderBy(displayObjects,
          (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
-    }));    
+    }));
 
     // permission: are buttons visible
     this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
@@ -154,7 +155,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
   navigateBack() {
     this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
-      this.wpfActionControllerService.ExecuteBackAction();
+      this.router.navigate(['core/picklists/underfilled']);
     });
   }
 

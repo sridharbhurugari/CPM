@@ -14,6 +14,8 @@ import { WorkstationTrackerData } from '../../api-core/data-contracts/workstatio
 import { OperationType } from '../../api-core/data-contracts/operation-type';
 import { PopupDialogProperties, PopupDialogType, } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
+import { UnfilledSortOrderService } from '../utilities/unfilled-sort-order.service';
+import { NavigationExtras, Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -45,8 +47,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   destinationPropertyName = nameof<UnderfilledPicklist>('DesintationSearchValue');
   datePropertyName = nameof<UnderfilledPicklist>('CompletedDate');
 
-  currentSortPropertyName : string = this.datePropertyName;
-  sortOrder: SortDirection = SortDirection.descending;
+  currentSortPropertyName : string;
+  sortOrder: SortDirection;
   workstation: string;
   okButtonText: string;
   orderInUseTitle: string;
@@ -69,8 +71,9 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     private workstationTrackerService: WorkstationTrackerService,
     private dialogService: PopupDialogService,
     public translateService: TranslateService,
-  ) {
-  }
+    private unfilledSortOrderService: UnfilledSortOrderService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.translateService.get('OK').subscribe(s => this.okButtonText = s);
@@ -91,6 +94,12 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
+    this.setSortProperties();
+  }
+
+  setSortProperties() {
+    this.currentSortPropertyName = this.unfilledSortOrderService.GetCurrentSortPropertyName();
+    this.sortOrder = this.unfilledSortOrderService.GetSortOrder();
   }
 
   navigate(orderId: string){
@@ -115,11 +124,23 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
       }
 
       this.workstationTrackerService.Track(workstationTrackerData).subscribe().add(() => {
-        this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
+        this.goToDetailsPage(orderId);
+        //this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
       });
     }, err => {
-      this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
+      this.goToDetailsPage(orderId);
+      //this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
     });
+  }
+
+  goToDetailsPage(orderId: string) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        orderId: orderId,
+      } ,
+      fragment: 'anchor'
+    };
+    this.router.navigate(['core/picklists/underfilled/picklistLines'], navigationExtras );
   }
 
   buildWorkstationsInUseStringFromResult(result): string {
@@ -141,6 +162,12 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
     this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], event.SortDirection)
+    this.sort(this.currentSortPropertyName, event.SortDirection);
+    this.unfilledSortOrderService.Update(this.currentSortPropertyName, this.sortOrder);
+  }
+
+  sort(currentSortPropertyName : string, sortOrder) {
+    this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], sortOrder)
   }
 
   displayInfo(title, message) {
