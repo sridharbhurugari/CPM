@@ -74,7 +74,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
       [outputDeviceAction.Print, new Set<PicklistQueueItem>()],
       [outputDeviceAction.Reroute, new Set<PicklistQueueItem>()],
       ]),
-      createActionDisableMap: jasmine.createSpy('createActionDisableMap').and.callThrough(),
+      createActionDisableMap: jasmine.createSpy('createActionDisableMap'),
       clearActionDisableMap: jasmine.createSpy('clearActionDisableMap'),
       updateActionDisableMap: jasmine.createSpy('updateActionDisableMap'),
       addToActionDisableMap: jasmine.createSpy('addToActionDisableMap'),
@@ -116,6 +116,21 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Button Disable States', () => {
+    it('should be disabled if no items exist', () => {
+      expect(component.getReleaseDisableState).toBeTruthy();
+      expect(component.getRerouteDisableState).toBeTruthy();
+      expect(component.getPrintDisableState).toBeTruthy();
+    });
+
+    it('should be disabled if not in multi select mode', () => {
+      component.multiSelectMode = false;
+      expect(component.getReleaseDisableState).toBeTruthy();
+      expect(component.getRerouteDisableState).toBeTruthy();
+      expect(component.getPrintDisableState).toBeTruthy();
+    });
   });
 
   describe('Queue API Actions', () => {
