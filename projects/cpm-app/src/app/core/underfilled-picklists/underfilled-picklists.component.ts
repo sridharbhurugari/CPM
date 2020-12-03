@@ -24,6 +24,8 @@ import { NavigationExtras, Route, Router } from '@angular/router';
 })
 export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   private _picklists: UnderfilledPicklist[];
+  private _currentSortPropertyName: string;
+  private _sortOrder: SortDirection;
 
   @ViewChild('searchBox', {
     static: true
@@ -47,8 +49,6 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   destinationPropertyName = nameof<UnderfilledPicklist>('DesintationSearchValue');
   datePropertyName = nameof<UnderfilledPicklist>('CompletedDate');
 
-  currentSortPropertyName : string;
-  sortOrder: SortDirection;
   workstation: string;
   okButtonText: string;
   orderInUseTitle: string;
@@ -61,8 +61,26 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     }
   }
 
+  @Input()
+  set currentSortPropertyName(value: string) {
+    this._currentSortPropertyName = value;
+  }
+
+  @Input()
+  set sortOrder(value: SortDirection) {
+    this._sortOrder = value;
+  }
+
   get picklists(): UnderfilledPicklist[]{
     return this._picklists;
+  }
+
+  get currentSortPropertyName(): string{
+    return this._currentSortPropertyName;
+  }
+
+  get sortOrder(): SortDirection{
+    return this._sortOrder;
   }
 
   constructor(
@@ -94,12 +112,6 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
           this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
         }
       });
-    this.setSortProperties();
-  }
-
-  setSortProperties() {
-    this.currentSortPropertyName = this.unfilledSortOrderService.GetCurrentSortPropertyName();
-    this.sortOrder = this.unfilledSortOrderService.GetSortOrder();
   }
 
   navigate(orderId: string){
@@ -167,7 +179,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   }
 
   sort(currentSortPropertyName : string, sortOrder) {
-    this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], sortOrder)
+    this.picklists = _.orderBy(this._picklists, x => x[currentSortPropertyName], sortOrder)
   }
 
   displayInfo(title, message) {

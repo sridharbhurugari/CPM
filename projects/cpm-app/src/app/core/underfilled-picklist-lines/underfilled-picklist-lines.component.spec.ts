@@ -7,6 +7,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { nameof } from '../../shared/functions/nameof';
 import { Observable, Subject } from 'rxjs';
 import * as _ from 'lodash';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 
 describe('UnderfilledPicklistLinesComponent', () => {
   let component: UnderfilledPicklistLinesComponent;
@@ -19,7 +20,8 @@ describe('UnderfilledPicklistLinesComponent', () => {
       declarations: [
         UnderfilledPicklistLinesComponent,
         MockTranslatePipe,
-        MockColHeaderSortable
+        MockColHeaderSortable,
+        MockCpClickableIconComponent
        ],
       imports: [ GridModule, FooterModule, LayoutModule, SvgIconModule, CheckboxModule]
     })

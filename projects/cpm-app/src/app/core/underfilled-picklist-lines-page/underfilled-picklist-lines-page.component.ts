@@ -69,7 +69,6 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,
     private resetPickRoutesService: ResetPickRoutesService,
-    private wpfActionControllerService: WpfActionControllerService,
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
