@@ -50,6 +50,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
   let picklistsQueueEventConnectionService: Partial<PicklistsQueueEventConnectionService>;
   let picklistsQueueService: Partial<PicklistsQueueService>;
   let xr2QueueMultiSelectService: Partial<Xr2QueueMultiSelectService>;
+  let popupDialogService: Partial<PopupDialogService>;
   let childDetailsQueueComponentSpy: jasmine.Spy;
   const outputDeviceAction: typeof OutputDeviceAction = OutputDeviceAction;
 
@@ -81,6 +82,10 @@ describe('Xr2QueueDetailsPageComponent', () => {
       removeFromActionDisableMap: jasmine.createSpy('removeFromActionDisableMap')
     };
 
+    popupDialogService = {
+      showOnce: jasmine.createSpy('showOnce').and.returnValue(of([]))
+    };
+
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueDetailsPageComponent, Xr2QueueDetailsHeaderComponent, Xr2DetailsQueueComponent,
         Xr2QueueButtonPanelComponent, MockCpClickableIconComponent, MockSearchBox, MockTranslatePipe,
@@ -92,7 +97,7 @@ describe('Xr2QueueDetailsPageComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: WpfActionControllerService, useVaule: { } },
         { provide: PicklistsQueueEventConnectionService, useValue: picklistsQueueEventConnectionService},
-        { provide: PopupDialogService, useValue: { showOnce: () => of([]) } },
+        { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: Location, useValue: { go: () => {}} },
         { provide: Router, useValue: { data: () => {}} },
@@ -116,6 +121,24 @@ describe('Xr2QueueDetailsPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Back Button', () => {
+    it('should send back event on back button click', () => {
+      const backEventSpy = spyOn(component.detailsPageBackButtonEvent, 'emit');
+
+      component.onBackClick();
+
+      expect(backEventSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Dialogs', () => {
+    it('should call dialog servive on failed event', () => {
+      component.displayXr2QueueError();
+
+      expect(popupDialogService.showOnce).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('Button Disable States', () => {
