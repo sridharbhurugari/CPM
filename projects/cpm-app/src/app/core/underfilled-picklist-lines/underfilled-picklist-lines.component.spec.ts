@@ -1,24 +1,27 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines.component';
-import { GridModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
+import { GridModule, FooterModule, LayoutModule, CheckboxModule, PopupWindowService, SvgiconComponent, SvgIconModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { nameof } from '../../shared/functions/nameof';
+import { Observable, Subject } from 'rxjs';
+import * as _ from 'lodash';
 
 describe('UnderfilledPicklistLinesComponent', () => {
   let component: UnderfilledPicklistLinesComponent;
   let fixture: ComponentFixture<UnderfilledPicklistLinesComponent>;
-  let event: IColHeaderSortChanged = {ColumnPropertyName:"DescriptionSortValue",SortDirection:"asc"};
-  
+  const event: IColHeaderSortChanged = {ColumnPropertyName: 'DescriptionSortValue', SortDirection: 'asc'};
+
   beforeEach(async(() => {
+
     TestBed.configureTestingModule({
-      declarations: [ 
-        UnderfilledPicklistLinesComponent, 
-        MockTranslatePipe, 
+      declarations: [
+        UnderfilledPicklistLinesComponent,
+        MockTranslatePipe,
         MockColHeaderSortable
        ],
-      imports: [ GridModule, FooterModule, LayoutModule ]
+      imports: [ GridModule, FooterModule, LayoutModule, SvgIconModule, CheckboxModule]
     })
     .compileComponents();
   }));

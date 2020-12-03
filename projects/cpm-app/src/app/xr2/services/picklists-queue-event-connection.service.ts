@@ -7,6 +7,8 @@ import { IPicklistQueueGroupedUpdateMessage } from '../../api-xr2/events/i-pickl
 import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-add-or-update-picklist-queue-item-message';
 import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
 import { takeUntil } from 'rxjs/operators';
+import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
+import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
 
 
 @Injectable({
@@ -19,6 +21,7 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
   public reloadPicklistQueueItemsSubject = new Subject<any>();
   public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
   public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
+  public picklistQueueItemListUpdateSubject = new Subject<IPicklistQueueItemListUpdateMessage>();
   public ngUnsubscribe = new Subject();
 
   constructor(
@@ -56,12 +59,17 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
 
       if (message.EventId === 'RemovePicklistQueueItemMessage') {
         console.log(message);
+        let robotPickGroupId = null;
+        if (message.Xr2OrderGroupKey.RobotPickGroupId) {
+          robotPickGroupId = Guid.parse(message.Xr2OrderGroupKey.RobotPickGroupId);
+        }
+
         this.removePicklistQueueItemSubject.next({
           Xr2OrderGroupKey: {
             OrderId: message.Xr2OrderGroupKey.OrderId,
             OrderGroupDestinationId: message.Xr2OrderGroupKey.OrderGroupDestinationId,
             DeviceLocationId: message.Xr2OrderGroupKey.DeviceLocationId,
-            RobotPickGroupId: Guid.parse(message.Xr2OrderGroupKey.RobotPickGroupId),
+            RobotPickGroupId: robotPickGroupId,
           }
         });
         return;
@@ -84,7 +92,13 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
         this.picklistQueueGroupedListUpdateSubject.next(message);
         return;
       }
-    } catch(e) {
+
+      if (message.EventId === 'PicklistQueueItemListUpdateMessage') {
+        console.log(message);
+        this.picklistQueueItemListUpdateSubject.next(message);
+        return;
+      }
+    } catch (e) {
       console.log('PicklistsQueueEventConnectionService.configurePicklistEventHandlers ERROR');
       console.log(e);
     }

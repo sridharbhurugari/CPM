@@ -7,9 +7,10 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-sync-request';
 import { catchError } from 'rxjs/operators';
 import { RobotPrintRequest } from '../data-contracts/robot-print-request';
-import { ReroutePickListLine } from '../data-contracts/reroute-pick-list-line';
 import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 import { PicklistQueueGrouped } from '../../xr2/model/picklist-queue-grouped';
+import { IReleaseablePicklistQueueItem } from '../data-contracts/i-releaseable-picklist-queue-item';
+import { IReroutablePicklistQueueItem } from '../data-contracts/i-reroutable-picklist-queue-item';
 
 @Injectable({
   providedIn: 'root'
@@ -51,10 +52,19 @@ export class PicklistsQueueService {
     });
   }
 
+  // TODO: Xr2- Clean up
   sendToRobot(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
-    console.log(GlobalDispenseSyncRequest);
+    console.log(globalDispenseSyncRequest);
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/SendToRobot');
     return this.httpClient.post(url, globalDispenseSyncRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  sendQueueItemsToRobot(pickPriorityIdentity: string, picklistQueueItems: Array<IReleaseablePicklistQueueItem>) {
+    console.log(picklistQueueItems);
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot/' + pickPriorityIdentity);
+    return this.httpClient.post(url, picklistQueueItems, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
@@ -66,6 +76,7 @@ export class PicklistsQueueService {
     });
   }
 
+  // TODO: Xr2- Clean up
   skip(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/Skip');
     return this.httpClient.post(url, globalDispenseSyncRequest, {
@@ -73,9 +84,24 @@ export class PicklistsQueueService {
     });
   }
 
+  rerouteQueueItems(picklistQueueItems: Array<IReroutablePicklistQueueItem>) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/RerouteQueueItems');
+    return this.httpClient.post(url, picklistQueueItems, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  // TODO: Xr2- Clean up
   printLabels(deviceId: number, robotPrintRequest: RobotPrintRequest) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
     return this.httpClient.post(url, robotPrintRequest, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  printQueueItemsLabels(robotPrintRequests: Array<RobotPrintRequest>) {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/PrintQueueItemsLabels');
+    return this.httpClient.post(url, robotPrintRequests, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

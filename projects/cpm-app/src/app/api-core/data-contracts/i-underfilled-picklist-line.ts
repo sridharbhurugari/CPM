@@ -1,4 +1,5 @@
 export interface IUnderfilledPicklistLine{
+  PicklistLineId: string;
   DestinationId: string;
   DestinationType: string;
   PriorityCode: string;
@@ -12,8 +13,12 @@ export interface IUnderfilledPicklistLine{
   DestinationOmni: string;
   FillDate: Date;
   FillQuantity: number;
+  OrderId: string;
   OrderQuantity: number;
   PickItemLocationDescription: string;
   PharmacyQOH: number;
   UnfilledReason: string;
+  ItemFoundInCPM: string;  // unknown item identifier
+  ItemLocation: string; // unassigned item identifier
+  InDeviceItem: string; // missing route
 }

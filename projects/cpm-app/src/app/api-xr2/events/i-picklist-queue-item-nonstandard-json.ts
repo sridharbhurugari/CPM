@@ -26,4 +26,7 @@ export interface IPicklistQueueItemNonstandardJson {
     IsPrintable: boolean;
     RobotPickGroupId: Guid;
     SequenceOrder: number;
+    OrderDate: Date;
+    PatientCount: number;
+    PickPriorityIdentity: number;
   }
