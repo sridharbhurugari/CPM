@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
-import { of } from 'rxjs';
+import { of} from 'rxjs';
 import { IDeviceLocation } from '../../api-core/data-contracts/i-device-location';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
@@ -12,17 +11,15 @@ import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaito
 import { OrderItemPendingQuantitiesService } from '../../api-core/services/order-item-pending-quantities.service';
 import { PicklistLineIdsService } from '../../api-core/services/picklist-line-ids.service';
 import { PicklistLinesService } from '../../api-core/services/picklist-lines.service';
+import { ConfigValues } from '../../shared/constants/config-values';
+import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
-import { MockGuidedItemHeaderComponent } from '../../shared/testing/mock-guided-item-header.spec';
-import { MockHeaderedContentControlComponent } from '../../shared/testing/mock-headered-content-control.spec';
-import { MockHorizontalTabsComponent } from '../../shared/testing/mock-hornizontal-tabs.spec';
-import { MockSplitFixedComponent } from '../../shared/testing/mock-spit-fixed.spec';
-import { MockTabContentsComponent } from '../../shared/testing/mock-tab-contents.spec';
-import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
 import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
+import { MockGuidedPickComponent } from '../testing/mock-guided-pick.spec';
 import { MockInternalTransferPickNeedsListComponent } from '../testing/mock-internal-transfer-pick-needs-list.spec';
-import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { InternalTransferPickPageComponent } from './internal-transfer-pick-page.component';
 
@@ -33,9 +30,9 @@ describe('InternalTransferPickPageComponent', () => {
   let wpfActionController: Partial<WpfActionControllerService>;
 
   let picktotals: IInternalTransferPackSizePick[] = [
-    { PackSize: 1, PacksToPick: 800, QuantityToPick: 800 },
-    { PackSize: 5, PacksToPick: 15, QuantityToPick: 75 },
-    { PackSize: 10, PacksToPick: 10, QuantityToPick: 100 },
+    { PackSize: 1, PacksToPick: 800, QuantityToPick: 800, DeviceQuantityNeeded: 800, },
+    { PackSize: 5, PacksToPick: 15, QuantityToPick: 75, DeviceQuantityNeeded: 75, },
+    { PackSize: 10, PacksToPick: 10, QuantityToPick: 100, DeviceQuantityNeeded: 100, },
   ];
 
   beforeEach(async(() => {
@@ -52,7 +49,7 @@ describe('InternalTransferPickPageComponent', () => {
       SourceDeviceLocationId: deviceLocationId,
       PicklistLineId: Guid.create().toString(),
     };
-    let picklistLines = [ picklistLine ];
+    let picklistLines = [ picklistLine, { ItemId: '', SourceDeviceLocationId: 3298, PicklistLineId: Guid.create().toString(), } ];
     let picklistLineIds = picklistLines.map(x => x.PicklistLineId);
   
     picklistLinesService = { 
@@ -63,32 +60,31 @@ describe('InternalTransferPickPageComponent', () => {
       ExecuteBackAction: jasmine.createSpy('ExecuteBackAction'), 
       ExecuteActionName: jasmine.createSpy('ExecuteActionName'), 
     };
+    let safetyStockConfig: Partial<IConfigurationValue> = {
+      Value: ConfigValues.No,
+    }
+    let quickAdvanceConfig: Partial<IConfigurationValue> = {
+      Value: ConfigValues.No,
+    }
     TestBed.configureTestingModule({
       declarations: [ 
         InternalTransferPickPageComponent,
-        MockGuidedItemHeaderComponent,
-        MockHorizontalTabsComponent,
-        MockTabContentsComponent,
-        MockHeaderedContentControlComponent,
-        MockValidationIconComponent,
+        MockGuidedPickComponent,
         MockInternalTransferPickNeedsListComponent,
-        MockSplitFixedComponent,
-        MockTranslatePipe,
       ],
       imports: [
-        LayoutModule,
-        FooterModule,
-        ButtonActionModule,
       ],
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: PicklistLineIdsService, useValue: { getLineIdsForWorkstation: () => { return of(picklistLineIds); } } },
         { provide: OcapHttpConfigurationService, useValue: { get: () => { return { clientId: '' } } } },
+        { provide: SystemConfigurationService, useValue: { getPickingSafetyStockConfig: () => of(safetyStockConfig), getSafetyStockQuickAdvanceConfig: () => of(quickAdvanceConfig) } },
         { provide: PicklistLinesService, useValue: picklistLinesService }, 
         { provide: DeviceReplenishmentNeedsService, useValue: { getDeviceNeedsForItem: () => { return of([ itemNeed ]) } } },
         { provide: WpfActionControllerService, useValue: wpfActionController },
         { provide: ItemLocaitonDetailsService, useValue: { get: () => { return of([ itemLocationDetail ]) } } },
         { provide: OrderItemPendingQuantitiesService, useValue: { get: () => { return of(null) } } },
+        { provide: CarouselLocationAccessService, useValue: { clearLightbar: jasmine.createSpy('clearLightbar') } },
       ]
     })
     .compileComponents();
@@ -116,14 +112,28 @@ describe('InternalTransferPickPageComponent', () => {
   describe('completePick', () => {
     it('should call PicklistLinesService completePick', () => {
       component.pickTotalChanged(picktotals);
-      component.completePick();
+      component.completePick({
+        isLast: false,
+        line: { } as IPicklistLine,
+        pickTotal: 50,
+        productScanRequired: false,
+        safetyStockScanInfo: null,
+        secondaryScanInfo: null,
+      });
       expect(picklistLinesService.completePick).toHaveBeenCalled();
     });
 
     describe('for last item', () => {
       it('should call ExecuteActionName continue', () => {
         component.pickTotalChanged(picktotals);
-        component.completePick();
+        component.completePick({
+          isLast: true,
+          line: { } as IPicklistLine,
+          pickTotal: 50,
+          productScanRequired: false,
+          safetyStockScanInfo: null,
+          secondaryScanInfo: null,
+        });
         expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
       });
     });

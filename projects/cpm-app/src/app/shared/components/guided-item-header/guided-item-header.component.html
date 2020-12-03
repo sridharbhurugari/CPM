@@ -1,8 +1,16 @@
 <div class="guidedItemHeader" *ngIf="itemHeaderInfo">
     <div class="itemNames">
         <div class="genericName">
-            <app-scalable-text [textValue]="itemHeaderInfo?.ItemGenericNameFormatted">
-            </app-scalable-text>
+            <app-validation-container>
+                <ng-container part="content">
+                    <app-scalable-text [textValue]="itemHeaderInfo?.ItemGenericNameFormatted">
+                    </app-scalable-text>
+                </ng-container>
+                <ng-container part="icon">
+                    <app-safety-stock-product [safetyStockProductData]="safetyStockProductData">
+                    </app-safety-stock-product>
+                </ng-container>
+            </app-validation-container>
         </div>
         <div class="brandName">
             <app-scalable-text [textValue]="itemHeaderInfo?.ItemTradeName">
