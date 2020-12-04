@@ -24,8 +24,8 @@ import { NavigationExtras, Route, Router } from '@angular/router';
 })
 export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   private _picklists: UnderfilledPicklist[];
-  private _currentSortPropertyName: string;
-  private _sortOrder: SortDirection;
+  currentSortPropertyName: string;
+  sortOrder: SortDirection;
 
   @ViewChild('searchBox', {
     static: true
@@ -61,26 +61,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     }
   }
 
-  @Input()
-  set currentSortPropertyName(value: string) {
-    this._currentSortPropertyName = value;
-  }
-
-  @Input()
-  set sortOrder(value: SortDirection) {
-    this._sortOrder = value;
-  }
-
   get picklists(): UnderfilledPicklist[]{
     return this._picklists;
-  }
-
-  get currentSortPropertyName(): string{
-    return this._currentSortPropertyName;
-  }
-
-  get sortOrder(): SortDirection{
-    return this._sortOrder;
   }
 
   constructor(
@@ -137,11 +119,9 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
 
       this.workstationTrackerService.Track(workstationTrackerData).subscribe().add(() => {
         this.goToDetailsPage(orderId);
-        //this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
       });
     }, err => {
       this.goToDetailsPage(orderId);
-      //this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/picklists/underfilled/picklistLines`, {orderId: orderId});
     });
   }
 
@@ -171,15 +151,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   }
 
   columnSelected(event: IColHeaderSortChanged){
-    this.currentSortPropertyName = event.ColumnPropertyName;
-    this.sortOrder = event.SortDirection;
-    this.picklists = _.orderBy(this._picklists, x => x[this.currentSortPropertyName], event.SortDirection)
-    this.sort(this.currentSortPropertyName, event.SortDirection);
-    this.unfilledSortOrderService.Update(this.currentSortPropertyName, this.sortOrder);
-  }
-
-  sort(currentSortPropertyName : string, sortOrder) {
-    this.picklists = _.orderBy(this._picklists, x => x[currentSortPropertyName], sortOrder)
+    this.unfilledSortOrderService.Update(event.ColumnPropertyName, event.SortDirection);
+    this.picklists = this.unfilledSortOrderService.Sort(this.picklists);
   }
 
   displayInfo(title, message) {

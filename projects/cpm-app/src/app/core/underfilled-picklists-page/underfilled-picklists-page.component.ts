@@ -44,18 +44,8 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
     this.translatedCabinets$ = translateService.get(this._cabinetsResourceKey);
   }
 
-  sort(picklists: UnderfilledPicklist[], currentSortPropertyName : string, sortOrder) : UnderfilledPicklist[] {
-    return _.orderBy(picklists, x => x[this.currentSortPropertyName], sortOrder);
-  }
-
-  setSortProperties() {
-    this.currentSortPropertyName = this.unfilledSortOrderService.GetCurrentSortPropertyName();
-    this.sortOrder = this.unfilledSortOrderService.GetSortOrder();
-  }
-
   ngOnInit() {
     try {
-      this.setSortProperties();
       var initialPicklists$ = this.underfilledPicklistsService.get();
 
       var unfilledEvents$ = merge(this.pickingEventConnectionService.updatedUnfilledPicklistSubject, this.pickingEventConnectionService.removedUnfilledPicklistSubject);
@@ -87,7 +77,7 @@ export class UnderfilledPicklistsPageComponent implements OnInit {
         var translatedPatients = results[2];
         var translatedCabinets = results[3];
         var displayObjects = underfilledPicklists.map(p => new UnderfilledPicklist(p, this.locale, translatedItems, translatedPatients, translatedCabinets));
-        var sorted = this.sort(displayObjects, this.currentSortPropertyName, this.sortOrder);
+        var sorted = this.unfilledSortOrderService.Sort(displayObjects);
         return sorted;
         }));
     } catch (e) {

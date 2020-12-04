@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
 import { nameof } from '../../shared/functions/nameof';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,8 @@ import { nameof } from '../../shared/functions/nameof';
 export class UnfilledSortOrderService {
 
   private datePropertyName = nameof<UnderfilledPicklist>('CompletedDate');
-  private CurrentSortPropertyName : string = this.datePropertyName;
-  private SortOrder : SortDirection = SortDirection.descending;
+  public CurrentSortPropertyName : string = this.datePropertyName;
+  public SortOrder : SortDirection = SortDirection.descending;
 
   constructor() { }
 
@@ -19,11 +20,8 @@ export class UnfilledSortOrderService {
     this.SortOrder = sortOrder;
   }
 
-  public GetCurrentSortPropertyName() : string {
-    return this.CurrentSortPropertyName;
-  }
-
-  public GetSortOrder() : SortDirection {
-    return this.SortOrder;
+  public Sort(picklists: UnderfilledPicklist[]) : UnderfilledPicklist[] {
+    const sortOrder : any = this.SortOrder;
+    return _.orderBy(picklists, x => x[this.CurrentSortPropertyName], sortOrder);
   }
 }
