@@ -251,5 +251,5 @@
   "ORDER_IN_USE_MSG": "This order is currently being viewed at the following workstations: <br /> {{workstations}}",
   "ORDER_IN_USE_TITLE": "Order In Use",
    "XR2_ALL_DEVICES": "All Devices",
-   "ITEM_MANAGEMENT_SEARCH": "Search"
+   "SEARCH_TEXT": "Search"
 }
