@@ -172,6 +172,13 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     }));
   });
 
+  describe('navigateBack', () => {
+    it('should call router.navigate', () => {
+      component.navigateBack();
+      expect(routerMock.navigate).toHaveBeenCalled();
+    });
+  });
+
   describe('Button Enabled', () => {
     it('should be enabled', () => {
       // Selected > 0
