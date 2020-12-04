@@ -71,7 +71,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
     private workstationTrackerService: WorkstationTrackerService,
     private dialogService: PopupDialogService,
     public translateService: TranslateService,
-    private unfilledSortOrderService: UnfilledSortOrderService,
+    public unfilledSortOrderService: UnfilledSortOrderService,
     private router: Router
   ) {}
 
