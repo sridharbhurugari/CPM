@@ -3,7 +3,7 @@ import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Observable, Subject } from 'rxjs';
-import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
+import { SingleselectRowItem, OcSingleselectDropdownComponent, GridComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
@@ -39,36 +39,36 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Input() clearSelectedItemsEvent: Observable<any>;
 
   @Input()
-  set loadedPicklistQueueItems(value: PicklistQueueItem[]) {
-    this._loadedPicklistQueueItems = value;
-    this._picklistQueueItems = value;
+  set unfilteredQueueItems(value: PicklistQueueItem[]) {
+    this._unfilteredQueueItems = value;
+    this._filteredQueueItems = value;
   }
-  get loadedPicklistQueueItems(): PicklistQueueItem[] {
-    return this._loadedPicklistQueueItems;
+  get unfilteredQueueItems(): PicklistQueueItem[] {
+    return this._unfilteredQueueItems;
   }
 
   @Input()
-  set picklistQueueItems(value: PicklistQueueItem[]) {
-    this._picklistQueueItems = value;
-    if (this.windowService.nativeWindow) {
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+  set filteredQueueItems(value: PicklistQueueItem[]) {
+    this._filteredQueueItems = value;
+    if (this.windowService) {
+      this.windowService.dispatchResizeEvent();
     }
   }
-  get picklistQueueItems(): PicklistQueueItem[] {
-    return this._picklistQueueItems;
+  get filteredQueueItems(): PicklistQueueItem[] {
+    return this._filteredQueueItems;
   }
 
   @Input()
   set searchTextFilter(value: string) {
     this._searchTextFilter = value;
-    this.picklistQueueItems = this.searchPipe.transform(this.loadedPicklistQueueItems, value, this.searchFields);
+    this.filterPicklistQueueItemsBySearchText(value);
   }
   get searchTextFilter(): string {
     return this._searchTextFilter;
   }
 
-  private _picklistQueueItems: PicklistQueueItem[];
-  private _loadedPicklistQueueItems: PicklistQueueItem[];
+  private _filteredQueueItems: PicklistQueueItem[];
+  private _unfilteredQueueItems: PicklistQueueItem[];
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -76,6 +76,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
   readonly itemPropertyName = nameof<PicklistQueueItem>('ItemCount');
   readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
+
+
   firstTime = true;
   checkboxToggleAll: string = CheckboxValues.ToggleAll;
   currentSortPropertyName: string;
@@ -258,7 +260,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   onSelectAllCheckBox(boxState: any): void {
     if (boxState.selectedState) {
-      this.picklistQueueItems.map((item) => this.selectedItems.add(item));
+      this.filteredQueueItems.map((item) => this.selectedItems.add(item));
     } else {
       this.clearSelectedItems();
     }
@@ -296,7 +298,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
+    this.filteredQueueItems = this.sort(this.filteredQueueItems, event.SortDirection);
   }
 
   sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
@@ -310,7 +312,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     ' RobotPickGroupId ' + xr2OrderGroupKey.RobotPickGroupId
     );
 
-    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+    const matchingItemIndex = _.findIndex(this.unfilteredQueueItems, (x) => {
       const queueRobotPickGroup = x.RobotPickGroupId  != null ? x.RobotPickGroupId.toString() : null;
       const orderGroupKeyPickGroupId = xr2OrderGroupKey.RobotPickGroupId != null ? xr2OrderGroupKey.RobotPickGroupId.toString() : null;
       return x.OrderId === xr2OrderGroupKey.OrderId &&
@@ -325,12 +327,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   addOrUpdatePicklistQueueItem(updatedQueueItem: IPicklistQueueItem) {
     console.log('addOrUpdatePickListQueueItem');
     console.log(updatedQueueItem);
-    let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+    let matchingPicklistQueueItemIndex = _.findIndex(this.unfilteredQueueItems, (x) => {
       return x.RobotPickGroupId != null && x.RobotPickGroupId === updatedQueueItem.RobotPickGroupId;
     });
 
     if (matchingPicklistQueueItemIndex < 0) {
-      matchingPicklistQueueItemIndex =  _.findIndex(this.picklistQueueItems, (x) => {
+      matchingPicklistQueueItemIndex =  _.findIndex(this.unfilteredQueueItems, (x) => {
         return x.RobotPickGroupId === null &&
         x.OrderId === updatedQueueItem.OrderId &&
         x.OrderGroupDestinationId === updatedQueueItem.OrderGroupDestinationId &&
@@ -342,21 +344,22 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
     if ((matchingPicklistQueueItemIndex < 0)) {
       console.log('PicklistItem Not Found. Adding Entry');
-      this.picklistQueueItems.push(new PicklistQueueItem(updatedQueueItem));
+      this.unfilteredQueueItems.push(new PicklistQueueItem(updatedQueueItem));
+      this.filterPicklistQueueItemsBySearchText(this.searchTextFilter);
       return;
     }
 
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemCount =  updatedQueueItem.ItemCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].Status =  updatedQueueItem.Status;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  updatedQueueItem.FilledBoxCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].BoxCount =  updatedQueueItem.BoxCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  updatedQueueItem.ItemPicklistLines;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  updatedQueueItem.IsPrintable;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  updatedQueueItem.RobotPickGroupId;
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].ItemCount =  updatedQueueItem.ItemCount;
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].Status =  updatedQueueItem.Status;
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  updatedQueueItem.FilledBoxCount;
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].BoxCount =  updatedQueueItem.BoxCount;
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  updatedQueueItem.ItemPicklistLines;
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  updatedQueueItem.IsPrintable;
+    this.unfilteredQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  updatedQueueItem.RobotPickGroupId;
+    this.filterPicklistQueueItemsBySearchText(this.searchTextFilter);
 
-    if (this.isContainedInSelected(this.picklistQueueItems[matchingPicklistQueueItemIndex])) {
-      this.addOrUpdateMultiSelectEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
+    if (this.isContainedInSelected(this.unfilteredQueueItems[matchingPicklistQueueItemIndex])) {
+      this.addOrUpdateMultiSelectEvent.emit([this.unfilteredQueueItems[matchingPicklistQueueItemIndex]]);
     }
   }
 
@@ -368,7 +371,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     'RobotPickGroupId: ' + removedQueueItem.RobotPickGroupId
     );
 
-    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+    const matchingItemIndex = _.findIndex(this.unfilteredQueueItems, (x) => {
       return x.OrderId === removedQueueItem.OrderId &&
       x.OrderGroupDestinationId === removedQueueItem.OrderGroupDestinationId &&
       x.DeviceLocationId === removedQueueItem.DeviceLocationId &&
@@ -382,35 +385,34 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   refreshDataOnScreen(updatedItemList: IPicklistQueueItem[]) {
     console.log('refreshDataOnScreen');
     console.log('Current List');
-    console.log(this.picklistQueueItems);
+    console.log(this.unfilteredQueueItems);
     console.log('New List for screen');
     console.log(updatedItemList);
     if (!updatedItemList) {
         console.log('No item in list clearing');
-        this.picklistQueueItems = [];
+        this.unfilteredQueueItems = [];
+        this.filterPicklistQueueItemsBySearchText(this.searchTextFilter);
         // Clear event
-        console.log(this.picklistQueueItems);
-        this.removeMultiSelectEvent.emit(this.picklistQueueItems);
+        console.log(this.unfilteredQueueItems);
+        this.removeMultiSelectEvent.emit(this.unfilteredQueueItems);
     } else {
         // Remove Items not in source list.
-        for (let i = this.picklistQueueItems.length - 1; i >= 0; i--) {
-          const itemFoundIndex = this.findNonExistingPicklistQueueItemIndex(this.picklistQueueItems[i], updatedItemList);
+        for (let i = this.unfilteredQueueItems.length - 1; i >= 0; i--) {
+          const itemFoundIndex = this.findNonExistingPicklistQueueItemIndex(this.unfilteredQueueItems[i], updatedItemList);
           if (itemFoundIndex === -1) {
-            console.log('Removing item in current picklist at index ' + i + '. Item:' + this.picklistQueueItems[i]);
+            console.log('Removing item in current picklist at index ' + i + '. Item:' + this.unfilteredQueueItems[i]);
             this.removePicklistQueueItemAtIndex(i);
           }
         }
 
         console.log('Removed Non matching Items.');
-        console.log(this.picklistQueueItems);
+        console.log(this.unfilteredQueueItems);
 
         // Add or Update
         updatedItemList.forEach((x) => {
             this.addOrUpdatePicklistQueueItem(x);
         });
     }
-
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   getOrderDate(picklistQueueItem: PicklistQueueItem): string {
@@ -423,9 +425,13 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    return this.picklistQueueItems.every((item) => {
+    return this.filteredQueueItems.every((item) => {
       return this.isContainedInSelected(item);
     });
+  }
+
+  private filterPicklistQueueItemsBySearchText(text: string) {
+    this.filteredQueueItems = this.searchPipe.transform(this.unfilteredQueueItems, text, this.searchFields);
   }
 
   private findNonExistingPicklistQueueItemIndex(itemToRemove: IPicklistQueueItem, sourceList: IPicklistQueueItem[]) {
@@ -447,23 +453,22 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     console.log('matchingItemIdex');
     console.log(matchingItemIndex);
     console.log('picklistqueue length : ');
-    console.log(this.picklistQueueItems.length);
-    if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
+    console.log(this.unfilteredQueueItems.length);
+    if (matchingItemIndex > -1 && matchingItemIndex < this.unfilteredQueueItems.length) {
       console.log('group exists removing it');
-      if (this.isContainedInSelected(this.picklistQueueItems[matchingItemIndex])) {
-        this.removeMultiSelectEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
+      if (this.isContainedInSelected(this.unfilteredQueueItems[matchingItemIndex])) {
+        this.removeMultiSelectEvent.emit([this.unfilteredQueueItems[matchingItemIndex]]);
       }
-      this.picklistQueueItems.splice(matchingItemIndex, 1);
-      console.log(this.picklistQueueItems);
+      this.unfilteredQueueItems.splice(matchingItemIndex, 1);
+      this.filterPicklistQueueItemsBySearchText(this.searchTextFilter);
+      console.log(this.unfilteredQueueItems);
     } else {
       console.log('Matching Index not found in queue to remove');
     }
-
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private clearSelectedItems(): void {
-    _.forEach(this.picklistQueueItems, (item) => {
+    _.forEach(this.filteredQueueItems, (item) => {
       this.selectedItems.delete(item);
     });
   }

@@ -14,7 +14,7 @@
     (searchTextFilterEvent)='onSearchTextFilter($event)'>
   </app-xr2-queue-details-header>
   <app-xr2-details-queue
-    [loadedPicklistQueueItems]="picklistsQueueItems | async"
+    [unfilteredQueueItems]="picklistsQueueItems | async"
     [searchTextFilter]="searchTextFilter"
     [multiSelectMode]="multiSelectMode"
     (failedEvent)="displayXr2QueueError()"

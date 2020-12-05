@@ -201,6 +201,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       }, error => {
         this.handlePrintQueueItemsLabelsError(picklistQueueItems);
       });
+    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   onAddOrUpdateMultiSelectEvent(picklistQueueItems: Array<PicklistQueueItem>) {
