@@ -145,7 +145,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         spyOn(component.childGroupingQueueComponent, 'removePicklistQueueGroup');
 
       component.ngOnInit();
-      component.childGroupingQueueComponent.picklistQueueGrouped = [];
+      component.childGroupingQueueComponent.filteredPicklistQueueGrouped = [];
       tick();
       expect(picklistQueueService.getGrouped).toHaveBeenCalled();
 
@@ -162,7 +162,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         spyOn(component.childGroupingQueueComponent, 'refreshDataOnScreen');
 
       component.ngOnInit();
-      component.childGroupingQueueComponent.picklistQueueGrouped = [];
+      component.childGroupingQueueComponent.filteredPicklistQueueGrouped = [];
       tick();
       expect(picklistQueueService.getGrouped).toHaveBeenCalled();
 
@@ -188,7 +188,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         spyOn(component.childGroupingQueueComponent, 'refreshDataOnScreen');
 
       component.ngOnInit();
-      component.childGroupingQueueComponent.picklistQueueGrouped = [];
+      component.childGroupingQueueComponent.filteredPicklistQueueGrouped = [];
       tick();
       expect(picklistQueueService.getGrouped).toHaveBeenCalled();
 
