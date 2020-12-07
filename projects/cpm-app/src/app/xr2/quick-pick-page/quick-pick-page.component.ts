@@ -427,6 +427,21 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     properties.primaryButtonText = okButtonText;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
+    properties.timeoutLength = this.popupTimeoutSeconds;
+    // timeout if another scan comes in:
+    this.searchElement.searchOutput$
+      .pipe(
+        switchMap((searchData: string) => {
+          return of(searchData);
+        })
+      )
+      .subscribe(data => {
+        this.searchTextFilter = of(data);
+        if (this.windowService.nativeWindow) {
+         // this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+         properties.timeoutLength = 0;
+        }
+      });
     this.dialogService.showOnce(properties);
   }
 
