@@ -50,9 +50,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Input()
   set filteredQueueItems(value: PicklistQueueItem[]) {
     this._filteredQueueItems = value;
-    if (this.windowService) {
-      this.windowService.dispatchResizeEvent();
-    }
+    this.resizeQueue();
   }
   get filteredQueueItems(): PicklistQueueItem[] {
     return this._filteredQueueItems;
@@ -97,19 +95,18 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     BAG: 'BAG',
     BAGS: 'BAGS',
   };
-
   translatables = [
-    'OF'
+    'OF',
+    'NOTRELEASED',
+    'PROCESSING',
   ];
   translations$: Observable<any>;
   ngUnsubscribe = new Subject();
-
-
-  @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
-
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('OrderId'),
     , nameof<PicklistQueueItem>('DeviceDescription')];
 
+  @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
+  @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
   @ViewChild('outputDeviceSingleSelect', { static: true })
   outputDeviceSingleSelect: OcSingleselectDropdownComponent;
 
@@ -142,7 +139,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   /* istanbul ignore next */
-  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem): Guid {
+  trackByPicklistQueueItemId(index: number, picklistQueueItem: PicklistQueueItem): Guid {
     if (!picklistQueueItem) {
       return null;
     }
@@ -236,8 +233,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   getOrderSplitDataString(picklistQueueItem: PicklistQueueItem): string {
     let dataString = '';
     let translatedLabel = '';
-    this.translateService.get('OF').subscribe((res: string) => {
-      translatedLabel = res;
+    this.translations$.subscribe(r => {
+      translatedLabel = r.OF;
     });
 
     dataString = `${picklistQueueItem.FilledBoxCount} ${translatedLabel} ${picklistQueueItem.BoxCount}`;
@@ -251,6 +248,21 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       label = picklistQueueItem.BoxCount > 1 ? this.translationMap.BAGS : this.translationMap.BAG;
     } else {
       label = picklistQueueItem.BoxCount > 1 ? this.translationMap.BINS : this.translationMap.BIN;
+    }
+
+    return label;
+  }
+
+  getStatusLabel(picklistQueueItem: PicklistQueueItem): string {
+    let label = '';
+    if (picklistQueueItem.Status === 1) {
+      this.translations$.subscribe(r => {
+        label = r.NOTRELEASED;
+      });
+    } else if (picklistQueueItem.Status === 2) {
+      this.translations$.subscribe(r => {
+        label = r.PROCESSING;
+      });
     }
 
     return label;
@@ -426,6 +438,14 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return this.filteredQueueItems.every((item) => {
       return this.isContainedInSelected(item);
     });
+  }
+
+  private resizeQueue() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
   }
 
   private filterPicklistQueueItemsBySearchText(text: string) {

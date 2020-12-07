@@ -170,7 +170,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         }, error => {
           this.handleSendQueueItemsToRobotError(picklistQueueItems);
         });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
@@ -183,7 +182,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       }, error => {
         this.handleRerouteQueueItemsError(picklistQueueItems);
       });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   printQueueItemsLabels(picklistQueueItems: Array<PicklistQueueItem>): void {
@@ -201,7 +199,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       }, error => {
         this.handlePrintQueueItemsLabelsError(picklistQueueItems);
       });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   onAddOrUpdateMultiSelectEvent(picklistQueueItems: Array<PicklistQueueItem>) {
@@ -240,7 +237,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     return this.xr2QueueMultiSelectService.actionDisableMap.get(this.outputDeviceAction.Reroute).size > 0
     || !this.multiSelectMode;
   }
-
 
   private configureEventHandlers(): void {
     if (!this.picklistQueueEventConnectionService) {

@@ -20,24 +20,26 @@
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col width-item"
-        [attr.data-width]="120"
+        ocGridColResize
+        [attr.data-width]="110"
         [columnPropertyName]="itemPropertyName"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="col width-status" data-width="160" >{{'STATUS' | translate}}</div>
+      <div class="col width-status" ocGridColResize data-width="170" >{{'STATUS' | translate}}</div>
       <div app-col-header-sortable class="col width-device"
+        ocGridColResize
         headerResourceKey="DEVICE"
         [attr.data-width]="250"
         [columnPropertyName]="deviceDescriptionPropertyName"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="col width-actions" data-width="250">{{'ACTIONS' | translate}}</div>
+      <div class="col width-actions" ocGridColResize data-width="250">{{'ACTIONS' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-      *ngFor="let picklistQueueItem of filteredQueueItems; trackBy: trackByPickListQueueItemId"
+      *ngFor="let picklistQueueItem of filteredQueueItems; trackBy: trackByPicklistQueueItemId"
       [ngStyle]="{'background-color': isContainedInSelected(picklistQueueItem) ? 'gainsboro': ''}">
         <div class="first" style="align-items: center;">
           <oc-checkbox valueField='enterprise'
@@ -59,18 +61,16 @@
             [label]="getItemPriorityLabel(picklistQueueItem) | translate">
           </app-cp-data-label>
         </div>
-        <div class="col width-status" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===1">
-          <span class="centered-item">{{'NOTRELEASED' | translate}}</span>
-        </div>
-        <div class="col width-status" [attr.data-title]="'STATUS' | translate" *ngIf="picklistQueueItem.Status===2">
-          <span class="centered-item">{{'PROCESSING' | translate}}</span>
-        </div>
-        <div class="col width-status" [attr.data-title]="'STATUS' | translate"
-          *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4">
-            <app-cp-data-label class="centered-item"
-              [data]="getOrderSplitDataString(picklistQueueItem)"
-              [label]="getOrderSplitDataLabel(picklistQueueItem) | translate">
-            </app-cp-data-label>
+        <div class="col width-status" [attr.data-title]="'STATUS' | translate">
+          <span *ngIf="picklistQueueItem.Status===1 || picklistQueueItem.Status===2"
+            class="centered-item">
+            {{getStatusLabel(picklistQueueItem)}}
+          </span>
+          <app-cp-data-label *ngIf="picklistQueueItem.Status===3 || picklistQueueItem.Status===4"
+            class="centered-item"
+            [data]="getOrderSplitDataString(picklistQueueItem)"
+            [label]="getOrderSplitDataLabel(picklistQueueItem) | translate">
+          </app-cp-data-label>
         </div>
         <div class="col width-device" [attr.data-title]="'DEVICE' | translate">
           <span [ngStyle]="{'font-size': '17px'}">{{picklistQueueItem.DeviceDescription}}</span>
