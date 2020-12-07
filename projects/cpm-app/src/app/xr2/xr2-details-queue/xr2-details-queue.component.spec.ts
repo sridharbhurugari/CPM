@@ -521,7 +521,7 @@ describe('Xr2DetailsQueueComponent', () => {
       queueItem.OrderId = '1';
       queueItem.RobotPickGroupId = mockGuid;
 
-      component.filteredQueueItems = [queueItem];
+      component.unfilteredQueueItems = [queueItem];
       component.selectedItems = new Set([queueItem]);
 
       component.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
@@ -530,7 +530,7 @@ describe('Xr2DetailsQueueComponent', () => {
       expect(multiSelectEvent).toHaveBeenCalled();
     });
     it('should clear list on null input for refresh', () => {
-      component.filteredQueueItems = [];
+      component.unfilteredQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -541,16 +541,16 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.filteredQueueItems.push(queueItem);
+        component.unfilteredQueueItems.push(queueItem);
       }
 
       component.refreshDataOnScreen(null);
 
-      expect(component.filteredQueueItems.length).toBe(0);
+      expect(component.unfilteredQueueItems.length).toBe(0);
     });
     it('should refresh data on screen and remove/update items', () => {
       const updatedList: PicklistQueueItem[] = [];
-      component.filteredQueueItems = [];
+      component.unfilteredQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -561,7 +561,7 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.filteredQueueItems.push(queueItem);
+        component.unfilteredQueueItems.push(queueItem);
         updatedList.push(new PicklistQueueItem(queueItem));
       }
 
@@ -572,14 +572,14 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.refreshDataOnScreen(updatedList);
 
-      expect(component.filteredQueueItems.length).toBe(updatedList.length);
+      expect(component.unfilteredQueueItems.length).toBe(updatedList.length);
 
       for (let i = 0; i < component.filteredQueueItems.length - 1; i++) {
         expect(component.filteredQueueItems[i].Status).toBe(updatedList[i].Status);
       }
     });
     it('should add picklist queue item to queue ', () => {
-      component.filteredQueueItems = [];
+      component.unfilteredQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -590,10 +590,10 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.filteredQueueItems.push(queueItem);
+        component.unfilteredQueueItems.push(queueItem);
       }
 
-      const previousLength = component.filteredQueueItems.length;
+      const previousLength = component.unfilteredQueueItems.length;
 
       const addedItem = new PicklistQueueItem(null);
       addedItem.DeviceLocationId = 4;
@@ -606,11 +606,11 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.addOrUpdatePicklistQueueItem(addedItem);
 
-      expect(component.filteredQueueItems.length).toBe(previousLength + 1);
+      expect(component.unfilteredQueueItems.length).toBe(previousLength + 1);
     });
     it('should update picklist queue item and send event to update multi select', () => {
       const multiSelectEvent = spyOn(component.addOrUpdateMultiSelectEvent, 'emit');
-      component.filteredQueueItems = [];
+      component.unfilteredQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -621,12 +621,12 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.filteredQueueItems.push(queueItem);
+        component.unfilteredQueueItems.push(queueItem);
       }
 
-      const previousLength = component.filteredQueueItems.length;
-      const lastIndex = component.filteredQueueItems.length - 1;
-      const lastItem = component.filteredQueueItems[lastIndex];
+      const previousLength = component.unfilteredQueueItems.length;
+      const lastIndex = component.unfilteredQueueItems.length - 1;
+      const lastItem = component.unfilteredQueueItems[lastIndex];
       const updatedItem = lastItem;
       updatedItem.Status = 4;
       component.selectedItems = new Set([updatedItem]);
@@ -634,8 +634,8 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.addOrUpdatePicklistQueueItem(updatedItem);
 
-      expect(component.filteredQueueItems.length).toBe(previousLength);
-      expect(component.filteredQueueItems[lastIndex].Status).toBe(updatedItem.Status);
+      expect(component.unfilteredQueueItems.length).toBe(previousLength);
+      expect(component.unfilteredQueueItems[lastIndex].Status).toBe(updatedItem.Status);
       expect(multiSelectEvent).toHaveBeenCalled();
     });
   });

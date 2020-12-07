@@ -76,8 +76,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   readonly destinationPropertyName = nameof<PicklistQueueItem>('Destination');
   readonly itemPropertyName = nameof<PicklistQueueItem>('ItemCount');
   readonly deviceDescriptionPropertyName = nameof<PicklistQueueItem>('DeviceDescription');
-
-
   firstTime = true;
   checkboxToggleAll: string = CheckboxValues.ToggleAll;
   currentSortPropertyName: string;
