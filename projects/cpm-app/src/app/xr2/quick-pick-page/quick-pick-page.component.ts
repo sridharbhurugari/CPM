@@ -9,7 +9,8 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { TranslateService } from '@ngx-translate/core';
 import {
   SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
-  PopupDialogProperties
+  PopupDialogProperties,
+  PopupDialogComponent
 } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
@@ -48,6 +49,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   popupTimeoutSeconds = 60;
+  lastDialog: PopupDialogComponent;
   inputLevelScan: string;
   nonBarcodeKeyboardInput = '';
   nonBarcodeInputFocus = false;
@@ -182,10 +184,9 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   }
 
  closeWarningPopup() {
-  const id = 'Role-Status-Warning';
-  const isDialogUp = this.dialogService.dialogs[id];
-  if ( isDialogUp !== undefined ) {
-   this.dialogService.dismiss(id);
+   if (this.lastDialog)
+   {
+    this.lastDialog.onCloseClicked();
    }
   }
 
@@ -423,7 +424,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     properties.primaryButtonText = okButtonText;
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+    this.lastDialog = this.dialogService.showOnce(properties);
   }
 
   /* istanbul ignore next */
