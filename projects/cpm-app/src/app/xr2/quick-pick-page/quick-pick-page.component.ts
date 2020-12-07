@@ -177,7 +177,16 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   }
 
   onQuickPickActive(isActive: boolean) {
-    this.robotSelectionDisabled = isActive;
+  this.closeWarningPopup();
+  this.robotSelectionDisabled = isActive;
+  }
+
+ closeWarningPopup() {
+  const id = 'Role-Status-Warning';
+  const isDialogUp = this.dialogService.dialogs[id];
+  if ( isDialogUp !== undefined ) {
+   this.dialogService.dismiss(id);
+   }
   }
 
   /* istanbul ignore next */
@@ -251,9 +260,9 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Info;
       properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      const component = this.dialogService.showOnce(properties);
+      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
       return merge(primaryClick$, secondaryClick$);
     }));
   }
@@ -263,65 +272,65 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     switch (error) {
       case QuickPickError.ScanNotFound:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_BARCODE_HEADER'];
-          const bodyText = customBody ? customBody : r['INVALID_SCAN_BARCODE'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.INVALID_SCAN_BARCODE_HEADER;
+          const bodyText = customBody ? customBody : r.INVALID_SCAN_BARCODE;
+          const okText = r.OK;
           this.displayWarningDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.ScanUnavailable:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT;
+          const okText = r.OK;
           this.displayWarningDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.InActive:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT;
+          const okText = r.OK;
           this.displayWarningDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.PrintFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['PRINTFAILED_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['PRINTFAILED_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.PRINTFAILED_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.PRINTFAILED_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.UnlockFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOUNLOCKDOOR_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOUNLOCKDOOR_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.FAILEDTOUNLOCKDOOR_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.FAILEDTOUNLOCKDOOR_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.RerouteFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOREROUTE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOREROUTE_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.FAILEDTOREROUTE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.FAILEDTOREROUTE_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.HardwareFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['XR2_QUICK_PICK_ERROR_HEADER'];
-          const bodyText = customBody ? customBody : r['XR2_QUICK_PICK_ERROR_BODY'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.XR2_QUICK_PICK_ERROR_HEADER;
+          const bodyText = customBody ? customBody : r.XR2_QUICK_PICK_ERROR_BODY;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.FailedToSave:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOSAVE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOSAVE_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.FAILEDTOSAVE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.FAILEDTOSAVE_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
@@ -427,21 +436,6 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     properties.primaryButtonText = okButtonText;
     properties.dialogDisplayType = PopupDialogType.Error;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    properties.timeoutLength = this.popupTimeoutSeconds;
-    // timeout if another scan comes in:
-    this.searchElement.searchOutput$
-      .pipe(
-        switchMap((searchData: string) => {
-          return of(searchData);
-        })
-      )
-      .subscribe(data => {
-        this.searchTextFilter = of(data);
-        if (this.windowService.nativeWindow) {
-         // this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-         properties.timeoutLength = 0;
-        }
-      });
     this.dialogService.showOnce(properties);
   }
 
