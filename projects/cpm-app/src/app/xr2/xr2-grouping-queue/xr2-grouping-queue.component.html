@@ -1,13 +1,14 @@
 <ng-container class="ocactiondetails">
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
+      <!-- 1280 px total-->
+      <!-- 82 px for first -->
       <div app-col-header-sortable class="first" data-colwrap="true"
         [columnPropertyName]="sequenceOrderPropertyName" headerResourceKey=""
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <!-- 1280 px total-->
-      <div app-col-header-sortable class="col" ocGridColResize data-width="480" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="398" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
@@ -31,7 +32,8 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-       *ngFor="let picklistQueueGroup of this.filteredPicklistQueueGrouped | searchPipe:searchTextFilter:searchFields">
+       *ngFor="let picklistQueueGroup of this.filteredPicklistQueueGrouped;
+       trackBy: trackByPicklistQueueItemId">
         <div class="first" style="align-items: center;">
           <div class="firstcolumncolorblock" [style.background-color]="picklistQueueGroup.PriorityCodeColor"></div>
         </div>
@@ -44,7 +46,7 @@
             ></app-cp-data-label>
           </div>
         </div>
-        <div class="col width-type" [attr.data-title]="'NEW' | translate">
+        <div class="col width-new" [attr.data-title]="'NEW' | translate">
           <span class="centered-content">
             <app-cp-data-label
             [data]="picklistQueueGroup.NewCount"
@@ -52,7 +54,7 @@
             ></app-cp-data-label>
           </span>
         </div>
-        <div class="col width-type" [attr.data-title]="'RELEASED' | translate">
+        <div class="col width-released" [attr.data-title]="'RELEASED' | translate">
           <span class="centered-content">
             <app-cp-data-label
             [data]="picklistQueueGroup.ReleasedCount"
@@ -60,7 +62,7 @@
             ></app-cp-data-label>
           </span>
         </div>
-        <div class="col width-type" [attr.data-title]="'DEVICE' | translate">
+        <div class="col width-device" [attr.data-title]="'DEVICE' | translate">
           <span [ngStyle]="{'font-size': '18px'}">{{picklistQueueGroup.DeviceDescription}}</span>
           <oc-singleselect
             [popupDirection]="'AUTO'"
@@ -69,7 +71,7 @@
             (selectionChanged)="onOutputDeviceSelectionChanged($event, picklistQueueGroup)">
           </oc-singleselect>
         </div>
-        <div class="col width-type" [attr.data-title]="'ACTIONS' | translate">
+        <div class="col width-actions" [attr.data-title]="'ACTIONS' | translate">
           <div class="btn-group">
             <app-cp-clickable-icon
               [width]="35"

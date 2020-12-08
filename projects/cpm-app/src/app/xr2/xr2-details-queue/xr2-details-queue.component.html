@@ -5,7 +5,7 @@
     <ng-container class="ocgridheader">
       <div>
           <oc-checkbox
-            [selected]="filteredQueueItems && filteredQueueItems.length > 0 && isEveryItemSelected(this.filteredQueueItems)"
+            [selected]="filteredPicklistQueueItems && filteredPicklistQueueItems.length > 0 && isEveryItemSelected(this.filteredPicklistQueueItems)"
             [noLabel]="true"
             [valueField]="checkboxToggleAll"
             (selection)="onSelectAllCheckBox($event)">
@@ -39,7 +39,7 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-      *ngFor="let picklistQueueItem of filteredQueueItems; trackBy: trackByPicklistQueueItemId"
+      *ngFor="let picklistQueueItem of filteredPicklistQueueItems; trackBy: trackByPicklistQueueItemId"
       [ngStyle]="{'background-color': isContainedInSelected(picklistQueueItem) ? 'gainsboro': ''}">
         <div class="first" style="align-items: center;">
           <oc-checkbox valueField='enterprise'
