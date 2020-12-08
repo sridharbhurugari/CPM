@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { Many } from 'lodash';
+import { filter, Many } from 'lodash';
 import { NavigationExtras, Router } from '@angular/router';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
@@ -31,32 +31,29 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   @Input()
-  set loadedPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
-    this._loadedPicklistQueueGrouped = value;
-    this.picklistQueueGrouped = value;
-    if (value && this.selectedDeviceInformation && this.selectedDeviceInformation.DeviceId !== 0) {
-      this.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
-    }
+  set unfilteredPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
+    this._unfilteredPicklistQueueGrouped = value;
+    this.filterPicklistQueueGroupedByDeviceId();
   }
 
-  get loadedPicklistQueueGrouped(): PicklistQueueGrouped[] {
-    return this._loadedPicklistQueueGrouped;
+  get unfilteredPicklistQueueGrouped(): PicklistQueueGrouped[] {
+    return this._unfilteredPicklistQueueGrouped;
   }
 
   @Input()
-  set picklistQueueGrouped(value: PicklistQueueGrouped[]) {
-    this._picklistQueueGrouped = value;
+  set filteredPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
+    this._filteredPicklistQueueGrouped = value;
     if (this.windowService.nativeWindow) {
       this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
-  get picklistQueueGrouped(): PicklistQueueGrouped[] {
-    return this._picklistQueueGrouped;
+  get filteredPicklistQueueGrouped(): PicklistQueueGrouped[] {
+    return this._filteredPicklistQueueGrouped;
   }
 
   @Input()
   set searchTextFilter(value: string) {
-    if (!this.picklistQueueGrouped) {
+    if (!this.filteredPicklistQueueGrouped) {
       return;
     }
     this._searchTextFilter = value;
@@ -73,8 +70,8 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return this._selectedDeviceInformation;
   }
 
-  private _loadedPicklistQueueGrouped: PicklistQueueGrouped[];
-  private _picklistQueueGrouped: PicklistQueueGrouped[];
+  private _unfilteredPicklistQueueGrouped: PicklistQueueGrouped[];
+  private _filteredPicklistQueueGrouped: PicklistQueueGrouped[];
 
   translationMap = {
     RELEASE: 'RELEASE',
@@ -123,7 +120,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   ngOnInit() {
     this.setTranslations();
     this.loadSavedConfigurations();
-    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
   }
 
   onReleaseClick(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -187,7 +183,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.picklistQueueGrouped = this.sort(this.picklistQueueGrouped, event.SortDirection);
+    this.filteredPicklistQueueGrouped = this.sort(this.filteredPicklistQueueGrouped, event.SortDirection);
     this.sortEvent.emit(event);
   }
 
@@ -221,88 +217,104 @@ export class Xr2GroupingQueueComponent implements OnInit {
     return label;
   }
 
-  filterPicklistQueueGroupedByDeviceId(deviceId: number) {
-    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === deviceId);
-    if (this.picklistQueueGrouped) {
-      this.loadSavedConfigurations();
-    }
-  }
-
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
     console.log('updatePickListQueueGroupedGrouping');
     console.log(picklistGrouped);
-    const matchingGrouped = _.findIndex(this.picklistQueueGrouped, (x) => {
+    const matchingGrouped = _.findIndex(this.unfilteredPicklistQueueGrouped, (x) => {
       return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
      });
     console.log(matchingGrouped);
     if (matchingGrouped < 0) {
       console.log('PickListGrouped Not Found. Adding Entry');
-      this.picklistQueueGrouped.push(new PicklistQueueGrouped(picklistGrouped));
+      this.unfilteredPicklistQueueGrouped.push(new PicklistQueueGrouped(picklistGrouped));
      } else {
        console.log('match found updating record');
        const newPickListQueueGrouped = new PicklistQueueGrouped(picklistGrouped);
        if (!_.isEqual(
-         this.picklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList,
+         this.unfilteredPicklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList,
          newPickListQueueGrouped.AvailableOutputDeviceList )) {
           console.log('available output device list changed updating.');
-          this.picklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList =
+          this.unfilteredPicklistQueueGrouped[matchingGrouped].AvailableOutputDeviceList =
             newPickListQueueGrouped.AvailableOutputDeviceList;
        }
-       this.picklistQueueGrouped[matchingGrouped].NewCount = picklistGrouped.NewCount;
-       this.picklistQueueGrouped[matchingGrouped].ReleasedCount = picklistGrouped.ReleasedCount;
-       this.picklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
+       this.unfilteredPicklistQueueGrouped[matchingGrouped].NewCount = picklistGrouped.NewCount;
+       this.unfilteredPicklistQueueGrouped[matchingGrouped].ReleasedCount = picklistGrouped.ReleasedCount;
+       this.unfilteredPicklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
      }
+    this.filterPicklistQueueGroupedByDeviceId();
   }
 
   removePicklistQueueGroup(priorityCode: string, deviceId: number ) {
     console.log('looking to remove group ' + priorityCode + ' and deviceId : ' + deviceId);
-    const matchingGroupedIndex = _.findIndex(this.picklistQueueGrouped, (x) => {
+    const matchingGroupedIndex = _.findIndex(this.unfilteredPicklistQueueGrouped, (x) => {
       return x.PriorityCode === priorityCode && x.DeviceId === deviceId;
      });
     if (matchingGroupedIndex > -1) {
       console.log('group exists removing it');
-      this.picklistQueueGrouped.splice(matchingGroupedIndex, 1);
-      console.log(this.picklistQueueGrouped);
+      this.unfilteredPicklistQueueGrouped.splice(matchingGroupedIndex, 1);
+      console.log(this.unfilteredPicklistQueueGrouped);
     }
+    this.filterPicklistQueueGroupedByDeviceId();
   }
 
   refreshDataOnScreen(picklistGroupedList: IPicklistQueueGrouped[]) {
       console.log('refreshDataOnScreen');
-      console.log('Current List');
-      console.log(this.picklistQueueGrouped);
+      console.log('Current List filtered');
+      console.log(this.filteredPicklistQueueGrouped);
+      console.log('Current List unfiltered');
+      console.log(this.unfilteredPicklistQueueGrouped);
       console.log('New List for screen');
       console.log(picklistGroupedList);
       if (!picklistGroupedList) {
           console.log('No item in list clearing');
-          this.picklistQueueGrouped = [];
-          console.log(this.picklistQueueGrouped);
+          this.unfilteredPicklistQueueGrouped = [];
+          console.log(this.unfilteredPicklistQueueGrouped);
       } else {
           // Remove Items not in source list.
-          for (let i = this.picklistQueueGrouped.length - 1; i >= 0; i--) {
+          for (let i = this.unfilteredPicklistQueueGrouped.length - 1; i >= 0; i--) {
             const resIndex = _.findIndex(picklistGroupedList,
-               (y) => this.picklistQueueGrouped[i].PriorityCode === y.PriorityCode
-                &&  this.picklistQueueGrouped[i].DeviceId === y.DeviceId);
+               (y) => this.unfilteredPicklistQueueGrouped[i].PriorityCode === y.PriorityCode
+                &&  this.unfilteredPicklistQueueGrouped[i].DeviceId === y.DeviceId);
             if (resIndex === -1) {
                 console.log('item below was not found adding to list to remove.');
-                this.picklistQueueGrouped.splice(i, 1);
+                this.unfilteredPicklistQueueGrouped.splice(i, 1);
             }
           }
 
           console.log('Removed Non matching Items.');
-          console.log(this.picklistQueueGrouped);
+          console.log(this.unfilteredPicklistQueueGrouped);
 
           // Add or Update
           picklistGroupedList.forEach((x) => {
               this.updatePickListQueueGroupedGrouping(x);
           });
       }
+      this.filterPicklistQueueGroupedByDeviceId();
   }
 
-  loadAllPicklistQueueGrouped() {
-    this.picklistQueueGrouped = this.loadedPicklistQueueGrouped;
-    if (this.picklistQueueGrouped){
+  loadAllPicklistQueueGrouped(selectedDevice: SelectableDeviceInfo) {
+    this.selectedDeviceInformation = selectedDevice;
+    this.filterPicklistQueueGroupedByDeviceId();
+  }
+
+  private filterPicklistQueueGroupedByDeviceId() {
+    console.log('filterPicklistQueueGroupedByDeviceId');
+    if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId ||
+        this.selectedDeviceInformation.DeviceId === 0 || !this.unfilteredPicklistQueueGrouped) {
+      console.log('filterPicklistQueueGroupedByDeviceId - No filter/No Data');
+      this.filteredPicklistQueueGrouped = this.unfilteredPicklistQueueGrouped;
+    } else {
+      console.log('filter by device id : ');
+      console.log(this.selectedDeviceInformation.DeviceId);
+      this.filteredPicklistQueueGrouped =
+          this.unfilteredPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === this.selectedDeviceInformation.DeviceId);
+      console.log(this.unfilteredPicklistQueueGrouped);
+    }
+
+    if (this.filteredPicklistQueueGrouped) {
       this.loadSavedConfigurations();
     }
+    console.log('filterPicklistQueueGroupedByDeviceId exiting');
   }
 
   private loadSavedConfigurations() {
@@ -310,7 +322,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
       return;
     }
 
-    if (this.savedPageConfiguration.colHeaderSort && this.picklistQueueGrouped) {
+    if (this.savedPageConfiguration.colHeaderSort && this.filteredPicklistQueueGrouped) {
       this.columnSelected(this.savedPageConfiguration.colHeaderSort);
     }
   }
