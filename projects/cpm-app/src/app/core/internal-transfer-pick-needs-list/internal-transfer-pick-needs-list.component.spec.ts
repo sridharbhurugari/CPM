@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CheckboxModule, GridModule, InputsModule } from '@omnicell/webcorecomponents';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
+import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
@@ -19,6 +20,9 @@ describe('InternalTransferPickNeedsListComponent', () => {
         InternalTransferPickNeedsListComponent,
         MockColHeaderSortable,
         MockTranslatePipe,
+      ],
+      providers: [
+        { provide: QuantityTrackingService, useValue: { quantity : 5, complete: () => { } } },
       ],
       imports: [ 
         CheckboxModule,

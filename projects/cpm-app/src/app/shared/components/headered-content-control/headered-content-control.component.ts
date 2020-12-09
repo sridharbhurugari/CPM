@@ -10,8 +10,6 @@ import { IBoundingBox } from '../../model/i-bounding-box';
   styleUrls: ['./headered-content-control.component.scss']
 })
 export class HeaderedContentControlComponent implements AfterViewInit {
-  private _showIcon: boolean;
-
   @Input()
   headerResourceKey: string;
 
@@ -26,18 +24,6 @@ export class HeaderedContentControlComponent implements AfterViewInit {
 
   @Input()
   contentBackgroundColor: string;
-
-  @Input()
-  set showIcon(value: boolean) {
-    this._showIcon = value;
-    if (this._showIcon) {
-      this.resetIconLocation();
-    }
-  }
-
-  get showIcon(): boolean {
-    return this._showIcon;
-  }
 
   @ViewChild('header', { static: true })
   headerElement: ElementRef;
@@ -67,6 +53,7 @@ export class HeaderedContentControlComponent implements AfterViewInit {
       this.renderer.setStyle(this.contentElement.nativeElement, 'border-radius', '5px');
       this.renderer.setStyle(this.contentElement.nativeElement, 'margin', '10px');
     }
+    this.resetIconLocation();
   }
 
   /* istanbul ignore next */

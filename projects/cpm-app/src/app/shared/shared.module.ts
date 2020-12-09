@@ -28,6 +28,8 @@ import { ScalableTextComponent } from './components/scalable-text/scalable-text.
 import { HorizontalTabsComponent } from './components/horizontal-tabs/horizontal-tabs.component';
 import { TabContentsComponent } from './components/tab-contents/tab-contents.component';
 import { ValidationIconComponent } from './components/validation-icon/validation-icon.component';
+import { ValidationContainerComponent } from './components/validation-container/validation-container.component';
+import { SafetyStockProductComponent } from './components/safety-stock-product/safety-stock-product.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { ValidationIconComponent } from './components/validation-icon/validation
     HorizontalTabsComponent,
     TabContentsComponent,
     ValidationIconComponent,
+    ValidationContainerComponent,
+    SafetyStockProductComponent,
   ],
   imports: [
     CommonModule,
