@@ -32,7 +32,7 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
-       *ngFor="let picklistQueueGroup of this.filteredPicklistQueueGrouped;
+       *ngFor="let picklistQueueGroup of this.filteredPicklistQueueGrouped | searchPipe:searchTextFilter:searchFields;
        trackBy: trackByPicklistQueueItemId">
         <div class="first" style="align-items: center;">
           <div class="firstcolumncolorblock" [style.background-color]="picklistQueueGroup.PriorityCodeColor"></div>

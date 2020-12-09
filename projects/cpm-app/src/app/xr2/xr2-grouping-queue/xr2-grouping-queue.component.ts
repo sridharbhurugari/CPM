@@ -58,7 +58,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
       return;
     }
     this._searchTextFilter = value;
-    this.applyGroupQueueFilters();
   }
   get searchTextFilter(): string {
     return this._searchTextFilter;
@@ -313,19 +312,11 @@ export class Xr2GroupingQueueComponent implements OnInit {
     if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId ||
       this.selectedDeviceInformation.DeviceId === 0 || !this.unfilteredPicklistQueueGrouped) {
         this.filteredPicklistQueueGrouped = this.unfilteredPicklistQueueGrouped;
-        console.log('filterPicklistQueueGroupedByDeviceId - No filter/No Data for device ID');
-        this.filteredPicklistQueueGrouped = this.filterBySearchText(this.searchTextFilter, this.unfilteredPicklistQueueGrouped);
+        console.log('filterPicklistQueueGroupedByDeviceId - No filter/No Data');
         return;
     }
 
-    const deviceFilteredQueueItems = this.filterByDevice(this.selectedDeviceInformation.DeviceId, this.unfilteredPicklistQueueGrouped);
-    this.filteredPicklistQueueGrouped = this.filterBySearchText(this.searchTextFilter, deviceFilteredQueueItems);
-  }
-
-  private filterBySearchText(text: string, unfilteredArray: PicklistQueueGrouped[]) {
-    console.log('filter by search text : ');
-    console.log(this.searchTextFilter);
-    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
+    this.filteredPicklistQueueGrouped = this.filterByDevice(this.selectedDeviceInformation.DeviceId, this.unfilteredPicklistQueueGrouped);
   }
 
   private filterByDevice(deviceId: number, unfilteredArray: PicklistQueueGrouped[]) {
