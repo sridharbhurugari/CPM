@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
-import { forkJoin, merge, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { forkJoin, merge, Observable, Subject } from 'rxjs';
+import { filter, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { CoreEventConnectionService } from '../../../api-core/services/core-event-connection.service';
 import { DeviceLocationAccessResult } from '../../enums/device-location-access-result';
 import { IItemHeaderInfo } from '../../model/i-item-header-info';
-import { SimpleDialogService } from '../../services/dialogs/simple-dialog.service';
+import { ISafetyStockProductData } from '../../model/i-safety-stock-product-data';
 import { SpinnerPopupComponent } from '../spinner-popup/spinner-popup.component';
 
 @Component({
@@ -13,12 +14,31 @@ import { SpinnerPopupComponent } from '../spinner-popup/spinner-popup.component'
   templateUrl: './guided-item-header.component.html',
   styleUrls: ['./guided-item-header.component.scss']
 })
-export class GuidedItemHeaderComponent implements OnInit {
+export class GuidedItemHeaderComponent {
   private _leaseDeniedTitle$: Observable<string>;
   private _okButtonText$: Observable<any>;
+  private _itemHeaderInfo: IItemHeaderInfo;
+  safetyStockProductData: ISafetyStockProductData;
 
   @Input()
-  itemHeaderInfo: IItemHeaderInfo;
+  set itemHeaderInfo(value: IItemHeaderInfo) {
+    this._itemHeaderInfo = value;
+    if (this._itemHeaderInfo) {
+      this.safetyStockProductData = {
+        itemId: this._itemHeaderInfo.ItemId,
+        dispenseIds: [],
+        requireProductScan: this._itemHeaderInfo.RequireItemProductScan,
+        requireDispenseScan: this._itemHeaderInfo.RequireDispenseScan,
+        requireBinScan: this._itemHeaderInfo.RequireBinScan,
+      };
+    } else {
+      this.safetyStockProductData = null;
+    }
+  }
+
+  get itemHeaderInfo(): IItemHeaderInfo {
+    return this._itemHeaderInfo;
+  }
 
   @Output()
   leaseDenied: EventEmitter<any> = new EventEmitter();
@@ -29,16 +49,27 @@ export class GuidedItemHeaderComponent implements OnInit {
 
   deviceLocationAccessBusy: boolean;
 
+  ngUnsubscribe = new Subject();
+
   constructor(
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
+    private coreEventConnectionService: CoreEventConnectionService,
   ) {
     this.leaseBusyTitle$ = this.translateService.get('LEASE_BUSY_TITLE');
     this._leaseDeniedTitle$ = this.translateService.get('DEVICE_ACCESS');
     this._okButtonText$ = this.translateService.get("OK");
+    this.coreEventConnectionService.carouselReadySubject
+      .pipe(filter(x => this.itemHeaderInfo && this.itemHeaderInfo.DeviceId == x.DeviceId), takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.carouselFaulted = false);
+    this.coreEventConnectionService.carouselFaultedSubject
+      .pipe(filter(x => this.itemHeaderInfo && this.itemHeaderInfo.DeviceId == x.DeviceId), takeUntil(this.ngUnsubscribe))
+      .subscribe(x => this.carouselFaulted = true);
   }
 
-  ngOnInit() {
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   handleDeviceLocationAccessResult(deviceLocationAccessResult: DeviceLocationAccessResult) {

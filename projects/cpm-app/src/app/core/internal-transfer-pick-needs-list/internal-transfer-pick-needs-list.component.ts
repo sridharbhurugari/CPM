@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
@@ -6,6 +6,7 @@ import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-chan
 import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
 import { nameof } from '../../shared/functions/nameof';
 import { sumValues } from '../../shared/functions/sumValues';
+import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
 import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 import { InternalTransferPick } from '../model/internal-transfer-pick';
 
@@ -21,6 +22,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
   set itemNeeds(value: InternalTransferPick[]) {
     this._itemNeeds = value;
     this.areAllValuesSelected = true;
+    this.quantityTrackingService.complete();
     this.pickQtyChanged();
   }
 
@@ -29,7 +31,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
   }
 
   @Output()
-  pickTotalChanged: EventEmitter<IInternalTransferPackSizePick[]> = new EventEmitter<IInternalTransferPackSizePick[]>();
+  pickTotalChanged: EventEmitter<IInternalTransferPackSizePick[]> = new EventEmitter<IInternalTransferPackSizePick[]>(true);
 
   @ViewChild('headerCheckContainer', {
     static: true
@@ -46,7 +48,9 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
   readonly pendingPickPropertyName: string = nameof<InternalTransferPick>('PendingDevicePickQuantity');
   readonly quantityToPick: string = nameof<InternalTransferPick>('QuantityToPick');
 
-  constructor() { }
+  constructor(
+    private quantityTrackingService: QuantityTrackingService,
+  ) { }
 
   ngAfterViewInit(): void {
     fixCheckAllNoneClass(this.headerCheckContainer);
@@ -57,6 +61,7 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       return;
     }
 
+    this.quantityTrackingService.quantity = sumValues(this.itemNeeds, x => x.QuantityToPick);
     this.pickTotalChanged.emit(this.itemNeeds);
   }
 
@@ -70,6 +75,6 @@ export class InternalTransferPickNeedsListComponent implements AfterViewInit {
       toggledNeed.IsSelected = selected;
     }
 
-    this.pickTotalChanged.emit(this.itemNeeds);
+    this.pickQtyChanged();
   }
 }
