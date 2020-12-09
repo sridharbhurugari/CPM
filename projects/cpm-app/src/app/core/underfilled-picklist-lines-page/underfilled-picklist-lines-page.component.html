@@ -27,7 +27,7 @@
               (click)="print()">
              </oc-button-action>
 
-             <oc-button-action *ngIf="false"
+             <oc-button-action
               [disabled]="!getRerouteButtonEnabled()"
               [buttonIcon]= "requestStatus == 'reroute' ? 'spin' : 'reroute'"
               [buttonText]="'REROUTE' | translate"
