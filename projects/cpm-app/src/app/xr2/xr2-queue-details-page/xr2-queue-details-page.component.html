@@ -1,12 +1,9 @@
 <ng-container>
   <app-xr2-queue-button-panel class="button-panel"
     [ngClass]="{'multi-select-mode': multiSelectMode}"
-    [releaseDisabled]="this.actionPicklistItemsDisableMap.get(outputDeviceAction.Release).size > 0
-                      || !multiSelectMode"
-    [printDisabled]="this.actionPicklistItemsDisableMap.get(outputDeviceAction.Print).size > 0
-                    || !multiSelectMode"
-    [rerouteDisabled]="this.actionPicklistItemsDisableMap.get(outputDeviceAction.Reroute).size > 0
-                      || !multiSelectMode"
+    [releaseDisabled]="getReleaseDisableState()"
+    [printDisabled]="getPrintDisableState()"
+    [rerouteDisabled]="getRerouteDisableState()"
     (rerouteEvent)="processReroute(selectedItems)"
     (releaseEvent)="processRelease(selectedItems)"
     (printEvent)="processPrint(selectedItems)">
@@ -22,8 +19,8 @@
     [multiSelectMode]="multiSelectMode"
     (failedEvent)="displayXr2QueueError()"
     (selectionChangedEvent)="onGridSelectionChanged($event)"
-    (picklistQueueItemAddorUpdatedEvent)="onPicklistQueueItemsAddorUpdated($event)"
-    (picklistQueueItemRemovedEvent)="onPicklistQueueItemsRemoved($event)"
+    (addOrUpdateMultiSelectEvent)="onAddOrUpdateMultiSelectEvent($event)"
+    (removeMultiSelectEvent)="onRemoveMultiSelectEvent($event)"
     (releaseEvent)="processRelease($event)"
     (rerouteEvent)="processReroute($event)"
     (printEvent)="processPrint($event)">
