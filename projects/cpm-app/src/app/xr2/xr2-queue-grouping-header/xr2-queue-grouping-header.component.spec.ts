@@ -126,8 +126,6 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
 
     it('Should clear search on device change and load new device', () => {
       const searchClearMock = spyOn(component.searchElement, 'clearSearch');
-      const searchSendDataMock = spyOn(component.searchElement, 'sendSearchData');
-      const searchEventMock = spyOn(component.searchTextFilterEvent, 'emit');
       const mockEvent = {value: '1'};
       const selectedDevice = {
         DeviceId: 1,
