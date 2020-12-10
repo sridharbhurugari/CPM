@@ -122,10 +122,6 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     this.configureSearchHandler();
   }
 
-  private onSearchDataEvent(data: string) {
-    this.searchTextFilterEvent.emit(data);
-  }
-
   private configureSearchHandler() {
     this.searchElement.searchOutput$
       .pipe(
@@ -134,7 +130,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe(data => {
-        this.onSearchDataEvent(data);
+        this.searchTextFilterEvent.emit(data);
       });
   }
 
@@ -147,7 +143,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
 
     if (savedSearchFilter) {
       this.searchElement.sendSearchData(savedSearchFilter);
-      this.onSearchDataEvent(savedSearchFilter);
+      this.searchTextFilterEvent.emit(savedSearchFilter);
     }
   }
 
