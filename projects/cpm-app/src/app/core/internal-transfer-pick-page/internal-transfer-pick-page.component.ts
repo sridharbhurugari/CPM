@@ -25,6 +25,7 @@ import { ICompletePickData } from '../model/i-completed-pick-data';
 import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
 import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
 import { DeviceTypeId } from '../../shared/constants/device-type-id';
+import { parseBool } from '../../shared/functions/parseBool';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -70,7 +71,7 @@ export class InternalTransferPickPageComponent {
     private carouselLocationAccessService: CarouselLocationAccessService,
   ) {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
-    const allDevices = activatedRoute.snapshot.queryParamMap.get('allDevices');
+    const allDevices = parseBool(activatedRoute.snapshot.queryParamMap.get('allDevices'));
     if (allDevices) {
       this.picklistLineIds$ = picklistLineIdsService.getLineIds(this.orderId).pipe(shareReplay(1));
     } else {
