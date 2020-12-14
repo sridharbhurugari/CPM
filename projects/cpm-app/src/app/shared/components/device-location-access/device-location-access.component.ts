@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output, Optional } from '@angular/core';
 import { DeviceLocationAccessService } from '../../services/devices/device-location-access.service';
 import { IDeviceLocationAccessComponentData } from '../../model/i-device-location-access-component-data';
 import { DeviceLocationTypeId } from '../../constants/device-location-type-id';
@@ -7,7 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { DeviceLeaseService } from '../../services/devices/device-lease.service';
 import { PopupDialogService, PopupDialogProperties, PopupDialogType, PopupDialogComponent } from '@omnicell/webcorecomponents';
 import { Observable, forkJoin, merge } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, flatMap, take } from 'rxjs/operators';
+import { QuantityTrackingService } from '../../services/quantity-tracking.service';
+import { CarouselLocationAccessService } from '../../services/devices/carousel-location-access.service';
 
 @Component({
   selector: 'app-device-location-access',
@@ -52,6 +54,11 @@ export class DeviceLocationAccessComponent {
     this._deviceLocationAccessData = value;
     this.displayButton = this._deviceLocationAccessData.DeviceLocationTypeId == DeviceLocationTypeId.Carousel;
     this.accessLocation();
+    if(this.quantityTrackingService) {
+      this.quantityTrackingService.quantitySubject.subscribe(newQuantity => {
+        this.handleNewQuantity(newQuantity);
+      })
+    }
   }
 
   get deviceLocationAccessData(): IDeviceLocationAccessComponentData {
@@ -71,6 +78,8 @@ export class DeviceLocationAccessComponent {
     private deviceLocationAccessService: DeviceLocationAccessService,
     private deviceLeaseService: DeviceLeaseService,
     private dialogService: PopupDialogService,
+    private carouselLocationAccessService: CarouselLocationAccessService,
+    @Optional() private quantityTrackingService: QuantityTrackingService,
     translateService: TranslateService,
   ) {
     this._requestLeaseTitle$ = translateService.get('DEVICE_ACCESS');
@@ -168,5 +177,22 @@ export class DeviceLocationAccessComponent {
     let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
     let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
     return merge(primaryClick$, secondaryClick$);
+  }
+
+  private handleNewQuantity(newQuantity: number) {
+    if (this.deviceLocationAccessData && this.deviceLocationAccessData.DeviceLocationTypeId == DeviceLocationTypeId.Carousel) {
+      this.carouselLocationAccessService.displayLocationLightbar({
+        binNumber: this.deviceLocationAccessData.BinNumber,
+        deviceId: this.deviceLocationAccessData.DeviceId,
+        deviceLocationId: this.deviceLocationAccessData.DeviceLocationId,
+        deviceLocationTypeId: this.deviceLocationAccessData.DeviceLocationTypeId,
+        shelfNumber: this.deviceLocationAccessData.ShelfNumber,
+        slotNumber: this.deviceLocationAccessData.SlotNumber,
+      }, {
+        itemDescription: this._deviceLocationAccessData.ItemGenericNameFormatted,
+        itemQuantity: newQuantity,
+        itemUnits: this._deviceLocationAccessData.DeviceLocationAccessUnits,
+      }).pipe(take(1)).subscribe();
+    }
   }
 }

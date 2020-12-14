@@ -88,14 +88,9 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   onDeviceSelectionChanged($event) {
     this.selectedDeviceInformation = $event;
-    if (this.selectedDeviceInformation.DeviceId === 0) {
-      this.childGroupingQueueComponent.loadAllPicklistQueueGrouped();
-      return;
-    }
-
-    if (this.childGroupingQueueComponent.loadedPicklistQueueGrouped) {
-      this.childGroupingQueueComponent.filterPicklistQueueGroupedByDeviceId(this.selectedDeviceInformation.DeviceId);
-    }
+    console.log('onDeviceSelectionChanged DeviceId: ');
+    console.log(this.selectedDeviceInformation.DeviceId);
+    this.childGroupingQueueComponent.loadAllPicklistQueueGrouped(this.selectedDeviceInformation);
   }
 
   processDetailsNavigate(params: IXr2QueueNavigationParameters) {

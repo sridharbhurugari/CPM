@@ -1,46 +1,47 @@
-<oc-action-layout>
-    <ng-container class="ocactionheader">
-        <div class="cpmactiontitle">{{(picklist$ | async)?.PriorityDescription}}</div>
-    </ng-container>
-    <ng-container class="ocactiondetails">
-        <div class="cpmheaderrow">
-            <app-header-container [title]="'ID' | translate">{{(picklist$ | async)?.OrderId}}</app-header-container>
-            <app-header-container></app-header-container>
-            <app-header-container [title]="'DATE' | translate">
-                {{(picklist$ | async)?.OrderDate | date:'shortDate'}}
-                {{(picklist$ | async)?.OrderDate | date:'mediumTime'}}
-            </app-header-container>
-        </div>
-        <app-underfilled-picklist-lines [picklistLines]="picklistLines$ | async"></app-underfilled-picklist-lines>
-    </ng-container>
-    <ng-container class="ocactionfooter">
-        <oc-footer>
-            <div class="ocleftalign">
-                <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()"></oc-button-action>
-            </div>
-            <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
-             <oc-button-action
-              *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
-              [disabled]="requestStatus != 'none'"
-              [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'print'"
-              [buttonText]="'PRINT_ALL' | translate"
-              (click)="print()">
-             </oc-button-action>
+<ng-container>
+  <div class="ocactiondetails">
+  <div class="cpmheaderrow header-container">
+    <div class="back-button">
+      <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'" (clickEvent)="navigateBack()">
+      </app-cp-clickable-icon>
+    </div>
+    <div class="title-content">
+      <span class="ellipsis">
+        {{(picklist$ | async)?.PriorityDescription}}
+      </span>
+    </div>
+    <app-header-container [title]="'ID' | translate">{{(picklist$ | async)?.OrderId}}</app-header-container>
+    <app-header-container></app-header-container>
+    <app-header-container [title]="'DATE' | translate">
+      {{(picklist$ | async)?.OrderDate | date:'shortDate'}}
+      {{(picklist$ | async)?.OrderDate | date:'mediumTime'}}
+    </app-header-container>
+  </div>
+</div>
+  <ng-container class="ocactiondetails">
+    <app-underfilled-picklist-lines [picklistLines]="picklistLines$ | async"></app-underfilled-picklist-lines>
+  </ng-container>
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()"></oc-button-action>
+      </div>
+      <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
+        <oc-button-action *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
+          [disabled]="requestStatus != 'none'" [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'print'"
+          [buttonText]="'PRINT_ALL' | translate" (click)="print()">
+        </oc-button-action>
 
-             <oc-button-action *ngIf="false"
-              [disabled]="!getRerouteButtonEnabled()"
-              [buttonIcon]= "requestStatus == 'reroute' ? 'spin' : 'reroute'"
-              [buttonText]="'REROUTE' | translate"
-              (click)="reroute()">
-             </oc-button-action>
+        <oc-button-action *ngIf="false" [disabled]="!getRerouteButtonEnabled()"
+          [buttonIcon]="requestStatus == 'reroute' ? 'spin' : 'reroute'" [buttonText]="'REROUTE' | translate"
+          (click)="reroute()">
+        </oc-button-action>
 
-             <oc-button-action *ngIf="buttonVisible"
-              [disabled]="!getButtonEnabled()"
-              [buttonIcon]= "requestStatus == 'complete' ? 'spin' : 'checkmark'"
-              [buttonText]="'CLOSE' | translate"
-              (click)="close()">
-             </oc-button-action>
-            </div>
-        </oc-footer>
-    </ng-container>
-</oc-action-layout>
+        <oc-button-action *ngIf="buttonVisible" [disabled]="!getButtonEnabled()"
+          [buttonIcon]="requestStatus == 'complete' ? 'spin' : 'checkmark'" [buttonText]="'CLOSE' | translate"
+          (click)="close()">
+        </oc-button-action>
+      </div>
+    </oc-footer>
+  </ng-container>
+  <ng-container>
