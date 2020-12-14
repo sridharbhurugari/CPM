@@ -5,12 +5,7 @@ import * as _ from 'lodash';
 
 export class RobotPrintRequest {
 
-  constructor(picklistIdentifier: string, robotPickGroupId: Guid, picklistQueueItem?: PicklistQueueItem) {
-
-    // TODO: Xr2Cleanup - clean this up when we remove old queue
-    this.PickListLineDetails = new Array<PickListLineDetail>();
-    this.PickListIdentifier = picklistIdentifier;
-    this.RobotPickGroupId = robotPickGroupId;
+  constructor(picklistQueueItem?: PicklistQueueItem) {
 
     if (picklistQueueItem) {
       this.PickListIdentifier = picklistQueueItem.PicklistId;

@@ -190,8 +190,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     const robotPrintRequestList = new Array<RobotPrintRequest>();
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = true;
-       // TODO: Xr2 Cleanup - clean robot print request when we remove old queue
-      robotPrintRequestList.push(new RobotPrintRequest(item.PicklistId, item.RobotPickGroupId, item));
+      robotPrintRequestList.push(new RobotPrintRequest(item));
     });
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
 
