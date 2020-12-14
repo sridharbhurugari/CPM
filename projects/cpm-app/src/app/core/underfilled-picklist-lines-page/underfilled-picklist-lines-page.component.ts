@@ -29,6 +29,7 @@ import { PickingEventConnectionService } from '../../api-core/services/picking-e
 import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../../api-core/events/i-unfilled-picklistline-added-or-updated-event';
 import { IUnfilledPicklistlineRemovedEvent } from '../../api-core/events/i-unfilled-picklistline-removed-event';
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
+import { ReportConstants } from '../../shared/constants/report-constants';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -106,10 +107,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
               picklistlines.splice(index, 1)
             }
             picklistlines.push(picklistLineEvent.PicklistLineUnderfilled)
-          }       
+          }
           return picklistlines;
-        }                  
-      }, x));        
+        }
+      }, x));
     }));
 
     var combinedPicklistLines$ = merge(initialPicklistLines$, allPicklistLines$);
@@ -119,7 +120,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       const result = _.orderBy(displayObjects,
          (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
-    }));    
+    }));
 
     // permission: are buttons visible
     this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
@@ -288,7 +289,7 @@ getButtonEnabled(): boolean  {
 
     this.getDocumentData();
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-    this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
+    this.pdfGridReportService.printWithBaseData(tableBody$, of(ReportConstants.UnfilledReport), this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();
