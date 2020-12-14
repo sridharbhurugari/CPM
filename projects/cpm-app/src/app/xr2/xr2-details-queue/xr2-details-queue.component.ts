@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { Many, remove } from 'lodash';
+import { Many } from 'lodash';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
@@ -31,8 +31,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Output() releaseEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() printEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
   @Output() selectionChangedEvent: EventEmitter<any> = new EventEmitter();
-  @Output() picklistQueueItemAddorUpdatedEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
-  @Output() picklistQueueItemRemovedEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() addOrUpdateMultiSelectEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
+  @Output() removeMultiSelectEvent: EventEmitter<PicklistQueueItem[]> = new EventEmitter();
 
   @Input() multiSelectMode: boolean;
 
@@ -163,10 +163,10 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
   getItemCountForDisplay(picklistQueueItem: PicklistQueueItem): number {
     if (picklistQueueItem.DestinationType === DestinationTypes.Patient) {
-      return picklistQueueItem.PatientCount
+      return picklistQueueItem.PatientCount;
     }
 
-    return picklistQueueItem.ItemCount
+    return picklistQueueItem.ItemCount;
   }
 
   getActiveOutputDeviceList(picklistQueueItem: PicklistQueueItem) {
@@ -315,8 +315,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       const orderGroupKeyPickGroupId = xr2OrderGroupKey.RobotPickGroupId != null ? xr2OrderGroupKey.RobotPickGroupId.toString() : null;
       return x.OrderId === xr2OrderGroupKey.OrderId &&
       x.OrderGroupDestinationId === xr2OrderGroupKey.OrderGroupDestinationId &&
-      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId && 
-      queueRobotPickGroup === orderGroupKeyPickGroupId
+      x.DeviceLocationId === xr2OrderGroupKey.DeviceLocationId &&
+      queueRobotPickGroup === orderGroupKeyPickGroupId;
     });
 
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
@@ -353,8 +353,11 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  updatedQueueItem.ItemPicklistLines;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  updatedQueueItem.IsPrintable;
     this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  updatedQueueItem.RobotPickGroupId;
-    this.picklistQueueItemAddorUpdatedEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+
+    if (this.isContainedInSelected(this.picklistQueueItems[matchingPicklistQueueItemIndex])) {
+      this.addOrUpdateMultiSelectEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
+    }
   }
 
   removePicklistQueueItem(removedQueueItem: IPicklistQueueItem) {
@@ -387,7 +390,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
         this.picklistQueueItems = [];
         // Clear event
         console.log(this.picklistQueueItems);
-        this.picklistQueueItemRemovedEvent.emit(this.picklistQueueItems);
+        this.removeMultiSelectEvent.emit(this.picklistQueueItems);
     } else {
         // Remove Items not in source list.
         for (let i = this.picklistQueueItems.length - 1; i >= 0; i--) {
@@ -416,7 +419,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
    }
 
   isEveryItemSelected(items: PicklistQueueItem[]) {
-    if (!items || items.length == 0) {
+    if (!items || items.length === 0) {
       return false;
     }
 
@@ -444,10 +447,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     console.log('matchingItemIdex');
     console.log(matchingItemIndex);
     console.log('picklistqueue length : ');
-    console.log(this.picklistQueueItems.length)
+    console.log(this.picklistQueueItems.length);
     if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
       console.log('group exists removing it');
-      this.picklistQueueItemRemovedEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
+      if (this.isContainedInSelected(this.picklistQueueItems[matchingItemIndex])) {
+        this.removeMultiSelectEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
+      }
       this.picklistQueueItems.splice(matchingItemIndex, 1);
       console.log(this.picklistQueueItems);
     } else {
