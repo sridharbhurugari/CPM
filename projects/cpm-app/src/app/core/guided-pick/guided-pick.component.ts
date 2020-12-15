@@ -1,6 +1,6 @@
 import { EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Component, Input, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { dateTimeToday } from '../../shared/functions/dateTimeToday';
 import { BarcodeOverrideDataPicking } from '../../shared/model/barcode-override-data-picking';
@@ -11,6 +11,8 @@ import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-co
 import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
 import { ICompletePickData } from '../model/i-completed-pick-data';
 import { IGuidedPickData } from '../model/i-guided-pick-data';
+import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-guided-pick',
@@ -51,12 +53,17 @@ export class GuidedPickComponent implements OnDestroy {
   @Output()
   holdClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @Output()
+  pickNowClicked: EventEmitter<void> = new EventEmitter<void>();
+
   userLocale: string;
   pickTotal: number;
   expDateInPast: boolean;
   awaitingProductScan: boolean;
   safetyStockScanInfo: IBarcodeData;
   secondaryScanInfo: IBarcodeData;
+  isHighPriorityAvailable: boolean;
+  ngUnsubscribe = new Subject();
 
   constructor(
     ocapConfigService: OcapHttpConfigurationService,
@@ -64,9 +71,11 @@ export class GuidedPickComponent implements OnDestroy {
     private barcodeOverrideService: BarcodeOverrideService,
     private barcodeSafetyStockService: BarcodeSafetyStockService,
     private qytTrackingService: QuantityTrackingService,
+    private coreEventConnectionService: CoreEventConnectionService,
   ) {
     this.userLocale = ocapConfigService.get().userLocale;
     this._awaitingScanSubscription = this.barcodeSafetyStockService.awaitingProductScanChanged.subscribe(x => this.awaitingProductScan = x);
+    coreEventConnectionService.highPriorityInterruptSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.isHighPriorityAvailable = true);
   }
 
   /* istanbul ignore next */
@@ -75,6 +84,8 @@ export class GuidedPickComponent implements OnDestroy {
     this._qtySubscription.unsubscribe();
     this._awaitingScanSubscription.unsubscribe();
     this.barcodeOverrideService.dispose();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete(); 
   }
 
   getCompletePickData(): ICompletePickData {

@@ -26,6 +26,7 @@ import { QuantityTrackingService } from '../../shared/services/quantity-tracking
 import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
 import { DeviceTypeId } from '../../shared/constants/device-type-id';
 import { parseBool } from '../../shared/functions/parseBool';
+import { WpfActionPaths } from "../constants/wpf-action-paths";
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -99,6 +100,12 @@ export class InternalTransferPickPageComponent {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Back');
   }
+
+  pickNow() {
+    this.clearLightbar();
+    this.wpfActionControllerService.ExecuteActionName(WpfActionPaths.HighPriorityPickNow);
+  }
+
 
   hold(isLast: boolean) {
     if (isLast) {

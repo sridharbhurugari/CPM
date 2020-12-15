@@ -99,6 +99,8 @@
                 <oc-button-action [buttonText]="'PAUSE' | translate" (click)="pauseClicked.next()">}</oc-button-action>
             </div>
             <div class="ocrightalign">
+                <oc-button-action [style.visibility]="isHighPriorityAvailable ? 'visible' : 'hidden'" [buttonText]="'HIGHPRIORITY' | translate" (click)="pickNowClicked.next()">
+                </oc-button-action>
                 <oc-button-action [buttonText]="'HOLD' | translate" (click)="holdClicked.next(guidedPickData?.isLastLine)">
                 </oc-button-action>
                 <oc-button-action [buttonText]="guidedPickData?.isLastLine ? ('DONE' | translate) : ('NEXT' | translate)"
