@@ -179,15 +179,18 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   }
 
   onQuickPickActive(isActive: boolean) {
-  this.closeWarningPopup();
+  if (isActive) { this.closeWarningPopup();}
   this.robotSelectionDisabled = isActive;
   }
 
  closeWarningPopup() {
+   var closed = false;
    if (this.lastDialog)
    {
     this.lastDialog.onCloseClicked();
+    closed = true;
    }
+   console.debug("Closed Warning Popup: ", closed);
   }
 
   /* istanbul ignore next */
@@ -272,6 +275,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   displayQuickPickError(error: QuickPickError, customHeader = null, customBody = null): void {
     switch (error) {
       case QuickPickError.ScanNotFound:
+
         this.translations$.subscribe(r => {
           const headerText = customHeader ? customHeader : r.INVALID_SCAN_BARCODE_HEADER;
           const bodyText = customBody ? customBody : r.INVALID_SCAN_BARCODE;
@@ -416,6 +420,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
 
   /* istanbul ignore next */
   private displayWarningDialog(headerText, bodyText, okButtonText): void {
+    this.closeWarningPopup()
     const properties = new PopupDialogProperties('Role-Status-Warning');
     properties.titleElementText = headerText;
     properties.messageElementText = bodyText;
