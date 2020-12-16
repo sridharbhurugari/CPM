@@ -88,8 +88,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   onDeviceSelectionChanged($event) {
     this.selectedDeviceInformation = $event;
-    console.log('onDeviceSelectionChanged DeviceId: ');
-    console.log(this.selectedDeviceInformation.DeviceId);
     this.childGroupingQueueComponent.loadAllPicklistQueueGrouped(this.selectedDeviceInformation);
   }
 
@@ -102,43 +100,38 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
     const dataDetailsForLog = 'PriorityCode: ' +
       picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
-    console.log(dataDetailsForLog);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' processRelease() - sendToRobotGrouped for: ' + dataDetailsForLog);
+      this.constructor.name + ' processRelease - sendToRobotGrouped for: ' + dataDetailsForLog);
 
     picklistQueueGrouped.Saving = true;
-    console.log('Sending PickList Group');
-    console.log(picklistQueueGrouped);
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
         try {
         this.handleSendToRobotGroupedSuccess(dataDetailsForLog, picklistQueueGrouped);
         } catch (e) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' processRelease() - handleSendToRobotGroupedSuccess failed: ' + e);
+            this.constructor.name + ' processRelease - handleSendToRobotGroupedSuccess failed: ' + e);
         }
       }, error => {
         try {
         this.handleSendToRobotGroupedError(picklistQueueGrouped);
         } catch (e) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' processRelease() - handleSendToRobotGroupedError failed: ' + e);
+            this.constructor.name + ' processRelease - handleSendToRobotGroupedError failed: ' + e);
         }
       });
   }
 
   private handleSendToRobotGroupedError(picklistQueueGrouped: PicklistQueueGrouped) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this.constructor.name + 'handleSendToRobotGroupedError() - Failed To Save');
-    console.log('Failed to save');
+      this.constructor.name + 'handleSendToRobotGroupedError - Failed To Save');
     picklistQueueGrouped.Saving = false;
     this.displayFailedToSaveDialog();
   }
 
   private handleSendToRobotGroupedSuccess(dataDetailsForLog: string, picklistQueueGrouped: PicklistQueueGrouped) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handleSendToRobotGroupedSuccess() - sendToRobotGrouped returned for: ' + dataDetailsForLog);
-    console.log('PickListGroup Sent. Refreshing Group Data');
+      this.constructor.name + ' handleSendToRobotGroupedSuccess - sendToRobotGrouped returned for: ' + dataDetailsForLog);
     this.picklistsQueueService.getGroupedFiltered(
       picklistQueueGrouped.DeviceId,
       picklistQueueGrouped.PickPriorityIdentity).subscribe(getGroupedResult => {
@@ -146,36 +139,35 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
           this.handleGetGroupedFilteredSuccess(getGroupedResult, picklistQueueGrouped);
         } catch (exception) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' handleSendToRobotGroupedSuccess() - handleGetGroupedFilteredSuccess failed: ' + exception);
+            this.constructor.name + ' handleSendToRobotGroupedSuccess - handleGetGroupedFilteredSuccess failed: ' + exception);
         }
       }, (error) => {
         try {
           this.handleGetGroupedFilteredError(picklistQueueGrouped);
         } catch (exception) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' handleSendToRobotGroupedSuccess() - handleGetGroupedFilteredError failed: ' + exception);
+            this.constructor.name + ' handleSendToRobotGroupedSuccess - handleGetGroupedFilteredError failed: ' + exception);
         }
       });
   }
 
   private handleGetGroupedFilteredError(picklistQueueGrouped: PicklistQueueGrouped) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this.constructor.name + 'handleGetGroupedFilteredError() - Failed To Refresh Data');
-    console.log('Failed to refresh data');
+      this.constructor.name + 'handleGetGroupedFilteredError - Failed To Refresh Data');
     picklistQueueGrouped.Saving = false;
     this.displayFailedToRefresh();
   }
 
   private handleGetGroupedFilteredSuccess(getGroupedResult: IPicklistQueueGrouped, picklistQueueGrouped: PicklistQueueGrouped) {
-    console.log('Data Refreshed. Updating UI');
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' handleSendToRobotGroupedSuccess - handleGetGroupedFilteredSuccess succeeded');
+
     if (!getGroupedResult) {
       picklistQueueGrouped.Saving = false;
       this.childGroupingQueueComponent.removePicklistQueueGroup(picklistQueueGrouped.PriorityCode, picklistQueueGrouped.DeviceId);
-      console.log('Send Complete Item removed');
     } else {
       picklistQueueGrouped.Saving = false;
       this.UpdatePickListQueueGroupedList(new PicklistQueueGrouped(getGroupedResult));
-      console.log('Send and Refresh complete.');
     }
   }
 
@@ -204,17 +196,19 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
       .subscribe((x) => {
         try {
           this.handlePicklistQueueGroupedListUpdateSubject(x);
-        } catch (exception) {
+        } catch (e) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            `${this.constructor.name} picklistQueueGroupedListUpdateSubject - handlepicklistQueueGroupedListUpdateSubject failed: ${exception}`);
+            `${this.constructor.name} picklistQueueGroupedListUpdateSubject - handlepicklistQueueGroupedListUpdateSubject failed: ${e}`);
         }
 
       });
   }
 
   private handlePicklistQueueGroupedUpdateSubject(x: IPicklistQueueGroupedUpdateMessage) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' handlePicklistQueueGroupedUpdateSubject');
+
     if (!x.PicklistQueueGrouped) {
-      console.log('!picklistqueuegrouped removing using priority and device');
       this.childGroupingQueueComponent.removePicklistQueueGroup(x.PriorityCode, x.DeviceId);
     } else {
       const pickListQueueGrouped = PicklistQueueGrouped.fromNonstandardJson(x.PicklistQueueGrouped);
@@ -223,9 +217,10 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   }
 
   private handlePicklistQueueGroupedListUpdateSubject(x: IPicklistQueueGroupedListUpdateMessage) {
-    console.log('picklistQueueGroupedListUpdateSubject called');
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' handlePicklistQueueGroupedListUpdateSubject');
+
     if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
-      console.log('Empty List just clear screen');
       this.childGroupingQueueComponent.refreshDataOnScreen(null);
     } else {
       const picklistQueueGroupedList = x.PicklistQueueGroupedList.$values.map((picklistQueueGrouped) => {
@@ -239,8 +234,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   private loadPicklistsQueueGrouped(): void {
     this.picklistsQueueGrouped = this.picklistsQueueService.getGrouped().pipe(map(x => {
       const displayObjects = x.map(picklistQueueGrouped => new PicklistQueueGrouped(picklistQueueGrouped));
-      console.log('loadPicklistsQueueGrouped : ');
-      console.log(displayObjects);
       return displayObjects;
     }), shareReplay(1));
   }
