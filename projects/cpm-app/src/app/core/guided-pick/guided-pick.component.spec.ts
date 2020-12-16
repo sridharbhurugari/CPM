@@ -19,6 +19,7 @@ import { IGuidedPickData } from '../model/i-guided-pick-data';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { GuidedPickComponent } from './guided-pick.component';
+import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
 
 describe('GuidedPickComponent', () => {
   let component: GuidedPickComponent;
@@ -27,6 +28,7 @@ describe('GuidedPickComponent', () => {
   let productScannedSuccessfully$: EventEmitter<IBarcodeData>;
   let awaitingProductScanChanged$: EventEmitter<boolean>;
   let guidedPickData: IGuidedPickData;
+  let coreEventConnectionService: Partial<CoreEventConnectionService>;
 
   beforeEach(async(() => {
     productScannedSuccessfully$ = new EventEmitter<IBarcodeData>();
@@ -34,6 +36,10 @@ describe('GuidedPickComponent', () => {
     productBarcodeParsed$ = new EventEmitter<IBarcodeData>();
     spyOn(productScannedSuccessfully$, 'subscribe').and.callThrough();
     spyOn(productBarcodeParsed$, 'subscribe').and.callThrough();
+    coreEventConnectionService = {
+      highPriorityInterruptSubject: new Subject(),
+    };
+
     TestBed.configureTestingModule({
       declarations: [ 
         GuidedPickComponent,
@@ -61,12 +67,14 @@ describe('GuidedPickComponent', () => {
         { provide: BarcodeParsingService, useValue: { productBarcodeParsed$: productBarcodeParsed$ } },
         { provide: BarcodeOverrideService, useValue: { initialize: () => { }, overrideBarcodeParsed$: new Subject<IBarcodeData>(), } },
         { provide: BarcodeSafetyStockService, useValue: { productScannedSuccessfully: productScannedSuccessfully$, awaitingProductScanChanged: awaitingProductScanChanged$ } },
+        { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
       ]}},
     )
     .compileComponents();
   }));
 
   beforeEach(() => {
+    spyOn(coreEventConnectionService.highPriorityInterruptSubject, 'subscribe').and.callThrough();
     fixture = TestBed.createComponent(GuidedPickComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -87,6 +95,7 @@ describe('GuidedPickComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(coreEventConnectionService.highPriorityInterruptSubject.subscribe).toHaveBeenCalled();
   });
 
   describe('given product scan is required', () => {
@@ -171,5 +180,12 @@ describe('GuidedPickComponent', () => {
         expect(component.pickCompleted.emit).toHaveBeenCalled();
       });
     });
+  });
+
+  describe('High priority event', () => {
+    it('should set bool', () => {
+        coreEventConnectionService.highPriorityInterruptSubject.next();
+        expect(component.isHighPriorityAvailable).toBeTruthy();
+      });
   });
 });

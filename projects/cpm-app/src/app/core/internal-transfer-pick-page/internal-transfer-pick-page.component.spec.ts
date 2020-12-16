@@ -22,6 +22,7 @@ import { MockGuidedPickComponent } from '../testing/mock-guided-pick.spec';
 import { MockInternalTransferPickNeedsListComponent } from '../testing/mock-internal-transfer-pick-needs-list.spec';
 
 import { InternalTransferPickPageComponent } from './internal-transfer-pick-page.component';
+import { WpfActionPaths } from "../constants/wpf-action-paths";
 
 describe('InternalTransferPickPageComponent', () => {
   let component: InternalTransferPickPageComponent;
@@ -136,6 +137,13 @@ describe('InternalTransferPickPageComponent', () => {
         });
         expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
       });
+    });
+  });
+
+  describe('pickNow', () => {
+    it('should call wpf with High Priority', () => {
+      component.pickNow();
+      expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith(WpfActionPaths.HighPriorityPickNow);
     });
   });
 });
