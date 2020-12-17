@@ -310,7 +310,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
       properties.primaryOnRight = false;
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Info;
-      properties.timeoutLength = 60;
+      properties.timeoutLength = 0;
       const component = this.dialogService.showOnce(properties);
       const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
       const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
