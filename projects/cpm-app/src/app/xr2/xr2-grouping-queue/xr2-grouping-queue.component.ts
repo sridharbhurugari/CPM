@@ -222,9 +222,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   updatePickListQueueGroupedGrouping(picklistGrouped: IPicklistQueueGrouped) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      this.constructor.name + ' updatePickListQueueGroupedGrouping entering');
-
     const matchingGrouped = _.findIndex(this.unfilteredPicklistQueueGrouped, (x) => {
       return x.PriorityCode === picklistGrouped.PriorityCode && x.DeviceId === picklistGrouped.DeviceId;
      });
@@ -243,15 +240,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
        this.unfilteredPicklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
      }
     this.filterPicklistQueueGroupedByDeviceId();
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      this.constructor.name + ' updatePickListQueueGroupedGrouping exiting');
   }
 
   removePicklistQueueGroup(priorityCode: string, deviceId: number ) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} removePicklistQueueGroup entering - DeviceID: ${deviceId} Priority Code: ${priorityCode}`);
-
     const matchingGroupedIndex = _.findIndex(this.unfilteredPicklistQueueGrouped, (x) => {
       return x.PriorityCode === priorityCode && x.DeviceId === deviceId;
      });
@@ -259,15 +250,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
       this.unfilteredPicklistQueueGrouped.splice(matchingGroupedIndex, 1);
     }
     this.filterPicklistQueueGroupedByDeviceId();
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      this.constructor.name + ' removePicklistQueueGroup exiting');
   }
 
   refreshDataOnScreen(picklistGroupedList: IPicklistQueueGrouped[]) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} refreshDataOnScreen entering`);
-
       if (!picklistGroupedList) {
           this.unfilteredPicklistQueueGrouped = [];
       } else {
@@ -287,9 +272,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
           });
       }
       this.filterPicklistQueueGroupedByDeviceId();
-
-      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-        `${this.constructor.name} refreshDataOnScreen exiting`);
   }
 
   loadAllPicklistQueueGrouped(selectedDevice: SelectableDeviceInfo) {
@@ -298,9 +280,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   private filterPicklistQueueGroupedByDeviceId() {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} filterPicklistQueueGroupedByDeviceId entering`);
-
     if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId ||
         this.selectedDeviceInformation.DeviceId === 0 || !this.unfilteredPicklistQueueGrouped) {
       this.filteredPicklistQueueGrouped = this.unfilteredPicklistQueueGrouped;
@@ -312,9 +291,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
     if (this.filteredPicklistQueueGrouped) {
       this.loadSavedConfigurations();
     }
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} filterPicklistQueueGroupedByDeviceId exiting`);
   }
 
   private loadSavedConfigurations() {

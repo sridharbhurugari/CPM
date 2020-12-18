@@ -115,23 +115,16 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       if (!result) {
         return;
       }
-
-      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-        this.constructor.name + 'Reroute clicked - rerouting current selected item/items');
       this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
   }
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + 'Release clicked - releasing current selected item/items');
     this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + 'Print clicked - printing current selected item/items');
     this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
@@ -326,12 +319,8 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private handlePicklistQueueItemAddorUpdateSubject(addOrUpdateMessage: IAddOrUpdatePicklistQueueItemMesssage) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handlePicklistQueueItemAddorUpdateSubject called');
     if (!this.isValidMessageClient(addOrUpdateMessage.PicklistQueueItem.DeviceId.toString(),
     addOrUpdateMessage.PicklistQueueItem.PickPriorityIdentity.toString())) {
-      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-        this.constructor.name + ' handlePicklistQueueItemAddorUpdateSubject - message ignored, invalid client');
       return;
     }
 
@@ -340,15 +329,11 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   private handleRemovePicklistQueueItemSubject(removeMessage: IRemovePicklistQueueItemMessage) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handleRemovePicklistQueueItemSubject called');
     const xr2OrderGroupKey = removeMessage.Xr2OrderGroupKey;
     this.childDetailsQueueComponent.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
   }
 
   private handlePicklistQueueItemListUpdateSubject(listUpdateMessage: IPicklistQueueItemListUpdateMessage) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handlePicklistQueueItemListUpdateSubject called');
     let availablePicklistQueueGroupKeys: PicklistQueueGroupKey[];
 
     if (listUpdateMessage.AvailablePicklistQueueGroupKeys != null && listUpdateMessage.AvailablePicklistQueueGroupKeys.$values.length > 0) {
@@ -361,8 +346,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       return;
     }
     if (!this.isValidMessageClient(listUpdateMessage.DeviceId.toString(), listUpdateMessage.PickPriorityIdentity.toString())) {
-      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-        this.constructor.name + ' handlePicklistQueueItemListUpdateSubject - message ignored, invalid client');
       return;
     }
     if (!listUpdateMessage.PicklistQueueItems.$values || listUpdateMessage.PicklistQueueItems.$values.length === 0) {

@@ -98,16 +98,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   }
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
-    const dataDetailsForLog = 'PriorityCode: ' +
-      picklistQueueGrouped.PriorityCode + ', DeviceId: ' + picklistQueueGrouped.DeviceId.toString();
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' processRelease - sendToRobotGrouped for: ' + dataDetailsForLog);
 
     picklistQueueGrouped.Saving = true;
     this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
       result => {
         try {
-        this.handleSendToRobotGroupedSuccess(dataDetailsForLog, picklistQueueGrouped);
+        this.handleSendToRobotGroupedSuccess(picklistQueueGrouped);
         } catch (e) {
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             this.constructor.name + ' processRelease - handleSendToRobotGroupedSuccess failed: ' + e);
@@ -129,9 +125,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
     this.displayFailedToSaveDialog();
   }
 
-  private handleSendToRobotGroupedSuccess(dataDetailsForLog: string, picklistQueueGrouped: PicklistQueueGrouped) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handleSendToRobotGroupedSuccess - sendToRobotGrouped returned for: ' + dataDetailsForLog);
+  private handleSendToRobotGroupedSuccess(picklistQueueGrouped: PicklistQueueGrouped) {
     this.picklistsQueueService.getGroupedFiltered(
       picklistQueueGrouped.DeviceId,
       picklistQueueGrouped.PickPriorityIdentity).subscribe(getGroupedResult => {
@@ -152,16 +146,11 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   }
 
   private handleGetGroupedFilteredError(picklistQueueGrouped: PicklistQueueGrouped) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this.constructor.name + 'handleGetGroupedFilteredError - Failed To Refresh Data');
     picklistQueueGrouped.Saving = false;
     this.displayFailedToRefresh();
   }
 
   private handleGetGroupedFilteredSuccess(getGroupedResult: IPicklistQueueGrouped, picklistQueueGrouped: PicklistQueueGrouped) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handleSendToRobotGroupedSuccess - handleGetGroupedFilteredSuccess succeeded');
-
     if (!getGroupedResult) {
       picklistQueueGrouped.Saving = false;
       this.childGroupingQueueComponent.removePicklistQueueGroup(picklistQueueGrouped.PriorityCode, picklistQueueGrouped.DeviceId);
@@ -205,9 +194,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   }
 
   private handlePicklistQueueGroupedUpdateSubject(x: IPicklistQueueGroupedUpdateMessage) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handlePicklistQueueGroupedUpdateSubject');
-
     if (!x.PicklistQueueGrouped) {
       this.childGroupingQueueComponent.removePicklistQueueGroup(x.PriorityCode, x.DeviceId);
     } else {
@@ -217,9 +203,6 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   }
 
   private handlePicklistQueueGroupedListUpdateSubject(x: IPicklistQueueGroupedListUpdateMessage) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' handlePicklistQueueGroupedListUpdateSubject');
-
     if (!x.PicklistQueueGroupedList.$values || x.PicklistQueueGroupedList.$values.length === 0) {
       this.childGroupingQueueComponent.refreshDataOnScreen(null);
     } else {

@@ -127,6 +127,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
+    this.logService.loadConfiguration();
   }
 
   ngOnDestroy() {
@@ -309,10 +310,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey: IXr2OrderGroupKey): void {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} removePicklistQueueItemByOrderGroupKey
-      entering - OrderID: ${xr2OrderGroupKey.OrderId} OrderGroupDestinationId: ${xr2OrderGroupKey.OrderGroupDestinationId}
-      DeviceLocationId ${xr2OrderGroupKey.DeviceLocationId} RobotPickGroupId: ' ${xr2OrderGroupKey.RobotPickGroupId}`);
 
     const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       const queueRobotPickGroup = x.RobotPickGroupId  != null ? x.RobotPickGroupId.toString() : null;
@@ -324,16 +321,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     });
 
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} removePicklistQueueItemByOrderGroupKey exiting`);
   }
 
   addOrUpdatePicklistQueueItem(updatedQueueItem: IPicklistQueueItem) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} addOrUpdatePicklistQueueItem entering -
-      OrderID: ${updatedQueueItem.OrderId} OrderGroupDestinationId: ${updatedQueueItem.OrderGroupDestinationId}
-      DeviceLocationId ${updatedQueueItem.DeviceLocationId} RobotPickGroupId: ' ${updatedQueueItem.RobotPickGroupId}`);
 
     let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       return x.RobotPickGroupId != null && x.RobotPickGroupId === updatedQueueItem.RobotPickGroupId;
@@ -365,16 +355,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     if (this.isContainedInSelected(this.picklistQueueItems[matchingPicklistQueueItemIndex])) {
       this.addOrUpdateMultiSelectEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
     }
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} addOrUpdatePicklistQueueItem exiting`);
   }
 
   removePicklistQueueItem(removedQueueItem: IPicklistQueueItem) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} removePicklistQueueItem
-      entering - OrderID: ${removedQueueItem.OrderId} OrderGroupDestinationId: ${removedQueueItem.OrderGroupDestinationId}
-      DeviceLocationId ${removedQueueItem.DeviceLocationId} RobotPickGroupId: ' ${removedQueueItem.RobotPickGroupId}`);
 
     const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
       return x.OrderId === removedQueueItem.OrderId &&
@@ -385,14 +368,9 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     });
 
     this.removePicklistQueueItemAtIndex(matchingItemIndex);
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} removePicklistQueueItem exiting`);
   }
 
   refreshDataOnScreen(updatedItemList: IPicklistQueueItem[]) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} refreshDataOnScreen entering`);
     if (!updatedItemList) {
         this.picklistQueueItems = [];
         // Clear event
@@ -413,9 +391,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     }
 
     this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, LoggingCategory.Xr2Queue,
-      `${this.constructor.name} refreshDataOnScreen exiting`);
   }
 
   getOrderDate(picklistQueueItem: PicklistQueueItem): string {

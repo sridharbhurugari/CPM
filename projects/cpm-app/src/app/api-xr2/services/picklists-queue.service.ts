@@ -4,8 +4,6 @@ import { Observable, of } from 'rxjs';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
-import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-sync-request';
-import { catchError } from 'rxjs/operators';
 import { RobotPrintRequest } from '../data-contracts/robot-print-request';
 import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 import { PicklistQueueGrouped } from '../../xr2/model/picklist-queue-grouped';
