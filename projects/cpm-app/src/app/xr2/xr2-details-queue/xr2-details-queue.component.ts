@@ -17,10 +17,6 @@ import { SelectionChangeType } from '../../shared/constants/selection-change-typ
 import { IPicklistQueueItem } from '../../api-xr2/data-contracts/i-picklist-queue-item';
 import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
-import { LoggerService, LogVerbosity } from 'oal-core';
-import { LogService } from '../../api-core/services/log-service';
-import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
-import { LoggingCategory } from '../../shared/constants/logging-category';
 
 
 @Component({
@@ -121,13 +117,11 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   constructor(
     private windowService: WindowService,
     private translateService: TranslateService,
-    private logService: LogService
     ) {}
 
   ngOnInit(): void {
     this.setTranslations();
     this.selectedItems = new Set<PicklistQueueItem>();
-    this.logService.loadConfiguration();
   }
 
   ngOnDestroy() {

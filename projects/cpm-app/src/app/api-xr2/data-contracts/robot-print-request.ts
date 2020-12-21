@@ -11,6 +11,7 @@ export class RobotPrintRequest {
       this.PickListIdentifier = picklistQueueItem.PicklistId;
       this.RobotPickGroupId = picklistQueueItem.RobotPickGroupId;
       this.DeviceId = picklistQueueItem.DeviceId;
+      this.PickListLineDetails = new Array<PickListLineDetail>();
       _.forEach(picklistQueueItem.ItemPicklistLines, (itemPicklistLine) => {
         const pickListLineDetail = new PickListLineDetail();
         pickListLineDetail.PickListLineIdentifier = itemPicklistLine.PicklistLineId;

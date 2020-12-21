@@ -15,10 +15,6 @@ import { Observable } from 'rxjs';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
-import { LogVerbosity } from 'oal-core';
-import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
-import { LogService } from '../../api-core/services/log-service';
-import { LoggingCategory } from '../../shared/constants/logging-category';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -117,8 +113,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   constructor(
     private windowService: WindowService,
-    private translateService: TranslateService,
-    private logService: LogService) {
+    private translateService: TranslateService) {
   }
 
   ngOnInit() {
