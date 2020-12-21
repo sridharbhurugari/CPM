@@ -185,11 +185,19 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
 
  closeWarningPopup() {
    var closed = false;
+   try {
+
    if (this.lastDialog)
    {
     this.lastDialog.onCloseClicked();
     closed = true;
    }
+
+  }
+  catch(err)
+  {
+    console.debug("Error in Closed Warning Popup: ", err);
+  }
    console.debug("Closed Warning Popup: ", closed);
   }
 
