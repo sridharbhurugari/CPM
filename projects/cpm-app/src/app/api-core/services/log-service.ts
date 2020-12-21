@@ -1,22 +1,18 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
-import { CoreEventConnectionService } from './core-event-connection.service';
-import { takeUntil } from 'rxjs/operators';
-import { Observable, Subject } from 'rxjs';
-import { ILoggerConfigurationUpdateEvent } from '../events/i-logger-configuration-update-event';
+import { Observable } from 'rxjs';
 import { LoggerConfiguration } from '../../shared/model/logger-configuration';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LogService implements OnDestroy {
+export class LogService {
 
   systemLoggerConfiguration: LoggerConfiguration;
-  ngUnsubscribe = new Subject();
 
   constructor(
     private httpClient: HttpClient,
@@ -25,11 +21,6 @@ export class LogService implements OnDestroy {
   ) {
     this.loadConfiguration();
    }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
 
   logMessageAsync(verbosity: LogVerbosity, severity: CpmLogLevel, category: string, message: string) {
     if(this.shouldLogWithSystemVerbosityLevel(verbosity)) {
