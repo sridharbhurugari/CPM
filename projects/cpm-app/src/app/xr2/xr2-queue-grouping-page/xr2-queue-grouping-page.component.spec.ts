@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, discardPeriodicTasks } from '@angular/core/testing';
 import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page.component';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
 import { Subject, of, Observable } from 'rxjs';
@@ -145,7 +145,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         spyOn(component.childGroupingQueueComponent, 'removePicklistQueueGroup');
 
       component.ngOnInit();
-      component.childGroupingQueueComponent.picklistQueueGrouped = [];
+      component.childGroupingQueueComponent.filteredPicklistQueueGrouped = [];
       tick();
       expect(picklistQueueService.getGrouped).toHaveBeenCalled();
 
@@ -162,7 +162,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         spyOn(component.childGroupingQueueComponent, 'refreshDataOnScreen');
 
       component.ngOnInit();
-      component.childGroupingQueueComponent.picklistQueueGrouped = [];
+      component.childGroupingQueueComponent.filteredPicklistQueueGrouped = [];
       tick();
       expect(picklistQueueService.getGrouped).toHaveBeenCalled();
 
@@ -188,7 +188,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
         spyOn(component.childGroupingQueueComponent, 'refreshDataOnScreen');
 
       component.ngOnInit();
-      component.childGroupingQueueComponent.picklistQueueGrouped = [];
+      component.childGroupingQueueComponent.filteredPicklistQueueGrouped = [];
       tick();
       expect(picklistQueueService.getGrouped).toHaveBeenCalled();
 
@@ -213,27 +213,39 @@ describe('Xr2QueueGroupingPageComponent', () => {
   });
 
   describe('Queue API Actions', () => {
-    it('should call PicklistQueue service to send to robot grouped on release click', fakeAsync(() => {
+    it('should call PicklistQueue service to send to robot grouped on release click and true dialog', fakeAsync(() => {
+      const releaseDialogSpy = spyOn<any>(component, 'displayReleaseDialog').and.returnValue(of(true));
       const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
       fakePicklistQueueGrouped.DeviceId = 1;
       fakePicklistQueueGrouped.PriorityCode = 'Patient';
       component.processRelease(fakePicklistQueueGrouped);
-      tick();
+      tick(500);
       expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(1);
     }));
 
+    it('should not call PicklistQueue service to send to robot grouped on release click and false dialog', fakeAsync(() => {
+      const releaseDialogSpy = spyOn<any>(component, 'displayReleaseDialog').and.returnValue(of(false));
+      const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
+      fakePicklistQueueGrouped.DeviceId = 1;
+      fakePicklistQueueGrouped.PriorityCode = 'Patient';
+      component.processRelease(fakePicklistQueueGrouped);
+      tick(500);
+      expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(0);
+    }));
+
     it('should call picklistqueue service and refresh data on specific grouping', fakeAsync(() => {
+      const releaseDialogSpy = spyOn<any>(component, 'displayReleaseDialog').and.returnValue(of(true));
       const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
       fakePicklistQueueGrouped.PriorityCode = 'Patient';
       fakePicklistQueueGrouped.DeviceId  = 1;
       component.processRelease(fakePicklistQueueGrouped);
-      tick();
+      tick(500);
       expect(picklistQueueService.getGroupedFiltered).toHaveBeenCalledTimes(1);
     }));
 
     it('should call filterPicklistQueueGroupedByDeviceId  when onDeviceSelectionChanged', () => {
       spyChildGroupingQueueComponent =
-      spyOn(component.childGroupingQueueComponent, 'filterPicklistQueueGroupedByDeviceId');
+      spyOn(component.childGroupingQueueComponent, 'loadAllPicklistQueueGrouped');
       let selectedDeviceInfo = new SelectableDeviceInfo(null);
       selectedDeviceInfo.DeviceId = 0;
       selectedDeviceInfo.Description = '';

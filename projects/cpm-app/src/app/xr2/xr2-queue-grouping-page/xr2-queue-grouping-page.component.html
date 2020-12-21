@@ -6,7 +6,7 @@
   </app-xr2-queue-grouping-header>
   <app-xr2-grouping-queue
       [selectedDeviceInformation]="selectedDeviceInformation"
-      [loadedPicklistQueueGrouped]="picklistsQueueGrouped | async"
+      [unfilteredPicklistQueueGrouped]="picklistsQueueGrouped | async"
       [savedPageConfiguration]="savedPageConfiguration"
       [searchTextFilter]="searchTextFilter"
       (releaseEvent)="processRelease($event)"

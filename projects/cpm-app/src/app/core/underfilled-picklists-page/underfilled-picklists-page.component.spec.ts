@@ -9,6 +9,7 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { Component, Input } from '@angular/core';
 import { UnderfilledPicklist } from '../model/underfilled-picklist';
 import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
+import { SortDirection } from '../../shared/constants/sort-direction';
 
 @Component({
   selector: 'app-underfilled-picklists',
@@ -16,6 +17,8 @@ import { PickingEventConnectionService } from '../../api-core/services/picking-e
 })
 class MockUnderfilledPicklistsComponent {
   @Input()picklists: UnderfilledPicklist[];
+  @Input()currentSortPropertyName: string;
+  @Input()sortOrder: SortDirection;
 }
 
 describe('UnderfilledPicklistsPageComponent', () => {
