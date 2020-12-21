@@ -19,7 +19,7 @@
                             <div app-tab-contents [tabKey]="'IN_STOCK'"
                                 style="text-align: center; font-size: 40px; font-weight: bold;">
                                 <div>{{ guidedPickData?.pickLocation?.QuantityOnHand }} / {{ guidedPickData?.pharmacyQoh }}</div>
-                                <!-- <button class="ocbtn secondary">{{ 'ADJUST' | translate }}</button> -->
+                                <button class="ocbtn secondary" (click)="adjustClicked.next(getAdjustQohData())">{{ 'ADJUST' | translate }}</button>
                             </div>
                             <div app-tab-contents [tabKey]="'DETAILS'" style="font-size: 40px; font-weight: bold;">
                                 <div style="display: flex; font-size: 20px; padding-top: 20px; font-weight: 600;">

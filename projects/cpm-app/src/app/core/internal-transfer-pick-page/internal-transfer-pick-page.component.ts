@@ -26,6 +26,8 @@ import { QuantityTrackingService } from '../../shared/services/quantity-tracking
 import { CarouselLocationAccessService } from '../../shared/services/devices/carousel-location-access.service';
 import { DeviceTypeId } from '../../shared/constants/device-type-id';
 import { parseBool } from '../../shared/functions/parseBool';
+import { WpfActionPaths } from "../constants/wpf-action-paths";
+import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -110,6 +112,11 @@ export class InternalTransferPickPageComponent {
 
   completePick(completePickData: ICompletePickData) {
     this.pickItem(completePickData);
+  }
+
+  adjustQoh(item: IAdjustQoh) {
+    this.clearLightbar();
+    this.wpfActionControllerService.ExecuteActionNameWithData(WpfActionPaths.AdjustQohPath, item);
   }
 
   private pickItem(completePickData: ICompletePickData) {

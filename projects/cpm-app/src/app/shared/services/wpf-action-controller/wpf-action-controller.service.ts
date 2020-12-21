@@ -74,4 +74,11 @@ export class WpfActionControllerService {
       this.wpfActionController.executeActionName(actionName);
     }
   }
+
+  ExecuteActionNameWithData(actionName: string, data: any) {
+    if (this.wpfActionController != null) {
+      this.eventConnectionService.stop();
+      this.wpfActionController.executeActionNameWithData(actionName, data);
+    }
+  }
 }
