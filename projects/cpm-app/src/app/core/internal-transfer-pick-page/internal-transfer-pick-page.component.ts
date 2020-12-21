@@ -97,9 +97,9 @@ export class InternalTransferPickPageComponent {
     this.wpfActionControllerService.ExecuteActionName('Continue');
   }
 
-  navigateBack() {
+  pause() {
     this.clearLightbar();
-    this.wpfActionControllerService.ExecuteActionName('Back');
+    this.wpfActionControllerService.ExecuteActionName('Pause');
   }
 
   hold(isLast: boolean) {
