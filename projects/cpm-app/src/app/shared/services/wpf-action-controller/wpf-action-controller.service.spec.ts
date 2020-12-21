@@ -17,11 +17,13 @@ describe('WpfActionControllerService', () => {
     actionController = {
       executeBackAction: () => { },
       executeContinueAction: () => { },
-      executeContinueNavigationAction: () => { }
+      executeContinueNavigationAction: () => { },
+      executeActionNameWithData: () => { },
     };
     spyOn(actionController, 'executeBackAction')
     spyOn(actionController, 'executeContinueAction')
     spyOn(actionController, 'executeContinueNavigationAction')
+    spyOn(actionController, 'executeActionNameWithData')
     windowService = { nativeWindow: {} };
   });
 
@@ -45,6 +47,13 @@ describe('WpfActionControllerService', () => {
     it('should be created', () => {
       expect(service).toBeTruthy();
     });
+
+    describe('ExecuteActionNameWithData', () => {
+      it('should call actionController.ExecuteActionNameWithData', () => {
+        service.ExecuteActionNameWithData('test', 'test');
+        expect(actionController.executeActionNameWithData).toHaveBeenCalled();
+      })
+    })
 
     describe('ExecuteBackAction', () => {
       it('should call actionController.executeBackAction', () => {

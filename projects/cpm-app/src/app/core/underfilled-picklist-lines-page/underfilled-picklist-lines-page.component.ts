@@ -87,7 +87,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     const datePipe = new DatePipe("en-US");
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
 
-    var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
+    this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(shareReplay(1)).pipe(map(x => {
+      return x.map(l => new UnderfilledPicklistLine(l));
+    }));
+
+    /*var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
 
     var unfilledEvents$ = merge(this.pickingEventConnectionService.updateUnfilledPicklistLineSubject, this.pickingEventConnectionService.removedUnfilledPicklistLineSubject);
 
@@ -119,7 +123,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       const result = _.orderBy(displayObjects,
          (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
-    }));
+
+    }));    */
+
 
     // permission: are buttons visible
     this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
