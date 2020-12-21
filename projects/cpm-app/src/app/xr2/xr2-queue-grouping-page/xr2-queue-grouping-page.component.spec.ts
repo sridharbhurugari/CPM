@@ -213,7 +213,8 @@ describe('Xr2QueueGroupingPageComponent', () => {
   });
 
   describe('Queue API Actions', () => {
-    it('should call PicklistQueue service to send to robot grouped on release click', fakeAsync(() => {
+    it('should call PicklistQueue service to send to robot grouped on release click and true dialog', fakeAsync(() => {
+      const releaseDialogSpy = spyOn<any>(component, 'displayReleaseDialog').and.returnValue(of(true));
       const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
       fakePicklistQueueGrouped.DeviceId = 1;
       fakePicklistQueueGrouped.PriorityCode = 'Patient';
@@ -222,7 +223,18 @@ describe('Xr2QueueGroupingPageComponent', () => {
       expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(1);
     }));
 
+    it('should not call PicklistQueue service to send to robot grouped on release click and false dialog', fakeAsync(() => {
+      const releaseDialogSpy = spyOn<any>(component, 'displayReleaseDialog').and.returnValue(of(false));
+      const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
+      fakePicklistQueueGrouped.DeviceId = 1;
+      fakePicklistQueueGrouped.PriorityCode = 'Patient';
+      component.processRelease(fakePicklistQueueGrouped);
+      tick(500);
+      expect(picklistQueueService.sendToRobotGrouped).toHaveBeenCalledTimes(0);
+    }));
+
     it('should call picklistqueue service and refresh data on specific grouping', fakeAsync(() => {
+      const releaseDialogSpy = spyOn<any>(component, 'displayReleaseDialog').and.returnValue(of(true));
       const fakePicklistQueueGrouped = new PicklistQueueGrouped(null);
       fakePicklistQueueGrouped.PriorityCode = 'Patient';
       fakePicklistQueueGrouped.DeviceId  = 1;
