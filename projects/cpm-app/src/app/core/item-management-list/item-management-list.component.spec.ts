@@ -100,6 +100,8 @@ describe('ItemManagementListComponent', () => {
     fixture = TestBed.createComponent(ItemManagementListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    component.deviceInformationList=[{DeviceId:8,Description:"SAMPLE",DefaultOwnerName:"SAMPLE",DeviceTypeId:'2100',IsActive:true,CurrentLeaseHolder:Guid.create()},
+    {DeviceId:9,Description:"SAMPLE11",DefaultOwnerName:"SAMPLE11",DeviceTypeId:'2100',IsActive:true,CurrentLeaseHolder:Guid.create()}];
   });
 
   it('should create', () => {
@@ -133,6 +135,7 @@ describe('ItemManagementListComponent', () => {
     it('filter and format report data list', () => {
     component.reportPickListLines$ = of(arrTestData);
     component.arrReportList = arrTestData;
+
     component.filterAndFormatReportList();
    })
   });
@@ -171,9 +174,7 @@ describe('ItemManagementListComponent', () => {
     let sortedXR2Inv = of(
       _.orderBy(component.arrReportList, (x) => x.FormattedGenericName.toLowerCase(), "asc")
     );
-    component.deviceInformationList=[{DeviceId:8,Description:"SAMPLE",DefaultOwnerName:"SAMPLE",DeviceTypeId:'2100',IsActive:true,CurrentLeaseHolder:Guid.create()},
-    {DeviceId:9,Description:"SAMPLE11",DefaultOwnerName:"SAMPLE11",DeviceTypeId:'2100',IsActive:true,CurrentLeaseHolder:Guid.create()}];
-     let tableBody$ = tableBody.call(colDefinitions,sortedXR2Inv,ReportConstants.Xr2InventoryReport);
+    let tableBody$ = tableBody.call(colDefinitions,sortedXR2Inv,ReportConstants.Xr2InventoryReport);
      component.printTheReport(tableBody$,8);
    })
   });
