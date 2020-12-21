@@ -4,7 +4,7 @@ import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-li
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import { of, Subject } from 'rxjs';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, Route } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
@@ -24,11 +24,12 @@ import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/d
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
   let component: UnderfilledPicklistLinesPageComponent;
   let fixture: ComponentFixture<UnderfilledPicklistLinesPageComponent>;
-  let wpfActionControllerService: Partial<WpfActionControllerService>;
+  let routerMock: Partial<Router>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let pickingEventConnectionService: Partial<PickingEventConnectionService>;
   let printWithBaseData: jasmine.Spy;
@@ -81,9 +82,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
 ];
 
   beforeEach(async(() => {
-    wpfActionControllerService = { ExecuteBackAction: () => { } };
-    spyOn(wpfActionControllerService, 'ExecuteBackAction');
-    printWithBaseData = jasmine.createSpy('printWithBaseData');
+    routerMock = { navigate: () => of<boolean>().toPromise() };
+    spyOn(routerMock, 'navigate');
+    printWithBaseData = jasmine.createSpy('navigate');
     const pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData
     };
@@ -110,6 +111,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         MockTranslatePipe,
         MockedDatePipe,
         MockAppHeaderContainer,
+        MockCpClickableIconComponent
       ],
       providers: [
         { provide: UnderfilledPicklistLinesService, useValue: { get: () => of([]) } },
@@ -123,10 +125,11 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
-        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
         { provide: PopupDialogService, useValue: simpleDialogService },
-        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService}
+        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService},
+        { provide: Router, useValue: routerMock },
+        { provide: Location, useValue: location },
       ],
       imports: [
         FooterModule,
@@ -170,9 +173,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   });
 
   describe('navigateBack', () => {
-    it('should call wpfActionControllerService.back', () => {
+    it('should call router.navigate', () => {
       component.navigateBack();
-      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalled();
+      expect(routerMock.navigate).toHaveBeenCalled();
     });
   });
 

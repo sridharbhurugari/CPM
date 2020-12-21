@@ -3,7 +3,7 @@
       <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="requestStatus != 'none'" *ngIf="hasActiveXR2Devices()"
       [buttonIcon]="requestStatus === 'printing' ? 'spin' : 'print'" (click)="printXR2Inventory()" ></oc-button-action>
         <app-header-container></app-header-container>
-        <oc-search-box class="searchbox" #searchBox placeHolderText="Search"></oc-search-box>
+        <oc-search-box class="searchbox" #searchBox [placeHolderText]="'SEARCH_TEXT' | translate"></oc-search-box>
     </div>
     <ng-container>
         <oc-grid #ocgrid ocgridfilter="false" appGridSortCol [initialSortPropertyName]="itemDescriptionPropertyName"

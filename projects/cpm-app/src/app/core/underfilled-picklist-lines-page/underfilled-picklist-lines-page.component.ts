@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, merge } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map, shareReplay, switchMap, scan } from 'rxjs/operators';
@@ -70,12 +70,12 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,
     private resetPickRoutesService: ResetPickRoutesService,
-    private wpfActionControllerService: WpfActionControllerService,
     public translateService: TranslateService,
     public pdfPrintService: PdfPrintService,
     private dialogService: PopupDialogService,
     private workstationTrackerService: WorkstationTrackerService,
-    private pickingEventConnectionService: PickingEventConnectionService
+    private pickingEventConnectionService: PickingEventConnectionService,
+    private router: Router
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -88,7 +88,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     const datePipe = new DatePipe("en-US");
     this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
 
-    var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
+    this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(shareReplay(1)).pipe(map(x => {
+      return x.map(l => new UnderfilledPicklistLine(l));
+    }));
+
+    /*var initialPicklistLines$ = this.underfilledPicklistLinesService.get(orderId);
 
     var unfilledEvents$ = merge(this.pickingEventConnectionService.updateUnfilledPicklistLineSubject, this.pickingEventConnectionService.removedUnfilledPicklistLineSubject);
 
@@ -120,7 +124,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       const result = _.orderBy(displayObjects,
          (x: UnderfilledPicklistLine) => [x.DestinationSortValue, x.ItemFormattedGenericName.toLowerCase()]);
       return result;
-    }));
+
+    }));    */
+
 
     // permission: are buttons visible
     this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
@@ -155,7 +161,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
 
   navigateBack() {
     this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
-      this.wpfActionControllerService.ExecuteBackAction();
+      this.router.navigate(['core/picklists/underfilled']);
     });
   }
 
@@ -289,7 +295,7 @@ getButtonEnabled(): boolean  {
 
     this.getDocumentData();
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-    this.pdfGridReportService.printWithBaseData(tableBody$, of(ReportConstants.UnfilledReport), this.reportBaseData$).subscribe(succeeded => {
+    this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();

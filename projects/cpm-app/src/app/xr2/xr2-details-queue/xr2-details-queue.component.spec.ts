@@ -24,15 +24,9 @@ import { PicklistsQueueEventConnectionService } from '../services/picklists-queu
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { Guid } from 'guid-typescript';
-import { IItemPicklistLine } from '../../api-xr2/data-contracts/i-item-picklist-line';
-import { IPicklistQueueItemNonstandardJson } from '../../api-xr2/events/i-picklist-queue-item-nonstandard-json';
 import { IXr2OrderGroupKey } from '../../api-xr2/events/i-xr2-order-group-key';
-import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { OutputDeviceTypeId } from '../../shared/constants/output-device-type-id';
 import { DestinationTypes } from '../../shared/constants/destination-types';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
-import { update } from 'lodash';
-import { last } from 'rxjs/operators';
 
 @Component({
   selector: 'oc-search-box',
@@ -508,7 +502,8 @@ describe('Xr2DetailsQueueComponent', () => {
   });
 
   describe('Queue data updates', () => {
-    it('should remove picklist queue item by order key', () => {
+    it('should remove picklist queue item by order key and send event to update multi select', () => {
+      const multiSelectEvent = spyOn(component.removeMultiSelectEvent, 'emit');
       const mockGuid = Guid.create();
       const DeviceLocationId = 1;
       const OrderGroupDestinationId = '1';
@@ -527,10 +522,12 @@ describe('Xr2DetailsQueueComponent', () => {
       queueItem.RobotPickGroupId = mockGuid;
 
       component.picklistQueueItems = [queueItem];
+      component.selectedItems = new Set([queueItem]);
 
       component.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
 
       expect(component.picklistQueueItems.length).toBe(0);
+      expect(multiSelectEvent).toHaveBeenCalled();
     });
     it('should clear list on null input for refresh', () => {
       component.picklistQueueItems = [];
@@ -581,7 +578,7 @@ describe('Xr2DetailsQueueComponent', () => {
         expect(component.picklistQueueItems[i].Status).toBe(updatedList[i].Status);
       }
     });
-    it('should add picklist queue item to queue', () => {
+    it('should add picklist queue item to queue ', () => {
       component.picklistQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
@@ -611,7 +608,8 @@ describe('Xr2DetailsQueueComponent', () => {
 
       expect(component.picklistQueueItems.length).toBe(previousLength + 1);
     });
-    it('should update picklist queue item', () => {
+    it('should update picklist queue item and send event to update multi select', () => {
+      const multiSelectEvent = spyOn(component.addOrUpdateMultiSelectEvent, 'emit');
       component.picklistQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
@@ -629,14 +627,16 @@ describe('Xr2DetailsQueueComponent', () => {
       const previousLength = component.picklistQueueItems.length;
       const lastIndex = component.picklistQueueItems.length - 1;
       const lastItem = component.picklistQueueItems[lastIndex];
-      const updatedItem = new PicklistQueueItem(lastItem);
+      const updatedItem = lastItem;
       updatedItem.Status = 4;
+      component.selectedItems = new Set([updatedItem]);
 
 
       component.addOrUpdatePicklistQueueItem(updatedItem);
 
       expect(component.picklistQueueItems.length).toBe(previousLength);
       expect(component.picklistQueueItems[lastIndex].Status).toBe(updatedItem.Status);
+      expect(multiSelectEvent).toHaveBeenCalled();
     });
   });
 });

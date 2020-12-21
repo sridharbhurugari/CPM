@@ -23,4 +23,12 @@ export class SystemConfigurationService {
       headers: this.ocapHttpHeadersService.getHeaders(), params }
       );
   }
+
+  getPickingSafetyStockConfig(): Observable<IConfigurationValue> {
+    return this.GetConfigurationValues('ITEM', 'PICKING_SAFETYSTOCK_ISSUE');
+  }
+
+  getSafetyStockQuickAdvanceConfig(): Observable<IConfigurationValue> {
+    return this.GetConfigurationValues('DISPENSING', 'SAFETYSTOCK_QUICK_ADVANCE');
+  }
 }

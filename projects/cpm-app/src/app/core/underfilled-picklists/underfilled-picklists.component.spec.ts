@@ -13,7 +13,9 @@ import { WorkstationTrackerService } from '../../api-core/services/workstation-t
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { WindowService } from '../../shared/services/window-service';
+import { Router } from '@angular/router';
 describe('UnderfilledPicklistsComponent', () => {
+  let routerMock: Partial<Router> = { navigate : (c, n) => of<boolean>().toPromise() };
   let component: UnderfilledPicklistsComponent;
   let fixture: ComponentFixture<UnderfilledPicklistsComponent>;
   let event: IColHeaderSortChanged = {ColumnPropertyName:"OrderId",SortDirection:"asc"};
@@ -24,6 +26,7 @@ describe('UnderfilledPicklistsComponent', () => {
   const translateService: Partial<TranslateService> = { get : () => of() };
   const popupDialogService: Partial<PopupDialogService> = { showOnce: jasmine.createSpy('showOnce') };
   beforeEach(async(() => {
+    spyOn(routerMock, 'navigate').and.returnValue(of<boolean>().toPromise());
     spyOn(workstationTrackerService, 'GetWorkstationShortNames').and.returnValue(of(['']));
     spyOn(translateService, 'get').and.returnValue(of(['']));
     TestBed.configureTestingModule({
@@ -40,7 +43,9 @@ describe('UnderfilledPicklistsComponent', () => {
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
         { provide: WindowService, useValue: {} },
-        { provide: TranslateService, useValue: translateService }
+        { provide: TranslateService, useValue: translateService },
+        { provide: Router, routerMock },
+        { provide: Location, location },
       ],
       imports: [ GridModule ]
     })
