@@ -295,7 +295,7 @@ getButtonEnabled(): boolean  {
 
     this.getDocumentData();
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-    this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
+    this.pdfGridReportService.printWithBaseData(tableBody$, of(ReportConstants.UnfilledReport), this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();
