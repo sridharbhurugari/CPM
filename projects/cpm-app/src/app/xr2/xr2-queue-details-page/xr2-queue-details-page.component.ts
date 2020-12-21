@@ -431,7 +431,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.dialogService.showOnce(properties);
   }
 
-    /* istanbul ignore next */
+  /* istanbul ignore next */
   private displayRerouteDialog(): Observable<boolean> {
     return forkJoin(this.translations$).pipe(flatMap(r => {
       const translations = r[0];
