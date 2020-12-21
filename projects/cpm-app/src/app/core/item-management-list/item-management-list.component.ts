@@ -61,9 +61,6 @@ export class ItemManagementListComponent implements AfterViewInit {
   reportBasedata: IAngularReportBaseData;
   reportPickListLines$: Observable<XR2InventoryLists[]>;
   activeXR2DevicesCount: number = 0;
-  itemHeaderKey = "ITEM";
-  packsizeHeaderKey = "PACKSIZE";
-  qohHeaderKey = "QOH";
   qtyFilledHeaderKey = "QTY_FILLED_REQUESTED";
   dateHeaderKey = "DATE";
   arrReportList: XR2InventoryLists[] = [];
@@ -86,15 +83,13 @@ export class ItemManagementListComponent implements AfterViewInit {
     private itemManagementService: ItemManagementService,
     private tableBodyService: TableBodyService,
     private pdfGridReportService: PdfGridReportService,
-    pdfPrintService: PdfPrintService,
+    private pdfPrintService: PdfPrintService,
     private simpleDialogService: SimpleDialogService,
     public translateService: TranslateService,
     private devicesService: DevicesService
   ) {
     this.reportTitle$ = translateService.get("XR2_INV_REPORT_TITLE");
-    this.reportBaseData$ = pdfPrintService
-      .getReportBaseData()
-      .pipe(shareReplay(1));
+    this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
 
   orderChanged(orderedItems: ItemManagement[]) {
@@ -137,14 +132,8 @@ export class ItemManagementListComponent implements AfterViewInit {
   }
 
   getReportData() {
-    this.reportPickListLines$ = this.itemManagementService
-      .getXR2ReportData()
-      .pipe(
-        map((x) => {
-          return x.map((p) => new XR2InventoryLists(p));
-        }),
-        shareReplay(1)
-      );
+    this.reportPickListLines$ = this.itemManagementService.getXR2ReportData().pipe(map((x) => {
+          return x.map((p) => new XR2InventoryLists(p));}),shareReplay(1));
 
     this.reportBaseData$.subscribe();
     this.reportPickListLines$.subscribe((p) => {
@@ -155,83 +144,54 @@ export class ItemManagementListComponent implements AfterViewInit {
 
   }
 
-
-
   filterAndFormatReportList() {
     const datePipe = new DatePipe("en-US");
+    const singleNewLine ="\n";
+    const threeNewlines = "\n\n\n";
+    const twoNewlines = "\n\n";
+    const space =" ";
     let arrUniqueReportList: XR2InventoryLists[] = [];
     if (this.reportPickListLines$) {
-      let result = this.groupByReportData(this.arrReportList, function (item) {
+      let groupedData = this.groupByReportData(this.arrReportList, function (item) {
         return [item.DeviceLocationID, item.DeviceDescription, item.ItemId];
       });
       console.log(arrUniqueReportList);
-      for (let i = 0; i < result.length; i++) {
+      var self = this;
+      groupedData.forEach(function(indData){
         let value: XR2InventoryLists = {
-          ItemId: "",
-          FormattedGenericName: "",
-          TradeName: "",
-          QuantityOnHand: 0,
-          FormattedQuantityOnHand: "",
-          DeviceLocationID: 0,
-          DeviceID: 0,
-          DeviceDescription: "",
-          PackSize: 0,
-          PackSizeMin: 0,
-          PackSizeMax: 0,
-          UnitsOfIssue: "",
-          TotalPacks: 0,
-          FormattedPackSize: "",
-          FormattedPackSizeMin: "",
-          FormattedPackSizeMax: "",
-          FormattedExpirationDate: "",
-          OmniSiteID: "",
-          ExpirationDate: "",
-        };
-        for (let j = 0; j < result[i].length; j++) {
-          value.ItemId = result[i][j].ItemId;
-          value.FormattedGenericName = result[i][j].FormattedGenericName;
-          value.TradeName = result[i][j].TradeName;
-          value.QuantityOnHand = result[i][j].QuantityOnHand;
-          value.FormattedQuantityOnHand +=
-            result[i][j].QuantityOnHand +
-            " " +
-            result[i][j].UnitsOfIssue +
-            "\n" +
-            "Packs:" +
-            result[i][j].TotalPacks +
-            "\n\n";
-          value.DeviceLocationID = result[i][j].DeviceLocationID;
-          value.DeviceID = result[i][j].DeviceID;
-          value.DeviceDescription = result[i][j].DeviceDescription;
-          value.PackSize = result[i][j].PackSize;
-          value.PackSizeMin = result[i][j].PackSizeMin;
-          value.PackSizeMax = result[i][j].PackSizeMax;
-          value.UnitsOfIssue = result[i][j].UnitsOfIssue;
-          value.TotalPacks = result[i][j].TotalPacks;
-          value.FormattedPackSize += result[i][j].PackSize + "\n\n\n";
-          value.FormattedPackSizeMin +=
-            result[i][j].PackSizeMin +
-            " " +
-            result[i][j].UnitsOfIssue +
-            "\n\n\n";
-          value.FormattedPackSizeMax +=
-            result[i][j].PackSizeMax +
-            " " +
-            result[i][j].UnitsOfIssue +
-            "\n\n\n";
-          value.FormattedExpirationDate += this.checkValidDate(
-            result[i][j].ExpirationDate
-          )
-            ? datePipe.transform(
-                new Date(result[i][j].ExpirationDate),
-                "M/d/yy   h:mm a"
-              )
-            : " ";
-          +"\n\n\n";
-          value.OmniSiteID = result[i][j].OmniSiteID;
-        }
-        arrUniqueReportList.push(value);
-      }
+          ItemId: "",FormattedGenericName: "",TradeName: "",QuantityOnHand: 0,FormattedQuantityOnHand: "",DeviceLocationID: 0,DeviceID: 0,DeviceDescription: "",
+          PackSize: 0,PackSizeMin: 0,PackSizeMax: 0,UnitsOfIssue: "",TotalPacks: 0,FormattedPackSize: "",FormattedPackSizeMin: "",FormattedPackSizeMax: "",
+          FormattedExpirationDate: "",OmniSiteID: "",ExpirationDate: ""};
+        indData.forEach(element => {
+          value.ItemId = element.ItemId;
+          value.FormattedGenericName = element.FormattedGenericName;
+          value.TradeName = element.TradeName;
+          value.QuantityOnHand = element.PackSize*element.TotalPacks;
+          value.DeviceLocationID = element.DeviceLocationID;
+          value.DeviceID = element.DeviceID;
+          value.DeviceDescription = element.DeviceDescription;
+          value.PackSize = element.PackSize;
+          value.PackSizeMin = element.PackSizeMin;
+          value.PackSizeMax = element.PackSizeMax;
+          value.UnitsOfIssue = element.UnitsOfIssue;
+          value.TotalPacks = element.TotalPacks;
+          value.FormattedPackSize += element.PackSize + threeNewlines;
+          value.FormattedQuantityOnHand += value.QuantityOnHand + space + element.UnitsOfIssue + singleNewLine + "Packs:" + element.TotalPacks + twoNewlines;
+          value.FormattedPackSizeMin +=  element.PackSizeMin + space+ element.UnitsOfIssue + threeNewlines;
+          value.FormattedPackSizeMax +=  element.PackSizeMax + space + element.UnitsOfIssue + threeNewlines;
+            if(self.checkValidDate(element.ExpirationDate))
+            {
+              value.FormattedExpirationDate += datePipe.transform(new Date(element.ExpirationDate), "MM/dd/yyyy" ) + threeNewlines;
+            }
+            else
+            {
+              space + threeNewlines;
+            }
+          value.OmniSiteID = element.OmniSiteID;
+        },
+        arrUniqueReportList.push(value));
+      },
+     );
     }
     this.reportPickListLines$ = of(arrUniqueReportList);
   }
@@ -261,49 +221,31 @@ export class ItemManagementListComponent implements AfterViewInit {
   printDeviceReport(element: number) {
     var colDefinitions: ITableColumnDefintion<XR2InventoryLists>[] = [
       {
-        cellPropertyNames: ["FormattedGenericName", "TradeName", "ItemId"],
-        headerResourceKey: "ITEM",
-        width: "60%",
+        cellPropertyNames: ["FormattedGenericName", "TradeName", "ItemId"],headerResourceKey: "ITEM", width: "60%",
       },
       {
-        cellPropertyNames: ["FormattedPackSize"],
-        headerResourceKey: "PACKSIZE",
-        width: "4%",
+        cellPropertyNames: ["FormattedPackSize"],headerResourceKey: "PACKSIZE",width: "4%",
       },
       {
-        cellPropertyNames: ["FormattedQuantityOnHand"],
-        headerResourceKey: "QOH",
-        width: "10%",
+        cellPropertyNames: ["FormattedQuantityOnHand"],headerResourceKey: "QOH",width: "10%",
       },
       {
-        cellPropertyNames: ["FormattedPackSizeMin"],
-        headerResourceKey: "PACKSIZE_MIN",
-        width: "8%",
+        cellPropertyNames: ["FormattedPackSizeMin"],headerResourceKey: "PACKSIZE_MIN",width: "8%",
       },
       {
-        cellPropertyNames: ["FormattedPackSizeMax"],
-        headerResourceKey: "PACKSIZE_MAX",
-        width: "8%",
+        cellPropertyNames: ["FormattedPackSizeMax"],headerResourceKey: "PACKSIZE_MAX",width: "8%",
       },
       {
-        cellPropertyNames: ["FormattedExpirationDate"],
-        headerResourceKey: "EARLIEST_EXP_DATE",
-        width: "10%",
+        cellPropertyNames: ["FormattedExpirationDate"],headerResourceKey: "EARLIEST_EXP_DATE",width: "10%",
       },
     ];
 
     if (this.reportPickListLines$) {
-      this.displayFilteredList$ = this.reportPickListLines$.pipe(
-        map((eventsListItems) => {
-          return _.orderBy(
-            eventsListItems
+      this.displayFilteredList$ = this.reportPickListLines$.pipe(map((eventsListItems) => {
+        return _.orderBy(eventsListItems
               .filter((item) => item.DeviceID === element)
               .map((p) => new XR2InventoryLists(p)),
-            (p) => p.FormattedGenericName.toLowerCase(),
-            "asc"
-          );
-        })
-      );
+            (p) => p.FormattedGenericName.toLowerCase(),"asc");}));
 
       this.displayFilteredList$
         .pipe(
@@ -324,13 +266,8 @@ export class ItemManagementListComponent implements AfterViewInit {
       _.orderBy(items, (x) => x.FormattedGenericName.toLowerCase(), "asc")
     );
 
-    let tableBody$ = this.tableBodyService.buildTableBody(
-      colDefinitions,
-      sortedXR2Inv,
-      ReportConstants.Xr2InventoryReport
-    );
-
-    this.printingReport(tableBody$, element);
+    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions,sortedXR2Inv,ReportConstants.Xr2InventoryReport);
+    this.printTheReport(tableBody$, element);
   }
 
   checkValidDate(date: string): boolean {
@@ -346,21 +283,15 @@ export class ItemManagementListComponent implements AfterViewInit {
     }
   }
 
-  printingReport(tableBody: Observable<ContentTable>, deviceId: number) {
+  printTheReport(tableBody: Observable<ContentTable>, deviceId: number) {
     console.log("printing started");
     this.setDeviceDescriptionData(
-      this.deviceInformationList.find((obj) => obj.DeviceId === deviceId)
-        .Description
+      this.deviceInformationList.find((obj) => obj.DeviceId === deviceId).Description
     );
     let reportBaseData$ = of({ ...this.reportBasedata });
 
     try {
-      this.pdfGridReportService
-        .printWithBaseData(
-          tableBody,
-          of(ReportConstants.Xr2InventoryReport),
-          reportBaseData$
-        )
+      this.pdfGridReportService.printWithBaseData(tableBody, of(ReportConstants.Xr2InventoryReport),reportBaseData$)
         .subscribe(
           (succeeded) => {
             if (!succeeded) {
