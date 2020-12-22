@@ -113,16 +113,23 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       if (!result) {
         return;
       }
+
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+        this.constructor.name + 'Reroute clicked - rerouting current selected item/items');
       this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
   }
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + 'Release clicked - releasing current selected item/items');
     this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + 'Print clicked - printing current selected item/items');
     this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
@@ -157,9 +164,19 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       .map(x => ReleasablePicklistQueueItem.fromPicklistQueueItem(x)))
       .subscribe(
         success => {
-          this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
+          try {
+            this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
+          } catch(exception) {
+            this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+              this.constructor.name + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotSuccess failed: ' + exception);
+          }
         }, error => {
-          this.handleSendQueueItemsToRobotError(picklistQueueItems);
+          try {
+            this.handleSendQueueItemsToRobotError(picklistQueueItems, error);
+          } catch(exception) {
+            this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+              this.constructor.name + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotError failed: ' + exception);
+          }
         });
   }
 
@@ -169,9 +186,19 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.picklistsQueueService.rerouteQueueItems(picklistQueueItems
       .map(x => ReroutablePicklistQueueItem.fromPicklistQueueItem(x))).subscribe(
       success => {
-        this.handleRerouteQueueItemsSuccess(picklistQueueItems);
+        try {
+          this.handleRerouteQueueItemsSuccess(picklistQueueItems);
+        } catch(exception) {
+          this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+            this.constructor.name + ' rerouteQueueItems - handleRerouteQueueItemsSuccess failed: ' + exception);
+        }
       }, error => {
-        this.handleRerouteQueueItemsError(picklistQueueItems);
+        try {
+          this.handleRerouteQueueItemsError(picklistQueueItems, error);
+        } catch(exception) {
+          this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+            this.constructor.name + ' rerouteQueueItems - handleRerouteQueueItemsError failed: ' + exception);
+        }
       });
   }
 
@@ -185,9 +212,19 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
     this.picklistsQueueService.printQueueItemsLabels(robotPrintRequestList).subscribe(
       success => {
-        this.handlePrintQueueItemsLabelsSuccess(picklistQueueItems);
+        try {
+          this.handlePrintQueueItemsLabelsSuccess(picklistQueueItems);
+        } catch(exception) {
+          this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+            this.constructor.name + ' printQueueItems - handlePrintQueueItemsSuccess failed: ' + exception);
+        }
       }, error => {
-        this.handlePrintQueueItemsLabelsError(picklistQueueItems);
+        try {
+          this.handlePrintQueueItemsLabelsError(picklistQueueItems, error);
+        } catch(exception) {
+          this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+            this.constructor.name + ' printQueueItems - handlePrintQueueItemsError failed: ' + exception);
+        }
       });
   }
 
@@ -275,7 +312,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
   }
 
-  private handleSendQueueItemsToRobotError(picklistQueueItems: PicklistQueueItem[]) {
+  private handleSendQueueItemsToRobotError(picklistQueueItems: PicklistQueueItem[], error: any) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
+      this.constructor.name + ' handleSendQueueItemsToRobotError - Failed To Save: ' + error);
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = false;
     });
@@ -290,7 +329,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
   }
 
-  private handleRerouteQueueItemsError(picklistQueueItems: PicklistQueueItem[]) {
+  private handleRerouteQueueItemsError(picklistQueueItems: PicklistQueueItem[], error: any) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
+      this.constructor.name + ' handleRerouteQueueItemsError - Failed To Save: ' + error);
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = false;
     });
@@ -305,7 +346,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
   }
 
-  private handlePrintQueueItemsLabelsError(picklistQueueItems: PicklistQueueItem[]) {
+  private handlePrintQueueItemsLabelsError(picklistQueueItems: PicklistQueueItem[], error: any) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
+      this.constructor.name + ' handlePrintQueueItemsLabelsError - Failed To Save: ' + error);
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = false;
     });

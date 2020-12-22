@@ -284,11 +284,9 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   private applyGroupQueueFilters() {
-    console.log('applyGroupQueueFilters');
     if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId ||
       this.selectedDeviceInformation.DeviceId === 0 || !this.unfilteredPicklistQueueGrouped) {
         this.filteredPicklistQueueGrouped = this.unfilteredPicklistQueueGrouped;
-        console.log('filterPicklistQueueGroupedByDeviceId - No filter/No Data');
         return;
     }
 
@@ -296,8 +294,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
   }
 
   private filterByDevice(deviceId: number, unfilteredArray: PicklistQueueGrouped[]) {
-    console.log('filter by device id : ');
-    console.log(this.selectedDeviceInformation.DeviceId);
     return unfilteredArray.filter((groupedItem) => groupedItem.DeviceId === deviceId);
   }
 

@@ -33,6 +33,7 @@ export class LogService {
   }
 
   private logMessage(verbosity: LogVerbosity, severity: CpmLogLevel, category: string, message: string) {
+    console.log(message);
     const url = this.ocapUrlBuilderService.buildUrl('/api/AngularLogging/logsingleevent');
     return this.httpClient.post(url, { TimeStamp: new Date(),
        Message: message, Verbosity: verbosity, LogLevel: severity, CategoryName: category, ApplicationPrefix: '' } , {
