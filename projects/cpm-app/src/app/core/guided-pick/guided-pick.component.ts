@@ -11,6 +11,7 @@ import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-co
 import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
 import { ICompletePickData } from '../model/i-completed-pick-data';
 import { IGuidedPickData } from '../model/i-guided-pick-data';
+import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
 
 @Component({
   selector: 'app-guided-pick',
@@ -51,6 +52,9 @@ export class GuidedPickComponent implements OnDestroy {
   @Output()
   holdClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @Output()
+  adjustClicked: EventEmitter<IAdjustQoh> = new EventEmitter<IAdjustQoh>();
+
   userLocale: string;
   pickTotal: number;
   expDateInPast: boolean;
@@ -85,6 +89,13 @@ export class GuidedPickComponent implements OnDestroy {
       productScanRequired: this.guidedPickData.isProductScanRequired,
       safetyStockScanInfo: this.safetyStockScanInfo,
       secondaryScanInfo: this.secondaryScanInfo,
+    };
+  }
+
+  getAdjustQohData(): IAdjustQoh {
+    return {
+      ItemId : this.guidedPickData.pickLocation.ItemId,
+      DeviceLocationId : this.guidedPickData.pickLocation.DeviceLocationId,
     };
   }
 
