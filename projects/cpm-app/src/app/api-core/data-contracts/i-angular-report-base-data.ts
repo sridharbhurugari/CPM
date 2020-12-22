@@ -1,4 +1,6 @@
-export interface IAngularReportBaseData {
+import { IAngularReportBaseExtensionData } from "./i-angular-report-base-extension-data";
+
+export interface IAngularReportBaseData extends IAngularReportBaseExtensionData{
   OmniId: string;
   OmniName: string;
   SiteDescription: string;
@@ -8,7 +10,4 @@ export interface IAngularReportBaseData {
   CombinedAddress: string;
   FormattedDateTime: string;
   FormPrinterName: string;
-  OrderId: string; //For Unfilled report
-  PriorityCode: string; //For Unfilled report
-  DeviceDescriptionName : string; //for XR2 inventory report
 }
