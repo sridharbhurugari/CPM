@@ -15,7 +15,6 @@ import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-q
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 import { Guid } from 'guid-typescript';
-import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -98,7 +97,6 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
-  searchPipe: SearchPipe = new SearchPipe();
   _searchTextFilter;
  _selectedDeviceInformation;
 
