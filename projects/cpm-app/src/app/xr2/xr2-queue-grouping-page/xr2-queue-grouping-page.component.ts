@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { PicklistsQueueService } from '../../api-xr2/services/picklists-queue.service';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { map, shareReplay, takeUntil } from 'rxjs/operators';
+import { forkJoin, merge, Observable, Subject } from 'rxjs';
+import { flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PopupDialogProperties, PopupDialogType, PopupDialogService } from '@omnicell/webcorecomponents';
 import * as _ from 'lodash';
 import { PicklistsQueueEventConnectionService } from '../services/picklists-queue-event-connection.service';
@@ -46,10 +46,12 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   translatables = [
     'YES',
     'NO',
-    'REROUTE',
-    'XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE',
-    'FAILEDTOREROUTE_HEADER_TEXT',
-    'FAILEDTOREROUTE_BODY_TEXT',
+    'OK',
+    'RELEASE',
+    'XR2_QUEUE_RELEASE_PRIORITY_DIALOG_MESSAGE',
+    'FAILEDTOSAVE_HEADER_TEXT',
+    'FAILEDTOSAVE_BODY_TEXT',
+    'FAILEDTREFRESH'
   ];
   translations$: Observable<any>;
   private _loggingCategory: string;
@@ -99,23 +101,29 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   processRelease(picklistQueueGrouped: PicklistQueueGrouped) {
 
-    picklistQueueGrouped.Saving = true;
-    this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
-      result => {
-        try {
-        this.handleSendToRobotGroupedSuccess(picklistQueueGrouped);
-        } catch (e) {
-          this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' processRelease - handleSendToRobotGroupedSuccess failed: ' + e);
-        }
-      }, error => {
-        try {
-        this.handleSendToRobotGroupedError(picklistQueueGrouped);
-        } catch (e) {
-          this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' processRelease - handleSendToRobotGroupedError failed: ' + e);
-        }
-      });
+    this.displayReleaseDialog().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      picklistQueueGrouped.Saving = true;
+      this.picklistsQueueService.sendToRobotGrouped(picklistQueueGrouped).subscribe(
+        result => {
+          try {
+          this.handleSendToRobotGroupedSuccess(picklistQueueGrouped);
+          } catch (e) {
+            this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+              this.constructor.name + ' processRelease() - handleSendToRobotGroupedSuccess failed: ' + e);
+          }
+        }, error => {
+          try {
+          this.handleSendToRobotGroupedError(picklistQueueGrouped);
+          } catch (e) {
+            this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+              this.constructor.name + ' processRelease() - handleSendToRobotGroupedError failed: ' + e);
+          }
+        });
+    });
   }
 
   private handleSendToRobotGroupedError(picklistQueueGrouped: PicklistQueueGrouped) {
@@ -235,28 +243,53 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   /* istanbul ignore next */
   private displayFailedToSaveDialog(): void {
-
+    this.translations$.subscribe(translations => {
       const properties = new PopupDialogProperties('Role-Status-Warning');
-      this.translateService.get('FAILEDTOSAVE_HEADER_TEXT').subscribe(result => { properties.titleElementText = result; });
-      this.translateService.get('FAILEDTOSAVE_BODY_TEXT').subscribe(result => { properties.messageElementText = result; });
-      this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
+      properties.titleElementText = translations.FAILEDTOSAVE_HEADER_TEXT;
+      properties.messageElementText = translations.FAILEDTOSAVE_BODY_TEXT;
+      properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
       properties.dialogDisplayType = PopupDialogType.Error;
       properties.timeoutLength = 60;
       this.dialogService.showOnce(properties);
-    }
+    });
+  }
 
-    /* istanbul ignore next */
-    private displayFailedToRefresh(): void {
+  /* istanbul ignore next */
+  private displayFailedToRefresh(): void {
+    this.translations$.subscribe(translations => {
       const properties = new PopupDialogProperties('Role-Status-Warning');
-      this.translateService.get('FAILEDTREFRESH').subscribe(result => { properties.titleElementText = result; });
-      this.translateService.get('FAILEDTREFRESH').subscribe(result => { properties.messageElementText = result; });
-      this.translateService.get('OK').subscribe((result) => { properties.primaryButtonText = result; });
+      properties.titleElementText = translations.FAILEDTREFRESH;
+      properties.messageElementText = translations.FAILEDTREFRESH;
+      properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
       properties.dialogDisplayType = PopupDialogType.Error;
       properties.timeoutLength = 60;
       this.dialogService.showOnce(properties);
-    }
+    });
+  }
+
+  /* istanbul ignore next */
+  private displayReleaseDialog(): Observable<boolean> {
+    return forkJoin(this.translations$).pipe(flatMap(r => {
+      const translations = r[0];
+      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
+      properties.titleElementText = translations.RELEASE;
+      properties.messageElementText = translations.XR2_QUEUE_RELEASE_PRIORITY_DIALOG_MESSAGE;
+      properties.showPrimaryButton = true;
+      properties.primaryButtonText = translations.YES;
+      properties.showSecondaryButton = true;
+      properties.secondaryButtonText = translations.NO;
+      properties.primaryOnRight = false;
+      properties.showCloseIcon = false;
+      properties.dialogDisplayType = PopupDialogType.Info;
+      properties.timeoutLength = 0;
+      const component = this.dialogService.showOnce(properties);
+      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      return merge(primaryClick$, secondaryClick$);
+    }));
+  }
 }

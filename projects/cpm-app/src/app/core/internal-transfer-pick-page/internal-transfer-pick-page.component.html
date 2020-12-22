@@ -2,7 +2,8 @@
     [guidedPickData]="guidedPickData$ | async"
     (pickCompleted)="completePick($event)"
     (holdClicked)="hold($event)"
-    (pauseClicked)="navigateBack()">
+    (pauseClicked)="pause()"
+    (adjustClicked)="adjustQoh($event)">
         <ng-container part="itemPicks">
             <app-internal-transfer-pick-needs-list [itemNeeds]="itemNeedPicks$ | async"
                 (pickTotalChanged)="pickTotalChanged($event)">

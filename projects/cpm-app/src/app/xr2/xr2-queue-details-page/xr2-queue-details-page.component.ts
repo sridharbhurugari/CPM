@@ -12,7 +12,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogType, PopupDialogProperties, PopupDialogService } from '@omnicell/webcorecomponents';
 import { OutputDeviceAction } from '../../shared/enums/output-device-actions';
 import { SelectionChangeType } from '../../shared/constants/selection-change-type';
-import { WindowService } from '../../shared/services/window-service';
 import { RobotPrintRequest } from '../../api-xr2/data-contracts/robot-print-request';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { LogVerbosity } from 'oal-core';
@@ -80,7 +79,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     private xr2QueueMultiSelectService: Xr2QueueMultiSelectService,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
-    private windowService: WindowService,
     private logService: LogService
     ) {
       this.configureEventHandlers();
@@ -163,7 +161,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         }, error => {
           this.handleSendQueueItemsToRobotError(picklistQueueItems);
         });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   rerouteQueueItems(picklistQueueItems: PicklistQueueItem[]): void {
@@ -176,7 +173,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       }, error => {
         this.handleRerouteQueueItemsError(picklistQueueItems);
       });
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   printQueueItemsLabels(picklistQueueItems: Array<PicklistQueueItem>): void {
@@ -231,7 +227,6 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     return this.xr2QueueMultiSelectService.actionDisableMap.get(this.outputDeviceAction.Reroute).size > 0
     || !this.multiSelectMode;
   }
-
 
   private configureEventHandlers(): void {
     if (!this.picklistQueueEventConnectionService) {
@@ -412,7 +407,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.dialogService.showOnce(properties);
   }
 
-    /* istanbul ignore next */
+  /* istanbul ignore next */
   private displayRerouteDialog(): Observable<boolean> {
     return forkJoin(this.translations$).pipe(flatMap(r => {
       const translations = r[0];

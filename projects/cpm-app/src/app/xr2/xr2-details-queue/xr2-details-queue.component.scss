@@ -38,6 +38,30 @@
   justify-content: space-between;
 }
 
-.centered-text {
-  text-align: center;
+.centered-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.width-destination {
+  width: 415px;
+}
+
+.width-item {
+  width: 110px;
+}
+
+.width-status {
+  width: 170px;
+}
+
+.width-device {
+  width: 250px;
+}
+
+.width-actions {
+  width: 250px;
+}
+
+
