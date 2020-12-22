@@ -3,10 +3,9 @@ import { nameof } from '../../shared/functions/nameof';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Observable, Subject } from 'rxjs';
-import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
+import { SingleselectRowItem, OcSingleselectDropdownComponent, GridComponent } from '@omnicell/webcorecomponents';
 import { PicklistQueueItem } from '../model/picklist-queue-item';
 import { TranslateService } from '@ngx-translate/core';
-import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { Many } from 'lodash';
@@ -39,36 +38,34 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   @Input() clearSelectedItemsEvent: Observable<any>;
 
   @Input()
-  set loadedPicklistQueueItems(value: PicklistQueueItem[]) {
-    this._loadedPicklistQueueItems = value;
-    this._picklistQueueItems = value;
+  set unfilteredPicklistQueueItems(value: PicklistQueueItem[]) {
+    this._unfilteredPicklistQueueItems = value;
+    this._filteredPicklistQueueItems = value;
   }
-  get loadedPicklistQueueItems(): PicklistQueueItem[] {
-    return this._loadedPicklistQueueItems;
+  get unfilteredPicklistQueueItems(): PicklistQueueItem[] {
+    return this._unfilteredPicklistQueueItems;
   }
 
   @Input()
-  set picklistQueueItems(value: PicklistQueueItem[]) {
-    this._picklistQueueItems = value;
-    if (this.windowService.nativeWindow) {
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-    }
+  set filteredPicklistQueueItems(value: PicklistQueueItem[]) {
+    this._filteredPicklistQueueItems = value;
+    this.resizeGrid();
   }
-  get picklistQueueItems(): PicklistQueueItem[] {
-    return this._picklistQueueItems;
+  get filteredPicklistQueueItems(): PicklistQueueItem[] {
+    return this._filteredPicklistQueueItems;
   }
 
   @Input()
   set searchTextFilter(value: string) {
     this._searchTextFilter = value;
-    this.picklistQueueItems = this.searchPipe.transform(this.loadedPicklistQueueItems, value, this.searchFields);
+    this.applyDetailsQueueFilters();
   }
   get searchTextFilter(): string {
     return this._searchTextFilter;
   }
 
-  private _picklistQueueItems: PicklistQueueItem[];
-  private _loadedPicklistQueueItems: PicklistQueueItem[];
+  private _filteredPicklistQueueItems: PicklistQueueItem[];
+  private _unfilteredPicklistQueueItems: PicklistQueueItem[];
 
   selectedItems = new Set<PicklistQueueItem>();
 
@@ -97,25 +94,23 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     BAG: 'BAG',
     BAGS: 'BAGS',
   };
-
   translatables = [
-    'OF'
+    'OF',
+    'NOTRELEASED',
+    'PROCESSING',
   ];
   translations$: Observable<any>;
   ngUnsubscribe = new Subject();
-
-
-  @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
-
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('OrderId'),
     , nameof<PicklistQueueItem>('DeviceDescription')];
 
+  @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
+  @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
   @ViewChild('outputDeviceSingleSelect', { static: true })
   outputDeviceSingleSelect: OcSingleselectDropdownComponent;
 
 
   constructor(
-    private windowService: WindowService,
     private translateService: TranslateService,
     ) {}
 
@@ -142,7 +137,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   /* istanbul ignore next */
-  trackByPickListQueueItemId(index: number, picklistQueueItem: PicklistQueueItem): Guid {
+  trackByPicklistQueueItemId(index: number, picklistQueueItem: PicklistQueueItem): Guid {
     if (!picklistQueueItem) {
       return null;
     }
@@ -236,8 +231,8 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   getOrderSplitDataString(picklistQueueItem: PicklistQueueItem): string {
     let dataString = '';
     let translatedLabel = '';
-    this.translateService.get('OF').subscribe((res: string) => {
-      translatedLabel = res;
+    this.translations$.subscribe(r => {
+      translatedLabel = r.OF;
     });
 
     dataString = `${picklistQueueItem.FilledBoxCount} ${translatedLabel} ${picklistQueueItem.BoxCount}`;
@@ -256,9 +251,24 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     return label;
   }
 
+  getStatusLabel(picklistQueueItem: PicklistQueueItem): string {
+    let label = '';
+    if (picklistQueueItem.Status === 1) {
+      this.translations$.subscribe(r => {
+        label = r.NOTRELEASED;
+      });
+    } else if (picklistQueueItem.Status === 2) {
+      this.translations$.subscribe(r => {
+        label = r.PROCESSING;
+      });
+    }
+
+    return label;
+  }
+
   onSelectAllCheckBox(boxState: any): void {
     if (boxState.selectedState) {
-      this.picklistQueueItems.map((item) => this.selectedItems.add(item));
+      this.filteredPicklistQueueItems.map((item) => this.selectedItems.add(item));
     } else {
       this.clearSelectedItems();
     }
@@ -296,7 +306,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.picklistQueueItems = this.sort(this.picklistQueueItems, event.SortDirection);
+    this.filteredPicklistQueueItems = this.sort(this.filteredPicklistQueueItems, event.SortDirection);
   }
 
   sort(picklistItems: PicklistQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PicklistQueueItem[] {
@@ -310,7 +320,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     ' RobotPickGroupId ' + xr2OrderGroupKey.RobotPickGroupId
     );
 
-    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+    const matchingItemIndex = _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
       const queueRobotPickGroup = x.RobotPickGroupId  != null ? x.RobotPickGroupId.toString() : null;
       const orderGroupKeyPickGroupId = xr2OrderGroupKey.RobotPickGroupId != null ? xr2OrderGroupKey.RobotPickGroupId.toString() : null;
       return x.OrderId === xr2OrderGroupKey.OrderId &&
@@ -325,12 +335,12 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   addOrUpdatePicklistQueueItem(updatedQueueItem: IPicklistQueueItem) {
     console.log('addOrUpdatePickListQueueItem');
     console.log(updatedQueueItem);
-    let matchingPicklistQueueItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+    let matchingPicklistQueueItemIndex = _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
       return x.RobotPickGroupId != null && x.RobotPickGroupId === updatedQueueItem.RobotPickGroupId;
     });
 
     if (matchingPicklistQueueItemIndex < 0) {
-      matchingPicklistQueueItemIndex =  _.findIndex(this.picklistQueueItems, (x) => {
+      matchingPicklistQueueItemIndex =  _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
         return x.RobotPickGroupId === null &&
         x.OrderId === updatedQueueItem.OrderId &&
         x.OrderGroupDestinationId === updatedQueueItem.OrderGroupDestinationId &&
@@ -342,21 +352,22 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
 
     if ((matchingPicklistQueueItemIndex < 0)) {
       console.log('PicklistItem Not Found. Adding Entry');
-      this.picklistQueueItems.push(new PicklistQueueItem(updatedQueueItem));
+      this.unfilteredPicklistQueueItems.push(new PicklistQueueItem(updatedQueueItem));
+      this.applyDetailsQueueFilters();
       return;
     }
 
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemCount =  updatedQueueItem.ItemCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].Status =  updatedQueueItem.Status;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  updatedQueueItem.FilledBoxCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].BoxCount =  updatedQueueItem.BoxCount;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  updatedQueueItem.ItemPicklistLines;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  updatedQueueItem.IsPrintable;
-    this.picklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  updatedQueueItem.RobotPickGroupId;
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].ItemCount =  updatedQueueItem.ItemCount;
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].Status =  updatedQueueItem.Status;
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].FilledBoxCount =  updatedQueueItem.FilledBoxCount;
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].BoxCount =  updatedQueueItem.BoxCount;
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].ItemPicklistLines =  updatedQueueItem.ItemPicklistLines;
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].IsPrintable =  updatedQueueItem.IsPrintable;
+    this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex].RobotPickGroupId =  updatedQueueItem.RobotPickGroupId;
+    this.applyDetailsQueueFilters();
 
-    if (this.isContainedInSelected(this.picklistQueueItems[matchingPicklistQueueItemIndex])) {
-      this.addOrUpdateMultiSelectEvent.emit([this.picklistQueueItems[matchingPicklistQueueItemIndex]]);
+    if (this.isContainedInSelected(this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex])) {
+      this.addOrUpdateMultiSelectEvent.emit([this.unfilteredPicklistQueueItems[matchingPicklistQueueItemIndex]]);
     }
   }
 
@@ -368,7 +379,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     'RobotPickGroupId: ' + removedQueueItem.RobotPickGroupId
     );
 
-    const matchingItemIndex = _.findIndex(this.picklistQueueItems, (x) => {
+    const matchingItemIndex = _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
       return x.OrderId === removedQueueItem.OrderId &&
       x.OrderGroupDestinationId === removedQueueItem.OrderGroupDestinationId &&
       x.DeviceLocationId === removedQueueItem.DeviceLocationId &&
@@ -382,35 +393,34 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   refreshDataOnScreen(updatedItemList: IPicklistQueueItem[]) {
     console.log('refreshDataOnScreen');
     console.log('Current List');
-    console.log(this.picklistQueueItems);
+    console.log(this.unfilteredPicklistQueueItems);
     console.log('New List for screen');
     console.log(updatedItemList);
     if (!updatedItemList) {
         console.log('No item in list clearing');
-        this.picklistQueueItems = [];
+        this.unfilteredPicklistQueueItems = [];
+        this.applyDetailsQueueFilters();
         // Clear event
-        console.log(this.picklistQueueItems);
-        this.removeMultiSelectEvent.emit(this.picklistQueueItems);
+        console.log(this.unfilteredPicklistQueueItems);
+        this.removeMultiSelectEvent.emit(this.unfilteredPicklistQueueItems);
     } else {
         // Remove Items not in source list.
-        for (let i = this.picklistQueueItems.length - 1; i >= 0; i--) {
-          const itemFoundIndex = this.findNonExistingPicklistQueueItemIndex(this.picklistQueueItems[i], updatedItemList);
+        for (let i = this.unfilteredPicklistQueueItems.length - 1; i >= 0; i--) {
+          const itemFoundIndex = this.findNonExistingPicklistQueueItemIndex(this.unfilteredPicklistQueueItems[i], updatedItemList);
           if (itemFoundIndex === -1) {
-            console.log('Removing item in current picklist at index ' + i + '. Item:' + this.picklistQueueItems[i]);
+            console.log('Removing item in current picklist at index ' + i + '. Item:' + this.unfilteredPicklistQueueItems[i]);
             this.removePicklistQueueItemAtIndex(i);
           }
         }
 
         console.log('Removed Non matching Items.');
-        console.log(this.picklistQueueItems);
+        console.log(this.unfilteredPicklistQueueItems);
 
         // Add or Update
         updatedItemList.forEach((x) => {
             this.addOrUpdatePicklistQueueItem(x);
         });
     }
-
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   getOrderDate(picklistQueueItem: PicklistQueueItem): string {
@@ -423,9 +433,17 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    return this.picklistQueueItems.every((item) => {
+    return this.filteredPicklistQueueItems.every((item) => {
       return this.isContainedInSelected(item);
     });
+  }
+
+  private applyDetailsQueueFilters() {
+    this.filteredPicklistQueueItems = this.filterBySearchText(this.searchTextFilter, this.unfilteredPicklistQueueItems);
+  }
+
+  private filterBySearchText(text: string, unfilteredArray: PicklistQueueItem[]) {
+    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   private findNonExistingPicklistQueueItemIndex(itemToRemove: IPicklistQueueItem, sourceList: IPicklistQueueItem[]) {
@@ -447,28 +465,35 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
     console.log('matchingItemIdex');
     console.log(matchingItemIndex);
     console.log('picklistqueue length : ');
-    console.log(this.picklistQueueItems.length);
-    if (matchingItemIndex > -1 && matchingItemIndex < this.picklistQueueItems.length) {
+    console.log(this.unfilteredPicklistQueueItems.length);
+    if (matchingItemIndex > -1 && matchingItemIndex < this.unfilteredPicklistQueueItems.length) {
       console.log('group exists removing it');
-      if (this.isContainedInSelected(this.picklistQueueItems[matchingItemIndex])) {
-        this.removeMultiSelectEvent.emit([this.picklistQueueItems[matchingItemIndex]]);
+      if (this.isContainedInSelected(this.unfilteredPicklistQueueItems[matchingItemIndex])) {
+        this.removeMultiSelectEvent.emit([this.unfilteredPicklistQueueItems[matchingItemIndex]]);
       }
-      this.picklistQueueItems.splice(matchingItemIndex, 1);
-      console.log(this.picklistQueueItems);
+      this.unfilteredPicklistQueueItems.splice(matchingItemIndex, 1);
+      this.applyDetailsQueueFilters();
+      console.log(this.unfilteredPicklistQueueItems);
     } else {
       console.log('Matching Index not found in queue to remove');
     }
-
-    this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
   }
 
   private clearSelectedItems(): void {
-    _.forEach(this.picklistQueueItems, (item) => {
+    _.forEach(this.filteredPicklistQueueItems, (item) => {
       this.selectedItems.delete(item);
     });
   }
 
   private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
+  }
+
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
   }
 }

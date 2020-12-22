@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 
 import { Xr2QueuePageComponent } from './xr2-queue-page.component';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 
 describe('Xr2QueuePageComponent', () => {
@@ -48,13 +49,31 @@ describe('Xr2QueuePageComponent', () => {
       component.onDetailsPageBackNavigation();
 
       expect(component.xr2QueueNavigationParameters).toBe(null);
-    });
+  });
 
   it('should set xr2QueueNavigationParameters on details page continue', () => {
     component.xr2QueueNavigationParameters = xr2QueueNavigationParameters;
     component.onDetailsPageContinueNavigation(xr2QueueNavigationParameters);
 
     expect(component.xr2QueueNavigationParameters).not.toBeNull();
-    });
   });
+
+  it('should set saved configuration on new saved coonfiguration event', () => {
+    component.xr2QueueNavigationParameters = xr2QueueNavigationParameters;
+    component.savedPageConfiguration = {
+      selectedDevice: null,
+      searchTextFilter: 'old',
+      colHeaderSort: null
+    }
+    const newSavedConfiguration: IXr2QueuePageConfiguration = {
+      selectedDevice: null,
+      searchTextFilter: 'new',
+      colHeaderSort: null
+    }
+
+    component.onXr2PageConfigurationUpdateEvent(newSavedConfiguration);
+
+    expect(component.savedPageConfiguration).toEqual(newSavedConfiguration)
+  });
+});
 

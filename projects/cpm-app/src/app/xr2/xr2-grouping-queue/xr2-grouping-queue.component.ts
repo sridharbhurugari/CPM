@@ -1,14 +1,12 @@
 import { Component, Input, ViewChild, OnInit, EventEmitter, Output } from '@angular/core';
 import { nameof } from '../../shared/functions/nameof';
 import * as _ from 'lodash';
-import { SingleselectRowItem, OcSingleselectDropdownComponent } from '@omnicell/webcorecomponents';
+import { SingleselectRowItem, OcSingleselectDropdownComponent, GridComponent } from '@omnicell/webcorecomponents';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
-import { WindowService } from '../../shared/services/window-service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { filter, Many } from 'lodash';
-import { NavigationExtras, Router } from '@angular/router';
+import { Many } from 'lodash';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { DestinationTypes } from '../../shared/constants/destination-types';
@@ -16,6 +14,7 @@ import { Observable } from 'rxjs';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-xr2-grouping-queue',
@@ -33,7 +32,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Input()
   set unfilteredPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._unfilteredPicklistQueueGrouped = value;
-    this.filterPicklistQueueGroupedByDeviceId();
+    this.applyGroupQueueFilters();
   }
 
   get unfilteredPicklistQueueGrouped(): PicklistQueueGrouped[] {
@@ -43,9 +42,10 @@ export class Xr2GroupingQueueComponent implements OnInit {
   @Input()
   set filteredPicklistQueueGrouped(value: PicklistQueueGrouped[]) {
     this._filteredPicklistQueueGrouped = value;
-    if (this.windowService.nativeWindow) {
-      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    if (this.filteredPicklistQueueGrouped) {
+      this.loadSavedConfigurations();
     }
+    this.resizeGrid();
   }
   get filteredPicklistQueueGrouped(): PicklistQueueGrouped[] {
     return this._filteredPicklistQueueGrouped;
@@ -109,11 +109,11 @@ export class Xr2GroupingQueueComponent implements OnInit {
   searchFields = [nameof<PicklistQueueGrouped>('Destination'), nameof<PicklistQueueGrouped>('PriorityCodeDescription'),
     , nameof<PicklistQueueGrouped>('DeviceDescription')];
 
+  @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
   @ViewChild('outputDeviceSingleSelect', { static: true })
   outputDeviceSingleSelect: OcSingleselectDropdownComponent;
 
   constructor(
-    private windowService: WindowService,
     private translateService: TranslateService) {
   }
 
@@ -241,7 +241,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
        this.unfilteredPicklistQueueGrouped[matchingGrouped].ReleasedCount = picklistGrouped.ReleasedCount;
        this.unfilteredPicklistQueueGrouped[matchingGrouped].AreaCount = picklistGrouped.AreaCount;
      }
-    this.filterPicklistQueueGroupedByDeviceId();
+    this.applyGroupQueueFilters();
   }
 
   removePicklistQueueGroup(priorityCode: string, deviceId: number ) {
@@ -254,7 +254,7 @@ export class Xr2GroupingQueueComponent implements OnInit {
       this.unfilteredPicklistQueueGrouped.splice(matchingGroupedIndex, 1);
       console.log(this.unfilteredPicklistQueueGrouped);
     }
-    this.filterPicklistQueueGroupedByDeviceId();
+    this.applyGroupQueueFilters();
   }
 
   refreshDataOnScreen(picklistGroupedList: IPicklistQueueGrouped[]) {
@@ -289,32 +289,38 @@ export class Xr2GroupingQueueComponent implements OnInit {
               this.updatePickListQueueGroupedGrouping(x);
           });
       }
-      this.filterPicklistQueueGroupedByDeviceId();
+      this.applyGroupQueueFilters();
   }
 
   loadAllPicklistQueueGrouped(selectedDevice: SelectableDeviceInfo) {
     this.selectedDeviceInformation = selectedDevice;
-    this.filterPicklistQueueGroupedByDeviceId();
+    this.applyGroupQueueFilters();
   }
 
-  private filterPicklistQueueGroupedByDeviceId() {
-    console.log('filterPicklistQueueGroupedByDeviceId');
+  /* istanbul ignore next */
+  trackByPicklistQueueItemId(index: number, picklistQueueItem: PicklistQueueGrouped): Guid {
+    if (!picklistQueueItem) {
+      return null;
+    }
+    return picklistQueueItem.TrackById;
+  }
+
+  private applyGroupQueueFilters() {
+    console.log('applyGroupQueueFilters');
     if (!this.selectedDeviceInformation || !this.selectedDeviceInformation.DeviceId ||
-        this.selectedDeviceInformation.DeviceId === 0 || !this.unfilteredPicklistQueueGrouped) {
-      console.log('filterPicklistQueueGroupedByDeviceId - No filter/No Data');
-      this.filteredPicklistQueueGrouped = this.unfilteredPicklistQueueGrouped;
-    } else {
-      console.log('filter by device id : ');
-      console.log(this.selectedDeviceInformation.DeviceId);
-      this.filteredPicklistQueueGrouped =
-          this.unfilteredPicklistQueueGrouped.filter((groupedItem) => groupedItem.DeviceId === this.selectedDeviceInformation.DeviceId);
-      console.log(this.unfilteredPicklistQueueGrouped);
+      this.selectedDeviceInformation.DeviceId === 0 || !this.unfilteredPicklistQueueGrouped) {
+        this.filteredPicklistQueueGrouped = this.unfilteredPicklistQueueGrouped;
+        console.log('filterPicklistQueueGroupedByDeviceId - No filter/No Data');
+        return;
     }
 
-    if (this.filteredPicklistQueueGrouped) {
-      this.loadSavedConfigurations();
-    }
-    console.log('filterPicklistQueueGroupedByDeviceId exiting');
+    this.filteredPicklistQueueGrouped = this.filterByDevice(this.selectedDeviceInformation.DeviceId, this.unfilteredPicklistQueueGrouped);
+  }
+
+  private filterByDevice(deviceId: number, unfilteredArray: PicklistQueueGrouped[]) {
+    console.log('filter by device id : ');
+    console.log(this.selectedDeviceInformation.DeviceId);
+    return unfilteredArray.filter((groupedItem) => groupedItem.DeviceId === deviceId);
   }
 
   private loadSavedConfigurations() {
@@ -329,5 +335,13 @@ export class Xr2GroupingQueueComponent implements OnInit {
 
   private setTranslations() {
     this.translations$ = this.translateService.get(this.translatables);
+  }
+
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
   }
 }

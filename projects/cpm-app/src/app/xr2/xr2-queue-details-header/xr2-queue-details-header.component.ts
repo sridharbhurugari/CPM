@@ -38,9 +38,6 @@ export class Xr2QueueDetailsHeaderComponent implements OnInit, AfterViewInit {
       )
       .subscribe(data => {
         this.searchTextFilterEvent.emit(data);
-        if (this.windowService.nativeWindow) {
-          this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-        }
       });
   }
 
