@@ -9,7 +9,8 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { TranslateService } from '@ngx-translate/core';
 import {
   SearchBoxComponent, SingleselectRowItem, PopupDialogService, PopupDialogType,
-  PopupDialogProperties
+  PopupDialogProperties,
+  PopupDialogComponent
 } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
@@ -48,6 +49,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplyItem: SingleselectRowItem;
   popupTimeoutSeconds = 60;
+  lastDialog: PopupDialogComponent;
   inputLevelScan: string;
   nonBarcodeKeyboardInput = '';
   nonBarcodeInputFocus = false;
@@ -177,7 +179,26 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   }
 
   onQuickPickActive(isActive: boolean) {
-    this.robotSelectionDisabled = isActive;
+  if (isActive) { this.closeWarningPopup();}
+  this.robotSelectionDisabled = isActive;
+  }
+
+ closeWarningPopup() {
+   var closed = false;
+   try {
+
+   if (this.lastDialog)
+   {
+    this.lastDialog.onCloseClicked();
+    closed = true;
+   }
+
+  }
+  catch(err)
+  {
+    console.debug("Error in Closed Warning Popup: ", err);
+  }
+   console.debug("Closed Warning Popup: ", closed);
   }
 
   /* istanbul ignore next */
@@ -251,9 +272,9 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Info;
       properties.timeoutLength = 0;
-      let component = this.dialogService.showOnce(properties);
-      let primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      let secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      const component = this.dialogService.showOnce(properties);
+      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
       return merge(primaryClick$, secondaryClick$);
     }));
   }
@@ -262,66 +283,67 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   displayQuickPickError(error: QuickPickError, customHeader = null, customBody = null): void {
     switch (error) {
       case QuickPickError.ScanNotFound:
+
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_BARCODE_HEADER'];
-          const bodyText = customBody ? customBody : r['INVALID_SCAN_BARCODE'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.INVALID_SCAN_BARCODE_HEADER;
+          const bodyText = customBody ? customBody : r.INVALID_SCAN_BARCODE;
+          const okText = r.OK;
           this.displayWarningDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.ScanUnavailable:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.INVALID_SCAN_QUICKPICK_INPROGRESS_BODY_TEXT;
+          const okText = r.OK;
           this.displayWarningDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.InActive:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT;
+          const okText = r.OK;
           this.displayWarningDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.PrintFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['PRINTFAILED_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['PRINTFAILED_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.PRINTFAILED_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.PRINTFAILED_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.UnlockFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOUNLOCKDOOR_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOUNLOCKDOOR_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.FAILEDTOUNLOCKDOOR_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.FAILEDTOUNLOCKDOOR_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.RerouteFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOREROUTE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOREROUTE_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.FAILEDTOREROUTE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.FAILEDTOREROUTE_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.HardwareFailure:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['XR2_QUICK_PICK_ERROR_HEADER'];
-          const bodyText = customBody ? customBody : r['XR2_QUICK_PICK_ERROR_BODY'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.XR2_QUICK_PICK_ERROR_HEADER;
+          const bodyText = customBody ? customBody : r.XR2_QUICK_PICK_ERROR_BODY;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
       case QuickPickError.FailedToSave:
         this.translations$.subscribe(r => {
-          const headerText = customHeader ? customHeader : r['FAILEDTOSAVE_HEADER_TEXT'];
-          const bodyText = customBody ? customBody : r['FAILEDTOSAVE_BODY_TEXT'];
-          const okText = r['OK'];
+          const headerText = customHeader ? customHeader : r.FAILEDTOSAVE_HEADER_TEXT;
+          const bodyText = customBody ? customBody : r.FAILEDTOSAVE_BODY_TEXT;
+          const okText = r.OK;
           this.displayErrorDialog(headerText, bodyText, okText);
         });
         break;
@@ -406,6 +428,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
 
   /* istanbul ignore next */
   private displayWarningDialog(headerText, bodyText, okButtonText): void {
+    this.closeWarningPopup()
     const properties = new PopupDialogProperties('Role-Status-Warning');
     properties.titleElementText = headerText;
     properties.messageElementText = bodyText;
@@ -414,7 +437,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     properties.primaryButtonText = okButtonText;
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
-    this.dialogService.showOnce(properties);
+    this.lastDialog = this.dialogService.showOnce(properties);
   }
 
   /* istanbul ignore next */
