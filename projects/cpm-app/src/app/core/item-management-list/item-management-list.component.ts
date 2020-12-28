@@ -266,7 +266,7 @@ export class ItemManagementListComponent implements AfterViewInit {
       _.orderBy(items, (x) => x.FormattedGenericName.toLowerCase(), "asc")
     );
 
-    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions,sortedXR2Inv,ReportConstants.Xr2InventoryReport);
+    let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions,sortedXR2Inv,ReportConstants.ReportBodySmallFontSize);
     this.printTheReport(tableBody$, element);
   }
 
@@ -289,6 +289,7 @@ export class ItemManagementListComponent implements AfterViewInit {
       this.deviceInformationList.find((obj) => obj.DeviceId === deviceId).Description
     );
     let reportBaseData$ = of({ ...this.reportBasedata });
+
 
     try {
       this.pdfGridReportService.printWithBaseData(tableBody, of(ReportConstants.Xr2InventoryReport),reportBaseData$)
