@@ -71,6 +71,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
     this.loadPicklistsQueueGrouped();
     this._loggingCategory = LoggingCategory.Xr2Queue;
     } catch (e) {
+      /* istanbul ignore next */
       console.log('Xr2QueueGroupingPageComponent Failed in ngOnInit');
     }
   }
@@ -117,6 +118,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
           try {
           this.handleSendToRobotGroupedSuccess(picklistQueueGrouped);
           } catch (e) {
+            /* istanbul ignore next */
             this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
               this.constructor.name + ' processRelease - handleSendToRobotGroupedSuccess failed: ' + e);
           }
@@ -124,6 +126,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
           try {
           this.handleSendToRobotGroupedError(picklistQueueGrouped, error);
           } catch (e) {
+            /* istanbul ignore next */
             this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
               this.constructor.name + ' processRelease - handleSendToRobotGroupedError failed: ' + e);
           }
@@ -131,6 +134,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  /* istanbul ignore next */
   private handleSendToRobotGroupedError(picklistQueueGrouped: PicklistQueueGrouped, error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
       this.constructor.name + 'handleSendToRobotGroupedError - Failed To Save: ' + error);
@@ -190,6 +194,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
         try {
           this.handlePicklistQueueGroupedUpdateSubject(x);
         } catch (e) {
+          /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             this.constructor.name + ' picklistQueueGroupedUpdateSubject - handlePicklistQueueGroupedUpdateSubject failed: ' + e);
         }
@@ -201,6 +206,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
         try {
           this.handlePicklistQueueGroupedListUpdateSubject(x);
         } catch (e) {
+          /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             `${this.constructor.name} picklistQueueGroupedListUpdateSubject - handlepicklistQueueGroupedListUpdateSubject failed: ${e}`);
         }

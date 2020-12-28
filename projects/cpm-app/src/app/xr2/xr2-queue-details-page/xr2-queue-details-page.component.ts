@@ -90,6 +90,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       this.loadPicklistsQueueItems();
       this.xr2QueueMultiSelectService.createActionDisableMap();
     } catch (e) {
+      /* istanbul ignore next */
       console.log('Xr2QueueDetailsPageComponent Failed in ngOnInit: ' + e);
     }
   }
@@ -167,6 +168,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
           try {
             this.handleSendQueueItemsToRobotSuccess(picklistQueueItems);
           } catch(exception) {
+            /* istanbul ignore next */
             this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
               this.constructor.name + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotSuccess failed: ' + exception);
           }
@@ -174,6 +176,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
           try {
             this.handleSendQueueItemsToRobotError(picklistQueueItems, error);
           } catch(exception) {
+            /* istanbul ignore next */
             this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
               this.constructor.name + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotError failed: ' + exception);
           }
@@ -189,6 +192,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         try {
           this.handleRerouteQueueItemsSuccess(picklistQueueItems);
         } catch(exception) {
+          /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             this.constructor.name + ' rerouteQueueItems - handleRerouteQueueItemsSuccess failed: ' + exception);
         }
@@ -196,6 +200,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         try {
           this.handleRerouteQueueItemsError(picklistQueueItems, error);
         } catch(exception) {
+          /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             this.constructor.name + ' rerouteQueueItems - handleRerouteQueueItemsError failed: ' + exception);
         }
@@ -215,6 +220,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         try {
           this.handlePrintQueueItemsLabelsSuccess(picklistQueueItems);
         } catch(exception) {
+          /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             this.constructor.name + ' printQueueItems - handlePrintQueueItemsSuccess failed: ' + exception);
         }
@@ -222,6 +228,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         try {
           this.handlePrintQueueItemsLabelsError(picklistQueueItems, error);
         } catch(exception) {
+          /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
             this.constructor.name + ' printQueueItems - handlePrintQueueItemsError failed: ' + exception);
         }
@@ -276,6 +283,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       try {
         this.handlePicklistQueueItemAddorUpdateSubject(x);
       } catch (e) {
+        /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
           this.constructor.name + ' addOrUpdatePicklistQueueItemSubject - handlePicklistQueueItemAddorUpdateSubject failed: ' + e);
       }
@@ -287,6 +295,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       try {
         this.handlePicklistQueueItemListUpdateSubject(x);
       } catch (e) {
+        /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
           this.constructor.name + ' picklistQueueItemListUpdateSubject - handlePicklistQueueItemListUpdateSubject failed: ' + e);
       }});
@@ -297,6 +306,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       try {
         this.handleRemovePicklistQueueItemSubject(x);
       } catch (e) {
+        /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
           this.constructor.name + ' removePicklistQueueItemSubject - handleRemovePicklistQueueItemSubject failed: ' + e);
       }
@@ -312,6 +322,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
   }
 
+  /* istanbul ignore next */
   private handleSendQueueItemsToRobotError(picklistQueueItems: PicklistQueueItem[], error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
       this.constructor.name + ' handleSendQueueItemsToRobotError - Failed To Save: ' + error);
@@ -329,6 +340,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
   }
 
+  /* istanbul ignore next */
   private handleRerouteQueueItemsError(picklistQueueItems: PicklistQueueItem[], error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
       this.constructor.name + ' handleRerouteQueueItemsError - Failed To Save: ' + error);
@@ -346,6 +358,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
     this.xr2QueueMultiSelectService.updateActionDisableMap(picklistQueueItems);
   }
 
+  /* istanbul ignore next */
   private handlePrintQueueItemsLabelsError(picklistQueueItems: PicklistQueueItem[], error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
       this.constructor.name + ' handlePrintQueueItemsLabelsError - Failed To Save: ' + error);
