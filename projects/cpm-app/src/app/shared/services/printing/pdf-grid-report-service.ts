@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { IAngularReportBaseData } from '../../../api-core/data-contracts/i-angular-report-base-data';
 import { PdfPrintService } from '../../../api-core/services/pdf-print-service';
 import { OcapUrlBuilderService } from '../ocap-url-builder.service';
-import { TDocumentDefinitions, ContentTable,PageOrientation,Table} from 'pdfmake/interfaces';
+import { TDocumentDefinitions, ContentTable} from 'pdfmake/interfaces';
 import { Observable, forkJoin, bindCallback } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,7 @@ import { IReportLabels } from './i-report-labels';
 import { PdfMakeService } from './pdf-make.service';
 import { ImageDataService } from '../images/image-data.service';
 import { ReportConstants } from '../../constants/report-constants';
+//import { TDocumentDefinitions,ContentTable } from 'pdfmake/interfaces';
 
 @Injectable({
   providedIn: 'root'
