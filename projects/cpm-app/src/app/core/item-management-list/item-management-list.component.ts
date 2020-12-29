@@ -262,12 +262,15 @@ export class ItemManagementListComponent implements AfterViewInit {
     colDefinitions: ITableColumnDefintion<XR2InventoryLists>[],
     element: number
   ) {
+    if(items.length > 0 )
+    {
     let sortedXR2Inv = of(
       _.orderBy(items, (x) => x.FormattedGenericName.toLowerCase(), "asc")
     );
 
     let tableBody$ = this.tableBodyService.buildTableBody(colDefinitions,sortedXR2Inv,ReportConstants.ReportBodySmallFontSize);
     this.printTheReport(tableBody$, element);
+    }
   }
 
   checkValidDate(date: string): boolean {
