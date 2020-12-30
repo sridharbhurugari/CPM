@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
-import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule, ToastModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule, ToastModule, ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -32,6 +32,7 @@ import { CoreRoutingModule } from "./core-routing.module";
 import { InternalTransferPickPageComponent } from './internal-transfer-pick-page/internal-transfer-pick-page.component';
 import { InternalTransferPickNeedsListComponent } from './internal-transfer-pick-needs-list/internal-transfer-pick-needs-list.component';
 import { GuidedPickComponent } from './guided-pick/guided-pick.component';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { GuidedPickComponent } from './guided-pick/guided-pick.component';
     InternalTransferPickPageComponent,
     InternalTransferPickNeedsListComponent,
     GuidedPickComponent,
+    LoadingComponent,
   ],
   imports: [
     CommonModule,
@@ -75,6 +77,7 @@ import { GuidedPickComponent } from './guided-pick/guided-pick.component';
     SvgIconModule,
     FormsModule,
     ToastModule,
-    CoreRoutingModule
+    CoreRoutingModule,
+    ProgressAnimationModule,
   ],})
 export class CoreModule { }
