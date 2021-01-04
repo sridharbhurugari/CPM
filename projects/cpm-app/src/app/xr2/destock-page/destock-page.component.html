@@ -1,0 +1,68 @@
+<div class="content">
+  <app-xr2-queue-grouping-header
+    [savedPageConfiguration]="savedPageConfiguration"
+    (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
+    (selectionChangedEvent)="onDeviceSelectionChanged($event)">
+  </app-xr2-queue-grouping-header>
+
+
+
+  <oc-grid  #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" ocGridCol data-width="86" minlength = 86 data-colwrap="false">
+        <!-- <oc-checkbox [noLabel]="true" [isEnabled]="true" [selected]="isHeaderCheckboxChecked"
+        (selection)="onHeaderCheck($event)"></oc-checkbox> -->
+    </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+        [columnPropertyName]="descriptionPropertyName" headerResourceKey='DESCRIPTION_ID'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="194" data-colwrap="true"
+        [columnPropertyName]="pharmacyQohPropertyName" headerResourceKey='PHARMACY_QOH'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
+        [columnPropertyName]="destinationPropertyName" headerResourceKey='DESTINATION'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
+        [columnPropertyName]="qtyFillReqPropertyName" headerResourceKey='QTY_FILLED_REQUESTED'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="fillDatePropertyName" headerResourceKey='DATE_COMPLETED'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row" *ngFor="let destockTypeInfo of deviceDestockTypeInfo">
+        <div class="first">
+          <!-- <oc-checkbox [noLabel]="true"
+          [isEnabled]="true"
+          [valueField]="destockTypeInfo.destockTypeInfoId"
+          [selected]="destockTypeInfo.IsChecked"
+          (selection)="onSelect($event)"></oc-checkbox> -->
+      </div>
+        <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
+          {{destockTypeInfo.Xr2DestockType_Display }}
+
+        </div>
+        <div class="col" [attr.data-title]="'PHARMACY_QOH' | translate" style="text-align: center;">
+          {{destockTypeInfo.ItemCount}}
+        </div>
+        <div class="col" [attr.data-title]="'DESTINATION' | translate">
+          {{destockTypeInfo.BinCount}}
+        </div>
+        <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
+          <span>
+              <oc-svgicon  *ngIf="!destockTypeInfo.canReroute && destockTypeInfo.IsChecked" icon="alert-no-tail"></oc-svgicon>
+
+        </div>
+        <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+
+
+</div>
