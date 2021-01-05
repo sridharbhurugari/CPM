@@ -27,6 +27,7 @@ import { CarouselLocationAccessService } from '../../shared/services/devices/car
 import { DeviceTypeId } from '../../shared/constants/device-type-id';
 import { parseBool } from '../../shared/functions/parseBool';
 import { WpfActionPaths } from "../constants/wpf-action-paths";
+import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 @Component({
@@ -131,6 +132,11 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   completePick(completePickData: ICompletePickData) {
     this.pickItem(completePickData);
+  }
+
+  adjustQoh(item: IAdjustQoh) {
+    this.clearLightbar();
+    this.wpfActionControllerService.ExecuteActionNameWithData(WpfActionPaths.AdjustQohPath, item);
   }
 
   onHighPriorityReceived() {

@@ -62,6 +62,7 @@ describe('InternalTransferPickPageComponent', () => {
     wpfActionController = { 
       ExecuteBackAction: jasmine.createSpy('ExecuteBackAction'), 
       ExecuteActionName: jasmine.createSpy('ExecuteActionName'), 
+      ExecuteActionNameWithData: jasmine.createSpy('ExecuteActionNameWithData'), 
     };
     let safetyStockConfig: Partial<IConfigurationValue> = {
       Value: ConfigValues.No,
@@ -144,6 +145,16 @@ describe('InternalTransferPickPageComponent', () => {
         });
         expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
       });
+    });
+  });
+
+  describe('adjustQoh', () => {
+    it('should call ExecuteActionNameWithData', () => {
+      component.adjustQoh({
+        ItemId: 'test',
+        DeviceLocationId: 12345,
+      });
+      expect(wpfActionController.ExecuteActionNameWithData).toHaveBeenCalled();
     });
   });
 

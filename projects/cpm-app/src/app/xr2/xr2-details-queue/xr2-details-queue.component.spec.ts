@@ -101,7 +101,7 @@ describe('Xr2DetailsQueueComponent', () => {
 
   describe('Action Sort by Column', () => {
     it('column selected ', () => {
-      component.sort(component.picklistQueueItems, 'desc');
+      component.sort(component.filteredPicklistQueueItems, 'desc');
 
       expect(component.columnSelected(event));
     });
@@ -140,7 +140,7 @@ describe('Xr2DetailsQueueComponent', () => {
       };
       const item1 = new PicklistQueueItem(null);
       const item2 = new PicklistQueueItem(null);
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         item1,
         item2
       ];
@@ -157,7 +157,7 @@ describe('Xr2DetailsQueueComponent', () => {
       const boxState = {
         selectedState: true
       };
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         new PicklistQueueItem(null),
         new PicklistQueueItem(null),
         new PicklistQueueItem(null)
@@ -166,7 +166,7 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.onSelectAllCheckBox(boxState);
 
-      expect(component.selectedItems.size).toBe(component.picklistQueueItems.length);
+      expect(component.selectedItems.size).toBe(component.filteredPicklistQueueItems.length);
       expect(selectionChangedSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -178,7 +178,7 @@ describe('Xr2DetailsQueueComponent', () => {
       };
       const item1 = new PicklistQueueItem(null);
       const item2 = new PicklistQueueItem(null);
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         item1,
         item2
       ];
@@ -197,7 +197,7 @@ describe('Xr2DetailsQueueComponent', () => {
         selectedState: true
       };
       const item = new PicklistQueueItem(null);
-      component.picklistQueueItems = [item];
+      component.filteredPicklistQueueItems = [item];
       component.selectedItems = new Set();
 
       component.onSelectItemCheckBox(boxState, checkedItem);
@@ -210,27 +210,27 @@ describe('Xr2DetailsQueueComponent', () => {
   describe('Selection', () => {
     it('should return false if there are no items', () => {
       component.selectedItems = new Set();
-      component.picklistQueueItems = [];
+      component.filteredPicklistQueueItems = [];
 
-      expect(component.isEveryItemSelected(component.picklistQueueItems)).toBeFalsy();
+      expect(component.isEveryItemSelected(component.filteredPicklistQueueItems)).toBeFalsy();
     });
 
     it('should return false if any item is not in selected', () => {
       const item1 = new PicklistQueueItem(null);
       const item2 = new PicklistQueueItem(null);
-      component.picklistQueueItems = [item1, item2];
+      component.filteredPicklistQueueItems = [item1, item2];
       component.selectedItems = new Set([item1]);
 
-      expect(component.isEveryItemSelected(component.picklistQueueItems)).toBeFalsy();
+      expect(component.isEveryItemSelected(component.filteredPicklistQueueItems)).toBeFalsy();
     });
 
     it('should return true if every item is in selected', () => {
       const item1 = new PicklistQueueItem(null);
       const item2 = new PicklistQueueItem(null);
-      component.picklistQueueItems = [item1, item2];
+      component.filteredPicklistQueueItems = [item1, item2];
       component.selectedItems = new Set([item1, item2]);
 
-      expect(component.isEveryItemSelected(component.picklistQueueItems)).toBeTruthy();
+      expect(component.isEveryItemSelected(component.filteredPicklistQueueItems)).toBeTruthy();
     });
 
   });
@@ -302,10 +302,10 @@ describe('Xr2DetailsQueueComponent', () => {
       item.AvailableOutputDeviceList = [
         outputDevice
       ];
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         item
       ];
-      expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).text).toEqual(expectedText);
+      expect(component.getReleaseButtonProperties(component.filteredPicklistQueueItems[0]).text).toEqual(expectedText);
     });
   });
 
@@ -324,11 +324,11 @@ describe('Xr2DetailsQueueComponent', () => {
       item.AvailableOutputDeviceList = [
         outputDevice
       ];
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         item
       ];
 
-      expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).disabled).toBeFalsy();
+      expect(component.getReleaseButtonProperties(component.filteredPicklistQueueItems[0]).disabled).toBeFalsy();
     });
   });
 
@@ -346,49 +346,49 @@ describe('Xr2DetailsQueueComponent', () => {
       item.AvailableOutputDeviceList = [
         outputDevice
       ];
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         item
       ];
 
-      expect(component.getReleaseButtonProperties(component.picklistQueueItems[0]).text).toEqual(expectedText);
+      expect(component.getReleaseButtonProperties(component.filteredPicklistQueueItems[0]).text).toEqual(expectedText);
     });
 
     it('should display print button on sent status', () => {
       const expectedText = 'PRINT';
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         new PicklistQueueItem(null),
       ];
-      component.picklistQueueItems[0].IsPrintable = true;
-      component.picklistQueueItems[0].Status = 2;
+      component.filteredPicklistQueueItems[0].IsPrintable = true;
+      component.filteredPicklistQueueItems[0].Status = 2;
 
-      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(expectedText);
+      expect(component.getPrintButtonProperties(component.filteredPicklistQueueItems[0]).text).toEqual(expectedText);
     });
 
     it('it should display print button on boxsplitreceived status', () => {
       const expectedText = 'PRINT';
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         new PicklistQueueItem(null),
       ];
-      component.picklistQueueItems[0].IsPrintable = true;
-      component.picklistQueueItems[0].Status = 2;
+      component.filteredPicklistQueueItems[0].IsPrintable = true;
+      component.filteredPicklistQueueItems[0].Status = 2;
 
-      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(expectedText);
+      expect(component.getPrintButtonProperties(component.filteredPicklistQueueItems[0]).text).toEqual(expectedText);
     });
 
     it('should display reprint button on printed status', () => {
       const expectedText = 'REPRINT';
-      component.picklistQueueItems = [
+      component.filteredPicklistQueueItems = [
         new PicklistQueueItem(null),
       ];
-      component.picklistQueueItems[0].IsPrintable = true;
-      component.picklistQueueItems[0].Status = 4;
+      component.filteredPicklistQueueItems[0].IsPrintable = true;
+      component.filteredPicklistQueueItems[0].Status = 4;
 
       let validText = '';
       translateService.get('REPRINT').subscribe((res: string) => {
         validText = res;
       });
 
-      expect(component.getPrintButtonProperties(component.picklistQueueItems[0]).text).toEqual(expectedText);
+      expect(component.getPrintButtonProperties(component.filteredPicklistQueueItems[0]).text).toEqual(expectedText);
     });
 
     it('should display bag/bags data labels on autopackager output device', () => {
@@ -521,16 +521,16 @@ describe('Xr2DetailsQueueComponent', () => {
       queueItem.OrderId = '1';
       queueItem.RobotPickGroupId = mockGuid;
 
-      component.picklistQueueItems = [queueItem];
+      component.unfilteredPicklistQueueItems = [queueItem];
       component.selectedItems = new Set([queueItem]);
 
       component.removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey);
 
-      expect(component.picklistQueueItems.length).toBe(0);
+      expect(component.filteredPicklistQueueItems.length).toBe(0);
       expect(multiSelectEvent).toHaveBeenCalled();
     });
     it('should clear list on null input for refresh', () => {
-      component.picklistQueueItems = [];
+      component.unfilteredPicklistQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -541,16 +541,16 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.picklistQueueItems.push(queueItem);
+        component.unfilteredPicklistQueueItems.push(queueItem);
       }
 
       component.refreshDataOnScreen(null);
 
-      expect(component.picklistQueueItems.length).toBe(0);
+      expect(component.unfilteredPicklistQueueItems.length).toBe(0);
     });
     it('should refresh data on screen and remove/update items', () => {
       const updatedList: PicklistQueueItem[] = [];
-      component.picklistQueueItems = [];
+      component.unfilteredPicklistQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -561,7 +561,7 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.picklistQueueItems.push(queueItem);
+        component.unfilteredPicklistQueueItems.push(queueItem);
         updatedList.push(new PicklistQueueItem(queueItem));
       }
 
@@ -572,14 +572,14 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.refreshDataOnScreen(updatedList);
 
-      expect(component.picklistQueueItems.length).toBe(updatedList.length);
+      expect(component.unfilteredPicklistQueueItems.length).toBe(updatedList.length);
 
-      for (let i = 0; i < component.picklistQueueItems.length - 1; i++) {
-        expect(component.picklistQueueItems[i].Status).toBe(updatedList[i].Status);
+      for (let i = 0; i < component.filteredPicklistQueueItems.length - 1; i++) {
+        expect(component.filteredPicklistQueueItems[i].Status).toBe(updatedList[i].Status);
       }
     });
     it('should add picklist queue item to queue ', () => {
-      component.picklistQueueItems = [];
+      component.unfilteredPicklistQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -590,10 +590,10 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.picklistQueueItems.push(queueItem);
+        component.unfilteredPicklistQueueItems.push(queueItem);
       }
 
-      const previousLength = component.picklistQueueItems.length;
+      const previousLength = component.unfilteredPicklistQueueItems.length;
 
       const addedItem = new PicklistQueueItem(null);
       addedItem.DeviceLocationId = 4;
@@ -606,11 +606,11 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.addOrUpdatePicklistQueueItem(addedItem);
 
-      expect(component.picklistQueueItems.length).toBe(previousLength + 1);
+      expect(component.unfilteredPicklistQueueItems.length).toBe(previousLength + 1);
     });
     it('should update picklist queue item and send event to update multi select', () => {
       const multiSelectEvent = spyOn(component.addOrUpdateMultiSelectEvent, 'emit');
-      component.picklistQueueItems = [];
+      component.unfilteredPicklistQueueItems = [];
       for (let i = 0; i < 4; i++) {
         const mockGuid = Guid.create();
         const queueItem = new PicklistQueueItem(null);
@@ -621,12 +621,12 @@ describe('Xr2DetailsQueueComponent', () => {
         queueItem.PriorityCode = i.toString();
         queueItem.RobotPickGroupId = mockGuid;
         queueItem.Status = 1;
-        component.picklistQueueItems.push(queueItem);
+        component.unfilteredPicklistQueueItems.push(queueItem);
       }
 
-      const previousLength = component.picklistQueueItems.length;
-      const lastIndex = component.picklistQueueItems.length - 1;
-      const lastItem = component.picklistQueueItems[lastIndex];
+      const previousLength = component.unfilteredPicklistQueueItems.length;
+      const lastIndex = component.unfilteredPicklistQueueItems.length - 1;
+      const lastItem = component.unfilteredPicklistQueueItems[lastIndex];
       const updatedItem = lastItem;
       updatedItem.Status = 4;
       component.selectedItems = new Set([updatedItem]);
@@ -634,8 +634,8 @@ describe('Xr2DetailsQueueComponent', () => {
 
       component.addOrUpdatePicklistQueueItem(updatedItem);
 
-      expect(component.picklistQueueItems.length).toBe(previousLength);
-      expect(component.picklistQueueItems[lastIndex].Status).toBe(updatedItem.Status);
+      expect(component.unfilteredPicklistQueueItems.length).toBe(previousLength);
+      expect(component.unfilteredPicklistQueueItems[lastIndex].Status).toBe(updatedItem.Status);
       expect(multiSelectEvent).toHaveBeenCalled();
     });
   });

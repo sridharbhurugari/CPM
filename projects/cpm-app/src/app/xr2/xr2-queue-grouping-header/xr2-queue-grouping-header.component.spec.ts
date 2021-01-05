@@ -21,6 +21,9 @@ import { Guid } from 'guid-typescript';
 class MockSearchBox {
   searchOutput$: Observable<string> = of();
   @Input()placeHolderText: string;
+
+  clearSearch() {};
+  sendSearchData(data: string) { return of() }
 }
 
 describe('Xr2QueueGroupingHeaderComponent', () => {
@@ -34,7 +37,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   beforeEach(async(() => {
     const selectableDeviceInfo1 = new SelectableDeviceInfo(null);
     const selectableDeviceInfo2 = new SelectableDeviceInfo(null);
-   
+
     selectableDeviceInfo1.DeviceId = 1;
     selectableDeviceInfo1.Description = 'DeviceXr21';
     selectableDeviceInfo1.CurrentLeaseHolder = Guid.create();
@@ -87,36 +90,65 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Should select device selection to default work station', fakeAsync(() => {
-    const expectedDeviceID = '1';
-    component.selectedDeviceInformation = selectedDeviceInformation;
-    const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
-    component.ngOnInit();
-    tick();
-    expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
-    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
-  }));
+  describe('Device selection', () => {
+    it('Should select device selection to default work station', fakeAsync(() => {
+      const expectedDeviceID = '1';
+      component.selectedDeviceInformation = selectedDeviceInformation;
+      const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
+      expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+    }));
 
-  it('Should default device if there is only one device', fakeAsync(() => {
-    const expectedDeviceID = '2';
-    component.selectedDeviceInformation = selectedDeviceInformation;
-    selectableDeviceInfoList.shift();
-    expect(component.getAllActiveXr2Devices()).toBeTruthy();
-    tick();
-    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
-    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
-  }));
+    it('Should default device if there is only one device', fakeAsync(() => {
+      const expectedDeviceID = '2';
+      component.selectedDeviceInformation = selectedDeviceInformation;
+      selectableDeviceInfoList.shift();
+      expect(component.getAllActiveXr2Devices()).toBeTruthy();
+      tick();
+      expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
+      expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+    }));
 
-  it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
-    ocapConfig.clientId = '';
-    const expectedDeviceID = '0';
-    component.selectedDeviceInformation = selectedDeviceInformation;
-    const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
-    component.ngOnInit();
-    tick();
-    expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-    expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
-    expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
-  }));
-});
+    it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
+      ocapConfig.clientId = '';
+      const expectedDeviceID = '0';
+      component.selectedDeviceInformation = selectedDeviceInformation;
+      const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
+      expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+    }));
+
+    it('Should clear search on device change and load new device', () => {
+      const searchClearMock = spyOn(component.searchElement, 'clearSearch');
+      const mockEvent = {value: '1'};
+      const selectedDevice = {
+        DeviceId: 1,
+        Description: null,
+        DefaultOwnerName: null,
+        DeviceTypeId: null,
+        CurrentLeaseHolder: null,
+        IsActive: true
+      }
+      component.savedPageConfiguration = {
+        selectedDevice,
+        colHeaderSort: null,
+        searchTextFilter: 'text'
+      }
+      component.deviceInformationList = [
+        selectedDevice
+      ];
+
+      component.onDeviceSelectionChanged(mockEvent);
+      expect(searchClearMock).toHaveBeenCalledTimes(1);
+      expect(component.selectedDeviceInformation.DeviceId).toBe(1);
+    });
+  });
+
+  })
+
