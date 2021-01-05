@@ -89,7 +89,9 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
     this.updateCurrentLineDetails();
 
-    this.coreEventConnectionService.highPriorityInterruptSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(this.onHighPriorityPick);
+    this.coreEventConnectionService.highPriorityInterruptSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(msg => {this.onHighPriorityReceived();});
     this.isHighPriorityAvailable = false;
 }
 
@@ -118,7 +120,6 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     this.wpfActionControllerService.ExecuteActionName(WpfActionPaths.HighPriorityPickNow);
   }
 
-
   hold(isLast: boolean) {
     if (isLast) {
       this.navigateContinue();
@@ -129,6 +130,10 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   completePick(completePickData: ICompletePickData) {
     this.pickItem(completePickData);
+  }
+
+  onHighPriorityReceived() {
+    this.isHighPriorityAvailable = true;
   }
 
   private pickItem(completePickData: ICompletePickData) {
@@ -147,7 +152,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       }
     });
   }
-
+  
   private next() {
     this.picklistLineIndex = this.picklistLineIndex + 1;
     this.clearLightbar();
@@ -232,9 +237,5 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     if (this.guidedPickData.pickLocation.DeviceType == DeviceTypeId.CarouselDeviceTypeId) {
       this.carouselLocationAccessService.clearLightbar(this.guidedPickData.pickLocation.DeviceId).pipe(take(1)).subscribe();
     }
-  }
-
-  private onHighPriorityPick() {
-    this.isHighPriorityAvailable = true;
   }
 }
