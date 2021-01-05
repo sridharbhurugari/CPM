@@ -263,5 +263,5 @@
   "ORDER_IN_USE_TITLE": "Order In Use",
   "XR2_ALL_DEVICES": "All Devices",
   "SEARCH_TEXT": "Search",
-  "HIGHPRIORITY": "Priority Picks"
+  "HIGHPRIORITY": "Priority Picks ({{count}})"
 }

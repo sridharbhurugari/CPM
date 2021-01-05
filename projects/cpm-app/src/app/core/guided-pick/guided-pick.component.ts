@@ -13,6 +13,8 @@ import { ICompletePickData } from '../model/i-completed-pick-data';
 import { IGuidedPickData } from '../model/i-guided-pick-data';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
 import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { InventoryManagementService } from '../../api-core/services/inventory-management.service';
 
 @Component({
   selector: 'app-guided-pick',
@@ -38,6 +40,19 @@ export class GuidedPickComponent implements OnDestroy {
     this.setupScanHandler();
     this.setExpDateInPastValue();
     this.setupQtySubscription();
+
+    this.isHighPriorityAvailable = this._guidedPickData.highPriorityAvailable;
+
+    if(this.isHighPriorityAvailable) {
+      this.inventoryManagementService.getHighPriorityPickRequestCount().subscribe(success => {
+        this.translateService.get("HIGHPRIORITY", {
+          count: success
+        }).subscribe(result => {
+          this.highPriorityButtonText = result
+        });
+      });      
+    }
+
   }
 
   get guidedPickData(): IGuidedPickData {
@@ -63,7 +78,7 @@ export class GuidedPickComponent implements OnDestroy {
   safetyStockScanInfo: IBarcodeData;
   secondaryScanInfo: IBarcodeData;
   isHighPriorityAvailable: boolean;
-  ngUnsubscribe = new Subject();
+  highPriorityButtonText: string;
 
   constructor(
     ocapConfigService: OcapHttpConfigurationService,
@@ -71,11 +86,11 @@ export class GuidedPickComponent implements OnDestroy {
     private barcodeOverrideService: BarcodeOverrideService,
     private barcodeSafetyStockService: BarcodeSafetyStockService,
     private qytTrackingService: QuantityTrackingService,
-    private coreEventConnectionService: CoreEventConnectionService,
+    private translateService: TranslateService,
+    private inventoryManagementService: InventoryManagementService,
   ) {
     this.userLocale = ocapConfigService.get().userLocale;
     this._awaitingScanSubscription = this.barcodeSafetyStockService.awaitingProductScanChanged.subscribe(x => this.awaitingProductScan = x);
-    coreEventConnectionService.highPriorityInterruptSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.isHighPriorityAvailable = true);
   }
 
   /* istanbul ignore next */
@@ -84,8 +99,6 @@ export class GuidedPickComponent implements OnDestroy {
     this._qtySubscription.unsubscribe();
     this._awaitingScanSubscription.unsubscribe();
     this.barcodeOverrideService.dispose();
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete(); 
   }
 
   getCompletePickData(): ICompletePickData {
