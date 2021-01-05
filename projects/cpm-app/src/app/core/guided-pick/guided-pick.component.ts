@@ -11,8 +11,6 @@ import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-co
 import { QuantityTrackingService } from '../../shared/services/quantity-tracking.service';
 import { ICompletePickData } from '../model/i-completed-pick-data';
 import { IGuidedPickData } from '../model/i-guided-pick-data';
-import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
-import { takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { InventoryManagementService } from '../../api-core/services/inventory-management.service';
 

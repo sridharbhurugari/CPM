@@ -20,6 +20,8 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { GuidedPickComponent } from './guided-pick.component';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
+import { TranslateService } from '@ngx-translate/core';
+import { InventoryManagementService } from '../../api-core/services/inventory-management.service';
 
 describe('GuidedPickComponent', () => {
   let component: GuidedPickComponent;
@@ -68,13 +70,14 @@ describe('GuidedPickComponent', () => {
         { provide: BarcodeOverrideService, useValue: { initialize: () => { }, overrideBarcodeParsed$: new Subject<IBarcodeData>(), } },
         { provide: BarcodeSafetyStockService, useValue: { productScannedSuccessfully: productScannedSuccessfully$, awaitingProductScanChanged: awaitingProductScanChanged$ } },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
+        { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: InventoryManagementService, useValue: { getHighPriorityPickRequestCount: () => of('') } },
       ]}},
     )
     .compileComponents();
   }));
 
   beforeEach(() => {
-    spyOn(coreEventConnectionService.highPriorityInterruptSubject, 'subscribe').and.callThrough();
     fixture = TestBed.createComponent(GuidedPickComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -89,13 +92,13 @@ describe('GuidedPickComponent', () => {
       picklistLineIndex: 1,
       quickAdvanceOnScan: false,
       totalLines: 5,
+      highPriorityAvailable: false,
     };
     spyOn(component.pickCompleted, 'emit').and.callThrough();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(coreEventConnectionService.highPriorityInterruptSubject.subscribe).toHaveBeenCalled();
   });
 
   describe('given product scan is required', () => {
@@ -180,12 +183,5 @@ describe('GuidedPickComponent', () => {
         expect(component.pickCompleted.emit).toHaveBeenCalled();
       });
     });
-  });
-
-  describe('High priority event', () => {
-    it('should set bool', () => {
-        coreEventConnectionService.highPriorityInterruptSubject.next();
-        expect(component.isHighPriorityAvailable).toBeTruthy();
-      });
   });
 });
