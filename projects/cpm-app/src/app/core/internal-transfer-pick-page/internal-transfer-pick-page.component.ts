@@ -117,6 +117,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   pickNow() {
     this.clearLightbar();
+    this.isHighPriorityAvailable = false;
     this.wpfActionControllerService.ExecuteActionName(WpfActionPaths.HighPriorityPickNow);
   }
 
@@ -209,7 +210,6 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       let safetyStockQuickAdvanceConfig = results[5];
       let pickLocation = itemLocationDetails.find(x => x.DeviceLocationId == currentLine.SourceDeviceLocationId);
       let isProductScanRequired = safetyStockScanConfig.Value == ConfigValues.Yes && pickLocation.SafetyStockIssueScan;
-      let highPriority = this.isHighPriorityAvailable;
 
       let guidedPickData: IGuidedPickData = {
         isProductScanRequired: isProductScanRequired,
@@ -222,7 +222,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
         quickAdvanceOnScan: safetyStockQuickAdvanceConfig.Value == ConfigValues.Yes,
         isLastLine: this.picklistLineIndex == (totalLines - 1),
         picklistLine: currentLine,
-        highPriorityAvailable: highPriority,
+        highPriorityAvailable: this.isHighPriorityAvailable,
       };
 
       return guidedPickData;
