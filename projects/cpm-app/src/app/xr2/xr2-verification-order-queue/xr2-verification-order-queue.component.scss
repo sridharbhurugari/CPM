@@ -1,0 +1,46 @@
+:host{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: auto;
+  padding-right: 20px;
+}
+
+.centered-content {
+  align-items: center;
+}
+
+.width-type {
+  width: 200px;
+}
+
+.width-order-id {
+  width: 298px;
+}
+
+.width-complete {
+  width: 150px;
+}
+
+.width-required {
+  width: 150px;
+}
+
+.width-exceptions {
+  width: 200px;
+}
+
+.width-date {
+  width: 200px;
+}

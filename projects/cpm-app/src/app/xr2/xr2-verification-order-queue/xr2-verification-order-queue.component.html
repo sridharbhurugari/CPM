@@ -1,0 +1,70 @@
+<ng-container class="ocactiondetails">
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <!-- 1280 px total-->
+      <!-- 82 px for first -->
+      <div app-col-header-sortable class="first" data-colwrap="true"
+        [columnPropertyName]="sequenceOrderPropertyName" headerResourceKey=""
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+        [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="298" data-colwrap="true"
+        [columnPropertyName]="orderIdPropertyName" headerResourceKey="ORDERID"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="completePropertyName" headerResourceKey="COMPLETE"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+      [columnPropertyName]="requiredPropertyName" headerResourceKey="REQUIRED"
+      [currentSortPropertyName]="currentSortPropertyName"
+      (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+        [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div class="last width-type" data-width="200" data-colwrap="true">{{'DATE' | translate}}</div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row"
+       *ngFor="let verificationOrderItem of this.verificationOrderItems">
+        <div class="first" style="align-items: center;">
+          <div class="firstcolumncolorblock" [style.background-color]="verificationOrderItem.PriorityCodeColor"></div>
+        </div>
+        <div class="col width-type" [attr.data-title]="'TYPE' | translate">
+          <div class=priority-container>
+            {{verificationOrderItem.PriorityCodeDescription}}
+          </div>
+        </div>
+        <div class="col width-order-id" [attr.data-title]="'ORDERID' | translate">
+          {{verificationOrderItem.OrderId}}
+        </div>
+        <div class="col width-complete" [attr.data-title]="'COMPLETE' | translate">
+          {{verificationOrderItem.CompleteVerifications / verificationOrderItem.TotalVerifications}}%
+        </div>
+        <div class="col width-required" [attr.data-title]="'REQUIRED' | translate">
+          <span class="centered-content">
+            {{verificationOrderItem.RequiredVerificationPercentage}}
+          </span>
+        </div>
+        <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
+          {{verificationOrderItem.CompleteExceptions / verificationOrderItem.RequiredExceptions}}
+        </div>
+        <div class="col width-date" [attr.data-title]="'DATE' | translate">
+          {{verificationOrderItem.Date}}
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>
+

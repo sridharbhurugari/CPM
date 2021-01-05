@@ -30,6 +30,10 @@ import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2
 import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
+import { Xr2VerificationPageComponent } from './xr2-verification-page/xr2-verification-page.component';
+import { Xr2VerificationOrderPageComponent } from './xr2-verification-order-page/xr2-verification-order-page.component';
+import { Xr2VerificationPatientPageComponent } from './xr2-verification-patient-page/xr2-verification-patient-page.component';
+import { Xr2VerificationOrderQueueComponent } from './xr2-verification-order-queue/xr2-verification-order-queue.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +57,10 @@ import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component
     Xr2QueueDetailsHeaderComponent,
     Xr2QueueButtonPanelComponent,
     Xr2QueuePageComponent,
+    Xr2VerificationPageComponent,
+    Xr2VerificationOrderPageComponent,
+    Xr2VerificationPatientPageComponent,
+    Xr2VerificationOrderQueueComponent,
   ],
   imports: [
     CommonModule,
