@@ -14,23 +14,23 @@
         (selection)="onHeaderCheck($event)"></oc-checkbox> -->
     </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
-        [columnPropertyName]="descriptionPropertyName" headerResourceKey='DESCRIPTION_ID'
+        [columnPropertyName]="typePropertyName" headerResourceKey='TYPE'
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="194" data-colwrap="true"
-        [columnPropertyName]="pharmacyQohPropertyName" headerResourceKey='PHARMACY_QOH'
+        [columnPropertyName]="itemcountPropertyName" headerResourceKey='ITEM_COUNT'
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
-        [columnPropertyName]="destinationPropertyName" headerResourceKey='DESTINATION'
+        [columnPropertyName]="bincountPropertyName" headerResourceKey='BIN_COUNT'
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
-        [columnPropertyName]="qtyFillReqPropertyName" headerResourceKey='QTY_FILLED_REQUESTED'
+        [columnPropertyName]='printPropertName' headerResourceKey='PRINT'
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
-        [columnPropertyName]="fillDatePropertyName" headerResourceKey='DATE_COMPLETED'
+        [columnPropertyName]="defaultdisplayorderPropertyName" headerResourceKey='DEFAULT_DISPLAY_ORDER'
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
@@ -43,22 +43,22 @@
           [selected]="destockTypeInfo.IsChecked"
           (selection)="onSelect($event)"></oc-checkbox> -->
       </div>
-        <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
+        <div class="col" [attr.data-title]="'TYPE' | translate">
           {{destockTypeInfo.Xr2DestockType_Display }}
 
         </div>
         <div class="col" [attr.data-title]="'PHARMACY_QOH' | translate" style="text-align: center;">
           {{destockTypeInfo.ItemCount}}
         </div>
-        <div class="col" [attr.data-title]="'DESTINATION' | translate">
+        <div class="col" [attr.data-title]="'ITEM_COUNT' | translate">
           {{destockTypeInfo.BinCount}}
         </div>
-        <div class="col" [attr.data-title]="'QTY_FILLED_REQUESTED' | translate" style="text-align: center;">
-          <span>
+        <div class="col" [attr.data-title]="'BIN_COUNT' | translate" style="text-align: center;">
+
               <oc-svgicon  *ngIf="!destockTypeInfo.canReroute && destockTypeInfo.IsChecked" icon="alert-no-tail"></oc-svgicon>
 
         </div>
-        <div class="last" [attr.data-title]="'DATE_COMPLETED' | translate">
+        <div class="last" [attr.data-title]="'DEFAULT_DISPLAY_ORDER' | translate">
         </div>
       </div>
     </ng-container>
