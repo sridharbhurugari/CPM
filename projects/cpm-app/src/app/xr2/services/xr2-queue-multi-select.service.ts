@@ -36,7 +36,6 @@ export class Xr2QueueMultiSelectService {
       return;
     }
 
-    console.log('updateActionPicklistItemDisableMap');
     this.removeFromActionDisableMap(picklistQueueItems);
     this.addToActionDisableMap(picklistQueueItems);
   }
@@ -47,8 +46,6 @@ export class Xr2QueueMultiSelectService {
     }
 
     _.forEach(itemsToProcess, (item) => {
-      console.log('Adding to action disable map:');
-      console.log(item);
       if (!item.Releaseable) {
         const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Release);
         currentSet.add(item);
@@ -63,7 +60,6 @@ export class Xr2QueueMultiSelectService {
         const currentSet  = this.actionDisableMap.get(OutputDeviceAction.Reroute);
         currentSet.add(item);
       }
-      console.log(this.actionDisableMap);
     });
   }
 
@@ -72,7 +68,6 @@ export class Xr2QueueMultiSelectService {
       return;
     }
 
-    console.log(this.actionDisableMap);
     _.forEach(itemsToProcess, (item) => {
       this.actionDisableMap.forEach((picklistSet, action) => {
         picklistSet.delete(item);
