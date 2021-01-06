@@ -10,13 +10,13 @@ import { nameof } from '../../shared/functions/nameof';
 import { Xr2VerificationOrder } from '../model/xr2-verification-order';
 
 @Component({
-  selector: 'app-xr2-verification-order-queue',
-  templateUrl: './xr2-verification-order-queue.component.html',
-  styleUrls: ['./xr2-verification-order-queue.component.scss']
+  selector: 'app-xr2-verification-patient-queue',
+  templateUrl: './xr2-verification-patient-queue.component.html',
+  styleUrls: ['./xr2-verification-patient-queue.component.scss']
 })
-export class Xr2VerificationOrderQueueComponent implements OnInit {
+export class Xr2VerificationPatientQueueComponent implements OnInit {
 
-  @Output() queueRowClickEvent: EventEmitter<Xr2VerificationOrder> = new EventEmitter();
+  @Output() queueRowClickEvent: EventEmitter<Guid> = new EventEmitter();
 
   @Input()
   set searchTextFilter(value: string) {
@@ -68,8 +68,8 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
   ngOnInit() {
   }
 
-  onGridRowClick(clickedVerificationOrderItem: Xr2VerificationOrder) {
-    this.queueRowClickEvent.emit(clickedVerificationOrderItem);
+  onGridRowClick(clickedVerificationOrder: Xr2VerificationOrder) {
+    this.queueRowClickEvent.emit(clickedVerificationOrder.OrderId);
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
@@ -98,4 +98,5 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
       }
     }, 250);
   }
+
 }

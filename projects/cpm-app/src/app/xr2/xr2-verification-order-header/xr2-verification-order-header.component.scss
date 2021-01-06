@@ -1,0 +1,10 @@
+:host ::ng-deep oc-search-box{
+  width: 375px !important;
+  margin-right: 10px;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

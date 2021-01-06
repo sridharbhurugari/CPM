@@ -1,1 +1,9 @@
-<app-xr2-verification-order-page></app-xr2-verification-order-page>
+<div class="content" [ngSwitch]="navigationParameters.Route">
+  <app-xr2-verification-order-page *ngSwitchCase="'OrderPage'"
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
+  ></app-xr2-verification-order-page>
+  <app-xr2-verification-patient-page *ngSwitchCase="'PatientPage'"
+  [navigationParameters]="navigationParameters"
+  (pageNavigationEvent)="onPageNavigationEvent($event)">
+  </app-xr2-verification-patient-page>
+</div>

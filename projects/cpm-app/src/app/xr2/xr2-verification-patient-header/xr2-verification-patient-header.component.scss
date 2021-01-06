@@ -1,0 +1,46 @@
+:host ::ng-deep oc-search-box{
+  width: 375px !important;
+  margin-right: 10px;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.back-button {
+  width: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 18px;
+  margin-right: 36px;
+}
+
+.title-content {
+  display: flex;
+  flex-direction: row;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding-right: 40px;
+  font-size: 30px;
+  color: gray;
+  font-weight: lighter;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .details-text {
+    width: 120px;
+  }
+}
+
+#searchBox {
+  width: 358px;
+  min-width: 358px;
+  margin-left: auto;
+}

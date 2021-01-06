@@ -34,6 +34,9 @@ import { Xr2VerificationPageComponent } from './xr2-verification-page/xr2-verifi
 import { Xr2VerificationOrderPageComponent } from './xr2-verification-order-page/xr2-verification-order-page.component';
 import { Xr2VerificationPatientPageComponent } from './xr2-verification-patient-page/xr2-verification-patient-page.component';
 import { Xr2VerificationOrderQueueComponent } from './xr2-verification-order-queue/xr2-verification-order-queue.component';
+import { Xr2VerificationOrderHeaderComponent } from './xr2-verification-order-header/xr2-verification-order-header.component';
+import { Xr2VerificationPatientQueueComponent } from './xr2-verification-patient-queue/xr2-verification-patient-queue.component';
+import { Xr2VerificationPatientHeaderComponent } from './xr2-verification-patient-header/xr2-verification-patient-header.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +64,9 @@ import { Xr2VerificationOrderQueueComponent } from './xr2-verification-order-que
     Xr2VerificationOrderPageComponent,
     Xr2VerificationPatientPageComponent,
     Xr2VerificationOrderQueueComponent,
+    Xr2VerificationOrderHeaderComponent,
+    Xr2VerificationPatientQueueComponent,
+    Xr2VerificationPatientHeaderComponent,
   ],
   imports: [
     CommonModule,
