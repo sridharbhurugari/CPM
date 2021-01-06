@@ -9,7 +9,7 @@ import { XR2InventoryLists } from '../model/xr2-inventory-list';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { ItemManagementService } from '../../api-core/services/item-management.service';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
-import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
+import { Xr2PdfGridReportService } from '../../shared/services/printing/xr2-pdf-grid-report-service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -82,7 +82,7 @@ export class ItemManagementListComponent implements AfterViewInit {
     private windowService: WindowService,
     private itemManagementService: ItemManagementService,
     private tableBodyService: TableBodyService,
-    private pdfGridReportService: PdfGridReportService,
+    private pdfGridReportService: Xr2PdfGridReportService,
     private pdfPrintService: PdfPrintService,
     private simpleDialogService: SimpleDialogService,
     public translateService: TranslateService,
@@ -155,7 +155,6 @@ export class ItemManagementListComponent implements AfterViewInit {
       let groupedData = this.groupByReportData(this.arrReportList, function (item) {
         return [item.DeviceLocationID, item.DeviceDescription, item.ItemId];
       });
-      console.log(arrUniqueReportList);
       var self = this;
       groupedData.forEach(function(indData){
         let value: XR2InventoryLists = {
@@ -185,7 +184,7 @@ export class ItemManagementListComponent implements AfterViewInit {
             }
             else
             {
-              space + threeNewlines;
+              value.FormattedExpirationDate += space + threeNewlines;
             }
           value.OmniSiteID = element.OmniSiteID;
         },
@@ -292,8 +291,6 @@ export class ItemManagementListComponent implements AfterViewInit {
       this.deviceInformationList.find((obj) => obj.DeviceId === deviceId).Description
     );
     let reportBaseData$ = of({ ...this.reportBasedata });
-
-
     try {
       this.pdfGridReportService.printWithBaseData(tableBody, of(ReportConstants.Xr2InventoryReport),reportBaseData$)
         .subscribe(

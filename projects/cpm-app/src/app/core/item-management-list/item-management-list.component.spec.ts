@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ItemManagementService } from '../../api-core/services/item-management.service';
 import { of, Subject } from 'rxjs';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
-import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
+import { Xr2PdfGridReportService } from '../../shared/services/printing/xr2-pdf-grid-report-service';
 import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
@@ -58,7 +58,7 @@ describe('ItemManagementListComponent', () => {
     devicesService = {
       getAllXr2Devices: () => of([])
     };
-    const pdfGridReportService: Partial<PdfGridReportService> = {
+    const pdfGridReportService: Partial<Xr2PdfGridReportService> = {
       printWithBaseData
     };
     simpleDialogService = {
@@ -85,7 +85,7 @@ describe('ItemManagementListComponent', () => {
         { provide: WindowService, useValue: { }} ,
         { provide: ItemManagementService, useValue: { get: () => of([]), getXR2ReportData: () => of([]) }},
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
-        { provide: PdfGridReportService, useValue: pdfGridReportService },
+        { provide: Xr2PdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },

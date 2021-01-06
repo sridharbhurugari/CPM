@@ -9,7 +9,7 @@ import { HeaderContainerComponent } from '../../shared/components/header-contain
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
-import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
+import { UnfilledPdfGridReportService } from '../../shared/services/printing/unfilled-pdf-grid-report-service';
 import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
@@ -85,7 +85,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     routerMock = { navigate: () => of<boolean>().toPromise() };
     spyOn(routerMock, 'navigate');
     printWithBaseData = jasmine.createSpy('navigate');
-    const pdfGridReportService: Partial<PdfGridReportService> = {
+    const pdfGridReportService: Partial<UnfilledPdfGridReportService> = {
       printWithBaseData
     };
     simpleDialogService = {
@@ -121,7 +121,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: ResetPickRoutesService, useValue: { reset: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
-        { provide: PdfGridReportService, useValue: pdfGridReportService },
+        { provide: UnfilledPdfGridReportService, useValue: pdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },

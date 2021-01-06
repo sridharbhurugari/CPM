@@ -7,7 +7,7 @@ import { map, shareReplay, switchMap, scan } from 'rxjs/operators';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { IUnderfilledPicklist } from '../../api-core/data-contracts/i-underfilled-picklist';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
-import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
+import { UnfilledPdfGridReportService } from '../../shared/services/printing/unfilled-pdf-grid-report-service';
 import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
@@ -65,7 +65,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
-    private pdfGridReportService: PdfGridReportService,
+    private pdfGridReportService: UnfilledPdfGridReportService,
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,

@@ -10,12 +10,11 @@ import { IReportLabels } from './i-report-labels';
 import { PdfMakeService } from './pdf-make.service';
 import { ImageDataService } from '../images/image-data.service';
 import { ReportConstants } from '../../constants/report-constants';
-//import { TDocumentDefinitions,ContentTable } from 'pdfmake/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PdfGridReportService
+export class Xr2PdfGridReportService
 {
   reportBaseData$: Observable<IAngularReportBaseData>;
   reportLogo$: Observable<string>;
@@ -30,7 +29,7 @@ export class PdfGridReportService
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
     this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
-    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED',];
+    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED','REPORT_LABEL_XR2_DEVICE_ID',];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
@@ -61,13 +60,15 @@ export class PdfGridReportService
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-      const documentDefinition = this.getDocumentDefinition(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+      const documentDefinition = this.getDocumentDefinitionForXR2Inventory(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
       const pdf = this.pdfMakeService.createPdf(documentDefinition);
       return pdf;
   }
 
-  private getDocumentDefinition(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
+  //this is only for Landscape page orientation type
+  private getDocumentDefinitionForXR2Inventory(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
     return {
+      pageOrientation: ReportConstants.ReportLandscapePageOrientation,
       footer: (currentPage: number, pageCount: number) => {
         return [
           {
@@ -97,28 +98,26 @@ export class PdfGridReportService
               width: 82,
               height: 18
             },
-            { text: reportTitle, alignment: 'right', style: 'header', fontSize: 20, bold: true }
+            { text: reportTitle, alignment: 'right', style: 'header', fontSize: ReportConstants.ReportHeaderSmallFontSize, bold: true }
           ]
         },
         // line
-        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595 - 2 * 40, y2: 5, lineWidth: 1 }] },
+        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: ReportConstants.ReportLandscapeCanvasDimension, y2: 5, lineWidth: 1 }] },
         // report base data
         {
           layout: 'noBorders', // optional
+          fontSize: 7,
           table: {
-            // headers are automatically repeated if the table spans over multiple pages
-            // you can declare how many rows should be treated as headers
-            headerRows: 0,
-            widths: [50, 75, 150, 50, '*'],
-            body: [
-              ['', '', '', '', ''],
-              ['', reportLabels.REPORT_LABEL_OMNI_ID, reportBaseData.OmniId, reportLabels.REPORT_LABEL_PRINTED, reportBaseData.FormattedDateTime],
-              ['', reportLabels.REPORT_LABEL_OMNI_NAME, reportBaseData.OmniName, '', ''],
-            ]
-          }
+          headerRows: 0,
+          widths: [50, 75, 75, 160, 150, 50, "*"],
+          body: [ ["", "", "", "", "", "", ""],
+            ["",reportLabels.REPORT_LABEL_OMNI_ID,reportBaseData.OmniId,"","",reportLabels.REPORT_LABEL_PRINTED,reportBaseData.FormattedDateTime,],
+            ["",reportLabels.REPORT_LABEL_XR2_DEVICE_ID,reportBaseData.DeviceDescriptionName,"","","","",],
+          ]
+        },
         },
         // line
-        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1 }] },
+        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: ReportConstants.ReportLandscapeCanvasDimension, y2: 5, lineWidth: 1 }] },
         // blank line
         { text: '   ', alignment: 'center', fontSize: 12, bold: true, lineHeight: 1.25 },
         // report contents
