@@ -40,16 +40,17 @@ export class GuidedPickComponent implements OnDestroy {
     this.setExpDateInPastValue();
     this.setupQtySubscription();
 
-    this.isHighPriorityAvailable = this._guidedPickData.highPriorityAvailable;
-
-    if(this.isHighPriorityAvailable) {
-      this.inventoryManagementService.getHighPriorityPickRequestCount().subscribe(success => {
-        this.translateService.get("HIGHPRIORITY", {
-          count: success
-        }).subscribe(result => {
-          this.highPriorityButtonText = result
-        });
-      });      
+    if(this._guidedPickData) {
+      this.isHighPriorityAvailable = this._guidedPickData.highPriorityAvailable;
+      if(this.isHighPriorityAvailable) {
+        this.inventoryManagementService.getHighPriorityPickRequestCount().subscribe(success => {
+          this.translateService.get("HIGHPRIORITY", {
+            count: success
+          }).subscribe(result => {
+            this.highPriorityButtonText = result
+          });
+        });      
+      }
     }
 
   }
