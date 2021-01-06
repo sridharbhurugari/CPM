@@ -31,6 +31,7 @@ import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-q
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
 import { DestockPageComponent } from './destock-page/destock-page.component';
+import { DestockTypeInfoComponent } from './destock-typeinfo/destock-typeinfo.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { DestockPageComponent } from './destock-page/destock-page.component';
     Xr2QueueButtonPanelComponent,
     Xr2QueuePageComponent,
     DestockPageComponent,
+    DestockTypeInfoComponent,
   ],
   imports: [
     CommonModule,

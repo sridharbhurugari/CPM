@@ -3,14 +3,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
-import { DestockPageComponent } from './destock-page.component';
+import { DestockTypeInfoComponent } from './destock-typeinfo.component';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
-import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
-
 
 describe('Xr2QueuePageComponent', () => {
-  let component: DestockPageComponent ;
-  let fixture: ComponentFixture<DestockPageComponent>;
+  let component: DestockTypeInfoComponent ;
+  let fixture: ComponentFixture<DestockTypeInfoComponent>;
   let translateService: Partial<TranslateService>;
   let xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
 
@@ -26,7 +24,7 @@ describe('Xr2QueuePageComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ DestockPageComponent],
+      declarations: [ DestockTypeInfoComponent],
       imports: [],
       providers: [],
       schemas: [NO_ERRORS_SCHEMA]
@@ -35,7 +33,7 @@ describe('Xr2QueuePageComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DestockPageComponent);
+    fixture = TestBed.createComponent(DestockTypeInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -44,12 +42,6 @@ describe('Xr2QueuePageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set xr2QueueNavigationParameters to null on details page back navigation', () => {
-      component.xr2QueueNavigationParameters = xr2QueueNavigationParameters;
-      component.onDetailsPageBackNavigation();
-
-      expect(component.xr2QueueNavigationParameters).toBe(null);
-  });
 
 });
 

@@ -1,0 +1,17 @@
+<div class="destockTypeList">
+
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div class="first" ></div>
+      <div class="col description">{{typePropertyName}}</div>
+    </ng-container>
+
+    <ng-container class="ocgridbody" >
+      <div class="row" *ngFor="let d of deviceDestockTypeInfo">
+        <div class="first" style="align-items: center;">
+        </div>
+        <div class="col" [attr.data-title]="typePropertyName">{{d.Xr2DestockType_Display}}</div>
+      </div>
+    </ng-container>
+</oc-grid>
+</div>
