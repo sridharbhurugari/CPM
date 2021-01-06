@@ -1,17 +1,50 @@
-<div class="destockTypeList">
-
-  <oc-grid #ocgrid ocgridfilter="false">
+  <oc-grid  #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-      <div class="first" ></div>
-      <div class="col description">{{typePropertyName}}</div>
-    </ng-container>
-
-    <ng-container class="ocgridbody" >
-      <div class="row" *ngFor="let d of deviceDestockTypeInfo">
-        <div class="first" style="align-items: center;">
-        </div>
-        <div class="col" [attr.data-title]="typePropertyName">{{d.Xr2DestockType_Display}}</div>
+      <div class="first" ocGridCol data-width="86" minlength = 86 data-colwrap="false">
+        <!-- <oc-checkbox [noLabel]="true" [isEnabled]="true" [selected]="isHeaderCheckboxChecked"
+        (selection)="onHeaderCheck($event)"></oc-checkbox> -->
+    </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="750" data-colwrap="true"
+        [columnPropertyName]="typePropertyName" headerResourceKey='DESTOCK_MEDSTATUS_TYPE'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="itemcountPropertyName" headerResourceKey='DESTOCK_MEDSTATUS_ITEMS'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="bincountPropertyName" headerResourceKey='DESTOCK_MEDSTATUS_BINS'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="last" data-width="80" minlength="86" data-colwrap="true"
+        [columnPropertyName]='printPropertName' headerResourceKey='PRINT'
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
-</oc-grid>
-</div>
+    <ng-container class="ocgridbody">
+      <div class="row" *ngFor="let destockTypeInfo of deviceDestockTypeInfo">
+        <div class="first">
+          <!-- <oc-checkbox [noLabel]="true"
+          [isEnabled]="true"
+          [valueField]="destockTypeInfo.destockTypeInfoId"
+          [selected]="destockTypeInfo.IsChecked"
+          (selection)="onSelect($event)"></oc-checkbox> -->
+      </div>
+        <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_TYPE' | translate">
+          {{destockTypeInfo.Xr2DestockType_Display }}
+
+        </div>
+        <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_ITEMS' | translate">
+          {{destockTypeInfo.ItemCount}}
+        </div>
+        <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_BINS' | translate">
+          {{destockTypeInfo.BinCount}}
+        </div>
+        <div class="last" [attr.data-title]="'PRINT' | translate" style="text-align: center;">
+          <oc-button-action [mode]="'secondary'" [buttonIcon] ="'print'" (click)="onPrint(destockTypeInfo)"></oc-button-action>
+            <!-- //  <oc-svgicon  *ngIf="!destockTypeInfo.canReroute && destockTypeInfo.IsChecked" icon="alert-no-tail"></oc-svgicon> -->
+
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>

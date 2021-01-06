@@ -4,8 +4,7 @@
   flex-direction: column;
   flex: 1;
 }
-
-.content {
-  height: 100%;
-  width: 100%;
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
 }

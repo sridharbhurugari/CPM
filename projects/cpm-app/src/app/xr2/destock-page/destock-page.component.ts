@@ -36,34 +36,10 @@ export class DestockPageComponent implements OnInit {
     if(! this.selectedDeviceInformation)
     {
       this.selectedDeviceInformation = new SelectableDeviceInfo(null);
-      this.selectedDeviceInformation.DeviceId = 4;
+      this.selectedDeviceInformation.DeviceId = 0;
     }
-    this.deviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(
-      tap({
-     next: val => {
-     console.log('on next', val);
-     },
-     error: error => {
-     console.log('on error', error.message);
-     },
-     complete: () => console.log('on complete')
-     }),
-  shareReplay(1));
-    //this.deviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId);
-
-     //  this.deviceDestockTypeInfo$ = this.destockService.get(4).pipe(map(x => {return x.map(y => {return new DestockTypeInfo(y)})}));
-       // .pipe(
-    //     shareReplay(1),
-    // tap({
-    //     next: val => {
-    //     console.log('on next', val);
-    //     },
-    //     error: error => {
-    //     console.log('on error', error.message);
-    //     },
-    //     complete: () => console.log('on complete')
-    //     }));
-  }
+    this.deviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(shareReplay(1));
+   }
 
   onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
@@ -75,58 +51,19 @@ export class DestockPageComponent implements OnInit {
     this.selectedDeviceInformation = $event;
     console.log('onDeviceSelectionChanged DeviceId: ');
     console.log(this.selectedDeviceInformation.DeviceId);
-    this.onChangedDeviceId();
   }
 
-  onChangedDeviceId() {
-    this.deviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(
-           tap({
-          next: val => {
-          console.log('on next', val);
-          },
-          error: error => {
-          console.log('on error', error.message);
-          },
-          complete: () => console.log('on complete')
-          }),
-       shareReplay(1));
-
-    // this.deviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(map(x => {return x.map(y => {return new DestockTypeInfo(y)})}),
-    //  tap({
-    //       next: val => {
-    //       console.log('on next', val);
-    //       },
-    //       error: error => {
-    //       console.log('on error', error.message);
-    //       },
-    //       complete: () => console.log('on complete')
-    //       }),
-    //    shareReplay(1));
-  //   this.deviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(
-  //     map(x => {
-  //       const c: DestockTypeInfo[] = [];
-  //        x.forEach(dd => { c.push(new DestockTypeInfo(dd));})
-  //       // d.map(dd => new DestockTypeInfo(dd));
-  //       return c;
-  //     } ),
-  //     shareReplay(1),
-  // tap({
-  //     next: val => {
-  //     console.log('on next', val);
-  //     },
-  //     error: error => {
-  //     console.log('on error', error.message);
-  //     },
-  //     complete: () => console.log('on complete')
-  //     }));
-// update screen with controller info
-//this.destockService.get(this.selectedDeviceInformation.DeviceId).subscribe(() => this.deviceDestockTypeInfo), shareReplay(1);
-// this.deviceDestockTypeInfo = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(map(x => {
-//   const displayObjects = x.map(d => new IDestockTypeInfo(d));
-//   return displayObjects;
-// }), shareReplay(1));
-      }
-
+  onPrint(event: DestockTypeInfo)
+  {
+    // DeviceId
+    console.log(this.selectedDeviceInformation.DeviceId);
+    // barcode
+    console.log(event.Barcode);
+    // label text
+    console.log(event.Xr2DestockType_Display);
+    // qty of labels to print:
+    console.log(event.BinCount);
+  }
   onRequestXr2CurrentNumbers() {
 // Request for Device Id
 // If No Device - request button shouldn't be available.

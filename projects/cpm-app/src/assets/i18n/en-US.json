@@ -264,5 +264,8 @@
   "ORDER_IN_USE_TITLE": "Order In Use",
   "XR2_ALL_DEVICES": "All Devices",
   "SEARCH_TEXT": "Search",
-  "ADJUST": "Adjust"
+  "ADJUST": "Adjust",
+  "DESTOCK_MEDSTATUS_TYPE": "Type",
+  "DESTOCK_MEDSTATUS_ITEMS": "Item Count",
+  "DESTOCK_MEDSTATUS_BINS": "Bin Count"
 }

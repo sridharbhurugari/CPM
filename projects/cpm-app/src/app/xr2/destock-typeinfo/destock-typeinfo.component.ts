@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IDestockTypeInfo } from '../../api-xr2/data-contracts/i-destock-type-info';
 import { DestockService } from '../../api-xr2/services/destock.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -11,8 +11,18 @@ import { DestockTypeInfo } from '../model/destock-type-info';
   styleUrls: ['./destock-typeinfo.component.scss']
 })
 export class DestockTypeInfoComponent implements OnInit {
+  // @Input('deviceDestockTypeInfo')
+  // set deviceDestockTypeInfo(value: DestockTypeInfo[]) {
+  //   this._deviceDestockTypeInfo = value;
 
-  @Input() deviceDestockTypeInfo: DestockTypeInfo[];
+  // }
+  // get deviceDestockTypeInfo(): DestockTypeInfo[] {
+  //   return this._deviceDestockTypeInfo;
+  // }
+ @Input() deviceDestockTypeInfo: DestockTypeInfo[];
+ @Output() printLabel: EventEmitter<DestockTypeInfo> = new EventEmitter<DestockTypeInfo>();
+
+  _deviceDestockTypeInfo: DestockTypeInfo[];
   searchTextFilter: string;
   currentSortPropertyName: string;
   // sortOrder: SortDirection;
@@ -42,6 +52,7 @@ export class DestockTypeInfoComponent implements OnInit {
     this.searchTextFilter = filterText;
   }
 
-  onPrint(event: IDestockTypeInfo) {
+  onPrint(event: DestockTypeInfo) {
+    this.printLabel.next(event);
   }
 }
