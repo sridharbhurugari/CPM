@@ -264,5 +264,11 @@
   "ORDER_IN_USE_TITLE": "Order In Use",
   "XR2_ALL_DEVICES": "All Devices",
   "SEARCH_TEXT": "Search",
-  "ADJUST": "Adjust"
+  "ADJUST": "Adjust",
+  "REPORT_LABEL_XR2_DEVICE_ID": "XR2 Name:",
+  "XR2_INV_REPORT_TITLE":"XR2 Inventory Worksheet",
+  "PRINT_XR2_INVENTORY_REPORT":"Print XR2 Inventory",
+  "PACKSIZE":"Pack Size",
+  "PACKSIZE_MIN":"PackSize Min",
+  "PACKSIZE_MAX":"PackSize Max"
 }
