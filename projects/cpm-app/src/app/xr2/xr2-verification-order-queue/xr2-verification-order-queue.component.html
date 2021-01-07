@@ -18,22 +18,22 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="165" data-colwrap="true"
         [columnPropertyName]="completePropertyName" headerResourceKey="COMPLETE"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="165" data-colwrap="true"
       [columnPropertyName]="requiredPropertyName" headerResourceKey="REQUIRED"
       [currentSortPropertyName]="currentSortPropertyName"
       (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
         [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="200" data-colwrap="true">{{'DATE' | translate}}</div>
+      <div class="last width-type" data-width="190" data-colwrap="true">{{'DATE' | translate}}</div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
@@ -58,12 +58,26 @@
         </div>
         <div class="col width-required" [attr.data-title]="'REQUIRED' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.RequiredVerificationPercentage}}
+            {{verificationOrderItem.RequiredVerificationPercentage}}%
           </span>
         </div>
         <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.CompleteExceptions / verificationOrderItem.RequiredExceptions}}
+            <app-cp-data-label
+            [ngStyle]="{'padding-right': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationOrderItem.CompleteExceptions"
+            [label]="'COMPLETE' | translate">
+            </app-cp-data-label>
+            /
+            <app-cp-data-label
+            [ngStyle]="{'padding-left': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationOrderItem.RequiredExceptions"
+            [label]="'REQUIRED' | translate">
+            </app-cp-data-label>
           </span>
         </div>
         <div class="col width-date" [attr.data-title]="'DATE' | translate">

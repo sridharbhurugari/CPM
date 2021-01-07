@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Xr2VerificationRouting } from '../../shared/enums/xr2-verification-routing';
 import { IXr2VerificationNavigationParameters } from '../../shared/interfaces/i-xr2-verification-navigation-parameters';
 
 @Component({
@@ -8,9 +9,10 @@ import { IXr2VerificationNavigationParameters } from '../../shared/interfaces/i-
 })
 export class Xr2VerificationPageComponent implements OnInit {
 
-  private initialRoute="OrderPage";
+  private initialRoute = Xr2VerificationRouting.OrderPage;
 
   navigationParameters: IXr2VerificationNavigationParameters;
+  xr2VerficationRouting: typeof Xr2VerificationRouting = Xr2VerificationRouting;
 
   constructor() { }
 

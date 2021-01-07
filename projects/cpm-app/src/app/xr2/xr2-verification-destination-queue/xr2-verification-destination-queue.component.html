@@ -1,0 +1,57 @@
+<ng-container class="ocactiondetails">
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <!-- 1280 px total-->
+      <!-- 82 px for first -->
+      <div app-col-header-sortable class="first" data-colwrap="true"
+        [columnPropertyName]="sequenceOrderPropertyName" headerResourceKey=""
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="398" data-colwrap="true"
+        [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        [columnPropertyName]="verificationPropertyName" headerResourceKey="VERIFICATION"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+        [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div class="last width-type" data-width="300" data-colwrap="true">{{'REQUIRED_VERIFICATION' | translate}}</div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row"
+      (click)="onGridRowClick(verificationDestinationItem)"
+      *ngFor="let verificationDestinationItem of this.verificationDestinationItems">
+        <div class="first" style="align-items: center;">
+          <div class="firstcolumncolorblock"></div>
+        </div>
+        <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
+            {{verificationDestinationItem.Destination}}
+        </div>
+        <div class="col width-verification" [attr.data-title]="'VERIFICATION' | translate">
+          <span class="centered-content">
+            {{verificationDestinationItem.CompleteVerifications}} / {{verificationDestinationItem.TotalVerifications}}
+          </span>
+        </div>
+        <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
+          <span class="centered-content">
+            {{verificationDestinationItem.CompleteExceptions}} / {{verificationDestinationItem.RequiredExceptions}}
+          </span>
+        </div>
+        <div class="col width-required-verification" [attr.data-title]="'REQUIRED_VERIFICATION' | translate">
+          <span class="centered-content">
+            {{verificationDestinationItem.RequiredVerifications}}
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>
+

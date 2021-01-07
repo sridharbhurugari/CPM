@@ -1,16 +1,15 @@
-import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PicklistsQueueComponent } from './picklists-queue/picklists-queue.component';
 import {
   GridModule, ButtonActionModule, SingleselectDropdownModule, CardContainerModule, DashboardCardModule, LayoutModule, FooterModule, SearchModule, InputsModule,
-  PopupDialogModule, SvgIconModule, DaterangeModule, CheckboxModule
+  PopupDialogModule, SvgIconModule, DaterangeModule, CheckboxModule, ButtonToggleModule
 } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { PicklistsQueuePageComponent } from './picklists-queue-page/picklists-queue-page.component';
 import { QuickPickPageComponent } from './quick-pick-page/quick-pick-page.component';
-import { environment } from '../../environments/environment';
 import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component';
 import {Xr2ExceptionDetailsPageComponent} from './xr2-exception-details-page/xr2-exceptions-details-page.component';
 import { QuickPickQueueViewComponent } from './quick-pick-queue-view/quick-pick-queue-view.component';
@@ -32,11 +31,11 @@ import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
 import { Xr2VerificationPageComponent } from './xr2-verification-page/xr2-verification-page.component';
 import { Xr2VerificationOrderPageComponent } from './xr2-verification-order-page/xr2-verification-order-page.component';
-import { Xr2VerificationPatientPageComponent } from './xr2-verification-patient-page/xr2-verification-patient-page.component';
+import { Xr2VerificationDestinationPageComponent } from './xr2-verification-destination-page/xr2-verification-destination-page.component';
 import { Xr2VerificationOrderQueueComponent } from './xr2-verification-order-queue/xr2-verification-order-queue.component';
 import { Xr2VerificationOrderHeaderComponent } from './xr2-verification-order-header/xr2-verification-order-header.component';
-import { Xr2VerificationPatientQueueComponent } from './xr2-verification-patient-queue/xr2-verification-patient-queue.component';
-import { Xr2VerificationPatientHeaderComponent } from './xr2-verification-patient-header/xr2-verification-patient-header.component';
+import { Xr2VerificationDestinationQueueComponent } from './xr2-verification-destination-queue/xr2-verification-destination-queue.component';
+import { Xr2VerificationDetailsPageComponent } from './xr2-verification-details-page/xr2-verification-details-page.component';
 
 @NgModule({
   declarations: [
@@ -62,11 +61,11 @@ import { Xr2VerificationPatientHeaderComponent } from './xr2-verification-patien
     Xr2QueuePageComponent,
     Xr2VerificationPageComponent,
     Xr2VerificationOrderPageComponent,
-    Xr2VerificationPatientPageComponent,
+    Xr2VerificationDestinationPageComponent,
     Xr2VerificationOrderQueueComponent,
     Xr2VerificationOrderHeaderComponent,
-    Xr2VerificationPatientQueueComponent,
-    Xr2VerificationPatientHeaderComponent,
+    Xr2VerificationDestinationQueueComponent,
+    Xr2VerificationDetailsPageComponent,
   ],
   imports: [
     CommonModule,
@@ -86,7 +85,8 @@ import { Xr2VerificationPatientHeaderComponent } from './xr2-verification-patien
     CheckboxModule,
     SvgIconModule,
     DaterangeModule,
-    Xr2RoutingModule
+    Xr2RoutingModule,
+    ButtonToggleModule
   ],
 })
 export class Xr2Module { }

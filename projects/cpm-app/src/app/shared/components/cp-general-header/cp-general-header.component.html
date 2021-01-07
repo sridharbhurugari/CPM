@@ -9,9 +9,12 @@
     </app-cp-clickable-icon>
   </div>
     <div class="title-content">
-      <span class="ellipsis">
-        {{priorityDescription}}-{{orderId}}
+      <span class="title ellipsis">
+        {{title}}
+      </span>
+      <span class="subtitle ellipsis">
+        {{subtitle}}
       </span>
     </div>
-  <oc-search-box #searchBox id="searchBox" [placeHolderText]="'SEARCH_CYCLECOUNT' | translate"></oc-search-box>
+  <oc-search-box *ngIf="showSearchBox" #searchBox id="searchBox" [placeHolderText]="'SEARCH_CYCLECOUNT' | translate"></oc-search-box>
 </div>

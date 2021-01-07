@@ -1,0 +1,12 @@
+<ng-container>
+  <app-cp-general-header
+  [title]="navigationParameters.PriorityCodeDescription"
+  [subtitle]="getHeaderSubtitle()"
+  [showSearchBox]="true"
+  (backEvent)="onBackEvent()"
+  ></app-cp-general-header>
+  <app-xr2-verification-destination-queue
+  [verificationDestinationItems]="verificationDestinationItems | async"
+  (gridRowClickEvent)="onGridRowClickEvent($event)"
+  ></app-xr2-verification-destination-queue>
+</ng-container>

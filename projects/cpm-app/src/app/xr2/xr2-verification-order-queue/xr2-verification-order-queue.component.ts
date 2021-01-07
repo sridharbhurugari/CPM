@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
-import { Xr2VerificationOrder } from '../model/xr2-verification-order';
+import { Xr2VerificationOrderItem } from '../model/xr2-verification-order-item';
 
 @Component({
   selector: 'app-xr2-verification-order-queue',
@@ -16,7 +16,7 @@ import { Xr2VerificationOrder } from '../model/xr2-verification-order';
 })
 export class Xr2VerificationOrderQueueComponent implements OnInit {
 
-  @Output() queueRowClickEvent: EventEmitter<Xr2VerificationOrder> = new EventEmitter();
+  @Output() gridRowClickEvent: EventEmitter<Xr2VerificationOrderItem> = new EventEmitter();
 
   @Input()
   set searchTextFilter(value: string) {
@@ -30,28 +30,28 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
   }
 
   @Input()
-  verificationOrderItems: Xr2VerificationOrder[];
+  verificationOrderItems: Xr2VerificationOrderItem[];
 
   @Input()
-  set verficationOrderItems(value: Xr2VerificationOrder[]) {
+  set verficationOrderItems(value: Xr2VerificationOrderItem[]) {
     this._verficationOrderItems = value;
     this.resizeGrid();
   }
-  get verficationOrderItems(): Xr2VerificationOrder[] {
+  get verficationOrderItems(): Xr2VerificationOrderItem[] {
     return this._verficationOrderItems;
   }
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  private  _verficationOrderItems: Xr2VerificationOrder[];
+  private  _verficationOrderItems: Xr2VerificationOrderItem[];
 
-  readonly sequenceOrderPropertyName = nameof<Xr2VerificationOrder>('SequenceOrder');
-  readonly typePropertyName = nameof<Xr2VerificationOrder>('PriorityCodeDescription');
-  readonly orderIdPropertyName = nameof<Xr2VerificationOrder>('OrderId');
-  readonly completePropertyName = nameof<Xr2VerificationOrder>('CompleteVerifications');
-  readonly requiredPropertyName = nameof<Xr2VerificationOrder>('RequiredVerificationPercentage');
-  readonly exceptionsPropertyName = nameof<Xr2VerificationOrder>('RequiredExceptions');
-  readonly datePropertyName = nameof<Xr2VerificationOrder>('Date');
+  readonly sequenceOrderPropertyName = nameof<Xr2VerificationOrderItem>('SequenceOrder');
+  readonly typePropertyName = nameof<Xr2VerificationOrderItem>('PriorityCodeDescription');
+  readonly orderIdPropertyName = nameof<Xr2VerificationOrderItem>('OrderId');
+  readonly completePropertyName = nameof<Xr2VerificationOrderItem>('CompleteVerifications');
+  readonly requiredPropertyName = nameof<Xr2VerificationOrderItem>('RequiredVerificationPercentage');
+  readonly exceptionsPropertyName = nameof<Xr2VerificationOrderItem>('RequiredExceptions');
+  readonly datePropertyName = nameof<Xr2VerificationOrderItem>('Date');
   firstTime = true;
 
   currentSortPropertyName: string;
@@ -68,8 +68,8 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
   ngOnInit() {
   }
 
-  onGridRowClick(clickedVerificationOrderItem: Xr2VerificationOrder) {
-    this.queueRowClickEvent.emit(clickedVerificationOrderItem);
+  onGridRowClick(clickedVerificationOrderItem: Xr2VerificationOrderItem) {
+    this.gridRowClickEvent.emit(clickedVerificationOrderItem);
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
@@ -78,7 +78,7 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
     this.verificationOrderItems = this.sort(this.verificationOrderItems, event.SortDirection);
   }
 
-  sort(xr2VerificationOrderItems: Xr2VerificationOrder[], sortDirection: Many<boolean | 'asc' | 'desc'>): Xr2VerificationOrder[] {
+  sort(xr2VerificationOrderItems: Xr2VerificationOrderItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): Xr2VerificationOrderItem[] {
     return _.orderBy(xr2VerificationOrderItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
