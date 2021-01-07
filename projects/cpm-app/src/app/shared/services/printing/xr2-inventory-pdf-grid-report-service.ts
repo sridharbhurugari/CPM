@@ -14,7 +14,7 @@ import { ReportConstants } from '../../constants/report-constants';
 @Injectable({
   providedIn: 'root'
 })
-export class Xr2PdfGridReportService
+export class Xr2InventoryPdfGridReportService
 {
   reportBaseData$: Observable<IAngularReportBaseData>;
   reportLogo$: Observable<string>;
