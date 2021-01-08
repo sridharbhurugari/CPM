@@ -177,7 +177,7 @@
   "TOTAL_REQUESTED": "Total Requested",
   "TYPE": "Priority Type",
   "UNDERFILLED": "Underfilled",
-  "UNFILLED" : "Unfilled",
+  "UNFILLED": "Unfilled",
   "YES": "Yes",
   "NO": "No",
   "REPRINT": "Reprint",
@@ -250,7 +250,7 @@
   "PACKAGER_ASSIGNITEM_BODY_TEXT": "Cycle counting is not supported for Packager or XR2 assignments.<br />",
   "PACKAGER_ASSIGNITEM_BODY_DEVICES_TEXT": "{{itemId}} is assigned to {{deviceDescription}}<br />",
   "PACKAGER_ASSIGNITEM_HEADER_TEXT": "Cycle Count",
-  "CycleCount_Concurrency_UpdateConflictMsg":"The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
+  "CycleCount_Concurrency_UpdateConflictMsg": "The item data is not current, or was changed in the system. To perform the update with the most recent data, press Ok.",
   "CycleCount_Concurrency_ConflictDialogTitle": "Item Data Information",
   "UNFILLED_DELETE_PICKLIST_PROMPT_TITLE": "Confirmation",
   "UNFILLED_DELETE_PICKLIST_PROMPT_MESSAGE": "Press Confirm to complete this order.  This action cannot be undone.",
@@ -270,5 +270,6 @@
   "PRINT_XR2_INVENTORY_REPORT":"Print XR2 Inventory",
   "PACKSIZE":"Pack Size",
   "PACKSIZE_MIN":"PackSize Min",
-  "PACKSIZE_MAX":"PackSize Max"
+  "PACKSIZE_MAX":"PackSize Max",
+  "HIGHPRIORITY": "Priority Picks ({{count}})"
 }

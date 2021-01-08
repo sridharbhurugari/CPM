@@ -97,6 +97,8 @@
         <oc-footer>
             <div class="ocleftalign">
                 <oc-button-action [buttonText]="'PAUSE' | translate" (click)="pauseClicked.next()">}</oc-button-action>
+                <oc-button-action mode="critical" [style.visibility]="isHighPriorityAvailable ? 'visible' : 'hidden'" [buttonText]="highPriorityButtonText" (click)="pickNowClicked.next()">
+                </oc-button-action>
             </div>
             <div class="ocrightalign">
                 <oc-button-action [buttonText]="'HOLD' | translate" (click)="holdClicked.next(guidedPickData?.isLastLine)">
