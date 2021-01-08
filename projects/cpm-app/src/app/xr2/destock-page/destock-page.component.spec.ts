@@ -8,7 +8,7 @@ import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-que
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 
-describe('Xr2QueuePageComponent', () => {
+describe('Xr2DestockComponent', () => {
   let component: DestockPageComponent ;
   let fixture: ComponentFixture<DestockPageComponent>;
   let translateService: Partial<TranslateService>;

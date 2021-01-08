@@ -26,4 +26,17 @@ export class DestockService {
     });
     return results;
   }
+
+  public print(deviceId: number, orderBoxBarcode: string, orderBoxBarcodeDisplay: string): Observable<object> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/destock/print`);
+    var data = {
+      DeviceId: deviceId,
+      OrderBoxBarcode: orderBoxBarcode,
+      OrderBoxBarcodeDisplay : orderBoxBarcodeDisplay
+    };
+
+    return this.httpClient.post(url, data, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
 }
