@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { PdfGridReportService } from './pdf-grid-report-service';
+import { Xr2InventoryPdfGridReportService } from './xr2-inventory-pdf-grid-report-service';
 import { PdfPrintService } from '../../../api-core/services/pdf-print-service';
 import { OcapUrlBuilderService } from '../ocap-url-builder.service';
 import { PdfMakeService } from './pdf-make.service';
@@ -12,7 +12,7 @@ import { IReportLabels } from './i-report-labels';
 import { ContentTable } from 'pdfmake/interfaces';
 
 describe('PdfGridReportService', () => {
-  let service: PdfGridReportService;
+  let service: Xr2InventoryPdfGridReportService;
   let pdfPrintService: Partial<PdfPrintService>;
   beforeEach(() => {
     let reportBaseData: IAngularReportBaseData = {
@@ -53,7 +53,7 @@ describe('PdfGridReportService', () => {
         { provide: ImageDataService, useValue: { getBase64ImageFromUrl: () => of('') } },
       ]
     });
-    service = TestBed.get(PdfGridReportService);
+    service = TestBed.get(Xr2InventoryPdfGridReportService);
   });
 
   it('should be created', () => {
