@@ -118,7 +118,6 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   pickNow() {
     this.clearLightbar();
-    this.isHighPriorityAvailable = false;
     this.wpfActionControllerService.ExecuteActionName(WpfActionPaths.HighPriorityPickNow);
   }
 
