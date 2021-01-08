@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, from } from 'rxjs';
+import { Subject } from 'rxjs';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 import { Guid } from 'guid-typescript';
@@ -8,7 +8,6 @@ import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-ad
 import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
 import { takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
-import { IPicklistQueueItemUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-update-message';
 
 
 @Injectable({
@@ -18,7 +17,6 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
 
   public addOrUpdatePicklistQueueItemSubject = new Subject<IAddOrUpdatePicklistQueueItemMesssage>();
   public removePicklistQueueItemSubject = new Subject<IRemovePicklistQueueItemMessage>();
-  public reloadPicklistQueueItemsSubject = new Subject<any>();
   public picklistQueueGroupedUpdateSubject = new Subject<IPicklistQueueGroupedUpdateMessage>();
   public picklistQueueGroupedListUpdateSubject = new Subject<IPicklistQueueGroupedListUpdateMessage>();
   public picklistQueueItemListUpdateSubject = new Subject<IPicklistQueueItemListUpdateMessage>();
@@ -72,12 +70,6 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
             RobotPickGroupId: robotPickGroupId,
           }
         });
-        return;
-      }
-
-      if (message.EventId === 'ReloadPicklistQueueItemsMessage') {
-        console.log(message);
-        this.reloadPicklistQueueItemsSubject.next(message);
         return;
       }
 

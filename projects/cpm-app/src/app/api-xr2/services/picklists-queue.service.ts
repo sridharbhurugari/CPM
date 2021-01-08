@@ -4,8 +4,6 @@ import { Observable, of } from 'rxjs';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
-import { GlobalDispenseSyncRequest } from '../data-contracts/global-dispense-sync-request';
-import { catchError } from 'rxjs/operators';
 import { RobotPrintRequest } from '../data-contracts/robot-print-request';
 import { IPicklistQueueGrouped } from '../data-contracts/i-picklist-queue-grouped';
 import { PicklistQueueGrouped } from '../../xr2/model/picklist-queue-grouped';
@@ -52,15 +50,6 @@ export class PicklistsQueueService {
     });
   }
 
-  // TODO: Xr2- Clean up
-  sendToRobot(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
-    console.log(globalDispenseSyncRequest);
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/SendToRobot');
-    return this.httpClient.post(url, globalDispenseSyncRequest, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
   sendQueueItemsToRobot(pickPriorityIdentity: string, picklistQueueItems: Array<IReleaseablePicklistQueueItem>) {
     console.log(picklistQueueItems);
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/SendQueueItemsToRobot/' + pickPriorityIdentity);
@@ -76,25 +65,9 @@ export class PicklistsQueueService {
     });
   }
 
-  // TODO: Xr2- Clean up
-  skip(deviceId: number, globalDispenseSyncRequest: GlobalDispenseSyncRequest) {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/Skip');
-    return this.httpClient.post(url, globalDispenseSyncRequest, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
   rerouteQueueItems(picklistQueueItems: Array<IReroutablePicklistQueueItem>) {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/RerouteQueueItems');
     return this.httpClient.post(url, picklistQueueItems, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
-  // TODO: Xr2- Clean up
-  printLabels(deviceId: number, robotPrintRequest: RobotPrintRequest) {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/xr2picklistsqueues/' + deviceId + '/PrintLabels');
-    return this.httpClient.post(url, robotPrintRequest, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

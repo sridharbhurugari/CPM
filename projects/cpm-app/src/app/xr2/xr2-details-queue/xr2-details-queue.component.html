@@ -90,7 +90,7 @@
             [theme]="'dark'"
             [label]="getReleaseButtonProperties(picklistQueueItem).text | translate"
             [disabled]="getReleaseButtonProperties(picklistQueueItem).disabled"
-            [icon]="'openv1-right'"
+            [icon]="'send'"
             (clickEvent)="onReleaseClick(picklistQueueItem)">
             </app-cp-clickable-icon>
             <app-cp-clickable-icon *ngIf="picklistQueueItem.Status!==1"

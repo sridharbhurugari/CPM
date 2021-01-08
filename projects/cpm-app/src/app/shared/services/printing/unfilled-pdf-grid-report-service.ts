@@ -15,7 +15,7 @@ import { ReportConstants } from '../../constants/report-constants';
 @Injectable({
   providedIn: 'root'
 })
-export class PdfGridReportService
+export class UnfilledPdfGridReportService
 {
   reportBaseData$: Observable<IAngularReportBaseData>;
   reportLogo$: Observable<string>;
@@ -30,7 +30,7 @@ export class PdfGridReportService
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
     this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
-    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED',];
+    const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED', 'UNFILLED_REPORT_LABEL_ORDER_ID', 'UNFILLED_REPORT_LABEL_PRIORITYCODE',];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
@@ -61,12 +61,13 @@ export class PdfGridReportService
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-      const documentDefinition = this.getDocumentDefinition(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+      const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
       const pdf = this.pdfMakeService.createPdf(documentDefinition);
       return pdf;
   }
 
-  private getDocumentDefinition(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
+  //for Unfilled report
+  private getDocumentDefinitionForUnfilled(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
     return {
       footer: (currentPage: number, pageCount: number) => {
         return [
@@ -111,8 +112,9 @@ export class PdfGridReportService
             headerRows: 0,
             widths: [50, 75, 150, 50, '*'],
             body: [
-              ['', '', '', '', ''],
-              ['', reportLabels.REPORT_LABEL_OMNI_ID, reportBaseData.OmniId, reportLabels.REPORT_LABEL_PRINTED, reportBaseData.FormattedDateTime],
+              ['', reportLabels.UNFILLED_REPORT_LABEL_ORDER_ID, reportBaseData.OrderId, reportLabels.REPORT_LABEL_PRINTED, reportBaseData.FormattedDateTime],
+              ['', reportLabels.UNFILLED_REPORT_LABEL_PRIORITYCODE, reportBaseData.PriorityCode, '', ''],
+              ['','','', '', ''],
               ['', reportLabels.REPORT_LABEL_OMNI_NAME, reportBaseData.OmniName, '', ''],
             ]
           }
