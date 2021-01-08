@@ -1,4 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { GridModule } from '@omnicell/webcorecomponents';
+import { Guid } from 'guid-typescript';
+import { VerificationRouting } from '../../shared/enums/verification-routing';
+import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
+import { MockSearchBox } from '../testing/mock-search-box.spec';
+import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { VerificationDetailsPageComponent } from './verification-details-page.component';
 
@@ -8,7 +18,10 @@ describe('VerificationDetailsPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDetailsPageComponent ]
+      declarations: [ VerificationDetailsPageComponent, MockCpGeneralHeaderComponent,
+        MockAppHeaderContainer, MockColHeaderSortable, MockAppHeaderContainer,
+         MockTranslatePipe, MockSearchBox, MockSearchPipe ],
+      imports: [GridModule]
     })
     .compileComponents();
   }));
@@ -16,7 +29,16 @@ describe('VerificationDetailsPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDetailsPageComponent);
     component = fixture.componentInstance;
+    component.navigationParameters = {
+      OrderId: Guid.create(),
+      DestinationId: Guid.create(),
+      PriorityCodeDescription: 'description',
+      Date: 'date',
+      Route: VerificationRouting.DetailsPage
+    } as IVerificationNavigationParameters;
     fixture.detectChanges();
+
+    component.navigationParameters = {} as IVerificationNavigationParameters;
   });
 
   it('should create', () => {

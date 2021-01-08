@@ -1,4 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ButtonToggleComponent, ButtonToggleModule } from '@omnicell/webcorecomponents';
+import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
+import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
+import { MockSearchBox } from '../testing/mock-search-box.spec';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { VerificationOrderHeaderComponent } from './verification-order-header.component';
 
@@ -8,7 +13,9 @@ describe('VerificationOrderHeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationOrderHeaderComponent ]
+      declarations: [ VerificationOrderHeaderComponent, MockCpGeneralHeaderComponent,
+        MockAppHeaderContainer, MockTranslatePipe, MockSearchBox],
+      imports: [ButtonToggleModule]
     })
     .compileComponents();
   }));
