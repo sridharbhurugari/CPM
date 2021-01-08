@@ -8,7 +8,7 @@ import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-que
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { DestockTypeInfo } from '../model/destock-type-info';
-
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 @Component({
   selector: 'app-destock-page',
   templateUrl: './destock-page.component.html',
@@ -29,7 +29,8 @@ export class DestockPageComponent implements OnInit {
     nameof<IDestockTypeInfo>('Xr2DestockType_Display'),
   ];
 
-  constructor(private destockService: DestockService) { }
+  constructor(private destockService: DestockService,
+    private simpleDialogService: SimpleDialogService) { }
 
   ngOnInit() {
 
@@ -88,6 +89,14 @@ export class DestockPageComponent implements OnInit {
     console.log(event.Xr2DestockType_Display);
     // qty of labels to print:
     console.log(event.BinCount);
+    this.destockService.print(this.selectedDeviceInformation.DeviceId, event.Barcode, event.Xr2DestockType_Display).subscribe(
+      s => {
+        this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
+      },
+      f => {
+        this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
+      }
+    );
   }
   onRequestXr2CurrentNumbers() {
 // Request for Device Id
