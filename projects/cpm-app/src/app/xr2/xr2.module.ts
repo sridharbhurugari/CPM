@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   GridModule, ButtonActionModule, SingleselectDropdownModule, CardContainerModule, DashboardCardModule, LayoutModule, FooterModule, SearchModule, InputsModule,
-  PopupDialogModule, SvgIconModule, DaterangeModule, CheckboxModule, ButtonToggleModule
+  PopupDialogModule, SvgIconModule, DaterangeModule, CheckboxModule
 } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -26,13 +26,6 @@ import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2
 import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
-import { Xr2VerificationPageComponent } from './xr2-verification-page/xr2-verification-page.component';
-import { Xr2VerificationOrderPageComponent } from './xr2-verification-order-page/xr2-verification-order-page.component';
-import { Xr2VerificationDestinationPageComponent } from './xr2-verification-destination-page/xr2-verification-destination-page.component';
-import { Xr2VerificationOrderQueueComponent } from './xr2-verification-order-queue/xr2-verification-order-queue.component';
-import { Xr2VerificationOrderHeaderComponent } from './xr2-verification-order-header/xr2-verification-order-header.component';
-import { Xr2VerificationDestinationQueueComponent } from './xr2-verification-destination-queue/xr2-verification-destination-queue.component';
-import { Xr2VerificationDetailsPageComponent } from './xr2-verification-details-page/xr2-verification-details-page.component';
 
 @NgModule({
   declarations: [
@@ -54,13 +47,6 @@ import { Xr2VerificationDetailsPageComponent } from './xr2-verification-details-
     Xr2QueueDetailsHeaderComponent,
     Xr2QueueButtonPanelComponent,
     Xr2QueuePageComponent,
-    Xr2VerificationPageComponent,
-    Xr2VerificationOrderPageComponent,
-    Xr2VerificationDestinationPageComponent,
-    Xr2VerificationOrderQueueComponent,
-    Xr2VerificationOrderHeaderComponent,
-    Xr2VerificationDestinationQueueComponent,
-    Xr2VerificationDetailsPageComponent,
   ],
   imports: [
     CommonModule,
@@ -81,7 +67,6 @@ import { Xr2VerificationDetailsPageComponent } from './xr2-verification-details-
     SvgIconModule,
     DaterangeModule,
     Xr2RoutingModule,
-    ButtonToggleModule
   ],
 })
 export class Xr2Module { }

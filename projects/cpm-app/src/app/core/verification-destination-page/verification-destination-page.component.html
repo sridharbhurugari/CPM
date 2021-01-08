@@ -5,8 +5,8 @@
   [showSearchBox]="true"
   (backEvent)="onBackEvent()"
   ></app-cp-general-header>
-  <app-xr2-verification-destination-queue
+  <app-verification-destination-queue
   [verificationDestinationItems]="verificationDestinationItems | async"
   (gridRowClickEvent)="onGridRowClickEvent($event)"
-  ></app-xr2-verification-destination-queue>
+  ></app-verification-destination-queue>
 </ng-container>

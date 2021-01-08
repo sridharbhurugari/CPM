@@ -1,6 +1,6 @@
 import { Guid } from 'guid-typescript';
 
-export interface IXr2VerificationOrderItem {
+export interface IVerificationOrderItem {
   Id: Guid;
   OrderId: Guid;
   PriorityCode: string;

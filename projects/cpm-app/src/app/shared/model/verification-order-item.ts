@@ -1,10 +1,10 @@
 import { Guid } from 'guid-typescript';
-import { IXr2VerificationOrderItem } from '../../api-xr2/data-contracts/i-xr2-verification-order-item';
+import { IVerificationOrderItem } from '../../api-core/data-contracts/i-verification-order-item';
 
-export class Xr2VerificationOrderItem implements IXr2VerificationOrderItem {
+export class VerificationOrderItem implements IVerificationOrderItem {
 
-  constructor(xr2VerficationItem: IXr2VerificationOrderItem) {
-    Object.assign(this, xr2VerficationItem);
+  constructor(verficationOrderItem: IVerificationOrderItem) {
+    Object.assign(this, verficationOrderItem);
   }
 
   Id: Guid;

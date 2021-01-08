@@ -7,16 +7,16 @@ import { Observable } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
-import { Xr2VerificationOrderItem } from '../model/xr2-verification-order-item';
+import { VerificationOrderItem } from '../../shared/model/verification-order-item';
 
 @Component({
-  selector: 'app-xr2-verification-order-queue',
-  templateUrl: './xr2-verification-order-queue.component.html',
-  styleUrls: ['./xr2-verification-order-queue.component.scss']
+  selector: 'app-verification-order-queue',
+  templateUrl: './verification-order-queue.component.html',
+  styleUrls: ['./verification-order-queue.component.scss']
 })
-export class Xr2VerificationOrderQueueComponent implements OnInit {
+export class VerificationOrderQueueComponent implements OnInit {
 
-  @Output() gridRowClickEvent: EventEmitter<Xr2VerificationOrderItem> = new EventEmitter();
+  @Output() gridRowClickEvent: EventEmitter<VerificationOrderItem> = new EventEmitter();
 
   @Input()
   set searchTextFilter(value: string) {
@@ -30,28 +30,28 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
   }
 
   @Input()
-  verificationOrderItems: Xr2VerificationOrderItem[];
+  verificationOrderItems: VerificationOrderItem[];
 
   @Input()
-  set verficationOrderItems(value: Xr2VerificationOrderItem[]) {
+  set verficationOrderItems(value: VerificationOrderItem[]) {
     this._verficationOrderItems = value;
     this.resizeGrid();
   }
-  get verficationOrderItems(): Xr2VerificationOrderItem[] {
+  get verficationOrderItems(): VerificationOrderItem[] {
     return this._verficationOrderItems;
   }
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  private  _verficationOrderItems: Xr2VerificationOrderItem[];
+  private  _verficationOrderItems: VerificationOrderItem[];
 
-  readonly sequenceOrderPropertyName = nameof<Xr2VerificationOrderItem>('SequenceOrder');
-  readonly typePropertyName = nameof<Xr2VerificationOrderItem>('PriorityCodeDescription');
-  readonly orderIdPropertyName = nameof<Xr2VerificationOrderItem>('OrderId');
-  readonly completePropertyName = nameof<Xr2VerificationOrderItem>('CompleteVerifications');
-  readonly requiredPropertyName = nameof<Xr2VerificationOrderItem>('RequiredVerificationPercentage');
-  readonly exceptionsPropertyName = nameof<Xr2VerificationOrderItem>('RequiredExceptions');
-  readonly datePropertyName = nameof<Xr2VerificationOrderItem>('Date');
+  readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
+  readonly typePropertyName = nameof<VerificationOrderItem>('PriorityCodeDescription');
+  readonly orderIdPropertyName = nameof<VerificationOrderItem>('OrderId');
+  readonly completePropertyName = nameof<VerificationOrderItem>('CompleteVerifications');
+  readonly requiredPropertyName = nameof<VerificationOrderItem>('RequiredVerificationPercentage');
+  readonly exceptionsPropertyName = nameof<VerificationOrderItem>('RequiredExceptions');
+  readonly datePropertyName = nameof<VerificationOrderItem>('Date');
   firstTime = true;
 
   currentSortPropertyName: string;
@@ -68,7 +68,7 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
   ngOnInit() {
   }
 
-  onGridRowClick(clickedVerificationOrderItem: Xr2VerificationOrderItem) {
+  onGridRowClick(clickedVerificationOrderItem: VerificationOrderItem) {
     this.gridRowClickEvent.emit(clickedVerificationOrderItem);
   }
 
@@ -78,8 +78,8 @@ export class Xr2VerificationOrderQueueComponent implements OnInit {
     this.verificationOrderItems = this.sort(this.verificationOrderItems, event.SortDirection);
   }
 
-  sort(xr2VerificationOrderItems: Xr2VerificationOrderItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): Xr2VerificationOrderItem[] {
-    return _.orderBy(xr2VerificationOrderItems, x => x[this.currentSortPropertyName], sortDirection);
+  sort(verificationOrderItems: VerificationOrderItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): VerificationOrderItem[] {
+    return _.orderBy(verificationOrderItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
   /* istanbul ignore next */

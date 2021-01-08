@@ -5,7 +5,6 @@ import { QuickPickPageComponent } from "./quick-pick-page/quick-pick-page.compon
 import { Xr2ExceptionDetailsPageComponent } from "./xr2-exception-details-page/xr2-exceptions-details-page.component";
 import { Xr2EventsPageComponent } from "./xr2-events-page/xr2-events-page.component";
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
-import { Xr2VerificationPageComponent } from './xr2-verification-page/xr2-verification-page.component';
 
 
 const routes: Routes = [
@@ -14,8 +13,6 @@ const routes: Routes = [
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
-  { path: 'xr2Verification', component: Xr2VerificationPageComponent },
-
 ];
 
 @NgModule({
