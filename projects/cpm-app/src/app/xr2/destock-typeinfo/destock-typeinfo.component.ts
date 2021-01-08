@@ -20,12 +20,10 @@ export class DestockTypeInfoComponent implements OnInit {
   //   return this._deviceDestockTypeInfo;
   // }
  @Input() deviceDestockTypeInfo: DestockTypeInfo[];
+ @Input() searchTextFilter: string;
  @Output() printLabel: EventEmitter<DestockTypeInfo> = new EventEmitter<DestockTypeInfo>();
 
-  _deviceDestockTypeInfo: DestockTypeInfo[];
-  searchTextFilter: string;
   currentSortPropertyName: string;
-  // sortOrder: SortDirection;
 
   searchFields = [
     nameof<IDestockTypeInfo>('Xr2DestockType_Display'),
@@ -44,12 +42,7 @@ export class DestockTypeInfoComponent implements OnInit {
   }
 
   columnSelected(event: IColHeaderSortChanged){
-    // this.unfilledSortOrderService.Update(event.ColumnPropertyName, event.SortDirection);
-    // this.picklists = this.unfilledSortOrderService.Sort(this.picklists);
-  }
-
-  onSearchTextFilterEvent(filterText: string) {
-    this.searchTextFilter = filterText;
+    // currently the sort is fixed
   }
 
   onPrint(event: DestockTypeInfo) {

@@ -22,7 +22,7 @@
       </div>
     </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" *ngFor="let destockTypeInfo of deviceDestockTypeInfo">
+      <div class="row" *ngFor="let destockTypeInfo of deviceDestockTypeInfo| searchPipe:searchTextFilter:searchFields">
         <div class="first">
           <!-- <oc-checkbox [noLabel]="true"
           [isEnabled]="true"

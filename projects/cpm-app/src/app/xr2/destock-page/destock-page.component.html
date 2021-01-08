@@ -1,10 +1,23 @@
-  <app-xr2-queue-grouping-header
+  <app-destock-header
     [savedPageConfiguration]="savedPageConfiguration"
     (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
     (selectionChangedEvent)="onDeviceSelectionChanged($event)">
-  </app-xr2-queue-grouping-header>
-  <app-destock-typeinfo
-    [deviceDestockTypeInfo]="deviceDestockTypeInfo$ | async"
-    (printLabel)="onPrint($event)">
-  </app-destock-typeinfo>
+  </app-destock-header>
+
+  <body [ngSwitch]="screenState">
+    <oc-svgicon icon="spin" *ngSwitchCase="'Waiting'">Waiting</oc-svgicon>
+    <oc-progress-animation #myLoader *ngSwitchCase="'Waiting'"    [data]="{size: 2}"></oc-progress-animation>
+    <app-destock-typeinfo *ngSwitchCase="'Display'"
+      [deviceDestockTypeInfo]="deviceDestockTypeInfo$ | async"
+      [searchTextFilter]="searchTextFilter"
+      (printLabel)="onPrint($event)">
+    </app-destock-typeinfo>
+    <span *ngSwitchCase="'Printing'">Printing</span>
+    <span *ngSwitchCase="'Error'">Error</span>
+    <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'NoData'">
+      <oc-svgicon icon="logowithtext" theme="primary" height="300" width="300"></oc-svgicon></div>
+    <!-- <app-spinner-popup *ngSwitchCase="'NoData'"></app-spinner-popup> -->
+    <span *ngSwitchDefault>Default</span>
+  </body>
+
 
