@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -13,27 +13,38 @@ import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { DestockTypeInfo } from '../model/destock-type-info';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
-import { Router } from '@angular/router';
 import { DestockPageComponent } from './destock-page.component';
-
+import { SvgiconComponent, SvgIconModule, ProgressAnimationComponent, ButtonActionModule, FooterModule, GridModule, LayoutModule, SearchModule } from '@omnicell/webcorecomponents';
+import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
+import { MockDestockTypeInfoComponent } from '../../shared/testing/mock-destock-typeinfo-component.spec';
 
 describe('DestockPageComponent', () => {
   let component: DestockPageComponent ;
   let fixture: ComponentFixture<DestockPageComponent>;
   let translateService: Partial<TranslateService>;
-  let xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
-  let router: Partial<Router>;
-
+  let simpleDialogService: Partial<SimpleDialogService>;
+  let destockService: Partial<DestockService>;
   beforeEach(async(() => {
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
     };
+    simpleDialogService = {
+      displayErrorOk: jasmine.createSpy('displayErrorOk'),
+      displayInfoOk: jasmine.createSpy('displayInfoOk'),
+    };
+    destockService = {
+      get: jasmine.createSpy('get').and.returnValue(of(DestockService)),
+      print: jasmine.createSpy('print').and.returnValue(of(DestockService))
+    };
 
     TestBed.configureTestingModule({
-      declarations: [ DestockPageComponent],
+      declarations: [ DestockPageComponent, MockDestockHeaderComponent, MockDestockTypeInfoComponent, ProgressAnimationComponent ],
       imports: [],
-      providers: [],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [
+        { provide: SimpleDialogService, useValue: simpleDialogService },
+        { provide: DestockService, useValue: destockService},
+       ]
     })
     .compileComponents();
   }));

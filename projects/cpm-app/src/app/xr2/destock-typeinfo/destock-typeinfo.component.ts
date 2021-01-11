@@ -10,14 +10,6 @@ import { DestockTypeInfo } from '../model/destock-type-info';
   styleUrls: ['./destock-typeinfo.component.scss']
 })
 export class DestockTypeInfoComponent implements OnInit {
-  // @Input('deviceDestockTypeInfo')
-  // set deviceDestockTypeInfo(value: DestockTypeInfo[]) {
-  //   this._deviceDestockTypeInfo = value;
-
-  // }
-  // get deviceDestockTypeInfo(): DestockTypeInfo[] {
-  //   return this._deviceDestockTypeInfo;
-  // }
  @Input() deviceDestockTypeInfo: DestockTypeInfo[];
  @Input() searchTextFilter: string;
  @Output() printLabel: EventEmitter<DestockTypeInfo> = new EventEmitter<DestockTypeInfo>();
