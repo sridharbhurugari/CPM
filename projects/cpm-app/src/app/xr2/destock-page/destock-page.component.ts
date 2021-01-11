@@ -65,9 +65,6 @@ export class DestockPageComponent implements OnInit {
   onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
   }
-  onDetailsPageBackNavigation() {
-    this.xr2QueueNavigationParameters = null;
-  }
   onDeviceSelectionChanged($event) {
     if(this.selectedDeviceInformation !== $event)
     {
@@ -103,7 +100,6 @@ export class DestockPageComponent implements OnInit {
 // If No Device - request button shouldn't be available.
 // update screen and save results to db
   }
-
 }
 export namespace DestockPageComponent
 {
