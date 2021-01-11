@@ -44,4 +44,21 @@ describe('VerificationDetailsPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('Eventing', () => {
+    it('should navigate page on back event', () => {
+      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
+      component.onBackEvent();
+
+      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    })
+
+    it('should navigate page on grid click event', () => {
+      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
+
+      component.onBackEvent();
+
+      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    });
+  })
 });

@@ -3,6 +3,7 @@ import { GridModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
@@ -44,4 +45,22 @@ describe('VerificationDestinationPageComponent', () => {
     component.navigationParameters = {} as IVerificationNavigationParameters;
     expect(component).toBeTruthy();
   });
+
+  describe('Eventing', () => {
+    it('should navigate page on back event', () => {
+      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
+      component.onBackEvent();
+
+      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    })
+
+    it('should navigate page on grid click event', () => {
+      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
+      const mockItem = new VerificationDestinationItem(null);
+
+      component.onGridRowClickEvent(mockItem);
+
+      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    });
+  })
 });
