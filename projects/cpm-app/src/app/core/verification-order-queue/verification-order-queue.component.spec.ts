@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { VerificationOrderItem } from '../../shared/model/verification-order-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
@@ -32,6 +33,17 @@ describe('VerificationOrderQueueComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('Eventing', () => {
+    it('should emit click event on grid row click', () => {
+      const gridClickEventSpy = spyOn(component.gridRowClickEvent, 'emit');
+      const mockItem = new VerificationOrderItem(null);
+
+      component.onGridRowClick(mockItem);
+
+      expect(gridClickEventSpy).toHaveBeenCalledTimes(1);
+    })
+  })
 
   describe('Queue filtering/sorting', () => {
     it('should set sort order on column selected event', () => {
