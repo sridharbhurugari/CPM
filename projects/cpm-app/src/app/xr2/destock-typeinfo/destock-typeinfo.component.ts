@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IDestockTypeInfo } from '../../api-xr2/data-contracts/i-destock-type-info';
-import { DestockService } from '../../api-xr2/services/destock.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { DestockTypeInfo } from '../model/destock-type-info';

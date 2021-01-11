@@ -24,11 +24,6 @@
     <ng-container class="ocgridbody">
       <div class="row" *ngFor="let destockTypeInfo of deviceDestockTypeInfo| searchPipe:searchTextFilter:searchFields">
         <div class="first">
-          <!-- <oc-checkbox [noLabel]="true"
-          [isEnabled]="true"
-          [valueField]="destockTypeInfo.destockTypeInfoId"
-          [selected]="destockTypeInfo.IsChecked"
-          (selection)="onSelect($event)"></oc-checkbox> -->
       </div>
         <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_TYPE' | translate">
           {{destockTypeInfo.Xr2DestockType_Display }}
@@ -42,8 +37,6 @@
         </div>
         <div class="last" [attr.data-title]="'PRINT' | translate" style="text-align: center;">
           <oc-button-action [mode]="'secondary'" [buttonIcon] ="'print'" (click)="onPrint(destockTypeInfo)"></oc-button-action>
-            <!-- //  <oc-svgicon  *ngIf="!destockTypeInfo.canReroute && destockTypeInfo.IsChecked" icon="alert-no-tail"></oc-svgicon> -->
-
         </div>
       </div>
     </ng-container>
