@@ -11,7 +11,6 @@ import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-co
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Guid } from 'guid-typescript';
-import { Xr2QueueGroupingHeaderComponent } from '../xr2-queue-grouping-header/xr2-queue-grouping-header.component';
 import { DestockHeaderComponent } from './destock-header.component';
 
 @Component({
@@ -69,7 +68,7 @@ describe('DestockHeaderComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
+      declarations: [ DestockHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
       imports: [ SingleselectDropdownModule],
       providers: [
         { provide: DevicesService, useValue: devicesService},

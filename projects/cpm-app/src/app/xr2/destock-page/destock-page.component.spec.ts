@@ -25,12 +25,6 @@ describe('DestockPageComponent', () => {
   let router: Partial<Router>;
 
   beforeEach(async(() => {
-    xr2QueueNavigationParameters = {
-      priorityCodeDescription: 'code',
-      pickPriorityIdentity: '1',
-      deviceId: '1',
-    };
-
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
     };
@@ -52,13 +46,6 @@ describe('DestockPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should set xr2QueueNavigationParameters to null on details page back navigation', () => {
-      component.xr2QueueNavigationParameters = xr2QueueNavigationParameters;
-      component.onDetailsPageBackNavigation();
-
-      expect(component.xr2QueueNavigationParameters).toBe(null);
   });
 
 });
