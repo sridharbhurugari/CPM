@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GridModule } from '@omnicell/webcorecomponents';
+import { SortDirection } from '../../shared/constants/sort-direction';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
@@ -29,5 +31,20 @@ describe('VerificationOrderQueueComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Queue filtering/sorting', () => {
+    it('should set sort order on column selected event', () => {
+      const mockSortEvent = {} as IColHeaderSortChanged;
+      const expectedSortOrder = SortDirection.ascending;
+      const expectedColumnName = 'column';
+      mockSortEvent.SortDirection = expectedSortOrder;
+      mockSortEvent.ColumnPropertyName = expectedColumnName;
+
+      component.columnSelected(mockSortEvent);
+
+      expect(component.currentSortPropertyName).toBe(expectedColumnName);
+      expect(component.sortOrder).toBe(expectedSortOrder);
+    });
   });
 });

@@ -91,6 +91,7 @@ export class VerificationOrderQueueComponent implements OnInit {
     return verificationOrderItem.Id;
   }
 
+  /* istanbul ignore next */
   private resizeGrid() {
     setTimeout(() => {
       if (this.ocGrid) {

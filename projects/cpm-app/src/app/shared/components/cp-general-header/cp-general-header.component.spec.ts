@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockSearchBox } from '../../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../../core/testing/mock-search-pipe.spec';
+import { MockTranslatePipe } from '../../../core/testing/mock-translate-pipe.spec';
 import { MockCpClickableIconComponent } from '../../testing/mock-cp-clickable-icon.spec';
 
 import { CpGeneralHeaderComponent } from './cp-general-header.component';
@@ -12,7 +13,7 @@ describe('CpGeneralHeaderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CpGeneralHeaderComponent, MockCpClickableIconComponent,
-        MockSearchBox, MockSearchPipe ]
+        MockSearchBox, MockSearchPipe, MockTranslatePipe ]
     })
     .compileComponents();
   }));
@@ -23,7 +24,17 @@ describe('CpGeneralHeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  describe('Eventing', () => {
+    it('Should send back event on back click', () => {
+      const backEventSpy = spyOn(component.backEvent, 'emit');
+
+      component.onBackClick();
+
+      expect(backEventSpy).toHaveBeenCalledTimes(1);
+    })
+  })
 });

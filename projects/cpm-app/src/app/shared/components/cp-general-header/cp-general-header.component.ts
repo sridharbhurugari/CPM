@@ -11,7 +11,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './cp-general-header.component.html',
   styleUrls: ['./cp-general-header.component.scss']
 })
-export class CpGeneralHeaderComponent implements OnInit {
+export class CpGeneralHeaderComponent {
 
   @Output() backEvent: EventEmitter<void> = new EventEmitter();
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
@@ -26,11 +26,7 @@ export class CpGeneralHeaderComponent implements OnInit {
   searchElement: SearchBoxComponent;
 
 
-  constructor() {
-   }
-
-  ngOnInit() {
-  }
+  constructor() {}
 
   ngAfterViewInit() {
     if(this.showSearchBox && this.searchElement) {
