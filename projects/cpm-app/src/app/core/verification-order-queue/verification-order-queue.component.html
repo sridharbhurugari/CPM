@@ -33,7 +33,11 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="190" data-colwrap="true">{{'DATE' | translate}}</div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="190" data-colwrap="true"
+      [columnPropertyName]="datePropertyName" headerResourceKey="DATE"
+      [currentSortPropertyName]="currentSortPropertyName"
+      (columnSelected)="columnSelected($event)">
+      </div>
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"
@@ -52,7 +56,7 @@
         </div>
         <div class="col width-complete" [attr.data-title]="'COMPLETE' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.CompleteVerifications / verificationOrderItem.TotalVerifications}}%
+            {{verificationOrderItem.CompleteVerificationPercentage}}%
           </span>
         </div>
         <div class="col width-required" [attr.data-title]="'REQUIRED' | translate">
@@ -81,7 +85,7 @@
         </div>
         <div class="col width-date" [attr.data-title]="'DATE' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.Date}}
+            {{getOrderDate(verificationOrderItem)}}
           </span>
         </div>
       </div>

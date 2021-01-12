@@ -7,8 +7,7 @@ export interface IVerificationOrderItem {
   PriorityCodeColor: string;
   PriorityCodeDescription: string;
   SequenceOrder: number;
-  CompleteVerifications: number;
-  TotalVerifications: number;
+  CompleteVerificationPercentage
   RequiredVerificationPercentage: number;
   CompleteExceptions: number;
   RequiredExceptions: number;

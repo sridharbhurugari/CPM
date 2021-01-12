@@ -13,8 +13,7 @@ export class VerificationOrderItem implements IVerificationOrderItem {
   PriorityCodeColor: string;
   PriorityCodeDescription: string;
   SequenceOrder: number;
-  CompleteVerifications: number;
-  TotalVerifications: number;
+  CompleteVerificationPercentage: number;
   RequiredVerificationPercentage: number;
   CompleteExceptions: number;
   RequiredExceptions: number;

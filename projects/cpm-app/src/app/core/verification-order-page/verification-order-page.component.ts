@@ -33,24 +33,60 @@ export class VerificationOrderPageComponent implements OnInit {
   ngOnInit() {
     // MOCK LIST - DELETE WITH API ADDITION
     const mockList = [];
-    for(let i =0; i < 5; i++) {
       mockList.push(
-        {
-          Id: Guid.create(),
-          OrderId: Guid.create(),
-          PriorityCode: 'CODE',
-          PriorityCodeColor: 'RED',
-          PriorityCodeDescription: 'Description',
-          SequenceOrder: 1,
-          CompleteVerifications: 0,
-          TotalVerifications: 5,
-          RequiredVerificationPercentage: 10,
-          CompleteExceptions: 0,
-          RequiredExceptions: 1,
-          Date: 'Date'
-        }
-      )
-    }
+      {
+        Id: Guid.create(),
+        OrderId: Guid.create(),
+        PriorityCode: 'CODE',
+        PriorityCodeColor: 'RED',
+        PriorityCodeDescription: 'ADescription',
+        SequenceOrder: 0,
+        CompleteVerificationPercentage: 0,
+        RequiredVerificationPercentage: 0,
+        CompleteExceptions: 0,
+        RequiredExceptions: 0,
+        Date: Date.now()
+      },
+      {
+        Id: Guid.create(),
+        OrderId: Guid.create(),
+        PriorityCode: 'CODE',
+        PriorityCodeColor: 'Blue',
+        PriorityCodeDescription: 'BDescription',
+        SequenceOrder: 1,
+        CompleteVerificationPercentage: 1,
+        RequiredVerificationPercentage: 1,
+        CompleteExceptions: 3,
+        RequiredExceptions: 1,
+        Date: Date.now()
+      },
+      {
+        Id: Guid.create(),
+        OrderId: Guid.create(),
+        PriorityCode: 'CODE',
+        PriorityCodeColor: 'Black',
+        PriorityCodeDescription: 'CDescription',
+        SequenceOrder: 2,
+        CompleteVerificationPercentage: 2,
+        RequiredVerificationPercentage: 2,
+        CompleteExceptions: 4,
+        RequiredExceptions: 1,
+        Date: Date.now()
+      },
+      {
+        Id: Guid.create(),
+        OrderId: Guid.create(),
+        PriorityCode: 'CODE',
+        PriorityCodeColor: 'YELLOW',
+        PriorityCodeDescription: 'DDescription',
+        SequenceOrder: 3,
+        CompleteVerificationPercentage: 2,
+        RequiredVerificationPercentage: 3,
+        CompleteExceptions: 2,
+        RequiredExceptions: 1,
+        Date: Date.now()
+      }
+    )
     this.verificationOrderItems = of(mockList)
   }
 

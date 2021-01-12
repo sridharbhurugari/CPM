@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -56,9 +57,9 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
   readonly typePropertyName = nameof<VerificationOrderItem>('PriorityCodeDescription');
   readonly orderIdPropertyName = nameof<VerificationOrderItem>('OrderId');
-  readonly completePropertyName = nameof<VerificationOrderItem>('CompleteVerifications');
+  readonly completePropertyName = nameof<VerificationOrderItem>('CompleteVerificationPercentage');
   readonly requiredPropertyName = nameof<VerificationOrderItem>('RequiredVerificationPercentage');
-  readonly exceptionsPropertyName = nameof<VerificationOrderItem>('RequiredExceptions');
+  readonly exceptionsPropertyName = nameof<VerificationOrderItem>('CompleteExceptions');
   readonly datePropertyName = nameof<VerificationOrderItem>('Date');
 
   filteredVerificationOrderItems: VerificationOrderItem[];
@@ -73,7 +74,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   translations$: Observable<any>;
 
 
-  constructor() { }
+  constructor(private translateService: TranslateService) { }
 
   ngOnInit() {
   }
@@ -101,6 +102,11 @@ export class VerificationOrderQueueComponent implements OnInit {
 
     return verificationOrderItem.Id;
   }
+
+  getOrderDate(verificationOrderItem: VerificationOrderItem): string {
+    const orderDate = new Date(verificationOrderItem.Date).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+   }
 
   private loadSavedConfigurations() {
     if (!this.savedPageConfiguration) {
