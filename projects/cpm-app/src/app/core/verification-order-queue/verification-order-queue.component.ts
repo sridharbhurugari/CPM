@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -7,7 +7,9 @@ import { Observable } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
+import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-verification-order-queue',
@@ -17,33 +19,39 @@ import { VerificationOrderItem } from '../../shared/model/verification-order-ite
 export class VerificationOrderQueueComponent implements OnInit {
 
   @Output() gridRowClickEvent: EventEmitter<VerificationOrderItem> = new EventEmitter();
+  @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   @Input()
   set searchTextFilter(value: string) {
-    if (!this.verificationOrderItems) {
-      return;
-    }
     this._searchTextFilter = value;
-  }
-  get searchTextFilter(): string {
-    return this._searchTextFilter;
+    this.filteredVerificationOrderItems = this.filterBySearchText(value, this.unfilteredVerificationOrderItems);
   }
 
   @Input()
-  verificationOrderItems: VerificationOrderItem[];
-
-  @Input()
-  set verficationOrderItems(value: VerificationOrderItem[]) {
+  set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
     this._verficationOrderItems = value;
+    this.filteredVerificationOrderItems = value;
     this.resizeGrid();
   }
-  get verficationOrderItems(): VerificationOrderItem[] {
+  get unfilteredVerificationOrderItems(): VerificationOrderItem[] {
     return this._verficationOrderItems;
+  }
+
+  @Input()
+  set savedPageConfiguration(value: IVerificationPageConfiguration) {
+    this._savedPageConfiguration = value;
+    if(this.savedPageConfiguration) {
+      this.loadSavedConfigurations();
+    }
+  }
+  get savedPageConfiguration(): IVerificationPageConfiguration {
+    return this._savedPageConfiguration;
   }
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
   private  _verficationOrderItems: VerificationOrderItem[];
+  private _savedPageConfiguration: IVerificationPageConfiguration;
 
   readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
   readonly typePropertyName = nameof<VerificationOrderItem>('PriorityCodeDescription');
@@ -52,12 +60,14 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly requiredPropertyName = nameof<VerificationOrderItem>('RequiredVerificationPercentage');
   readonly exceptionsPropertyName = nameof<VerificationOrderItem>('RequiredExceptions');
   readonly datePropertyName = nameof<VerificationOrderItem>('Date');
-  firstTime = true;
 
+  filteredVerificationOrderItems: VerificationOrderItem[];
+  firstTime = true;
+  searchPipe: SearchPipe = new SearchPipe();
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
-  searchFields = [];
+  searchFields = [nameof<VerificationOrderItem>('PriorityCodeDescription'), nameof<VerificationOrderItem>('OrderId')];
 
   translatables = [];
   translations$: Observable<any>;
@@ -75,7 +85,8 @@ export class VerificationOrderQueueComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.verificationOrderItems = this.sort(this.verificationOrderItems, event.SortDirection);
+    this.unfilteredVerificationOrderItems = this.sort(this.unfilteredVerificationOrderItems, event.SortDirection);
+    this.sortEvent.emit(event);
   }
 
   sort(verificationOrderItems: VerificationOrderItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): VerificationOrderItem[] {
@@ -89,6 +100,25 @@ export class VerificationOrderQueueComponent implements OnInit {
     }
 
     return verificationOrderItem.Id;
+  }
+
+  private loadSavedConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    if(this.savedPageConfiguration.searchTextFilter) {
+      this.filteredVerificationOrderItems = this.filterBySearchText(this.savedPageConfiguration.searchTextFilter, this.unfilteredVerificationOrderItems)
+    }
+
+    if (this.savedPageConfiguration.colHeaderSort) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
+    }
+  }
+
+  private filterBySearchText(text: string, unfilteredArray: any[]) {
+    if(text === undefined || !unfilteredArray) return;
+    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   /* istanbul ignore next */

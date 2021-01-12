@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 
 @Component({
   selector: 'app-verification-base-page',
@@ -8,6 +9,8 @@ import { IVerificationNavigationParameters } from '../../shared/interfaces/i-ver
   styleUrls: ['./verification-base-page.component.scss']
 })
 export class VerificationBasePageComponent implements OnInit {
+
+  @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
   private initialRoute = VerificationRouting.OrderPage;
 
@@ -20,13 +23,17 @@ export class VerificationBasePageComponent implements OnInit {
     this.initializeNavigationParameters();
   }
 
-  initializeNavigationParameters() {
+  initializeNavigationParameters(): void {
     this.navigationParameters = {} as IVerificationNavigationParameters;
     this.navigationParameters.Route = this.initialRoute;
   }
 
-  onPageNavigationEvent(params: IVerificationNavigationParameters) {
+  onPageNavigationEvent(params: IVerificationNavigationParameters): void {
     this.navigationParameters = params;
+  }
+
+  onPageConfigurationUpdateEvent(event: IVerificationPageConfiguration) {
+    this.savedPageConfiguration = event;
   }
 
 }
