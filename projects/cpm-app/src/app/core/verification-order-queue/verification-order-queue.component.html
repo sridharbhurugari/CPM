@@ -39,10 +39,11 @@
       (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
-    <ng-container class="ocgridbody">
+    <ng-container class="ocgridbody"  *ngIf="this.verificationOrderItems">
       <div class="row"
       (click)="onGridRowClick(verificationOrderItem)"
-      *ngFor="let verificationOrderItem of this.filteredVerificationOrderItems; trackBy: trackByItemId">
+      *ngFor="let verificationOrderItem of this.verificationOrderItems | searchPipe:searchTextFilter:searchFields;
+      trackBy: trackByItemId">
         <div class="first" style="align-items: center;">
           <div class="firstcolumncolorblock" [style.background-color]="verificationOrderItem.PriorityCodeColor"></div>
         </div>

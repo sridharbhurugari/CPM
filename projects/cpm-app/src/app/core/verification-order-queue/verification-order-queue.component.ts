@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
@@ -10,7 +10,6 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { nameof } from '../../shared/functions/nameof';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
-import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-verification-order-queue',
@@ -22,37 +21,25 @@ export class VerificationOrderQueueComponent implements OnInit {
   @Output() gridRowClickEvent: EventEmitter<VerificationOrderItem> = new EventEmitter();
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
-  @Input()
-  set searchTextFilter(value: string) {
-    this._searchTextFilter = value;
-    this.filteredVerificationOrderItems = this.filterBySearchText(value, this.unfilteredVerificationOrderItems);
-  }
+  @Input() savedPageConfiguration: IVerificationPageConfiguration;
+  @Input() searchTextFilter;
 
   @Input()
-  set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
+  set verificationOrderItems(value: VerificationOrderItem[]) {
     this._verficationOrderItems = value;
-    this.filteredVerificationOrderItems = value;
-    this.resizeGrid();
-  }
-  get unfilteredVerificationOrderItems(): VerificationOrderItem[] {
-    return this._verficationOrderItems;
-  }
-
-  @Input()
-  set savedPageConfiguration(value: IVerificationPageConfiguration) {
-    this._savedPageConfiguration = value;
     if(this.savedPageConfiguration) {
       this.loadSavedConfigurations();
     }
+    this.resizeGrid();
   }
-  get savedPageConfiguration(): IVerificationPageConfiguration {
-    return this._savedPageConfiguration;
+  get verificationOrderItems(): VerificationOrderItem[] {
+    return this._verficationOrderItems;
   }
+
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  private  _verficationOrderItems: VerificationOrderItem[];
-  private _savedPageConfiguration: IVerificationPageConfiguration;
+  private  _verficationOrderItems: VerificationOrderItem[];;
 
   readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
   readonly typePropertyName = nameof<VerificationOrderItem>('PriorityCodeDescription');
@@ -64,10 +51,8 @@ export class VerificationOrderQueueComponent implements OnInit {
 
   filteredVerificationOrderItems: VerificationOrderItem[];
   firstTime = true;
-  searchPipe: SearchPipe = new SearchPipe();
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
-  _searchTextFilter;
   searchFields = [nameof<VerificationOrderItem>('PriorityCodeDescription'), nameof<VerificationOrderItem>('OrderId')];
 
   translatables = [];
@@ -86,7 +71,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.unfilteredVerificationOrderItems = this.sort(this.unfilteredVerificationOrderItems, event.SortDirection);
+    this.verificationOrderItems = this.sort(this.verificationOrderItems, event.SortDirection);
     this.sortEvent.emit(event);
   }
 
@@ -112,19 +97,12 @@ export class VerificationOrderQueueComponent implements OnInit {
     if (!this.savedPageConfiguration) {
       return;
     }
+    const colHeaderSort = this.savedPageConfiguration.colHeaderSort;
+    this.savedPageConfiguration = null;
 
-    if(this.savedPageConfiguration.searchTextFilter) {
-      this.filteredVerificationOrderItems = this.filterBySearchText(this.savedPageConfiguration.searchTextFilter, this.unfilteredVerificationOrderItems)
+    if (colHeaderSort) {
+      this.columnSelected(colHeaderSort);
     }
-
-    if (this.savedPageConfiguration.colHeaderSort) {
-      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
-    }
-  }
-
-  private filterBySearchText(text: string, unfilteredArray: any[]) {
-    if(text === undefined || !unfilteredArray) return;
-    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   /* istanbul ignore next */
