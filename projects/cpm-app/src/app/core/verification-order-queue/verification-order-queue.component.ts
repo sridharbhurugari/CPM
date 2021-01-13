@@ -25,21 +25,32 @@ export class VerificationOrderQueueComponent implements OnInit {
   @Input() searchTextFilter;
 
   @Input()
-  set verificationOrderItems(value: VerificationOrderItem[]) {
-    this._verficationOrderItems = value;
+  set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
+    this._unfilteredVerficationOrderItems = value;
+    this.filteredVerificationOrderItems = value
     if(this.savedPageConfiguration) {
       this.loadSavedConfigurations();
     }
     this.resizeGrid();
   }
   get verificationOrderItems(): VerificationOrderItem[] {
-    return this._verficationOrderItems;
+    return this._unfilteredVerficationOrderItems;
+  }
+
+  set filteredVerificationOrderItems(value: VerificationOrderItem[]) {
+    this._filteredVerificationOrderItems = value;
+    this.resizeGrid();
+  }
+  get filteredVerificationOrderItems(): VerificationOrderItem[] {
+    return this._filteredVerificationOrderItems;
   }
 
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  private  _verficationOrderItems: VerificationOrderItem[];;
+  private  _unfilteredVerficationOrderItems: VerificationOrderItem[];
+  private  _filteredVerificationOrderItems: VerificationOrderItem[];
+
 
   readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
   readonly typePropertyName = nameof<VerificationOrderItem>('PriorityCodeDescription');
@@ -49,7 +60,6 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly exceptionsPropertyName = nameof<VerificationOrderItem>('CompleteExceptions');
   readonly datePropertyName = nameof<VerificationOrderItem>('FillDate');
 
-  filteredVerificationOrderItems: VerificationOrderItem[];
   firstTime = true;
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
@@ -71,7 +81,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.sortOrder = event.SortDirection;
-    this.verificationOrderItems = this.sort(this.verificationOrderItems, event.SortDirection);
+    this.filteredVerificationOrderItems = this.sort(this.filteredVerificationOrderItems, event.SortDirection);
     this.sortEvent.emit(event);
   }
 
@@ -97,11 +107,9 @@ export class VerificationOrderQueueComponent implements OnInit {
     if (!this.savedPageConfiguration) {
       return;
     }
-    const colHeaderSort = this.savedPageConfiguration.colHeaderSort;
-    this.savedPageConfiguration = null;
 
-    if (colHeaderSort) {
-      this.columnSelected(colHeaderSort);
+    if (this.savedPageConfiguration.colHeaderSort) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
     }
   }
 

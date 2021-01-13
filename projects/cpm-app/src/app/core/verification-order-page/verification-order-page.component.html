@@ -4,7 +4,7 @@
   (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
   ></app-verification-order-header>
   <app-verification-order-queue
-  [verificationOrderItems]="verificationOrderItems | async"
+  [unfilteredVerificationOrderItems]="verificationOrderItems | async"
   [searchTextFilter]="searchTextFilter"
   [savedPageConfiguration]="savedPageConfiguration"
   (gridRowClickEvent)="onGridRowClickEvent($event)"
