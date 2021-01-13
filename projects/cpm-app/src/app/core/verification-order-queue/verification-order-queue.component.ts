@@ -90,7 +90,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  trackByItemId(index: number, verificationOrderItem: any): Guid {
+  trackByItemId(index: number, verificationOrderItem: VerificationOrderItem): Guid {
     if (!verificationOrderItem) {
       return null;
     }
