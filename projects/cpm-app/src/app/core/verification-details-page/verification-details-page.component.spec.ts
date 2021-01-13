@@ -30,10 +30,10 @@ describe('VerificationDetailsPageComponent', () => {
     fixture = TestBed.createComponent(VerificationDetailsPageComponent);
     component = fixture.componentInstance;
     component.navigationParameters = {
-      OrderId: Guid.create(),
+      OrderId: 'order',
       DestinationId: Guid.create(),
       PriorityCodeDescription: 'description',
-      Date: 'date',
+      Date: null,
       Route: VerificationRouting.DetailsPage
     } as IVerificationNavigationParameters;
     fixture.detectChanges();

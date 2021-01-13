@@ -60,7 +60,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly completePropertyName = nameof<VerificationOrderItem>('CompleteVerificationPercentage');
   readonly requiredPropertyName = nameof<VerificationOrderItem>('RequiredVerificationPercentage');
   readonly exceptionsPropertyName = nameof<VerificationOrderItem>('CompleteExceptions');
-  readonly datePropertyName = nameof<VerificationOrderItem>('Date');
+  readonly datePropertyName = nameof<VerificationOrderItem>('FillDate');
 
   filteredVerificationOrderItems: VerificationOrderItem[];
   firstTime = true;
@@ -104,7 +104,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   }
 
   getOrderDate(verificationOrderItem: VerificationOrderItem): string {
-    const orderDate = new Date(verificationOrderItem.Date).toLocaleString(this.translateService.getDefaultLang());
+    const orderDate = new Date(verificationOrderItem.FillDate).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
    }
 

@@ -1,4 +1,3 @@
-import { Guid } from 'guid-typescript';
 import { IVerificationOrderItem } from '../../api-core/data-contracts/i-verification-order-item';
 
 export class VerificationOrderItem implements IVerificationOrderItem {
@@ -7,8 +6,7 @@ export class VerificationOrderItem implements IVerificationOrderItem {
     Object.assign(this, verficationOrderItem);
   }
 
-  Id: Guid;
-  OrderId: Guid;
+  OrderId: string;
   PriorityCode: string;
   PriorityCodeColor: string;
   PriorityCodeDescription: string;
@@ -17,5 +15,5 @@ export class VerificationOrderItem implements IVerificationOrderItem {
   RequiredVerificationPercentage: number;
   CompleteExceptions: number;
   RequiredExceptions: number;
-  Date: string;
+  FillDate: Date;
 }

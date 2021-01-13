@@ -2,9 +2,9 @@ import { Guid } from "guid-typescript";
 import { VerificationRouting } from "../enums/verification-routing";
 
 export interface IVerificationNavigationParameters {
-  OrderId: Guid;
+  OrderId: string;
   DestinationId: Guid,
-  PriorityCodeDescription: String,
-  Date: String,
+  PriorityCodeDescription: string,
+  Date: Date,
   Route: VerificationRouting;
 }
