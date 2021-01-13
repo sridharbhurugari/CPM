@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -20,7 +21,9 @@ export class VerificationDetailsPageComponent implements OnInit {
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
 
 
-  constructor() { }
+  constructor(
+    private translateService: TranslateService
+  ) { }
 
   ngOnInit() {
   }
@@ -37,7 +40,12 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   getHeaderSubtitle() {
-    return `${this.navigationParameters.OrderId} - ${this.navigationParameters.Date}`
+    return `${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
+
+  private transformDateTime(date: Date): string {
+    const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+   }
 
 }

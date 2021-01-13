@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
 import { Observable, of } from 'rxjs';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
@@ -22,7 +23,9 @@ export class VerificationDestinationPageComponent implements OnInit {
 
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
 
-  constructor() { }
+  constructor(
+    private translateService: TranslateService
+  ) { }
 
   ngOnInit() {
     // MOCK LIST - DELETE WITH API ADDITION
@@ -62,7 +65,12 @@ export class VerificationDestinationPageComponent implements OnInit {
   }
 
   getHeaderSubtitle() {
-    return `${this.navigationParameters.OrderId} - ${this.navigationParameters.Date}`
+    return `${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
+
+  private transformDateTime(date: Date): string {
+    const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+   }
 
 }
