@@ -8,12 +8,12 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="320" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="298" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="228" data-colwrap="true"
         [columnPropertyName]="orderIdPropertyName" headerResourceKey="ORDER_ID"
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
@@ -33,13 +33,13 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="190" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="140" data-colwrap="true"
       [columnPropertyName]="datePropertyName" headerResourceKey="DATE"
       [currentSortPropertyName]="currentSortPropertyName"
       (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
-    <ng-container class="ocgridbody"  *ngIf="this.verificationOrderItems">
+    <ng-container class="ocgridbody" *ngIf="this.verificationOrderItems">
       <div class="row"
       (click)="onGridRowClick(verificationOrderItem)"
       *ngFor="let verificationOrderItem of this.filteredVerificationOrderItems | searchPipe:searchTextFilter:searchFields;
@@ -53,7 +53,9 @@
           </div>
         </div>
         <div class="col width-order-id" [attr.data-title]="'ORDERID' | translate">
-          {{verificationOrderItem.OrderId}}
+          <span class="centered-content">
+            {{verificationOrderItem.OrderId}}
+          </span>
         </div>
         <div class="col width-complete" [attr.data-title]="'COMPLETE' | translate">
           <span class="centered-content">
@@ -66,7 +68,7 @@
           </span>
         </div>
         <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
-          <span class="centered-content">
+          <span class="centered-content" *ngIf="verificationOrderItem.RequiredExceptions > 0">
             <app-cp-data-label
             [ngStyle]="{'padding-right': '5px'}"
             [dataSize]=20
