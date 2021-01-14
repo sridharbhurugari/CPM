@@ -30,6 +30,7 @@ import { TabContentsComponent } from './components/tab-contents/tab-contents.com
 import { ValidationIconComponent } from './components/validation-icon/validation-icon.component';
 import { ValidationContainerComponent } from './components/validation-container/validation-container.component';
 import { SafetyStockProductComponent } from './components/safety-stock-product/safety-stock-product.component';
+import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-general-header.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { SafetyStockProductComponent } from './components/safety-stock-product/s
     ValidationIconComponent,
     ValidationContainerComponent,
     SafetyStockProductComponent,
+    CpGeneralHeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -98,6 +100,7 @@ import { SafetyStockProductComponent } from './components/safety-stock-product/s
     HorizontalTabsComponent,
     TabContentsComponent,
     ValidationIconComponent,
+    CpGeneralHeaderComponent,
   ],
   entryComponents: [
     TextResultPopupComponent,

@@ -13,7 +13,6 @@ const routes: Routes = [
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
-
 ];
 
 @NgModule({

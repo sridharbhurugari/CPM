@@ -1,0 +1,20 @@
+<div class="cpmheaderrow header-container">
+  <div class= "back-button">
+    <app-cp-clickable-icon
+        [width]="35"
+        [height]="35"
+        [theme]="'dark'"
+        [icon]="'back'"
+        (clickEvent)="onBackClick()">
+    </app-cp-clickable-icon>
+  </div>
+    <div class="title-content">
+      <span class="title ellipsis">
+        {{title}}
+      </span>
+      <span class="subtitle ellipsis">
+        {{subtitle}}
+      </span>
+    </div>
+  <oc-search-box *ngIf="showSearchBox" #searchBox id="searchBox" [placeHolderText]="'SEARCH_CYCLECOUNT' | translate"></oc-search-box>
+</div>
