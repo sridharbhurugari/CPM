@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
+import { of } from 'rxjs';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
@@ -15,13 +17,22 @@ import { VerificationDetailsPageComponent } from './verification-details-page.co
 describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
   let fixture: ComponentFixture<VerificationDetailsPageComponent>;
+  let translateService: Partial<TranslateService>;
+
+  translateService = {
+    get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+    getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDetailsPageComponent, MockCpGeneralHeaderComponent,
         MockAppHeaderContainer, MockColHeaderSortable, MockAppHeaderContainer,
          MockTranslatePipe, MockSearchBox, MockSearchPipe ],
-      imports: [GridModule]
+      imports: [GridModule],
+      providers: [
+        {provide: TranslateService, useValue: translateService }
+      ]
     })
     .compileComponents();
   }));
