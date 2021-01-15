@@ -2,7 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
 import { Observable, of } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
+import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
@@ -24,26 +26,12 @@ export class VerificationDestinationPageComponent implements OnInit {
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
 
   constructor(
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private verificationService: VerificationService
   ) { }
 
   ngOnInit() {
-    // MOCK LIST - DELETE WITH API ADDITION
-    const mockList = [] as IVerificationDestinationItem[];
-    for(let i =0; i < 15; i++) {
-      mockList.push({
-        Id: Guid.create(),
-        DestinationId: Guid.create(),
-        SequenceOrder: 1,
-        Destination: 'Destination',
-        CompleteVerifications: 1,
-        TotalVerifications: 2,
-        RequiredVerifications: 2,
-        CompleteExceptions: 1,
-        RequiredExceptions: 2
-      })
-    }
-    this.verificationDestinationItems = of(mockList)
+    this.loadVerificationDestinationItems();
   }
 
   onBackEvent(): void {
@@ -66,6 +54,20 @@ export class VerificationDestinationPageComponent implements OnInit {
 
   getHeaderSubtitle() {
     return `${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
+  }
+
+  private loadVerificationDestinationItems(): void {
+    if(!this.navigationParameters || !this.navigationParameters.OrderId) {
+      return;
+    }
+
+    this.verificationDestinationItems = this.verificationService.getVerificationDestinations(this.navigationParameters.OrderId).pipe(
+      map((verificationOrderItems) => {
+        return verificationOrderItems.map((verificationItem) => {
+          return new VerificationDestinationItem(verificationItem);
+        });
+      }), shareReplay(1)
+    );
   }
 
   private transformDateTime(date: Date): string {
