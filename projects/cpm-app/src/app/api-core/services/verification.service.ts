@@ -17,7 +17,7 @@ export class VerificationService {
     ) { }
 
   getVerificationOrders(): Observable<IVerificationOrderItem[]> {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/pickverificationV2/orders');
+    const url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/orders');
     return this.httpClient.get<IVerificationOrderItem[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
