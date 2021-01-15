@@ -51,7 +51,7 @@ describe('VerificationDestinationPageComponent', () => {
     component = fixture.componentInstance;
     component.navigationParameters = {
       OrderId: 'order',
-      DestinationId: Guid.create(),
+      DestinationId: 'destination',
       PriorityCodeDescription: 'description',
       Date: null,
       Route: VerificationRouting.DestinationPage

@@ -40,10 +40,10 @@ export class VerificationDestinationPageComponent implements OnInit {
     this.pageNavigationEvent.emit(navigationParams);
   }
 
-  onGridRowClickEvent(verificationOrderItem: VerificationDestinationItem): void {
+  onGridRowClickEvent(verificationDestinationItem: VerificationDestinationItem): void {
     const navigationParams = {
       OrderId: this.navigationParameters.OrderId,
-      DestinationId: verificationOrderItem.DestinationId,
+      DestinationId: verificationDestinationItem.DestinationId,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       Date: this.navigationParameters.Date,
       Route: this.continueRoute

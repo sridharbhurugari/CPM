@@ -16,7 +16,7 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
 })
 export class VerificationDestinationQueueComponent implements OnInit {
 
-  @Output() gridRowClickEvent: EventEmitter<Guid> = new EventEmitter();
+  @Output() gridRowClickEvent: EventEmitter<VerificationDestinationItem> = new EventEmitter();
 
   @Input()
   set searchTextFilter(value: string) {
@@ -42,11 +42,9 @@ export class VerificationDestinationQueueComponent implements OnInit {
 
   private  _verificationDestinationItems: VerificationDestinationItem[];
 
-  readonly sequenceOrderPropertyName = nameof<VerificationDestinationItem>('SequenceOrder');
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('Destination');
   readonly verificationPropertyName = nameof<VerificationDestinationItem>('CompleteVerifications');
   readonly exceptionsPropertyName = nameof<VerificationDestinationItem>('CompleteExceptions');
-  readonly requiredPropertyName = nameof<VerificationDestinationItem>('RequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
@@ -64,7 +62,7 @@ export class VerificationDestinationQueueComponent implements OnInit {
   }
 
   onGridRowClick(clickedVerificationDestinationItem: VerificationDestinationItem) {
-    this.gridRowClickEvent.emit(clickedVerificationDestinationItem.DestinationId);
+    this.gridRowClickEvent.emit(clickedVerificationDestinationItem);
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
