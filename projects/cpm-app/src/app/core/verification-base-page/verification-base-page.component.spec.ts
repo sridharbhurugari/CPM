@@ -3,6 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 
 import { VerificationBasePageComponent } from './verification-base-page.component';
 
@@ -41,6 +42,19 @@ describe('VerificationPageComponent', () => {
       component.onPageNavigationEvent(params);
 
       expect(component.navigationParameters).toBe(params);
+    });
+
+    it('should set page configuration on page configuration event', () => {
+      const configuration = {} as IVerificationPageConfiguration;
+      configuration.colHeaderSort = {
+        ColumnPropertyName: 'column',
+        SortDirection: 'asc'
+      }
+      configuration.searchTextFilter = 'filter';
+
+      component.onPageConfigurationUpdateEvent(configuration);
+
+      expect(component.savedPageConfiguration).toBe(configuration);
     });
   });
 });

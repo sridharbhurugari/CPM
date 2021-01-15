@@ -4,6 +4,7 @@ import { GridModule } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
@@ -55,7 +56,7 @@ describe('VerificationOrderQueueComponent', () => {
 
       expect(gridClickEventSpy).toHaveBeenCalledTimes(1);
     })
-  })
+  });
 
   describe('Queue filtering/sorting', () => {
     it('should set sort order on column selected event', () => {
@@ -70,5 +71,36 @@ describe('VerificationOrderQueueComponent', () => {
       expect(component.currentSortPropertyName).toBe(expectedColumnName);
       expect(component.sortOrder).toBe(expectedSortOrder);
     });
+  });
+
+  describe('Configurations', () => {
+    it('should sort on items load with saved configuration', () => {
+      const savedConfiguration = {
+        searchTextFilter: 'filter',
+        colHeaderSort: {
+          ColumnPropertyName: 'column',
+          SortDirection: 'asc'
+        }
+      } as IVerificationPageConfiguration
+      component.savedPageConfiguration = savedConfiguration;
+      const columSelectedSpy = spyOn(component, 'columnSelected');
+
+      component.unfilteredVerificationOrderItems = []
+
+      expect(columSelectedSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('String Transformations', () => {
+    it('should transform date into displayable date string', () => {
+      const verificationOrderItem = new VerificationOrderItem(null);
+      const expectedDate = new Date();
+      const expectedDateString = expectedDate.toLocaleString('en-US');
+      verificationOrderItem.FillDate = expectedDate;
+
+      const displayedDateString = component.getOrderDate(verificationOrderItem);
+
+      expect(displayedDateString).toBe(expectedDateString);
+    })
   });
 });
