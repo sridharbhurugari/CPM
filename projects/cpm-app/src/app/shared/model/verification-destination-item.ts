@@ -11,11 +11,8 @@ export class VerificationDestinationItem implements IVerificationDestinationItem
   OrderId: string;
   DestinationId: string;
   DestinationType: string;
-  Area: string;
-  PatientArea: string;
-  PatientName: string;
-  PatientRoom: string;
-  DestinationOmni: string;
+  DestinationLine1: string;
+  DestinationLine2: string;
   CompleteVerifications: number;
   TotalVerifications: number;
   CompleteExceptions: number;

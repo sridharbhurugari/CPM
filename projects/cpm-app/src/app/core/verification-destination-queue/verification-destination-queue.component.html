@@ -21,19 +21,14 @@
       *ngFor="let verificationDestinationItem of this.verificationDestinationItems | searchPipe:searchTextFilter:searchFields;
       trackBy: trackByItemId">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
-          <div [ngSwitch]="verificationDestinationItem.DestinationType">
-            <div *ngSwitchCase="destinationTypes.Patient">
-              <div>{{verificationDestinationItem.PatientRoom}}, {{verificationDestinationItem.PatientArea}}</div>
-              <div>{{verificationDestinationItem.PatientName}}</div>
-            </div>
-            <div *ngSwitchCase="destinationTypes.Omni">
-              <div>{{verificationDestinationItem.Area}}</div>
-              <div>{{verificationDestinationItem.DestinationOmni}}</div>
-            </div>
-            <div *ngSwitchCase="destinationTypes.Area">
-              <div>{{verificationDestinationItem.Area}}</div>
-            </div>
-          </div>
+          <span *ngIf="verificationDestinationItem.DestinationLine2">
+            <div>{{verificationDestinationItem.DestinationLine1}}</div>
+            <div>{{verificationDestinationItem.DestinationLine2}}</div>
+          </span>
+          <span *ngIf="!verificationDestinationItem.DestinationLine2">
+            <div>{{verificationDestinationItem.DestinationLine1}}</div>
+            <div>&nbsp;</div>
+          </span>
         </div>
         <div class="col width-verification" [attr.data-title]="'VERIFICATION' | translate">
           <span class="centered-content">

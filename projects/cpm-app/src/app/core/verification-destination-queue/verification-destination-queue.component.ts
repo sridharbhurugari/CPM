@@ -34,14 +34,14 @@ export class VerificationDestinationQueueComponent implements OnInit {
 
   private  _verificationDestinationItems: VerificationDestinationItem[];
 
-  readonly destinationPropertyName = nameof<VerificationDestinationItem>('PatientArea');
+  readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationLine1');
   readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
-  searchFields = [nameof<VerificationDestinationItem>('PatientArea')];
+  searchFields = [nameof<VerificationDestinationItem>('DestinationLine1'), nameof<VerificationDestinationItem>('DestinationLine2')];
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [];
