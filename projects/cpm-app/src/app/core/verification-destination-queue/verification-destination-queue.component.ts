@@ -20,17 +20,6 @@ export class VerificationDestinationQueueComponent implements OnInit {
   @Output() gridRowClickEvent: EventEmitter<VerificationDestinationItem> = new EventEmitter();
 
   @Input()
-  set searchTextFilter(value: string) {
-    if (!this.verificationDestinationItems) {
-      return;
-    }
-    this._searchTextFilter = value;
-  }
-  get searchTextFilter(): string {
-    return this._searchTextFilter;
-  }
-
-  @Input()
   set verificationDestinationItems(value: VerificationDestinationItem[]) {
     this._verificationDestinationItems = value;
     this.resizeGrid();
@@ -39,20 +28,20 @@ export class VerificationDestinationQueueComponent implements OnInit {
     return this._verificationDestinationItems;
   }
 
+  @Input() searchTextFilter: string;
+
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
   private  _verificationDestinationItems: VerificationDestinationItem[];
 
-  readonly destinationPropertyName = nameof<VerificationDestinationItem>('Destination');
-  readonly verificationPropertyName = nameof<VerificationDestinationItem>('CompleteVerifications');
-  readonly exceptionsPropertyName = nameof<VerificationDestinationItem>('CompleteExceptions');
+  readonly destinationPropertyName = nameof<VerificationDestinationItem>('PatientArea');
   readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
-  searchFields = [];
+  searchFields = [nameof<VerificationDestinationItem>('PatientArea')];
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [];

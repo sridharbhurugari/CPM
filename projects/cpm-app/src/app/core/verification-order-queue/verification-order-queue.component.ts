@@ -22,7 +22,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
-  @Input() searchTextFilter;
+  @Input() searchTextFilter: string;
 
   @Input()
   set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {

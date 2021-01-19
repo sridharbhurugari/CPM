@@ -21,7 +21,7 @@ export class CpGeneralHeaderComponent {
   @Input() showSearchBox: boolean = true;
 
   @ViewChild('searchBox', {
-    static: true
+    static: false
   })
   searchElement: SearchBoxComponent;
 

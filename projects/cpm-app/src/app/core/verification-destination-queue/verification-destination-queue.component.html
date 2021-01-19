@@ -7,16 +7,8 @@
         [currentSortPropertyName]="currentSortPropertyName"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
-        [columnPropertyName]="verificationPropertyName" headerResourceKey="VERIFICATION"
-        [currentSortPropertyName]="currentSortPropertyName"
-        (columnSelected)="columnSelected($event)">
-      </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
-        [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
-        [currentSortPropertyName]="currentSortPropertyName"
-        (columnSelected)="columnSelected($event)">
-      </div>
+      <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'VERIFICATION' | translate}}</div>
+      <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'EXCEPTIONS' | translate}}</div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="280" data-colwrap="true"
       [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED_VERIFICATION"
       [currentSortPropertyName]="currentSortPropertyName"
@@ -26,7 +18,8 @@
     <ng-container class="ocgridbody">
       <div class="row"
       (click)="onGridRowClick(verificationDestinationItem)"
-      *ngFor="let verificationDestinationItem of this.verificationDestinationItems">
+      *ngFor="let verificationDestinationItem of this.verificationDestinationItems | searchPipe:searchTextFilter:searchFields;
+      trackBy: trackByItemId">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
           <div [ngSwitch]="verificationDestinationItem.DestinationType">
             <div *ngSwitchCase="destinationTypes.Patient">

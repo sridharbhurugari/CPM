@@ -6,6 +6,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
@@ -24,6 +25,8 @@ export class VerificationDestinationPageComponent implements OnInit {
   private continueRoute = VerificationRouting.DetailsPage;
 
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
+  searchTextFilter: string;
+  colHeaderSort: IColHeaderSortChanged;
 
   constructor(
     private translateService: TranslateService,
@@ -38,6 +41,14 @@ export class VerificationDestinationPageComponent implements OnInit {
     const navigationParams = {} as IVerificationNavigationParameters;
     navigationParams.Route = this.backRoute;
     this.pageNavigationEvent.emit(navigationParams);
+  }
+
+  onSearchTextFilterEvent(filterText: string): void {
+    this.searchTextFilter = filterText;
+  }
+
+  onSortEvent(event: IColHeaderSortChanged): void {
+    this.colHeaderSort = event;
   }
 
   onGridRowClickEvent(verificationDestinationItem: VerificationDestinationItem): void {

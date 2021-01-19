@@ -3,10 +3,13 @@
   [title]="navigationParameters.PriorityCodeDescription"
   [subtitle]="getHeaderSubtitle()"
   [showSearchBox]="true"
+  (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
   (backEvent)="onBackEvent()"
   ></app-cp-general-header>
   <app-verification-destination-queue
   [verificationDestinationItems]="verificationDestinationItems | async"
+  [searchTextFilter]="searchTextFilter"
   (gridRowClickEvent)="onGridRowClickEvent($event)"
+  (sortEvent)="onSortEvent($event)"
   ></app-verification-destination-queue>
 </ng-container>
