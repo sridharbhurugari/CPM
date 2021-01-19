@@ -45,6 +45,7 @@ export class VerificationDestinationQueueComponent implements OnInit {
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('Destination');
   readonly verificationPropertyName = nameof<VerificationDestinationItem>('CompleteVerifications');
   readonly exceptionsPropertyName = nameof<VerificationDestinationItem>('CompleteExceptions');
+  readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
