@@ -1,11 +1,12 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { Xr2QueuePageComponent } from './xr2-queue-page.component';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 
 describe('Xr2QueuePageComponent', () => {
@@ -28,7 +29,9 @@ describe('Xr2QueuePageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ Xr2QueuePageComponent],
       imports: [],
-      providers: [],
+      providers: [
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+      ],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();

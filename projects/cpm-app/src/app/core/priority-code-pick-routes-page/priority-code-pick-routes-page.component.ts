@@ -5,6 +5,7 @@ import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-priority-code-pick-routes-page',
@@ -17,7 +18,12 @@ export class PriorityCodePickRoutesPageComponent implements OnInit {
   constructor(
     private priorityCodePickRoutesService: PriorityCodePickRoutesService,
     private router: Router,
-  ) { }
+    private wpfInteropService: WpfInteropService,
+  ) {
+    this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
+      this.ngOnInit();
+    });
+  }
 
   ngOnInit() {
     this.priorityCodePickRoutes$ = this.priorityCodePickRoutesService.get().pipe(map(p => {

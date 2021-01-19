@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoggerService, LogVerbosity } from 'oal-core';
+import { Subject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { CpmLogCategories } from '../constants/cpm-log-categories';
 import { EventConnectionService } from './event-connection.service';
@@ -11,6 +12,7 @@ import { WindowService } from './window-service';
   providedIn: 'root'
 })
 export class WpfInteropService {
+  wpfViewModelActivated: Subject<null> = new Subject();
 
   constructor(
     private windowService: WindowService,
@@ -49,6 +51,12 @@ export class WpfInteropService {
           navigateAway();
         })
         this.eventConnectionService.stop();
+      });
+    };
+
+    this.windowService.nativeWindow['wpfViewModelActivated'] = () => {
+      this.zone.run(() => {
+        this.wpfViewModelActivated.next();
       });
     };
   }

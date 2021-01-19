@@ -14,6 +14,7 @@ import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-ver
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -66,8 +67,14 @@ export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
     private quickPickEventConnectionService: QuickPickEventConnectionService,
     private quickPickDrawerService: Xr2QuickPickDrawerService,
     private router: Router,
-    private hardwareLeaseService: HardwareLeaseService
+    private hardwareLeaseService: HardwareLeaseService,
+    wpfInteropService: WpfInteropService
   ) {
+    wpfInteropService.wpfViewModelActivated.subscribe(() => {
+      if(this.detailedDrawer){
+        this.onCloseQuickPickDrawerDetails();
+      }
+    });
   }
 
   ngOnInit() {
