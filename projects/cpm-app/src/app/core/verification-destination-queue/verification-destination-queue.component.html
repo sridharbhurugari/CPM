@@ -28,7 +28,19 @@
       (click)="onGridRowClick(verificationDestinationItem)"
       *ngFor="let verificationDestinationItem of this.verificationDestinationItems">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
-            {{verificationDestinationItem.Destination}}
+          <div [ngSwitch]="verificationDestinationItem.DestinationType">
+            <div *ngSwitchCase="destinationTypes.Patient">
+              <div>{{verificationDestinationItem.PatientRoom}}, {{verificationDestinationItem.PatientArea}}</div>
+              <div>{{verificationDestinationItem.PatientName}}</div>
+            </div>
+            <div *ngSwitchCase="destinationTypes.Omni">
+              <div>{{verificationDestinationItem.Area}}</div>
+              <div>{{verificationDestinationItem.DestinationOmni}}</div>
+            </div>
+            <div *ngSwitchCase="destinationTypes.Area">
+              <div>{{verificationDestinationItem.Area}}</div>
+            </div>
+          </div>
         </div>
         <div class="col width-verification" [attr.data-title]="'VERIFICATION' | translate">
           <span class="centered-content">
@@ -50,7 +62,7 @@
           </span>
         </div>
         <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
-          <span class="centered-content">
+          <span class="centered-content" *ngIf="verificationDestinationItem.RequiredExceptions > 0">
             <app-cp-data-label
             [ngStyle]="{'padding-right': '5px'}"
             [dataSize]=20
@@ -69,7 +81,7 @@
           </span>
         </div>
         <div class="col width-required-verification" [attr.data-title]="'REQUIRED_VERIFICATION' | translate">
-          <span class="centered-content">
+          <span class="centered-content"  *ngIf="verificationDestinationItem.RequiredRequiredVerifications > 0">
             <app-cp-data-label
             [ngStyle]="{'padding-right': '5px'}"
             [dataSize]=20

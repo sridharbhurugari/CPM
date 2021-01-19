@@ -5,6 +5,7 @@
   [showSearchBox]="true"
   (backEvent)="onBackEvent()"
   ></app-cp-general-header>
+  <app-verification-dashboard></app-verification-dashboard>
   <app-verification-destination-queue
   [verificationDestinationItems]="verificationDestinationItems | async"
   (gridRowClickEvent)="onGridRowClickEvent($event)"

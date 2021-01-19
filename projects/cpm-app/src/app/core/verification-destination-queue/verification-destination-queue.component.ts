@@ -4,6 +4,7 @@ import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { Observable } from 'rxjs';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
@@ -52,6 +53,7 @@ export class VerificationDestinationQueueComponent implements OnInit {
   sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
   searchFields = [];
+  destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [];
   translations$: Observable<any>;
