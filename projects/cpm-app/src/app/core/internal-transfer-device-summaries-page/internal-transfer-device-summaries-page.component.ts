@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
-import { CpmLogLevel } from "../../shared/enums/cpm-log-level";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-internal-transfer-device-summaries-page',
@@ -18,7 +17,7 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
 
   constructor(
     coreEventConnectionService: CoreEventConnectionService,
-    private wpfActionControllerService: WpfActionControllerService,
+    private router: Router,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
   ) {
     coreEventConnectionService.refreshDeviceNeedsSubject
@@ -50,7 +49,7 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
   ngOnInit() {
   }
 
-  deviceSelected(deviceId: number){
-    this.wpfActionControllerService.ExecuteContinueNavigationAction(`core/internalTransfer/deviceReplenishmentNeeds/${deviceId}`);
+  deviceSelected(deviceId: number) {
+    this.router.navigate(['core/internalTransfer/deviceReplenishmentNeeds/', deviceId]);
   }
 }

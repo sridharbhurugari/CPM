@@ -4,6 +4,7 @@ import { PriorityCodePickRoutesService } from '../../api-core/services/priority-
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-priority-code-pick-routes-page',
@@ -14,7 +15,8 @@ export class PriorityCodePickRoutesPageComponent implements OnInit {
   priorityCodePickRoutes$: Observable<IPriorityCodePickRoute[]>;
 
   constructor(
-    private priorityCodePickRoutesService: PriorityCodePickRoutesService
+    private priorityCodePickRoutesService: PriorityCodePickRoutesService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -23,4 +25,8 @@ export class PriorityCodePickRoutesPageComponent implements OnInit {
     }));
   }
 
+  navigate(priorityCodePickRouteId: number) {
+    let params = { priorityCodePickRouteId: priorityCodePickRouteId };
+    this.router.navigate(['core/priorityCode/RouteAssignments'], { queryParams: params });
+  }
 }
