@@ -15,6 +15,16 @@
   align-items: center;
 }
 
+.priority-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.order {
+  font-size: 14px;
+  padding-top: 5px;
+}
+
 .width-type {
   width: 320px;
 }

@@ -66,7 +66,8 @@ export class VerificationDestinationPageComponent implements OnInit {
   }
 
   getHeaderSubtitle() {
-    return `${this.navigationParameters.DeviceDescription} - ${this.transformDateTime(this.navigationParameters.Date)}`
+    return `${this.navigationParameters.DeviceDescription} -
+    ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
 
   private transformDateTime(date: Date): string {
