@@ -15,6 +15,7 @@ import { HardwareLeaseService } from '../../api-core/services/hardware-lease-ser
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { QuickPickControlDataStatus } from '../model/quick-pick-control-data-status';
 
 @Component({
   selector: 'app-quick-pick-drawer-view',
@@ -71,7 +72,7 @@ export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
     wpfInteropService: WpfInteropService
   ) {
     wpfInteropService.wpfViewModelActivated.subscribe(() => {
-      if(this.detailedDrawer){
+      if(this.detailedDrawer && this.detailedDrawer.Status <= QuickPickControlDataStatus.OrderReady){
         this.onCloseQuickPickDrawerDetails();
       }
     });
