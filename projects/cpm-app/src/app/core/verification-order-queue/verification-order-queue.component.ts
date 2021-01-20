@@ -54,16 +54,18 @@ export class VerificationOrderQueueComponent implements OnInit {
 
   readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
   readonly typePropertyName = nameof<VerificationOrderItem>('PriorityCodeDescription');
-  readonly orderIdPropertyName = nameof<VerificationOrderItem>('OrderId');
+  readonly devicePropertyName = nameof<VerificationOrderItem>('DeviceDescription');
   readonly completePropertyName = nameof<VerificationOrderItem>('CompleteVerificationPercentage');
   readonly requiredPropertyName = nameof<VerificationOrderItem>('RequiredVerificationPercentage');
   readonly exceptionsPropertyName = nameof<VerificationOrderItem>('CompleteExceptions');
   readonly datePropertyName = nameof<VerificationOrderItem>('FillDate');
 
   firstTime = true;
+  columnSize = 7;
   currentSortPropertyName: string;
-  sortOrder: SortDirection = SortDirection.ascending;
+  columnSortDirection: SortDirection;
   searchFields = [nameof<VerificationOrderItem>('PriorityCodeDescription'), nameof<VerificationOrderItem>('OrderId')];
+  customSorts = new Array<string>(this.columnSize);
 
   translatables = [];
   translations$: Observable<any>;
@@ -80,7 +82,7 @@ export class VerificationOrderQueueComponent implements OnInit {
 
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
-    this.sortOrder = event.SortDirection;
+    this.columnSortDirection = event.SortDirection;
     this.filteredVerificationOrderItems = this.sort(this.filteredVerificationOrderItems, event.SortDirection);
     this.sortEvent.emit(event);
   }
@@ -110,6 +112,7 @@ export class VerificationOrderQueueComponent implements OnInit {
 
     if (this.savedPageConfiguration.colHeaderSort) {
       this.columnSelected(this.savedPageConfiguration.colHeaderSort);
+      this.columnSortDirection = this.savedPageConfiguration.colHeaderSort.SortDirection;
     }
   }
 

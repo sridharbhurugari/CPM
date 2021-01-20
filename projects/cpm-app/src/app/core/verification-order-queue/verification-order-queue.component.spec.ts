@@ -61,15 +61,15 @@ describe('VerificationOrderQueueComponent', () => {
   describe('Queue filtering/sorting', () => {
     it('should set sort order on column selected event', () => {
       const mockSortEvent = {} as IColHeaderSortChanged;
-      const expectedSortOrder = SortDirection.ascending;
+      const expectedSortDirection = SortDirection.ascending;
       const expectedColumnName = 'column';
-      mockSortEvent.SortDirection = expectedSortOrder;
+      mockSortEvent.SortDirection = expectedSortDirection;
       mockSortEvent.ColumnPropertyName = expectedColumnName;
 
       component.columnSelected(mockSortEvent);
 
       expect(component.currentSortPropertyName).toBe(expectedColumnName);
-      expect(component.sortOrder).toBe(expectedSortOrder);
+      expect(component.columnSortDirection).toBe(expectedSortDirection);
     });
   });
 

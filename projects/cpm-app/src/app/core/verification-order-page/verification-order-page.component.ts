@@ -42,12 +42,14 @@ export class VerificationOrderPageComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  onGridRowClickEvent(verficationOrderItem: VerificationOrderItem): void {
+  onGridRowClickEvent(verificationOrderItem: VerificationOrderItem): void {
     const navigationParams = {
-      OrderId: verficationOrderItem.OrderId,
+      OrderId: verificationOrderItem.OrderId,
+      DeviceId: verificationOrderItem.DeviceId,
+      DeviceDescription: verificationOrderItem.DeviceDescription,
       DestinationId: null,
-      PriorityCodeDescription: verficationOrderItem.PriorityCodeDescription,
-      Date: verficationOrderItem.FillDate,
+      PriorityCodeDescription: verificationOrderItem.PriorityCodeDescription,
+      Date: verificationOrderItem.FillDate,
       Route: this.continueRoute
     } as IVerificationNavigationParameters
 

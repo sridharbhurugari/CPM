@@ -15,20 +15,30 @@
   align-items: center;
 }
 
+.priority-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.order {
+  font-size: 14px;
+  padding-top: 5px;
+}
+
 .width-type {
   width: 320px;
 }
 
-.width-order-id {
+.width-device {
   width: 228px;
 }
 
 .width-complete {
-  width: 165px;
+  width: 160px;
 }
 
 .width-required {
-  width: 165px;
+  width: 160px;
 }
 
 .width-exceptions {
@@ -36,5 +46,5 @@
 }
 
 .width-date {
-  width: 140px;
+  width: 150px;
 }
