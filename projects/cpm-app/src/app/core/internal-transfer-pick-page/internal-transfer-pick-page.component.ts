@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Guid } from 'guid-typescript';
-import { forkJoin, Observable  } from 'rxjs';
-import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { forkJoin, Observable, Subject  } from 'rxjs';
+import { map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { IPicklistLine } from '../../api-core/data-contracts/i-picklist-line';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
@@ -28,6 +28,7 @@ import { DeviceTypeId } from '../../shared/constants/device-type-id';
 import { parseBool } from '../../shared/functions/parseBool';
 import { WpfActionPaths } from "../constants/wpf-action-paths";
 import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -37,7 +38,7 @@ import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
     QuantityTrackingService
   ],
 })
-export class InternalTransferPickPageComponent {
+export class InternalTransferPickPageComponent implements OnDestroy {
   private _pickTotal: number;
   orderId: string;
 
@@ -58,6 +59,8 @@ export class InternalTransferPickPageComponent {
   safetyStockQuickAdvanceConfig$: Observable<IConfigurationValue>;
   guidedPickData: IGuidedPickData;
 
+  isHighPriorityAvailable: boolean;
+  ngUnsubscribe = new Subject();
 
   constructor(
     activatedRoute: ActivatedRoute,
@@ -71,7 +74,8 @@ export class InternalTransferPickPageComponent {
     private orderItemPendingQuantitiesService: OrderItemPendingQuantitiesService,
     private quantityTrackingService: QuantityTrackingService,
     private carouselLocationAccessService: CarouselLocationAccessService,
-  ) {
+    private coreEventConnectionService: CoreEventConnectionService,
+    ) {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
     const allDevices = parseBool(activatedRoute.snapshot.queryParamMap.get('allDevices'));
     if (allDevices) {
@@ -85,6 +89,16 @@ export class InternalTransferPickPageComponent {
     this.safetyStockQuickAdvanceConfig$ = systemConfiguraitonsService.getSafetyStockQuickAdvanceConfig();
 
     this.updateCurrentLineDetails();
+
+    this.coreEventConnectionService.highPriorityInterruptSubject
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(msg => {this.onHighPriorityReceived();});
+    this.isHighPriorityAvailable = false;
+}
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete(); 
   }
 
   pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
@@ -100,6 +114,11 @@ export class InternalTransferPickPageComponent {
   pause() {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Pause');
+  }
+
+  pickNow() {
+    this.clearLightbar();
+    this.wpfActionControllerService.ExecuteActionName(WpfActionPaths.HighPriorityPickNow);
   }
 
   hold(isLast: boolean) {
@@ -119,6 +138,10 @@ export class InternalTransferPickPageComponent {
     this.wpfActionControllerService.ExecuteActionNameWithData(WpfActionPaths.AdjustQohPath, item);
   }
 
+  onHighPriorityReceived() {
+    this.isHighPriorityAvailable = true;
+  }
+
   private pickItem(completePickData: ICompletePickData) {
     let scanInfo = completePickData.safetyStockScanInfo;
     if (!scanInfo && completePickData.secondaryScanInfo && completePickData.secondaryScanInfo.ItemId == completePickData.line.ItemId) {
@@ -135,7 +158,7 @@ export class InternalTransferPickPageComponent {
       }
     });
   }
-
+  
   private next() {
     this.picklistLineIndex = this.picklistLineIndex + 1;
     this.clearLightbar();
@@ -204,6 +227,7 @@ export class InternalTransferPickPageComponent {
         quickAdvanceOnScan: safetyStockQuickAdvanceConfig.Value == ConfigValues.Yes,
         isLastLine: this.picklistLineIndex == (totalLines - 1),
         picklistLine: currentLine,
+        highPriorityAvailable: this.isHighPriorityAvailable,
       };
 
       return guidedPickData;

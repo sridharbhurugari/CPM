@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, of, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EventEventId } from '../../shared/constants/event-event-id';
 import { EventConnectionService } from '../../shared/services/event-connection.service';
 import { QuickPickDrawerData } from '../model/quick-pick-drawer-data';
 
@@ -34,27 +35,27 @@ export class QuickPickEventConnectionService {
       if (message.EventId === undefined) {
         return;
       }
-      if (message.EventId === 'QuickPickReloadDrawersEvent') {
+      if (message.EventId === EventEventId.QuickPickReloadDrawersEvent) {
         console.log(message);
         this.QuickPickReloadDrawersSubject.next(message);
         return;
       }
-      if (message.EventId === 'QuickPickDrawerUpdateEvent') {
+      if (message.EventId === EventEventId.QuickPickDrawerUpdateEvent) {
         console.log(message);
         this.QuickPickDrawerUpdateSubject.next(message);
         return;
       }
-      if (message.EventId === 'QuickPickQueueUpdateEvent') {
+      if (message.EventId === EventEventId.QuickPickQueueUpdateEvent) {
         console.log(message);
         this.QuickPickQueueUpdateSubject.next(message);
         return;
       }
-      if (message.EventId === 'QuickPickErrorUpdateEvent') {
+      if (message.EventId === EventEventId.QuickPickErrorUpdateEvent) {
         console.log(message);
         this.QuickPickErrorUpdateSubject.next(message);
         return;
       }
-      if (message.EventId === 'QuickPickDeviceStatusUpdateEvent') {
+      if (message.EventId === EventEventId.QuickPickDeviceStatusUpdateEvent) {
         console.log(message);
         this.QuickPickDeviceStatusUpdateSubject.next(message);
         return;

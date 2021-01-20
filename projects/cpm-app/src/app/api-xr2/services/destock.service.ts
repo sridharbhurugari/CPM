@@ -3,8 +3,6 @@ import { Observable, of } from 'rxjs';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { HttpClient } from '@angular/common/http';
-import { IDestockTypeInfo } from '../data-contracts/i-destock-type-info';
-import { DestockTypeInfo } from '../../xr2/model/destock-type-info';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +15,11 @@ export class DestockService {
     private ocapHttpHeadersService: OcapHttpHeadersService
     ) { }
 
-  public get(xr2DeviceId: number): Observable<DestockTypeInfo[]> {
+  public get(xr2DeviceId: number): Observable<number> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/destock`);
     const params = { xr2DeviceId: xr2DeviceId.toString() };
 
-    const results = this.httpClient.get<DestockTypeInfo[]>( url, {
+    const results = this.httpClient.get<number>( url, {
       headers: this.ocapHttpHeadersService.getHeaders(), params
     });
     return results;

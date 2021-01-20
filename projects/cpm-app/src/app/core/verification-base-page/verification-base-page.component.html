@@ -1,0 +1,13 @@
+<div class="content" [ngSwitch]="navigationParameters.Route">
+  <app-verification-order-page *ngSwitchCase="verificationRouting.OrderPage"
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
+  ></app-verification-order-page>
+  <app-verification-destination-page *ngSwitchCase="verificationRouting.DestinationPage"
+  [navigationParameters]="navigationParameters"
+  (pageNavigationEvent)="onPageNavigationEvent($event)">
+  </app-verification-destination-page>
+  <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
+  [navigationParameters]="navigationParameters"
+  (pageNavigationEvent)="onPageNavigationEvent($event)">
+  </app-verification-details-page>
+</div>

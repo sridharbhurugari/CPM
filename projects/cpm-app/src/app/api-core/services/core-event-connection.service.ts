@@ -8,6 +8,8 @@ import { ICarouselFaultedEvent } from '../events/i-carousel.faulted-event';
 import { ICarouselReadyEvent } from '../events/i-carousel-ready-event';
 import { IRefreshDeviceNeedsEvent } from "../events/i-refresh-device-needs";
 import { takeUntil } from 'rxjs/operators';
+import { IHighPriorityInterrupt } from "../events/i-high-priority-interrupt";
+import { EventEventId } from '../../shared/constants/event-event-id';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,7 @@ export class CoreEventConnectionService implements OnDestroy {
   public carouselFaultedSubject = new Subject<ICarouselFaultedEvent>();
   public carouselReadySubject = new Subject<ICarouselReadyEvent>();
   public refreshDeviceNeedsSubject = new Subject<IRefreshDeviceNeedsEvent>();
+  public highPriorityInterruptSubject = new Subject<IHighPriorityInterrupt>();
   public ngUnsubscribe = new Subject();
 
   public startedSubject = new ReplaySubject(1);
@@ -47,7 +50,7 @@ export class CoreEventConnectionService implements OnDestroy {
       }
 
       if (message.EventId === undefined) {
-        if (message.$type.includes('DeviceOperationResultEvent')) {
+        if (message.$type.includes(EventEventId.DeviceOperationResultEvent)) {
           this.deviceOperationResultEventSubject.next({
             DeviceId: message.DeviceId,
             IsExpired: message.IsExpired,
@@ -56,54 +59,58 @@ export class CoreEventConnectionService implements OnDestroy {
           });
         }
 
-        if (message.$type.includes('HardwareLeaseGrantedEvent')) {
+        if (message.$type.includes(EventEventId.HardwareLeaseGrantedEvent)) {
           this.deviceLeaseGrantedSubject.next({
             DeviceId: message.DeviceId,
             RequestId: message.RequestId,
           })
         }
 
-        if (message.$type.includes('HardwareLeaseDeniedEvent')) {
+        if (message.$type.includes(EventEventId.HardwareLeaseDeniedEvent)) {
           this.deviceLeaseDeniedSubject.next({
             DeviceId: message.DeviceId,
             RequestId: message.RequestId,
           })
         }
 
-        if (message.$type.includes('CarouselIsReadyEvent')) {
+        if (message.$type.includes(EventEventId.CarouselIsReadyEvent)) {
           this.carouselReadySubject.next({ DeviceId: message.DeviceId });
         }
 
-        if (message.$type.includes('CarouselFaultedEvent')) {
+        if (message.$type.includes(EventEventId.CarouselFaultedEvent)) {
           this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
         }
 
-        if (message.$type.includes('OcsAvailableEvent')) {
+        if (message.$type.includes(EventEventId.OcsAvailableEvent)) {
           this.ocsIsHealthySubject.next(true);
         }
 
-        if (message.$type.includes('OcsUnavailableEvent')) {
+        if (message.$type.includes(EventEventId.OcsUnavailableEvent)) {
           this.ocsIsHealthySubject.next(false);
         }
 
-        if (message.$type.includes('RefreshDeviceNeeds')) {
+        if (message.$type.includes(EventEventId.RefreshDeviceNeeds)) {
           this.refreshDeviceNeedsSubject.next();
+        }
+
+        if (message.$type.includes(EventEventId.HighPriorityPickRequestEvent)) {
+          this.highPriorityInterruptSubject.next();
         }
 
         return;
       }
 
-      if (message.EventId === 'Ocs2Available') {
+      if (message.EventId === EventEventId.Ocs2Available) {
         this.ocsIsHealthySubject.next(true);
         return;
       }
 
-      if (message.EventId === 'Ocs2Unavailable') {
+      if (message.EventId === EventEventId.Ocs2Unavailable) {
         this.ocsIsHealthySubject.next(false);
         return;
       }
 
-      if (message.EventId === 'DeviceOperationResultEvent') {
+      if (message.EventId === EventEventId.DeviceOperationResultEvent) {
         this.deviceOperationResultEventSubject.next({
           DeviceId: message.DeviceId,
           IsExpired: message.IsExpired,
@@ -112,30 +119,34 @@ export class CoreEventConnectionService implements OnDestroy {
         });
       }
 
-      if (message.EventId === 'HardwareLeaseGrantedEvent') {
+      if (message.EventId === EventEventId.HardwareLeaseGrantedEvent) {
         this.deviceLeaseGrantedSubject.next({
           DeviceId: message.DeviceId,
           RequestId: message.RequestId,
         });
       }
 
-      if (message.EventId === 'HardwareLeaseDeniedEvent') {
+      if (message.EventId === EventEventId.HardwareLeaseDeniedEvent) {
         this.deviceLeaseDeniedSubject.next({
           DeviceId: message.DeviceId,
           RequestId: message.RequestId,
         });
       }
 
-      if (message.EventId === 'CarouselIsReadyEvent') {
+      if (message.EventId === EventEventId.CarouselIsReadyEvent) {
         this.carouselReadySubject.next({ DeviceId: message.DeviceId });
       }
 
-      if (message.EventId === 'CarouselFaultedEvent') {
+      if (message.EventId === EventEventId.CarouselFaultedEvent) {
         this.carouselFaultedSubject.next({ DeviceId: message.DeviceId });
       }
 
-      if (message.EventId === 'RefreshDeviceNeeds') {
+      if (message.EventId === EventEventId.RefreshDeviceNeeds) {
         this.refreshDeviceNeedsSubject.next();
+      }
+
+      if (message.EventId === EventEventId.HighPriorityPickRequestEvent) {
+        this.highPriorityInterruptSubject.next();
       }
     } catch (e) {
       console.log('CoreEventConnectionService.eventHandlers ERROR');

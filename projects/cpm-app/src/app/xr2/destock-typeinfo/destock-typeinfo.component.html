@@ -34,7 +34,7 @@
           {{destockTypeInfo.BinCount}}
         </div>
         <div class="last" [attr.data-title]="'PRINT' | translate" style="text-align: center;">
-          <oc-button-action [mode]="'secondary'" [buttonIcon] ="'print'" (click)="onPrint(destockTypeInfo)"></oc-button-action>
+          <oc-button-action [mode]="'secondary'" [buttonIcon] ="'print'" [disabled]="destockTypeInfo.BinCount === 0" (click)="onPrint(destockTypeInfo)"></oc-button-action>
         </div>
       </div>
     </ng-container>

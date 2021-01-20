@@ -23,3 +23,12 @@
     border: 0px;
     margin-bottom: 0px;
 }
+
+::ng-deep oc-button-action .critical {
+  border-radius: 25px;
+  background-color: #ff0000;
+
+  oc-svgicon {
+    left: 13px;
+  }
+}
