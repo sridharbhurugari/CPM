@@ -54,6 +54,7 @@ export class VerificationDestinationPageComponent implements OnInit {
 
   onGridRowClickEvent(verificationOrderItem: VerificationDestinationItem): void {
     const navigationParams = {
+      DeviceId: this.navigationParameters.DeviceId,
       OrderId: this.navigationParameters.OrderId,
       DestinationId: verificationOrderItem.DestinationId,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
@@ -65,7 +66,7 @@ export class VerificationDestinationPageComponent implements OnInit {
   }
 
   getHeaderSubtitle() {
-    return `${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
+    return `${this.navigationParameters.DeviceDescription} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
 
   private transformDateTime(date: Date): string {

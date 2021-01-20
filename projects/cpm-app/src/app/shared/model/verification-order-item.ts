@@ -9,6 +9,8 @@ export class VerificationOrderItem implements IVerificationOrderItem {
 
   Id: Guid;
   OrderId: string;
+  DeviceId: number;
+  DeviceDescription: string;
   PriorityCode: string;
   PriorityCodeColor: string;
   PriorityCodeDescription: string;

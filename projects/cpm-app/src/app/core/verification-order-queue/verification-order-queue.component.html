@@ -6,36 +6,43 @@
       <div app-col-header-sortable class="first" data-colwrap="true"
         [columnPropertyName]="sequenceOrderPropertyName" headerResourceKey=""
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="320" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="228" data-colwrap="true"
-        [columnPropertyName]="orderIdPropertyName" headerResourceKey="ORDER_ID"
+        [columnPropertyName]="devicePropertyName" headerResourceKey="DEVICE"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
         [columnPropertyName]="completePropertyName" headerResourceKey="COMPLETE"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
       [columnPropertyName]="requiredPropertyName" headerResourceKey="REQUIRED"
       [currentSortPropertyName]="currentSortPropertyName"
+      [customColumnSortOrder]="columnSortDirection"
       (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
         [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
       [columnPropertyName]="datePropertyName" headerResourceKey="DATE"
       [currentSortPropertyName]="currentSortPropertyName"
+      [customColumnSortOrder]="columnSortDirection"
       (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
@@ -52,9 +59,9 @@
             {{verificationOrderItem.PriorityCodeDescription}}
           </div>
         </div>
-        <div class="col width-order-id" [attr.data-title]="'ORDERID' | translate">
+        <div class="col width-device" [attr.data-title]="'DEVICE' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.OrderId}}
+            {{verificationOrderItem.DeviceDescription}}
           </span>
         </div>
         <div class="col width-complete" [attr.data-title]="'COMPLETE' | translate">
