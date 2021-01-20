@@ -26,7 +26,7 @@ import { DeviceOperationOutcome } from '../../api-core/data-contracts/device-ope
 export class HardwareLeasePageComponent implements OnInit, OnDestroy {
 
   @Input() devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
-  @Input() deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
+  @Input() deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerFriendlyName');
   popupDialogComponent: PopupDialogComponent;
 
   pageDescription$;
