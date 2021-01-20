@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable,  of  } from 'rxjs';
+import { Observable,  of, Subject  } from 'rxjs';
 import { finalize, catchError, map, shareReplay, tap } from 'rxjs/operators';
 import { IDestockTypeInfo } from '../../api-xr2/data-contracts/i-destock-type-info';
 import { DestockService } from '../../api-xr2/services/destock.service';
@@ -17,6 +17,8 @@ import { DestockPageComponent } from './destock-page.component';
 import { SvgiconComponent, SvgIconModule, ProgressAnimationComponent, ButtonActionModule, FooterModule, GridModule, LayoutModule, SearchModule } from '@omnicell/webcorecomponents';
 import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
 import { MockDestockTypeInfoComponent } from '../../shared/testing/mock-destock-typeinfo-component.spec';
+import { DestockEventConnectionService } from '../services/destock-event-connection.service';
+import { DestockDataEvent } from '../model/destock-data-event';
 
 describe('DestockPageComponent', () => {
   let component: DestockPageComponent ;
@@ -24,6 +26,8 @@ describe('DestockPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let destockService: Partial<DestockService>;
+  let destockEventConnectionService: Partial<DestockEventConnectionService>;
+
   beforeEach(async(() => {
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
@@ -35,6 +39,12 @@ describe('DestockPageComponent', () => {
     destockService = {
       get: jasmine.createSpy('get').and.returnValue(of(DestockService)),
       print: jasmine.createSpy('print').and.returnValue(of(DestockService))
+    };
+
+    destockEventConnectionService = {
+      DestockIncomingDataSubject: new Subject<DestockDataEvent>(),
+      DestockIncomingDataErrorSubject: new Subject<any>(),
+      ngUnsubscribe: new Subject()
     };
 
     TestBed.configureTestingModule({

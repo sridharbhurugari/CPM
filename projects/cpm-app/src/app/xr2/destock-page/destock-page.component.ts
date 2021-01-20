@@ -22,7 +22,6 @@ export class DestockPageComponent implements OnInit {
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceDestockTypeInfo$: Observable<number> ;
-  //deviceDestockTypeInfo: Subject<DestockTypeInfo[]> = new Subject<DestockTypeInfo[]>();
   deviceDestockTypeInfo: DestockTypeInfo[];
   searchTextFilter: string;
   currentSortPropertyName: string;
@@ -135,7 +134,6 @@ setDestockService()
       console.log(e);
     }
   }
-
 
   onPrint(event: DestockTypeInfo)
   {

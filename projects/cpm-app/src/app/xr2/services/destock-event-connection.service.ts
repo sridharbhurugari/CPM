@@ -35,6 +35,7 @@ export class DestockEventConnectionService {
             DeviceId: event.DeviceId,
             CorrelationId: event.DestockDataMessage.CorrelationId,
             EventDateTime: event.DestockDataMessage.EventDateTime,
+            // Cast is needed because the message is not being serialized properly (vanilla)
             DestockTypeInfoData: event.DestockDataMessage.DestockTypeInfoData.$values as DestockTypeInfo[]
         });
         return;
