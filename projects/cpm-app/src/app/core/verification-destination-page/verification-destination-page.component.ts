@@ -74,7 +74,8 @@ export class VerificationDestinationPageComponent implements OnInit {
       return;
     }
 
-    this.verificationDestinationItems = this.verificationService.getVerificationDestinations(this.navigationParameters.OrderId).pipe(
+    this.verificationDestinationItems = this.verificationService
+    .getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
       map((verificationOrderItems) => {
         return verificationOrderItems.map((verificationItem) => {
           return new VerificationDestinationItem(verificationItem);
