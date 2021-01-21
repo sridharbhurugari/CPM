@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
@@ -27,6 +28,8 @@ describe('VerificationDestinationQueueComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDestinationQueueComponent);
     component = fixture.componentInstance;
+    component.savedPageConfiguration = {} as IVerificationPageConfiguration;
+    component.savedPageConfiguration.colHeaderSortDestination = {} as IColHeaderSortChanged;
     fixture.detectChanges();
   });
 

@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
@@ -74,6 +75,22 @@ describe('VerificationDestinationPageComponent', () => {
       component.onGridRowClickEvent(mockItem);
 
       expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set search text on search filter event', () => {
+      const event = 'filter';
+      component.onSearchTextFilterEvent(event);
+
+      expect(component.searchTextFilter).toBe(event);
+    });
+
+    it('should set sort on sort event', () => {
+      const event = {} as IColHeaderSortChanged;
+      event.SortDirection = 'asc';
+      event.ColumnPropertyName = 'name';
+      component.onSortEvent(event);
+
+      expect(component.colHeaderSort).toBe(event);
     });
   })
 });
