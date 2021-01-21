@@ -112,18 +112,6 @@ describe('DestockHeaderComponent', () => {
       expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
     }));
 
-    it('Should default to All Devices when device is not leased to same client', fakeAsync(() => {
-      ocapConfig.clientId = '';
-      const expectedDeviceID = '0';
-      component.selectedDeviceInformation = selectedDeviceInformation;
-      const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
-      component.ngOnInit();
-      tick();
-      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
-      expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
-      expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
-    }));
-
     it('Should clear search on device change and load new device', () => {
       const searchClearMock = spyOn(component.searchElement, 'clearSearch');
       const mockEvent = {value: '1'};
