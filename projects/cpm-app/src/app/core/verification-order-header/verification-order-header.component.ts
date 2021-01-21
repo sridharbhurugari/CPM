@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';

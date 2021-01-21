@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
@@ -16,7 +16,7 @@ import { VerificationOrderItem } from '../../shared/model/verification-order-ite
   templateUrl: './verification-order-page.component.html',
   styleUrls: ['./verification-order-page.component.scss']
 })
-export class VerificationOrderPageComponent implements OnInit {
+export class VerificationOrderPageComponent implements OnInit, AfterContentChecked {
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
