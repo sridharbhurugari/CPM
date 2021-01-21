@@ -154,11 +154,7 @@ setDestockService()
       }
     );
   }
-  onRequestXr2CurrentNumbers() {
-// Request for Device Id
-// If No Device - request button shouldn't be available.
-// update screen and save results to db
-  }
+
 }
 export namespace DestockPageComponent
 {

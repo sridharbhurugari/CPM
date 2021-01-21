@@ -36,6 +36,6 @@ export class DestockHeaderComponent extends Xr2QueueGroupingHeaderComponent impl
       CurrentLeaseHolder: undefined,
       IsActive: true
     };
-    this.deviceInformationList.push(allDevicesInfo);
+    // this.deviceInformationList.push(allDevicesInfo);
   }
 }
