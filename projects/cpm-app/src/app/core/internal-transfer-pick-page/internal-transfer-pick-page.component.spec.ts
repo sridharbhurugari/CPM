@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
 import { of} from 'rxjs';
 import { IDeviceLocation } from '../../api-core/data-contracts/i-device-location';
@@ -86,6 +86,7 @@ describe('InternalTransferPickPageComponent', () => {
         { provide: ItemLocaitonDetailsService, useValue: { get: () => { return of([ itemLocationDetail ]) } } },
         { provide: OrderItemPendingQuantitiesService, useValue: { get: () => { return of(null) } } },
         { provide: CarouselLocationAccessService, useValue: { clearLightbar: jasmine.createSpy('clearLightbar') } },
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
       ]
     })
     .compileComponents();

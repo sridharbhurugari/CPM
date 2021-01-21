@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
 import { forkJoin, Observable  } from 'rxjs';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
@@ -71,6 +71,7 @@ export class InternalTransferPickPageComponent {
     private orderItemPendingQuantitiesService: OrderItemPendingQuantitiesService,
     private quantityTrackingService: QuantityTrackingService,
     private carouselLocationAccessService: CarouselLocationAccessService,
+    private router: Router,
   ) {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
     const allDevices = parseBool(activatedRoute.snapshot.queryParamMap.get('allDevices'));
@@ -95,11 +96,13 @@ export class InternalTransferPickPageComponent {
   navigateContinue() {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Continue');
+    this.router.navigate(['core/loading']);
   }
 
   pause() {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Pause');
+    this.router.navigate(['core/loading']);
   }
 
   hold(isLast: boolean) {
