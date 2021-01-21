@@ -6,39 +6,50 @@
       <div app-col-header-sortable class="first" data-colwrap="true"
         [columnPropertyName]="sequenceOrderPropertyName" headerResourceKey=""
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="370" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="298" data-colwrap="true"
-        [columnPropertyName]="orderIdPropertyName" headerResourceKey="ORDER_ID"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="178" data-colwrap="true"
+        [columnPropertyName]="devicePropertyName" headerResourceKey="DEVICE"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="165" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
         [columnPropertyName]="completePropertyName" headerResourceKey="COMPLETE"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="165" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
       [columnPropertyName]="requiredPropertyName" headerResourceKey="REQUIRED"
       [currentSortPropertyName]="currentSortPropertyName"
+      [customColumnSortOrder]="columnSortDirection"
       (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
         [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div class="last width-type" data-width="190" data-colwrap="true">{{'DATE' | translate}}</div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+      [columnPropertyName]="datePropertyName" headerResourceKey="DATE"
+      [currentSortPropertyName]="currentSortPropertyName"
+      [customColumnSortOrder]="columnSortDirection"
+      (columnSelected)="columnSelected($event)">
+      </div>
     </ng-container>
-    <ng-container class="ocgridbody">
+    <ng-container class="ocgridbody" *ngIf="this.verificationOrderItems">
       <div class="row"
       (click)="onGridRowClick(verificationOrderItem)"
-      *ngFor="let verificationOrderItem of this.verificationOrderItems | searchPipe:searchTextFilter:searchFields;
+      *ngFor="let verificationOrderItem of this.filteredVerificationOrderItems | searchPipe:searchTextFilter:searchFields;
       trackBy: trackByItemId">
         <div class="first" style="align-items: center;">
           <div class="firstcolumncolorblock" [style.background-color]="verificationOrderItem.PriorityCodeColor"></div>
@@ -46,14 +57,17 @@
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
           <div class=priority-container>
             {{verificationOrderItem.PriorityCodeDescription}}
+            <span class="order">{{verificationOrderItem.OrderId}}</span>
           </div>
         </div>
-        <div class="col width-order-id" [attr.data-title]="'ORDERID' | translate">
-          {{verificationOrderItem.OrderId}}
+        <div class="col width-device" [attr.data-title]="'DEVICE' | translate">
+          <span class="centered-content">
+            {{verificationOrderItem.DeviceDescription}}
+          </span>
         </div>
         <div class="col width-complete" [attr.data-title]="'COMPLETE' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.CompleteVerifications / verificationOrderItem.TotalVerifications}}%
+            {{verificationOrderItem.CompleteVerificationPercentage}}%
           </span>
         </div>
         <div class="col width-required" [attr.data-title]="'REQUIRED' | translate">
@@ -62,7 +76,7 @@
           </span>
         </div>
         <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
-          <span class="centered-content">
+          <span class="centered-content" *ngIf="verificationOrderItem.RequiredExceptions > 0">
             <app-cp-data-label
             [ngStyle]="{'padding-right': '5px'}"
             [dataSize]=20
@@ -82,7 +96,7 @@
         </div>
         <div class="col width-date" [attr.data-title]="'DATE' | translate">
           <span class="centered-content">
-            {{verificationOrderItem.Date}}
+            {{getOrderDate(verificationOrderItem)}}
           </span>
         </div>
       </div>

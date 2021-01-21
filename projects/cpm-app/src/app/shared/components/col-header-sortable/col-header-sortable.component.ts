@@ -34,7 +34,7 @@ export class ColHeaderSortableComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = SortDirection.ascending;
 
   get IsSortAscending(){
-    this.sortDirection = this.customColumnSortOrder && this.customColumnSortOrder === SortDirection.descending ? this.customColumnSortOrder : this.sortDirection;
+    this.sortDirection = this.customColumnSortOrder && this.customColumnSortOrder === SortDirection.ascending ? this.customColumnSortOrder : this.sortDirection;
     return this.sortDirection == SortDirection.ascending;
   }
 
