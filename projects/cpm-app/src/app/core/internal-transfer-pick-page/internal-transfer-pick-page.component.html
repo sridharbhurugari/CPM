@@ -3,7 +3,8 @@
     (pickCompleted)="completePick($event)"
     (holdClicked)="hold($event)"
     (pauseClicked)="pause()"
-    (adjustClicked)="adjustQoh($event)">
+    (adjustClicked)="adjustQoh($event)"
+    (pickNowClicked)="pickNow()">
         <ng-container part="itemPicks">
             <app-internal-transfer-pick-needs-list [itemNeeds]="itemNeedPicks$ | async"
                 (pickTotalChanged)="pickTotalChanged($event)">

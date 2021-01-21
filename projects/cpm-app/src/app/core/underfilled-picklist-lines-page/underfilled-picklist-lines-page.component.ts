@@ -7,7 +7,7 @@ import { map, shareReplay, switchMap, scan } from 'rxjs/operators';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { IUnderfilledPicklist } from '../../api-core/data-contracts/i-underfilled-picklist';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
-import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
+import { UnfilledPdfGridReportService } from '../../shared/services/printing/unfilled-pdf-grid-report-service';
 import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
@@ -29,6 +29,7 @@ import { PickingEventConnectionService } from '../../api-core/services/picking-e
 import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../../api-core/events/i-unfilled-picklistline-added-or-updated-event';
 import { IUnfilledPicklistlineRemovedEvent } from '../../api-core/events/i-unfilled-picklistline-removed-event';
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
+import { ReportConstants } from '../../shared/constants/report-constants';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -64,7 +65,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
-    private pdfGridReportService: PdfGridReportService,
+    private pdfGridReportService: UnfilledPdfGridReportService,
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
     private underfilledPicklistLinesService: UnderfilledPicklistLinesService,
@@ -294,7 +295,7 @@ getButtonEnabled(): boolean  {
 
     this.getDocumentData();
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-    this.pdfGridReportService.printWithBaseData(tableBody$, this.reportTitle$, this.reportBaseData$).subscribe(succeeded => {
+    this.pdfGridReportService.printWithBaseData(tableBody$, of(ReportConstants.UnfilledReport), this.reportBaseData$).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();

@@ -213,7 +213,6 @@
   "XR2_QUICK_PICK_ERROR_BODY": "Défaillance du matériel de sélection rapide Veuillez réessayer.",
   "XR2_DEVICE_INACTIVE": "L'état de l'appareil est inactif",
   "XR2_QUEUE_REROUTE_SELECTED_DIALOG_MESSAGE": "Cela réacheminera les commandes pour les zones sélectionnées.<br /><br />Voulez-vous réacheminer?",
-  "XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE": "Cela réacheminera toutes les commandes pour cette priorité.<br /><br />Voulez-vous réacheminer?",
   "XR2_QUEUE_RELEASE_PRIORITY_DIALOG_MESSAGE": "This will release all orders for the this priority.<br /><br />Do you want to release all?",
   "DEVICE_SELECTION_TEXT": "Sélectionner l'appareil",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "Aucun appareil",

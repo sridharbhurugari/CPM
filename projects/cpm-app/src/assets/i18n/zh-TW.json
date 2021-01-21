@@ -213,7 +213,6 @@
   "XR2_QUICK_PICK_ERROR_BODY": "快速揀選硬體故障。請重試。",
   "XR2_DEVICE_INACTIVE": "裝置狀態為非作用中",
   "XR2_QUEUE_REROUTE_SELECTED_DIALOG_MESSAGE": "這會對所選護理站的訂單重設途徑。<br /><br />是否要重設路徑？",
-  "XR2_QUEUE_REROUTE_PRIORITY_DIALOG_MESSAGE": "這會重新對此優先順序的所有訂單重設途徑。<br /><br />是否要重設路",
   "XR2_QUEUE_RELEASE_PRIORITY_DIALOG_MESSAGE": "This will release all orders for the this priority.<br /><br />Do you want to release all?",
   "DEVICE_SELECTION_TEXT": "選擇裝置",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "沒有裝置",
