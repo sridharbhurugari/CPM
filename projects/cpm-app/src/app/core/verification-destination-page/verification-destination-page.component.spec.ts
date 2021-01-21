@@ -1,10 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
-import { Guid } from 'guid-typescript';
 import { of } from 'rxjs';
 import { VerificationService } from '../../api-core/services/verification.service';
-import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
