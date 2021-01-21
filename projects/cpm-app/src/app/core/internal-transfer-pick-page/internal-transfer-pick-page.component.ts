@@ -28,6 +28,7 @@ import { DeviceTypeId } from '../../shared/constants/device-type-id';
 import { parseBool } from '../../shared/functions/parseBool';
 import { WpfActionPaths } from "../constants/wpf-action-paths";
 import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -64,6 +65,7 @@ export class InternalTransferPickPageComponent {
     picklistLineIdsService: PicklistLineIdsService,
     ocapConfigService: OcapHttpConfigurationService,
     systemConfiguraitonsService: SystemConfigurationService,
+    wpfInteropService: WpfInteropService,
     private picklistLinesService: PicklistLinesService,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     private wpfActionControllerService: WpfActionControllerService,
@@ -86,6 +88,7 @@ export class InternalTransferPickPageComponent {
     this.safetyStockQuickAdvanceConfig$ = systemConfiguraitonsService.getSafetyStockQuickAdvanceConfig();
 
     this.updateCurrentLineDetails();
+    wpfInteropService.wpfViewModelActivated.subscribe(() => this.continueLoadCurrentLineDetails());
   }
 
   pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
