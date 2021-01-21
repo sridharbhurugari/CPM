@@ -46,7 +46,7 @@
       (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
-    <ng-container class="ocgridbody" *ngIf="this.verificationOrderItems">
+    <ng-container class="ocgridbody" *ngIf="this.unfilteredVerificationOrderItems">
       <div class="row"
       (click)="onGridRowClick(verificationOrderItem)"
       *ngFor="let verificationOrderItem of this.filteredVerificationOrderItems | searchPipe:searchTextFilter:searchFields;

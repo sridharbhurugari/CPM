@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Guid } from 'guid-typescript';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
@@ -8,6 +7,7 @@ import { VerificationService } from '../../api-core/services/verification.servic
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
 @Component({
@@ -15,11 +15,13 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
   templateUrl: './verification-destination-page.component.html',
   styleUrls: ['./verification-destination-page.component.scss']
 })
-export class VerificationDestinationPageComponent implements OnInit {
+export class VerificationDestinationPageComponent implements OnInit, AfterContentChecked {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
+  @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
+  @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
   private backRoute = VerificationRouting.OrderPage;
   private continueRoute = VerificationRouting.DetailsPage;
@@ -30,11 +32,16 @@ export class VerificationDestinationPageComponent implements OnInit {
 
   constructor(
     private translateService: TranslateService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.loadVerificationDestinationItems();
+  }
+
+  ngAfterContentChecked() {
+    this.ref.detectChanges();
   }
 
   onBackEvent(): void {
@@ -56,12 +63,16 @@ export class VerificationDestinationPageComponent implements OnInit {
       DeviceId: this.navigationParameters.DeviceId,
       OrderId: this.navigationParameters.OrderId,
       DestinationId: verificationDestinationItem.DestinationId,
+      DeviceDescription: this.navigationParameters.DeviceDescription,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       Date: this.navigationParameters.Date,
       Route: this.continueRoute
-    } as IVerificationNavigationParameters
+    } as IVerificationNavigationParameters;
+
+    const savedPageConfiguration = this.createSavedPageConfiguration();
 
     this.pageNavigationEvent.emit(navigationParams);
+    this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
   }
 
   getHeaderSubtitle() {
@@ -70,7 +81,7 @@ export class VerificationDestinationPageComponent implements OnInit {
   }
 
   private loadVerificationDestinationItems(): void {
-    if(!this.navigationParameters || !this.navigationParameters.OrderId) {
+    if(!this.navigationParameters || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
       return;
     }
 
@@ -82,6 +93,15 @@ export class VerificationDestinationPageComponent implements OnInit {
         });
       }), shareReplay(1)
     );
+  }
+
+  private createSavedPageConfiguration() {
+    return {
+      searchTextFilterOrder: this.savedPageConfiguration.searchTextFilterOrder,
+      colHeaderSortOrder: this.savedPageConfiguration.colHeaderSortOrder,
+      searchTextFilterDestination: this.searchTextFilter,
+      colHeaderSortDestination: this.colHeaderSort
+    } as IVerificationPageConfiguration;
   }
 
   private transformDateTime(date: Date): string {

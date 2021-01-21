@@ -8,6 +8,7 @@ import { DestinationTypes } from '../../shared/constants/destination-types';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
 @Component({
@@ -18,31 +19,46 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
 export class VerificationDestinationQueueComponent implements OnInit {
 
   @Output() gridRowClickEvent: EventEmitter<VerificationDestinationItem> = new EventEmitter();
+  @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   @Input()
-  set verificationDestinationItems(value: VerificationDestinationItem[]) {
-    this._verificationDestinationItems = value;
+  set unfilteredVerificationDestinationItems(value: VerificationDestinationItem[]) {
+    this._unfilteredVerificationDestinationItems = value;
+    this.filteredVerificationDestinationItems = value
+    if(this.savedPageConfiguration) {
+      this.loadSavedConfigurations();
+    }
     this.resizeGrid();
   }
-  get verificationDestinationItems(): VerificationDestinationItem[] {
-    return this._verificationDestinationItems;
+  get unfilteredVerificationDestinationItems(): VerificationDestinationItem[] {
+    return this._unfilteredVerificationDestinationItems;
+  }
+
+  set filteredVerificationDestinationItems(value: VerificationDestinationItem[]) {
+    this._filteredVerificationDestinationItems = value;
+    this.resizeGrid();
+  }
+  get filteredVerificationDestinationItems(): VerificationDestinationItem[] {
+    return this._filteredVerificationDestinationItems;
   }
 
   @Input() searchTextFilter: string;
+  @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  private  _verificationDestinationItems: VerificationDestinationItem[];
+  private  _unfilteredVerificationDestinationItems: VerificationDestinationItem[];
+  private _filteredVerificationDestinationItems: VerificationDestinationItem[];
 
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationLine1');
   readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
-  sortOrder: SortDirection = SortDirection.ascending;
   _searchTextFilter;
   searchFields = [nameof<VerificationDestinationItem>('DestinationLine1'), nameof<VerificationDestinationItem>('DestinationLine2')];
   destinationTypes: typeof DestinationTypes = DestinationTypes;
+  columnSortDirection: string;
 
   translatables = [];
   translations$: Observable<any>;
@@ -59,12 +75,24 @@ export class VerificationDestinationQueueComponent implements OnInit {
 
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
-    this.sortOrder = event.SortDirection;
-    this.verificationDestinationItems = this.sort(this.verificationDestinationItems, event.SortDirection);
+    this.columnSortDirection = event.SortDirection;
+    this.filteredVerificationDestinationItems = this.sort(this.filteredVerificationDestinationItems, event.SortDirection);
+    this.sortEvent.emit(event);
   }
 
   sort(verificationDestinationItems: VerificationDestinationItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): VerificationDestinationItem[] {
     return _.orderBy(verificationDestinationItems, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  private loadSavedConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    if (this.savedPageConfiguration.colHeaderSortDestination) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSortDestination);
+      this.columnSortDirection = this.savedPageConfiguration.colHeaderSortDestination.SortDirection;
+    }
   }
 
   /* istanbul ignore next */

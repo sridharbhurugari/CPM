@@ -46,7 +46,7 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const savedSearchFilter = this.savedPageConfiguration.searchTextFilter;
+    const savedSearchFilter = this.savedPageConfiguration.searchTextFilterOrder;
 
     if (savedSearchFilter) {
         this.searchElement.sendSearchData(savedSearchFilter);

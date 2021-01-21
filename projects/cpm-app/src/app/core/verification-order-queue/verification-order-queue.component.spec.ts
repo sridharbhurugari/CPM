@@ -76,8 +76,8 @@ describe('VerificationOrderQueueComponent', () => {
   describe('Configurations', () => {
     it('should sort on items load with saved configuration', () => {
       const savedConfiguration = {
-        searchTextFilter: 'filter',
-        colHeaderSort: {
+        searchTextFilterOrder: 'filter',
+        colHeaderSortOrder: {
           ColumnPropertyName: 'column',
           SortDirection: 'asc'
         }

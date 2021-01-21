@@ -79,8 +79,8 @@ export class VerificationOrderPageComponent implements OnInit {
 
   private createSavedPageConfiguration() {
     return {
-      searchTextFilter: this.searchTextFilter,
-      colHeaderSort: this.colHeaderSort
+      searchTextFilterOrder: this.searchTextFilter,
+      colHeaderSortOrder: this.colHeaderSort
     } as IVerificationPageConfiguration;
   }
 }

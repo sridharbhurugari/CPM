@@ -33,7 +33,7 @@ export class VerificationOrderQueueComponent implements OnInit {
     }
     this.resizeGrid();
   }
-  get verificationOrderItems(): VerificationOrderItem[] {
+  get unfilteredVerificationOrderItems(): VerificationOrderItem[] {
     return this._unfilteredVerficationOrderItems;
   }
 
@@ -61,12 +61,9 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly datePropertyName = nameof<VerificationOrderItem>('FillDate');
 
   firstTime = true;
-  columnSize = 7;
   currentSortPropertyName: string;
   columnSortDirection: SortDirection;
   searchFields = [nameof<VerificationOrderItem>('PriorityCodeDescription'), nameof<VerificationOrderItem>('OrderId')];
-  customSorts = new Array<string>(this.columnSize);
-
   translatables = [];
   translations$: Observable<any>;
 
@@ -91,6 +88,12 @@ export class VerificationOrderQueueComponent implements OnInit {
     return _.orderBy(verificationOrderItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
+
+  getOrderDate(verificationOrderItem: VerificationOrderItem): string {
+    const orderDate = new Date(verificationOrderItem.FillDate).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+  }
+
   /* istanbul ignore next */
   trackByItemId(index: number, verificationOrderItem: VerificationOrderItem): Guid {
     if (!verificationOrderItem) {
@@ -100,19 +103,14 @@ export class VerificationOrderQueueComponent implements OnInit {
     return verificationOrderItem.Id;
   }
 
-  getOrderDate(verificationOrderItem: VerificationOrderItem): string {
-    const orderDate = new Date(verificationOrderItem.FillDate).toLocaleString(this.translateService.getDefaultLang());
-    return orderDate;
-   }
-
   private loadSavedConfigurations() {
     if (!this.savedPageConfiguration) {
       return;
     }
 
-    if (this.savedPageConfiguration.colHeaderSort) {
-      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
-      this.columnSortDirection = this.savedPageConfiguration.colHeaderSort.SortDirection;
+    if (this.savedPageConfiguration.colHeaderSortOrder) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSortOrder);
+      this.columnSortDirection = this.savedPageConfiguration.colHeaderSortOrder.SortDirection;
     }
   }
 

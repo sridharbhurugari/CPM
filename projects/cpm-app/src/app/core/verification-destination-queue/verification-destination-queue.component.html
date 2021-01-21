@@ -5,6 +5,7 @@
       <div app-col-header-sortable class="col" ocGridColResize data-width="640" data-colwrap="true"
         [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
         [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
       <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'VERIFICATION' | translate}}</div>
@@ -12,13 +13,14 @@
       <div app-col-header-sortable class="col" ocGridColResize data-width="280" data-colwrap="true"
       [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED_VERIFICATION"
       [currentSortPropertyName]="currentSortPropertyName"
+      [customColumnSortOrder]="columnSortDirection"
       (columnSelected)="columnSelected($event)">
       </div>
     </ng-container>
-    <ng-container class="ocgridbody">
+    <ng-container class="ocgridbody" *ngIf="this.unfilteredVerificationDestinationItems">
       <div class="row"
       (click)="onGridRowClick(verificationDestinationItem)"
-      *ngFor="let verificationDestinationItem of this.verificationDestinationItems | searchPipe:searchTextFilter:searchFields;
+      *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems | searchPipe:searchTextFilter:searchFields;
       trackBy: trackByItemId">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
           <span *ngIf="verificationDestinationItem.DestinationLine2">
