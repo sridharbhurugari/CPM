@@ -23,13 +23,9 @@
       *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems | searchPipe:searchTextFilter:searchFields;
       trackBy: trackByItemId">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
-          <span *ngIf="verificationDestinationItem.DestinationLine2">
+          <span>
             <div>{{verificationDestinationItem.DestinationLine1}}</div>
             <div>{{verificationDestinationItem.DestinationLine2}}</div>
-          </span>
-          <span *ngIf="!verificationDestinationItem.DestinationLine2">
-            <div>{{verificationDestinationItem.DestinationLine1}}</div>
-            <div>&nbsp;</div>
           </span>
         </div>
         <div class="col width-verification" [attr.data-title]="'VERIFICATION' | translate">

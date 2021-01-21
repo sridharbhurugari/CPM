@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { Observable } from 'rxjs';
 import { DestinationTypes } from '../../shared/constants/destination-types';
-import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -50,13 +49,13 @@ export class VerificationDestinationQueueComponent implements OnInit {
   private  _unfilteredVerificationDestinationItems: VerificationDestinationItem[];
   private _filteredVerificationDestinationItems: VerificationDestinationItem[];
 
-  readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationLine1');
+  readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
   readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
   _searchTextFilter;
-  searchFields = [nameof<VerificationDestinationItem>('DestinationLine1'), nameof<VerificationDestinationItem>('DestinationLine2')];
+  searchFields = [nameof<VerificationDestinationItem>('DestinationStringValue')]
   destinationTypes: typeof DestinationTypes = DestinationTypes;
   columnSortDirection: string;
 

@@ -6,8 +6,10 @@ import { of } from 'rxjs';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
@@ -36,7 +38,7 @@ describe('VerificationDestinationPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent,
       MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
-      MockSearchPipe],
+      MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent],
       imports: [GridModule],
       providers: [
         { provide: TranslateService, useValue: translateService },
@@ -49,13 +51,8 @@ describe('VerificationDestinationPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDestinationPageComponent);
     component = fixture.componentInstance;
-    component.navigationParameters = {
-      OrderId: 'order',
-      DestinationId: 'destination',
-      PriorityCodeDescription: 'description',
-      Date: null,
-      Route: VerificationRouting.DestinationPage
-    } as IVerificationNavigationParameters;
+    component.navigationParameters = {} as IVerificationNavigationParameters;
+    component.savedPageConfiguration =  {} as IVerificationPageConfiguration;
     fixture.detectChanges();
   });
 

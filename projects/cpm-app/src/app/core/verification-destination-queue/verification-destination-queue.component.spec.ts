@@ -4,6 +4,7 @@ import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
@@ -17,7 +18,7 @@ describe('VerificationDestinationQueueComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDestinationQueueComponent, MockColHeaderSortable,
-        MockAppHeaderContainer, MockTranslatePipe, MockSearchPipe ],
+        MockAppHeaderContainer, MockTranslatePipe, MockSearchPipe, MockCpDataLabelComponent],
       imports: [GridModule]
     })
     .compileComponents();
@@ -55,7 +56,7 @@ describe('VerificationDestinationQueueComponent', () => {
       component.columnSelected(mockSortEvent);
 
       expect(component.currentSortPropertyName).toBe(expectedColumnName);
-      expect(component.sortOrder).toBe(expectedSortOrder);
+      expect(component.columnSortDirection).toBe(expectedSortOrder);
     });
   });
 });
