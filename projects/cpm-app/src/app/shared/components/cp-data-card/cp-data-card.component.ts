@@ -1,0 +1,23 @@
+import { Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-cp-data-card',
+  templateUrl: './cp-data-card.component.html',
+  styleUrls: ['./cp-data-card.component.scss']
+})
+export class CpDataCardComponent implements OnInit {
+
+  @Input() title: string;
+  @Input() data1: string;
+  @Input() dataLabel1: string;
+  @Input() data2: string;
+  @Input() dataLabel2: string;
+  @Input() data3: string;
+  @Input() dataLabel3: string;
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

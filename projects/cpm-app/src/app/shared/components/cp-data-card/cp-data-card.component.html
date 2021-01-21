@@ -1,0 +1,19 @@
+<div class="card">
+  <div class="card-header">
+    {{title}}
+  </div>
+  <div class="card-body">
+  <app-cp-data-label *ngIf="data1"
+    [data]="data1"
+    [label]="dataLabel1">
+  </app-cp-data-label>
+  <app-cp-data-label *ngIf="data2"
+  [data]="data2"
+  [label]="dataLabel2">
+  </app-cp-data-label>
+  <app-cp-data-label *ngIf="data3"
+  [data]="data3"
+  [label]="dataLabel3">
+  </app-cp-data-label>
+  </div>
+</div>
