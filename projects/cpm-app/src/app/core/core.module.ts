@@ -39,6 +39,7 @@ import { VerificationOrderQueueComponent } from './verification-order-queue/veri
 import { VerificationOrderHeaderComponent } from './verification-order-header/verification-order-header.component';
 import { VerificationDestinationQueueComponent } from './verification-destination-queue/verification-destination-queue.component';
 import { VerificationDetailsPageComponent } from './verification-details-page/verification-details-page.component';
+import { VerificationDetailsCardComponent } from './verification-details-card/verification-details-card.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { VerificationDetailsPageComponent } from './verification-details-page/ve
     VerificationOrderHeaderComponent,
     VerificationDestinationQueueComponent,
     VerificationDetailsPageComponent,
+    VerificationDetailsCardComponent,
   ],
   imports: [
     CommonModule,

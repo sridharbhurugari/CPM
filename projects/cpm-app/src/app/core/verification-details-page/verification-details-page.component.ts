@@ -1,10 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Console } from 'console';
 import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
+import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
-import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
-
+import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -18,14 +21,18 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private backRoute = VerificationRouting.DestinationPage;
 
-  verificationDestinationItems: Observable<VerificationDestinationItem[]>;
+  verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
 
 
   constructor(
-    private translateService: TranslateService
-  ) { }
+    private translateService: TranslateService,
+    private verificationService: VerificationService,
+  ) {
+     //this.verificationDestinationDetails = [];
+   }
 
   ngOnInit() {
+    this.loadVerificationDestinationDetails();
   }
 
   onBackEvent(): void {
@@ -41,6 +48,33 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.pageNavigationEvent.emit(navigationParams);
   }
 
+  private loadVerificationDestinationDetails(): void {
+    console.log(this.navigationParameters.DestinationId);
+    if(!this.navigationParameters || !this.navigationParameters.DestinationId) {
+      return;
+    }
+
+    console.log('Getting Data');
+    // this.verificationService.getVerificationDestinationDetails(this.navigationParameters.DestinationId).subscribe(x=> {
+    //   if(!x || x.length == 0){
+    //     return;
+    //   }
+    //   x.map(x=> this.verificationDestinationDetails.push(new VerificationDestinationDetail(x)));
+    //   console.log(this.verificationDestinationDetails);
+    // }, error => {
+    //   console.log(error);
+    // })
+
+    this.verificationDestinationDetails = this.verificationService
+    .getVerificationDestinationDetails(this.navigationParameters.DestinationId).pipe(
+      map((verificationDetails) => {
+        return verificationDetails.map((verificationDetail) => {
+          return new VerificationDestinationDetail(verificationDetail);
+        });
+      }), shareReplay(1)
+    );
+  }
+
   getHeaderSubtitle() {
     return `${this.navigationParameters.DeviceDescription} -
     ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
@@ -50,5 +84,4 @@ export class VerificationDetailsPageComponent implements OnInit {
     const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
    }
-
 }
