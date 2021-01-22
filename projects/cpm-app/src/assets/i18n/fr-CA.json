@@ -261,7 +261,7 @@
   "INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE": "Échec de l'ajout à la file d'attente des sélections",
   "ORDER_IN_USE_MSG": "Cette commande est actuellement affichée aux postes de travail suivants :   <br /> {{workstations}}",
   "ORDER_IN_USE_TITLE": "Commande en cours d’utilisation",
-   "XR2_ALL_DEVICES": "Tous les appareils"
+  "XR2_ALL_DEVICES": "Tous les appareils",
   "SEARCH_TEXT": "Search",
   "ADJUST": "Adjust"
 }
