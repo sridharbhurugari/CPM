@@ -14,4 +14,5 @@ export interface IGuidedPickData {
   isProductScanRequired: boolean;
   isLastLine: boolean;
   picklistLine: IPicklistLine;
+  highPriorityAvailable: boolean;
 }

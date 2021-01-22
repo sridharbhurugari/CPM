@@ -4,6 +4,7 @@ import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.se
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { IItemManagement } from '../data-contracts/i-item-management';
 import { Observable } from 'rxjs';
+import { IXR2InventoryLists } from '../data-contracts/i-xr2-inventory-lists';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,19 @@ export class ItemManagementService {
       headers: serviceHeaders
     });
 
+
     return result;
   }
+
+  public getXR2ReportData(): Observable<IXR2InventoryLists[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/ItemManagement/XR2InventoryReport`);
+    const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
+    const result = this.httpClient.get<IXR2InventoryLists[]>(url, {
+      headers: serviceHeaders
+    });
+
+    return result;
+
+  }
+
 }

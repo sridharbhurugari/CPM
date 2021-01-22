@@ -1,6 +1,6 @@
 import { EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Component, Input, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { dateTimeToday } from '../../shared/functions/dateTimeToday';
 import { BarcodeOverrideDataPicking } from '../../shared/model/barcode-override-data-picking';
@@ -12,6 +12,8 @@ import { QuantityTrackingService } from '../../shared/services/quantity-tracking
 import { ICompletePickData } from '../model/i-completed-pick-data';
 import { IGuidedPickData } from '../model/i-guided-pick-data';
 import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
+import { TranslateService } from '@ngx-translate/core';
+import { InventoryManagementService } from '../../api-core/services/inventory-management.service';
 
 @Component({
   selector: 'app-guided-pick',
@@ -37,6 +39,26 @@ export class GuidedPickComponent implements OnDestroy {
     this.setupScanHandler();
     this.setExpDateInPastValue();
     this.setupQtySubscription();
+    this.isHighPriorityAvailable = false;
+
+    if(this._guidedPickData) {
+      if(this._guidedPickData.highPriorityAvailable) {
+        this.inventoryManagementService.getHighPriorityPickRequestCount().subscribe(count => {
+          if (count === 0) {
+            this.isHighPriorityAvailable = false;
+            return;
+          }
+
+          this.translateService.get("HIGHPRIORITY", {
+            count: count
+          }).subscribe(result => {
+            this.highPriorityButtonText = result;
+            this.isHighPriorityAvailable = true;
+          });
+        });      
+      }
+    }
+
   }
 
   get guidedPickData(): IGuidedPickData {
@@ -55,12 +77,17 @@ export class GuidedPickComponent implements OnDestroy {
   @Output()
   adjustClicked: EventEmitter<IAdjustQoh> = new EventEmitter<IAdjustQoh>();
 
+  @Output()
+  pickNowClicked: EventEmitter<void> = new EventEmitter<void>();
+
   userLocale: string;
   pickTotal: number;
   expDateInPast: boolean;
   awaitingProductScan: boolean;
   safetyStockScanInfo: IBarcodeData;
   secondaryScanInfo: IBarcodeData;
+  isHighPriorityAvailable: boolean;
+  highPriorityButtonText: string;
 
   constructor(
     ocapConfigService: OcapHttpConfigurationService,
@@ -68,6 +95,8 @@ export class GuidedPickComponent implements OnDestroy {
     private barcodeOverrideService: BarcodeOverrideService,
     private barcodeSafetyStockService: BarcodeSafetyStockService,
     private qytTrackingService: QuantityTrackingService,
+    private translateService: TranslateService,
+    private inventoryManagementService: InventoryManagementService,
   ) {
     this.userLocale = ocapConfigService.get().userLocale;
     this._awaitingScanSubscription = this.barcodeSafetyStockService.awaitingProductScanChanged.subscribe(x => this.awaitingProductScan = x);

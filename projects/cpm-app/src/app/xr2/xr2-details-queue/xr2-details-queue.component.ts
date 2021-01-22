@@ -314,11 +314,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   removePicklistQueueItemByOrderGroupKey(xr2OrderGroupKey: IXr2OrderGroupKey): void {
-    console.log('removePicklistQueueItemByOrderGroupKey: looking to remove xr2 item with order id: ' + xr2OrderGroupKey.OrderId +
-    ' OrderGroupDestinationId ' + xr2OrderGroupKey.OrderGroupDestinationId +
-    ' DeviceLocationId ' + xr2OrderGroupKey.DeviceLocationId,
-    ' RobotPickGroupId ' + xr2OrderGroupKey.RobotPickGroupId
-    );
 
     const matchingItemIndex = _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
       const queueRobotPickGroup = x.RobotPickGroupId  != null ? x.RobotPickGroupId.toString() : null;
@@ -333,8 +328,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   addOrUpdatePicklistQueueItem(updatedQueueItem: IPicklistQueueItem) {
-    console.log('addOrUpdatePickListQueueItem');
-    console.log(updatedQueueItem);
     let matchingPicklistQueueItemIndex = _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
       return x.RobotPickGroupId != null && x.RobotPickGroupId === updatedQueueItem.RobotPickGroupId;
     });
@@ -348,10 +341,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       });
     }
 
-    console.log(matchingPicklistQueueItemIndex);
-
     if ((matchingPicklistQueueItemIndex < 0)) {
-      console.log('PicklistItem Not Found. Adding Entry');
       this.unfilteredPicklistQueueItems.push(new PicklistQueueItem(updatedQueueItem));
       this.applyDetailsQueueFilters();
       return;
@@ -372,12 +362,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   removePicklistQueueItem(removedQueueItem: IPicklistQueueItem) {
-    console.log('removePicklistQueueItem: looking to remove xr2 item with order id:' + removedQueueItem.OrderId +
-    'device ID:' + removedQueueItem.DeviceId + 'priority code: ' + removedQueueItem.PriorityCode +
-    'OrderGroupDestinationId: ' + removedQueueItem.OrderGroupDestinationId +
-    'DeviceLocationId: ' + removedQueueItem.DeviceLocationId,
-    'RobotPickGroupId: ' + removedQueueItem.RobotPickGroupId
-    );
 
     const matchingItemIndex = _.findIndex(this.unfilteredPicklistQueueItems, (x) => {
       return x.OrderId === removedQueueItem.OrderId &&
@@ -391,32 +375,17 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   refreshDataOnScreen(updatedItemList: IPicklistQueueItem[]) {
-    console.log('refreshDataOnScreen');
-    console.log('Current List');
-    console.log(this.unfilteredPicklistQueueItems);
-    console.log('New List for screen');
-    console.log(updatedItemList);
     if (!updatedItemList) {
-        console.log('No item in list clearing');
         this.unfilteredPicklistQueueItems = [];
         this.applyDetailsQueueFilters();
-        // Clear event
-        console.log(this.unfilteredPicklistQueueItems);
         this.removeMultiSelectEvent.emit(this.unfilteredPicklistQueueItems);
     } else {
-        // Remove Items not in source list.
         for (let i = this.unfilteredPicklistQueueItems.length - 1; i >= 0; i--) {
           const itemFoundIndex = this.findNonExistingPicklistQueueItemIndex(this.unfilteredPicklistQueueItems[i], updatedItemList);
           if (itemFoundIndex === -1) {
-            console.log('Removing item in current picklist at index ' + i + '. Item:' + this.unfilteredPicklistQueueItems[i]);
             this.removePicklistQueueItemAtIndex(i);
           }
         }
-
-        console.log('Removed Non matching Items.');
-        console.log(this.unfilteredPicklistQueueItems);
-
-        // Add or Update
         updatedItemList.forEach((x) => {
             this.addOrUpdatePicklistQueueItem(x);
         });
@@ -447,7 +416,6 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   }
 
   private findNonExistingPicklistQueueItemIndex(itemToRemove: IPicklistQueueItem, sourceList: IPicklistQueueItem[]) {
-    console.log('Finding non existing items - Item to Remove: ' + itemToRemove.OrderId);
     const matchingItemIndex = _.findIndex(sourceList, (x) => {
       return x.OrderId === itemToRemove.OrderId &&
       x.OrderGroupDestinationId === itemToRemove.OrderGroupDestinationId &&
@@ -456,26 +424,16 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
       x.DeviceId === itemToRemove.DeviceId && x.PriorityCode === itemToRemove.PriorityCode;
     });
 
-    console.log('Matching index in source list: ' + matchingItemIndex);
-
     return matchingItemIndex;
   }
 
   private removePicklistQueueItemAtIndex(matchingItemIndex: number) {
-    console.log('matchingItemIdex');
-    console.log(matchingItemIndex);
-    console.log('picklistqueue length : ');
-    console.log(this.unfilteredPicklistQueueItems.length);
     if (matchingItemIndex > -1 && matchingItemIndex < this.unfilteredPicklistQueueItems.length) {
-      console.log('group exists removing it');
       if (this.isContainedInSelected(this.unfilteredPicklistQueueItems[matchingItemIndex])) {
         this.removeMultiSelectEvent.emit([this.unfilteredPicklistQueueItems[matchingItemIndex]]);
       }
       this.unfilteredPicklistQueueItems.splice(matchingItemIndex, 1);
       this.applyDetailsQueueFilters();
-      console.log(this.unfilteredPicklistQueueItems);
-    } else {
-      console.log('Matching Index not found in queue to remove');
     }
   }
 

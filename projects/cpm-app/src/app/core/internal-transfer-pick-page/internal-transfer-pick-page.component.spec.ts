@@ -23,12 +23,15 @@ import { MockGuidedPickComponent } from '../testing/mock-guided-pick.spec';
 import { MockInternalTransferPickNeedsListComponent } from '../testing/mock-internal-transfer-pick-needs-list.spec';
 
 import { InternalTransferPickPageComponent } from './internal-transfer-pick-page.component';
+import { WpfActionPaths } from "../constants/wpf-action-paths";
+import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 
 describe('InternalTransferPickPageComponent', () => {
   let component: InternalTransferPickPageComponent;
   let fixture: ComponentFixture<InternalTransferPickPageComponent>;
   let picklistLinesService: Partial<PicklistLinesService>;
   let wpfActionController: Partial<WpfActionControllerService>;
+  let coreEventConnectionService: Partial<CoreEventConnectionService>;
 
   let picktotals: IInternalTransferPackSizePick[] = [
     { PackSize: 1, PacksToPick: 800, QuantityToPick: 800, DeviceQuantityNeeded: 800, },
@@ -68,6 +71,10 @@ describe('InternalTransferPickPageComponent', () => {
     let quickAdvanceConfig: Partial<IConfigurationValue> = {
       Value: ConfigValues.No,
     }
+    coreEventConnectionService = {
+      highPriorityInterruptSubject: new Subject(),
+    };
+
     TestBed.configureTestingModule({
       declarations: [ 
         InternalTransferPickPageComponent,
@@ -87,6 +94,7 @@ describe('InternalTransferPickPageComponent', () => {
         { provide: ItemLocaitonDetailsService, useValue: { get: () => { return of([ itemLocationDetail ]) } } },
         { provide: OrderItemPendingQuantitiesService, useValue: { get: () => { return of(null) } } },
         { provide: CarouselLocationAccessService, useValue: { clearLightbar: jasmine.createSpy('clearLightbar') } },
+        { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
       ]
@@ -151,5 +159,19 @@ describe('InternalTransferPickPageComponent', () => {
       });
       expect(wpfActionController.ExecuteActionNameWithData).toHaveBeenCalled();
     });
+  });
+
+  describe('pickNow', () => {
+    it('should call wpf with High Priority', () => {
+      component.pickNow();
+      expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith(WpfActionPaths.HighPriorityPickNow);
+    });
+  });
+
+  describe('High priority event', () => {
+    it('should set bool', () => {
+        coreEventConnectionService.highPriorityInterruptSubject.next();
+        expect(component.isHighPriorityAvailable).toBeTruthy();
+      });
   });
 });

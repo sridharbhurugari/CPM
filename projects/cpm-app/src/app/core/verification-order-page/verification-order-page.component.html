@@ -1,0 +1,13 @@
+<ng-container>
+  <app-verification-order-header
+  [savedPageConfiguration]="savedPageConfiguration"
+  (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
+  ></app-verification-order-header>
+  <app-verification-order-queue
+  [unfilteredVerificationOrderItems]="verificationOrderItems | async"
+  [searchTextFilter]="searchTextFilter"
+  [savedPageConfiguration]="savedPageConfiguration"
+  (gridRowClickEvent)="onGridRowClickEvent($event)"
+  (sortEvent)="onSortEvent($event)">
+  </app-verification-order-queue>
+</ng-container>
