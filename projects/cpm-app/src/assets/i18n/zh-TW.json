@@ -261,7 +261,7 @@
   "INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE": "新增至揀貨佇列失敗",
   "ORDER_IN_USE_MSG": "下列工作站目前正在檢視此訂單：<br />{{workstations}}",
   "ORDER_IN_USE_TITLE": "使用中的訂單",
-   "XR2_ALL_DEVICES": "全部裝置"
+  "XR2_ALL_DEVICES": "全部裝置",
   "SEARCH_TEXT": "Search",
   "ADJUST": "Adjust"
 }
