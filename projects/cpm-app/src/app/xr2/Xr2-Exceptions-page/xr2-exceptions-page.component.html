@@ -52,7 +52,15 @@
         <div class="row" *ngFor="let exceptions of (displayExceptionsList$ | async) | searchPipe:searchTextFilter:searchFields"
         (click)="navigatedetailspage(exceptions)" >
             <div class="first" style="align-items: center;"></div>
-            <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate">{{exceptions.TrayID}}</div>
+            <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate">
+            <div>{{exceptions.TrayID}}</div>
+            <div *ngIf="exceptions.IsReturn">
+              {{'XR2_EXCEPTIONS_TRAY_RETURN_TYPE' | translate}}
+            </div>
+            <div *ngIf="!exceptions.IsReturn">
+              {{'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE' | translate}}
+            </div>
+            </div>
             <div class="col col-traytype" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_DESCRIPTION' | translate">{{exceptions.TrayDescription}}</div>
             <div class="col col-pockets" [attr.data-title]="'XR2_EXCEPTIONS_POCKETS' | translate">{{exceptions.ExceptionPockets}} Pockets</div>
             <div class="col col-device-name" [attr.data-title]="'XR2_EXCEPTIONS_DEVICE_NAME' | translate"> {{exceptions.DeviceName}}

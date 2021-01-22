@@ -11,4 +11,5 @@ export class Xr2ExceptionsItem implements IXr2ExceptionsItem {
   DeviceName: string;
   CompletedDateTime: string;
   DeviceID: string;
+  IsReturn: boolean;
 }
