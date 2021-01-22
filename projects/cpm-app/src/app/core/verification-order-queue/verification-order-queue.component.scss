@@ -12,28 +12,39 @@
 .centered-content {
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.priority-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.order {
+  font-size: 14px;
+  padding-top: 5px;
 }
 
 .width-type {
-  width: 200px;
+  width: 320px;
 }
 
-.width-order-id {
-  width: 298px;
+.width-device {
+  width: 228px;
 }
 
 .width-complete {
-  width: 150px;
+  width: 160px;
 }
 
 .width-required {
-  width: 150px;
+  width: 160px;
 }
 
 .width-exceptions {
-  width: 200px;
+  width: 180px;
 }
 
 .width-date {
-  width: 200px;
+  width: 150px;
 }
