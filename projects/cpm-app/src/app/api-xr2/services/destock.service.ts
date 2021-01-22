@@ -25,12 +25,13 @@ export class DestockService {
     return results;
   }
 
-  public print(deviceId: number, orderBoxBarcode: string, orderBoxBarcodeDisplay: string): Observable<object> {
+  public print(deviceId: number, orderBoxBarcode: string, orderBoxBarcodeDisplay: string, binCount: number): Observable<object> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/destock/print`);
     var data = {
       DeviceId: deviceId,
       OrderBoxBarcode: orderBoxBarcode,
-      OrderBoxBarcodeDisplay : orderBoxBarcodeDisplay
+      OrderBoxBarcodeDisplay : orderBoxBarcodeDisplay,
+      BinCount: binCount
     };
 
     return this.httpClient.post(url, data, {

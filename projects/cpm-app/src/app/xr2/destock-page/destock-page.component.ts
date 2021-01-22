@@ -145,7 +145,7 @@ setDestockService()
     console.log(event.Xr2DestockType_Display);
     // qty of labels to print:
     console.log(event.BinCount);
-    this.destockService.print(this.selectedDeviceInformation.DeviceId, event.Barcode, event.Xr2DestockType_Display).subscribe(
+    this.destockService.print(this.selectedDeviceInformation.DeviceId, event.Barcode, event.Xr2DestockType_Display, event.BinCount).subscribe(
       s => {
         this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
       },
