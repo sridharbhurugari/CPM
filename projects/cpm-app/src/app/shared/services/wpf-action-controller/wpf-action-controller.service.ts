@@ -16,7 +16,6 @@ export class WpfActionControllerService {
     windowService: WindowService,
     private location: Location,
     private router: Router,
-    private eventConnectionService: EventConnectionService
   ) {
     if(windowService.nativeWindow){
       this.wpfActionController = windowService.nativeWindow['actionController'];
@@ -25,7 +24,6 @@ export class WpfActionControllerService {
 
   ExecuteBackAction() {
     if (this.wpfActionController != null) {
-      this.eventConnectionService.stop();
       this.wpfActionController.executeBackAction();
     } else {
       this.location.back();
@@ -35,7 +33,6 @@ export class WpfActionControllerService {
   /* istanbul ignore next */
   ExecuteContinueAction() {
     if (this.wpfActionController != null) {
-      this.eventConnectionService.stop();
       this.wpfActionController.executeContinueAction();
     }
   }
@@ -53,7 +50,6 @@ export class WpfActionControllerService {
 
       var qs = httpParamsObj.toString();
       var fragment = queryParams ? `${newRoute}?${qs}` : newRoute;
-      this.eventConnectionService.stop();
       this.wpfActionController.executeContinueNavigationAction(fragment);
     } else {
       this.router.navigate([newRoute], { queryParams: queryParams, preserveQueryParams: false });
@@ -63,21 +59,18 @@ export class WpfActionControllerService {
   /* istanbul ignore next */
   ExecuteWpfContinueNavigationAction(action: string) {
     if (this.wpfActionController != null) {
-      this.eventConnectionService.stop();
       this.wpfActionController.executeWpfContinueNavigationAction(action);
     }
   }
 
   ExecuteActionName(actionName: string) {
     if (this.wpfActionController != null) {
-      this.eventConnectionService.stop();
       this.wpfActionController.executeActionName(actionName);
     }
   }
 
   ExecuteActionNameWithData(actionName: string, data: any) {
     if (this.wpfActionController != null) {
-      this.eventConnectionService.stop();
       this.wpfActionController.executeActionNameWithData(actionName, data);
     }
   }

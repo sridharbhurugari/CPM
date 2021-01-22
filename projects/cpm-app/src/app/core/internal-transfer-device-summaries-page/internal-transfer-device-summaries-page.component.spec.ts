@@ -7,7 +7,8 @@ import { of, Subject } from 'rxjs';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Component, Input } from '@angular/core';
 import { CoreEventConnectionService } from
-  "../../api-core/services/core-event-connection.service";;
+  "../../api-core/services/core-event-connection.service";import { Router } from '@angular/router';
+;
 
 @Component({
   selector: 'app-internal-transfer-device-list',
@@ -40,7 +41,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
         MockDeviceNeedsList,
       ],
       providers: [
-        { provide: WpfActionControllerService, useValue: { } },
+        { provide: Router, useValue: { } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
       ]

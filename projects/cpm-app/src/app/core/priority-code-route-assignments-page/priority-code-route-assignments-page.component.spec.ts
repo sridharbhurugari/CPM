@@ -3,6 +3,7 @@ import { PriorityCodeRouteAssignmentsPageComponent } from './priority-code-route
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
 import { of, Subject, throwError, ReplaySubject } from 'rxjs';
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
 import { PickRouteSelectComponent } from '../pick-route-select/pick-route-select.component';
@@ -10,8 +11,7 @@ import { GridModule, FooterModule, LayoutModule, ButtonActionModule,
    PopupWindowService, PopupDialogService } from '@omnicell/webcorecomponents';
 import { DeviceSequenceOrderComponent } from '../device-sequence-order/device-sequence-order.component';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { ActivatedRoute } from '@angular/router';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ class MockPriorityCodeRouteAssignmentsComponent {
 describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   let component: PriorityCodeRouteAssignmentsPageComponent;
   let fixture: ComponentFixture<PriorityCodeRouteAssignmentsPageComponent>;
-  let wpfActionControllerService: Partial<WpfActionControllerService>;
+  let locationService: Partial<Location>;
   let popupDialogService: Partial<PopupDialogService>;
   let priorityCodeRouteAssignmentsService: Partial<PriorityCodeRouteAssignmentsService>;
   let popupWindowService: any;
@@ -50,8 +50,8 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   let ocsStatusService: Partial<OcsStatusService>;
 
   beforeEach(async(() => {
-    wpfActionControllerService = { ExecuteBackAction: () => { } };
-    spyOn(wpfActionControllerService, 'ExecuteBackAction');
+    locationService = { back: () => { } };
+    spyOn(locationService, 'back');
     let saveSucceededSpy = jasmine.createSpy('saveSucceeded').and.returnValue(of({}));
     let saveFailedSpy = jasmine.createSpy('saveFailed').and.returnValue(throwError(''));
     let serviceSave = saveSucceeded ? saveSucceededSpy : saveFailedSpy;
@@ -78,7 +78,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PriorityCodeRouteAssignmentsService, useValue: priorityCodeRouteAssignmentsService },
         { provide: PriorityCodePickRoutesService, useValue: { getPriority: () => of() } },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
+        { provide: Location, useValue: locationService },
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
@@ -129,7 +129,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
   describe('navigateBack', () => {
     it('should call wpfActionControllerService.back', () => {
       component.navigateBack();
-      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalled();
+      expect(locationService.back).toHaveBeenCalled();
     });
   });
 

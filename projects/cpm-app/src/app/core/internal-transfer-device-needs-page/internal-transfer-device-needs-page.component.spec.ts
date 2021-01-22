@@ -5,11 +5,11 @@ import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ButtonActionModule, FooterModule, LayoutModule } from '@omnicell/webcorecomponents';
 import { ActivatedRoute } from '@angular/router';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { of, Subject } from 'rxjs';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { Input, Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { PdfGridReportService } from '../../shared/services/printing/pdf-grid-report-service';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
@@ -29,7 +29,7 @@ class MockInternalTransferItemsListComponent {
 describe('InternalTransferDeviceNeedsPageComponent', () => {
   let component: InternalTransferDeviceNeedsPageComponent;
   let fixture: ComponentFixture<InternalTransferDeviceNeedsPageComponent>;
-  let wpfActionControllerService: Partial<WpfActionControllerService>;
+  let locationService: Partial<Location>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let printWithBaseData: jasmine.Spy;
   let getDeviceItemNeeds: jasmine.Spy;
@@ -93,8 +93,8 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
   ];
 
   beforeEach(async(() => {
-    wpfActionControllerService = { ExecuteBackAction: () => { } };
-    spyOn(wpfActionControllerService, 'ExecuteBackAction');
+    locationService = { back: () => { } };
+    spyOn(locationService, 'back');
     printWithBaseData = jasmine.createSpy('printWithBaseData');
     let pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData: printWithBaseData
@@ -129,7 +129,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
-        { provide: WpfActionControllerService, useValue: wpfActionControllerService },
+        { provide: Location, useValue: locationService },
         { provide: DevicesService, useValue: { get: () => of([]) } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
@@ -167,7 +167,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
   describe('goBack', () => {
     it('should call wpfActionControllerService.back', () => {
       component.goBack();
-      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalled();
+      expect(locationService.back).toHaveBeenCalled();
     });
   });
 

@@ -1,11 +1,11 @@
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
 import { PriorityCodeRouteAssignmentsService } from '../../api-core/services/priority-code-route-assignments.service';
-import { map, shareReplay, filter, single, pluck, takeUntil } from 'rxjs/operators';
+import { map, shareReplay, single, takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of, forkJoin, Subject } from 'rxjs';
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, forkJoin, Subject } from 'rxjs';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
@@ -59,7 +59,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
     private route: ActivatedRoute,
     private priorityCodeRouteAssignmentsService: PriorityCodeRouteAssignmentsService,
     private priorityCodePickRoutesService: PriorityCodePickRoutesService,
-    private wpfActionControllerService: WpfActionControllerService,
+    private location: Location,
     private translateService: TranslateService,
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
@@ -95,7 +95,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
   }
 
   navigateBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
+    this.location.back();
   }
 
   getPickrouteDevices(): Observable<IPickRouteDevice[]> {
@@ -155,12 +155,12 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
       if (selectedConfirm) {
         this.saveInProgress = true;
         this.priorityCodeRouteAssignmentsService.save(this.pickRoute.PickRouteGuid, this.priorityCode)
-          .subscribe(result => this.navigateBack(), error => this.onSaveFailed(error));
+          .subscribe(() => this.navigateBack(), error => this.onSaveFailed());
       }
     });
   }
 
-  onSaveFailed(error: HttpErrorResponse): any {
+  onSaveFailed(): any {
     this.saveInProgress = false;
     forkJoin(this.genericErrorTitle$, this.genericErrorMessage$).subscribe(r => {
       this.displayError('Generic-Error', r[0], r[1]);

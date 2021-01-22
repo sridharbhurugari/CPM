@@ -18,6 +18,7 @@ import { Router, RouterModule } from '@angular/router';
 import { HardwareLeaseService } from '../../api-core/services/hardware-lease-service';
 import { LeaseVerificationResult } from '../../api-core/data-contracts/lease-verification-result';
 import { Guid } from 'guid-typescript';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 describe('QuickPickDrawerViewComponent', () => {
   let component: QuickPickDrawerViewComponent;
@@ -66,7 +67,8 @@ describe('QuickPickDrawerViewComponent', () => {
         { provide: QuickPickEventConnectionService, useValue: quickPickEventConnectionService },
         { provide: Location, useValue: { go: () => { } } },
         { provide: Router, useValue: router },
-        { provide: HardwareLeaseService, useValue: hardwareLeaseService }
+        { provide: HardwareLeaseService, useValue: hardwareLeaseService },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
       ]
     }).overrideComponent(DashboardCardComponent, {
       set: {
