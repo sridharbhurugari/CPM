@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
+import { of } from 'rxjs';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
@@ -17,13 +19,22 @@ import { VerificationDestinationPageComponent } from './verification-destination
 describe('VerificationDestinationPageComponent', () => {
   let component: VerificationDestinationPageComponent;
   let fixture: ComponentFixture<VerificationDestinationPageComponent>;
+  let translateService: Partial<TranslateService>;
+
+  translateService = {
+    get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+    getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent,
       MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
       MockSearchPipe],
-      imports: [GridModule]
+      imports: [GridModule],
+      providers: [
+        {provide: TranslateService, useValue: translateService }
+      ]
     })
     .compileComponents();
   }));
@@ -32,10 +43,10 @@ describe('VerificationDestinationPageComponent', () => {
     fixture = TestBed.createComponent(VerificationDestinationPageComponent);
     component = fixture.componentInstance;
     component.navigationParameters = {
-      OrderId: Guid.create(),
+      OrderId: 'order',
       DestinationId: Guid.create(),
       PriorityCodeDescription: 'description',
-      Date: 'date',
+      Date: null,
       Route: VerificationRouting.DestinationPage
     } as IVerificationNavigationParameters;
     fixture.detectChanges();

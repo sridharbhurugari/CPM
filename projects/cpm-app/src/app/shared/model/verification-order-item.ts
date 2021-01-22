@@ -8,15 +8,16 @@ export class VerificationOrderItem implements IVerificationOrderItem {
   }
 
   Id: Guid;
-  OrderId: Guid;
+  OrderId: string;
+  DeviceId: number;
+  DeviceDescription: string;
   PriorityCode: string;
   PriorityCodeColor: string;
   PriorityCodeDescription: string;
   SequenceOrder: number;
-  CompleteVerifications: number;
-  TotalVerifications: number;
+  CompleteVerificationPercentage: number;
   RequiredVerificationPercentage: number;
   CompleteExceptions: number;
   RequiredExceptions: number;
-  Date: string;
+  FillDate: Date;
 }
