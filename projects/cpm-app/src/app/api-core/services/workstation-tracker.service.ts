@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { IWorkstationNameData } from '../data-contracts/i-workstation-name-data';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,13 @@ export class WorkstationTrackerService {
       var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/GetWorkstationShortNames');
       var headers = this.ocapHttpHeadersService.getHeaders();
       return this.httpClient.post<string[]>(url, workstationTrackerData, {
+        headers: this.ocapHttpHeadersService.getHeaders()
+      });
+    }
+
+    public GetWorkstationNames(workstationTrackerData: WorkstationTrackerData): Observable<IWorkstationNameData[]> {
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/GetWorkstationNames');
+      return this.httpClient.post<IWorkstationNameData[]>(url, workstationTrackerData, {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
