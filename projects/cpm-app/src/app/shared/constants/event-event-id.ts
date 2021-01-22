@@ -5,37 +5,18 @@ export class EventEventId {
 
 // CPM Common Events: ..//CPM-CentralPharmacy\Omnicell.CentralPharmacy.Common\Events\
     public static readonly HighPriorityPickRequestEvent: string = 'HighPriorityPickRequestEvent';
-    // LicenseSavedEvent
     public static readonly OcsUnavailableEvent: string = 'OcsUnavailableEvent';
     public static readonly OcsAvailableEvent: string = 'OcsAvailableEvent';
-    // PicklistReceivedOrUpdatedEvent
-    // PrintFoilLabelStatusEvent
-    // PrintPrepackLabelStatusEvent
     public static readonly RefreshDeviceNeeds: string = 'RefreshDeviceNeeds';
 
  // Common Hardware Events: ..\OCAP-Framework\Omnicell.Hardware.Common\Events\
-    // DeviceConfigurationUpdatedEvent
-    // DeviceConnectionLossEvent
-    // DeviceEvent
-    // DeviceLeaseIsReleasedEvent
     public static readonly DeviceOperationResultEvent: string = 'DeviceOperationResultEvent';
-    // DeviceShutdownEvent
-    // HardwareLeaseEventBase
     public static readonly HardwareLeaseGrantedEvent: string = 'HardwareLeaseGrantedEvent';
     public static readonly HardwareLeaseDeniedEvent: string = 'HardwareLeaseDeniedEvent';
-    // PrintBinLabelStatusEvent
-    // RequestToTakeOverHardwareLeaseEvent
 
 // Carousel events: ..\CPM-CentralPharmacy\Omnicell.CentralPharmacy.Carousel.Common\Events\
-    //CarouselClientStarted
-    //CarouselConnectionLossEvent
     public static readonly CarouselFaultedEvent: string = 'CarouselFaultedEvent';
-    //CarouselHardwareControlDisabledEvent
     public static readonly CarouselIsReadyEvent: string = 'CarouselIsReadyEvent';
-    // CarouselLocalModeEvent
-    // CarouselOilingEvent
-    // LightbarConnectionLossEvent
-    // LightbarIsReadyEvent
 
 //SignalR Events: ..\CPM-CentralPharmacy\Omnicell.CentralPharmacy.Common\Events\SignalREvents\AddOrUpdateUnderfilledPicklistEvent.cs
     public static readonly AddOrUpdateUnderfilledPicklistEvent: string = 'AddOrUpdateUnderfilledPicklistEvent';
@@ -49,10 +30,7 @@ export class EventEventId {
 
 // XR2 Common Events: ..\CPM-CentralPharmacy\Omnicell.CentralPharmacy.XR2.Common\Events\EventTypes.cs
     public static readonly AddOrUpdatePicklistQueueItemMessage: string = 'AddOrUpdatePicklistQueueItemMessage';
-    // public static readonly UpdateOrRemovePicklistQueueItemMessageByRobotPickGroup: string = 'UpdateOrRemovePicklistQueueItemMessageByRobotPickGroup';
-    // public static readonly AddOrUpdatePicklistQueueItemMessageByPicklistLineId: string = 'AddOrUpdatePicklistQueueItemMessageByPicklistLineId';
     public static readonly RemovePicklistQueueItemMessage: string = 'RemovePicklistQueueItemMessage';
-    // public static readonly ReloadPicklistQueueMessage: string = 'ReloadPicklistQueueMessage';
     public static readonly QuickPickDrawerUpdateEvent: string = 'QuickPickDrawerUpdateEvent';
     public static readonly QuickPickQueueUpdateEvent: string = 'QuickPickQueueUpdateEvent';
     public static readonly QuickPickErrorUpdateEvent: string = 'QuickPickErrorUpdateEvent';
@@ -62,6 +40,4 @@ export class EventEventId {
     public static readonly PicklistQueueItemListUpdateMessage: string = 'PicklistQueueItemListUpdateMessage';
     public static readonly DestockDataEvent: string = 'DestockDataEvent';
     public static readonly DestockDataErrorEvent: string = 'DestockDataErrorEvent';
-    // public static readonly DestockInfoReceived: string = 'DestockInfoReceived';
-    // public static readonly DestockInfoRequestFailed: string = 'DestockInfoRequestFailed';
 }
