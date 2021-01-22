@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { LoggerService, LogVerbosity } from 'oal-core';
 import { Subject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
-import { CpmLogCategories } from '../constants/cpm-log-categories';
+import { LoggingCategory } from '../constants/logging-category';
 import { EventConnectionService } from './event-connection.service';
 import { LocalStorageService } from './local-storage.service';
 import { WindowService } from './window-service';
@@ -23,6 +23,7 @@ export class WpfInteropService {
     private loggerService: LoggerService
   ) { }
 
+  /* istanbul ignore next */
   attachWindowMethods() {
     if (!this.windowService.nativeWindow) {
       return;
@@ -47,7 +48,7 @@ export class WpfInteropService {
         disconnectedOrTimedOut.subscribe(x => {
           navigateAway();
         }, err => {
-          this.loggerService.logError(LogVerbosity.Normal, CpmLogCategories.CpmApp, `signalr disconnect timed out`);
+          this.loggerService.logError(LogVerbosity.Normal, LoggingCategory.CpmApp, `signalr disconnect timed out`);
           navigateAway();
         })
         this.eventConnectionService.stop();
