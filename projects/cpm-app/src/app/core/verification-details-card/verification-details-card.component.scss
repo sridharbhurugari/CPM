@@ -1,60 +1,249 @@
-.leftPanel {
-  //   overflow-y: auto;
-  border-top: solid slategrey 2px;
-  border-right: none;
-  height: 100%;
-  width: 60%;
-  box-sizing: border-box;
-  float:left;
-  background-color: lightgray;
-  display: flex;
-}
-.rightPanel {
-  border-top:solid slategrey 2px;
-  height: 100%;
-  width: 40%;
-  box-sizing: border-box;
-  background-color: white;
-  float:left;
-  display: flex;
-}
 
-.cpmactiontitle{
-    line-height: 60px;
-    vertical-align: middle;
-    font-size: 28px;
-    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-    color: white;
-    flex: 1px;
-    padding-left: 20px;
-}
-.ocactionheader{
-  background-color: #5e6a71;
-  width: 100%;
-}
 
-.table-medication{
+:host {
+    height: 100%;
     width: 100%;
+  }
 
-}
-
-.thead-blue{
+  .leftPanel {
+    //   overflow-y: auto;
+    border-top: solid slategrey 2px;
+    border-right: none;
+    height: 100%;
+    width: 65%;
+    box-sizing: border-box;
+    float:left;
+    background-color: lightgray;
+    display: flex;
+  }
+  .rightPanel {
+    border-top:solid slategrey 2px;
+    height: 100%;
+    width: 35%;
+    box-sizing: border-box;
+    background-color: white;
+    float:left;
+    display: flex;
+  }
+  
+  .cpmactiontitle{
+      line-height: 60px;
+      vertical-align: middle;
+      font-size: 28px;
+      font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+      color: white;
+      flex: 1px;
+      padding-left: 20px;
+  }
+  .ocactionheader{
+    background-color: #5e6a71;
     width: 100%;
-    background-color: rgb(151, 192, 230);
-    color: rgb(49, 49, 49);
-    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 20px;
-}
-
-.th{
-    padding-left: 5px;
-    padding-right: 5px;
-    text-align:left;
-}
-
-.cbody{
+  }
+  .cbody{
+      width: 100%;
+      height: 100%;
+  }
+  .card{
     width: 100%;
     height: 100%;
-    position: absolute;
-    background-color: blue;
+    margin-top: 150px;
+  }
+
+  hr.solid{
+    border: 3px solid #bbb;
+  }
+
+  .line{
+      width: 100%;
+      height: 100%;
+  }
+
+  .detailContainer{
+      padding-left: 10px;
+      padding-right: 10px;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+  }
+  .row.active{
+      background-color:white;
+  }
+
+  .detailHeader{
+    margin-top: 10px;
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    font-size: 12px;
+    font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 400;
+    color: #333;
+    margin-left: 20px;
+  }
+
+  .detailBody{
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    font-size: 22px;
+    font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 400;
+    color: #000000;
+    margin-left: 50px;
+    margin-top: 10px;
+  }
+
+  
+  .detailBodySmall{
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    font-size: 12px;
+    font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 400;
+    color: #000000;
+    margin-left: 50px;
+    margin-top: 10px;
+  }
+
+  .detailBodyLarge{
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    font-size: 48px;
+    font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 400;
+    color: #000000;
+    margin-left: 50px;
+    margin-top: 10px;
+  }
+
+  
+  .scroll-container {
+    display: flex;
+    width: 100%;
+    height: 94%;
+   
+  
+    .scroll-container-content {
+      width: 100%;
+  
+      .header {
+        display: flex;
+        width: 100%;
+        height: 6%;
+  
+        .header-content {
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          border-bottom: solid;
+          border-width: 2px;
+          border-color: grey;
+          background-color: #97C0E6;
+  
+          .table-labels {
+            display: flex;
+            flex-grow: 1;
+            width: 100%;
+            font-size: 22px;
+            font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+            font-weight: 400;
+            color: #333;
+            margin-left: 50px;
+  
+  
+            .label-title {
+              display: flex;
+              width: 80%;
+              height: 100%;
+              align-items: center;
+              justify-content: left;
+              padding-left: 30px;
+            }
+  
+            .data-title {
+              display: flex;
+              width: 20%;
+              height: 100%;
+              align-items: center;
+              justify-content: center;
+  
+            }
+  
+            .data-spacer {
+              // static for scroll bar below
+              width: 10px; // Webkit scroll is 58 with 8px left and right padding (58+16)
+              height: 100%;
+            }
+          }
+  
+          // static for scroll bar below
+          .index {
+            width: 57px;
+            height: 100%;
+          }
+        }
+      }
+  
+      .body {
+        display: flex;
+        width: 100%;
+        height: 65%;
+        align-items: center;
+        overflow-y: scroll;
+        direction: rtl;
+        --lh: 1.4rem;
+        line-height: var(--lh);
+  
+        .body-content {
+          height: 100%;
+          width: 100%;
+  
+          .row {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 15%;
+            font-size: large;
+            direction: ltr;
+            :hover{
+                cursor: pointer;
+            }
+  
+            .label {
+              display: flex;
+              width: 80%;
+              height: 100%;
+              align-items: center;
+              justify-content: left;
+              padding-left: 10px;
+              overflow: hidden;
+  
+              .text-label{
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+  
+            .data {
+              display: flex;
+              width: 20%;
+              height: 100%;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+        }
+      }
+  
+      .footer {
+        width: 100%;
+        height: 1%;
+      }
+    }
 }
+  

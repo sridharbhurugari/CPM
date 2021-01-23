@@ -7,25 +7,98 @@
         </div>
         <div class="card-body cbody">
             <div class="leftPanel">
-                
-                <table class="table table-medication" >
-                    <thead class="thead-blue">
-                        <th>Medication</th>
-                        <th>Verified</th>
-                        <th>Required</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let row of this.verificationDestinationDetails; let i = index" (click)='MedicationClicked(row, i)' [class.active]="i == HighlightRow">
-                            <td><div class="itemMed" >{{row.ItemFormattedGenericName}}</div>
-                                <div class="itemMed" >{{row.ItemTradeName}}</div></td>
-                            <td><div class="itemVerified" >{{row.VerifiedStatus}}</div></td>
-                            <td><div class="item" ></div></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="scroll-container">
+                    <div class="scroll-container-content">
+                      <div class="header">
+                        <div class="header-content">
+                          <div class="table-labels">
+                            <div class="label-title">{{ "MEDICATION" | translate }}</div>
+                            <div class="data-title">
+                              {{ "Verified" | translate }} 
+                            </div>
+                            <div class="data-title">
+                              {{ "Required" | translate }}
+                            </div>
+                            <div class="data-spacer"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="body">
+                        <div class="body-content">
+                          <div 
+                            class="row"
+                            *ngFor="let row of this.verificationDestinationDetails; let i = index" (click)='MedicationClicked(row, i)' [class.active]="i == HighlightRow">
+                            <div class="label">
+                              <div class=text-label>
+                                {{ row.ItemFormattedGenericName }}
+                              </div>
+                            </div>
+                            <div class="data">
+                              <app-cp-clickable-icon *ngIf="row.VerifiedStatus == 'U'"
+                              [width]="30"
+                              [height]="30"
+                              [theme]="'primary'"
+                              [label]="'Verified' | translate"
+                              [icon]="'checkmark'"
+                              (clickEvent)="''">
+                              </app-cp-clickable-icon>
+                            </div>
+                            <div class="data">
+                                <app-cp-clickable-icon *ngIf="row.VerifiedStatus == 'U'"
+                                [width]="30"
+                                [height]="30"
+                                [label]="'Exception' | translate"
+                                [icon]="'alert-no-tail'"
+                                (clickEvent)="''">
+                                </app-cp-clickable-icon>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="footer"></div>
+                    </div>
+                  </div>
             </div>
             <div class="rightPanel">
-               
+                <div class="detailContainer">
+                    <div  *ngIf="this.selectedVerificationDestinationDetail">
+                        <div class="detailHeader">
+                               Item ID
+                        </div>
+                        <div class="detailBody">
+                                {{this.selectedVerificationDestinationDetail.ItemId}}
+                        </div>
+                        <hr class="Solid">
+                        <div class="detailHeader">
+                                Pick Location
+                        </div>
+                        <div class="detailBody">
+                               XR21 - Auto Packager
+                        </div>
+                        <hr class="Solid">
+                        <div class="detailHeader">
+                                Requested Qty - Picked Qty
+                        </div>
+                        <div class="detailBodyLarge">
+                                {{this.selectedVerificationDestinationDetail.RequestedQuantity}} - {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                        </div>
+                        <hr class="Solid">
+                        <div class="detailHeader">
+                              Picked By
+                        </div>
+                        <div class="detailBodySmall">
+                            {{this.selectedVerificationDestinationDetail.FillUserName}}
+                        </div>
+                        <hr class="Solid">
+                         <div class="detailHeader">
+                                Filled Time
+                        </div>
+                        <div class="detailBodySmall">
+                                {{this.selectedVerificationDestinationDetail.FillDate}}
+                        </div>
+                        <hr class="Solid">
+                    </div>
+               </div>
             </div>
         </div>
     </div>
