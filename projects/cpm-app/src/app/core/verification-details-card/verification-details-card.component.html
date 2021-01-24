@@ -30,7 +30,7 @@
                             *ngFor="let row of this.verificationDestinationDetails; let i = index" (click)='MedicationClicked(row, i)' [class.active]="i == HighlightRow">
                             <div class="label">
                               <div class=text-label>
-                                {{ row.ItemFormattedGenericName }}
+                                {{ row.ItemFormattedGenericName }} <br> {{ row.ItemTradeName }}
                               </div>
                             </div>
                             <div class="data">
@@ -40,16 +40,17 @@
                               [theme]="'primary'"
                               [label]="'Verified' | translate"
                               [icon]="'checkmark'"
-                              (clickEvent)="''">
+                              (clickEvent)="MedicationClicked(row, i)">
                               </app-cp-clickable-icon>
                             </div>
                             <div class="data">
                                 <app-cp-clickable-icon *ngIf="row.VerifiedStatus == 'U'"
                                 [width]="30"
                                 [height]="30"
-                                [label]="'Exception' | translate"
-                                [icon]="'alert-no-tail'"
-                                (clickEvent)="''">
+                                [theme]="'danger'"
+                                [label]="'Required' | translate"
+                                [icon]="'checkmark'"
+                                (clickEvent)="MedicationClicked(row, i)">
                                 </app-cp-clickable-icon>
                               </div>
                           </div>
@@ -70,17 +71,40 @@
                         </div>
                         <hr class="Solid">
                         <div class="detailHeader">
-                                Pick Location
+                                <span style="width: 40%;">Pick Location</span> 
+                                <span style="width: 60%; color: red; padding-right: 20px; text-align: right;" *ngIf="this.selectedVerificationDestinationDetail.ForcedOutputDeviceChecking">Forced Output Device Checking</span>
                         </div>
                         <div class="detailBody">
-                               XR21 - Auto Packager
+                            <span style="margin-left: -50px; padding-right: 20px;" *ngIf="this.selectedVerificationDestinationDetail.Exception">
+                                <app-cp-clickable-icon 
+                                [width]="20"
+                                [height]="20"
+                                [label]="'Exception' | translate"
+                                [icon]="'alert-no-tail'"
+                                (clickEvent)="''">
+                                </app-cp-clickable-icon>
+                            </span>
+                            <span>XR21 - Auto Packager</span>
+                               
                         </div>
                         <hr class="Solid">
-                        <div class="detailHeader">
-                                Requested Qty - Picked Qty
-                        </div>
-                        <div class="detailBodyLarge">
-                                {{this.selectedVerificationDestinationDetail.RequestedQuantity}} - {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                        <div class=detailLeftRightContainer>
+                            <div class="vdetailLeft">
+                                <div class="detailHeader">
+                                    Requested Quantity
+                                </div>
+                                <div class="detailBodyLarge">
+                                    {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
+                                </div>
+                            </div>
+                            <div class= vdetailRight>
+                                <div class="detailHeader">
+                                    Picked Quantity
+                                </div>
+                                <div class="detailBodyLarge">
+                                    {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                                </div>
+                            </div>
                         </div>
                         <hr class="Solid">
                         <div class="detailHeader">

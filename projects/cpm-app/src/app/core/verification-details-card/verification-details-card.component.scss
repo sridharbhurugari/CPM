@@ -118,6 +118,26 @@
     margin-top: 10px;
   }
 
+  .vdetailLeft{
+    width: 20%;
+    height: 100%;
+    display: grid;
+    text-align: center;
+  }
+  .vdetailRight{
+    width: 20%;
+    height: 100%;
+    display: grid;
+    text-align: center;
+  }
+
+  .detailsLeftRightContainer{
+    display: flex;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
   
   .scroll-container {
     display: flex;

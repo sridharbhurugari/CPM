@@ -7,8 +7,12 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
     Object.assign(this, verificationDestinationDetail);
     if(verificationDestinationDetail) {
       this.DestinationStringValue = this.getDestinationStringValue();
+      this.Exception = true;
+      this.ForcedOutputDeviceChecking = true;
     }
   }
+  Exception: boolean;
+  ForcedOutputDeviceChecking: boolean;
 
   Id: Guid;
   OrderId: string;

@@ -21,4 +21,6 @@ export interface IVerificationDestinationDetail {
   IsIssueScanRequired: boolean
   VerifiedStatus: string;
   VerifiedDate: string;
+  Exception: boolean;
+  ForcedOutputDeviceChecking: boolean
 }
