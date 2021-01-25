@@ -26,6 +26,10 @@ import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2
 import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
+import { DestockPageComponent } from './destock-page/destock-page.component';
+import { DestockTypeInfoComponent } from './destock-typeinfo/destock-typeinfo.component';
+import { DestockHeaderComponent } from './destock-header/destock-header.component';
+import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 
 @NgModule({
   declarations: [
@@ -47,6 +51,9 @@ import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component
     Xr2QueueDetailsHeaderComponent,
     Xr2QueueButtonPanelComponent,
     Xr2QueuePageComponent,
+    DestockPageComponent,
+    DestockTypeInfoComponent,
+    DestockHeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -67,6 +74,7 @@ import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component
     SvgIconModule,
     DaterangeModule,
     Xr2RoutingModule,
+    ProgressAnimationModule
   ],
 })
 export class Xr2Module { }

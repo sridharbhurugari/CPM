@@ -28,6 +28,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   readonly trayTypePropertyName = nameof<Xr2ExceptionDetailsItem>("TrayDescription");
   readonly deviceNamePropertyName = nameof<Xr2ExceptionDetailsItem>("DeviceName");
   readonly completedDatePropertyName = nameof<Xr2ExceptionDetailsItem>("CompletedDateTime");
+  readonly IsReturnPropertyName = nameof<Xr2ExceptionDetailsItem>("IsReturn");
   readonly reasonPropertyName = nameof<Xr2ExceptionDetailsItem>("Reason");
   readonly columnPropertyName = nameof<Xr2ExceptionDetailsItem>("PocketColumn");
   readonly rowProperyName = nameof<Xr2ExceptionDetailsItem>("PocketRow");
@@ -42,6 +43,8 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   trayType: string;
   deviceName: string;
   completedDate: string;
+  IsReturn: string;
+  exceptionTrayType: boolean;
   firstTime: boolean = true;
   currentSortPropertyName: string = this.reasonPropertyName;
   sortOrder: SortDirection = SortDirection.ascending;
@@ -67,6 +70,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
       TrayID: this.activatedRoute.snapshot.queryParamMap.get('TrayID'),
       DeviceID: this.activatedRoute.snapshot.queryParamMap.get('DeviceID'),
       CompletedDateTime: this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime'),
+      IsReturn: false,
       DeviceName: "",
       ExceptionPockets: "",
       TrayDescription: ""
@@ -76,6 +80,8 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
     this.trayType = this.activatedRoute.snapshot.queryParamMap.get('TrayDescription');
     this.deviceName = this.activatedRoute.snapshot.queryParamMap.get('DeviceName');
     this.completedDate = this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime');
+    this.IsReturn = this.activatedRoute.snapshot.queryParamMap.get('TrayType');
+    this.exceptionTrayType = this.IsReturn === "true" ? true: false;
     this.displayExceptionDetailList$ = this.exceptionDetailsListService.get(this.selectedItem).pipe(map(guidedDeviceListItems => {
       return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionDetailsItem(p)), SortDirection.ascending);
     }), shareReplay(1));

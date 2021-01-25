@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { switchMap } from 'rxjs/operators';
@@ -26,6 +26,9 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
     return this._priorityCodePickRoutes;
   }
 
+  @Output()
+  priorityCodePickRouteSelected: EventEmitter<number> = new EventEmitter<number>();
+
   @ViewChild('searchBox', {
     static: true
   })
@@ -37,7 +40,6 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
 
   constructor(
     private windowService: WindowService,
-    private wpfActionControllerService: WpfActionControllerService
   ) { }
 
   ngAfterViewInit(): void {
@@ -54,8 +56,8 @@ export class PriorityCodePickRoutesComponent implements AfterViewInit {
         }
       });
   }
-  navigate(priorityCodePickRouteId: number) {
-    this.wpfActionControllerService.
-    ExecuteContinueNavigationAction(`core/priorityCode/RouteAssignments`, {priorityCodePickRouteId: priorityCodePickRouteId});
+
+  selected(priorityCodePickRouteId: number) {
+    this.priorityCodePickRouteSelected.emit(priorityCodePickRouteId);
   }
 }

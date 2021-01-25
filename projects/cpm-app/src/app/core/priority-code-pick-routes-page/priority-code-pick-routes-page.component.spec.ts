@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PriorityCodePickRoutesPageComponent } from './priority-code-pick-routes-page.component';
-import { PriorityCodePickRoutesComponent } from '../priority-code-pick-routes/priority-code-pick-routes.component';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { Component, Input } from '@angular/core';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
+import { Router } from '@angular/router';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-priority-code-pick-routes',
@@ -23,7 +24,9 @@ describe('PriorityCodePickRoutesPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ PriorityCodePickRoutesPageComponent, MockPriorityCodePickRoutesComponent ],
       providers: [
-        { provide: PriorityCodePickRoutesService, useValue: { get: () => of([]) } }
+        { provide: PriorityCodePickRoutesService, useValue: { get: () => of([]) } },
+        { provide: Router, useValue: { } },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
       ]
     })
     .compileComponents();

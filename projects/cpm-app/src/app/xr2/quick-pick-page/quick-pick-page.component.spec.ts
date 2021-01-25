@@ -27,6 +27,8 @@ import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-conf
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
 import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { MockNotificationComponent } from '../../shared/testing/mock-notification.spec';
+import { MockQuickPickQueueViewComponent } from '../testing/mock-quick-pick-queue-view.spec';
+import { MockQuickPickDrawerViewComponent } from '../testing/mock-quick-pick-drawer-view.spec';
 
 @Component({
   selector: 'oc-search-box',
@@ -150,7 +152,7 @@ describe('QuickPickPageComponent', () => {
     configurationValue = { Value: '15', Category: '', SubCategory: '' };
 
     TestBed.configureTestingModule({
-      declarations: [QuickPickPageComponent, QuickPickQueueViewComponent, QuickPickDrawerViewComponent, MockTranslatePipe,
+      declarations: [QuickPickPageComponent, MockQuickPickQueueViewComponent, MockQuickPickDrawerViewComponent, MockTranslatePipe,
         MockSearchPipe, MockSearchBox, MockAppHeaderContainer, MockNotificationComponent, ],
       imports: [GridModule, ButtonActionModule, SingleselectDropdownModule, PopupWindowModule, PopupDialogModule, HttpClientModule,
         FooterModule, LayoutModule, SharedModule, ],
@@ -168,14 +170,6 @@ describe('QuickPickPageComponent', () => {
         { provide: Router, useValue: { data: () => { } } },
         { provide: SystemConfigurationService, useValue: systemConfigurationService },
       ]
-    }).overrideComponent(QuickPickQueueViewComponent, {
-      set: {
-        template: ''
-      }
-    }).overrideComponent(QuickPickDrawerViewComponent, {
-      set: {
-        template: ''
-      }
     })
       .compileComponents();
   }));

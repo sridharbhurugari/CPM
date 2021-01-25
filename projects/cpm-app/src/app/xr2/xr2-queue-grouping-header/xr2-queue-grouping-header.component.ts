@@ -153,7 +153,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private getAllDevicesInfo() {
+ getAllDevicesInfo() {
     let translatedLabel = '';
     this.translateService.get('XR2_ALL_DEVICES').subscribe((res: string) => {
     translatedLabel = res;
