@@ -19,7 +19,7 @@
                 <div class="row" *ngFor="let device of displayDeviceConfigurationList">
                     <div class="first" style="align-items: center;"></div>
                     <div class="col width-device" [attr.data-title]="'devicePropertyName' | translate">{{device.DeviceDescription}}</div>
-                    <div class="col width-device" [attr.data-title]="'deviceOwnerPropertyName' | translate">{{device.DefaultOwnerFriendlyName}}</div>
+                    <div class="col width-device wrap" [attr.data-title]="'deviceOwnerPropertyName' | translate">{{device.DefaultOwnerFriendlyName}}</div>
                 </div>
             </ng-container>
 
