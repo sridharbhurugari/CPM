@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
-import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule, ToastModule, ButtonToggleModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule, ToastModule, ButtonToggleModule, ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -39,6 +39,7 @@ import { VerificationOrderQueueComponent } from './verification-order-queue/veri
 import { VerificationOrderHeaderComponent } from './verification-order-header/verification-order-header.component';
 import { VerificationDestinationQueueComponent } from './verification-destination-queue/verification-destination-queue.component';
 import { VerificationDetailsPageComponent } from './verification-details-page/verification-details-page.component';
+import { LoadingComponent } from './loading/loading.component';
 import { VerificationDetailsCardComponent } from './verification-details-card/verification-details-card.component';
 
 @NgModule({
@@ -75,6 +76,7 @@ import { VerificationDetailsCardComponent } from './verification-details-card/ve
     VerificationOrderHeaderComponent,
     VerificationDestinationQueueComponent,
     VerificationDetailsPageComponent,
+    LoadingComponent,
     VerificationDetailsCardComponent,
   ],
   imports: [
@@ -92,6 +94,7 @@ import { VerificationDetailsCardComponent } from './verification-details-card/ve
     FormsModule,
     ToastModule,
     CoreRoutingModule,
-    ButtonToggleModule
+    ButtonToggleModule,
+    ProgressAnimationModule,
   ],})
 export class CoreModule { }

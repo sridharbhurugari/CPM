@@ -9,6 +9,7 @@ export class Xr2ExceptionDetailsItem implements IXr2ExceptionDetailsItem {
   TrayDescription: string;
   DeviceName: string;
   CompletedDateTime: string;
+  IsReturn: boolean;
   Reason: string;
   PocketColumn: string;
   PocketRow: string;

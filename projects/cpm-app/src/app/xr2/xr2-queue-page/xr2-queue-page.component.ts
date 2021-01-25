@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-xr2-queue-page',
@@ -12,7 +13,13 @@ export class Xr2QueuePageComponent implements OnInit {
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
 
-  constructor() { }
+  constructor(
+    wpfInteropService: WpfInteropService,
+  ) {
+    wpfInteropService.wpfViewModelActivated.subscribe(() => {
+      this.xr2QueueNavigationParameters = null;
+    })
+  }
 
   ngOnInit() {
   }

@@ -8,6 +8,7 @@ import { WindowService } from './shared/services/window-service';
 import { IOcapHttpConfiguration } from './shared/interfaces/i-ocap-http-configuration';
 import { ConfigurationService, OcapHttpClientService } from 'oal-core';
 import { EventConnectionService } from './shared/services/event-connection.service';
+import { WpfInteropService } from './shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class AppComponent implements AfterViewInit {
     configurationService: ConfigurationService,
     httpClient: OcapHttpClientService,
     eventConnectionService: EventConnectionService,
+    wpfInteropService: WpfInteropService,
   ){
     this.loading = true;
     var ocap : Partial<IOcapHttpConfiguration> = {};
@@ -46,6 +48,7 @@ export class AppComponent implements AfterViewInit {
       localStorageService.setItemObject(OcapConfigurationConstants.storageKey, ocap);
       configurationService.init(httpClient);
       eventConnectionService.startUp();
+      wpfInteropService.attachWindowMethods();
     }
 
     translate.setDefaultLang(ocap.userLocale || 'en-US');

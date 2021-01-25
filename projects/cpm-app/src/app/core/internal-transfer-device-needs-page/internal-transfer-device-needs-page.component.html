@@ -11,7 +11,7 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'CANCEL' | translate" (click)="goBack()">}</oc-button-action>
+                <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'BACK' | translate" (click)="goBack()">}</oc-button-action>
             </div>
             <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
                 <oc-button-action 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
 import { forkJoin, Observable, Subject  } from 'rxjs';
 import { map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -29,6 +29,7 @@ import { parseBool } from '../../shared/functions/parseBool';
 import { WpfActionPaths } from "../constants/wpf-action-paths";
 import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -67,6 +68,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     picklistLineIdsService: PicklistLineIdsService,
     ocapConfigService: OcapHttpConfigurationService,
     systemConfiguraitonsService: SystemConfigurationService,
+    wpfInteropService: WpfInteropService,
     private picklistLinesService: PicklistLinesService,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     private wpfActionControllerService: WpfActionControllerService,
@@ -75,6 +77,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     private quantityTrackingService: QuantityTrackingService,
     private carouselLocationAccessService: CarouselLocationAccessService,
     private coreEventConnectionService: CoreEventConnectionService,
+    private router: Router,
     ) {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
     const allDevices = parseBool(activatedRoute.snapshot.queryParamMap.get('allDevices'));
@@ -94,7 +97,8 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(msg => {this.onHighPriorityReceived();});
     this.isHighPriorityAvailable = false;
-}
+    wpfInteropService.wpfViewModelActivated.subscribe(() => this.continueLoadCurrentLineDetails());
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -109,16 +113,19 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   navigateContinue() {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Continue');
+    this.router.navigate(['core/loading']);
   }
 
   pause() {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName('Pause');
+    this.router.navigate(['core/loading']);
   }
 
   pickNow() {
     this.clearLightbar();
     this.wpfActionControllerService.ExecuteActionName(WpfActionPaths.HighPriorityPickNow);
+    this.router.navigate(['core/loading']);
   }
 
   hold(isLast: boolean) {
@@ -158,7 +165,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       }
     });
   }
-  
+
   private next() {
     this.picklistLineIndex = this.picklistLineIndex + 1;
     this.clearLightbar();

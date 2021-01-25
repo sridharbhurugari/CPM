@@ -6,6 +6,7 @@ import { IUnfilledPicklistRemovedEvent } from '../events/i-unfilled-picklist-rem
 import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../events/i-unfilled-picklistline-added-or-updated-event';
 import { IUnfilledPicklistlineRemovedEvent } from '../events/i-unfilled-picklistline-removed-event';
 import { takeUntil } from 'rxjs/operators';
+import { EventEventId } from '../../shared/constants/event-event-id';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,11 @@ export class PickingEventConnectionService implements OnDestroy {
   public removedUnfilledPicklistSubject = new Subject<IUnfilledPicklistRemovedEvent>();
   public updateUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineAddedOrUpdatedEvent>();
   public removedUnfilledPicklistLineSubject = new Subject<IUnfilledPicklistlineRemovedEvent>();
-  public ngUnsubscribe = new Subject();  
+  public ngUnsubscribe = new Subject();
 
   public startedSubject = new ReplaySubject(1);
 
-  constructor(private eventConnectionService: EventConnectionService) 
+  constructor(private eventConnectionService: EventConnectionService)
     {
       this.eventConnectionService.receivedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(message => this.eventHandlers(message));
       this.eventConnectionService.startedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.startedSubject.next());
@@ -30,34 +31,34 @@ export class PickingEventConnectionService implements OnDestroy {
       this.ngUnsubscribe.complete();
     }
 
-    private eventHandlers(message: any): void 
+    private eventHandlers(message: any): void
     {
-      try 
+      try
         {
-          if (message === undefined) 
-            { return; }    
+          if (message === undefined)
+            { return; }
 
-          if (message.EventId === 'AddOrUpdateUnderfilledPicklistEvent') {            
+          if (message.EventId === EventEventId.AddOrUpdateUnderfilledPicklistEvent) {
             this.updatedUnfilledPicklistSubject.next(message);
             return;
           }
-            
-          if (message.EventId === 'RemoveUnderfilledPicklistEvent') {            
+
+          if (message.EventId === EventEventId.RemoveUnderfilledPicklistEvent) {
             this.removedUnfilledPicklistSubject.next(message);
             return;
           }
 
-          if (message.EventId === 'AddOrUpdateUnderfilledPicklistLineEvent') {            
+          if (message.EventId === EventEventId.AddOrUpdateUnderfilledPicklistLineEvent) {
             this.updateUnfilledPicklistLineSubject.next(message);
             return;
           }
 
-          if (message.EventId === 'RemoveUnderfilledPicklistLineEvent') {            
+          if (message.EventId === EventEventId.RemoveUnderfilledPicklistLineEvent) {
             this.removedUnfilledPicklistLineSubject.next(message);
             return;
           }
         }
-      catch (e) 
+      catch (e)
         {
           console.log('PickingEventConnectionService.eventHandlers ERROR');
           console.log(e);
