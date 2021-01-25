@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CpDataCardComponent implements OnInit {
 
+  @Input() showLoading: boolean = false;
   @Input() title: string;
   @Input() data1: string;
   @Input() dataLabel1: string;

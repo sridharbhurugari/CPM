@@ -1,15 +1,17 @@
-<div class="dashboard" *ngIf="verificationDashboardData">
+<div class="dashboard">
   <app-cp-data-card
+  [showLoading]="!verificationDashboardData"
   [title]="'VERIFICATION' | translate"
-  [data1]="verificationDashboardData.CompleteVerifications.toString()"
+  [data1]="verificationDashboardData?.CompleteVerifications.toString()"
   [dataLabel1]="'COMPLETE' | translate"
-  [data2]="verificationDashboardData.RequiredVerifications.toString()"
+  [data2]="'-1'"
   [dataLabel2]="'REQUIRED' | translate"
-  [data3]="verificationDashboardData.TotalVerifications.toString()"
+  [data3]="verificationDashboardData?.TotalVerifications.toString()"
   [dataLabel3]="'TOTAL' | translate"
   >
   </app-cp-data-card>
   <app-cp-data-card
+  [showLoading]="!verificationDashboardData"
   [title]="'EXCEPTIONS' | translate"
   [data1]="'-1'"
   [dataLabel1]="'COMPLETE' | translate"
@@ -18,6 +20,7 @@
   >
   </app-cp-data-card>
   <app-cp-data-card
+  [showLoading]="!verificationDashboardData"
   [title]="'REQUIRED_VERIFICATION' | translate"
   [data1]="'-1'"
   [dataLabel1]="'COMPLETE' | translate"
