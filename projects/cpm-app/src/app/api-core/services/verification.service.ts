@@ -32,9 +32,9 @@ export class VerificationService {
     });
   }
 
-  getVerificationDestinationDetails(destinationId: string): Observable<IVerificationDestinationDetail[]> {
+  getVerificationDestinationDetails(destinationId: string, orderId: string): Observable<IVerificationDestinationDetail[]> {
     console.log('verificationservice get')
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destination/${destinationId}`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destination/${destinationId}/${orderId}`);
     return this.httpClient.get<IVerificationDestinationDetail[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });

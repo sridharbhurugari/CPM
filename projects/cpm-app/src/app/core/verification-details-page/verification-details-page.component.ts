@@ -50,23 +50,12 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private loadVerificationDestinationDetails(): void {
     console.log(this.navigationParameters.DestinationId);
-    if(!this.navigationParameters || !this.navigationParameters.DestinationId) {
+    if(!this.navigationParameters || !this.navigationParameters.DestinationId || !this.navigationParameters.OrderId) {
       return;
     }
 
-    console.log('Getting Data');
-    // this.verificationService.getVerificationDestinationDetails(this.navigationParameters.DestinationId).subscribe(x=> {
-    //   if(!x || x.length == 0){
-    //     return;
-    //   }
-    //   x.map(x=> this.verificationDestinationDetails.push(new VerificationDestinationDetail(x)));
-    //   console.log(this.verificationDestinationDetails);
-    // }, error => {
-    //   console.log(error);
-    // })
-
     this.verificationDestinationDetails = this.verificationService
-    .getVerificationDestinationDetails(this.navigationParameters.DestinationId).pipe(
+    .getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId).pipe(
       map((verificationDetails) => {
         return verificationDetails.map((verificationDetail) => {
           return new VerificationDestinationDetail(verificationDetail);
