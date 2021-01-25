@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockCpDataCardComponent } from '../../shared/testing/mock-cp-data-card.spec';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { VerificationDashboardComponent } from './verification-dashboard.component';
 
@@ -9,7 +10,7 @@ describe('VerificationDashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDashboardComponent, MockCpDataCardComponent ]
+      declarations: [ VerificationDashboardComponent, MockCpDataCardComponent, MockTranslatePipe ]
     })
     .compileComponents();
   }));

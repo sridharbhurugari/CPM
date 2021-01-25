@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SvgIconModule } from '@omnicell/webcorecomponents';
+import { MockCpDataLabelComponent } from '../../testing/mock-cp-data-label.spec';
 
 import { CpDataCardComponent } from './cp-data-card.component';
 
@@ -8,7 +10,8 @@ describe('CpDataCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CpDataCardComponent ]
+      declarations: [CpDataCardComponent, MockCpDataLabelComponent],
+      imports: [SvgIconModule]
     })
     .compileComponents();
   }));

@@ -6,11 +6,13 @@ import { of } from 'rxjs';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpDataCardComponent } from '../../shared/testing/mock-cp-data-card.spec';
 import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { VerificationDashboardComponent } from '../verification-dashboard/verification-dashboard.component';
 
 import { VerificationDetailsPageComponent } from './verification-details-page.component';
 
@@ -26,9 +28,10 @@ describe('VerificationDetailsPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDetailsPageComponent, MockCpGeneralHeaderComponent,
-        MockAppHeaderContainer, MockColHeaderSortable, MockAppHeaderContainer,
-         MockTranslatePipe, MockSearchBox, MockSearchPipe ],
+      declarations: [ VerificationDetailsPageComponent, VerificationDashboardComponent,
+        MockCpGeneralHeaderComponent, MockAppHeaderContainer, MockCpDataCardComponent,
+        MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
+        MockSearchPipe, ],
       imports: [GridModule],
       providers: [
         {provide: TranslateService, useValue: translateService }
