@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
+import * as _ from 'lodash';
+import { Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -9,7 +14,7 @@ import { VerificationDestinationDetail } from '../../shared/model/verification-d
 })
 export class VerificationDetailsCardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private translateService: TranslateService) { }
 
   @Input() 
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -24,7 +29,12 @@ export class VerificationDetailsCardComponent implements OnInit {
   HighlightRow : number;
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
 
+  readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
+  readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
+  readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
+  currentSortPropertyName: string;
+  columnSortDirection: string;
 
   ngOnInit() {
   }
@@ -33,5 +43,20 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.HighlightRow = index;
     this.selectedVerificationDestinationDetail = destinationDetail;
     console.log(this.selectedVerificationDestinationDetail);
+  }
+
+  columnSelected(event: IColHeaderSortChanged): void {
+    this.currentSortPropertyName = event.ColumnPropertyName;
+    this.columnSortDirection = event.SortDirection;
+    this.verificationDestinationDetails = this.sort(this.verificationDestinationDetails, event.SortDirection);
+  }
+
+  sort(verificationDestinationDetails: VerificationDestinationDetail[], sortDirection: Many<boolean | 'asc' | 'desc'>): VerificationDestinationDetail[] {
+    return _.orderBy(verificationDestinationDetails, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  getOrderDate(verificationDestinationDetail: VerificationDestinationDetail): string {
+    const orderDate = new Date(verificationDestinationDetail.FillDate).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
   }
 }

@@ -23,4 +23,6 @@ export interface IVerificationDestinationDetail {
   VerifiedDate: string;
   Exception: boolean;
   ForcedOutputDeviceChecking: boolean
+  DeviceDescription: string;
+  OutputDevice: string;
 }

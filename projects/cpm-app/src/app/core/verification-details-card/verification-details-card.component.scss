@@ -114,25 +114,26 @@
     font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
     font-weight: 400;
     color: #000000;
-    margin-left: 50px;
-    margin-top: 10px;
+    padding-top: 10px;
+    justify-content: center;
   }
 
   .vdetailLeft{
-    width: 20%;
+    width: 50%;
     height: 100%;
-    display: grid;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
   }
   .vdetailRight{
-    width: 20%;
+    width: 50%;
     height: 100%;
-    display: grid;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
   }
 
   .detailsLeftRightContainer{
     display: flex;
+    flex-direction: row;
     align-content: center;
     width: 100%;
     height: 100%;
@@ -175,7 +176,7 @@
   
             .label-title {
               display: flex;
-              width: 80%;
+              width: 75%;
               height: 100%;
               align-items: center;
               justify-content: left;
@@ -184,16 +185,16 @@
   
             .data-title {
               display: flex;
-              width: 20%;
+              width: 25%;
               height: 100%;
               align-items: center;
-              justify-content: center;
+              justify-content: left;
   
             }
   
             .data-spacer {
-              // static for scroll bar below
-              width: 10px; // Webkit scroll is 58 with 8px left and right padding (58+16)
+              // static for sort glyph
+              width: 25px; 
               height: 100%;
             }
           }
@@ -233,7 +234,7 @@
   
             .label {
               display: flex;
-              width: 80%;
+              width: 75%;
               height: 100%;
               align-items: center;
               justify-content: left;
@@ -251,7 +252,7 @@
   
             .data {
               display: flex;
-              width: 20%;
+              width: 25%;
               height: 100%;
               align-items: center;
               justify-content: center;

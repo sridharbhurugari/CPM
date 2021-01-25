@@ -11,8 +11,12 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
       this.ForcedOutputDeviceChecking = true;
     }
   }
+
   Exception: boolean;
   ForcedOutputDeviceChecking: boolean;
+  get RequiredVerification(): boolean {
+    return this.Exception || this.ForcedOutputDeviceChecking;
+  }
 
   Id: Guid;
   OrderId: string;
@@ -21,6 +25,9 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   DestinationLine1: string;
   DestinationLine2: string;
   DestinationStringValue: string;
+
+  DeviceDescription: string;
+  OutputDevice: string;
 
   ItemFormattedGenericName: string;
   ItemTradeName: string;
