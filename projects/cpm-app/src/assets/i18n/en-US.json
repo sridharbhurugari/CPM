@@ -179,6 +179,7 @@
   "SKIP": "Skip",
   "REROUTE": "Reroute",
   "STATUS": "Status",
+  "TOTAL": "Total",
   "TOTAL_REQUESTED": "Total Requested",
   "TYPE": "Priority Type",
   "UNDERFILLED": "Underfilled",
