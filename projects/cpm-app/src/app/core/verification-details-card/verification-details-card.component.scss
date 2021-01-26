@@ -4,6 +4,13 @@
     height: 100%;
     width: 100%;
   }
+  .loading {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 
   .leftPanel {
     //   overflow-y: auto;
@@ -13,7 +20,7 @@
     width: 65%;
     box-sizing: border-box;
     float:left;
-    background-color: lightgray;
+    background-color: rgb(241, 241, 241);
     display: flex;
   }
   .rightPanel {
@@ -87,7 +94,7 @@
     width: 100%;
     font-size: 22px;
     font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-    font-weight: 400;
+    font-weight: 700;
     color: #000000;
     margin-left: 50px;
     margin-top: 10px;
@@ -100,7 +107,7 @@
     width: 100%;
     font-size: 12px;
     font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-    font-weight: 400;
+    font-weight: 700;
     color: #000000;
     margin-left: 50px;
     margin-top: 10px;
@@ -112,7 +119,7 @@
     width: 100%;
     font-size: 48px;
     font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-    font-weight: 400;
+    font-weight: 700;
     color: #000000;
     padding-top: 10px;
     justify-content: center;
@@ -169,14 +176,14 @@
             width: 100%;
             font-size: 22px;
             font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-            font-weight: 400;
+            font-weight: 600;
             color: #333;
             margin-left: 50px;
   
   
             .label-title {
               display: flex;
-              width: 75%;
+              width: 80%;
               height: 100%;
               align-items: center;
               justify-content: left;
@@ -185,7 +192,7 @@
   
             .data-title {
               display: flex;
-              width: 25%;
+              width: 20%;
               height: 100%;
               align-items: center;
               justify-content: left;
@@ -247,6 +254,7 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
               }
             }
   
@@ -256,6 +264,7 @@
               height: 100%;
               align-items: center;
               justify-content: center;
+              font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
             }
           }
         }

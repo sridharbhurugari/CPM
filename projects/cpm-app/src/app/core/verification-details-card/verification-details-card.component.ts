@@ -6,6 +6,8 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastComponent } from '@omnicell/webcorecomponents/lib/toast/toast.component';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -39,7 +41,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   ngOnInit() {
   }
 
-  MedicationClicked(destinationDetail: VerificationDestinationDetail, index){
+  medicationClicked(destinationDetail: VerificationDestinationDetail, index){
     this.HighlightRow = index;
     this.selectedVerificationDestinationDetail = destinationDetail;
     console.log(this.selectedVerificationDestinationDetail);
@@ -59,4 +61,18 @@ export class VerificationDetailsCardComponent implements OnInit {
     const orderDate = new Date(verificationDestinationDetail.FillDate).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
   }
+
+  alert(destinationDetail: VerificationDestinationDetail, index){
+    // Toast message based on required flag
+  }
+
+   /* istanbul ignore next */
+   trackByItemId(index: number, verificationDestinationDetail: any): Guid {
+    if (!verificationDestinationDetail) {
+      return null;
+    }
+
+    return verificationDestinationDetail.Id;
+  }
+
 }

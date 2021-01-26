@@ -126,6 +126,7 @@
   "PICK_ITEM_TOTAL_MSG": "Total pick quantity exceeds quantity on hand",
   "PICK_QTY": "Pick Qty",
   "PICK_TOTAL": "Pick Total",
+  "PICK_VERIFICATION_TOTAL_MSG": "Filled quantity does not match Requested quantity",
   "SOURCE_LOCACTION": "Source Location",
   "SOURCE_QOH": "Source QOH",
   "PRINT_FAILED_DIALOG_TITLE": "Print Document",

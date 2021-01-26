@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-verification-base-page',
@@ -17,7 +18,10 @@ export class VerificationBasePageComponent implements OnInit {
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
 
-  constructor() { }
+  constructor(private wpfInteropService: WpfInteropService) {
+      this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
+        this.navigationParameters.Route = this.initialRoute;
+      }) }
 
   ngOnInit() {
     this.initializeNavigationParameters();
