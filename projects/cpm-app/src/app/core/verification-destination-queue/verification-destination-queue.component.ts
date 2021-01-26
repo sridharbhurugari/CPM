@@ -9,6 +9,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { nameof } from '../../shared/functions/nameof';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
+import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-verification-destination-queue',
@@ -41,23 +42,34 @@ export class VerificationDestinationQueueComponent implements OnInit {
     return this._filteredVerificationDestinationItems;
   }
 
-  @Input() searchTextFilter: string;
+  @Input()
+  set searchTextFilter(value: string) {
+    this._searchTextFilter = value;
+    if(this.unfilteredVerificationDestinationItems) {
+      this.filteredVerificationDestinationItems = this.filterBySearchText(value, this.unfilteredVerificationDestinationItems);
+    }
+  }
+  get searchTextFilter(): string {
+    return this._searchTextFilter;
+  }
+
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
   private  _unfilteredVerificationDestinationItems: VerificationDestinationItem[];
   private _filteredVerificationDestinationItems: VerificationDestinationItem[];
+  private  _searchTextFilter: string;
 
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
   readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
-  _searchTextFilter;
   searchFields = [nameof<VerificationDestinationItem>('DestinationStringValue')]
   destinationTypes: typeof DestinationTypes = DestinationTypes;
   columnSortDirection: string;
+  searchPipe: SearchPipe = new SearchPipe();
 
   translatables = [];
   translations$: Observable<any>;
@@ -92,6 +104,10 @@ export class VerificationDestinationQueueComponent implements OnInit {
       this.columnSelected(this.savedPageConfiguration.colHeaderSortDestination);
       this.columnSortDirection = this.savedPageConfiguration.colHeaderSortDestination.SortDirection;
     }
+
+    if (this.savedPageConfiguration.searchTextFilterDestination) {
+      this.searchTextFilter = this.savedPageConfiguration.searchTextFilterDestination;
+    }
   }
 
   /* istanbul ignore next */
@@ -101,6 +117,11 @@ export class VerificationDestinationQueueComponent implements OnInit {
     }
 
     return verificationDestinationItem.Id;
+  }
+
+  /* istanbul ignore next */
+  private filterBySearchText(text: string, unfilteredArray: VerificationDestinationItem[]) {
+    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   /* istanbul ignore next */
