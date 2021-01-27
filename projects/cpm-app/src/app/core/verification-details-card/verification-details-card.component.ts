@@ -8,6 +8,7 @@ import { VerificationDestinationDetail } from '../../shared/model/verification-d
 import { TranslateService } from '@ngx-translate/core';
 import { ToastComponent } from '@omnicell/webcorecomponents/lib/toast/toast.component';
 import { Guid } from 'guid-typescript';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -38,7 +39,24 @@ export class VerificationDetailsCardComponent implements OnInit {
   currentSortPropertyName: string;
   columnSortDirection: string;
 
+  translatables = [
+    'ITEM_ID',
+    'PICK_LOCATION',
+    'REQUESTED_QUANTITY',
+    'PICKED_QUANTITY',
+    'PICKED_BY',
+    'PICKED_TIME',
+    'SELECT_SCAN_MED'
+  ];
+
+  translations$: Observable<any>;
+
   ngOnInit() {
+    this.setTranslations();
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail, index){

@@ -9,7 +9,7 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 
-fdescribe('VerificationDetailsCardComponent', () => {
+describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
   let fixture: ComponentFixture<VerificationDetailsCardComponent>;
   let translateService: Partial<TranslateService>;

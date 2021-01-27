@@ -16,14 +16,14 @@
                         <div class="header-content">
                           <div class="table-labels">
                             <div app-col-header-sortable class="label-title" 
-                              [columnPropertyName]="itemVerificationPropertyName" headerResourceKey="Medication"
+                              [columnPropertyName]="itemVerificationPropertyName" headerResourceKey="DESCRIPTION"
                               [paddingLeft]="5"
                               [currentSortPropertyName]="currentSortPropertyName"
                               [customColumnSortOrder]="columnSortDirection"
                               (columnSelected)="columnSelected($event)">
                             </div>
                             <div app-col-header-sortable class="data-title" 
-                              [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="Required"
+                              [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED"
                               [paddingLeft]="30"
                               [currentSortPropertyName]="currentSortPropertyName"
                               [customColumnSortOrder]="columnSortDirection"
@@ -40,7 +40,7 @@
                             *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId" (click)='medicationClicked(row, i)' [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
                             <div class="label">
                               <div class="text-label">
-                                {{ row.ItemFormattedGenericName }} <br> {{ row.ItemTradeName }}
+                                <span style="font-weight: 700;">{{ row.ItemFormattedGenericName }}</span> <br> <span>{{ row.ItemTradeName }}</span>
                               </div>
                             </div>
                             <div class="data">
@@ -64,14 +64,14 @@
                 <div class="detailContainer">
                     <div  *ngIf="this.selectedVerificationDestinationDetail">
                         <div class="detailHeader">
-                          Item ID
+                          {{ 'ITEM_ID' | translate }}
                         </div>
                         <div class="detailBody">
                           {{this.selectedVerificationDestinationDetail.ItemId}}
                         </div>
                         <hr class="Solid">
                         <div class="detailHeader">
-                          Pick Location
+                          {{ 'PICK_LOCATION' | translate }}
                         </div>
                         <div class="detailBody">
                           <span style="padding-right: 10px;">{{this.selectedVerificationDestinationDetail.DeviceDescription}}</span>
@@ -82,15 +82,15 @@
                         <div class=detailsLeftRightContainer>
                             <div class="vdetailLeft">
                                 <div class="detailHeader">
-                                    Requested Quantity
+                                  {{ 'REQUESTED_QUANTITY' | translate }}
                                 </div>
                                 <div class="detailBodyLarge">
-                                    {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
+                                  {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
                                 </div>
                             </div>
                             <div class= vdetailRight>
                                 <div class="detailHeader">
-                                  <span>Filled Quantity</span>
+                                  <span> {{ 'PICKED_QUANTITY' | translate }}</span>
                                   <span style="padding-left: 30px; margin-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity != this.selectedVerificationDestinationDetail.FillQuantity">
                                     <ng-container part="icon">
                                       <app-validation-icon
@@ -104,25 +104,28 @@
                                   </span>  
                                 </div>
                                 <div class="detailBodyLarge">
-                                    {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                                  {{this.selectedVerificationDestinationDetail.FillQuantity}}
                                 </div>
                             </div>
                         </div>
                         <hr class="Solid">
                         <div class="detailHeader">
-                              Picked By
+                          {{ 'PICKED_BY' | translate }}
                         </div>
                         <div class="detailBodySmall">
-                            {{this.selectedVerificationDestinationDetail.FillUserName}}
+                          {{ this.selectedVerificationDestinationDetail.FillUserName }}
                         </div>
                         <hr class="Solid">
                          <div class="detailHeader">
-                                Filled Time
+                          {{ 'PICKED_TIME' | translate }}
                         </div>
                         <div class="detailBodySmall">
-                                {{getOrderDate(this.selectedVerificationDestinationDetail)}}
+                          {{ getOrderDate(this.selectedVerificationDestinationDetail) }}
                         </div>
                         <hr class="Solid">
+                    </div>
+                    <div class="noDetails" *ngIf="!this.selectedVerificationDestinationDetail">
+                        {{ 'SELECT_SCAN_MED' | translate }}
                     </div>
                </div>
             </div>
