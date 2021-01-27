@@ -58,7 +58,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-  medicationClicked(destinationDetail: VerificationDestinationDetail){
+  medicationClicked(destinationDetail: IVerificationDestinationDetail){
     this.selectedVerificationDestinationDetail = destinationDetail;
   }
 
@@ -72,7 +72,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     return _.orderBy(verificationDestinationDetails, x => x[this.currentSortPropertyName], sortDirection);
   }
 
-  getOrderDate(verificationDestinationDetail: VerificationDestinationDetail): string {
+  getOrderDate(verificationDestinationDetail: IVerificationDestinationDetail): string {
     const orderDate = new Date(verificationDestinationDetail.FillDate).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
   }
