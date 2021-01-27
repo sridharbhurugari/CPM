@@ -29,7 +29,6 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
-  HighlightRow : number;
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
@@ -59,10 +58,8 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-  medicationClicked(destinationDetail: VerificationDestinationDetail, index){
-    this.HighlightRow = index;
+  medicationClicked(destinationDetail: VerificationDestinationDetail){
     this.selectedVerificationDestinationDetail = destinationDetail;
-    console.log(this.selectedVerificationDestinationDetail);
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
@@ -78,10 +75,6 @@ export class VerificationDetailsCardComponent implements OnInit {
   getOrderDate(verificationDestinationDetail: VerificationDestinationDetail): string {
     const orderDate = new Date(verificationDestinationDetail.FillDate).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
-  }
-
-  alert(destinationDetail: VerificationDestinationDetail, index){
-    // Toast message based on required flag
   }
 
    /* istanbul ignore next */
