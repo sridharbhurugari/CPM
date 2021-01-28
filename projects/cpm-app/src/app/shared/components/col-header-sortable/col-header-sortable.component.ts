@@ -28,6 +28,9 @@ export class ColHeaderSortableComponent implements OnInit {
   @Input()
   bold: boolean = false
 
+  @Input()
+  paddingLeft: number = 0;
+
   @Output()
   columnSelected: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
@@ -41,6 +44,10 @@ export class ColHeaderSortableComponent implements OnInit {
   get IsSortDescending(){
     this.sortDirection = this.customColumnSortOrder && this.customColumnSortOrder === SortDirection.descending  ? this.customColumnSortOrder : this.sortDirection;
     return this.sortDirection == SortDirection.descending;
+  }
+
+  get PaddingLeft() {
+    return `${this.paddingLeft}px`;
   }
 
   constructor() { }

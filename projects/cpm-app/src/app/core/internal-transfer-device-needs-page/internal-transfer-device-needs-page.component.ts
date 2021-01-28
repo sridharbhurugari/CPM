@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { IItemReplenishmentNeed } from '../../api-core/data-contracts/i-item-replenishment-need';
 import { Observable, Subject } from 'rxjs';
@@ -43,7 +43,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   ngUnsubscribe = new Subject();
 
   constructor(
-    private wpfActionControllerService: WpfActionControllerService,
+    private location: Location,
     private pdfGridReportService: PdfGridReportService,
     private tableBodyService: TableBodyService,
     private simpleDialogService: SimpleDialogService,
@@ -128,7 +128,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   }
 
   goBack() {
-    this.wpfActionControllerService.ExecuteBackAction();
+    this.location.back();
   }
 
   onSelect(items: IItemReplenishmentNeed[]) {

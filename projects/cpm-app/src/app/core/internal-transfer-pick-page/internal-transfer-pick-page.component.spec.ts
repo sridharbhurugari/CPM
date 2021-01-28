@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
 import { of, Subject} from 'rxjs';
 import { IDeviceLocation } from '../../api-core/data-contracts/i-device-location';
@@ -17,6 +17,7 @@ import { CarouselLocationAccessService } from '../../shared/services/devices/car
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { IInternalTransferPackSizePick } from '../model/i-internal-transfer-pack-size-pick';
 import { MockGuidedPickComponent } from '../testing/mock-guided-pick.spec';
 import { MockInternalTransferPickNeedsListComponent } from '../testing/mock-internal-transfer-pick-needs-list.spec';
@@ -94,6 +95,8 @@ describe('InternalTransferPickPageComponent', () => {
         { provide: OrderItemPendingQuantitiesService, useValue: { get: () => { return of(null) } } },
         { provide: CarouselLocationAccessService, useValue: { clearLightbar: jasmine.createSpy('clearLightbar') } },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
       ]
     })
     .compileComponents();

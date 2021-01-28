@@ -25,7 +25,7 @@ describe('Xr2ExceptionsPageComponent', () => {
   let component: Xr2ExceptionsPageComponent;
   let fixture: ComponentFixture<Xr2ExceptionsPageComponent>;
   let event: IColHeaderSortChanged = { ColumnPropertyName: "TrayID", SortDirection: "asc" };
-  let eventSelected: IXr2ExceptionsItem = { TrayID: "c00004", DeviceID: "5", CompletedDateTime: "2020-06-01 07:41:19.763", TrayDescription: "", ExceptionPockets: "", DeviceName: "" };
+  let eventSelected: IXr2ExceptionsItem = { TrayID: "c00004", DeviceID: "5", CompletedDateTime: "2020-06-01 07:41:19.763", TrayDescription: "", ExceptionPockets: "", DeviceName: "",IsReturn: false };
   let router: Partial<Router>;
   let xr2ExceptionsService: Partial<Xr2ExceptionsService>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;

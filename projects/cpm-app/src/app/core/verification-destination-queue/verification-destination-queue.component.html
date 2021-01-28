@@ -2,8 +2,9 @@
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
       <!-- 1280 px total-->
-      <div app-col-header-sortable class="col" ocGridColResize data-width="640" data-colwrap="true"
+      <div app-col-header-sortable class="first" ocGridColResize data-width="640" data-colwrap="true"
         [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
+        [paddingLeft]="30"
         [currentSortPropertyName]="currentSortPropertyName"
         [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
@@ -20,13 +21,13 @@
     <ng-container class="ocgridbody" *ngIf="this.unfilteredVerificationDestinationItems">
       <div class="row"
       (click)="onGridRowClick(verificationDestinationItem)"
-      *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems | searchPipe:searchTextFilter:searchFields;
+      *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems
       trackBy: trackByItemId">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
-          <span>
+          <div class="first-column">
             <div>{{verificationDestinationItem.DestinationLine1}}</div>
             <div>{{verificationDestinationItem.DestinationLine2}}</div>
-          </span>
+          </div>
         </div>
         <div class="col width-verification" [attr.data-title]="'VERIFICATION' | translate">
           <span class="centered-content">
@@ -43,7 +44,7 @@
             [dataSize]=20
             [labelSize]=13
             [data]="verificationDestinationItem.TotalVerifications"
-            [label]="'REQUIRED' | translate">
+            [label]="'TOTAL' | translate">
             </app-cp-data-label>
           </span>
         </div>

@@ -1,1 +1,4 @@
-<app-priority-code-pick-routes [priorityCodePickRoutes]="priorityCodePickRoutes$ | async"></app-priority-code-pick-routes>
+<app-priority-code-pick-routes 
+    (priorityCodePickRouteSelected)="navigate($event)"
+    [priorityCodePickRoutes]="priorityCodePickRoutes$ | async">
+</app-priority-code-pick-routes>

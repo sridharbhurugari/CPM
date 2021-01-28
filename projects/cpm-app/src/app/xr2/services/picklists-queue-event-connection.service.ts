@@ -8,6 +8,8 @@ import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-ad
 import { IPicklistQueueGroupedListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-grouped-list-update-message';
 import { takeUntil } from 'rxjs/operators';
 import { IPicklistQueueItemListUpdateMessage } from '../../api-xr2/events/i-picklist-queue-item-list-update-message';
+import { EventEventId } from '../../shared/constants/event-event-id';
+
 
 
 @Injectable({
@@ -47,7 +49,7 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
         return;
       }
 
-      if (message.EventId === 'AddOrUpdatePicklistQueueItemMessage') {
+      if (message.EventId === EventEventId.AddOrUpdatePicklistQueueItemMessage) {
         console.log(message);
         this.addOrUpdatePicklistQueueItemSubject.next({
           PicklistQueueItem: message.PicklistQueueItem
@@ -55,7 +57,7 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
         return;
       }
 
-      if (message.EventId === 'RemovePicklistQueueItemMessage') {
+      if (message.EventId === EventEventId.RemovePicklistQueueItemMessage) {
         console.log(message);
         let robotPickGroupId = null;
         if (message.Xr2OrderGroupKey.RobotPickGroupId) {
@@ -73,19 +75,19 @@ export class PicklistsQueueEventConnectionService implements OnDestroy {
         return;
       }
 
-      if (message.EventId === 'PickListQueueGroupedUpdateMessage') {
+      if (message.EventId === EventEventId.PickListQueueGroupedUpdateMessage) {
         console.log(message);
         this.picklistQueueGroupedUpdateSubject.next(message);
         return;
       }
 
-      if (message.EventId === 'PickListQueueGroupedListUpdateMessage') {
+      if (message.EventId === EventEventId.PickListQueueGroupedListUpdateMessage) {
         console.log(message);
         this.picklistQueueGroupedListUpdateSubject.next(message);
         return;
       }
 
-      if (message.EventId === 'PicklistQueueItemListUpdateMessage') {
+      if (message.EventId === EventEventId.PicklistQueueItemListUpdateMessage) {
         console.log(message);
         this.picklistQueueItemListUpdateSubject.next(message);
         return;

@@ -5,6 +5,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import * as _ from 'lodash';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-item-management',
@@ -26,6 +27,10 @@ export class ItemManagementComponent implements OnInit {
   }
 
   constructor(private itemManagementService: ItemManagementService,
-              private wpfActionControllerService: WpfActionControllerService) { }
-
+    private wpfActionControllerService: WpfActionControllerService,
+    private wpfInteropService: WpfInteropService) {
+      this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
+        this.ngOnInit();
+      });
+  }
 }
