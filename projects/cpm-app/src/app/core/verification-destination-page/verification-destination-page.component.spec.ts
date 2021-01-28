@@ -33,6 +33,7 @@ describe('VerificationDestinationPageComponent', () => {
 
   verificationService = {
     getVerificationDestinations: () => of([]),
+    getVerificationDashboardData: () => of()
   };
 
   beforeEach(async(() => {

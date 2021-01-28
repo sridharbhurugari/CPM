@@ -5,5 +5,7 @@
   [showSearchBox]="false"
   (backEvent)="onBackEvent()">
   </app-cp-general-header>
-  <app-verification-dashboard></app-verification-dashboard>
+  <app-verification-dashboard
+  [verificationDashboardData]="verificationDashboardData | async"
+  ></app-verification-dashboard>
 </ng-container>
