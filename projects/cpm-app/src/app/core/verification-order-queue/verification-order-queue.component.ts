@@ -10,6 +10,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { nameof } from '../../shared/functions/nameof';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
+import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-verification-order-queue',
@@ -22,7 +23,17 @@ export class VerificationOrderQueueComponent implements OnInit {
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
-  @Input() searchTextFilter;
+
+  @Input()
+  set searchTextFilter(value: string) {
+    this._searchTextFilter = value;
+    if(this.unfilteredVerificationOrderItems) {
+      this.filteredVerificationOrderItems = this.filterBySearchText(value, this.unfilteredVerificationOrderItems);
+    }
+  }
+  get searchTextFilter(): string {
+    return this._searchTextFilter;
+  }
 
   @Input()
   set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
@@ -33,7 +44,7 @@ export class VerificationOrderQueueComponent implements OnInit {
     }
     this.resizeGrid();
   }
-  get verificationOrderItems(): VerificationOrderItem[] {
+  get unfilteredVerificationOrderItems(): VerificationOrderItem[] {
     return this._unfilteredVerficationOrderItems;
   }
 
@@ -50,6 +61,7 @@ export class VerificationOrderQueueComponent implements OnInit {
 
   private  _unfilteredVerficationOrderItems: VerificationOrderItem[];
   private  _filteredVerificationOrderItems: VerificationOrderItem[];
+  private _searchTextFilter: string;
 
 
   readonly sequenceOrderPropertyName = nameof<VerificationOrderItem>('SequenceOrder');
@@ -60,13 +72,11 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly exceptionsPropertyName = nameof<VerificationOrderItem>('CompleteExceptions');
   readonly datePropertyName = nameof<VerificationOrderItem>('FillDate');
 
+  searchPipe: SearchPipe = new SearchPipe();
   firstTime = true;
-  columnSize = 7;
   currentSortPropertyName: string;
   columnSortDirection: SortDirection;
   searchFields = [nameof<VerificationOrderItem>('PriorityCodeDescription'), nameof<VerificationOrderItem>('OrderId')];
-  customSorts = new Array<string>(this.columnSize);
-
   translatables = [];
   translations$: Observable<any>;
 
@@ -91,6 +101,12 @@ export class VerificationOrderQueueComponent implements OnInit {
     return _.orderBy(verificationOrderItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
+
+  getOrderDate(verificationOrderItem: VerificationOrderItem): string {
+    const orderDate = new Date(verificationOrderItem.FillDate).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+  }
+
   /* istanbul ignore next */
   trackByItemId(index: number, verificationOrderItem: VerificationOrderItem): Guid {
     if (!verificationOrderItem) {
@@ -100,20 +116,24 @@ export class VerificationOrderQueueComponent implements OnInit {
     return verificationOrderItem.Id;
   }
 
-  getOrderDate(verificationOrderItem: VerificationOrderItem): string {
-    const orderDate = new Date(verificationOrderItem.FillDate).toLocaleString(this.translateService.getDefaultLang());
-    return orderDate;
-   }
-
   private loadSavedConfigurations() {
     if (!this.savedPageConfiguration) {
       return;
     }
 
-    if (this.savedPageConfiguration.colHeaderSort) {
-      this.columnSelected(this.savedPageConfiguration.colHeaderSort);
-      this.columnSortDirection = this.savedPageConfiguration.colHeaderSort.SortDirection;
+    if (this.savedPageConfiguration.colHeaderSortOrder) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSortOrder);
+      this.columnSortDirection = this.savedPageConfiguration.colHeaderSortOrder.SortDirection;
     }
+
+    if (this.savedPageConfiguration.searchTextFilterOrder) {
+      this.searchTextFilter = this.savedPageConfiguration.searchTextFilterOrder;
+    }
+  }
+
+   /* istanbul ignore next */
+   private filterBySearchText(text: string, unfilteredArray: VerificationOrderItem[]) {
+    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   /* istanbul ignore next */

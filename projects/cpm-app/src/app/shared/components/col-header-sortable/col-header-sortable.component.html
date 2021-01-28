@@ -1,5 +1,6 @@
-  <span [ngClass]="(wrap==true)?'headertextwrapped':'headertext'">
-    <div *ngIf="headerResourceKey" 
+<span [ngClass]="(wrap==true)?'headertextwrapped':'headertext'"
+      [ngStyle]="{'padding-left': PaddingLeft}">
+    <div *ngIf="headerResourceKey"
          [ngClass]="bold ? 'boldheader' :  ''">{{headerResourceKey | translate}}</div>
   </span>
   <span class="headericon">

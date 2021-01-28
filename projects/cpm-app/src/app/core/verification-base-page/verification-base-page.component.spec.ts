@@ -46,11 +46,11 @@ describe('VerificationPageComponent', () => {
 
     it('should set page configuration on page configuration event', () => {
       const configuration = {} as IVerificationPageConfiguration;
-      configuration.colHeaderSort = {
+      configuration.colHeaderSortOrder = {
         ColumnPropertyName: 'column',
         SortDirection: 'asc'
       }
-      configuration.searchTextFilter = 'filter';
+      configuration.searchTextFilterOrder = 'filter';
 
       component.onPageConfigurationUpdateEvent(configuration);
 

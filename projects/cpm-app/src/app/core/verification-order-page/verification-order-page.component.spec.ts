@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ButtonToggleModule, GridModule } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
@@ -68,6 +69,22 @@ describe('VerificationOrderPageComponent', () => {
       component.onGridRowClickEvent(mockItem);
 
       expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set search text on search filter event', () => {
+      const event = 'filter';
+      component.onSearchTextFilterEvent(event);
+
+      expect(component.searchTextFilter).toBe(event);
+    });
+
+    it('should set sort on sort event', () => {
+      const event = {} as IColHeaderSortChanged;
+      event.SortDirection = 'asc';
+      event.ColumnPropertyName = 'name';
+      component.onSortEvent(event);
+
+      expect(component.colHeaderSort).toBe(event);
     });
   });
 });
