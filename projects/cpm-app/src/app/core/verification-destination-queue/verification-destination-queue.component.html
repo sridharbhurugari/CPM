@@ -21,7 +21,7 @@
     <ng-container class="ocgridbody" *ngIf="this.unfilteredVerificationDestinationItems">
       <div class="row"
       (click)="onGridRowClick(verificationDestinationItem)"
-      *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems | searchPipe:searchTextFilter:searchFields;
+      *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems
       trackBy: trackByItemId">
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
           <div class="first-column">
