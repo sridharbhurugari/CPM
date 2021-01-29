@@ -5,10 +5,12 @@
   [showSearchBox]="false"
   (backEvent)="onBackEvent()">
   </app-cp-general-header>
-  <app-verification-dashboard
-  [verificationDashboardData]="verificationDashboardData | async"
-  ></app-verification-dashboard>
-  <app-verification-details-card
-    [verificationDestinationDetails]="verificationDestinationDetails | async">
-  </app-verification-details-card>
+  <div class="content">
+    <app-verification-dashboard
+    [verificationDashboardData]="verificationDashboardData | async"
+    ></app-verification-dashboard>
+    <app-verification-details-card
+      [verificationDestinationDetails]="verificationDestinationDetails | async">
+    </app-verification-details-card>
+  </div>
 </ng-container>
