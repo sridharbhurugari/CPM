@@ -35,7 +35,8 @@ describe('VerificationDetailsPageComponent', () => {
 
   verificationService = {
     getVerificationDestinations: () => of([]),
-    getVerificationDashboardData: () => of()
+    getVerificationDashboardData: () => of(),
+    getVerificationDestinationDetails: () => of(verificationDestinationDetails)
   };
 
   beforeEach(async(() => {
@@ -44,7 +45,7 @@ describe('VerificationDetailsPageComponent', () => {
         MockCpGeneralHeaderComponent, MockAppHeaderContainer, MockCpDataCardComponent,
         MockColHeaderSortable, MockTranslatePipe, MockSearchBox,
             MockSearchPipe, MockCpClickableIconComponent, MockValidationIconComponent ],
-      imports: [GridModule],
+      imports: [GridModule, SvgIconModule],
       providers: [
         {provide: TranslateService, useValue: translateService },
         { provide: VerificationService, useValue: verificationService }
