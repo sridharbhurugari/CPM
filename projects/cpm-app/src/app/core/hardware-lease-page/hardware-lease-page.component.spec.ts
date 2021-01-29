@@ -37,6 +37,7 @@ describe('HardwareLeasePageComponent', () => {
       DeviceId: 1,
       Active: true,
       DefaultOwnerShortname: 'WRKS1',
+      DefaultOwnerFriendlyName: 'Workstation 1',
       DeviceDescription: 'Device1',
       DeviceType: '',
       IsValid: true,
@@ -49,7 +50,7 @@ describe('HardwareLeasePageComponent', () => {
   let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
 
   const devicePropertyName = nameof<DeviceConfigurationList>('DeviceDescription');
-  const deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerShortname');
+  const deviceOwnerPropertyName = nameof<DeviceConfigurationList>('DefaultOwnerFriendlyName');
   const displayDeviceConfigurationList: DeviceConfigurationList[] = [];
   let deviceOperationResult: DeviceOperationResult = { OutcomeText: '', Outcome: 5, IsSuccessful: false };
   let router: Partial<Router>;

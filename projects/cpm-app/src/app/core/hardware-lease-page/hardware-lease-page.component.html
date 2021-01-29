@@ -12,14 +12,14 @@
             <ng-container class="ocgridheader">
                 <div class="first" style="align-items: center;"></div>
                 <div class="col width-device" ocGridColResize [attr.data-width]="'350'" >{{devicePropertyName | translate}}</div>
-                <div class="col width-device" ocGridColResize [attr.data-width]="'500'">{{deviceOwnerPropertyName | translate}}</div>
+                <div class="col width-device" ocGridColResize [attr.data-width]="'710'">{{deviceOwnerPropertyName | translate}}</div>
             </ng-container>
 
             <ng-container class="ocgridbody">
                 <div class="row" *ngFor="let device of displayDeviceConfigurationList">
                     <div class="first" style="align-items: center;"></div>
                     <div class="col width-device" [attr.data-title]="'devicePropertyName' | translate">{{device.DeviceDescription}}</div>
-                    <div class="col width-device" [attr.data-title]="'deviceOwnerPropertyName' | translate">{{device.DefaultOwnerShortname}}</div>
+                    <div class="col width-device" [attr.data-title]="'deviceOwnerPropertyName' | translate">{{device.DefaultOwnerFriendlyName}}</div>
                 </div>
             </ng-container>
 

@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
+import { IWorkstationNameData } from '../../api-core/data-contracts/i-workstation-name-data';
 import { OperationType } from '../../api-core/data-contracts/operation-type';
 import { PopupDialogProperties, PopupDialogType, } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
@@ -103,9 +104,10 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
       ConnectionId: null,
       WorkstationShortName: this.workstation
     };
-    this.workstationTrackerService.GetWorkstationShortNames(workstationTrackerData).subscribe(success => {
+    this.workstationTrackerService.GetWorkstationNames(workstationTrackerData).subscribe((success : IWorkstationNameData[]) => {
       if (success.length > 0) {
-        const workstationsInUse = this.buildWorkstationsInUseStringFromResult(success);
+        const workstationNames = success.map(x => x.WorkstationFriendlyName);
+        const workstationsInUse = this.buildWorkstationsInUseStringFromResult(workstationNames);
         this.translateService
         .get('ORDER_IN_USE_MSG', {
           workstations: workstationsInUse

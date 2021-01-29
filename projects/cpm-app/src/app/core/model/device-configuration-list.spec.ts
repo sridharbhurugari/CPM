@@ -6,6 +6,7 @@ describe('DeviceConfigurationList', () => {
       Active: true,
       DefaultOwner: '1',
       DefaultOwnerShortname: 'WKS0000001',
+      DefaultOwnerFriendlyName: 'Workstation 1',
       DeviceDescription: 'Workstation 1',
       DeviceId: 1,
       DeviceType: '',

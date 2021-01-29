@@ -39,6 +39,7 @@ describe('GuidedInvMgmtCycleCountPageComponent', () => {
     DeviceId: 1,
     Active: true,
     DefaultOwnerShortname: 'WRKS1',
+    DefaultOwnerFriendlyName: 'Workstation 1',
     DeviceDescription: 'Device1',
     DeviceType: '',
     IsValid: true,

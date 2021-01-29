@@ -1,12 +1,15 @@
 To get up and running with this project, make sure you have:
-    - Installed NodeJs
-    - npm
-    - Installed Angular-cli 8.2.2 or greater
-    - run 'npm install' from this dir
-    - run 'ng serve' to build the serve the project
+- Installed NodeJs
+- npm
+- Installed Angular-cli 8.2.2 or greater
+- run `npm install` from this dir
+- run `ng serve` to build the serve the project
 
 To build this to your cpm web folder to debug in the cpm app use the following command(adjust your outputPath to match your CPM-CentralPharmacy location):
+
+```
 ng build --outputPath=C:\dev\CPM-CentralPharmacy\Omnicell.CentralPharmacy.Service\bin\Debug\web\cpm-app
+```
 
 More information can be found at:
 https://maivm-wiki.omnicell.com/display/CP/Angular+Setup
