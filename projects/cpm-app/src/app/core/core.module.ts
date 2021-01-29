@@ -39,6 +39,7 @@ import { VerificationOrderQueueComponent } from './verification-order-queue/veri
 import { VerificationOrderHeaderComponent } from './verification-order-header/verification-order-header.component';
 import { VerificationDestinationQueueComponent } from './verification-destination-queue/verification-destination-queue.component';
 import { VerificationDetailsPageComponent } from './verification-details-page/verification-details-page.component';
+import { VerificationDashboardComponent } from './verification-dashboard/verification-dashboard.component';
 import { LoadingComponent } from './loading/loading.component';
 import { VerificationDetailsCardComponent } from './verification-details-card/verification-details-card.component';
 
@@ -59,7 +60,7 @@ import { VerificationDetailsCardComponent } from './verification-details-card/ve
     EditDeviceSequenceComponent,
     GuidedInvMgmtCycleCountPageComponent,
     HardwareLeasePageComponent,
-        ItemManagementComponent,
+    ItemManagementComponent,
     GuidedinvmgmtManualcyclecountPageComponent,
     InternalTransferDeviceSummariesPageComponent,
     InternalTransferDeviceListComponent,
@@ -76,6 +77,7 @@ import { VerificationDetailsCardComponent } from './verification-details-card/ve
     VerificationOrderHeaderComponent,
     VerificationDestinationQueueComponent,
     VerificationDetailsPageComponent,
+    VerificationDashboardComponent,
     LoadingComponent,
     VerificationDetailsCardComponent,
   ],

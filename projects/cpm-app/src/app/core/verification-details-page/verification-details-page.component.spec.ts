@@ -9,12 +9,14 @@ import { IVerificationNavigationParameters } from '../../shared/interfaces/i-ver
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { MockCpDataCardComponent } from '../../shared/testing/mock-cp-data-card.spec';
 import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { VerificationDashboardComponent } from '../verification-dashboard/verification-dashboard.component';
 import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
 
 import { VerificationDetailsPageComponent } from './verification-details-page.component';
@@ -32,18 +34,20 @@ describe('VerificationDetailsPageComponent', () => {
   };
 
   verificationService = {
-    getVerificationDestinationDetails: () => of(verificationDestinationDetails),
+    getVerificationDestinations: () => of([]),
+    getVerificationDashboardData: () => of()
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDetailsPageComponent, VerificationDetailsCardComponent, MockCpGeneralHeaderComponent,
-        MockAppHeaderContainer, MockColHeaderSortable, 
-         MockTranslatePipe, MockSearchBox, MockSearchPipe, MockCpClickableIconComponent, MockValidationIconComponent ],
-      imports: [GridModule, SvgIconModule],
+        declarations: [VerificationDetailsPageComponent, VerificationDashboardComponent, VerificationDetailsCardComponent,
+        MockCpGeneralHeaderComponent, MockAppHeaderContainer, MockCpDataCardComponent,
+        MockColHeaderSortable, MockTranslatePipe, MockSearchBox,
+            MockSearchPipe, MockCpClickableIconComponent, MockValidationIconComponent ],
+      imports: [GridModule],
       providers: [
-        { provide: TranslateService, useValue: translateService},
-        { provide: VerificationService, useValue: verificationService },
+        {provide: TranslateService, useValue: translateService },
+        { provide: VerificationService, useValue: verificationService }
       ]
     })
     .compileComponents();

@@ -7,6 +7,9 @@
   (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
   (backEvent)="onBackEvent()"
   ></app-cp-general-header>
+  <app-verification-dashboard
+  [verificationDashboardData]="verificationDashboardData | async"
+  ></app-verification-dashboard>
   <app-verification-destination-queue
   [unfilteredVerificationDestinationItems]="verificationDestinationItems | async"
   [searchTextFilter]="searchTextFilter"

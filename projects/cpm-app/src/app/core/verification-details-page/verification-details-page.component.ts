@@ -7,6 +7,9 @@ import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
+import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
+
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 @Component({
   selector: 'app-verification-details-page',
@@ -21,6 +24,8 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private backRoute = VerificationRouting.DestinationPage;
 
+  verificationDestinationItems: Observable<VerificationDestinationItem[]>;
+  verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
 
 
@@ -28,10 +33,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     private translateService: TranslateService,
     private verificationService: VerificationService,
   ) {
-     //this.verificationDestinationDetails = [];
-   }
+  }
 
   ngOnInit() {
+    this.loadVerificationDashboardData();
     this.loadVerificationDestinationDetails();
   }
 
@@ -67,6 +72,19 @@ export class VerificationDetailsPageComponent implements OnInit {
   getHeaderSubtitle() {
     return `${this.navigationParameters.DeviceDescription} -
     ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
+  }
+
+  private loadVerificationDashboardData(): void {
+    if(!this.navigationParameters || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
+      return;
+    }
+
+    this.verificationDashboardData = this.verificationService
+    .getVerificationDashboardData(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+      map((verificationDashboardData) => {
+        return new VerificationDashboardData(verificationDashboardData)
+      }), shareReplay(1)
+    );
   }
 
   private transformDateTime(date: Date): string {
