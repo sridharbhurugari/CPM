@@ -105,7 +105,7 @@ hr.solid{
 
 .detailBody{
   display: flex;
-  flex-grow: 1;
+  flex-wrap: wrap;
   width: 100%;
   font-size: 22px;
   font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
@@ -234,6 +234,7 @@ hr.solid{
         width: 100%;
         height: 86%;
         align-items: center;
+        justify-content: left;
         overflow-y: scroll;
         direction: rtl;
         --lh: 1.4rem;
@@ -245,32 +246,33 @@ hr.solid{
   
           .row {
             display: flex;
-            flex-direction: row;
             width: 100%;
-            height: 15%;
+            min-height: 15%;
             font-size: large;
             direction: ltr;
+            align-items: center;
+            justify-content: left;
             :hover{
                 cursor: pointer;
             }
   
             .label {
               display: flex;
+              flex-direction: row;
               width: 75%;
               height: 100%;
-              align-items: center;
-              justify-content: left;
               padding-left: 10px;
               overflow: hidden;
-  
-              .text-label{
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-              }
+            }
+
+            .boldName{
+              font-weight: 700;
+            }
+
+            .text-label{
+              align-items: center;
+              justify-content: left;
+              font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
             }
   
             .data {
