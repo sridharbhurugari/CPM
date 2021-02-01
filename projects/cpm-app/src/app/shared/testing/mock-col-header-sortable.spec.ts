@@ -24,4 +24,7 @@ export class MockColHeaderSortable {
 
   @Input()
   bold: boolean;
+
+  @Input()
+  paddingLeft: number = 0;
 }

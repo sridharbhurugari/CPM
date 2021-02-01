@@ -3,10 +3,15 @@
   [title]="navigationParameters.PriorityCodeDescription"
   [subtitle]="getHeaderSubtitle()"
   [showSearchBox]="true"
+  [searchFilterText]="this.savedPageConfiguration.searchTextFilterDestination"
+  (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
   (backEvent)="onBackEvent()"
   ></app-cp-general-header>
   <app-verification-destination-queue
-  [verificationDestinationItems]="verificationDestinationItems | async"
+  [unfilteredVerificationDestinationItems]="verificationDestinationItems | async"
+  [searchTextFilter]="searchTextFilter"
+  [savedPageConfiguration]="savedPageConfiguration"
   (gridRowClickEvent)="onGridRowClickEvent($event)"
+  (sortEvent)="onSortEvent($event)"
   ></app-verification-destination-queue>
 </ng-container>

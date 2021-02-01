@@ -31,6 +31,7 @@
   "DATE_COMPLETED": "Date",
   "DEFAULT": "Par défaut",
   "DefaultOwnerShortname": "Propriétaire par défaut",
+  "DefaultOwnerFriendlyName": "Propriétaire par défaut",
   "DELETE": "Supprimer",
   "DESCRIPTION": "Description",
   "DESCRIPTION_ID": "Description / ID",

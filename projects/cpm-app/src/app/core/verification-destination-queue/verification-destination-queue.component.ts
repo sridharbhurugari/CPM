@@ -4,10 +4,12 @@ import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { Observable } from 'rxjs';
-import { SortDirection } from '../../shared/constants/sort-direction';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
+import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-verification-destination-queue',
@@ -16,43 +18,58 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
 })
 export class VerificationDestinationQueueComponent implements OnInit {
 
-  @Output() gridRowClickEvent: EventEmitter<Guid> = new EventEmitter();
+  @Output() gridRowClickEvent: EventEmitter<VerificationDestinationItem> = new EventEmitter();
+  @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
+
+  @Input()
+  set unfilteredVerificationDestinationItems(value: VerificationDestinationItem[]) {
+    this._unfilteredVerificationDestinationItems = value;
+    this.filteredVerificationDestinationItems = value
+    if(this.savedPageConfiguration) {
+      this.loadSavedConfigurations();
+    }
+    this.resizeGrid();
+  }
+  get unfilteredVerificationDestinationItems(): VerificationDestinationItem[] {
+    return this._unfilteredVerificationDestinationItems;
+  }
+
+  set filteredVerificationDestinationItems(value: VerificationDestinationItem[]) {
+    this._filteredVerificationDestinationItems = value;
+    this.resizeGrid();
+  }
+  get filteredVerificationDestinationItems(): VerificationDestinationItem[] {
+    return this._filteredVerificationDestinationItems;
+  }
 
   @Input()
   set searchTextFilter(value: string) {
-    if (!this.verificationDestinationItems) {
-      return;
-    }
     this._searchTextFilter = value;
+    if(this.unfilteredVerificationDestinationItems) {
+      this.filteredVerificationDestinationItems = this.filterBySearchText(value, this.unfilteredVerificationDestinationItems);
+    }
   }
   get searchTextFilter(): string {
     return this._searchTextFilter;
   }
 
-  @Input()
-  set verificationDestinationItems(value: VerificationDestinationItem[]) {
-    this._verificationDestinationItems = value;
-    this.resizeGrid();
-  }
-  get verificationDestinationItems(): VerificationDestinationItem[] {
-    return this._verificationDestinationItems;
-  }
+  @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  private  _verificationDestinationItems: VerificationDestinationItem[];
+  private  _unfilteredVerificationDestinationItems: VerificationDestinationItem[];
+  private _filteredVerificationDestinationItems: VerificationDestinationItem[];
+  private  _searchTextFilter: string;
 
-  readonly sequenceOrderPropertyName = nameof<VerificationDestinationItem>('SequenceOrder');
-  readonly destinationPropertyName = nameof<VerificationDestinationItem>('Destination');
-  readonly verificationPropertyName = nameof<VerificationDestinationItem>('CompleteVerifications');
-  readonly exceptionsPropertyName = nameof<VerificationDestinationItem>('CompleteExceptions');
-  readonly requiredPropertyName = nameof<VerificationDestinationItem>('RequiredVerifications');
+  readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
+  readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
   firstTime = true;
 
   currentSortPropertyName: string;
-  sortOrder: SortDirection = SortDirection.ascending;
-  _searchTextFilter;
-  searchFields = [];
+  searchFields = [nameof<VerificationDestinationItem>('DestinationStringValue')]
+  destinationTypes: typeof DestinationTypes = DestinationTypes;
+  columnSortDirection: string;
+  searchPipe: SearchPipe = new SearchPipe();
 
   translatables = [];
   translations$: Observable<any>;
@@ -64,17 +81,33 @@ export class VerificationDestinationQueueComponent implements OnInit {
   }
 
   onGridRowClick(clickedVerificationDestinationItem: VerificationDestinationItem) {
-    this.gridRowClickEvent.emit(clickedVerificationDestinationItem.DestinationId);
+    this.gridRowClickEvent.emit(clickedVerificationDestinationItem);
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
-    this.sortOrder = event.SortDirection;
-    this.verificationDestinationItems = this.sort(this.verificationDestinationItems, event.SortDirection);
+    this.columnSortDirection = event.SortDirection;
+    this.filteredVerificationDestinationItems = this.sort(this.filteredVerificationDestinationItems, event.SortDirection);
+    this.sortEvent.emit(event);
   }
 
   sort(verificationDestinationItems: VerificationDestinationItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): VerificationDestinationItem[] {
     return _.orderBy(verificationDestinationItems, x => x[this.currentSortPropertyName], sortDirection);
+  }
+
+  private loadSavedConfigurations() {
+    if (!this.savedPageConfiguration) {
+      return;
+    }
+
+    if (this.savedPageConfiguration.colHeaderSortDestination) {
+      this.columnSelected(this.savedPageConfiguration.colHeaderSortDestination);
+      this.columnSortDirection = this.savedPageConfiguration.colHeaderSortDestination.SortDirection;
+    }
+
+    if (this.savedPageConfiguration.searchTextFilterDestination) {
+      this.searchTextFilter = this.savedPageConfiguration.searchTextFilterDestination;
+    }
   }
 
   /* istanbul ignore next */
@@ -84,6 +117,11 @@ export class VerificationDestinationQueueComponent implements OnInit {
     }
 
     return verificationDestinationItem.Id;
+  }
+
+  /* istanbul ignore next */
+  private filterBySearchText(text: string, unfilteredArray: VerificationDestinationItem[]) {
+    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   /* istanbul ignore next */

@@ -9,23 +9,27 @@
   font-size: 22px;
 }
 
+.first-column {
+  padding-left: 30px;
+}
+
 .centered-content {
   display: flex;
   justify-content: center;
 }
 
 .width-destination {
-  width: 398px;
+  width: 640px;
 }
 
 .width-verification {
-  width: 300px;
+  width: 180px;
 }
 
 .width-exceptions {
-  width: 200px;
+  width: 180px;
 }
 
 .width-required-verification {
-  width: 300px;
+  width: 280px;
 }

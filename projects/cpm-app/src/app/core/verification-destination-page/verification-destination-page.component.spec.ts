@@ -1,12 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
-import { Guid } from 'guid-typescript';
 import { of } from 'rxjs';
-import { VerificationRouting } from '../../shared/enums/verification-routing';
+import { VerificationService } from '../../api-core/services/verification.service';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
@@ -20,20 +22,26 @@ describe('VerificationDestinationPageComponent', () => {
   let component: VerificationDestinationPageComponent;
   let fixture: ComponentFixture<VerificationDestinationPageComponent>;
   let translateService: Partial<TranslateService>;
+  let verificationService: Partial<VerificationService>;
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
   };
 
+  verificationService = {
+    getVerificationDestinations: () => of([]),
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent,
       MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
-      MockSearchPipe],
+      MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent],
       imports: [GridModule],
       providers: [
-        {provide: TranslateService, useValue: translateService }
+        { provide: TranslateService, useValue: translateService },
+        { provide: VerificationService, useValue: verificationService }
       ]
     })
     .compileComponents();
@@ -42,13 +50,8 @@ describe('VerificationDestinationPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDestinationPageComponent);
     component = fixture.componentInstance;
-    component.navigationParameters = {
-      OrderId: 'order',
-      DestinationId: Guid.create(),
-      PriorityCodeDescription: 'description',
-      Date: null,
-      Route: VerificationRouting.DestinationPage
-    } as IVerificationNavigationParameters;
+    component.navigationParameters = {} as IVerificationNavigationParameters;
+    component.savedPageConfiguration =  {} as IVerificationPageConfiguration;
     fixture.detectChanges();
   });
 
@@ -72,6 +75,22 @@ describe('VerificationDestinationPageComponent', () => {
       component.onGridRowClickEvent(mockItem);
 
       expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set search text on search filter event', () => {
+      const event = 'filter';
+      component.onSearchTextFilterEvent(event);
+
+      expect(component.searchTextFilter).toBe(event);
+    });
+
+    it('should set sort on sort event', () => {
+      const event = {} as IColHeaderSortChanged;
+      event.SortDirection = 'asc';
+      event.ColumnPropertyName = 'name';
+      component.onSortEvent(event);
+
+      expect(component.colHeaderSort).toBe(event);
     });
   })
 });

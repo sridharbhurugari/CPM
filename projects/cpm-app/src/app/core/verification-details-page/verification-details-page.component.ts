@@ -31,7 +31,9 @@ export class VerificationDetailsPageComponent implements OnInit {
   onBackEvent(): void {
     const navigationParams = {
       OrderId: this.navigationParameters.OrderId,
-      DestinationId: this.navigationParameters.DestinationId,
+      DeviceId: this.navigationParameters.DeviceId,
+      DestinationId: null,
+      DeviceDescription: this.navigationParameters.DeviceDescription,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       Date: this.navigationParameters.Date,
       Route: this.backRoute
@@ -40,7 +42,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   getHeaderSubtitle() {
-    return `${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
+    return `${this.navigationParameters.DeviceDescription} -
+    ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
 
   private transformDateTime(date: Date): string {

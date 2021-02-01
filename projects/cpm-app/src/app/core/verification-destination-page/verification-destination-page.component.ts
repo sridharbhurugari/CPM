@@ -1,10 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Guid } from 'guid-typescript';
 import { Observable, of } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
+import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
 @Component({
@@ -12,38 +15,33 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
   templateUrl: './verification-destination-page.component.html',
   styleUrls: ['./verification-destination-page.component.scss']
 })
-export class VerificationDestinationPageComponent implements OnInit {
+export class VerificationDestinationPageComponent implements OnInit, AfterContentChecked {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
+  @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
+  @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
   private backRoute = VerificationRouting.OrderPage;
   private continueRoute = VerificationRouting.DetailsPage;
 
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
+  searchTextFilter: string;
+  colHeaderSort: IColHeaderSortChanged;
 
   constructor(
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private verificationService: VerificationService,
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    // MOCK LIST - DELETE WITH API ADDITION
-    const mockList = [] as IVerificationDestinationItem[];
-    for(let i =0; i < 15; i++) {
-      mockList.push({
-        Id: Guid.create(),
-        DestinationId: Guid.create(),
-        SequenceOrder: 1,
-        Destination: 'Destination',
-        CompleteVerifications: 1,
-        TotalVerifications: 2,
-        RequiredVerifications: 2,
-        CompleteExceptions: 1,
-        RequiredExceptions: 2
-      })
-    }
-    this.verificationDestinationItems = of(mockList)
+    this.loadVerificationDestinationItems();
+  }
+
+  ngAfterContentChecked() {
+    this.ref.detectChanges();
   }
 
   onBackEvent(): void {
@@ -52,22 +50,58 @@ export class VerificationDestinationPageComponent implements OnInit {
     this.pageNavigationEvent.emit(navigationParams);
   }
 
-  onGridRowClickEvent(verificationOrderItem: VerificationDestinationItem): void {
+  onSearchTextFilterEvent(filterText: string): void {
+    this.searchTextFilter = filterText;
+  }
+
+  onSortEvent(event: IColHeaderSortChanged): void {
+    this.colHeaderSort = event;
+  }
+
+  onGridRowClickEvent(verificationDestinationItem: VerificationDestinationItem): void {
     const navigationParams = {
       DeviceId: this.navigationParameters.DeviceId,
       OrderId: this.navigationParameters.OrderId,
-      DestinationId: verificationOrderItem.DestinationId,
+      DestinationId: verificationDestinationItem.DestinationId,
+      DeviceDescription: this.navigationParameters.DeviceDescription,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       Date: this.navigationParameters.Date,
       Route: this.continueRoute
-    } as IVerificationNavigationParameters
+    } as IVerificationNavigationParameters;
+
+    const savedPageConfiguration = this.createSavedPageConfiguration();
 
     this.pageNavigationEvent.emit(navigationParams);
+    this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
   }
 
   getHeaderSubtitle() {
     return `${this.navigationParameters.DeviceDescription} -
     ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
+  }
+
+  private loadVerificationDestinationItems(): void {
+    if(!this.navigationParameters || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
+      return;
+    }
+
+    this.verificationDestinationItems = this.verificationService
+    .getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+      map((verificationOrderItems) => {
+        return verificationOrderItems.map((verificationItem) => {
+          return new VerificationDestinationItem(verificationItem);
+        });
+      }), shareReplay(1)
+    );
+  }
+
+  private createSavedPageConfiguration() {
+    return {
+      searchTextFilterOrder: this.savedPageConfiguration.searchTextFilterOrder,
+      colHeaderSortOrder: this.savedPageConfiguration.colHeaderSortOrder,
+      searchTextFilterDestination: this.searchTextFilter,
+      colHeaderSortDestination: this.colHeaderSort
+    } as IVerificationPageConfiguration;
   }
 
   private transformDateTime(date: Date): string {

@@ -7,6 +7,7 @@ export class DeviceConfigurationList implements IDeviceConfiguration {
   Active: boolean;
    DefaultOwner: string;
    DefaultOwnerShortname: string;
+   DefaultOwnerFriendlyName: string;
    DeviceDescription: string;
    DeviceId: number;
    DeviceType: string;

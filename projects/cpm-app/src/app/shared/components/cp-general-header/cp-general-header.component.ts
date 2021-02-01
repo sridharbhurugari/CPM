@@ -18,10 +18,11 @@ export class CpGeneralHeaderComponent {
 
   @Input() title: string;
   @Input() subtitle: string;
+  @Input() searchFilterText: string;
   @Input() showSearchBox: boolean = true;
 
   @ViewChild('searchBox', {
-    static: true
+    static: false
   })
   searchElement: SearchBoxComponent;
 
@@ -40,6 +41,11 @@ export class CpGeneralHeaderComponent {
           this.searchTextFilterEvent.emit(data);
         });
     }
+
+    if (this.searchFilterText) {
+      this.searchElement.sendSearchData(this.searchFilterText);
+      this.searchTextFilterEvent.emit(this.searchFilterText);
+  }
   }
 
   onBackClick(): void {
