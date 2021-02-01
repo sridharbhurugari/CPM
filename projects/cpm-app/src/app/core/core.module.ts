@@ -39,6 +39,7 @@ import { VerificationOrderQueueComponent } from './verification-order-queue/veri
 import { VerificationOrderHeaderComponent } from './verification-order-header/verification-order-header.component';
 import { VerificationDestinationQueueComponent } from './verification-destination-queue/verification-destination-queue.component';
 import { VerificationDetailsPageComponent } from './verification-details-page/verification-details-page.component';
+import { VerificationDashboardComponent } from './verification-dashboard/verification-dashboard.component';
 import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
@@ -58,7 +59,7 @@ import { LoadingComponent } from './loading/loading.component';
     EditDeviceSequenceComponent,
     GuidedInvMgmtCycleCountPageComponent,
     HardwareLeasePageComponent,
-        ItemManagementComponent,
+    ItemManagementComponent,
     GuidedinvmgmtManualcyclecountPageComponent,
     InternalTransferDeviceSummariesPageComponent,
     InternalTransferDeviceListComponent,
@@ -75,6 +76,7 @@ import { LoadingComponent } from './loading/loading.component';
     VerificationOrderHeaderComponent,
     VerificationDestinationQueueComponent,
     VerificationDetailsPageComponent,
+    VerificationDashboardComponent,
     LoadingComponent,
   ],
   imports: [

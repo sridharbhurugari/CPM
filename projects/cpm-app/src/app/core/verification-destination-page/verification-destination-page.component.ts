@@ -2,12 +2,14 @@ import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input,
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
 @Component({
@@ -27,6 +29,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   private continueRoute = VerificationRouting.DetailsPage;
 
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
+  verificationDashboardData: Observable<IVerificationDashboardData>;
+
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
 
@@ -38,6 +42,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   ngOnInit() {
     this.loadVerificationDestinationItems();
+    this.loadVerificationDashboardData();
   }
 
   ngAfterContentChecked() {
@@ -91,6 +96,19 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
         return verificationOrderItems.map((verificationItem) => {
           return new VerificationDestinationItem(verificationItem);
         });
+      }), shareReplay(1)
+    );
+  }
+
+  private loadVerificationDashboardData(): void {
+    if(!this.navigationParameters || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
+      return;
+    }
+
+    this.verificationDashboardData = this.verificationService
+    .getVerificationDashboardData(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+      map((verificationDashboardData) => {
+        return new VerificationDashboardData(verificationDashboardData)
       }), shareReplay(1)
     );
   }

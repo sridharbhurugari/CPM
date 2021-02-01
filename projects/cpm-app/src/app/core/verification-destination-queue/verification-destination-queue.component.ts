@@ -62,7 +62,7 @@ export class VerificationDestinationQueueComponent implements OnInit {
   private  _searchTextFilter: string;
 
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
-  readonly requiredVerificationPropertyName = nameof<VerificationDestinationItem>('CompleteRequiredVerifications');
+  readonly outputDevicePropertyName = nameof<VerificationDestinationItem>('CompleteOutputDevice');
   firstTime = true;
 
   currentSortPropertyName: string;
