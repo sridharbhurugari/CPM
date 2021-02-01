@@ -10,6 +10,7 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
+import { IWorkstationNameData } from '../../api-core/data-contracts/i-workstation-name-data';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { WindowService } from '../../shared/services/window-service';
@@ -21,13 +22,15 @@ describe('UnderfilledPicklistsComponent', () => {
   let event: IColHeaderSortChanged = {ColumnPropertyName:"OrderId",SortDirection:"asc"};
   let saveSucceededSpy = jasmine.createSpy('saveSucceeded').and.returnValue(of({}));
   const wpfActionControllerService: Partial<WpfActionControllerService> = { ExecuteContinueNavigationAction : () => {}};
-  const workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName : () => of(''), Track : () => of([]),
-  GetWorkstationShortNames : () => of(['']) };
+  const workstationTrackerService: Partial<WorkstationTrackerService> = { 
+    GetWorkstationShortName : () => of(''), Track : () => of([]),
+    GetWorkstationNames : () => of([{WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}])
+  };
   const translateService: Partial<TranslateService> = { get : () => of() };
   const popupDialogService: Partial<PopupDialogService> = { showOnce: jasmine.createSpy('showOnce') };
   beforeEach(async(() => {
     spyOn(routerMock, 'navigate').and.returnValue(of<boolean>().toPromise());
-    spyOn(workstationTrackerService, 'GetWorkstationShortNames').and.returnValue(of(['']));
+    spyOn(workstationTrackerService, 'GetWorkstationNames').and.returnValue(of([{WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}]));
     spyOn(translateService, 'get').and.returnValue(of(['']));
     TestBed.configureTestingModule({
       declarations: [
@@ -70,9 +73,9 @@ describe('UnderfilledPicklistsComponent', () => {
   });
 
   describe('navigate', () => {
-    it('should call workstationTrackerService.GetWorkstationShortNames', () => {
+    it('should call workstationTrackerService.GetWorkstationNames', () => {
       component.navigate('testorder');
-      expect(workstationTrackerService.GetWorkstationShortNames).toHaveBeenCalled();
+      expect(workstationTrackerService.GetWorkstationNames).toHaveBeenCalled();
       expect(translateService.get).toHaveBeenCalled();
     });
   });

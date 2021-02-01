@@ -9,12 +9,17 @@ export interface IDeviceConfiguration {
         /// <summary>
         /// Gets or sets the default owner client's short name.
         /// </summary>
-         DefaultOwnerShortname: string;
+        DefaultOwnerShortname: string;
+
+        /// <summary>
+        /// Gets or sets the default owner client's friendly name.
+        /// </summary>
+        DefaultOwnerFriendlyName: string;
 
         /// <summary>
         /// Gets or sets the device description.
         /// </summary>
-         DeviceDescription: string;
+        DeviceDescription: string;
 
         /// <summary>
         /// Gets or sets the device id.
@@ -24,7 +29,7 @@ export interface IDeviceConfiguration {
         /// <summary>
         /// Gets or sets the device type id.
         /// </summary>
-         DeviceType: string;
+        DeviceType: string;
 
         /// <summary>
         /// Gets a value indicating whether this instance is valid.
@@ -47,7 +52,7 @@ export interface IDeviceConfiguration {
         /// <summary>
         /// Gets or sets the device model
         /// </summary>
-         Model: string;
+        Model: string;
 
         /// <summary>
         /// Gets or sets the order for the device.  Will help in deciding whihc device should be used in certain circumstances.

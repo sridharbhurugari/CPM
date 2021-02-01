@@ -12,6 +12,6 @@ export interface IVerificationDestinationItem {
   TotalVerifications: number;
   CompleteExceptions: number;
   RequiredExceptions: number;
-  CompleteRequiredVerifications: number;
-  RequiredRequiredVerifications: number;
+  CompleteOutputDevice: number;
+  RequiredOutputDevice: number;
 }

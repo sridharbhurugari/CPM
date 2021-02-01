@@ -6,7 +6,7 @@ export class VerificationDashboardData implements IVerificationDashboardData {
     Object.assign(this, verificationDashboardData);
   }
 
-  TotalVerifications: number;
-  CompleteVerifications: number;
-  RequiredVerifications: number;
+  TotalStatuses: number;
+  CompleteStatuses: number;
+  RequiredStatuses: number;
 }
