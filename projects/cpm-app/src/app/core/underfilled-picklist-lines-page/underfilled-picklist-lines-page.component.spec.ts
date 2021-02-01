@@ -155,7 +155,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.picklistLines$ = of(pickListLinesData);
-    component.reportPickListLines$ = component.picklistLines$;
+    component.picklistLines = pickListLinesData;
   });
 
   it('should create', () => {
@@ -164,7 +164,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
 
   describe('Unfilled record selection', () => {
     it('Should get report data ', fakeAsync(() => {
-      component.reportPickListLines$ = of(pickListLinesData);
+      component.picklistLines = pickListLinesData;
       const getReportFields = spyOn(component, 'getReportData').and.callThrough();
       component.ngOnInit();
       tick();
