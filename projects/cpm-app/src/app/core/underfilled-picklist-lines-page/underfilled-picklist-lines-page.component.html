@@ -26,7 +26,7 @@
       <div class="ocleftalign">
         <oc-button-action [buttonText]="'CANCEL' | translate" (click)="navigateBack()"></oc-button-action>
       </div>
-      <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
+      <div class="ocrightalign" *ngIf="(reportBaseData)">
         <oc-button-action *ngIf="reportBaseData.FormPrinterName && reportBaseData.FormPrinterName.length > 0"
           [disabled]="requestStatus != 'none'" [buttonIcon]="requestStatus == 'printing' ? 'spin' : 'print'"
           [buttonText]="'PRINT_ALL' | translate" (click)="print()">

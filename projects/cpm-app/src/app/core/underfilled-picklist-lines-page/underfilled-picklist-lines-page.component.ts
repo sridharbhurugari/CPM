@@ -30,6 +30,7 @@ import { IUnfilledPicklistlineAddedOrUpdatedEvent } from '../../api-core/events/
 import { IUnfilledPicklistlineRemovedEvent } from '../../api-core/events/i-unfilled-picklistline-removed-event';
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 import { ReportConstants } from '../../shared/constants/report-constants';
+import { ContentTable } from 'pdfmake/interfaces';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
@@ -48,8 +49,21 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   picklistLines: UnderfilledPicklistLine[];
   reportTitle$: Observable<string>;
   requestStatus: 'none' | 'printing' | 'reroute' | 'complete' = 'none';
-  reportPickListLines$: Observable<UnderfilledPicklistLine[]>;
   reportBaseData$: Observable<IAngularReportBaseData>;
+  reportBaseData: IAngularReportBaseData = {
+    Address1: '',
+    Address2: '',
+    Address3: '',
+    CombinedAddress: '',
+    FormPrinterName: '',
+    FormattedDateTime: '',
+    OmniId: '',
+    OmniName: '',
+    SiteDescription: '',
+    OrderId:'',
+    PriorityCode:'',
+    DeviceDescriptionName:''
+  };
   errorGenericTitle$: Observable<string>;
   errorGenericMessage$: Observable<string>;
   okButtonText: string;
@@ -80,10 +94,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     private router: Router
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
-    this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
+    this.reportBaseData$ = pdfPrintService.getReportBaseData();
   }
-
-
 
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
@@ -175,9 +187,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     });
   }
 
-  getReportData(datePipe: DatePipe) {
-    this.reportPickListLines$ = of(this.picklistLines).pipe(
-      map(underfilled => {
+  getReportData(datePipe: DatePipe): UnderfilledPicklistLine[] {
+const underfilled = this.picklistLines;
+
         underfilled.forEach(element => {
           const date = element.FillDate;
           element.PrintFillDate = datePipe.transform(date, 'M/d/yy   h:mm a');
@@ -224,8 +236,6 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
             }
         });
         return underfilled;
-      })
-    );
   }
 
 getRerouteButtonEnabled(): boolean  {
@@ -299,30 +309,33 @@ getButtonEnabled(): boolean  {
       { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: 'auto' },
     ];
 
-    const sortedFilled$ = this.reportPickListLines$.pipe(map(underFill => {
+    this.getDocumentData();
+    const datePipe = new DatePipe("en-US");
+    const rptData = this.getReportData(datePipe);
+    console.log('rptData', rptData);
+    const sortedFilled$ = of(rptData).pipe(map(underFill => {
       return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
     }));
-    const datePipe = new DatePipe("en-US");
-    this.getReportData(datePipe);
-    this.getDocumentData();
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-
+let tableBody: ContentTable;
 var tb = tableBody$.subscribe(
-  (data) => console.log('subscribe tableBody complete', data));
+  (data) => {console.log('subscribe tableBody complete', data);
+tableBody = data;
+});
 
  tb = tableBody$.subscribe(
     res => console.log('subscribe tableBody response', res),
     err => console.log('subscribe tableBody Error', err),
      () => console.log('subscribe tableBody complete'));
 
-var rbd = this.reportBaseData$.subscribe(
-      (data) => console.log('subscribe reportBaseData complete', data));
-    rbd = this.reportBaseData$.subscribe(
-      res => console.log('subscribe reportBaseData response', res),
-      err => console.log('subscribe reportBaseData Error', err),
-       () => console.log('subscribe reportBaseData complete'));
-
-    this.pdfGridReportService.printWithBaseData(tableBody$, of(ReportConstants.UnfilledReport), this.reportBaseData$).subscribe(succeeded => {
+// var rbd = this.reportBaseData$.subscribe(
+//       (data) => console.log('subscribe reportBaseData complete', data));
+//     rbd = this.reportBaseData$.subscribe(
+//       res => console.log('subscribe reportBaseData response', res),
+//       err => console.log('subscribe reportBaseData Error', err),
+//        () => console.log('subscribe reportBaseData complete'));
+console.log('this.reportBaseData', this.reportBaseData);
+    this.pdfGridReportService.printWithBaseData(of(tableBody), of(ReportConstants.UnfilledReport), of(this.reportBaseData)).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
         this.displayPrintFailed();
@@ -337,13 +350,23 @@ var rbd = this.reportBaseData$.subscribe(
 
   private getDocumentData() {
     let pickList: IUnderfilledPicklist;
-    let reportBasedata: IAngularReportBaseData;
     this.picklist$.subscribe((listData) => {pickList = listData; });
-    this.reportBaseData$.subscribe((baseData) => { reportBasedata = baseData; });
-    reportBasedata.OrderId = pickList.OrderId;
-    reportBasedata.PriorityCode = pickList.PriorityCode;
-    this.reportBaseData$ = of(reportBasedata);
-  }
+    this.reportBaseData$.subscribe((baseData) => {
+      console.log('getDocumentData...Base Data', baseData)
+      if(baseData)
+      {
+      this.reportBaseData = baseData;
+      }
+      if(pickList)
+      {
+      this.reportBaseData.OrderId = pickList.OrderId;
+      this.reportBaseData.PriorityCode = pickList.PriorityCode;
+    }
+      return this.reportBaseData;
+    },
+    err => console.log('getDocumentData ERROR: ', err)
+    );
+}
 
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
