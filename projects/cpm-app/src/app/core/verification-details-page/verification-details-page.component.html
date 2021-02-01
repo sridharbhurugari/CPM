@@ -10,7 +10,9 @@
     [verificationDashboardData]="verificationDashboardData | async"
     ></app-verification-dashboard>
     <app-verification-details-card
-      [verificationDestinationDetails]="verificationDestinationDetails | async">
+      [verificationDestinationDetails]="verificationDestinationDetails | async"
+      (approveVerification)="onApproveVerification($event)"
+      (rejectVerification)="onRejectVerification($event)">
     </app-verification-details-card>
   </div>
 </ng-container>

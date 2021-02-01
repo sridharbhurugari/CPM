@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
@@ -27,6 +27,9 @@ export class VerificationDetailsCardComponent implements OnInit {
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
       return this._verificationDestinationDetails;
   }
+
+  @Output() approveVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
+  @Output() rejectVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
@@ -86,4 +89,13 @@ export class VerificationDetailsCardComponent implements OnInit {
     return verificationDestinationDetail.Id;
   }
 
+  approveClicked(selectedVerificationDestinationDetail: VerificationDestinationDetail){
+    console.log('button approve clicked');
+    console.log(selectedVerificationDestinationDetail);
+    this.approveVerification.emit(selectedVerificationDestinationDetail);
+  }
+
+  rejectClicked(selectedVerificationDestinationDetail: VerificationDestinationDetail){
+    this.rejectVerification.emit(selectedVerificationDestinationDetail);
+  }
 }

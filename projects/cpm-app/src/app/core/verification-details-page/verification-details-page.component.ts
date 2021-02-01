@@ -91,4 +91,36 @@ export class VerificationDetailsPageComponent implements OnInit {
     const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
    }
+
+  onApproveVerification($event: VerificationDestinationDetail) {
+    console.log($event)
+    this.approveVerification($event);
+  }
+
+  private approveVerification(verificationDestinationDetail: VerificationDestinationDetail){
+    console.log('approveVerification');
+    console.log(verificationDestinationDetail);
+    this.verificationService.approveVerification(verificationDestinationDetail).subscribe(x => {
+        //Todo Log Success
+        console.log("Approved Order");
+    },error => {
+        // Todo Log error
+        console.log(error);
+    });
+  }
+
+  onRejectVerification($event: VerificationDestinationDetail) {
+    console.log($event)
+    this.rejectVerification($event);
+  }
+
+  rejectVerification(verificationDestinationDetail: VerificationDestinationDetail){
+    this.verificationService.rejectVerification(verificationDestinationDetail).subscribe(x => {
+      //Todo Log Success
+      console.log("Approved Order");
+    },error => {
+          // Todo Log error
+          console.log(error);
+    });
+  }
 }
