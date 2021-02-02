@@ -8,12 +8,14 @@ import { IVerificationNavigationParameters } from '../../shared/interfaces/i-ver
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpDataCardComponent } from '../../shared/testing/mock-cp-data-card.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-general-header.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { VerificationDashboardComponent } from '../verification-dashboard/verification-dashboard.component';
 import { VerificationDestinationQueueComponent } from '../verification-destination-queue/verification-destination-queue.component';
 
 import { VerificationDestinationPageComponent } from './verification-destination-page.component';
@@ -31,13 +33,14 @@ describe('VerificationDestinationPageComponent', () => {
 
   verificationService = {
     getVerificationDestinations: () => of([]),
+    getVerificationDashboardData: () => of()
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent,
+      declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent, VerificationDashboardComponent,
       MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
-      MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent],
+      MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent, MockCpDataCardComponent],
       imports: [GridModule],
       providers: [
         { provide: TranslateService, useValue: translateService },

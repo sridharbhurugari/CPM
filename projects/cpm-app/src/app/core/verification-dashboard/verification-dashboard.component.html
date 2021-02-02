@@ -1,0 +1,32 @@
+<div class="dashboard">
+  <app-cp-data-card
+  [showLoading]="!verificationDashboardData"
+  [title]="'STATUS' | translate"
+  [data1]="verificationDashboardData?.CompleteStatuses.toString()"
+  [dataLabel1]="'COMPLETE' | translate"
+  [data2]="verificationDashboardData?.RequiredStatuses.toString()"
+  [dataLabel2]="'REQUIRED' | translate"
+  [data3]="verificationDashboardData?.TotalStatuses.toString()"
+  [dataLabel3]="'TOTAL' | translate"
+  >
+  </app-cp-data-card>
+  <app-cp-data-card
+  [showLoading]="!verificationDashboardData"
+  [title]="'EXCEPTIONS' | translate"
+  [data1]="'0'"
+  [dataLabel1]="'COMPLETE' | translate"
+  [data2]="'0'"
+  [dataLabel2]="'REQUIRED' | translate"
+  >
+  </app-cp-data-card>
+  <app-cp-data-card
+  [showLoading]="!verificationDashboardData"
+  [title]="'OUTPUT_DEVICE' | translate"
+  [data1]="'0'"
+  [dataLabel1]="'COMPLETE' | translate"
+  [data2]="'0'"
+  [dataLabel2]="'REQUIRED' | translate"
+  >
+  </app-cp-data-card>
+</div>
+

@@ -31,6 +31,7 @@ import { ValidationIconComponent } from './components/validation-icon/validation
 import { ValidationContainerComponent } from './components/validation-container/validation-container.component';
 import { SafetyStockProductComponent } from './components/safety-stock-product/safety-stock-product.component';
 import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-general-header.component';
+import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-gene
     ValidationContainerComponent,
     SafetyStockProductComponent,
     CpGeneralHeaderComponent,
+    CpDataCardComponent,
   ],
   imports: [
     CommonModule,
@@ -101,6 +103,7 @@ import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-gene
     TabContentsComponent,
     ValidationIconComponent,
     CpGeneralHeaderComponent,
+    CpDataCardComponent,
   ],
   entryComponents: [
     TextResultPopupComponent,
