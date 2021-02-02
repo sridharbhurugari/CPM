@@ -28,6 +28,8 @@ export class VerificationDetailsCardComponent implements OnInit {
       return this._verificationDestinationDetails;
   }
 
+  @Input() deviceDescription : string;
+
   private _verificationDestinationDetails : VerificationDestinationDetail[]
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
 

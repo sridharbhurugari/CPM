@@ -10,6 +10,7 @@
     [verificationDashboardData]="verificationDashboardData | async"
     ></app-verification-dashboard>
     <app-verification-details-card
+      [deviceDescription]="this.navigationParameters.DeviceDescription"
       [verificationDestinationDetails]="verificationDestinationDetails | async">
     </app-verification-details-card>
   </div>
