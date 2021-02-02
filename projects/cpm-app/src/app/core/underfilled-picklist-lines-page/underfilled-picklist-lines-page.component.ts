@@ -144,7 +144,6 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       .subscribe(event => this.onPllDelete(event));
   }
 
-
   private onPllUpsert(event: IUnfilledPicklistlineAddedOrUpdatedEvent) {
     try {
       if (!event) {
@@ -317,24 +316,12 @@ getButtonEnabled(): boolean  {
       return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
     }));
     const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-let tableBody: ContentTable;
-var tb = tableBody$.subscribe(
-  (data) => {console.log('subscribe tableBody complete', data);
-tableBody = data;
-});
+      let tableBody: ContentTable;
+      var tb = tableBody$.subscribe(
+        (data) => {console.log('subscribe tableBody complete', data);
+      tableBody = data;
+      });
 
- tb = tableBody$.subscribe(
-    res => console.log('subscribe tableBody response', res),
-    err => console.log('subscribe tableBody Error', err),
-     () => console.log('subscribe tableBody complete'));
-
-// var rbd = this.reportBaseData$.subscribe(
-//       (data) => console.log('subscribe reportBaseData complete', data));
-//     rbd = this.reportBaseData$.subscribe(
-//       res => console.log('subscribe reportBaseData response', res),
-//       err => console.log('subscribe reportBaseData Error', err),
-//        () => console.log('subscribe reportBaseData complete'));
-console.log('this.reportBaseData', this.reportBaseData);
     this.pdfGridReportService.printWithBaseData(of(tableBody), of(ReportConstants.UnfilledReport), of(this.reportBaseData)).subscribe(succeeded => {
       this.requestStatus = 'none';
       if (!succeeded) {
