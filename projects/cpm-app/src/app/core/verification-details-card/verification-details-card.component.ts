@@ -6,9 +6,9 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
-import { ToastComponent } from '@omnicell/webcorecomponents/lib/toast/toast.component';
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
+import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -19,7 +19,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   constructor(private translateService: TranslateService) { }
 
-  @Input() 
+  @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
     console.log('setting data');
      this._verificationDestinationDetails = value;
@@ -28,8 +28,7 @@ export class VerificationDetailsCardComponent implements OnInit {
       return this._verificationDestinationDetails;
   }
 
-  @Output() approveVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
-  @Output() rejectVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
+  @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
@@ -89,13 +88,23 @@ export class VerificationDetailsCardComponent implements OnInit {
     return verificationDestinationDetail.Id;
   }
 
-  approveClicked(selectedVerificationDestinationDetail: VerificationDestinationDetail){
+  onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail){
     console.log('button approve clicked');
     console.log(selectedVerificationDestinationDetail);
-    this.approveVerification.emit(selectedVerificationDestinationDetail);
+    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
+    this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
   }
 
-  rejectClicked(selectedVerificationDestinationDetail: VerificationDestinationDetail){
-    this.rejectVerification.emit(selectedVerificationDestinationDetail);
+  onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail){
+    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Rejected;
+    this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
+  }
+
+  removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]) {
+    const removalSet = new Set(verificationDestinationDetailsToRemove);
+    this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
+      return !removalSet.has(verificationDestinationDetail);
+    });
+    this.selectedVerificationDestinationDetail = null;
   }
 }

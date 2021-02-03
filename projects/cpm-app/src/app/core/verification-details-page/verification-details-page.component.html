@@ -11,8 +11,7 @@
     ></app-verification-dashboard>
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
-      (approveVerification)="onApproveVerification($event)"
-      (rejectVerification)="onRejectVerification($event)">
+      (saveVerificationEvent)="onSaveVerificationEvent($event)">
     </app-verification-details-card>
   </div>
 </ng-container>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Console } from 'console';
 import { Observable } from 'rxjs';
@@ -11,6 +11,12 @@ import { VerificationDashboardData } from '../../shared/model/verification-dashb
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
+import { VerifiableItem } from '../../shared/model/verifiable-item';
+import { LogService } from '../../api-core/services/log-service';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -23,15 +29,19 @@ export class VerificationDetailsPageComponent implements OnInit {
   @Input() navigationParameters: IVerificationNavigationParameters;
 
   private backRoute = VerificationRouting.DestinationPage;
+  private loggingCategory = LoggingCategory.Verification;
 
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
 
+  @ViewChild(VerificationDetailsCardComponent, null) childVerificationDetailsCardComponent: VerificationDetailsCardComponent;
+
 
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
+    private logService: LogService
   ) {
   }
 
@@ -92,35 +102,39 @@ export class VerificationDetailsPageComponent implements OnInit {
     return orderDate;
    }
 
-  onApproveVerification($event: VerificationDestinationDetail) {
+  onSaveVerificationEvent($event: VerificationDestinationDetail) {
     console.log($event)
-    this.approveVerification($event);
+    this.saveVerification($event);
   }
 
-  private approveVerification(verificationDestinationDetail: VerificationDestinationDetail){
+  private saveVerification(verificationDestinationDetail: VerificationDestinationDetail){
     console.log('approveVerification');
     console.log(verificationDestinationDetail);
-    this.verificationService.approveVerification(verificationDestinationDetail).subscribe(x => {
-        //Todo Log Success
-        console.log("Approved Order");
-    },error => {
-        // Todo Log error
-        console.log(error);
+    this.verificationService.saveVerification(
+      [VerifiableItem.fromVerificationDestinationDetail(verificationDestinationDetail)]
+      )
+    .subscribe(success => {
+      try {
+        this.handleSaveVerificationSuccess(verificationDestinationDetail);
+      } catch(exception) {
+        /* istanbul ignore next */
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+          this.constructor.name + ' saveVerificaiton - handleSaveVerificationSuccess failed: ' + exception);
+      }
+    }, error => {
+      try {
+        this.handleSaveVerificationFailure(verificationDestinationDetail, error);
+      } catch(exception) {
+        /* istanbul ignore next */
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+          this.constructor.name + ' saveVerificaiton - handleSaveVerificationError failed: ' + exception);
+      }
     });
   }
 
-  onRejectVerification($event: VerificationDestinationDetail) {
-    console.log($event)
-    this.rejectVerification($event);
+  private handleSaveVerificationSuccess(verificationDestinationDetail: VerificationDestinationDetail): void {
+    this.childVerificationDetailsCardComponent.removeVerifiedDetails([verificationDestinationDetail]);
   }
 
-  rejectVerification(verificationDestinationDetail: VerificationDestinationDetail){
-    this.verificationService.rejectVerification(verificationDestinationDetail).subscribe(x => {
-      //Todo Log Success
-      console.log("Approved Order");
-    },error => {
-          // Todo Log error
-          console.log(error);
-    });
-  }
+  private handleSaveVerificationFailure(verificationDestinationDetail: VerificationDestinationDetail, error): void {}
 }
