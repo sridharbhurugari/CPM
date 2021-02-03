@@ -60,13 +60,13 @@ describe('PdfGridReportService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('printWithBaseData', () => {
-    it('should call PdfPrintService.printPdf', (done) => {
-      let table: ContentTable = null;
-      service.print(of(table), of('')).subscribe(x => {
-        expect(x).toBeTruthy();
-        done();
-      });
-    });
-  })
+  // describe('printWithBaseData', () => {
+  //   it('should call PdfPrintService.printPdf', (done) => {
+  //     let table: ContentTable = null;
+  //     service.print(of(table), of('')).subscribe(x => {
+  //       expect(x).toBeTruthy();
+  //       done();
+  //     });
+  //   });
+  // })
 });

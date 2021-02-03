@@ -315,24 +315,40 @@ getButtonEnabled(): boolean  {
     const sortedFilled$ = of(rptData).pipe(map(underFill => {
       return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
     }));
-    const tableBody$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-      let tableBody: ContentTable;
-      var tb = tableBody$.subscribe(
+    // snapshot TableData for report:
+    const tableBodyPrintMe$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
+      let tableBodyPrintMe: ContentTable;
+      var tb = tableBodyPrintMe$.subscribe(
         (data) => {console.log('subscribe tableBody complete', data);
-      tableBody = data;
+      tableBodyPrintMe = data;
       });
-
-    this.pdfGridReportService.printWithBaseData(of(tableBody), of(ReportConstants.UnfilledReport), of(this.reportBaseData)).subscribe(succeeded => {
+      // print our snapshots and subscribe for pass/fail
+      this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ).subscribe(succeeded => {
       this.requestStatus = 'none';
-      if (!succeeded) {
+        if (!succeeded) {
+          console.log('printMe returned Failed')
+          this.displayPrintFailed();
+        } else {
+          console.log('printMe Printed...')
+          this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
+        }
+      }, err => {
+        console.log('printMe error: ', err)
+        this.requestStatus = 'none';
         this.displayPrintFailed();
-      } else {
-        this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
-      }
-    }, err => {
-      this.requestStatus = 'none';
-      this.displayPrintFailed();
-    });
+      });
+    tb.unsubscribe;
+    // this.pdfGridReportService.printWithBaseData(of(tableBody), of(ReportConstants.UnfilledReport), of(this.reportBaseData)).subscribe(succeeded => {
+    //   this.requestStatus = 'none';
+    //   if (!succeeded) {
+    //     this.displayPrintFailed();
+    //   } else {
+    //     this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
+    //   }
+    // }, err => {
+    //   this.requestStatus = 'none';
+    //   this.displayPrintFailed();
+    // });
   }
 
   private getDocumentData() {

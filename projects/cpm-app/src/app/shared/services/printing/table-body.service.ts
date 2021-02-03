@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ITableColumnDefintion } from './i-table-column-definition';
 import { TranslateService } from '@ngx-translate/core';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable, forkJoin } from 'rxjs';
 import { TableCell, ContentTable } from 'pdfmake/interfaces';
 import { fonts } from 'pdfmake/build/pdfmake';
@@ -25,6 +25,11 @@ export class TableBodyService {
       return headerResourceKeys.map(headerKey => {
         return { text: translatedHeadersObject[headerKey], style: 'tableHeader'}
       });
+    }),
+    tap({
+      next: val =>    console.log('headerRow$ on next', val),
+      error: error => console.log('headerRow$ on error', error.message),
+      complete: () => console.log('headerRow$ on complete')
     }));
 
     const dataSourceRows$ = dataSource$.pipe(map<T[], TableCell[][]>((dataSourceRows) => {
@@ -43,7 +48,12 @@ export class TableBodyService {
       });
 
       return compiledRows;
-    }));
+    }),
+      tap({
+        next: val =>    console.log('dataSourceRows$ on next', val),
+        error: error => console.log('dataSourceRows$ on error', error.message),
+        complete: () => console.log('dataSourceRows$ on complete')
+      }));
 
     return forkJoin(headerRow$, dataSourceRows$).pipe(map(tableParts => {
       let tableBody: TableCell[][] = []

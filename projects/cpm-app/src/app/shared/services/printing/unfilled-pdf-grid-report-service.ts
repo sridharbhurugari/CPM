@@ -34,34 +34,37 @@ export class UnfilledPdfGridReportService
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
-  printWithBaseData(tableBody$: Observable<ContentTable>, reportTitle$: Observable<string>, reportBaseData$: Observable<IAngularReportBaseData>): Observable<boolean> {
-    return forkJoin(reportBaseData$, this.reportLogo$, tableBody$, reportTitle$, this.reportLabels$).pipe(switchMap(r => {
-      return this.generateAndPrintPdf(r[0], r[1], r[2], r[3], r[4]);
-    }));
+  printMe(reportBaseData: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): Observable<boolean> {
+    let reportLogoDataUrl: string;
+      this.reportLogo$.subscribe((data) => {console.log("subscribe logo", data); reportLogoDataUrl = data;});
+     //this.reportLogo$.subscribe(res => {console.log("subscribe logo", res); reportLogoDataUrl = res;});
+    let reportLabels: IReportLabels = {
+      REPORT_LABEL_OMNI_ID: 'omni id:',
+      REPORT_LABEL_OMNI_NAME: 'omni name:',
+      REPORT_LABEL_PRINTED: 'printed:',
+      UNFILLED_REPORT_LABEL_ORDER_ID : 'Order Id',
+      UNFILLED_REPORT_LABEL_PRIORITYCODE: 'Priority type',
+      REPORT_LABEL_XR2_DEVICE_ID: 'xr2 name'
+    };
+      this.reportLabels$.subscribe((data) => reportLabels = data, console.error );
+console.log('pre-print', tableBodyPrintMe);
+ return this.print(reportBaseData, reportLogoDataUrl, tableBodyPrintMe, reportTitle, reportLabels);
   }
 
-  print(tableBody$: Observable<ContentTable>, reportTitle$: Observable<string>): Observable<boolean> {
-    return forkJoin(this.reportBaseData$, this.reportLogo$, tableBody$, reportTitle$, this.reportLabels$).pipe(switchMap(r => {
-      return this.generateAndPrintPdf(r[0], r[1], r[2], r[3], r[4]);
-    }));
-  }
-
-  private generateAndPrintPdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
-    const blob$ = this.generatePdfBlob(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
-    return blob$.pipe(switchMap((blob: Blob) => {
-      return this.pdfPrintService.printPdf(blob);
-    }));
-  }
-
-  private generatePdfBlob(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<Blob> {
-    const pdf = this.generatePdf(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+  print(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBodyPrintMe: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
+    const pdf = this.generatePdf(reportBaseData, reportLogoDataUrl, tableBodyPrintMe, reportTitle, reportLabels);
     const boundGetBlob = pdf.getBlob.bind(pdf);
     const blob$ = bindCallback<Blob>(boundGetBlob)();
-    return blob$;
+    return blob$.pipe(switchMap((blob: Blob) => {
+       return this.pdfPrintService.printPdf(blob);
+      }));
+    // const result = this.pdfPrintService.printPdf(boundGetBlob);
+    // return result;
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-      const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+    console.log('generatePdf', tableBody);
+    const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
       const pdf = this.pdfMakeService.createPdf(documentDefinition);
       return pdf;
   }
@@ -93,11 +96,11 @@ export class UnfilledPdfGridReportService
         // logo and title
         {
           columns: [
-            {
-              image: reportLogo,
-              width: 82,
-              height: 18
-            },
+            // {
+            //   image: reportLogo,
+            //   width: 82,
+            //   height: 18
+            // },
             { text: reportTitle, alignment: 'right', style: 'header', fontSize: 20, bold: true }
           ]
         },
