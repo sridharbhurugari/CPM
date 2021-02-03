@@ -28,6 +28,8 @@ export class VerificationDetailsCardComponent implements OnInit {
       return this._verificationDestinationDetails;
   }
 
+  @Input() deviceDescription : string;
+
   @Output() approveVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
   @Output() rejectVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
 

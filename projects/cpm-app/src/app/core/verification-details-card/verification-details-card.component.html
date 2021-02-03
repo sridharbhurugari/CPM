@@ -44,7 +44,7 @@
                               </div>
                             </div>
                             <div class="data">
-                                <app-cp-clickable-icon *ngIf="!row.RequiredVerification"
+                                <app-cp-clickable-icon *ngIf="row.RequiredVerification"
                                 [width]="30"
                                 [height]="30"
                                 [theme]="'danger'"
@@ -74,7 +74,7 @@
                           {{ 'PICK_LOCATION' | translate }}
                         </div>
                         <div class="detailBody">
-                          {{this.selectedVerificationDestinationDetail.DeviceDescription}}
+                          {{this.selectedVerificationDestinationDetail.DeviceDescription || this.deviceDescription}}
                           <span style="padding-left: 10px; padding-right: 10px;" *ngIf="this.selectedVerificationDestinationDetail.OutputDevice">-</span>
                           {{this.selectedVerificationDestinationDetail.OutputDevice}}
                         </div>

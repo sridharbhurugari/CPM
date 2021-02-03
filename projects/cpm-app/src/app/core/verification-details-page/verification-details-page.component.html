@@ -12,7 +12,8 @@
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
       (approveVerification)="onApproveVerification($event)"
-      (rejectVerification)="onRejectVerification($event)">
+      (rejectVerification)="onRejectVerification($event)"
+      [deviceDescription]="this.navigationParameters.DeviceDescription">
     </app-verification-details-card>
   </div>
 </ng-container>
