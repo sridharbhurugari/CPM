@@ -11,7 +11,8 @@
     ></app-verification-dashboard>
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
-      (saveVerificationEvent)="onSaveVerificationEvent($event)">
+      (saveVerificationEvent)="onSaveVerificationEvent($event)"
+      [deviceDescription]="this.navigationParameters.DeviceDescription">
     </app-verification-details-card>
   </div>
 </ng-container>

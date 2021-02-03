@@ -29,6 +29,10 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
+  @Output() approveVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
+  @Output() rejectVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
+
+  @Input() deviceDescription : string;
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
