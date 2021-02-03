@@ -322,8 +322,28 @@ getButtonEnabled(): boolean  {
         (data) => {console.log('subscribe tableBody complete', data);
       tableBodyPrintMe = data;
       });
+      // Run the prePrint on the snapshots, and if it passes, update the snapshots.
+      if(!this.pdfGridReportService.prePrint(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ))
+        {
+          console.log('printMe returned Failed')
+          this.displayPrintFailed();
+        }
+        this.getDocumentData();
+        const rptData2 = this.getReportData(datePipe);
+        console.log('rptData2', rptData2);
+        const sortedFilled2$ = of(rptData2).pipe(map(underFill => {
+          return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
+        }));
+        // snapshot TableData for report:
+        const tableBodyPrintMe2$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
+          let tableBodyPrintMe2: ContentTable;
+          var tb2 = tableBodyPrintMe2$.subscribe(
+            (data) => {console.log('subscribe tableBody complete', data);
+          tableBodyPrintMe2 = data;
+          });
       // print our snapshots and subscribe for pass/fail
-      this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ).subscribe(succeeded => {
+
+      this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe2, ReportConstants.UnfilledReport ).subscribe(succeeded => {
       this.requestStatus = 'none';
         if (!succeeded) {
           console.log('printMe returned Failed')

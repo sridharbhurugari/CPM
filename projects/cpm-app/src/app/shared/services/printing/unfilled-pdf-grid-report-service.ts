@@ -36,7 +36,27 @@ export class UnfilledPdfGridReportService
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
-  printMe(reportBaseData: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): Observable<boolean> {
+  prePrint(reportBaseData: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): boolean {
+    try{
+    console.log("subscribe logo", this.reportLogoData);
+    let reportLabels: IReportLabels = {
+      REPORT_LABEL_OMNI_ID: '',
+      REPORT_LABEL_OMNI_NAME: '',
+      REPORT_LABEL_PRINTED: '',
+      UNFILLED_REPORT_LABEL_ORDER_ID : '',
+      UNFILLED_REPORT_LABEL_PRIORITYCODE: '',
+      REPORT_LABEL_XR2_DEVICE_ID: ''
+    };
+      this.reportLabels$.subscribe((data) => reportLabels = data, console.error );
+      const pdf = this.generatePdf(reportBaseData, this.reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
+      return true;
+    } catch (e) {
+      console.log('prePrint ERROR', e);
+      return false;
+    }
+  }
+
+  printMe(reportBaseDataPrintMe: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): Observable<boolean> {
     console.log("subscribe logo", this.reportLogoData);
 //    this.reportLogo$.subscribe((data) => {console.log("subscribe logo", data); this.reportLogoData = data;});
 
@@ -49,13 +69,8 @@ export class UnfilledPdfGridReportService
       REPORT_LABEL_XR2_DEVICE_ID: 'xr2 name'
     };
       this.reportLabels$.subscribe((data) => reportLabels = data, console.error );
-console.log('pre-print', tableBodyPrintMe);
-let rptBase: IAngularReportBaseData = JSON.parse(JSON.stringify(reportBaseData));
-console.log('printMe - reportBaseData1', reportBaseData);
-this.reportBaseData$.subscribe((data) => {rptBase = data; console.log('printMe - rptBase1', rptBase), console.error});
-console.log('printMe - rptBase2', rptBase);
-console.log('printMe - reportBaseData2', reportBaseData);
- return this.print(rptBase, this.reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
+console.log('printMe tableBodyPrintMe', tableBodyPrintMe);
+ return this.print(reportBaseDataPrintMe, this.reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
   }
 
   print(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBodyPrintMe: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
@@ -65,8 +80,6 @@ console.log('printMe - reportBaseData2', reportBaseData);
     return blob$.pipe(switchMap((blob: Blob) => {
        return this.pdfPrintService.printPdf(blob);
       }));
-    // const result = this.pdfPrintService.printPdf(boundGetBlob);
-    // return result;
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
@@ -109,11 +122,11 @@ console.log('printMe - reportBaseData2', reportBaseData);
         // logo and title
         {
           columns: [
-            // {
-            //   image: reportLogo,
-            //   width: 82,
-            //   height: 18
-            // },
+            {
+              image: reportLogo,
+              width: 82,
+              height: 18
+            },
             { text: reportTitle, alignment: 'right', style: 'header', fontSize: 20, bold: true }
           ]
         },
