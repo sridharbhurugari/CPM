@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastComponent } from '@omnicell/webcorecomponents/lib/toast/toast.component';
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
+import { ToastService } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -17,7 +18,8 @@ import { Observable } from 'rxjs';
 })
 export class VerificationDetailsCardComponent implements OnInit {
 
-  constructor(private translateService: TranslateService) { }
+  constructor(private translateService: TranslateService,
+              private toastService: ToastService) { }
 
   @Input() 
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -86,6 +88,16 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     return verificationDestinationDetail.Id;
+  }
+
+  Alert(){
+    //if(this.selectedVerificationDestinationDetail.Exception){
+      this.toastService.info('info title', 'This medication has an exception', {
+        timeout: 5000,
+        pauseOnHover: false
+      });
+    //}
+    
   }
 
 }

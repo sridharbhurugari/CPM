@@ -9,6 +9,7 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 
@@ -16,10 +17,20 @@ describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
   let fixture: ComponentFixture<VerificationDetailsCardComponent>;
   let translateService: Partial<TranslateService>;
+  let toastService: Partial<ToastService>;
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+  };
+
+  let errorSpy = jasmine.createSpy('error');
+  let warningSpy = jasmine.createSpy('warning');
+  let infoSpy = jasmine.createSpy('info');
+  toastService = {
+    error: errorSpy,
+    warning: warningSpy,
+    info: infoSpy,
   };
 
   beforeEach(async(() => {
@@ -29,6 +40,7 @@ describe('VerificationDetailsCardComponent', () => {
       imports: [SvgIconModule],
       providers: [
         { provide: TranslateService, useValue: translateService},
+        { provide: ToastService, useValue: toastService },
       ]
     })
     .compileComponents();
@@ -70,6 +82,13 @@ describe('VerificationDetailsCardComponent', () => {
       mockdetail.OrderId = "1"
       component.medicationClicked(mockdetail);
       expect(component.selectedVerificationDestinationDetail.OrderId).toBe("1");
+    });
+  
+    it('should call toastService.info', () => {
+      const mockdetail = new VerificationDestinationDetail(null);
+      mockdetail.Exception = true;
+      component.Alert();
+      expect(toastService.info).toHaveBeenCalled();
     });
   });
 });
