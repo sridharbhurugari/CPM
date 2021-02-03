@@ -19,6 +19,7 @@ export class UnfilledPdfGridReportService
 {
   reportBaseData$: Observable<IAngularReportBaseData>;
   reportLogo$: Observable<string>;
+  reportLogoData: string;
   reportLabels$: Observable<IReportLabels>;
 
   constructor(
@@ -30,14 +31,15 @@ export class UnfilledPdfGridReportService
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
     this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png'));
+    this.reportLogo$.subscribe((data) => {this.reportLogoData = data; console.log("subscribe logo", this.reportLogoData); });
     const reportLabelKeys: (keyof IReportLabels)[] = [ 'REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED', 'UNFILLED_REPORT_LABEL_ORDER_ID', 'UNFILLED_REPORT_LABEL_PRIORITYCODE',];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1));
   }
 
   printMe(reportBaseData: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): Observable<boolean> {
-    let reportLogoDataUrl: string;
-      this.reportLogo$.subscribe((data) => {console.log("subscribe logo", data); reportLogoDataUrl = data;});
-     //this.reportLogo$.subscribe(res => {console.log("subscribe logo", res); reportLogoDataUrl = res;});
+    console.log("subscribe logo", this.reportLogoData);
+//    this.reportLogo$.subscribe((data) => {console.log("subscribe logo", data); this.reportLogoData = data;});
+
     let reportLabels: IReportLabels = {
       REPORT_LABEL_OMNI_ID: 'omni id:',
       REPORT_LABEL_OMNI_NAME: 'omni name:',
@@ -48,7 +50,12 @@ export class UnfilledPdfGridReportService
     };
       this.reportLabels$.subscribe((data) => reportLabels = data, console.error );
 console.log('pre-print', tableBodyPrintMe);
- return this.print(reportBaseData, reportLogoDataUrl, tableBodyPrintMe, reportTitle, reportLabels);
+let rptBase: IAngularReportBaseData = JSON.parse(JSON.stringify(reportBaseData));
+console.log('printMe - reportBaseData1', reportBaseData);
+this.reportBaseData$.subscribe((data) => {rptBase = data; console.log('printMe - rptBase1', rptBase), console.error});
+console.log('printMe - rptBase2', rptBase);
+console.log('printMe - reportBaseData2', reportBaseData);
+ return this.print(rptBase, this.reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
   }
 
   print(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBodyPrintMe: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
@@ -63,9 +70,15 @@ console.log('pre-print', tableBodyPrintMe);
   }
 
   private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-    console.log('generatePdf', tableBody);
+    console.log('generatePdf - reportBaseData', reportBaseData);
+    console.log('generatePdf - reportLogoDataUrl', reportLogoDataUrl);
+    console.log('generatePdf - tableBody', tableBody);
+    console.log('generatePdf - reportTitle', reportTitle);
+    console.log('generatePdf - reportLabels', reportLabels);
     const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
-      const pdf = this.pdfMakeService.createPdf(documentDefinition);
+    console.log('generatePdf - documentDefinition', documentDefinition);
+    const pdf = this.pdfMakeService.createPdf(documentDefinition);
+    console.log('generatePdf - pdf', pdf);
       return pdf;
   }
 
