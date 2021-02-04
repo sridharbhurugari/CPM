@@ -63,20 +63,15 @@
 
 .cpmactiontitleMultiLine{
   vertical-align: middle;
+  font-size: 22px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
   color: white;
   flex: 1px;
   padding-left: 20px;
 }
 
-.cpmactiontitleMultiLineLarge{
-  font-size: 24px;
-  flex: 1px;
-}
-
-.cpmactiontitleMultiLineSmall{
-  font-size: 20px;
-  flex: 1px;
+.cpmactiontitleMultiLineBold{
+  font-weight: 600;
 }
 
 .ocactionheader{
