@@ -13,7 +13,6 @@ import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
 import { take } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
-import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -130,7 +129,6 @@ export class VerificationDetailsCardComponent implements OnInit {
         rejectReasonDisplayList.push(rejectReasonDisplayRow);
     })
 
-    defaultRejectReasonDisplayItem = rejectReasonDisplayList.length > 0 ? rejectReasonDisplayList[0]: null;
     const rowsToHideCheckbox = rejectReasonDisplayList.slice();
 
     this.translations$.subscribe((translations) => {
@@ -138,12 +136,12 @@ export class VerificationDetailsCardComponent implements OnInit {
         popuptitle: translations.REJECT_REASON,
         dropdowntitle: translations.REASON,
         dropdownrows: rejectReasonDisplayList,
-        defaultrow: defaultRejectReasonDisplayItem,
+        defaultrow: null,
         showCheckbox: false,
         checkboxLabel: '',
         checkboxSelected: false,
         checkboxHideSelection: rowsToHideCheckbox,
-        selectedrow: defaultRejectReasonDisplayItem,
+        selectedrow: null,
         selectedcheckbox: false
       };
 
