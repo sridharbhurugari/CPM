@@ -12,6 +12,7 @@
   </app-verification-destination-page>
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
   [navigationParameters]="navigationParameters"
+  [xr2PickingBarcodeScanned]="xr2PickingBarcodeScanned"
   (pageNavigationEvent)="onPageNavigationEvent($event)">
   </app-verification-details-page>
 </div>

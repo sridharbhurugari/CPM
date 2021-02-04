@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { shareReplay } from 'rxjs/operators';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -20,11 +21,12 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   @Input() navigationParameters: IVerificationNavigationParameters;
 
+  @Input() xr2PickingBarcodeScanned: IBarcodeData;
+
   private backRoute = VerificationRouting.DestinationPage;
 
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
-
 
   constructor(
     private translateService: TranslateService,
