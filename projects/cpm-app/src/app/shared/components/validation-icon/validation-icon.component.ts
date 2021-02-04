@@ -18,7 +18,16 @@ export class ValidationIconComponent implements OnInit {
   iconString: string;
 
   @Input()
+  iconTheme: 'dark';
+
+  @Input()
   toastType: 'info' | 'warn' | 'error'
+
+  @Input()
+  iconHeight = 50;
+  
+  @Input()
+  iconWidth = 50;
 
   constructor(
     private toastService: ToastService,

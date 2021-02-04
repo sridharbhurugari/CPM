@@ -41,6 +41,7 @@ import { VerificationDestinationQueueComponent } from './verification-destinatio
 import { VerificationDetailsPageComponent } from './verification-details-page/verification-details-page.component';
 import { VerificationDashboardComponent } from './verification-dashboard/verification-dashboard.component';
 import { LoadingComponent } from './loading/loading.component';
+import { VerificationDetailsCardComponent } from './verification-details-card/verification-details-card.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { LoadingComponent } from './loading/loading.component';
     VerificationDetailsPageComponent,
     VerificationDashboardComponent,
     LoadingComponent,
+    VerificationDetailsCardComponent,
   ],
   imports: [
     CommonModule,

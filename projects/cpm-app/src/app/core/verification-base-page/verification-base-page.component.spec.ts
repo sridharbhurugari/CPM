@@ -1,9 +1,11 @@
 import { parseTemplate } from '@angular/compiler';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, Subject } from 'rxjs';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 import { VerificationBasePageComponent } from './verification-base-page.component';
 
@@ -14,6 +16,9 @@ describe('VerificationPageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationBasePageComponent ],
+      providers: [
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }},
+      ],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();

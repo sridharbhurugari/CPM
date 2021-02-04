@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IVerificationDashboardData } from '../data-contracts/i-verification-dashboard-data';
+import { IVerificationDestinationDetail } from '../data-contracts/i-verification-destination-detail';
 import { IVerificationDestinationItem } from '../data-contracts/i-verification-destination-item';
 import { IVerificationOrderItem } from '../data-contracts/i-verification-order-item';
 
@@ -35,6 +36,14 @@ export class VerificationService {
   getVerificationDashboardData(deviceId: string, orderId: string):  Observable<IVerificationDashboardData> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/dashboard/${deviceId}/${orderId}`);
     return this.httpClient.get<IVerificationDashboardData>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  getVerificationDestinationDetails(destinationId: string, orderId: string, deviceId: number): Observable<IVerificationDestinationDetail[]> {
+    console.log('verificationservice get')
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destination/${destinationId}/${orderId}/${deviceId}`);
+    return this.httpClient.get<IVerificationDestinationDetail[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
