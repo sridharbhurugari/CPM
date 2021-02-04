@@ -130,7 +130,7 @@
   "PICK_QTY": "Pick Qty",
   "PICK_TOTAL": "Pick Total",
   "PICK_LOCATION": "Pick Location",
-  "PICK_VERIFICATION_TOTAL_MSG": "Filled quantity does not match Requested quantity",
+  "PICK_VERIFICATION_TOTAL_MSG": "Filled quantity does not match requested quantity",
   "PICKED_BY": "Picked By",
   "PICKED_QUANTITY": "Picked Quantity",
   "PICKED_TIME": "Picked Time",

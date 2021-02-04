@@ -14,6 +14,7 @@ import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
 import { take } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -55,6 +56,8 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   currentSortPropertyName: string;
   columnSortDirection: string;
+
+  destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [
     'REJECT_REASON',
@@ -128,36 +131,37 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.rejectReasons.forEach((reason) => {
         const rejectReasonDisplayRow = new SingleselectRowItem(reason, reason);
         rejectReasonDisplayList.push(rejectReasonDisplayRow);
-    })
+    });
 
     defaultRejectReasonDisplayItem = rejectReasonDisplayList.length > 0 ? rejectReasonDisplayList[0]: null;
     const rowsToHideCheckbox = rejectReasonDisplayList.slice();
 
     this.translations$.subscribe((translations) => {
-      const data: IDropdownPopupData = {
-        popuptitle: translations.REJECT_REASON,
-        dropdowntitle: translations.REASON,
-        dropdownrows: rejectReasonDisplayList,
-        defaultrow: defaultRejectReasonDisplayItem,
-        showCheckbox: false,
-        checkboxLabel: '',
-        checkboxSelected: false,
-        checkboxHideSelection: rowsToHideCheckbox,
-        selectedrow: defaultRejectReasonDisplayItem,
-        selectedcheckbox: false
-      };
+        const data: IDropdownPopupData = {
+            popuptitle: translations.REJECT_REASON,
+            dropdowntitle: translations.REASON,
+            dropdownrows: rejectReasonDisplayList,
+            defaultrow: defaultRejectReasonDisplayItem,
+            showCheckbox: false,
+            checkboxLabel: '',
+            checkboxSelected: false,
+            checkboxHideSelection: rowsToHideCheckbox,
+            selectedrow: defaultRejectReasonDisplayItem,
+            selectedcheckbox: false
+        };
 
-      properties.data = data;
+        properties.data = data;
 
-      let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
-      component.dismiss.pipe(take(1)).subscribe(selectedOk => {
-        if (selectedOk) {
-          selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Rejected;
-          selectedVerificationDestinationDetail.RejectReason = data.selectedrow.value;
-          this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
-        }
-      });
-    })
+        let component =
+            this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
+        component.dismiss.pipe(take(1)).subscribe(selectedOk => {
+            if (selectedOk) {
+                selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Rejected;
+                selectedVerificationDestinationDetail.RejectReason = data.selectedrow.value;
+                this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
+            }
+        });
+    });
 
   }
 }

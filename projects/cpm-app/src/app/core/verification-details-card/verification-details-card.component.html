@@ -4,11 +4,13 @@
   </div>
   <div class="card" *ngIf="this.verificationDestinationDetails">
     <div class="card-header ocactionheader">
-      <div class="cpmactiontitle">
-        <!-- Add destination formating here
-             <div>{{destinationLine1}}</div>
-             <div>{{destinationLine2}}</div> -->
-      </div>
+        <div class="cpmactiontitle" *ngIf="this.verificationDestinationDetails[0].DestinationType===this.destinationTypes.Area">
+            {{destinationLine1}}
+        </div>
+        <div class="cpmactiontitleMultiLine" *ngIf="this.verificationDestinationDetails[0].DestinationType!==this.destinationTypes.Area">
+            <div class="cpmactiontitleMultiLineBold">{{destinationLine1}}</div>
+            <div>{{destinationLine2}}</div>
+        </div>
     </div>
     <div class="card-body cbody">
       <div class="leftPanel">
