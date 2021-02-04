@@ -92,7 +92,9 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   Alert(){
     //if(this.selectedVerificationDestinationDetail.Exception){
-      this.toastService.info('info title', 'This medication has an exception', {
+      var exceptionMsg;
+      this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
+      this.toastService.error('error title', exceptionMsg, {
         timeout: 5000,
         pauseOnHover: false
       });

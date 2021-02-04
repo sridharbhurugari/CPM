@@ -84,11 +84,9 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.selectedVerificationDestinationDetail.OrderId).toBe("1");
     });
   
-    it('should call toastService.info', () => {
-      const mockdetail = new VerificationDestinationDetail(null);
-      mockdetail.Exception = true;
+    it('should call toastService.error', () => {
       component.Alert();
-      expect(toastService.info).toHaveBeenCalled();
+      expect(toastService.error).toHaveBeenCalled();
     });
   });
 });

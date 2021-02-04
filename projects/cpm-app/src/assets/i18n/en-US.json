@@ -292,5 +292,6 @@
   "HIGHPRIORITY": "Priority Picks ({{count}})",
   "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" : "Return",
   "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" : "Restock",
-  "HYPHEN_SEPARATOR": "-"
+  "HYPHEN_SEPARATOR": "-",
+  "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item."
 }
