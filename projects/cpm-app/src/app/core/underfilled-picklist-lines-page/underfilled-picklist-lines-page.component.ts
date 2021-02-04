@@ -3,7 +3,7 @@ import { UnderfilledPicklistLinesService } from '../../api-core/services/underfi
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, merge, Subject } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
-import { map, shareReplay, switchMap, scan, takeUntil } from 'rxjs/operators';
+import { map, shareReplay, switchMap, scan, takeUntil, catchError } from 'rxjs/operators';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { IUnderfilledPicklist } from '../../api-core/data-contracts/i-underfilled-picklist';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
@@ -101,11 +101,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   ngOnInit() {
     try {
     const orderId = this.route.snapshot.queryParamMap.get('orderId');
-    this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1));
+    this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1), catchError(err => of(err.status)));
 
     this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(shareReplay(1)).pipe(map(x => {
       return x.map(l => new UnderfilledPicklistLine(l));
-    }));
+    }), catchError(err => of(err.status)));
     this.picklistLines$.subscribe((pll) => {this.picklistLines = pll; });
 
     // permission: are buttons visible
@@ -129,18 +129,17 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     });
     this.getDocumentData();
     } catch (e) {
-      console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR');
-      console.log(e);
+      console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR', e);
     }
   }
 
   ngAfterViewInit() {
     this.child.SelectedItemCount$.subscribe(n => this.currentItemCountSelected = n);
     this.pickingEventConnectionService.updateUnfilledPicklistLineSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
+      .pipe(takeUntil(this.ngUnsubscribe), catchError(err => of(err.status)))
       .subscribe(event => this.onPllUpsert(event));
     this.pickingEventConnectionService.removedUnfilledPicklistLineSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
+      .pipe(takeUntil(this.ngUnsubscribe), catchError(err => of(err.status)))
       .subscribe(event => this.onPllDelete(event));
   }
 
@@ -159,8 +158,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
           this.picklistLines.push(upll);
         }
     } catch (e) {
-      console.log('UnderfilledPicklistLinesPageComponent.onPllAdd ERROR');
-      console.log(e);
+      console.log('UnderfilledPicklistLinesPageComponent.onPllAdd ERROR', e);
     }
   }
 
@@ -176,8 +174,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       }
 
     } catch (e) {
-      console.log('UnderfilledPicklistLinesPageComponent.onPllDelete ERROR');
-      console.log(e);
+      console.log('UnderfilledPicklistLinesPageComponent.onPllDelete ERROR', e);
     }
   }
   navigateBack() {
@@ -311,36 +308,27 @@ getButtonEnabled(): boolean  {
     this.getDocumentData();
     const datePipe = new DatePipe("en-US");
     const rptData = this.getReportData(datePipe);
-    console.log('rptData', rptData);
     const sortedFilled$ = of(rptData).pipe(map(underFill => {
       return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
-    }));
-    // snapshot TableData for report:
+    }), catchError(err => of(err.status)));
+
+    // snapshot TableData for running through the pdf creator:
     const tableBodyPrintMe$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
       let tableBodyPrintMe: ContentTable;
-      var tb = tableBodyPrintMe$.subscribe(
-        (data) => {console.log('subscribe tableBody complete', data);
-      tableBodyPrintMe = data;
-      });
+      var tb = tableBodyPrintMe$.subscribe((data) => tableBodyPrintMe = data, console.error);
       // Run the prePrint on the snapshots, and if it passes, update the snapshots.
       if(!this.pdfGridReportService.prePrint(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ))
         {
-          console.log('printMe returned Failed')
+          console.log('prePrint Failed')
           this.displayPrintFailed();
+          return;
         }
-        this.getDocumentData();
-        const rptData2 = this.getReportData(datePipe);
-        console.log('rptData2', rptData2);
-        const sortedFilled2$ = of(rptData2).pipe(map(underFill => {
-          return _.orderBy(underFill, x => x.DescriptionSortValue, 'asc');
-        }));
-        // snapshot TableData for report:
+        tb.unsubscribe;
+
+        // snapshot TableData for report again - the pdf function changes 'something' that adds details to the fields
         const tableBodyPrintMe2$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
           let tableBodyPrintMe2: ContentTable;
-          var tb2 = tableBodyPrintMe2$.subscribe(
-            (data) => {console.log('subscribe tableBody complete', data);
-          tableBodyPrintMe2 = data;
-          });
+          var tb2 = tableBodyPrintMe2$.subscribe((data) => tableBodyPrintMe2 = data, console.error);
       // print our snapshots and subscribe for pass/fail
 
       this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe2, ReportConstants.UnfilledReport ).subscribe(succeeded => {
@@ -349,7 +337,6 @@ getButtonEnabled(): boolean  {
           console.log('printMe returned Failed')
           this.displayPrintFailed();
         } else {
-          console.log('printMe Printed...')
           this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
         }
       }, err => {
@@ -357,25 +344,13 @@ getButtonEnabled(): boolean  {
         this.requestStatus = 'none';
         this.displayPrintFailed();
       });
-    tb.unsubscribe;
-    // this.pdfGridReportService.printWithBaseData(of(tableBody), of(ReportConstants.UnfilledReport), of(this.reportBaseData)).subscribe(succeeded => {
-    //   this.requestStatus = 'none';
-    //   if (!succeeded) {
-    //     this.displayPrintFailed();
-    //   } else {
-    //     this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
-    //   }
-    // }, err => {
-    //   this.requestStatus = 'none';
-    //   this.displayPrintFailed();
-    // });
+    tb2.unsubscribe;
   }
 
   private getDocumentData() {
     let pickList: IUnderfilledPicklist;
     this.picklist$.subscribe((listData) => {pickList = listData; });
     this.reportBaseData$.subscribe((baseData) => {
-      console.log('getDocumentData...Base Data', baseData)
       if(baseData)
       {
       this.reportBaseData = baseData;
