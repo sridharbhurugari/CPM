@@ -47,7 +47,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
 
-  selectedVerificationDestinationDetail : IVerificationDestinationDetail;
+  selectedVerificationDestinationDetail : VerificationDestinationDetail;
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
@@ -73,7 +73,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-  medicationClicked(destinationDetail: IVerificationDestinationDetail): void {
+  medicationClicked(destinationDetail: VerificationDestinationDetail): void {
     this.selectedVerificationDestinationDetail = destinationDetail;
   }
 
