@@ -11,6 +11,8 @@ export interface IBarcodeData {
     BinId: string;
     TransactionId: string;
     DispenseId: number;
+    OrderId: string;
+    DestinationId: string;
     SourceOmniId: string;
     IsBarcodeOverride: boolean;
     IsDispenseBarcode: boolean;
@@ -18,4 +20,5 @@ export interface IBarcodeData {
     IsBinBarcode: boolean;
     IsTrayBarcode: boolean;
     IsUnrecognizedBarcode: boolean;
+    IsXr2PickingBarcode: boolean;
 }
