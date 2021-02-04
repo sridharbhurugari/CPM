@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastComponent } from '@omnicell/webcorecomponents/lib/toast/toast.component';
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -39,6 +40,8 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   currentSortPropertyName: string;
   columnSortDirection: string;
+
+  destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [
     'ITEM_ID',
