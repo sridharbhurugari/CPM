@@ -10,6 +10,7 @@ import { ToastComponent } from '@omnicell/webcorecomponents/lib/toast/toast.comp
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
 import { ToastService } from '@omnicell/webcorecomponents';
+import { DestinationTypes } from '../../shared/constants/destination-types';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -41,6 +42,8 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   currentSortPropertyName: string;
   columnSortDirection: string;
+
+  destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [
     'ITEM_ID',
@@ -98,8 +101,6 @@ export class VerificationDetailsCardComponent implements OnInit {
         timeout: 5000,
         pauseOnHover: false
       });
-    //}
-    
+   //}
   }
-
 }

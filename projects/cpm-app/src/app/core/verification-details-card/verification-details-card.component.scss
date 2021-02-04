@@ -60,6 +60,20 @@
     flex: 1px;
     padding-left: 20px;
 }
+
+.cpmactiontitleMultiLine{
+  vertical-align: middle;
+  font-size: 22px;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: white;
+  flex: 1px;
+  padding-left: 20px;
+}
+
+.cpmactiontitleMultiLineBold{
+  font-weight: 600;
+}
+
 .ocactionheader{
   background-color: #5e6a71;
   width: 100%;
