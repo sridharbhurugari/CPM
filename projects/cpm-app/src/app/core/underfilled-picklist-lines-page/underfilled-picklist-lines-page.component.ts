@@ -184,7 +184,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   getReportData(datePipe: DatePipe): UnderfilledPicklistLine[] {
-const underfilled = this.picklistLines;
+const underfilled = JSON.parse(JSON.stringify(this.picklistLines));
 
         underfilled.forEach(element => {
           const date = element.FillDate;
