@@ -68,6 +68,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       DeviceId: this.navigationParameters.DeviceId,
       OrderId: this.navigationParameters.OrderId,
       DestinationId: verificationDestinationItem.DestinationId,
+      DestinationLine1: verificationDestinationItem.DestinationLine1,
+      DestinationLine2: verificationDestinationItem.DestinationLine2,
       DeviceDescription: this.navigationParameters.DeviceDescription,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       Date: this.navigationParameters.Date,

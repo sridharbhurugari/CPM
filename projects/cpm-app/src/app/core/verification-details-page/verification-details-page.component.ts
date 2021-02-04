@@ -27,6 +27,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
+  @Input() rejectReasons: string[];
 
   private backRoute = VerificationRouting.DestinationPage;
   private loggingCategory = LoggingCategory.Verification;
@@ -55,6 +56,8 @@ export class VerificationDetailsPageComponent implements OnInit {
       OrderId: this.navigationParameters.OrderId,
       DeviceId: this.navigationParameters.DeviceId,
       DestinationId: null,
+      DestinationLine1: null,
+      DestinationLine2: null,
       DeviceDescription: this.navigationParameters.DeviceDescription,
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       Date: this.navigationParameters.Date,

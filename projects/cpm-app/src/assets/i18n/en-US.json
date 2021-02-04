@@ -142,6 +142,8 @@
   "PRINT_SUCCEEDED_DIALOG_MESSAGE": "Document printed successfully.",
   "RELEASE": "Release",
   "RELEASED": "Released",
+  "REASON": "Reason",
+  "REJECT_REASON": "Reject Reason",
   "REJECT": "Reject",
   "REQUESTED_QUANTITY": "Requested Quantity",
   "PRINT": "Print",

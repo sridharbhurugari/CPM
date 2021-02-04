@@ -11,8 +11,11 @@
     ></app-verification-dashboard>
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
-      (saveVerificationEvent)="onSaveVerificationEvent($event)"
-      [deviceDescription]="this.navigationParameters.DeviceDescription">
+      [rejectReasons]="rejectReasons"
+      [deviceDescription]="this.navigationParameters.DeviceDescription"
+      [destinationLine1]="this.navigationParameters.DestinationLine1"
+      [destinationLine2]="this.navigationParameters.DestinationLine2"
+      (saveVerificationEvent)="onSaveVerificationEvent($event)">
     </app-verification-details-card>
   </div>
 </ng-container>

@@ -54,4 +54,11 @@ export class VerificationService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
+  getVerificationRejectReasons(): Observable<string[]> {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/rejectreasons');
+    return this.httpClient.get<string[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
 }

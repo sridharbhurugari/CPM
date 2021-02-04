@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { Many } from 'lodash';
+import { flatMap, Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
@@ -9,6 +9,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
+import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
+import { take } from 'rxjs/operators';
+import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -17,7 +22,10 @@ import { VerificationStatusTypes } from '../../shared/constants/verification-sta
 })
 export class VerificationDetailsCardComponent implements OnInit {
 
-  constructor(private translateService: TranslateService) { }
+  constructor(
+    private translateService: TranslateService,
+    private popupWindowService: PopupWindowService
+    ) { }
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -33,8 +41,12 @@ export class VerificationDetailsCardComponent implements OnInit {
   @Output() rejectVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
 
   @Input() deviceDescription : string;
+  @Input() rejectReasons: string[];
+  @Input() destinationLine1: string;
+  @Input() destinationLine2: string;
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
+
   selectedVerificationDestinationDetail : IVerificationDestinationDetail;
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
@@ -45,13 +57,8 @@ export class VerificationDetailsCardComponent implements OnInit {
   columnSortDirection: string;
 
   translatables = [
-    'ITEM_ID',
-    'PICK_LOCATION',
-    'REQUESTED_QUANTITY',
-    'PICKED_QUANTITY',
-    'PICKED_BY',
-    'PICKED_TIME',
-    'SELECT_SCAN_MED'
+    'REJECT_REASON',
+    'REASON'
   ];
 
   translations$: Observable<any>;
@@ -64,7 +71,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
-  medicationClicked(destinationDetail: IVerificationDestinationDetail){
+  medicationClicked(destinationDetail: IVerificationDestinationDetail): void {
     this.selectedVerificationDestinationDetail = destinationDetail;
   }
 
@@ -92,23 +99,65 @@ export class VerificationDetailsCardComponent implements OnInit {
     return verificationDestinationDetail.Id;
   }
 
-  onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail){
+  onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     console.log('button approve clicked');
     console.log(selectedVerificationDestinationDetail);
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
   }
 
-  onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail){
-    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Rejected;
-    this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
+  onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
+    this.displayRejectPopupDialog(selectedVerificationDestinationDetail);
   }
 
-  removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]) {
+  removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
     const removalSet = new Set(verificationDestinationDetailsToRemove);
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
       return !removalSet.has(verificationDestinationDetail);
     });
     this.selectedVerificationDestinationDetail = null;
+  }
+
+
+  private displayRejectPopupDialog(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
+
+    const properties = new PopupWindowProperties();
+    const rejectReasonDisplayList: SingleselectRowItem[] = [];
+    let defaultRejectReasonDisplayItem: SingleselectRowItem = null;
+
+    this.rejectReasons.forEach((reason) => {
+        const rejectReasonDisplayRow = new SingleselectRowItem(reason, reason);
+        rejectReasonDisplayList.push(rejectReasonDisplayRow);
+    })
+
+    defaultRejectReasonDisplayItem = rejectReasonDisplayList.length > 0 ? rejectReasonDisplayList[0]: null;
+    const rowsToHideCheckbox = rejectReasonDisplayList.slice();
+
+    this.translations$.subscribe((translations) => {
+      const data: IDropdownPopupData = {
+        popuptitle: translations.REJECT_REASON,
+        dropdowntitle: translations.REASON,
+        dropdownrows: rejectReasonDisplayList,
+        defaultrow: defaultRejectReasonDisplayItem,
+        showCheckbox: false,
+        checkboxLabel: '',
+        checkboxSelected: false,
+        checkboxHideSelection: rowsToHideCheckbox,
+        selectedrow: defaultRejectReasonDisplayItem,
+        selectedcheckbox: false
+      };
+
+      properties.data = data;
+
+      let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
+      component.dismiss.pipe(take(1)).subscribe(selectedOk => {
+        if (selectedOk) {
+          selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Rejected;
+          selectedVerificationDestinationDetail.RejectReason = data.selectedrow.value;
+          this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
+        }
+      });
+    })
+
   }
 }
