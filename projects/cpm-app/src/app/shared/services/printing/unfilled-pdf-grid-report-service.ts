@@ -1,21 +1,20 @@
-import {Injectable, Inject} from '@angular/core';
-import {IAngularReportBaseData} from '../../../api-core/data-contracts/i-angular-report-base-data';
-import {PdfPrintService} from '../../../api-core/services/pdf-print-service';
-import {OcapUrlBuilderService} from '../ocap-url-builder.service';
-import {TDocumentDefinitions, ContentTable} from 'pdfmake/interfaces';
-import {Observable, forkJoin, bindCallback, of, throwError} from 'rxjs';
-import {switchMap, shareReplay, catchError, tap} from 'rxjs/operators';
-import {TranslateService} from '@ngx-translate/core';
-import {IReportLabels} from './i-report-labels';
-import {PdfMakeService} from './pdf-make.service';
-import {ImageDataService} from '../images/image-data.service';
+import { Injectable } from '@angular/core';
+import { IAngularReportBaseData } from '../../../api-core/data-contracts/i-angular-report-base-data';
+import { PdfPrintService } from '../../../api-core/services/pdf-print-service';
+import { OcapUrlBuilderService } from '../ocap-url-builder.service';
+import { TDocumentDefinitions, ContentTable } from 'pdfmake/interfaces';
+import { Observable, bindCallback, of, throwError, forkJoin } from 'rxjs';
+import { switchMap, shareReplay, catchError, map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { IReportLabels } from './i-report-labels';
+import { PdfMakeService } from './pdf-make.service';
+import { ImageDataService } from '../images/image-data.service';
 @Injectable({
   providedIn: 'root',
 })
 export class UnfilledPdfGridReportService {
   reportBaseData$: Observable<IAngularReportBaseData>;
   reportLogo$: Observable<string>;
-  reportLogoData: string;
   reportLabels$: Observable<IReportLabels>;
 
   constructor(
@@ -27,53 +26,20 @@ export class UnfilledPdfGridReportService {
   ) {
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1), catchError(err => of(err.status)));
     this.reportLogo$ = imageDataService.getBase64ImageFromUrl(this.ocapUrlBuilderService.buildUrl('/web/cpm-app/assets/img/reportlogo.png')).pipe(shareReplay(1), catchError(err => of(err.status)));
-    this.reportLogo$.subscribe((data) => {
-      this.reportLogoData = data; console.log('Logo info received: ', this.reportLogoData);
-    });
     const reportLabelKeys: (keyof IReportLabels)[] = ['REPORT_LABEL_OMNI_ID', 'REPORT_LABEL_OMNI_NAME', 'REPORT_LABEL_PRINTED', 'UNFILLED_REPORT_LABEL_ORDER_ID', 'UNFILLED_REPORT_LABEL_PRIORITYCODE'];
     this.reportLabels$ = translateService.get(reportLabelKeys).pipe(shareReplay(1), catchError(err => of(err.status)));
   }
 
-  prePrint(reportBaseData: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): boolean {
-    try {
-      if (!this.reportLogoData) {
-        console.log('Missing logo info:', this.reportLogoData);
-        return false;
-      }
-      let reportLabels: IReportLabels = {
-        REPORT_LABEL_OMNI_ID: '',
-        REPORT_LABEL_OMNI_NAME: '',
-        REPORT_LABEL_PRINTED: '',
-        UNFILLED_REPORT_LABEL_ORDER_ID: '',
-        UNFILLED_REPORT_LABEL_PRIORITYCODE: '',
-        REPORT_LABEL_XR2_DEVICE_ID: '',
-      };
-      this.reportLabels$.subscribe((data) => reportLabels = data, console.error );
-      const pdf = this.generatePdf(reportBaseData, this.reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
-      console.log("prePrint pdf:", pdf);
-      return true;
-    } catch (e) {
-      console.log('prePrint ERROR', e);
-      return false;
-    }
-  }
-
   printMe(reportBaseDataPrintMe: IAngularReportBaseData, tableBodyPrintMe: ContentTable, reportTitle: string): Observable<boolean> {
     try {
-      if (!this.reportLogoData) {
-        console.log('Missing logo info:', this.reportLogoData);
-        return of(false);
-      }
-      let reportLabels: IReportLabels = {
-        REPORT_LABEL_OMNI_ID: '',
-        REPORT_LABEL_OMNI_NAME: '',
-        REPORT_LABEL_PRINTED: '',
-        UNFILLED_REPORT_LABEL_ORDER_ID: '',
-        UNFILLED_REPORT_LABEL_PRIORITYCODE: '',
-        REPORT_LABEL_XR2_DEVICE_ID: '',
-      };
-      this.reportLabels$.subscribe((data) => reportLabels = data, console.error );
-      return this.print(reportBaseDataPrintMe, this.reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
+      const printingResult = forkJoin(this.reportLogo$, this.reportLabels$).pipe(switchMap(
+        c => {
+          const reportLogoData = c[0];
+          const reportLabels = c[1];
+          return this.print(reportBaseDataPrintMe, reportLogoData, tableBodyPrintMe, reportTitle, reportLabels);
+        }
+      ));
+      return printingResult;
     } catch (e) {
       console.log('printMe ERROR', e);
       return of(false);
@@ -87,27 +53,18 @@ export class UnfilledPdfGridReportService {
       const boundGetBlob = pdf.getBlob.bind(pdf);
       console.log("boundGetBlob", boundGetBlob);
       const blob$ = bindCallback<Blob>(boundGetBlob)().pipe(
-        tap({
-          next: val => {
-          console.log('blob$ on next', val);
-          },
-          error: error => {
-          console.log('blob$ on error', error.message);
-          },
-          complete: () => console.log('blob$ on complete')
-          }),
         catchError((err) => {
-        console.log('error caught when calling printPdf:', err);
-        return throwError(err);    //Rethrow it back to component
-      }));
+          console.log('error caught when calling printPdf:', err);
+          return throwError(err);    //Rethrow it back to component
+        }));
       console.log("blob$", blob$);
       return blob$.pipe(switchMap((blob: Blob) => {
         console.log("printPdf(blob)", blob);
         return this.pdfPrintService.printPdf(blob).pipe(
           catchError((err) => {
-          console.log('error caught when calling printPdf:', err);
-          return throwError(err);    //Rethrow it back to component
-        }));
+            console.log('error caught when calling printPdf:', err);
+            return throwError(err);    //Rethrow it back to component
+          }));
       }), catchError(err => of(err.status)));
     } catch (e) {
       console.log('print ERROR', e);
@@ -130,9 +87,9 @@ export class UnfilledPdfGridReportService {
         return [
           {
             columns: [
-              {text: reportBaseData.SiteDescription, alignment: 'left', fontSize: 8, margin: 5},
-              {text: reportBaseData.CombinedAddress, alignment: 'center', fontSize: 8, margin: 5},
-              {text: currentPage.toString() + '/' + pageCount, alignment: 'right', fontSize: 8, margin: 5},
+              { text: reportBaseData.SiteDescription, alignment: 'left', fontSize: 8, margin: 5 },
+              { text: reportBaseData.CombinedAddress, alignment: 'center', fontSize: 8, margin: 5 },
+              { text: currentPage.toString() + '/' + pageCount, alignment: 'right', fontSize: 8, margin: 5 },
             ],
           }];
       },
@@ -140,9 +97,9 @@ export class UnfilledPdfGridReportService {
         return [
           {
             columns: [
-              {text: '', alignment: 'left', fontSize: 8, margin: 5},
-              {text: '', alignment: 'center', fontSize: 8, margin: 5},
-              {text: '', alignment: 'right', fontSize: 8, margin: 5},
+              { text: '', alignment: 'left', fontSize: 8, margin: 5 },
+              { text: '', alignment: 'center', fontSize: 8, margin: 5 },
+              { text: '', alignment: 'right', fontSize: 8, margin: 5 },
             ],
           }];
       },
@@ -155,11 +112,11 @@ export class UnfilledPdfGridReportService {
               width: 82,
               height: 18,
             },
-            {text: reportTitle, alignment: 'right', style: 'header', fontSize: 20, bold: true},
+            { text: reportTitle, alignment: 'right', style: 'header', fontSize: 20, bold: true },
           ],
         },
         // line
-        {canvas: [{type: 'line', x1: 0, y1: 5, x2: 595 - 2 * 40, y2: 5, lineWidth: 1}]},
+        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 595 - 2 * 40, y2: 5, lineWidth: 1 }] },
         // report base data
         {
           layout: 'noBorders', // optional
@@ -177,9 +134,9 @@ export class UnfilledPdfGridReportService {
           },
         },
         // line
-        {canvas: [{type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1}]},
+        { canvas: [{ type: 'line', x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1 }] },
         // blank line
-        {text: '   ', alignment: 'center', fontSize: 12, bold: true, lineHeight: 1.25},
+        { text: '   ', alignment: 'center', fontSize: 12, bold: true, lineHeight: 1.25 },
         // report contents
         tableBodyDoc,
       ],

@@ -16,9 +16,11 @@ import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import {   PopupDialogService,
+import {
+  PopupDialogService,
   PopupDialogProperties,
-  PopupDialogType, } from '@omnicell/webcorecomponents';
+  PopupDialogType,
+} from '@omnicell/webcorecomponents';
 import { UnderfilledPicklistLinesComponent } from '../underfilled-picklist-lines/underfilled-picklist-lines.component';
 import * as _ from 'lodash';
 import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
@@ -60,9 +62,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     OmniId: '',
     OmniName: '',
     SiteDescription: '',
-    OrderId:'',
-    PriorityCode:'',
-    DeviceDescriptionName:''
+    OrderId: '',
+    PriorityCode: '',
+    DeviceDescriptionName: ''
   };
   errorGenericTitle$: Observable<string>;
   errorGenericMessage$: Observable<string>;
@@ -100,34 +102,34 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
   ngOnInit() {
     try {
-    const orderId = this.route.snapshot.queryParamMap.get('orderId');
-    this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1), catchError(err => of(err.status)));
+      const orderId = this.route.snapshot.queryParamMap.get('orderId');
+      this.picklist$ = this.underfilledPicklistsService.getForOrder(orderId).pipe(shareReplay(1), catchError(err => of(err.status)));
 
-    this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(shareReplay(1)).pipe(map(x => {
-      return x.map(l => new UnderfilledPicklistLine(l));
-    }), catchError(err => of(err.status)));
-    this.picklistLines$.subscribe((pll) => {this.picklistLines = pll; });
+      this.picklistLines$ = this.underfilledPicklistLinesService.get(orderId).pipe(shareReplay(1)).pipe(map(x => {
+        return x.map(l => new UnderfilledPicklistLine(l));
+      }), catchError(err => of(err.status)));
+      this.picklistLines$.subscribe((pll) => { this.picklistLines = pll; });
 
-    // permission: are buttons visible
-    this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
-    // error message text
-    this.errorGenericTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
-    this.errorGenericMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
-    this.translateService.get('OK').subscribe(s => this.okButtonText = s);
-    this.errorRerouteTitle$ = this.translateService.get('FAILEDTOREROUTE_HEADER_TEXT');
-    this.errorRerouteMessage$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
-    this.errorCloseTitle$ = this.translateService.get('FAILEDTOCLOSE_HEADER_TEXT');
-    this.errorCloseMessage$ = this.translateService.get('FAILEDTOCLOSE_BODY_TEXT');
-    this.workstationTrackerService.GetWorkstationShortName().subscribe(s => {
-      this.workstation = s;
-      this.workstationTrackerData = {
-        Id: orderId,
-        Operation: OperationType.Unfilled,
-        ConnectionId: null,
-        WorkstationShortName: this.workstation
-      };
-    });
-    this.getDocumentData();
+      // permission: are buttons visible
+      this.underfilledPicklistsService.doesUserHaveDeletePicklistPermissions().subscribe(v => this.buttonVisible = v);
+      // error message text
+      this.errorGenericTitle$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_TITLE');
+      this.errorGenericMessage$ = this.translateService.get('ERROR_ROUTE_MAINTENANCE_MESSAGE');
+      this.translateService.get('OK').subscribe(s => this.okButtonText = s);
+      this.errorRerouteTitle$ = this.translateService.get('FAILEDTOREROUTE_HEADER_TEXT');
+      this.errorRerouteMessage$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
+      this.errorCloseTitle$ = this.translateService.get('FAILEDTOCLOSE_HEADER_TEXT');
+      this.errorCloseMessage$ = this.translateService.get('FAILEDTOCLOSE_BODY_TEXT');
+      this.workstationTrackerService.GetWorkstationShortName().subscribe(s => {
+        this.workstation = s;
+        this.workstationTrackerData = {
+          Id: orderId,
+          Operation: OperationType.Unfilled,
+          ConnectionId: null,
+          WorkstationShortName: this.workstation
+        };
+      });
+      this.getDocumentData();
     } catch (e) {
       console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR', e);
     }
@@ -149,14 +151,14 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
         return;
       }
 
-        if (event.PicklistLineUnderfilled.OrderId === this.picklistLines[0].OrderId){
-          let index = this.picklistLines.findIndex((r) => r.PicklistLineId === event.PicklistLineUnderfilled.PicklistLineId);
-          if (index != -1){
-            this.picklistLines.splice(index, 1)
-          }
-          const upll = new UnderfilledPicklistLine(event.PicklistLineUnderfilled);
-          this.picklistLines.push(upll);
+      if (event.PicklistLineUnderfilled.OrderId === this.picklistLines[0].OrderId) {
+        let index = this.picklistLines.findIndex((r) => r.PicklistLineId === event.PicklistLineUnderfilled.PicklistLineId);
+        if (index != -1) {
+          this.picklistLines.splice(index, 1)
         }
+        const upll = new UnderfilledPicklistLine(event.PicklistLineUnderfilled);
+        this.picklistLines.push(upll);
+      }
     } catch (e) {
       console.log('UnderfilledPicklistLinesPageComponent.onPllAdd ERROR', e);
     }
@@ -169,7 +171,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       }
 
       let index = this.picklistLines.findIndex((r) => r.PicklistLineId === event.PicklistLineId.toString());
-      if (index != -1){
+      if (index != -1) {
         this.picklistLines.splice(index, 1)
       }
 
@@ -184,68 +186,68 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
   }
 
   getReportData(datePipe: DatePipe): UnderfilledPicklistLine[] {
-const underfilled = JSON.parse(JSON.stringify(this.picklistLines));
+    const underfilled = JSON.parse(JSON.stringify(this.picklistLines));
 
-        underfilled.forEach(element => {
-          const date = element.FillDate;
-          element.PrintFillDate = datePipe.transform(date, 'M/d/yy   h:mm a');
-          element.DisplayFillRequired = (element.FillQuantity ? element.FillQuantity.toString() : '0') + ' / ' + element.OrderQuantity;
-          if (element.PatientRoom && element.PatientRoom !== '') {
-            element.DisplayDestionationValue  = element.PatientRoom + ',';
-          }
+    underfilled.forEach(element => {
+      const date = element.FillDate;
+      element.PrintFillDate = datePipe.transform(date, 'M/d/yy   h:mm a');
+      element.DisplayFillRequired = (element.FillQuantity ? element.FillQuantity.toString() : '0') + ' / ' + element.OrderQuantity;
+      if (element.PatientRoom && element.PatientRoom !== '') {
+        element.DisplayDestionationValue = element.PatientRoom + ',';
+      }
 
-          if (element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
-              const reg = new RegExp('.{1,' + 18 + '}', 'g');
-              const parts = element.ItemFormattedGenericName.match(reg);
-              element.ItemFormatedDescription =  parts.join('\n');
-              element.ItemFormattedGenericName = '';
-            }
-          if (element.ItemBrandName && element.ItemBrandName.length > 40) {
-              const reg = new RegExp('.{1,' + 18 + '}', 'g');
-              const parts = element.ItemBrandName.match(reg);
-              element.ItemBrandDescription =  parts.join('\n');
-              element.ItemBrandName = '';
-            }
-          if (element.ItemId && element.ItemId.length > 40) {
-              const reg = new RegExp('.{1,' + 18 + '}', 'g');
-              const parts = element.ItemBrandName.match(reg);
-              element.ItemIdDescription =  parts.join('\n');
-              element.ItemId = '';
-            }
-          if (element.AreaDescription && element.AreaDescription.length > 21) {
-              const reg = new RegExp('.{1,' + 10 + '}', 'g');
-              const parts = element.AreaDescription.match(reg);
-              element.AreaDesctiptionForReport = parts.join('\n');
-              element.AreaDescription = '';
-            }
-          if (element.PatientName && element.PatientName.length > 21) {
-              const reg = new RegExp('.{1,' + 10 + '}', 'g');
-              const parts = element.PatientName.match(reg);
-              element.patientNameForReport = parts.join('\n');
-              element.PatientName = '';
-            }
-          if (element.DestinationOmni && element.DestinationOmni.length > 21) {
-              const reg = new RegExp('.{1,' + 10 + '}', 'g');
-              const parts = element.DestinationOmni.match(reg);
-              element.DestinationOmniForReport = parts.join('\n');
-              element.DestinationOmni = '';
-            }
-        });
-        return underfilled;
+      if (element.ItemFormattedGenericName && element.ItemFormattedGenericName.length > 40) {
+        const reg = new RegExp('.{1,' + 18 + '}', 'g');
+        const parts = element.ItemFormattedGenericName.match(reg);
+        element.ItemFormatedDescription = parts.join('\n');
+        element.ItemFormattedGenericName = '';
+      }
+      if (element.ItemBrandName && element.ItemBrandName.length > 40) {
+        const reg = new RegExp('.{1,' + 18 + '}', 'g');
+        const parts = element.ItemBrandName.match(reg);
+        element.ItemBrandDescription = parts.join('\n');
+        element.ItemBrandName = '';
+      }
+      if (element.ItemId && element.ItemId.length > 40) {
+        const reg = new RegExp('.{1,' + 18 + '}', 'g');
+        const parts = element.ItemBrandName.match(reg);
+        element.ItemIdDescription = parts.join('\n');
+        element.ItemId = '';
+      }
+      if (element.AreaDescription && element.AreaDescription.length > 21) {
+        const reg = new RegExp('.{1,' + 10 + '}', 'g');
+        const parts = element.AreaDescription.match(reg);
+        element.AreaDesctiptionForReport = parts.join('\n');
+        element.AreaDescription = '';
+      }
+      if (element.PatientName && element.PatientName.length > 21) {
+        const reg = new RegExp('.{1,' + 10 + '}', 'g');
+        const parts = element.PatientName.match(reg);
+        element.patientNameForReport = parts.join('\n');
+        element.PatientName = '';
+      }
+      if (element.DestinationOmni && element.DestinationOmni.length > 21) {
+        const reg = new RegExp('.{1,' + 10 + '}', 'g');
+        const parts = element.DestinationOmni.match(reg);
+        element.DestinationOmniForReport = parts.join('\n');
+        element.DestinationOmni = '';
+      }
+    });
+    return underfilled;
   }
 
-getRerouteButtonEnabled(): boolean  {
-  return (this.child.SelectedButCannotRerouteCount() === 0) && this.getButtonEnabled();
+  getRerouteButtonEnabled(): boolean {
+    return (this.child.SelectedButCannotRerouteCount() === 0) && this.getButtonEnabled();
   }
 
-getButtonEnabled(): boolean  {
+  getButtonEnabled(): boolean {
     let returnValue = true;
     if (this.currentItemCountSelected === 0) {
-     returnValue = false;
-  }
+      returnValue = false;
+    }
     if (this.requestStatus !== 'none') {
-   returnValue = false;
-  }
+      returnValue = false;
+    }
     return returnValue;
   }
 
@@ -296,13 +298,17 @@ getButtonEnabled(): boolean  {
   print() {
     this.requestStatus = 'printing';
     const colDefinitions: ITableColumnDefintion<UnderfilledPicklistLine>[] = [
-      { cellPropertyNames: [ 'ItemFormattedGenericName', 'ItemFormatedDescription', 'ItemBrandName', 'ItemBrandDescription', 'ItemId', 'ItemIdDescription']
-        , headerResourceKey: this.itemHeaderKey, width: 'auto' },
-      { cellPropertyNames: [ 'PharmacyQOH' ], headerResourceKey: this.qohHeaderKey, width: '*' },
-      { cellPropertyNames: [ 'DisplayDestionationValue', 'AreaDescription', 'AreaDesctiptionForReport', 'PatientName', 'patientNameForReport', 'DestinationOmni', 'DestinationOmniForReport' ]
-        , headerResourceKey: this.destinationHeaderKey, width: 'auto' },
-      { cellPropertyNames: [ 'DisplayFillRequired', 'UnfilledReason' ], headerResourceKey: this.qtyFilledHeaderKey, width: '*' },
-      { cellPropertyNames: [ 'PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: 'auto' },
+      {
+        cellPropertyNames: ['ItemFormattedGenericName', 'ItemFormatedDescription', 'ItemBrandName', 'ItemBrandDescription', 'ItemId', 'ItemIdDescription']
+        , headerResourceKey: this.itemHeaderKey, width: 'auto'
+      },
+      { cellPropertyNames: ['PharmacyQOH'], headerResourceKey: this.qohHeaderKey, width: '*' },
+      {
+        cellPropertyNames: ['DisplayDestionationValue', 'AreaDescription', 'AreaDesctiptionForReport', 'PatientName', 'patientNameForReport', 'DestinationOmni', 'DestinationOmniForReport']
+        , headerResourceKey: this.destinationHeaderKey, width: 'auto'
+      },
+      { cellPropertyNames: ['DisplayFillRequired', 'UnfilledReason'], headerResourceKey: this.qtyFilledHeaderKey, width: '*' },
+      { cellPropertyNames: ['PrintFillDate'], headerResourceKey: this.dateHeaderKey, width: 'auto' },
     ];
 
     this.getDocumentData();
@@ -314,61 +320,35 @@ getButtonEnabled(): boolean  {
 
     // snapshot TableData for running through the pdf creator:
     const tableBodyPrintMe$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-      let tableBodyPrintMe: ContentTable;
-      var tb = tableBodyPrintMe$.subscribe((data) => tableBodyPrintMe = data, console.error);
-      // // Run the prePrint on the snapshots, and if it passes, update the snapshots.
-      // if(!this.pdfGridReportService.prePrint(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ))
-      //   {
-      //     console.log('prePrint Failed')
-      //     this.displayPrintFailed();
-      //     return;
-      //   }
-      //   tb.unsubscribe;
+    let tableBodyPrintMe: ContentTable;
+    tableBodyPrintMe$.subscribe((data) => tableBodyPrintMe = data, console.error);
 
-      //   // snapshot TableData for report again - the pdf function changes 'something' that adds details to the fields
-      //   const tableBodyPrintMe2$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-      //     let tableBodyPrintMe2: ContentTable;
-      //     var tb2 = tableBodyPrintMe2$.subscribe((data) => tableBodyPrintMe2 = data, console.error);
-      // // print our snapshots and subscribe for pass/fail
-      // console.log('tableBodyPrintMe prior to PrintMe:', tableBodyPrintMe)
-      // console.log('tableBodyPrintMe2 prior to PrintMe:', tableBodyPrintMe2)
-
-      this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ).subscribe(succeeded => {
+    this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport).subscribe(succeeded => {
       this.requestStatus = 'none';
-        if (!succeeded) {
-          console.log('printMe returned Failed')
-          this.displayPrintFailed();
-        } else {
-          this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
-        }
-      }, err => {
-        console.log('printMe error: ', err)
-        this.requestStatus = 'none';
+      if (!succeeded) {
+        console.log('printMe returned Failed')
         this.displayPrintFailed();
-      });
-
+      } else {
+        this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
+      }
+    }, err => {
+      console.log('printMe error: ', err)
+      this.requestStatus = 'none';
+      this.displayPrintFailed();
+    });
   }
 
   private getDocumentData() {
-    let pickList: IUnderfilledPicklist;
-
-    const docData$ = forkJoin(this.reportBaseData$, this.picklist$).pipe(shareReplay(), catchError(err => of(err.status)));
-    docData$.subscribe(d =>
-      {
-        if(d[0])
-        {
-        this.reportBaseData = d[0];
-        }
-        if(d[1])
-        {
-          console.log("picklist");
-        this.reportBaseData.OrderId = d[1].OrderId;
-        this.reportBaseData.PriorityCode = d[1].PriorityCode;
-      }
-      },
-    err => console.log('getDocumentData ERROR: ', err)
-    );
-}
+    const docData$ = forkJoin(this.reportBaseData$, this.picklist$).pipe(map(results => {
+      let reportBaseData = results[0];
+      let picklist = results[1];
+      reportBaseData.OrderId = picklist.OrderId;
+      reportBaseData.PriorityCode = picklist.PriorityCode;
+      return reportBaseData;
+    }), shareReplay(), catchError(err => of(err.status)));
+    docData$.subscribe((data) => this.reportBaseData = data,
+      err => console.log('getDocumentData ERROR: ', err));
+  }
 
   private displayPrintFailed() {
     this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
