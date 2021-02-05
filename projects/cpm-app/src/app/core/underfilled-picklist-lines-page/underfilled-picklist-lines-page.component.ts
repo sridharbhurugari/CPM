@@ -316,22 +316,24 @@ getButtonEnabled(): boolean  {
     const tableBodyPrintMe$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
       let tableBodyPrintMe: ContentTable;
       var tb = tableBodyPrintMe$.subscribe((data) => tableBodyPrintMe = data, console.error);
-      // Run the prePrint on the snapshots, and if it passes, update the snapshots.
-      if(!this.pdfGridReportService.prePrint(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ))
-        {
-          console.log('prePrint Failed')
-          this.displayPrintFailed();
-          return;
-        }
-        tb.unsubscribe;
+      // // Run the prePrint on the snapshots, and if it passes, update the snapshots.
+      // if(!this.pdfGridReportService.prePrint(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ))
+      //   {
+      //     console.log('prePrint Failed')
+      //     this.displayPrintFailed();
+      //     return;
+      //   }
+      //   tb.unsubscribe;
 
-        // snapshot TableData for report again - the pdf function changes 'something' that adds details to the fields
-        const tableBodyPrintMe2$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
-          let tableBodyPrintMe2: ContentTable;
-          var tb2 = tableBodyPrintMe2$.subscribe((data) => tableBodyPrintMe2 = data, console.error);
-      // print our snapshots and subscribe for pass/fail
+      //   // snapshot TableData for report again - the pdf function changes 'something' that adds details to the fields
+      //   const tableBodyPrintMe2$ = this.tableBodyService.buildTableBody(colDefinitions, sortedFilled$);
+      //     let tableBodyPrintMe2: ContentTable;
+      //     var tb2 = tableBodyPrintMe2$.subscribe((data) => tableBodyPrintMe2 = data, console.error);
+      // // print our snapshots and subscribe for pass/fail
+      // console.log('tableBodyPrintMe prior to PrintMe:', tableBodyPrintMe)
+      // console.log('tableBodyPrintMe2 prior to PrintMe:', tableBodyPrintMe2)
 
-      this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe2, ReportConstants.UnfilledReport ).subscribe(succeeded => {
+      this.pdfGridReportService.printMe(this.reportBaseData, tableBodyPrintMe, ReportConstants.UnfilledReport ).subscribe(succeeded => {
       this.requestStatus = 'none';
         if (!succeeded) {
           console.log('printMe returned Failed')
@@ -344,24 +346,26 @@ getButtonEnabled(): boolean  {
         this.requestStatus = 'none';
         this.displayPrintFailed();
       });
-    tb2.unsubscribe;
+
   }
 
   private getDocumentData() {
     let pickList: IUnderfilledPicklist;
-    this.picklist$.subscribe((listData) => {pickList = listData; });
-    this.reportBaseData$.subscribe((baseData) => {
-      if(baseData)
+
+    const docData$ = forkJoin(this.reportBaseData$, this.picklist$).pipe(shareReplay(), catchError(err => of(err.status)));
+    docData$.subscribe(d =>
       {
-      this.reportBaseData = baseData;
+        if(d[0])
+        {
+        this.reportBaseData = d[0];
+        }
+        if(d[1])
+        {
+          console.log("picklist");
+        this.reportBaseData.OrderId = d[1].OrderId;
+        this.reportBaseData.PriorityCode = d[1].PriorityCode;
       }
-      if(pickList)
-      {
-      this.reportBaseData.OrderId = pickList.OrderId;
-      this.reportBaseData.PriorityCode = pickList.PriorityCode;
-    }
-      return this.reportBaseData;
-    },
+      },
     err => console.log('getDocumentData ERROR: ', err)
     );
 }

@@ -3,8 +3,8 @@ import {IAngularReportBaseData} from '../../../api-core/data-contracts/i-angular
 import {PdfPrintService} from '../../../api-core/services/pdf-print-service';
 import {OcapUrlBuilderService} from '../ocap-url-builder.service';
 import {TDocumentDefinitions, ContentTable} from 'pdfmake/interfaces';
-import {Observable, forkJoin, bindCallback, of} from 'rxjs';
-import {switchMap, shareReplay, catchError} from 'rxjs/operators';
+import {Observable, forkJoin, bindCallback, of, throwError} from 'rxjs';
+import {switchMap, shareReplay, catchError, tap} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import {IReportLabels} from './i-report-labels';
 import {PdfMakeService} from './pdf-make.service';
@@ -83,10 +83,31 @@ export class UnfilledPdfGridReportService {
   private print(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBodyPrintMe: ContentTable, reportTitle: string, reportLabels: IReportLabels): Observable<boolean> {
     try {
       const pdf = this.generatePdf(reportBaseData, reportLogoDataUrl, tableBodyPrintMe, reportTitle, reportLabels);
+      console.log("print pdf", pdf);
       const boundGetBlob = pdf.getBlob.bind(pdf);
-      const blob$ = bindCallback<Blob>(boundGetBlob)();
+      console.log("boundGetBlob", boundGetBlob);
+      const blob$ = bindCallback<Blob>(boundGetBlob)().pipe(
+        tap({
+          next: val => {
+          console.log('blob$ on next', val);
+          },
+          error: error => {
+          console.log('blob$ on error', error.message);
+          },
+          complete: () => console.log('blob$ on complete')
+          }),
+        catchError((err) => {
+        console.log('error caught when calling printPdf:', err);
+        return throwError(err);    //Rethrow it back to component
+      }));
+      console.log("blob$", blob$);
       return blob$.pipe(switchMap((blob: Blob) => {
-        return this.pdfPrintService.printPdf(blob);
+        console.log("printPdf(blob)", blob);
+        return this.pdfPrintService.printPdf(blob).pipe(
+          catchError((err) => {
+          console.log('error caught when calling printPdf:', err);
+          return throwError(err);    //Rethrow it back to component
+        }));
       }), catchError(err => of(err.status)));
     } catch (e) {
       console.log('print ERROR', e);
@@ -94,14 +115,16 @@ export class UnfilledPdfGridReportService {
     }
   }
 
-  private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
-    const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBody, reportTitle, reportLabels);
+  private generatePdf(reportBaseData: IAngularReportBaseData, reportLogoDataUrl: string, tableBodyPdf: ContentTable, reportTitle: string, reportLabels: IReportLabels): pdfMake.TCreatedPdf {
+    console.log("Enter generatePdf:", reportBaseData, reportLogoDataUrl, tableBodyPdf, reportTitle, reportLabels);
+    const documentDefinition = this.getDocumentDefinitionForUnfilled(reportBaseData, reportLogoDataUrl, tableBodyPdf, reportTitle, reportLabels);
+    console.log("generatePdf documentDefinition", documentDefinition);
     const pdf = this.pdfMakeService.createPdf(documentDefinition);
     return pdf;
   }
 
   // for Unfilled report
-  private getDocumentDefinitionForUnfilled(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBody: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
+  private getDocumentDefinitionForUnfilled(reportBaseData: IAngularReportBaseData, reportLogo: any, tableBodyDoc: ContentTable, reportTitle: string, reportLabels: IReportLabels): TDocumentDefinitions {
     return {
       footer: (currentPage: number, pageCount: number) => {
         return [
@@ -158,7 +181,7 @@ export class UnfilledPdfGridReportService {
         // blank line
         {text: '   ', alignment: 'center', fontSize: 12, bold: true, lineHeight: 1.25},
         // report contents
-        tableBody,
+        tableBodyDoc,
       ],
     };
   }
