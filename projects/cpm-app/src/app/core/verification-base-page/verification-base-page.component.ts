@@ -6,6 +6,7 @@ import { BarcodeDataService } from '../../api-core/services/barcode-data.service
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-verification-base-page',
@@ -27,7 +28,10 @@ export class VerificationBasePageComponent implements OnInit {
 
   ngUnsubscribe = new Subject();
 
-  constructor(private barcodeScanService: BarcodeScanService, private barcodeDataService: BarcodeDataService) { }
+  constructor(private wpfInteropService: WpfInteropService, private barcodeScanService: BarcodeScanService, private barcodeDataService: BarcodeDataService) {
+      this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
+        this.navigationParameters.Route = this.initialRoute;
+      }) }
 
   ngOnInit() {
     this.hookupEventHandlers();

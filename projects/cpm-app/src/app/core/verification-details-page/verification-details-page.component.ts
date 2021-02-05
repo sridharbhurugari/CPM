@@ -1,14 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Console } from 'console';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/internal/operators/map';
-import { shareReplay } from 'rxjs/operators';
-import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { map, shareReplay } from 'rxjs/operators';
+import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
+
+import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 
 @Component({
   selector: 'app-verification-details-page',
@@ -27,14 +30,17 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
+  verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
 
   constructor(
     private translateService: TranslateService,
-    private verificationService: VerificationService
-  ) { }
+    private verificationService: VerificationService,
+  ) {
+  }
 
   ngOnInit() {
     this.loadVerificationDashboardData();
+    this.loadVerificationDestinationDetails();
   }
 
   onBackEvent(): void {
@@ -48,6 +54,22 @@ export class VerificationDetailsPageComponent implements OnInit {
       Route: this.backRoute
     } as IVerificationNavigationParameters
     this.pageNavigationEvent.emit(navigationParams);
+  }
+
+  private loadVerificationDestinationDetails(): void {
+    console.log(this.navigationParameters.DestinationId);
+    if(!this.navigationParameters || !this.navigationParameters.DestinationId || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
+      return;
+    }
+
+    this.verificationDestinationDetails = this.verificationService
+    .getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId, this.navigationParameters.DeviceId).pipe(
+      map((verificationDetails) => {
+        return verificationDetails.map((verificationDetail) => {
+          return new VerificationDestinationDetail(verificationDetail);
+        });
+      }), shareReplay(1)
+    );
   }
 
   getHeaderSubtitle() {
@@ -72,5 +94,4 @@ export class VerificationDetailsPageComponent implements OnInit {
     const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
    }
-
 }
