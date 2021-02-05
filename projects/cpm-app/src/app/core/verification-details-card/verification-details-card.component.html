@@ -4,16 +4,16 @@
   </div>
   <div class="card" *ngIf="this.verificationDestinationDetails">
     <div class="card-header ocactionheader">
-        <div class="cpmactiontitle" *ngIf="this.verificationDestinationDetails[0].DestinationType===this.destinationTypes.Area">
-            {{destinationLine1}}
-        </div>
-        <div class="cpmactiontitleMultiLine" *ngIf="this.verificationDestinationDetails[0].DestinationType!==this.destinationTypes.Area">
-            <div class="cpmactiontitleMultiLineBold">{{destinationLine1}}</div>
-            <div>{{destinationLine2}}</div>
-        </div>
+      <div class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
+        {{destinationLine1}}
+      </div>
+      <div class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
+        <div class="cpmaction-title-multi-line-bold">{{destinationLine1}}</div>
+          <div>{{destinationLine2}}</div>
+      </div>
     </div>
     <div class="card-body cbody">
-      <div class="leftPanel">
+      <div class="left-panel">
         <div class="scroll-container">
           <div class="scroll-container-content">
             <div class="header">
@@ -44,7 +44,7 @@
                 [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
                   <div class="label">
                     <div class="text-label">
-                      <div class="boldName">{{ row.ItemFormattedGenericName }}</div>
+                      <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>
                       <div>{{ row.ItemTradeName }}</div>
                     </div>
                   </div>
@@ -65,70 +65,77 @@
           </div>
         </div>
       </div>
-      <div class="rightPanel">
-        <div class="detailContainer">
-          <div  *ngIf="this.selectedVerificationDestinationDetail">
-            <div class="detailHeader">
-              {{ 'ITEM_ID' | translate }}
-            </div>
-            <div class="detailBody">
-              {{this.selectedVerificationDestinationDetail.ItemId}}
-            </div>
-            <hr class="Solid">
-            <div class="detailHeader">
-              {{ 'PICK_LOCATION' | translate }}
-            </div>
-            <div class="detailBody">
-              {{this.selectedVerificationDestinationDetail.DeviceDescription}}
-              <span style="padding-left: 10px; padding-right: 10px;" *ngIf="this.selectedVerificationDestinationDetail.OutputDevice">-</span>
-              {{this.selectedVerificationDestinationDetail.OutputDevice}}
-            </div>
-            <hr class="Solid">
-            <div class=detailsLeftRightContainer>
-              <div class="vdetailLeft">
-                <div class="detailHeader">
-                  {{ 'REQUESTED_QUANTITY' | translate }}
+      <div class="right-panel">
+        <div class="detail-container">
+          <div  *ngIf="this.selectedVerificationDestinationDetail" class="details">
+            <div class = details-information>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'ITEM_ID' | translate }}
                 </div>
-                <div class="detailBodyLarge">
-                  {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
+                <div class="detail-body">
+                  {{this.selectedVerificationDestinationDetail.ItemId}}
                 </div>
-              </div>
-              <div class= vdetailRight>
-                <div class="detailHeader">
-                <span> {{ 'PICKED_QUANTITY' | translate }}</span>
-                <span style="padding-left: 30px; margin-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity != this.selectedVerificationDestinationDetail.FillQuantity">
-                  <ng-container part="icon">
-                    <app-validation-icon
-                    iconString="warning" toastTileResourceKey="" toastMsgResourceKey="PICK_VERIFICATION_TOTAL_MSG"
-                    toastType="warn"
-                    iconWidth=50
-                    iconHeight=50
-                    iconTheme="warning">
-                    </app-validation-icon>
-                  </ng-container>
-                </span>
+              </span>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'PICK_LOCATION' | translate }}
                 </div>
-                <div class="detailBodyLarge">
-                  {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                <div class="detail-body">
+                  {{this.selectedVerificationDestinationDetail.DeviceDescription}}
+                  <span style="padding-left: 10px; padding-right: 10px;" *ngIf="this.selectedVerificationDestinationDetail.OutputDevice">-</span>
+                  {{this.selectedVerificationDestinationDetail.OutputDevice}}
                 </div>
-              </div>
+              </span>
+              <span class="section">
+                <div class="details-left-right-container">
+                  <div class="v-detail-left">
+                    <div class="detail-header">
+                      {{ 'REQUESTED_QUANTITY' | translate }}
+                    </div>
+                    <div class="detail-body-large">
+                      {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
+                    </div>
+                  </div>
+                  <div class= v-detail-right>
+                    <div class="detail-header">
+                    <span> {{ 'PICKED_QUANTITY' | translate }}</span>
+                    <span style="padding-left: 30px; margin-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity != this.selectedVerificationDestinationDetail.FillQuantity">
+                      <ng-container part="icon">
+                        <app-validation-icon
+                        iconString="warning" toastTileResourceKey="" toastMsgResourceKey="PICK_VERIFICATION_TOTAL_MSG"
+                        toastType="warn"
+                        iconWidth=50
+                        iconHeight=50
+                        iconTheme="warning">
+                        </app-validation-icon>
+                      </ng-container>
+                    </span>
+                    </div>
+                    <div class="detail-body-large">
+                      {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                    </div>
+                  </div>
+                </div>
+              </span>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'PICKED_BY' | translate }}
+                </div>
+                <div class="detail-body-small">
+                  {{ this.selectedVerificationDestinationDetail.FillUserName }}
+                </div>
+              </span>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'PICKED_TIME' | translate }}
+                </div>
+                <div class="detail-body-small">
+                  {{ getOrderDate(this.selectedVerificationDestinationDetail) }}
+                </div>
+              </span>
             </div>
-            <hr class="Solid">
-            <div class="detailHeader">
-              {{ 'PICKED_BY' | translate }}
-            </div>
-            <div class="detailBodySmall">
-              {{ this.selectedVerificationDestinationDetail.FillUserName }}
-            </div>
-            <hr class="Solid">
-            <div class="detailHeader">
-              {{ 'PICKED_TIME' | translate }}
-            </div>
-            <div class="detailBodySmall">
-              {{ getOrderDate(this.selectedVerificationDestinationDetail) }}
-            </div>
-            <hr class="Solid">
-            <div class="detailsFooter">
+            <div class="details-actions">
               <app-cp-clickable-icon
               [width]="40"
               [height]="40"
@@ -147,7 +154,7 @@
               </app-cp-clickable-icon>
             </div>
           </div>
-          <div class="noDetails" *ngIf="!this.selectedVerificationDestinationDetail">
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail">
             {{ 'SELECT_SCAN_MED' | translate }}
           </div>
         </div>

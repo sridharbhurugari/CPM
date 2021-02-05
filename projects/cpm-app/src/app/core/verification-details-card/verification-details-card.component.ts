@@ -31,6 +31,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
     console.log('setting data');
      this._verificationDestinationDetails = value;
+     this.setDetailsGroupData(value);
   }
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
       return this._verificationDestinationDetails;
@@ -42,8 +43,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
-  @Input() destinationLine1: string;
-  @Input() destinationLine2: string;
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
 
@@ -55,6 +54,9 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   currentSortPropertyName: string;
   columnSortDirection: string;
+  destinationLine1: string;
+  destinationLine2: string;
+  destinationType: string;
 
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
@@ -67,10 +69,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   ngOnInit() {
     this.setTranslations();
-  }
-
-  private setTranslations(): void {
-    this.translations$ = this.translateService.get(this.translatables);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -160,5 +158,17 @@ export class VerificationDetailsCardComponent implements OnInit {
             }
         });
     });
+  }
+
+  private setDetailsGroupData(verificationDestinationDetails: VerificationDestinationDetail[]) {
+    if(verificationDestinationDetails && verificationDestinationDetails.length > 0) {
+      this.destinationLine1 = verificationDestinationDetails[0].DestinationLine1;
+      this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
+      this.destinationType = verificationDestinationDetails[0].DestinationType;
+    }
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 }
