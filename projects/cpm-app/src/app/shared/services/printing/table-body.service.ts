@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ITableColumnDefintion } from './i-table-column-definition';
 import { TranslateService } from '@ngx-translate/core';
-import { map, tap } from 'rxjs/operators';
-import { Observable, forkJoin } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, forkJoin, of } from 'rxjs';
 import { TableCell, ContentTable } from 'pdfmake/interfaces';
 import { fonts } from 'pdfmake/build/pdfmake';
 import { ReportConstants} from '../../constants/report-constants';
@@ -30,7 +30,7 @@ export class TableBodyService {
       next: val =>    console.log('headerRow$ on next', val),
       error: error => console.log('headerRow$ on error', error.message),
       complete: () => console.log('headerRow$ on complete')
-    }));
+    }), catchError(err => of(err.status)));
 
     const dataSourceRows$ = dataSource$.pipe(map<T[], TableCell[][]>((dataSourceRows) => {
       let compiledRows: TableCell[][] = [];
@@ -48,12 +48,7 @@ export class TableBodyService {
       });
 
       return compiledRows;
-    }),
-      tap({
-        next: val =>    console.log('dataSourceRows$ on next', val),
-        error: error => console.log('dataSourceRows$ on error', error.message),
-        complete: () => console.log('dataSourceRows$ on complete')
-      }));
+    }), catchError(err => of(err.status)));
 
     return forkJoin(headerRow$, dataSourceRows$).pipe(map(tableParts => {
       let tableBody: TableCell[][] = []
@@ -72,6 +67,6 @@ export class TableBodyService {
 
         }
       };
-    }));
+    }), catchError(err => of(err.status)));
   }
 }
