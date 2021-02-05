@@ -8,7 +8,7 @@
         {{destinationLine1}}
       </div>
       <div class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
-        <div class="cpmaction-title-multi-line-bold">{{destinationLine1}}</div>
+        <div class="cpm-action-title-multi-line-bold">{{destinationLine1}}</div>
           <div>{{destinationLine2}}</div>
       </div>
     </div>
@@ -49,11 +49,11 @@
                     </div>
                   </div>
                   <div class="data">
-                    <app-cp-clickable-icon *ngIf="!row.RequiredVerification"
+                    <app-cp-clickable-icon *ngIf="row.RequiredVerification"
                     [width]="30"
                     [height]="30"
                     [theme]="'danger'"
-                    [label]="'Required' | translate"
+                    [label]="'REQUIRED' | translate"
                     [icon]="'alert-no-tail'"
                     (clickEvent)="''">
                     </app-cp-clickable-icon>

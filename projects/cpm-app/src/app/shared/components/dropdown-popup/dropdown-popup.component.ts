@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { IPopupWindowContainer, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { IPopupWindowContainer, SingleselectRowItem, SingleSelectStyle } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
 import { IDropdownPopupData } from '../../model/i-dropdown-popup-data';
 
@@ -15,9 +15,9 @@ export class DropdownPopupComponent implements OnInit, IPopupWindowContainer {
   selectedRowItem: SingleselectRowItem;
   checkboxSelected: boolean;
   disableOK: boolean = true;
-
   @Output()
   dismiss: Subject<boolean> = new Subject<boolean>();
+  selectText: string;
 
 
   constructor() { }
@@ -25,6 +25,7 @@ export class DropdownPopupComponent implements OnInit, IPopupWindowContainer {
   ngOnInit() {
     this.selectedRowItem = this.data.defaultrow;
     this.checkboxSelected = this.data.checkboxSelected;
+    this.selectText = this.data.selectText;
     if(this.selectedRowItem) {
       this.showCheckbox(this.selectedRowItem.value);
     }

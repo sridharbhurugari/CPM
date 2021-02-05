@@ -61,8 +61,8 @@ export class VerificationDetailsCardComponent implements OnInit {
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
   translatables = [
-    'REJECT_REASON',
-    'REASON'
+    'REJECT_PICK',
+    'REASON',
   ];
 
   translations$: Observable<any>;
@@ -125,18 +125,19 @@ export class VerificationDetailsCardComponent implements OnInit {
     const properties = new PopupWindowProperties();
     const rejectReasonDisplayList: SingleselectRowItem[] = [];
     let defaultRejectReasonDisplayItem: SingleselectRowItem = null;
-
+    let i = 0;
     this.rejectReasons.forEach((reason) => {
-        const rejectReasonDisplayRow = new SingleselectRowItem(reason, reason);
+        i++;
+        const rejectReasonDisplayRow = new SingleselectRowItem(i + '. ' + reason, reason);
         rejectReasonDisplayList.push(rejectReasonDisplayRow);
     });
 
-    const rowsToHideCheckbox = rejectReasonDisplayList.slice();
+    const rowsToHideCheckbox = rejectReasonDisplayList;
 
     this.translations$.subscribe((translations) => {
         const data: IDropdownPopupData = {
-            popuptitle: translations.REJECT_REASON,
-            dropdowntitle: translations.REASON,
+            popuptitle: translations.REJECT_PICK,
+            dropdowntitle: '',
             dropdownrows: rejectReasonDisplayList,
             defaultrow: defaultRejectReasonDisplayItem,
             showCheckbox: false,
@@ -144,7 +145,8 @@ export class VerificationDetailsCardComponent implements OnInit {
             checkboxSelected: false,
             checkboxHideSelection: rowsToHideCheckbox,
             selectedrow: defaultRejectReasonDisplayItem,
-            selectedcheckbox: false
+            selectedcheckbox: false,
+            selectText: translations.REASON
         };
 
         properties.data = data;

@@ -10,5 +10,6 @@ export interface IDropdownPopupData {
     checkboxSelected: boolean,
     checkboxHideSelection: SingleselectRowItem[],
     selectedrow: SingleselectRowItem,
-    selectedcheckbox: boolean
+    selectedcheckbox: boolean,
+    selectText: string,
 }

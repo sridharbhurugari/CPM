@@ -41,7 +41,8 @@ describe('DropdownPopupComponent', () => {
       checkboxSelected: true,
       checkboxHideSelection: dropdownrowdata,
       selectedrow: defaultrowdata,
-      selectedcheckbox: true
+      selectedcheckbox: true,
+      selectText: ''
     };
   }));
 
