@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -10,6 +12,7 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   styleUrls: ['./verification-base-page.component.scss']
 })
 export class VerificationBasePageComponent implements OnInit {
+  private _ngUnsubscribe: Subject<void> = new Subject();
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
@@ -19,7 +22,7 @@ export class VerificationBasePageComponent implements OnInit {
   verificationRouting: typeof VerificationRouting = VerificationRouting;
 
   constructor(private wpfInteropService: WpfInteropService) {
-      this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
+      this.wpfInteropService.wpfViewModelActivated.pipe(takeUntil(this._ngUnsubscribe)).subscribe(() => {
         this.navigationParameters.Route = this.initialRoute;
       }) }
 
@@ -38,6 +41,11 @@ export class VerificationBasePageComponent implements OnInit {
 
   onPageConfigurationUpdateEvent(event: IVerificationPageConfiguration) {
     this.savedPageConfiguration = event;
+  }
+
+  ngOnDestroy() {
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete()
   }
 
 }

@@ -5,7 +5,7 @@ import { PriorityCodePickRoutesService } from '../../api-core/services/priority-
 import { of, Subject } from 'rxjs';
 import { Component, Input } from '@angular/core';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
@@ -27,6 +27,7 @@ describe('PriorityCodePickRoutesPageComponent', () => {
         { provide: PriorityCodePickRoutesService, useValue: { get: () => of([]) } },
         { provide: Router, useValue: { } },
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+        { provide: ActivatedRoute, useValue: { snapshot: { routeConfig: { path: '' } } } },
       ]
     })
     .compileComponents();

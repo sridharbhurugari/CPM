@@ -97,7 +97,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(msg => {this.onHighPriorityReceived();});
     this.isHighPriorityAvailable = false;
-    wpfInteropService.wpfViewModelActivated.subscribe(() => this.continueLoadCurrentLineDetails());
+    wpfInteropService.wpfViewModelActivated.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.continueLoadCurrentLineDetails());
   }
 
   ngOnDestroy() {

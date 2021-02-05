@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import * as _ from 'lodash';
-import { map } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
@@ -12,17 +12,22 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   templateUrl: './priority-code-pick-routes-page.component.html',
   styleUrls: ['./priority-code-pick-routes-page.component.scss']
 })
-export class PriorityCodePickRoutesPageComponent implements OnInit {
+export class PriorityCodePickRoutesPageComponent implements OnInit, OnDestroy {
+  private _ngUnsubscribe: Subject<void> = new Subject();
   priorityCodePickRoutes$: Observable<IPriorityCodePickRoute[]>;
 
   constructor(
     private priorityCodePickRoutesService: PriorityCodePickRoutesService,
     private router: Router,
     private wpfInteropService: WpfInteropService,
+    private activatedRoute: ActivatedRoute,
   ) {
-    this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
-      this.ngOnInit();
-    });
+    let hash = `#/${this.activatedRoute.snapshot.routeConfig.path}`;
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      });
   }
 
   ngOnInit() {
@@ -34,5 +39,10 @@ export class PriorityCodePickRoutesPageComponent implements OnInit {
   navigate(priorityCodePickRouteId: number) {
     let params = { priorityCodePickRouteId: priorityCodePickRouteId };
     this.router.navigate(['core/priorityCode/RouteAssignments'], { queryParams: params });
+  }
+
+  ngOnDestroy() {
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete()
   }
 }
