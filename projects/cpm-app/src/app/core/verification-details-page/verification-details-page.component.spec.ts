@@ -42,10 +42,10 @@ describe('VerificationDetailsPageComponent', () => {
   };
 
   verificationService = {
-    getVerificationDestinations: () => of([]),
-    getVerificationDashboardData: () => of(),
-    getVerificationDestinationDetails: () => of(verificationDestinationDetails),
-    saveVerification: () => of(true)
+    getVerificationDestinations: jasmine.createSpy('getVerificationDestinations').and.returnValue(of([])),
+    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of()),
+    getVerificationDestinationDetails: jasmine.createSpy('getVerificationDestinationDetails').and.returnValue(of([])),
+    saveVerification: jasmine.createSpy('saveVerification').and.returnValue(of(true)),
   };
 
   beforeEach(async(() => {
@@ -97,6 +97,14 @@ describe('VerificationDetailsPageComponent', () => {
       component.onBackEvent();
 
       expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should save verification on save verification event', () => {
+      const mockItem = new VerificationDestinationDetail(null);
+
+      component.onSaveVerificationEvent(mockItem);
+
+      expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
     })
-  })
+  });
 });

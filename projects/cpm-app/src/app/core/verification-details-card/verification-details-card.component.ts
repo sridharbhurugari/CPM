@@ -119,6 +119,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
 
+  /* istanbul ignore next */
   private displayRejectPopupDialog(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
 
     const properties = new PopupWindowProperties();

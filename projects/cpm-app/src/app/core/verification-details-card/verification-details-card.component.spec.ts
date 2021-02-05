@@ -4,6 +4,7 @@ import { PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { SortDirection } from '../../shared/constants/sort-direction';
+import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
@@ -82,4 +83,16 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.selectedVerificationDestinationDetail.OrderId).toBe("1");
     });
   });
+
+  describe('Button Clicks', () => {
+    it('should send event with verified item on appove click', () => {
+      const verificationItem = new VerificationDestinationDetail(null);
+      const saveSpy =  spyOn(component.saveVerificationEvent, 'emit');
+
+      component.onApproveClick(verificationItem);
+
+      expect(verificationItem.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
+  })
 });
