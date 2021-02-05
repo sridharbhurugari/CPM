@@ -60,13 +60,27 @@ describe('PdfGridReportService', () => {
     expect(service).toBeTruthy();
   });
 
-  // describe('printWithBaseData', () => {
-  //   it('should call PdfPrintService.printPdf', (done) => {
-  //     let table: ContentTable = null;
-  //     service.print(of(table), of('')).subscribe(x => {
-  //       expect(x).toBeTruthy();
-  //       done();
-  //     });
-  //   });
-  // })
+  describe('printWithBaseData', () => {
+    it('should call PdfPrintService.printPdf', (done) => {
+      let table: ContentTable = null;
+      let reportBaseData: IAngularReportBaseData = {
+        Address1: 'a',
+        Address2: 'b',
+        Address3: 'c',
+        CombinedAddress: 'a b c',
+        FormPrinterName: 'printer',
+        FormattedDateTime: '24 May 2020',
+        OmniId: 'someOmni',
+        OmniName: 'some omni',
+        SiteDescription: 'some site',
+        OrderId:'PHA24-0000000105',
+        PriorityCode:'Area',
+        DeviceDescriptionName:"sample description"
+      };
+      service.printMe(reportBaseData, table, '').subscribe(x => {
+        expect(x).toBeTruthy();
+        done();
+      });
+    });
+  })
 });

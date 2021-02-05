@@ -86,8 +86,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     spyOn(routerMock, 'navigate');
     printWithBaseData = jasmine.createSpy('navigate');
     const unfilledPdfGridReportService: Partial<UnfilledPdfGridReportService> = {
-      printMe: () => of(true),
-      prePrint: () => true
+      printMe: () => of(true)
     };
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
