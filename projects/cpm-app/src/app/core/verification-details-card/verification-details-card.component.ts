@@ -62,7 +62,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   translatables = [
     'REJECT_PICK',
-    'REASON'
+    'REASON',
   ];
 
   translations$: Observable<any>;
