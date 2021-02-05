@@ -5,8 +5,6 @@ export interface IVerificationNavigationParameters {
   DeviceDescription: string;
   OrderId: string;
   DestinationId: string;
-  DestinationLine1: string;
-  DestinationLine2: string;
   PriorityCodeDescription: string,
   Date: Date,
   Route: VerificationRouting;
