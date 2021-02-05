@@ -124,10 +124,9 @@ export class VerificationDetailsCardComponent implements OnInit {
     const properties = new PopupWindowProperties();
     const rejectReasonDisplayList: SingleselectRowItem[] = [];
     let defaultRejectReasonDisplayItem: SingleselectRowItem = null;
-    let i = 0;
+
     this.rejectReasons.forEach((reason) => {
-        i++;
-        const rejectReasonDisplayRow = new SingleselectRowItem(i + '. ' + reason, reason);
+        const rejectReasonDisplayRow = new SingleselectRowItem(reason, reason);
         rejectReasonDisplayList.push(rejectReasonDisplayRow);
     });
 
