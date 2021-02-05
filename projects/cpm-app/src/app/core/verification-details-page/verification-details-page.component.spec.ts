@@ -1,9 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { GridModule, SvgIconModule } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { GridModule, PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
+import { of, Subject } from 'rxjs';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
+import { LogService } from '../../api-core/services/log-service';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
@@ -27,6 +29,12 @@ describe('VerificationDetailsPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
   let verificationDestinationDetails : IVerificationDestinationDetail[];
+  let popupWindowService: Partial<PopupWindowService>;
+
+  const popupDismissedSubject = new Subject<boolean>();
+  const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
+  const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
+  popupWindowService = { show: showSpy };
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -36,7 +44,8 @@ describe('VerificationDetailsPageComponent', () => {
   verificationService = {
     getVerificationDestinations: () => of([]),
     getVerificationDashboardData: () => of(),
-    getVerificationDestinationDetails: () => of(verificationDestinationDetails)
+    getVerificationDestinationDetails: () => of(verificationDestinationDetails),
+    saveVerification: () => of(true)
   };
 
   beforeEach(async(() => {
@@ -48,7 +57,9 @@ describe('VerificationDetailsPageComponent', () => {
       imports: [GridModule, SvgIconModule],
       providers: [
         {provide: TranslateService, useValue: translateService },
-        { provide: VerificationService, useValue: verificationService }
+        { provide: VerificationService, useValue: verificationService },
+        { provide: LogService, useValue: { logMessageAsync: () => {}}},
+        { provide: PopupWindowService, useValue: popupWindowService}
       ]
     })
     .compileComponents();
@@ -87,13 +98,5 @@ describe('VerificationDetailsPageComponent', () => {
 
       expect(navigateEventSpy).toHaveBeenCalledTimes(1);
     })
-
-    it('should navigate page on grid click event', () => {
-      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
-
-      component.onBackEvent();
-
-      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
-    });
   })
 });

@@ -136,15 +136,15 @@
               [label]="'REJECT' | translate"
               [icon]="'close'"
               (clickEvent)="onRejectClick(this.selectedVerificationDestinationDetail)">
-            </app-cp-clickable-icon>
-            <app-cp-clickable-icon
-            [width]="40"
-            [height]="40"
-            [theme]="'primary'"
-            [label]="'APPROVE' | translate"
-            [icon]="'checkmark'"
-            (clickEvent)="onApproveClick(this.selectedVerificationDestinationDetail)">
-            </app-cp-clickable-icon>
+              </app-cp-clickable-icon>
+              <app-cp-clickable-icon
+              [width]="40"
+              [height]="40"
+              [theme]="'primary'"
+              [label]="'APPROVE' | translate"
+              [icon]="'checkmark'"
+              (clickEvent)="onApproveClick(this.selectedVerificationDestinationDetail)">
+              </app-cp-clickable-icon>
             </div>
           </div>
           <div class="noDetails" *ngIf="!this.selectedVerificationDestinationDetail">
