@@ -1,5 +1,7 @@
 export interface IVerificationDashboardData {
   TotalStatuses: number;
   CompleteStatuses: number;
-  RequiredStatuses: number
+  RequiredStatuses: number;
+  CompleteExceptions: number;
+  RequiredExceptions: number;
 }
