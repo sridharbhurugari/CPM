@@ -27,29 +27,28 @@ import { ToastService } from '@omnicell/webcorecomponents';
 describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
   let fixture: ComponentFixture<VerificationDetailsPageComponent>;
+  const popupDismissedSubject = new Subject<boolean>();
+  const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
+
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
   let verificationDestinationDetails : IVerificationDestinationDetail[];
   let popupWindowService: Partial<PopupWindowService>;
   let toastService: Partial<ToastService>;
+  let logService: Partial<LogService>;
 
-  const popupDismissedSubject = new Subject<boolean>();
-  const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
-  const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
-  popupWindowService = { show: showSpy };
+
+  popupWindowService = { show: jasmine.createSpy('show').and.returnValue(popupResult) };
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
   };
 
-  let errorSpy = jasmine.createSpy('error');
-  let warningSpy = jasmine.createSpy('warning');
-  let infoSpy = jasmine.createSpy('info');
   toastService = {
-    error: errorSpy,
-    warning: warningSpy,
-    info: infoSpy,
+    error: jasmine.createSpy('error'),
+    warning: jasmine.createSpy('warning'),
+    info: jasmine.createSpy('info'),
   };
 
   verificationService = {
@@ -58,6 +57,10 @@ describe('VerificationDetailsPageComponent', () => {
     getVerificationDestinationDetails: jasmine.createSpy('getVerificationDestinationDetails').and.returnValue(of([])),
     saveVerification: jasmine.createSpy('saveVerification').and.returnValue(of(true)),
   };
+
+  logService = {
+    logMessageAsync: jasmine.createSpy('logMessageAsync')
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -69,7 +72,7 @@ describe('VerificationDetailsPageComponent', () => {
       providers: [
         {provide: TranslateService, useValue: translateService },
         { provide: VerificationService, useValue: verificationService },
-        { provide: LogService, useValue: { logMessageAsync: () => {}}},
+        { provide: LogService, useValue: logService },
         { provide: PopupWindowService, useValue: popupWindowService},
         { provide: ToastService, useValue: toastService },
       ]
