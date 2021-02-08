@@ -22,7 +22,9 @@ export class VerificationDashboardComponent implements OnInit {
     if(this.dashboardUpdate$) {
       this.dashboardUpdate$.pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((dashboardDataUpdate) => {
-        this.verificationDashboardData.Add(dashboardDataUpdate)
+        if(this.verificationDashboardData) {
+          this.verificationDashboardData.Add(dashboardDataUpdate);
+        }
       });
     }
   }
