@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Console } from 'console';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -16,7 +15,7 @@ import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
-import { ToastService } from '@omnicell/webcorecomponents';
+import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -35,6 +34,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
+  dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject()
 
   @ViewChild(VerificationDetailsCardComponent, null) childVerificationDetailsCardComponent: VerificationDetailsCardComponent;
 
@@ -43,7 +43,6 @@ export class VerificationDetailsPageComponent implements OnInit {
     private translateService: TranslateService,
     private verificationService: VerificationService,
     private logService: LogService,
-    private toastService: ToastService,
   ) {
   }
 
@@ -104,20 +103,21 @@ export class VerificationDetailsPageComponent implements OnInit {
     return orderDate;
    }
 
-  onSaveVerificationEvent($event: VerificationDestinationDetail) {
+  onSaveVerificationEvent($event: VerificationDestinationDetail[]): void {
     console.log($event)
     this.saveVerification($event);
   }
 
-  private saveVerification(verificationDestinationDetail: VerificationDestinationDetail){
+  private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     console.log('approveVerification');
-    console.log(verificationDestinationDetail);
+    console.log(verificationDestinationDetails);
     this.verificationService.saveVerification(
-      [VerifiableItem.fromVerificationDestinationDetail(verificationDestinationDetail)]
-      )
+      verificationDestinationDetails.map((detail) => {
+      return VerifiableItem.fromVerificationDestinationDetail(detail);
+      }))
     .subscribe(success => {
       try {
-        this.handleSaveVerificationSuccess(verificationDestinationDetail);
+        this.handleSaveVerificationSuccess(verificationDestinationDetails);
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
@@ -125,7 +125,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       }
     }, error => {
       try {
-        this.handleSaveVerificationFailure(verificationDestinationDetail, error);
+        this.handleSaveVerificationFailure(verificationDestinationDetails, error);
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
@@ -134,9 +134,14 @@ export class VerificationDetailsPageComponent implements OnInit {
     });
   }
 
-  private handleSaveVerificationSuccess(verificationDestinationDetail: VerificationDestinationDetail): void {
-    this.childVerificationDetailsCardComponent.removeVerifiedDetails([verificationDestinationDetail]);
+  private handleSaveVerificationSuccess(verificationDestinationDetails: VerificationDestinationDetail[]): void {
+    const dashboardDataAdded =  {
+      CompleteStatuses: 1,
+     } as IVerificationDashboardData
+
+    this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
+    this.dashboardUpdateSubject.next(dashboardDataAdded);
   }
 
-  private handleSaveVerificationFailure(verificationDestinationDetail: VerificationDestinationDetail, error): void {}
+  private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {}
 }

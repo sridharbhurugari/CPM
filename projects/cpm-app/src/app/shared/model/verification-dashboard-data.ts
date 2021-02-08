@@ -6,6 +6,12 @@ export class VerificationDashboardData implements IVerificationDashboardData {
     Object.assign(this, verificationDashboardData);
   }
 
+  Add(dashboardDataToAdd: IVerificationDashboardData) {
+    for(let property in dashboardDataToAdd) {
+      this[property] += dashboardDataToAdd[property];
+    }
+  }
+
   TotalStatuses: number;
   CompleteStatuses: number;
   RequiredStatuses: number;

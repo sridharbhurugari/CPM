@@ -112,9 +112,9 @@ describe('VerificationDetailsPageComponent', () => {
     });
 
     it('should save verification on save verification event', () => {
-      const mockItem = new VerificationDestinationDetail(null);
+      const mockItems = [new VerificationDestinationDetail(null)];
 
-      component.onSaveVerificationEvent(mockItem);
+      component.onSaveVerificationEvent(mockItems);
 
       expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
     })

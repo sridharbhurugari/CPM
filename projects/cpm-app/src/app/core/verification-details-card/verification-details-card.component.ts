@@ -39,9 +39,7 @@ export class VerificationDetailsCardComponent implements OnInit {
       return this._verificationDestinationDetails;
   }
 
-  @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
-  @Output() approveVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
-  @Output() rejectVerification: EventEmitter<VerificationDestinationDetail> = new EventEmitter<VerificationDestinationDetail>();
+  @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
@@ -105,11 +103,11 @@ export class VerificationDetailsCardComponent implements OnInit {
     console.log('button approve clicked');
     console.log(selectedVerificationDestinationDetail);
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
-    this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
+    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
   }
 
   onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
-    this.displayRejectPopupDialog(selectedVerificationDestinationDetail);
+    this.displayRejectPopupDialog([selectedVerificationDestinationDetail]);
   }
 
   onRequiredIconClick() {
@@ -126,7 +124,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
 
   /* istanbul ignore next */
-  private displayRejectPopupDialog(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
+  private displayRejectPopupDialog(selectedVerificationDestinationDetails: VerificationDestinationDetail[]): void {
 
     const properties = new PopupWindowProperties();
     const rejectReasonDisplayList: SingleselectRowItem[] = [];
@@ -161,15 +159,17 @@ export class VerificationDetailsCardComponent implements OnInit {
             this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
         component.dismiss.pipe(take(1)).subscribe(selectedOk => {
             if (selectedOk) {
-                selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Rejected;
-                selectedVerificationDestinationDetail.RejectReason = data.selectedrow.value;
-                this.saveVerificationEvent.emit(selectedVerificationDestinationDetail);
+              selectedVerificationDestinationDetails.forEach((detail) => {
+                detail.VerifiedStatus = VerificationStatusTypes.Rejected;
+                detail.RejectReason = data.selectedrow.value;
+              });
+              this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
             }
         });
     });
   }
 
-  private setDetailsGroupData(verificationDestinationDetails: VerificationDestinationDetail[]) {
+  private setDetailsGroupData(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     if(verificationDestinationDetails && verificationDestinationDetails.length > 0) {
       this.destinationLine1 = verificationDestinationDetails[0].DestinationLine1;
       this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
@@ -177,7 +177,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
   }
 
-  showAlert(){
+  showAlert(): void {
     //if(this.selectedVerificationDestinationDetail.Exception) {
       var exceptionMsg;
       this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });

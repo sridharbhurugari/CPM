@@ -8,6 +8,7 @@
   <div class="content">
     <app-verification-dashboard
     [verificationDashboardData]="verificationDashboardData | async"
+    [dashboardUpdate$]="dashboardUpdateSubject.asObservable()"
     ></app-verification-dashboard>
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
