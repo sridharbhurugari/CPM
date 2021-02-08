@@ -9,7 +9,6 @@ import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
-
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { VerifiableItem } from '../../shared/model/verifiable-item';
 import { LogService } from '../../api-core/services/log-service';
@@ -17,6 +16,7 @@ import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
+import { ToastService } from '@omnicell/webcorecomponents';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -42,7 +42,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
-    private logService: LogService
+    private logService: LogService,
+    private toastService: ToastService,
   ) {
   }
 

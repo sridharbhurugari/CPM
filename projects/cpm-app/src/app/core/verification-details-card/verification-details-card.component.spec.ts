@@ -4,12 +4,14 @@ import { PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { SortDirection } from '../../shared/constants/sort-direction';
+import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 
@@ -23,10 +25,20 @@ describe('VerificationDetailsCardComponent', () => {
   const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
   const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
   popupWindowService = { show: showSpy };
+  let toastService: Partial<ToastService>;
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+  };
+
+  let errorSpy = jasmine.createSpy('error');
+  let warningSpy = jasmine.createSpy('warning');
+  let infoSpy = jasmine.createSpy('info');
+  toastService = {
+    error: errorSpy,
+    warning: warningSpy,
+    info: infoSpy,
   };
 
   beforeEach(async(() => {
@@ -36,7 +48,8 @@ describe('VerificationDetailsCardComponent', () => {
       imports: [SvgIconModule],
       providers: [
         { provide: TranslateService, useValue: translateService},
-        { provide: PopupWindowService, useValue: popupWindowService }
+        { provide: PopupWindowService, useValue: popupWindowService },
+        { provide: ToastService, useValue: toastService },
       ]
     })
     .compileComponents();
@@ -81,5 +94,22 @@ describe('VerificationDetailsCardComponent', () => {
       component.medicationClicked(mockdetail);
       expect(component.selectedVerificationDestinationDetail.OrderId).toBe("1");
     });
+
+    it('should call toastService.error', () => {
+      component.showAlert();
+      expect(toastService.error).toHaveBeenCalled();
+    });
   });
+
+  describe('Button Clicks', () => {
+    it('should send event with verified item on appove click', () => {
+      const verificationItem = new VerificationDestinationDetail(null);
+      const saveSpy =  spyOn(component.saveVerificationEvent, 'emit');
+
+      component.onApproveClick(verificationItem);
+
+      expect(verificationItem.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
+  })
 });

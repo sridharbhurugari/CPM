@@ -14,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
-import { MockedDatePipe} from '../testing/mock-date-pipe.spec';
+import { MockedDatePipe } from '../testing/mock-date-pipe.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { DatePipe } from '@angular/common';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
@@ -79,14 +79,14 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     ItemFormatedDescription: '5% dextrose in water 1000ml bag', ItemBrandDescription: 'Tylenol', ItemIdDescription: '001EEE',
     AreaDesctiptionForReport: '#Childeren Hospital', patientNameForReport: 'Aaron, Derron', DestinationOmniForReport: 'POD 3B ext28270'
   },
-];
+  ];
 
   beforeEach(async(() => {
     routerMock = { navigate: () => of<boolean>().toPromise() };
     spyOn(routerMock, 'navigate');
     printWithBaseData = jasmine.createSpy('navigate');
-    const pdfGridReportService: Partial<UnfilledPdfGridReportService> = {
-      printWithBaseData
+    const unfilledPdfGridReportService: Partial<UnfilledPdfGridReportService> = {
+      printMe: () => of(true)
     };
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
@@ -115,19 +115,23 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       ],
       providers: [
         { provide: UnderfilledPicklistLinesService, useValue: { get: () => of([]) } },
-        { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of(''),
-        doesUserHaveDeletePicklistPermissions: () => of(true) } },
+        {
+          provide: UnderfilledPicklistsService, useValue: {
+            getForOrder: () => of(''),
+            doesUserHaveDeletePicklistPermissions: () => of(true)
+          }
+        },
 
         { provide: ResetPickRoutesService, useValue: { reset: () => of() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => '' } } } },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
-        { provide: UnfilledPdfGridReportService, useValue: pdfGridReportService },
+        { provide: UnfilledPdfGridReportService, useValue: unfilledPdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
         { provide: PopupDialogService, useValue: simpleDialogService },
-        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService},
+        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService },
         { provide: Router, useValue: routerMock },
         { provide: Location, useValue: location },
       ],
@@ -137,17 +141,17 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         ButtonActionModule,
       ]
     })
-    .overrideComponent(UnderfilledPicklistLinesComponent, {
-      set: {
-        template: ''
-      }
-    })
-    .overrideComponent(HeaderContainerComponent, {
-      set: {
-        template: ''
-      }
-    })
-    .compileComponents();
+      .overrideComponent(UnderfilledPicklistLinesComponent, {
+        set: {
+          template: ''
+        }
+      })
+      .overrideComponent(HeaderContainerComponent, {
+        set: {
+          template: ''
+        }
+      })
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -155,7 +159,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.picklistLines$ = of(pickListLinesData);
-    component.reportPickListLines$ = component.picklistLines$;
+    component.picklistLines = pickListLinesData;
   });
 
   it('should create', () => {
@@ -163,12 +167,12 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   });
 
   describe('Unfilled record selection', () => {
-    it('Should get report data ', fakeAsync(() => {
-      component.reportPickListLines$ = of(pickListLinesData);
+    it('Should NOT get report data OnInit ', fakeAsync(() => {
+      component.picklistLines = pickListLinesData;
       const getReportFields = spyOn(component, 'getReportData').and.callThrough();
       component.ngOnInit();
       tick();
-      expect(getReportFields).toHaveBeenCalledTimes(1);
+      expect(getReportFields).toHaveBeenCalledTimes(0);
     }));
   });
 
@@ -211,8 +215,12 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     });
 
     it('should NOT be visible', () => {
-      TestBed.overrideProvider(UnderfilledPicklistsService, {useValue: { getForOrder: () => of(''),
-      doesUserHaveDeletePicklistPermissions: () => of(true) }});
+      TestBed.overrideProvider(UnderfilledPicklistsService, {
+        useValue: {
+          getForOrder: () => of(''),
+          doesUserHaveDeletePicklistPermissions: () => of(true)
+        }
+      });
       expect(component.buttonVisible === false);
     });
   });
@@ -242,12 +250,6 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         pickList.PriorityCode = 'Patient';
         component.reportBaseData$ = of(baseData);
         component.picklist$ = of(pickList);
-      });
-      it('should display error dialog', () => {
-        printWithBaseData.and.returnValue(of(false));
-        component.requestStatus = 'none';
-        component.print();
-        expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
       });
     });
   });
