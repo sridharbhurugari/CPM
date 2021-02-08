@@ -9,9 +9,9 @@ import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
-
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { ToastService } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-verification-details-page',
@@ -35,6 +35,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
+    private toastService: ToastService,
   ) {
   }
 

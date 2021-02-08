@@ -11,7 +11,7 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 import { VerificationBasePageComponent } from './verification-base-page.component';
 
-fdescribe('VerificationPageComponent', () => {
+describe('VerificationPageComponent', () => {
   let component: VerificationBasePageComponent;
   let fixture: ComponentFixture<VerificationBasePageComponent>;
 
