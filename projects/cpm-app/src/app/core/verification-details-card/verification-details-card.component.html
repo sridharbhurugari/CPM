@@ -100,7 +100,7 @@
                   <div class= v-detail-right>
                     <div class="detail-header">
                     <span> {{ 'PICKED_QUANTITY' | translate }}</span>
-                    <span style="padding-left: 30px; margin-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity != this.selectedVerificationDestinationDetail.FillQuantity">
+                    <span style="padding-left: 30px; padding-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity !== this.selectedVerificationDestinationDetail.FillQuantity">
                       <ng-container part="icon">
                         <app-validation-icon
                         iconString="warning" toastTileResourceKey="" toastMsgResourceKey="PICK_VERIFICATION_TOTAL_MSG"
