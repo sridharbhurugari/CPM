@@ -136,7 +136,7 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private handleSaveVerificationSuccess(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     const dashboardDataAdded =  {
-      CompleteStatuses: 1,
+      CompleteStatuses: verificationDestinationDetails.length,
      } as IVerificationDashboardData
 
     this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
