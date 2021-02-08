@@ -13,6 +13,7 @@ import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
 import { take } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 
 @Component({
@@ -24,7 +25,8 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   constructor(
     private translateService: TranslateService,
-    private popupWindowService: PopupWindowService
+    private popupWindowService: PopupWindowService,
+    private toastService: ToastService
     ) { }
 
   @Input()
@@ -110,6 +112,10 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.displayRejectPopupDialog(selectedVerificationDestinationDetail);
   }
 
+  onRequiredIconClick() {
+    this.showAlert();
+  }
+
   removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
     const removalSet = new Set(verificationDestinationDetailsToRemove);
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
@@ -169,6 +175,17 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
       this.destinationType = verificationDestinationDetails[0].DestinationType;
     }
+  }
+
+  showAlert(){
+    //if(this.selectedVerificationDestinationDetail.Exception) {
+      var exceptionMsg;
+      this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
+      this.toastService.error('error title', exceptionMsg, {
+        timeout: 5000,
+        pauseOnHover: false
+      });
+    // }
   }
 
   private setTranslations(): void {

@@ -22,6 +22,7 @@ import { VerificationDashboardComponent } from '../verification-dashboard/verifi
 import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
 
 import { VerificationDetailsPageComponent } from './verification-details-page.component';
+import { ToastService } from '@omnicell/webcorecomponents';
 
 describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
@@ -30,6 +31,7 @@ describe('VerificationDetailsPageComponent', () => {
   let verificationService: Partial<VerificationService>;
   let verificationDestinationDetails : IVerificationDestinationDetail[];
   let popupWindowService: Partial<PopupWindowService>;
+  let toastService: Partial<ToastService>;
 
   const popupDismissedSubject = new Subject<boolean>();
   const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
@@ -39,6 +41,15 @@ describe('VerificationDetailsPageComponent', () => {
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+  };
+
+  let errorSpy = jasmine.createSpy('error');
+  let warningSpy = jasmine.createSpy('warning');
+  let infoSpy = jasmine.createSpy('info');
+  toastService = {
+    error: errorSpy,
+    warning: warningSpy,
+    info: infoSpy,
   };
 
   verificationService = {
@@ -59,7 +70,8 @@ describe('VerificationDetailsPageComponent', () => {
         {provide: TranslateService, useValue: translateService },
         { provide: VerificationService, useValue: verificationService },
         { provide: LogService, useValue: { logMessageAsync: () => {}}},
-        { provide: PopupWindowService, useValue: popupWindowService}
+        { provide: PopupWindowService, useValue: popupWindowService},
+        { provide: ToastService, useValue: toastService },
       ]
     })
     .compileComponents();
