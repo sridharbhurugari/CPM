@@ -1,7 +1,8 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { flatMap, map, shareReplay } from 'rxjs/operators';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -21,11 +22,16 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
+  @Output() nonXr2PickingBarcodeScanUnexpected: EventEmitter<null> = new EventEmitter();
   @Output() PriorityDescription: Observable<string>;
   @Output() headerSubTitle: Observable<string>;
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
+  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+
+  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
+
 
   private backRoute = VerificationRouting.OrderPage;
   private continueRoute = VerificationRouting.DetailsPage;
@@ -50,12 +56,36 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
    }
 
   ngOnInit() {
+    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationDestinationItems();
     this.loadVerificationDashboardData();
   }
 
   ngAfterContentChecked() {
     this.ref.detectChanges();
+  }
+
+  onBarcodeScannedEvent(data: IBarcodeData) {
+    if(data.IsXr2PickingBarcode) {
+      console.log('Details Page Xr2 Barcode!')
+
+      const navigationParams = {
+        OrderId: data.OrderId,
+        DeviceId: data.DeviceId,
+        DeviceDescription: '',
+        DestinationId: data.DestinationId,
+        PriorityCodeDescription: '',
+        Date: new Date(),
+        Route:  VerificationRouting.DetailsPage
+      } as IVerificationNavigationParameters
+
+      const savedPageConfiguration = this.createSavedPageConfiguration();
+      this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
+      this.pageNavigationEvent.emit(navigationParams);
+      this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+    } else {
+        this.nonXr2PickingBarcodeScanUnexpected.emit();
+    }
   }
 
   onBackEvent(): void {

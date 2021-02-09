@@ -22,7 +22,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
-  @Input() xr2BarcodeScannedEvents: Observable<IBarcodeData>;
+  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
 
@@ -52,16 +52,17 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.xr2xr2PickingBarcodeScannedSubscription = this.xr2BarcodeScannedEvents.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationDashboardData();
     this.loadVerificationDestinationDetails();
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
-      console.log('Details Page Xr2 Barcode!')
+      // TODO: Save anything in progress - move to new barcode.  If barcode is the same - ignore it.
     } else {
-      // TODO: Handle Item Scanned
+      // TODO: Handle Item Scanned - Safety Stock
+      // TODO: If item not found here, figure out how to report null transaction.
     }
   }
 
@@ -77,6 +78,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   private loadVerificationDestinationDetails(): void {
+    // TODO - Determine what to do here if data cannot be loaded for some reason - perhaps they scanned something already verified.
     console.log(this.navigationParameters.DestinationId);
     if(!this.navigationParameters || !this.navigationParameters.DestinationId || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
       return;

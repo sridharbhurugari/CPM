@@ -23,7 +23,9 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
-  @Input() xr2BarcodeScannedEvents: Observable<IBarcodeData>;
+  @Output() nonXr2PickingBarcodeScanUnexpected: EventEmitter<null> = new EventEmitter();
+
+  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
 
@@ -39,7 +41,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     ) { }
 
   ngOnInit() {
-    this.xr2xr2PickingBarcodeScannedSubscription = this.xr2BarcodeScannedEvents.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationOrderItems();
   }
 
@@ -67,7 +69,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       this.pageNavigationEvent.emit(navigationParams);
       this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
     } else {
-      // TODO: Cant scan item here - tell the user about it.
+        this.nonXr2PickingBarcodeScanUnexpected.emit();
     }
   }
 

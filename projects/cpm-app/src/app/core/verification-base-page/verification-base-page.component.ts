@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
@@ -19,7 +22,7 @@ export class VerificationBasePageComponent implements OnInit {
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
-  xr2PickingBarcodeScanned: Subject<IBarcodeData> = new Subject<IBarcodeData>();
+  barcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
   private initialRoute = VerificationRouting.OrderPage;
 
@@ -27,15 +30,40 @@ export class VerificationBasePageComponent implements OnInit {
   verificationRouting: typeof VerificationRouting = VerificationRouting;
 
   ngUnsubscribe = new Subject();
+  popupTimeoutSeconds: number;
+  translations$: Observable<any>;
 
-  constructor(private wpfInteropService: WpfInteropService, private barcodeScanService: BarcodeScanService, private barcodeDataService: BarcodeDataService) {
+  translatables = [
+    'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN',
+    'BARCODESCAN_DIALOGWARNING_TITLE',
+    'OK',
+  ];
+
+  constructor(private wpfInteropService: WpfInteropService,
+    private barcodeScanService: BarcodeScanService,
+    private barcodeDataService: BarcodeDataService,
+    private systemConfigurationService: SystemConfigurationService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService,
+    private changeDetectorRef: ChangeDetectorRef) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
-        this.navigationParameters.Route = this.initialRoute;
-      }) }
+        this.LoadTransientData();
+        this.initializeNavigationParameters();
+        this.changeDetectorRef.detectChanges()
+      })
+    }
 
   ngOnInit() {
+    this.LoadTransientData();
     this.hookupEventHandlers();
     this.initializeNavigationParameters();
+  }
+
+  private LoadTransientData() {
+    this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
+      this.popupTimeoutSeconds = Number(result.Value);
+    });
+    this.setTranslations();
   }
 
   ngOnDestroy(): void {
@@ -55,6 +83,14 @@ export class VerificationBasePageComponent implements OnInit {
 
   onPageConfigurationUpdateEvent(event: IVerificationPageConfiguration) {
     this.savedPageConfiguration = event;
+  }
+
+  onNonXr2PickingBarcodeScanUnexpected() {
+    this.displayExpectedPickingBarcodeScan();
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 
   /* istanbul ignore next */
@@ -78,18 +114,7 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   processScannedBarcodeData(result: IBarcodeData): void {
-    console.log(result);
-    console.log(result.IsXr2PickingBarcode);
-
-    if(result.IsXr2PickingBarcode)
-    {
-      this.xr2PickingBarcodeScanned.next(result);
-      return;
-    }
-
-    if(result.IsProductBarcode) {
-
-    }
+      this.barcodeScannedSubject.next(result);
   }
 
   private unsubscribeIfValidSubscription(subscription: Subscription): void {
@@ -104,5 +129,19 @@ export class VerificationBasePageComponent implements OnInit {
 
   private isInvalidSubscription(variable: any): boolean {
     return !this.isValidSubscription(variable);
+  }
+
+  private displayExpectedPickingBarcodeScan(): void {
+    this.translations$.subscribe(translations => {
+      const properties = new PopupDialogProperties('Role-Status-Warning');
+      properties.titleElementText = translations.BARCODESCAN_DIALOGWARNING_TITLE;
+      properties.messageElementText = translations.PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN;
+      properties.primaryButtonText = translations.OK;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Warning;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      this.dialogService.showOnce(properties);
+    });
   }
 }
