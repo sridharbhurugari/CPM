@@ -40,6 +40,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   IsIssueScanRequired: boolean
   VerifiedStatus: string;
   VerifiedDate: string;
+  PriorityDescription: string;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

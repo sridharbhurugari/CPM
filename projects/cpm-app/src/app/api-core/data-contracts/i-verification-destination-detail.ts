@@ -25,4 +25,5 @@ export interface IVerificationDestinationDetail {
   ForcedOutputDeviceChecking: boolean
   DeviceDescription: string;
   OutputDevice: string;
+  PriorityDescription: string;
 }
