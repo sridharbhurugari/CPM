@@ -21,4 +21,5 @@ export interface IBarcodeData {
     IsTrayBarcode: boolean;
     IsUnrecognizedBarcode: boolean;
     IsXr2PickingBarcode: boolean;
+    DeviceId: number;
 }
