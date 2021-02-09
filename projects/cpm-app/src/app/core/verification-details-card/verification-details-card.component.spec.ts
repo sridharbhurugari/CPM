@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
-import { of, Subject } from 'rxjs';
-import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { of } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -18,27 +17,22 @@ import { VerificationDetailsCardComponent } from './verification-details-card.co
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
   let fixture: ComponentFixture<VerificationDetailsCardComponent>;
+
   let translateService: Partial<TranslateService>;
   let popupWindowService: Partial<PopupWindowService>;
-
-  const popupDismissedSubject = new Subject<boolean>();
-  const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
-  const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
-  popupWindowService = { show: showSpy };
   let toastService: Partial<ToastService>;
+
+  popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
   };
 
-  let errorSpy = jasmine.createSpy('error');
-  let warningSpy = jasmine.createSpy('warning');
-  let infoSpy = jasmine.createSpy('info');
   toastService = {
-    error: errorSpy,
-    warning: warningSpy,
-    info: infoSpy,
+    error: jasmine.createSpy('error'),
+    warning: jasmine.createSpy('warning'),
+    info: jasmine.createSpy('info'),
   };
 
   beforeEach(async(() => {
@@ -65,7 +59,23 @@ describe('VerificationDetailsCardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Verification Card', () => {
+  it('should set group data/titles on item list set', () => {
+    const newItem = new VerificationDestinationDetail(null);
+    newItem.DestinationType = 'type';
+    newItem.DestinationLine1 = 'DL0';
+    newItem.DestinationLine2 = 'DL1'
+    const newList = [
+      Object.assign({}, newItem)
+    ];
+
+    component.verificationDestinationDetails = newList;
+
+    expect(component.destinationType).toBe(newItem.DestinationType);
+    expect(component.destinationLine1).toBe(newItem.DestinationLine1);
+    expect(component.destinationLine2).toBe(newItem.DestinationLine2)
+  });
+
+  describe('Sorting', () => {
     it('should set sort order on column selected event', () => {
       const mockSortEvent = {} as IColHeaderSortChanged;
       const expectedSortOrder = SortDirection.ascending;
@@ -78,7 +88,10 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.currentSortPropertyName).toBe(expectedColumnName);
       expect(component.columnSortDirection).toBe(expectedSortOrder);
     });
+  });
 
+
+  describe('Formatting', () => {
     it('should get formated datetime', () => {
       const mockdetail = new VerificationDestinationDetail(null);
       const expectedDate = new Date(1, 1, 1, 1, 1, 1, 1);
@@ -86,18 +99,6 @@ describe('VerificationDetailsCardComponent', () => {
       mockdetail.FillDate = expectedDate;
 
       expect(component.getOrderDate(mockdetail)).toBe(expectedDate.toLocaleString('en-US'));
-    });
-
-    it('should set selected upon item click', () => {
-      const mockdetail = new VerificationDestinationDetail(null);
-      mockdetail.OrderId = "1"
-      component.medicationClicked(mockdetail);
-      expect(component.selectedVerificationDestinationDetail.OrderId).toBe("1");
-    });
-
-    it('should call toastService.error', () => {
-      component.showAlert();
-      expect(toastService.error).toHaveBeenCalled();
     });
   });
 
@@ -110,6 +111,19 @@ describe('VerificationDetailsCardComponent', () => {
 
       expect(verificationItem.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
       expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set selected upon item click', () => {
+      const mockdetail = new VerificationDestinationDetail(null);
+      mockdetail.OrderId = "1"
+      component.medicationClicked(mockdetail);
+      expect(component.selectedVerificationDestinationDetail.OrderId).toBe("1");
+    });
+
+    it('should display toast on required icon click', () => {
+      component.onRequiredIconClick();
+
+      expect(toastService.error).toHaveBeenCalledTimes(1);
     });
   })
 });

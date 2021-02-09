@@ -90,15 +90,6 @@ export class VerificationDetailsCardComponent implements OnInit {
     return orderDate;
   }
 
-   /* istanbul ignore next */
-   trackByItemId(index: number, verificationDestinationDetail: any): Guid {
-    if (!verificationDestinationDetail) {
-      return null;
-    }
-
-    return verificationDestinationDetail.Id;
-  }
-
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     console.log('button approve clicked');
     console.log(selectedVerificationDestinationDetail);
@@ -122,6 +113,14 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.selectedVerificationDestinationDetail = null;
   }
 
+  /* istanbul ignore next */
+  trackByItemId(index: number, verificationDestinationDetail: any): Guid {
+    if (!verificationDestinationDetail) {
+      return null;
+    }
+
+    return verificationDestinationDetail.Id;
+  }
 
   /* istanbul ignore next */
   private displayRejectPopupDialog(selectedVerificationDestinationDetails: VerificationDestinationDetail[]): void {
