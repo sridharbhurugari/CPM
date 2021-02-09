@@ -1,7 +1,8 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationOrderItem } from '../../api-core/data-contracts/i-verification-order-item';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
@@ -22,6 +23,9 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
+  @Input() xr2BarcodeScannedEvents: Observable<IBarcodeData>;
+
+  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
 
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
   searchTextFilter: string;
@@ -35,11 +39,36 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     ) { }
 
   ngOnInit() {
+    this.xr2xr2PickingBarcodeScannedSubscription = this.xr2BarcodeScannedEvents.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationOrderItems();
   }
 
   ngAfterContentChecked() {
     this.ref.detectChanges();
+  }
+
+  onBarcodeScannedEvent(data: IBarcodeData) {
+
+    if(data.IsXr2PickingBarcode) {
+      console.log('Details Page Xr2 Barcode!')
+
+      const navigationParams = {
+        OrderId: data.OrderId,
+        DeviceId: data.DeviceId,
+        DeviceDescription: '',
+        DestinationId: data.DestinationId,
+        PriorityCodeDescription: '',
+        Date: new Date(),
+        Route:  VerificationRouting.DetailsPage
+      } as IVerificationNavigationParameters
+
+      const savedPageConfiguration = this.createSavedPageConfiguration();
+      this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
+      this.pageNavigationEvent.emit(navigationParams);
+      this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+    } else {
+      // TODO: Cant scan item here - tell the user about it.
+    }
   }
 
   onGridRowClickEvent(verificationOrderItem: VerificationOrderItem): void {
@@ -54,7 +83,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     } as IVerificationNavigationParameters
 
     const savedPageConfiguration = this.createSavedPageConfiguration();
-
+    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
     this.pageNavigationEvent.emit(navigationParams);
     this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
   }

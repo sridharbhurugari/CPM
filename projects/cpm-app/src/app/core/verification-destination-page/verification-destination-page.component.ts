@@ -1,7 +1,7 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { flatMap, map, shareReplay } from 'rxjs/operators';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -21,6 +21,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
+  @Output() PriorityDescription: Observable<string>;
+  @Output() headerSubTitle: Observable<string>;
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
@@ -33,12 +35,19 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
+  translations$: Observable<any>;
+
+
+  translatables = [
+    'LOADING'
+  ];
 
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
     private ref: ChangeDetectorRef
-  ) { }
+  ) { this.setTranslations();
+   }
 
   ngOnInit() {
     this.loadVerificationDestinationItems();
@@ -68,9 +77,6 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       DeviceId: this.navigationParameters.DeviceId,
       OrderId: this.navigationParameters.OrderId,
       DestinationId: verificationDestinationItem.DestinationId,
-      DeviceDescription: this.navigationParameters.DeviceDescription,
-      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
-      Date: this.navigationParameters.Date,
       Route: this.continueRoute
     } as IVerificationNavigationParameters;
 
@@ -78,11 +84,6 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
     this.pageNavigationEvent.emit(navigationParams);
     this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
-  }
-
-  getHeaderSubtitle() {
-    return `${this.navigationParameters.DeviceDescription} -
-    ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
 
   private loadVerificationDestinationItems(): void {
@@ -93,7 +94,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     this.verificationDestinationItems = this.verificationService
     .getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
       map((verificationOrderItems) => {
-        return verificationOrderItems.map((verificationItem) => {
+        this.headerSubTitle = of(`${verificationOrderItems.DeviceDescription} -
+        ${verificationOrderItems.OrderId} - ${this.transformDateTime(verificationOrderItems.FillDate)}`)
+        this.PriorityDescription = of(verificationOrderItems.PriorityDescription);
+        return verificationOrderItems.DetailItems.map((verificationItem) => {
           return new VerificationDestinationItem(verificationItem);
         });
       }), shareReplay(1)
@@ -120,6 +124,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       searchTextFilterDestination: this.searchTextFilter,
       colHeaderSortDestination: this.colHeaderSort
     } as IVerificationPageConfiguration;
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
   }
 
   private transformDateTime(date: Date): string {

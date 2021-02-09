@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BarcodeScanService } from 'oal-core';
 import { Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
@@ -19,12 +19,12 @@ export class VerificationBasePageComponent implements OnInit {
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
+  xr2PickingBarcodeScanned: Subject<IBarcodeData> = new Subject<IBarcodeData>();
+
   private initialRoute = VerificationRouting.OrderPage;
 
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
-
-  xr2PickingBarcodeScanned: IBarcodeData;
 
   ngUnsubscribe = new Subject();
 
@@ -83,7 +83,7 @@ export class VerificationBasePageComponent implements OnInit {
 
     if(result.IsXr2PickingBarcode)
     {
-      this.xr2PickingBarcodeScanned = result;
+      this.xr2PickingBarcodeScanned.next(result);
       return;
     }
 

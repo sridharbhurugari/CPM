@@ -1,7 +1,7 @@
 <ng-container>
   <app-cp-general-header
-  [title]="this.navigationParameters.PriorityCodeDescription"
-  [subtitle]="getHeaderSubtitle()"
+  [title]="PriorityDescription | async"
+  [subtitle]="headerSubTitle | async"
   [showSearchBox]="false"
   (backEvent)="onBackEvent()">
   </app-cp-general-header>

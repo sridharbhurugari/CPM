@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Console } from 'console';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -23,25 +22,47 @@ export class VerificationDetailsPageComponent implements OnInit {
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
+  @Input() xr2BarcodeScannedEvents: Observable<IBarcodeData>;
 
-  @Input() xr2PickingBarcodeScanned: IBarcodeData;
+  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
 
   private backRoute = VerificationRouting.DestinationPage;
 
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
+  @Output() headerSubTitle: Observable<string>;
+  @Output() PriorityDescription: Observable<string>;
+  translations$: Observable<any>;
+
+
+  translatables = [
+    'LOADING'
+  ];
+
+  FillDate: string;
+  DeviceDescription: string;
 
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
     private toastService: ToastService,
   ) {
+    this.setTranslations();
   }
 
   ngOnInit() {
+    this.xr2xr2PickingBarcodeScannedSubscription = this.xr2BarcodeScannedEvents.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationDashboardData();
     this.loadVerificationDestinationDetails();
+  }
+
+  onBarcodeScannedEvent(data: IBarcodeData) {
+    if(data.IsXr2PickingBarcode) {
+      console.log('Details Page Xr2 Barcode!')
+    } else {
+      // TODO: Handle Item Scanned
+    }
   }
 
   onBackEvent(): void {
@@ -49,11 +70,9 @@ export class VerificationDetailsPageComponent implements OnInit {
       OrderId: this.navigationParameters.OrderId,
       DeviceId: this.navigationParameters.DeviceId,
       DestinationId: null,
-      DeviceDescription: this.navigationParameters.DeviceDescription,
-      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
-      Date: this.navigationParameters.Date,
       Route: this.backRoute
     } as IVerificationNavigationParameters
+    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
     this.pageNavigationEvent.emit(navigationParams);
   }
 
@@ -65,17 +84,14 @@ export class VerificationDetailsPageComponent implements OnInit {
 
     this.verificationDestinationDetails = this.verificationService
     .getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId, this.navigationParameters.DeviceId).pipe(
-      map((verificationDetails) => {
-        return verificationDetails.map((verificationDetail) => {
+      map((verificationDetailViewData) => {
+        this.PriorityDescription = of(verificationDetailViewData.PriorityDescription);
+        this.headerSubTitle = of(`${verificationDetailViewData.DeviceDescription} - ${verificationDetailViewData.OrderId} - ${this.transformDateTime(new Date(verificationDetailViewData.FillDate))}`);
+        return verificationDetailViewData.DetailItems.map((verificationDetail) => {
           return new VerificationDestinationDetail(verificationDetail);
         });
       }), shareReplay(1)
     );
-  }
-
-  getHeaderSubtitle() {
-    return `${this.navigationParameters.DeviceDescription} -
-    ${this.navigationParameters.OrderId} - ${this.transformDateTime(this.navigationParameters.Date)}`
   }
 
   private loadVerificationDashboardData(): void {
@@ -95,4 +111,8 @@ export class VerificationDetailsPageComponent implements OnInit {
     const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
    }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
+  }
 }
