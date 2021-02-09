@@ -3,17 +3,17 @@
     [savedPageConfiguration]="savedPageConfiguration"
     (pageNavigationEvent)="onPageNavigationEvent($event)"
     (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)"
-    [xr2BarcodeScannedEvents]="xr2PickingBarcodeScanned"
-  ></app-verification-order-page>
+    [xr2BarcodeScannedEvents]="xr2PickingBarcodeScanned">
+  </app-verification-order-page>
   <app-verification-destination-page *ngSwitchCase="verificationRouting.DestinationPage"
-  [savedPageConfiguration]="savedPageConfiguration"
-  [navigationParameters]="navigationParameters"
-  (pageNavigationEvent)="onPageNavigationEvent($event)"
-  (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)">
+    [savedPageConfiguration]="savedPageConfiguration"
+    [navigationParameters]="navigationParameters"
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
+    (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)">
   </app-verification-destination-page>
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
-  [navigationParameters]="navigationParameters"
-  [xr2BarcodeScannedEvents]="xr2PickingBarcodeScanned"
-  (pageNavigationEvent)="onPageNavigationEvent($event)">
+    [navigationParameters]="navigationParameters"
+    [xr2BarcodeScannedEvents]="xr2PickingBarcodeScanned"
+    (pageNavigationEvent)="onPageNavigationEvent($event)">
   </app-verification-details-page>
 </div>
