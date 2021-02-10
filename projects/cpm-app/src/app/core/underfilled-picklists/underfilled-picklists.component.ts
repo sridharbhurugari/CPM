@@ -80,8 +80,10 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.translateService.get('OK').subscribe(s => this.okButtonText = s);
     this.translateService.get('ORDER_IN_USE_TITLE').subscribe(s => this.orderInUseTitle = s);
-    this.workstationTrackerService.GetWorkstationShortName().subscribe(s => this.workstation = s);
-    this.workstationTrackerService.GetWorkstationFriendlyName().subscribe(s => this.workstationFriendlyName = s);
+    this.workstationTrackerService.GetWorkstationName().subscribe(s => {
+      this.workstationFriendlyName = s.WorkstationFriendlyName;
+      this.workstation = s.WorkstationShortName;
+    });
   }
 
   ngAfterViewInit(): void {

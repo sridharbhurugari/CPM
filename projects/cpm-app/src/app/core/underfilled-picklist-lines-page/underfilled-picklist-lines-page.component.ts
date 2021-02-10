@@ -120,14 +120,14 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
       this.errorRerouteMessage$ = this.translateService.get('FAILEDTOREROUTE_BODY_TEXT');
       this.errorCloseTitle$ = this.translateService.get('FAILEDTOCLOSE_HEADER_TEXT');
       this.errorCloseMessage$ = this.translateService.get('FAILEDTOCLOSE_BODY_TEXT');
-      this.workstationTrackerService.GetWorkstationShortName().subscribe(s => {
-        this.workstation = s;
+      this.workstationTrackerService.GetWorkstationName().subscribe(s => {
+        this.workstation = s.WorkstationShortName;
         this.workstationTrackerData = {
           Id: orderId,
           Operation: OperationType.Unfilled,
           ConnectionId: null,
           WorkstationShortName: this.workstation,
-          WorkstationFriendlyName: ''
+          WorkstationFriendlyName: s.WorkstationFriendlyName
         };
       });
       this.getDocumentData();
