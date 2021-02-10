@@ -58,4 +58,11 @@ export class WorkstationTrackerService {
         headers: this.ocapHttpHeadersService.getHeaders()
       });
     }
+
+    public GetWorkstationFriendlyName(): Observable<string>{
+      var url = this.ocapUrlBuilderService.buildUrl('/api/WorkstationTracker/GetWorkstationFriendlyName');
+      return this.httpClient.get<string>(url, {
+        headers: this.ocapHttpHeadersService.getHeaders()
+      });
+    }
 }

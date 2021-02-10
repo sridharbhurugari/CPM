@@ -126,7 +126,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
           Id: orderId,
           Operation: OperationType.Unfilled,
           ConnectionId: null,
-          WorkstationShortName: this.workstation
+          WorkstationShortName: this.workstation,
+          WorkstationFriendlyName: ''
         };
       });
       this.getDocumentData();
