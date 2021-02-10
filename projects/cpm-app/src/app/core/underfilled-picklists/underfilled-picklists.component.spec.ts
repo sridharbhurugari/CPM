@@ -23,7 +23,9 @@ describe('UnderfilledPicklistsComponent', () => {
   let saveSucceededSpy = jasmine.createSpy('saveSucceeded').and.returnValue(of({}));
   const wpfActionControllerService: Partial<WpfActionControllerService> = { ExecuteContinueNavigationAction : () => {}};
   const workstationTrackerService: Partial<WorkstationTrackerService> = { 
-    GetWorkstationShortName : () => of(''), Track : () => of([]),
+    GetWorkstationShortName : () => of(''), 
+    Track : () => of([]),
+    GetWorkstationFriendlyName: () => of(''),
     GetWorkstationNames : () => of([{WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}])
   };
   const translateService: Partial<TranslateService> = { get : () => of() };
