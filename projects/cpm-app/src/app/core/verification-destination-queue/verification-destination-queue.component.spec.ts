@@ -52,7 +52,6 @@ describe('VerificationDestinationQueueComponent', () => {
 
     expect(component.searchTextFilter).toBe(expectedSearchTextFilter);
     expect(component.columnSortDirection).toBe(expectedSort.SortDirection);
-
   })
 
   describe('Eventing', () => {
