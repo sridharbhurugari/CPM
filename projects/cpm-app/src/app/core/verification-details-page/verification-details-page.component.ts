@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
+import { Subject, Observable, of, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -11,6 +11,14 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { ToastService } from '@omnicell/webcorecomponents';
 
+import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
+import { VerifiableItem } from '../../shared/model/verifiable-item';
+import { LogService } from '../../api-core/services/log-service';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
+import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -24,12 +32,17 @@ export class VerificationDetailsPageComponent implements OnInit {
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
+  @Input() rejectReasons: string[];
 
   private backRoute = VerificationRouting.DestinationPage;
+  private loggingCategory = LoggingCategory.Verification;
 
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
+  dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject()
+
+  @ViewChild(VerificationDetailsCardComponent, null) childVerificationDetailsCardComponent: VerificationDetailsCardComponent;
 
   headerSubTitle: Observable<string>;
   headerTitle: Observable<string>;
@@ -46,7 +59,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
-    private toastService: ToastService,
+    private logService: LogService,
   ) {
     this.setTranslations();
   }
@@ -111,5 +124,57 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
+  }
+
+  onSaveVerificationEvent($event: VerificationDestinationDetail[]): void {
+    console.log($event)
+    this.saveVerification($event);
+  }
+
+  private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
+    console.log('approveVerification');
+    console.log(verificationDestinationDetails);
+    this.verificationService.saveVerification(
+      verificationDestinationDetails.map((detail) => {
+      return VerifiableItem.fromVerificationDestinationDetail(detail);
+      }))
+    .subscribe(success => {
+      try {
+        this.handleSaveVerificationSuccess(verificationDestinationDetails);
+      } catch(exception) {
+        /* istanbul ignore next */
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+          this.constructor.name + ' saveVerificaiton - handleSaveVerificationSuccess failed: ' + exception);
+      }
+    }, error => {
+      try {
+        this.handleSaveVerificationFailure(verificationDestinationDetails, error);
+      } catch(exception) {
+        /* istanbul ignore next */
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+          this.constructor.name + ' saveVerificaiton - handleSaveVerificationError failed: ' + exception);
+      }
+    });
+  }
+
+  private handleSaveVerificationSuccess(verificationDestinationDetails: VerificationDestinationDetail[]): void {
+    const dashboardDataAdded =  {
+      CompleteStatuses: verificationDestinationDetails.length,
+      CompleteExceptions: this.countCompleteExceptions(verificationDestinationDetails)
+     } as IVerificationDashboardData
+
+    this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
+    this.dashboardUpdateSubject.next(dashboardDataAdded);
+  }
+
+  private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {}
+
+  private countCompleteExceptions(verificationDestinationDetails: VerificationDestinationDetail[]): number {
+    let count = 0;
+    verificationDestinationDetails.forEach(detail => {
+      if(detail.Exception) count++;
+    });
+
+    return count;
   }
 }

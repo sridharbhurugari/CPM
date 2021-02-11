@@ -130,7 +130,8 @@ export class EditDeviceSequenceComponent implements OnInit {
       checkboxSelected: device.DeviceOutput.IsAutoFill,
       checkboxHideSelection: this.rowItemsToHideCheckbox,
       selectedrow: this.defaultDisplayItem,
-      selectedcheckbox: false
+      selectedcheckbox: false,
+      selectText: ''
     };
 
     properties.data = data;

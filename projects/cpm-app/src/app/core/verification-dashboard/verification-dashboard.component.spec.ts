@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
+import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { MockCpDataCardComponent } from '../../shared/testing/mock-cp-data-card.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
@@ -18,6 +20,7 @@ describe('VerificationDashboardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDashboardComponent);
     component = fixture.componentInstance;
+    component.verificationDashboardData = new VerificationDashboardData(null);
     fixture.detectChanges();
   });
 

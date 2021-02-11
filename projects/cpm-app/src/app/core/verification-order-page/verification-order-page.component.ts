@@ -78,7 +78,6 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       OrderId: verificationOrderItem.OrderId,
       DeviceId: verificationOrderItem.DeviceId,
       DeviceDescription: verificationOrderItem.DeviceDescription,
-      DestinationId: null,
       PriorityCodeDescription: verificationOrderItem.PriorityCodeDescription,
       Date: verificationOrderItem.FillDate,
       Route: this.continueRoute

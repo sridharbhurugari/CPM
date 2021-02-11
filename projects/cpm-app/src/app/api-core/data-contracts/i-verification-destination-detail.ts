@@ -4,6 +4,7 @@ export interface IVerificationDestinationDetail {
 
   Id: Guid;
   OrderId: string;
+  PicklistLineId: Guid;
   DestinationId: string;
   DestinationType: string;
   DestinationLine1: string;
@@ -15,12 +16,12 @@ export interface IVerificationDestinationDetail {
   MedOrderId: string;
   RequestedQuantity: number;
   FillQuantity: number;
-  FillDate: string;
+  FillDate: Date;
   FillUserId: string;
   FillUserName: string;
   IsIssueScanRequired: boolean
   VerifiedStatus: string;
-  VerifiedDate: string;
+  VerifiedDate: Date;
   Exception: boolean;
   ForcedOutputDeviceChecking: boolean
   DeviceDescription: string;

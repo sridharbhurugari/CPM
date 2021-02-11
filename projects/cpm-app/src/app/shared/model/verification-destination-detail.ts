@@ -17,6 +17,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   }
 
   Id: Guid;
+  PicklistLineId: Guid;
   OrderId: string;
   DestinationId: string;
   DestinationType: string;
@@ -34,13 +35,14 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   MedOrderId: string;
   RequestedQuantity: number;
   FillQuantity: number;
-  FillDate: string;
+  FillDate: Date;
   FillUserId: string;
   FillUserName: string;
   IsIssueScanRequired: boolean
   VerifiedStatus: string;
-  VerifiedDate: string;
   PriorityDescription: string;
+  VerifiedDate: Date;
+  RejectReason: string;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

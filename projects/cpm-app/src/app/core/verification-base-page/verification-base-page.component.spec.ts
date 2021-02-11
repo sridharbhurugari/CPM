@@ -6,6 +6,7 @@ import { BarcodeScanService } from 'oal-core';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
+import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -25,6 +26,7 @@ describe('VerificationBasePageComponent', () => {
   let barcodeDataService: Partial<BarcodeDataService>;
   let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
   let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
+  let verificationService: Partial<VerificationService>;
 
   barcodeScanService = {
     reset: jasmine.createSpy('reset'),
@@ -37,6 +39,12 @@ describe('VerificationBasePageComponent', () => {
 
   beforeEach(async(() => {
     systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
+
+  beforeEach(async(() => {
+    verificationService = {
+      getVerificationRejectReasons: () => of([]),
+    };
+
 
     TestBed.configureTestingModule({
       declarations: [ VerificationBasePageComponent ],
@@ -51,6 +59,7 @@ describe('VerificationBasePageComponent', () => {
           provide: TranslateService,
           useValue: { get: (x: string) => of(`{x}_TRANSLATED`) },
         },
+        { provide: VerificationService, useValue: verificationService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })

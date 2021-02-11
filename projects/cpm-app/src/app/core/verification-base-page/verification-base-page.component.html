@@ -18,5 +18,6 @@
     [navigationParameters]="navigationParameters"
     [barcodeScannedEventSubject]="barcodeScannedSubject"
     (pageNavigationEvent)="onPageNavigationEvent($event)">
+    [rejectReasons] = "rejectReasons | async"
   </app-verification-details-page>
 </div>

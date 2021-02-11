@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { IVerifiableItem } from '../data-contracts/i-verifiable-item';
 import { IVerificationDashboardData } from '../data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationDetailViewData } from "../data-contracts/i-verification-destination-detail-view-data";
 import { IVerificationDestinationViewData } from '../data-contracts/i-verification-destination-view-data';
@@ -44,6 +45,20 @@ export class VerificationService {
     console.log('verificationservice get')
     const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destination/${destinationId}/${orderId}/${deviceId}`);
     return this.httpClient.get<IVerificationDestinationDetailViewData>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  saveVerification(verifiableItem: Array<IVerifiableItem>): Observable<boolean> {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/save');
+    return this.httpClient.post<boolean>(url, verifiableItem, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  getVerificationRejectReasons(): Observable<string[]> {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/rejectreasons');
+    return this.httpClient.get<string[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

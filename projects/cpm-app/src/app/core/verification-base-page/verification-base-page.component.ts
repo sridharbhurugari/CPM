@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
+import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -28,6 +29,7 @@ export class VerificationBasePageComponent implements OnInit {
 
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
+  rejectReasons: Observable<string[]>;
 
   ngUnsubscribe = new Subject();
   popupTimeoutSeconds: number;
@@ -45,7 +47,9 @@ export class VerificationBasePageComponent implements OnInit {
     private systemConfigurationService: SystemConfigurationService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private changeDetectorRef: ChangeDetectorRef) {
+    private changeDetectorRef: ChangeDetectorRef,
+    private verificationService: VerificationService
+    ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.LoadTransientData();
         this.initializeNavigationParameters();
@@ -57,6 +61,7 @@ export class VerificationBasePageComponent implements OnInit {
     this.LoadTransientData();
     this.hookupEventHandlers();
     this.initializeNavigationParameters();
+    this.loadRejectReasons();
   }
 
   private LoadTransientData() {
@@ -143,5 +148,9 @@ export class VerificationBasePageComponent implements OnInit {
       properties.timeoutLength = this.popupTimeoutSeconds;
       this.dialogService.showOnce(properties);
     });
+  }
+
+  private loadRejectReasons(): void {
+    this.rejectReasons = this.verificationService.getVerificationRejectReasons();
   }
 }
