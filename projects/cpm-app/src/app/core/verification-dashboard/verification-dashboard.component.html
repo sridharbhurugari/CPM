@@ -13,6 +13,8 @@
   <app-cp-data-card
   [showLoading]="!verificationDashboardData"
   [title]="'EXCEPTIONS' | translate"
+  [iconString]="showIcon('warning', verificationDashboardData?.CompleteExceptions, verificationDashboardData?.RequiredExceptions)"
+  [iconTheme]="'warning'"
   [data1]="verificationDashboardData?.CompleteExceptions?.toString()"
   [dataLabel1]="'COMPLETE' | translate"
   [data2]="verificationDashboardData?.RequiredExceptions?.toString()"
@@ -22,6 +24,7 @@
   <app-cp-data-card
   [showLoading]="!verificationDashboardData"
   [title]="'OUTPUT_DEVICE' | translate"
+  [iconString]="showIcon('notification-active', verificationDashboardData?.CompleteOutputDevices, verificationDashboardData?.RequiredOutputDevices)"
   [data1]="'0'"
   [dataLabel1]="'COMPLETE' | translate"
   [data2]="'0'"

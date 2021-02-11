@@ -3,6 +3,14 @@
     <oc-svgicon icon="spin" theme="dark"></oc-svgicon>
   </div>
   <div class="card-content" *ngIf="!showLoading">
+    <app-validation-icon
+    id="icon"
+    [iconWidth]="30"
+    [iconHeight]="30"
+    [iconString]="iconString" toastTileResourceKey="" toastMsgResourceKey="PICK_VERIFICATION_TOTAL_MSG"
+    toastType="warn"
+    iconTheme="{{iconTheme}}">
+    </app-validation-icon>
     <div class="card-header">
       {{title}}
     </div>

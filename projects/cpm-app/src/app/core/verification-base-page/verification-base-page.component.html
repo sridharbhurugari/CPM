@@ -8,11 +8,13 @@
   [savedPageConfiguration]="savedPageConfiguration"
   [navigationParameters]="navigationParameters"
   (pageNavigationEvent)="onPageNavigationEvent($event)"
-  (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)">
+  (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)"
+  (alertEvent)="onAlertEvent()">
   </app-verification-destination-page>
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
   [navigationParameters]="navigationParameters"
   [rejectReasons] = "rejectReasons | async"
-  (pageNavigationEvent)="onPageNavigationEvent($event)">
+  (pageNavigationEvent)="onPageNavigationEvent($event)"
+  (alertEvent)="onAlertEvent()">
   </app-verification-details-page>
 </div>

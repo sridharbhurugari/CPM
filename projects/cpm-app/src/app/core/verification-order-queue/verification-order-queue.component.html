@@ -9,7 +9,7 @@
         [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="370" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="550" data-colwrap="true"
         [columnPropertyName]="typePropertyName" headerResourceKey="TYPE"
         [currentSortPropertyName]="currentSortPropertyName"
         [customColumnSortOrder]="columnSortDirection"
@@ -33,12 +33,6 @@
       [customColumnSortOrder]="columnSortDirection"
       (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="180" data-colwrap="true"
-        [columnPropertyName]="exceptionsPropertyName" headerResourceKey="EXCEPTIONS"
-        [currentSortPropertyName]="currentSortPropertyName"
-        [customColumnSortOrder]="columnSortDirection"
-        (columnSelected)="columnSelected($event)">
-      </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
       [columnPropertyName]="datePropertyName" headerResourceKey="DATE"
       [currentSortPropertyName]="currentSortPropertyName"
@@ -56,8 +50,21 @@
         </div>
         <div class="col width-type" [attr.data-title]="'TYPE' | translate">
           <div class=priority-container>
-            {{verificationOrderItem.PriorityCodeDescription}}
-            <span class="order">{{verificationOrderItem.OrderId}}</span>
+            <span class="priority-text">
+              {{verificationOrderItem.PriorityCodeDescription}}
+              <span class="order">{{verificationOrderItem.OrderId}}</span>
+            </span>
+            <span class=priority-icons>
+              <app-cp-clickable-icon *ngIf="verificationOrderItem.hasExceptions" id="exception-icon"
+              [icon]="'notification-active'"
+              [theme]="'danger'"
+              [label]="'EXCEPTION' | translate">
+              </app-cp-clickable-icon>
+              <app-cp-clickable-icon *ngIf="verificationOrderItem.hasOutputDeviceVerification" id="output-device-icon"
+              [icon]="'notification-active'"
+              [label]="'OUTPUT_DEVICE' | translate">
+              </app-cp-clickable-icon>
+            </span>
           </div>
         </div>
         <div class="col width-device" [attr.data-title]="'DEVICE' | translate">
@@ -73,25 +80,6 @@
         <div class="col width-required" [attr.data-title]="'REQUIRED' | translate">
           <span class="centered-content">
             {{verificationOrderItem.RequiredVerificationPercentage}}%
-          </span>
-        </div>
-        <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
-          <span class="centered-content" *ngIf="verificationOrderItem.RequiredExceptions > 0">
-            <app-cp-data-label
-            [ngStyle]="{'padding-right': '5px'}"
-            [dataSize]=20
-            [labelSize]=13
-            [data]="verificationOrderItem.CompleteExceptions"
-            [label]="'COMPLETE' | translate">
-            </app-cp-data-label>
-            /
-            <app-cp-data-label
-            [ngStyle]="{'padding-left': '5px'}"
-            [dataSize]=20
-            [labelSize]=13
-            [data]="verificationOrderItem.RequiredExceptions"
-            [label]="'REQUIRED' | translate">
-            </app-cp-data-label>
           </span>
         </div>
         <div class="col width-date" [attr.data-title]="'DATE' | translate">

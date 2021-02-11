@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastService } from '@omnicell/webcorecomponents';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -24,7 +26,9 @@ export class VerificationBasePageComponent implements OnInit {
 
   constructor(
     private wpfInteropService: WpfInteropService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
+    private translateService: TranslateService,
+    private toastService: ToastService
     ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.navigationParameters.Route = this.initialRoute;
