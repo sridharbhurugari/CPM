@@ -11,7 +11,6 @@
     [dashboardUpdate$]="dashboardUpdateSubject.asObservable()"
     ></app-verification-dashboard>
     <app-verification-details-card
-      [deviceDescription]="this.DeviceDescription | async"
       [verificationDestinationDetails]="verificationDestinationDetails | async"
       [rejectReasons]="rejectReasons"
       (saveVerificationEvent)="onSaveVerificationEvent($event)">
