@@ -12,6 +12,6 @@ export interface IVerificationOrderItem {
   CompleteVerificationPercentage: number;
   RequiredVerificationPercentage: number;
   FillDate: Date;
-  hasOutputDeviceVerification: boolean;
-  hasExceptions: boolean;
+  HasOutputDeviceVerification: boolean;
+  HasExceptions: boolean;
 }
