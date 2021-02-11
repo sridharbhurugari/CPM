@@ -39,8 +39,6 @@ describe('VerificationBasePageComponent', () => {
 
   beforeEach(async(() => {
     systemConfigurationService = { GetConfigurationValues: () => of(configurationValue) };
-
-  beforeEach(async(() => {
     verificationService = {
       getVerificationRejectReasons: () => of([]),
     };
