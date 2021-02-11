@@ -77,9 +77,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     const navigationParams = {
       OrderId: verificationOrderItem.OrderId,
       DeviceId: verificationOrderItem.DeviceId,
-      DeviceDescription: verificationOrderItem.DeviceDescription,
-      PriorityCodeDescription: verificationOrderItem.PriorityCodeDescription,
-      Date: verificationOrderItem.FillDate,
+      DestinationId: null,
       Route: this.continueRoute
     } as IVerificationNavigationParameters
 
