@@ -11,6 +11,8 @@ export class CpDataCardComponent implements OnInit {
   @Input() title: string;
   @Input() iconString: string;
   @Input() iconTheme: string;
+  @Input() toastType: string;
+  @Input() toastMsgResourceKey: string;
   @Input() data1: string;
   @Input() dataLabel1: string;
   @Input() data2: string;

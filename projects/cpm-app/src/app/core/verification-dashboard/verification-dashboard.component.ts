@@ -1,6 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastService } from '@omnicell/webcorecomponents';
+import { Component, Input, OnInit} from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
