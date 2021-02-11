@@ -8,7 +8,6 @@ import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
-import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { ToastService } from '@omnicell/webcorecomponents';
 
@@ -31,8 +30,9 @@ export class VerificationDetailsPageComponent implements OnInit {
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
-  @Output() headerSubTitle: Observable<string>;
-  @Output() PriorityDescription: Observable<string>;
+
+  headerSubTitle: Observable<string>;
+  headerTitle: Observable<string>;
   translations$: Observable<any>;
 
 
@@ -79,21 +79,16 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private loadVerificationDestinationDetails(): void {
     // TODO - Determine what to do here if data cannot be loaded for some reason - perhaps they scanned something already verified.
-    console.log(this.navigationParameters.DestinationId);
     if(!this.navigationParameters || !this.navigationParameters.DestinationId || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
       return;
     }
 
-    this.verificationDestinationDetails = this.verificationService
-    .getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId, this.navigationParameters.DeviceId).pipe(
-      map((verificationDetailViewData) => {
-        this.PriorityDescription = of(verificationDetailViewData.PriorityDescription);
+    this.verificationService.getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId, this.navigationParameters.DeviceId).subscribe(
+      (verificationDetailViewData) => {
+        this.headerTitle = of(verificationDetailViewData.PriorityDescription);
         this.headerSubTitle = of(`${verificationDetailViewData.DeviceDescription} - ${verificationDetailViewData.OrderId} - ${this.transformDateTime(new Date(verificationDetailViewData.FillDate))}`);
-        return verificationDetailViewData.DetailItems.map((verificationDetail) => {
-          return new VerificationDestinationDetail(verificationDetail);
-        });
-      }), shareReplay(1)
-    );
+        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems);
+      }), shareReplay(1);
   }
 
   private loadVerificationDashboardData(): void {

@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -25,6 +26,7 @@ describe('VerificationDestinationPageComponent', () => {
   let fixture: ComponentFixture<VerificationDestinationPageComponent>;
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
+  let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -32,7 +34,7 @@ describe('VerificationDestinationPageComponent', () => {
   };
 
   verificationService = {
-    getVerificationDestinations: () => of([]),
+    getVerificationDestinations: () => of(),
     getVerificationDashboardData: () => of()
   };
 
@@ -53,8 +55,12 @@ describe('VerificationDestinationPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDestinationPageComponent);
     component = fixture.componentInstance;
+    component.barcodeScannedEventSubject = barcodeScannedInputSubject;
     component.navigationParameters = {} as IVerificationNavigationParameters;
     component.savedPageConfiguration =  {} as IVerificationPageConfiguration;
+    spyOn(component.pageNavigationEvent, 'emit');
+    spyOn(component.nonXr2PickingBarcodeScanUnexpected, 'emit');
+    spyOn(component.pageConfigurationUpdateEvent, 'emit');
     fixture.detectChanges();
   });
 
@@ -65,19 +71,17 @@ describe('VerificationDestinationPageComponent', () => {
 
   describe('Eventing', () => {
     it('should navigate page on back event', () => {
-      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
       component.onBackEvent();
 
-      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     })
 
     it('should navigate page on grid click event', () => {
-      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
       const mockItem = new VerificationDestinationItem(null);
 
       component.onGridRowClickEvent(mockItem);
 
-      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     });
 
     it('should set search text on search filter event', () => {
@@ -94,6 +98,22 @@ describe('VerificationDestinationPageComponent', () => {
       component.onSortEvent(event);
 
       expect(component.colHeaderSort).toBe(event);
+    });
+
+    it('should handle XR2 Picking Barcode Scan', () => {
+      var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.nonXr2PickingBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(0);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
+      expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle non XR2 Picking Barcode Scan', () => {
+      var barcodeData = {BarCodeFormat: 'UP', BarCodeScanned: '123456789012', IsXr2PickingBarcode: false} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.nonXr2PickingBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(0);
+      expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(0);
     });
   })
 });

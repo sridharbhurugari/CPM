@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule, SvgIconModule } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
@@ -21,6 +21,8 @@ import { VerificationDetailsCardComponent } from '../verification-details-card/v
 
 import { VerificationDetailsPageComponent } from './verification-details-page.component';
 import { ToastService } from '@omnicell/webcorecomponents';
+import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 
 describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
@@ -28,7 +30,9 @@ describe('VerificationDetailsPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
   let verificationDestinationDetails : IVerificationDestinationDetail[];
+  let verificationDestinationDetailsViewData : IVerificationDestinationDetailViewData;
   let toastService: Partial<ToastService>;
+  let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -44,10 +48,18 @@ describe('VerificationDetailsPageComponent', () => {
     info: infoSpy,
   };
 
+  verificationDestinationDetailsViewData = {
+    DetailItems: [],
+    PriorityDescription: 'priority-description',
+    DeviceDescription: 'device-description',
+    FillDate: new Date(),
+    OrderId: 'orderId'
+  } as IVerificationDestinationDetailViewData;
+
   verificationService = {
-    getVerificationDestinations: () => of([]),
+    getVerificationDestinations: () => of(),
     getVerificationDashboardData: () => of(),
-    getVerificationDestinationDetails: () => of(verificationDestinationDetails)
+    getVerificationDestinationDetails: () => of(verificationDestinationDetailsViewData)
   };
 
   beforeEach(async(() => {
@@ -67,25 +79,26 @@ describe('VerificationDetailsPageComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VerificationDetailsPageComponent);
-    component = fixture.componentInstance;
-    component.navigationParameters = {
-      DeviceId: 1,
-      OrderId: 'orderId',
-      DeviceDescription: 'device-description',
-      DestinationId: 'destinaitonId',
-      PriorityCodeDescription: 'priority-description',
-      Date: null,
-      Route: VerificationRouting.DetailsPage
-    } as IVerificationNavigationParameters;
-
     let a: IVerificationDestinationDetail;
     const mockItem = new VerificationDestinationDetail(a);
     verificationDestinationDetails = [];
     verificationDestinationDetails.push(mockItem);
-    fixture.detectChanges();
+    verificationDestinationDetailsViewData.DetailItems = verificationDestinationDetails;
 
-    component.navigationParameters = {} as IVerificationNavigationParameters;
+    fixture = TestBed.createComponent(VerificationDetailsPageComponent);
+    component = fixture.componentInstance;
+    component.barcodeScannedEventSubject = barcodeScannedInputSubject;
+
+    component.navigationParameters = {
+      DeviceId: 1,
+      OrderId: 'orderId',
+      DestinationId: 'destinaitonId',
+      Route: VerificationRouting.DetailsPage
+    } as IVerificationNavigationParameters;
+
+    spyOn(component.pageNavigationEvent, 'emit');
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -94,18 +107,13 @@ describe('VerificationDetailsPageComponent', () => {
 
   describe('Eventing', () => {
     it('should navigate page on back event', () => {
-      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
       component.onBackEvent();
-
-      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     })
 
     it('should navigate page on grid click event', () => {
-      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
-
       component.onBackEvent();
-
-      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     });
   })
 });

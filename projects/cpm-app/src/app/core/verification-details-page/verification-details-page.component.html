@@ -1,6 +1,6 @@
 <ng-container>
   <app-cp-general-header
-  [title]="PriorityDescription | async"
+  [title]="headerTitle | async"
   [subtitle]="headerSubTitle | async"
   [showSearchBox]="false"
   (backEvent)="onBackEvent()">
@@ -10,7 +10,7 @@
     [verificationDashboardData]="verificationDashboardData | async"
     ></app-verification-dashboard>
     <app-verification-details-card
-      [deviceDescription]="this.navigationParameters.DeviceDescription"
+      [deviceDescription]="this.DeviceDescription | async"
       [verificationDestinationDetails]="verificationDestinationDetails | async">
     </app-verification-details-card>
   </div>

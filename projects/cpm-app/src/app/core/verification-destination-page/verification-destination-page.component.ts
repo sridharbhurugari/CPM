@@ -1,7 +1,7 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import { flatMap, map, shareReplay } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
@@ -23,8 +23,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
   @Output() nonXr2PickingBarcodeScanUnexpected: EventEmitter<null> = new EventEmitter();
-  @Output() PriorityDescription: Observable<string>;
-  @Output() headerSubTitle: Observable<string>;
+
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
@@ -38,6 +37,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
   verificationDashboardData: Observable<IVerificationDashboardData>;
+  headerTitle: Observable<string>;
+  headerSubTitle: Observable<string>;
 
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
@@ -121,17 +122,12 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       return;
     }
 
-    this.verificationDestinationItems = this.verificationService
-    .getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
-      map((verificationOrderItems) => {
-        this.headerSubTitle = of(`${verificationOrderItems.DeviceDescription} -
-        ${verificationOrderItems.OrderId} - ${this.transformDateTime(verificationOrderItems.FillDate)}`)
-        this.PriorityDescription = of(verificationOrderItems.PriorityDescription);
-        return verificationOrderItems.DetailItems.map((verificationItem) => {
-          return new VerificationDestinationItem(verificationItem);
-        });
-      }), shareReplay(1)
-    );
+    this.verificationService.getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).subscribe(
+      (verificationDestinationViewData) => {
+        this.headerTitle = of(verificationDestinationViewData.PriorityDescription);
+        this.headerSubTitle = of(`${verificationDestinationViewData.DeviceDescription} - ${verificationDestinationViewData.OrderId} - ${this.transformDateTime(new Date(verificationDestinationViewData.FillDate))}`);
+        this.verificationDestinationItems = of(verificationDestinationViewData.DetailItems);
+      }), shareReplay(1);
   }
 
   private loadVerificationDashboardData(): void {
