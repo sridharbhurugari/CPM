@@ -29,9 +29,9 @@
   [iconString]="showIcon('notification-active', verificationDashboardData?.CompleteOutputDevices, verificationDashboardData?.RequiredOutputDevices)"
   [toastMsgResourceKey]="'OUTPUT_DEVICE_MSG'"
   [toastType]="'warn'"
-  [data1]="'0'"
+  [data1]="verificationDashboardData?.CompleteOutputDevices?.toString()"
   [dataLabel1]="'COMPLETE' | translate"
-  [data2]="'0'"
+  [data2]="verificationDashboardData?.RequiredOutputDevices?.toString()"
   [dataLabel2]="'REQUIRED' | translate"
   >
   </app-cp-data-card>
