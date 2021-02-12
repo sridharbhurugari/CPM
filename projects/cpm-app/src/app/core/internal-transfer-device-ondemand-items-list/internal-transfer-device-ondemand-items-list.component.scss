@@ -1,0 +1,18 @@
+:host{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+:host ::ng-deep oc-search-box{
+width: 358px !important;
+margin-right: 10px;
+}
+div.packSize{
+font-size: 12px;
+}
+div.packs{
+font-size: 12px;
+}

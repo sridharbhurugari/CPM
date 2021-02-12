@@ -57,6 +57,8 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
       this.router.navigate(['core/internalTransfer/deviceReplenishmentNeeds/', deviceId]);
       return;
     }
+
+    this.router.navigate(['core/internalTransfer/deviceReplenishmentOnDemand/', deviceId]);
   }
 
   tranferByNeedsChanged(isTransferByNeeds: boolean) {

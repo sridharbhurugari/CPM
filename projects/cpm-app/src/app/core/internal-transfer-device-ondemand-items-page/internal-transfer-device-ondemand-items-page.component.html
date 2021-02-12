@@ -1,0 +1,18 @@
+<oc-action-layout>
+  <ng-container class="ocactionheader">
+      <div class="cpmactiontitle">{{'DEVICE_ONDEMAND' | translate}}</div>
+  </ng-container>
+  <ng-container class="ocactiondetails">
+      <div class="cpmheaderrow">
+          <app-header-container *ngIf="device$ | async as device" [title]="'DEVICE' | translate">{{device.Description}}</app-header-container>
+      </div>
+      <app-internal-transfer-device-ondemand-items-list [assignedItems]="assignedItems$ | async" (selectedItem)="onSelect($event)"></app-internal-transfer-device-ondemand-items-list>
+  </ng-container>
+  <ng-container class="ocactionfooter">
+      <oc-footer>
+          <div class="ocleftalign">
+              <oc-button-action [disabled]="false" [buttonText]="'BACK' | translate" (click)="goBack()"></oc-button-action>
+          </div>
+      </oc-footer>
+  </ng-container>
+</oc-action-layout>

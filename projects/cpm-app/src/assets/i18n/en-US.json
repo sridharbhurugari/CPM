@@ -295,5 +295,8 @@
   "HYPHEN_SEPARATOR": "-",
   "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item.",
   "INTERNAL_TRANSFER_TOGGLE_NEEDS_BASED": "Needs Based",
-  "INTERNAL_TRANSFER_TOGGLE_ON_DEMAND": "On-Demand"
+  "INTERNAL_TRANSFER_TOGGLE_ON_DEMAND": "On-Demand",
+  "DEVICE_ONDEMAND": "Device Items: On-Demand",
+  "SOURCE_LOCACTION_COUNT": "# Source Locations",
+  "AVAIABLE_PHARMACY_QOH": "Available Pharmacy QOH"
 }

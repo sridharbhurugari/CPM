@@ -45,7 +45,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   picklistLineIds$: Observable<Guid[]>;
   totalLines$: Observable<number>;
-  picklistLineIndex = 0;
+  picklistLineIndex = 0; m
 
   currentLine$: Observable<IPicklistLine>;
   isLastLine$: Observable<boolean>;
@@ -102,7 +102,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete(); 
+    this.ngUnsubscribe.complete();
   }
 
   pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
