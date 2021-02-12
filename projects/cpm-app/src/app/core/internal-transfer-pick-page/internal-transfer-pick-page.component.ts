@@ -194,11 +194,15 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     this.isLastLine$ = this.totalLines$.pipe(map(x => x === this.picklistLineIndex + 1));
     this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x =>
        this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId, x.OrderId)), shareReplay(1));
-    this.currentNeedsDetails$.pipe(take(1)).subscribe(x => {
-      if (!x || !x.length) {
-        this.completeZeroPick();
-      } else {
+    forkJoin(this.currentLine$, this.currentNeedsDetails$).subscribe(results => {
+      let line = results[0];
+      let isOnDemand = line.PackSizes && line.PackSizes.some(p => p.IsOnDemand);
+      let needs = results[1];
+      let stillNeedsReplenished = needs && needs.length;
+      if (isOnDemand || stillNeedsReplenished) {
         this.continueLoadCurrentLineDetails();
+      } else {
+        this.completeZeroPick();
       }
     });
   }
