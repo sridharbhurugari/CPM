@@ -25,8 +25,10 @@ import { VerificationDetailsPageComponent } from './verification-details-page.co
 import { ToastService } from '@omnicell/webcorecomponents';
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
+import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 
-describe('VerificationDetailsPageComponent', () => {
+fdescribe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
   let fixture: ComponentFixture<VerificationDetailsPageComponent>;
   const popupDismissedSubject = new Subject<boolean>();
@@ -37,10 +39,17 @@ describe('VerificationDetailsPageComponent', () => {
   let verificationDestinationDetails : IVerificationDestinationDetail[];
   let verificationDestinationDetailsViewData : IVerificationDestinationDetailViewData;
   let toastService: Partial<ToastService>;
-  let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
+  let barcodeScannedInputSubject: Subject<IBarcodeData>;
   let popupWindowService: Partial<PopupWindowService>;
   let logService: Partial<LogService>;
-
+  let deviceId: number = 1;
+  let pickingBarcodeScanned = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true, OrderId: 'Order1', DestinationId: 'Dest1', DeviceId: 1} as IBarcodeData;
+  let differentDestPickingBarcodeScanned = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true, OrderId: 'Order1', DestinationId: 'Dest2', DeviceId: 1} as IBarcodeData;
+  let differentDevicePickingBarcodeScanned = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true, OrderId: 'Order1', DestinationId: 'Dest2', DeviceId: 2} as IBarcodeData;
+  let differentOrderPickingBarcodeScanned = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true, OrderId: 'Order2', DestinationId: 'Dest2', DeviceId: 1} as IBarcodeData;
+  let itemBarcodeScanned = {BarCodeFormat: 'UP', BarCodeScanned: '312345678909', IsXr2PickingBarcode: false, ItemId: "Item1"} as IBarcodeData;
+  let nonItemBarcodeScanned = {BarCodeFormat: 'UN', BarCodeScanned: '12345|67', IsXr2PickingBarcode: false} as IBarcodeData;
+  let mockVerificationService: VerificationService;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(popupResult) };
 
@@ -64,9 +73,9 @@ describe('VerificationDetailsPageComponent', () => {
   } as IVerificationDestinationDetailViewData;
 
   verificationService = {
-    getVerificationDestinations: jasmine.createSpy('getVerificationDestinations').and.returnValue(of([])),
-    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of()),
-    getVerificationDestinationDetails: jasmine.createSpy('getVerificationDestinationDetails').and.returnValue(of([])),
+    getVerificationDestinations: () => of({} as IVerificationDestinationViewData),
+    getVerificationDashboardData: () => of({} as IVerificationDashboardData),
+    getVerificationDestinationDetails: () => of(verificationDestinationDetailsViewData),
     saveVerification: jasmine.createSpy('saveVerification').and.returnValue(of(true)),
   };
 
@@ -82,7 +91,7 @@ describe('VerificationDetailsPageComponent', () => {
             MockSearchPipe, MockCpClickableIconComponent, MockValidationIconComponent ],
       imports: [GridModule, SvgIconModule],
       providers: [
-        {provide: TranslateService, useValue: translateService },
+        { provide: TranslateService, useValue: translateService },
         { provide: VerificationService, useValue: verificationService },
         { provide: LogService, useValue: logService },
         { provide: PopupWindowService, useValue: popupWindowService},
@@ -93,24 +102,29 @@ describe('VerificationDetailsPageComponent', () => {
   }));
 
   beforeEach(() => {
+    fixture = TestBed.createComponent(VerificationDetailsPageComponent);
+    mockVerificationService = TestBed.get(VerificationService);
+    component = fixture.componentInstance;
+    barcodeScannedInputSubject = new Subject<IBarcodeData>();
+    component.barcodeScannedEventSubject = barcodeScannedInputSubject;
+
     let a: IVerificationDestinationDetail;
     const mockItem = new VerificationDestinationDetail(a);
     verificationDestinationDetails = [];
     verificationDestinationDetails.push(mockItem);
     verificationDestinationDetailsViewData.DetailItems = verificationDestinationDetails;
 
-    fixture = TestBed.createComponent(VerificationDetailsPageComponent);
-    component = fixture.componentInstance;
-    component.barcodeScannedEventSubject = barcodeScannedInputSubject;
-
     component.navigationParameters = {
-      DeviceId: 1,
-      OrderId: 'orderId',
-      DestinationId: 'destinaitonId',
+      DeviceId: pickingBarcodeScanned.DeviceId,
+      OrderId: pickingBarcodeScanned.OrderId,
+      DestinationId: pickingBarcodeScanned.DestinationId,
       Route: VerificationRouting.DetailsPage
     } as IVerificationNavigationParameters;
 
     spyOn(component.pageNavigationEvent, 'emit');
+    spyOn(component.itemBarcodeScannedSubject, 'next');
+
+    spyOn(mockVerificationService, 'getVerificationDestinationDetails').and.callThrough();
 
     fixture.detectChanges();
   });
@@ -119,7 +133,8 @@ describe('VerificationDetailsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Eventing', () => {
+
+
     it('should navigate page on back event', () => {
       component.onBackEvent();
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
@@ -134,8 +149,37 @@ describe('VerificationDetailsPageComponent', () => {
       const mockItems = [new VerificationDestinationDetail(null)];
 
       component.onSaveVerificationEvent(mockItems);
-
       expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
-    })
+    });
+
+    it('should send Item Barcodes Event when Barcode that is not a PickingBarcode is scanned', () => {
+      barcodeScannedInputSubject.next(itemBarcodeScanned);
+      expect(component.itemBarcodeScannedSubject.next).toHaveBeenCalledWith(itemBarcodeScanned);
+    });
+
+    it('should not send Item Barcodes Event when Picking Barcode Scanned', () => {
+      barcodeScannedInputSubject.next(pickingBarcodeScanned);
+      expect(component.itemBarcodeScannedSubject.next).not.toHaveBeenCalled();
+    });
+
+    it('should not reload data when picking barcode for the same details is scanned', () => {
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(1);
+      barcodeScannedInputSubject.next(pickingBarcodeScanned);
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reload data when picking barcode for different details is scanned', () => {
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(1);
+      barcodeScannedInputSubject.next(pickingBarcodeScanned);
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(1);
+
+      barcodeScannedInputSubject.next(differentDestPickingBarcodeScanned);
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(2);
+
+      barcodeScannedInputSubject.next(differentOrderPickingBarcodeScanned);
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(3);
+
+      barcodeScannedInputSubject.next(differentDevicePickingBarcodeScanned);
+      expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(4);
+    });
   });
-});

@@ -40,7 +40,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
-  dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject()
+  dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject();
+  itemBarcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
   @ViewChild(VerificationDetailsCardComponent, null) childVerificationDetailsCardComponent: VerificationDetailsCardComponent;
 
@@ -66,16 +67,25 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   ngOnInit() {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.LoadData();
+  }
+
+  private LoadData() {
     this.loadVerificationDashboardData();
     this.loadVerificationDestinationDetails();
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
-      // TODO: Save anything in progress - move to new barcode.  If barcode is the same - ignore it.
+      // TODO: Save anything in progress at the Item Card level
+      if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
+        this.navigationParameters.OrderId = data.OrderId;
+        this.navigationParameters.DestinationId = data.DestinationId;
+        this.navigationParameters.DeviceId = data.DeviceId;
+        this.LoadData();
+      }
     } else {
-      // TODO: Handle Item Scanned - Safety Stock
-      // TODO: If item not found here, figure out how to report null transaction.
+      this.itemBarcodeScannedSubject.next(data);
     }
   }
 

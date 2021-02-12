@@ -7,7 +7,7 @@ import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
@@ -15,6 +15,7 @@ import { take } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -33,6 +34,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
     console.log('setting data');
      this._verificationDestinationDetails = value;
+     this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);
   }
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
@@ -43,6 +45,9 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
+  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+
+  private barcodeScannedEventSubscription: Subscription;
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
 
@@ -68,7 +73,32 @@ export class VerificationDetailsCardComponent implements OnInit {
   translations$: Observable<any>;
 
   ngOnInit() {
+    if(this.barcodeScannedEventSubscription) {
+      this.barcodeScannedEventSubscription.unsubscribe();
+    }
+    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.setTranslations();
+  }
+
+  onBarcodeScannedEvent(data: IBarcodeData): void {
+    //TODO If Item, check for Item in control - jump to it if present.
+    // If not an item in the control - or not an item barcode, Fire event alerting incorect barcode scanned - display popup
+    if(!data.ItemId)
+    {
+      //Not even an item barcode bail out
+      console.log('Not an Item Barcode');
+      return;
+    }
+
+    const index = this.verificationDestinationDetails.findIndex(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
+    if(index === -1)
+    {
+      console.log('Not a Present Item Barcode');
+      //Not a med here - bail out.
+      return;
+    }
+
+    this.selectedVerificationDestinationDetail = this.verificationDestinationDetails[index];
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
