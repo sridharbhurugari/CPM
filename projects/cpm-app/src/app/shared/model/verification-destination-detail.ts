@@ -35,11 +35,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   VerifiedDate: Date;
   RejectReason: string;
   Exception: boolean;
-  HasOuputDeviceVerifcation: boolean;
-
-  get RequiredVerification(): boolean {
-    return this.Exception || this.HasOuputDeviceVerifcation;
-  }
+  HasOutputDeviceVerification: boolean;
 
   private getDestinationStringValue(): string {
     var stringValues = [];
