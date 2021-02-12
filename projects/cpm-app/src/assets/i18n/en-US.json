@@ -298,5 +298,8 @@
   "INTERNAL_TRANSFER_TOGGLE_ON_DEMAND": "On-Demand",
   "DEVICE_ONDEMAND": "Device Items: On-Demand",
   "SOURCE_LOCACTION_COUNT": "# Source Locations",
-  "AVAIABLE_PHARMACY_QOH": "Available Pharmacy QOH"
+  "AVAIABLE_PHARMACY_QOH": "Available Pharmacy QOH",
+  "ONDEMAND_SOURCE_POPUP_TITLE": "On-Demand Source Location Selection",
+  "ONDEMAND_SOURCE_DROPDOWN_TITLE": "Selection Loacation",
+  "ONDEMAND_SOURCE_CHECKBOX_LABEL": ""
 }
