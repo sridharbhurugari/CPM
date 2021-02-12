@@ -35,10 +35,10 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   VerifiedDate: Date;
   RejectReason: string;
   Exception: boolean;
-  ForcedOutputDeviceChecking: boolean;
+  HasOuputDeviceVerifcation: boolean;
 
   get RequiredVerification(): boolean {
-    return this.Exception || this.ForcedOutputDeviceChecking;
+    return this.Exception || this.HasOuputDeviceVerifcation;
   }
 
   private getDestinationStringValue(): string {
