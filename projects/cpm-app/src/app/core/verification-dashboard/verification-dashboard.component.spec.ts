@@ -27,4 +27,24 @@ describe('VerificationDashboardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should show icon if required is greater than completed', () => {
+    const required = 3;
+    const completed = 1;
+    const iconString = 'icon';
+
+    const newIconString = component.showIcon(iconString, completed, required);
+
+    expect(newIconString).toBe(iconString);
+  });
+
+  it('should not show icon if required is less or equal to completed', () => {
+    const required = 2;
+    const completed = 2;
+    const iconString = 'icon';
+
+    const newIconString = component.showIcon(iconString, completed, required);
+
+    expect(newIconString).toBe('');
+  });
 });

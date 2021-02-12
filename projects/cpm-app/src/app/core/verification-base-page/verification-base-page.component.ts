@@ -27,8 +27,6 @@ export class VerificationBasePageComponent implements OnInit {
   constructor(
     private wpfInteropService: WpfInteropService,
     private verificationService: VerificationService,
-    private translateService: TranslateService,
-    private toastService: ToastService
     ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.navigationParameters.Route = this.initialRoute;

@@ -7,6 +7,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
@@ -28,7 +29,7 @@ describe('VerificationOrderQueueComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ VerificationOrderQueueComponent, MockCpDataLabelComponent, MockColHeaderSortable,
-        MockAppHeaderContainer, MockTranslatePipe, MockSearchPipe],
+        MockAppHeaderContainer, MockTranslatePipe, MockSearchPipe, MockCpClickableIconComponent],
       imports: [GridModule],
       providers: [
         { provide: TranslateService, useValue: translateService }

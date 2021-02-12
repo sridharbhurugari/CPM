@@ -9,6 +9,7 @@ import { VerificationOrderItem } from '../../shared/model/verification-order-ite
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
@@ -38,7 +39,7 @@ describe('VerificationOrderPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ VerificationOrderPageComponent, VerificationOrderHeaderComponent,
         VerificationOrderQueueComponent, MockColHeaderSortable, MockAppHeaderContainer,
-        MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpDataLabelComponent ],
+        MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpDataLabelComponent, MockCpClickableIconComponent],
       imports: [GridModule, ButtonToggleModule],
       providers: [
         { provide: HttpClient, useValue: { get: () => {}} },
