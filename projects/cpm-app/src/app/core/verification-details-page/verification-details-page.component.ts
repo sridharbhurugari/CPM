@@ -137,7 +137,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   private handleSaveVerificationSuccess(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     const dashboardDataAdded =  {
       CompleteStatuses: verificationDestinationDetails.length,
-      CompleteExceptions: this.countCompleteExceptions(verificationDestinationDetails)
+      CompleteExceptions: verificationDestinationDetails.filter(x => x.Exception).length,
+      CompleteOutputDevices: verificationDestinationDetails.filter(x => x.ForcedOutputDeviceChecking).length
      } as IVerificationDashboardData
 
     this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
@@ -145,13 +146,4 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {}
-
-  private countCompleteExceptions(verificationDestinationDetails: VerificationDestinationDetail[]): number {
-    let count = 0;
-    verificationDestinationDetails.forEach(detail => {
-      if(detail.Exception) count++;
-    });
-
-    return count;
-  }
 }

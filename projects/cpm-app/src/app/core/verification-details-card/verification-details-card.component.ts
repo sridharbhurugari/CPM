@@ -50,7 +50,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
-  readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
   currentSortPropertyName: string;
   columnSortDirection: string;
