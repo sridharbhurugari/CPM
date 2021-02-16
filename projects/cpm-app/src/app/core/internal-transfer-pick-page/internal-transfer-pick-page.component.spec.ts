@@ -47,7 +47,7 @@ describe('InternalTransferPickPageComponent', () => {
       DeviceLocation: deviceLocation as any,
       QuantityOnHand: 35
     };
-    let itemNeed: Partial<IItemReplenishmentNeed> = { };
+    let itemNeed: Partial<IItemReplenishmentNeed> = { DeviceQuantityNeeded: 5 };
     let picklistLine: Partial<IPicklistLine> = { 
       ItemId: '', 
       SourceDeviceLocationId: deviceLocationId,

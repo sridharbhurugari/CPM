@@ -1,5 +1,5 @@
 export interface IPicklistLinePackSize {
-    PackSize: Number;
-    RequestedQuantityInPacks: Number;
+    PackSize: number;
+    RequestedQuantityInPacks: number;
     IsOnDemand: boolean;
 }
