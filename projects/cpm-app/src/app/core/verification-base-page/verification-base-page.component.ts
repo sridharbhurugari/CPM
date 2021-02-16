@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -109,7 +110,7 @@ export class VerificationBasePageComponent implements OnInit {
       return;
     }
 
-    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((scannedBarcode: string) =>
       this.barcodeDataService.getData(scannedBarcode).subscribe((result: IBarcodeData) => this.processScannedBarcodeData(result))
     );
   }
