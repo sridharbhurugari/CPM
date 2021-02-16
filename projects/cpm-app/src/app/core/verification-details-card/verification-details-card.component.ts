@@ -24,6 +24,8 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 })
 export class VerificationDetailsCardComponent implements OnInit {
 
+  @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
+
   constructor(
     private translateService: TranslateService,
     private popupWindowService: PopupWindowService,
@@ -85,16 +87,14 @@ export class VerificationDetailsCardComponent implements OnInit {
     // If not an item in the control - or not an item barcode, Fire event alerting incorect barcode scanned - display popup
     if(!data.ItemId)
     {
-      //Not even an item barcode bail out
-      console.log('Not an Item Barcode');
+      this.verificationDetailBarcodeScanUnexpected.emit(data);
       return;
     }
 
     const index = this.verificationDestinationDetails.findIndex(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(index === -1)
     {
-      console.log('Not a Present Item Barcode');
-      //Not a med here - bail out.
+      this.verificationDetailBarcodeScanUnexpected.emit(data);
       return;
     }
 

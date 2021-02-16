@@ -298,5 +298,6 @@
   "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" : "Restock",
   "HYPHEN_SEPARATOR": "-",
   "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item.",
-  "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Unknown barcode scanned.  Scan an XR2 Picking Barcode to continue."
+  "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Unknown barcode scanned.  Scan an XR2 Picking Barcode to continue.",
+  "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN": "Unknown barcode scanned.  Scan an Item displayed or an XR2 Picking Barcode to continue."
 }

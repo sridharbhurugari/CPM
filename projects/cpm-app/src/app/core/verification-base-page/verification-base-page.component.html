@@ -17,7 +17,8 @@
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
     [navigationParameters]="navigationParameters"
     [barcodeScannedEventSubject]="barcodeScannedSubject"
-    (pageNavigationEvent)="onPageNavigationEvent($event)">
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
     [rejectReasons] = "rejectReasons | async"
+    (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)">
   </app-verification-details-page>
 </div>

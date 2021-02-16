@@ -14,7 +14,8 @@
       [verificationDestinationDetails]="verificationDestinationDetails | async"
       [rejectReasons]="rejectReasons"
       (saveVerificationEvent)="onSaveVerificationEvent($event)"
-      [barcodeScannedEventSubject]="itemBarcodeScannedSubject">
+      [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
+      (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)">
     </app-verification-details-card>
   </div>
 </ng-container>

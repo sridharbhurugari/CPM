@@ -27,6 +27,7 @@ import { IVerificationDashboardData } from '../../api-core/data-contracts/i-veri
 export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
+  @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
@@ -98,6 +99,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     } as IVerificationNavigationParameters
     this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
     this.pageNavigationEvent.emit(navigationParams);
+  }
+
+  onVerificationDetailBarcodeScanUnexpected(data: IBarcodeData) {
+    this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
   private loadVerificationDestinationDetails(): void {
