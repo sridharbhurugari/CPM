@@ -289,7 +289,7 @@
   "PACKSIZE":"Taille de l’emballage",
   "PACKSIZE_MIN":"Taille minimale de l'emballage",
   "PACKSIZE_MAX":"Taille maximale de l'emballage",
-  "HIGHPRIORITY": "Sélections prioritaires ({{count}})"
+  "HIGHPRIORITY": "Sélections prioritaires ({{count}})",
   "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" : "Return",
   "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" : "Restock",
   "HYPHEN_SEPARATOR": "-"
