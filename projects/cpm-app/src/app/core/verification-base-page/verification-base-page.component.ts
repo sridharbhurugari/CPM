@@ -125,6 +125,9 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   processScannedBarcodeData(result: IBarcodeData): void {
+      // TODO - This should probably check if it is an XR2 Picking Label and that it is shown on the screen?
+      // Right now, you can scan something that has aged off and it will still show.
+      // If we move the verification to here, we can handle it better on all views.
       this.barcodeScannedSubject.next(result);
   }
 

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, Observable, of, Subscription } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
@@ -38,6 +38,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   private backRoute = VerificationRouting.DestinationPage;
   private loggingCategory = LoggingCategory.Verification;
 
+  ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
@@ -67,8 +68,13 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.LoadData();
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   private LoadData() {

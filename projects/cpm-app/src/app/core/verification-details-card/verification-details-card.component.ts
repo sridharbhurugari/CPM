@@ -7,11 +7,11 @@ import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
@@ -59,6 +59,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
   readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
+  ngUnsubscribe = new Subject();
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
@@ -78,8 +79,16 @@ export class VerificationDetailsCardComponent implements OnInit {
     if(this.barcodeScannedEventSubscription) {
       this.barcodeScannedEventSubscription.unsubscribe();
     }
-    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.setTranslations();
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    if(this.barcodeScannedEventSubscription) {
+      this.barcodeScannedEventSubscription.unsubscribe();
+    }
   }
 
   onBarcodeScannedEvent(data: IBarcodeData): void {

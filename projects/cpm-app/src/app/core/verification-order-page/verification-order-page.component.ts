@@ -1,7 +1,7 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { Observable, of, Subscription } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationOrderItem } from '../../api-core/data-contracts/i-verification-order-item';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -29,6 +29,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
 
+  ngUnsubscribe = new Subject();
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
@@ -41,12 +42,18 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     ) { }
 
   ngOnInit() {
-    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationOrderItems();
   }
 
   ngAfterContentChecked() {
     this.ref.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
@@ -65,7 +72,6 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       } as IVerificationNavigationParameters
 
       const savedPageConfiguration = this.createSavedPageConfiguration();
-      this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
       this.pageNavigationEvent.emit(navigationParams);
       this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
     } else {
