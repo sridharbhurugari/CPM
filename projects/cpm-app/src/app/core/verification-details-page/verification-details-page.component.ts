@@ -74,6 +74,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     .getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId, this.navigationParameters.DeviceId).pipe(
       map((verificationDetails) => {
         return verificationDetails.map((verificationDetail) => {
+          console.log(verificationDetail);
           return new VerificationDestinationDetail(verificationDetail);
         });
       }), shareReplay(1)
@@ -138,7 +139,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     const dashboardDataAdded =  {
       CompleteStatuses: verificationDestinationDetails.length,
       CompleteExceptions: verificationDestinationDetails.filter(x => x.Exception).length,
-      CompleteOutputDevices: verificationDestinationDetails.filter(x => x.HasOuputDeviceVerifcation).length
+      CompleteOutputDevices: verificationDestinationDetails.filter(x => x.HasOutputDeviceVerification).length
      } as IVerificationDashboardData
 
     this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
