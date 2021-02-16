@@ -6,7 +6,6 @@ import { of, Subject } from 'rxjs';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute, Router, Route } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
 import { UnfilledPdfGridReportService } from '../../shared/services/printing/unfilled-pdf-grid-report-service';
@@ -18,13 +17,12 @@ import { MockedDatePipe } from '../testing/mock-date-pipe.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { DatePipe } from '@angular/common';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
-import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
-import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
   let component: UnderfilledPicklistLinesPageComponent;
@@ -32,7 +30,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let routerMock: Partial<Router>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let pickingEventConnectionService: Partial<PickingEventConnectionService>;
+  let wpfInteropService: Partial<WpfInteropService>;
   let printWithBaseData: jasmine.Spy;
+  let workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName: () => of(''), UnTrack: () => of() };
   const date = new Date();
   const pickListLinesData: UnderfilledPicklistLine[] = [{
     IsChecked: false, PicklistLineId: 'pllid1241',
@@ -95,13 +95,17 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const popupDismissedSubject = new Subject<boolean>();
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
     const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
-    const workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName: () => of(''), UnTrack: () => of() };
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
     spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
+    spyOn(workstationTrackerService, 'UnTrack').and.returnValue(of(['']));
 
     pickingEventConnectionService = {
       updateUnfilledPicklistLineSubject: new Subject(),
       removedUnfilledPicklistLineSubject: new Subject()
+    };
+
+    wpfInteropService = {
+      wpfViewModelClosing: new Subject()
     };
 
     TestBed.configureTestingModule({
@@ -134,6 +138,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         { provide: PickingEventConnectionService, useValue: pickingEventConnectionService },
         { provide: Router, useValue: routerMock },
         { provide: Location, useValue: location },
+        { provide: WpfInteropService, useValue: wpfInteropService },
       ],
       imports: [
         FooterModule,
@@ -254,4 +259,10 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     });
   });
 
+  describe('View Closing', () => {
+    it('should call to untrack', () => {
+      component.unTrack();
+      expect(workstationTrackerService.UnTrack).toHaveBeenCalled();
+    });
+  });
 });
