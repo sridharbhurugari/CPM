@@ -64,6 +64,8 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   isHighPriorityAvailable: boolean;
   ngUnsubscribe = new Subject();
 
+  requestStatus: string = 'none';
+
   constructor(
     activatedRoute: ActivatedRoute,
     picklistLineIdsService: PicklistLineIdsService,
@@ -153,20 +155,26 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   }
 
   private pickItem(completePickData: ICompletePickData) {
+    this.requestStatus = 'picking';
     let scanInfo = completePickData.safetyStockScanInfo;
     if (!scanInfo && completePickData.secondaryScanInfo && completePickData.secondaryScanInfo.ItemId == completePickData.line.ItemId) {
       scanInfo = completePickData.secondaryScanInfo;
     }
 
-    let packPicks = new PicklistLineFillData(completePickData.line, this.pickItemTotals, this._pickTotal, scanInfo, completePickData.productScanRequired);
+    let packPicks = new PicklistLineFillData(completePickData.line, this.pickItemTotals, this._pickTotal, scanInfo, completePickData.productScanRequired, this.guidedPickData.isOnDemandTransfer);
 
-    this.picklistLinesService.completePick(packPicks).pipe(take(1)).subscribe(x => {
+    this.picklistLinesService.completePick(packPicks).subscribe(x => {
+      this.clearRequestStatus();
       if (completePickData.isLast) {
         this.navigateContinue();
       } else {
         this.next();
       }
-    });
+    }, err => this.clearRequestStatus());
+  }
+
+  private clearRequestStatus() {
+    this.requestStatus = 'none';
   }
 
   private next() {
@@ -176,7 +184,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   }
 
   private completeZeroPick() {
-    forkJoin(this.currentLine$, this.isLastLine$).pipe(take(1)).subscribe(results => {
+    forkJoin(this.currentLine$, this.isLastLine$).subscribe(results => {
       this._pickTotal = 0;
       const line = results[0];
       const isLast = results[1];
@@ -253,6 +261,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
         isLastLine: this.picklistLineIndex == (totalLines - 1),
         picklistLine: currentLine,
         highPriorityAvailable: this.isHighPriorityAvailable,
+        isOnDemandTransfer: this.isOnDemand(currentLine.PackSizes),
       };
 
       return guidedPickData;

@@ -10,6 +10,9 @@ export class MockGuidedPickComponent {
   @Input()
   guidedPickData: IGuidedPickData;
 
+  @Input()
+  requestStatus: string;
+
   @Output()
   pickCompleted: EventEmitter<ICompletePickData> = new EventEmitter<ICompletePickData>();
 
