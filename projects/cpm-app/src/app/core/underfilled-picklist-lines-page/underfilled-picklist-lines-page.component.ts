@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, merge, Subject } from 'rxjs';
@@ -13,7 +13,6 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-report-base-data';
 import { ITableColumnDefintion } from '../../shared/services/printing/i-table-column-definition';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -33,13 +32,14 @@ import { IUnfilledPicklistlineRemovedEvent } from '../../api-core/events/i-unfil
 import { IUnderfilledPicklistLine } from '../../api-core/data-contracts/i-underfilled-picklist-line';
 import { ReportConstants } from '../../shared/constants/report-constants';
 import { ContentTable } from 'pdfmake/interfaces';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-underfilled-picklist-lines-page',
   templateUrl: './underfilled-picklist-lines-page.component.html',
   styleUrls: ['./underfilled-picklist-lines-page.component.scss']
 })
-export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy {
+export class UnderfilledPicklistLinesPageComponent implements OnInit {
   ngUnsubscribe = new Subject();
   itemHeaderKey = 'DESCRIPTION_ID';
   qohHeaderKey = 'PHARMACY_QOH';
@@ -80,6 +80,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
   buttonVisible = false;
   workstationTrackerData: WorkstationTrackerData;
   workstation: string;
+
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -93,10 +94,15 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
     private dialogService: PopupDialogService,
     private workstationTrackerService: WorkstationTrackerService,
     private pickingEventConnectionService: PickingEventConnectionService,
-    private router: Router
+    private router: Router,
+    private wpfInteropService: WpfInteropService
   ) {
     this.reportTitle$ = translateService.get('UNFILLED');
     this.reportBaseData$ = pdfPrintService.getReportBaseData();
+    this.wpfInteropService.wpfViewModelClosing.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+      this.unTrack();
+    });
+
   }
 
   @ViewChild(UnderfilledPicklistLinesComponent, null) child: UnderfilledPicklistLinesComponent;
@@ -133,10 +139,6 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
     } catch (e) {
       console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR', e);
     }
-  }
-
-  ngOnDestroy() {
-    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe()
   }
 
   ngAfterViewInit() {
@@ -187,6 +189,10 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
     this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
       this.router.navigate(['core/picklists/underfilled']);
     });
+  }
+ 
+  unTrack() {
+    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe();
   }
 
   getReportData(datePipe: DatePipe): UnderfilledPicklistLine[] {
