@@ -1,0 +1,16 @@
+:host{
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+:host ::ng-deep .ocwindowcontent {
+  padding: 15px;
+  font-size: 14pt;
+  font-weight: 500;
+}
+
+#popup-window{
+  height: 50% !important;
+  width: 50% !important;
+  top:30% !important;
+  left: 25% !important;
+}

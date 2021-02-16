@@ -32,6 +32,7 @@ import { ValidationContainerComponent } from './components/validation-container/
 import { SafetyStockProductComponent } from './components/safety-stock-product/safety-stock-product.component';
 import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-general-header.component';
 import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.component';
+import { QuantityEditorPopupComponent } from './components/quantity-editor-popup/quantity-editor-popup.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.comp
     SafetyStockProductComponent,
     CpGeneralHeaderComponent,
     CpDataCardComponent,
+    QuantityEditorPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -104,12 +106,14 @@ import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.comp
     ValidationIconComponent,
     CpGeneralHeaderComponent,
     CpDataCardComponent,
+    QuantityEditorPopupComponent
   ],
   entryComponents: [
     TextResultPopupComponent,
     ConfirmPopupComponent,
     SpinnerPopupComponent,
-    DropdownPopupComponent
+    DropdownPopupComponent,
+    QuantityEditorPopupComponent
   ]
 })
 export class SharedModule { }

@@ -17,6 +17,9 @@ import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
 import { IItemReplenishmentOnDemandItemLocations } from '../../api-core/data-contracts/i-item-replenishment-ondemand-item-locations';
 import { toArray } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
+import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
+import { ItemManagementComponent } from '../item-management/item-management.component';
+import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',
@@ -42,6 +45,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
   popupTitle: string;
   dropdowntitle: string;
+  quantityEditorPopupTite: string;
 
   constructor(
     private popupWindowService: PopupWindowService,
@@ -75,7 +79,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
       this.popupTitle = res;});
     this.translateService.get('ONDEMAND_SOURCE_DROPDOWN_TITLE').subscribe((res: string) => {
       this.dropdowntitle = res;});
-}
+    this.translateService.get('ONDEMAND_QUANTITY_EDITOR_TITLE').subscribe((res: string) => {
+      this.quantityEditorPopupTite = res;});
+    }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -88,16 +94,12 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
   onSelect(item: IItemReplenishmentOnDemand) {
     this.itemsToPick.push(item);
-    this.selectItemSource(item.ItemId);
-    if(this.selectedSource < 1 ) {
-      this.itemsToPick = [];
+
+    if(item.AvailablePharmacyLocationCount < 1) {
       return;
     }
 
-    if(this.requestedAmount < 1 ) {
-      this.itemsToPick = [];
-      return;
-    }
+    this.selectItemSource(item);
 
     this.pick();
   }
@@ -118,37 +120,20 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     }
   }
 
-  private loadAssignedItems() {
-    this.assignedItems$ = this.deviceReplenishmentOnDemandService.getDeviceAssignedItems(this.deviceId).pipe(shareReplay(1));
-  }
-
-  private onRefreshDeviceItems() {
-    this.loadAssignedItems();
-  }
-
-  private handlePickSuccess() {
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
-  }
-
-  private handlePickFailure() {
-    this.itemsToPick = [];
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE', 'INTERNAL_TRANS_PICKQUEUE_FAILED_MSG');
-  }
-
-  private selectItemSource(itemId: string){
+  selectItemSource(item: IItemReplenishmentOnDemand){
     const properties = new PopupWindowProperties();
     this.rowItemsToHideCheckbox = [];
     this.selectedSource = 0;
 
     this.itemlocations = [];
-    const locations$ = this.deviceReplenishmentOnDemandService.getAvailableItemLocations(this.deviceId, itemId).pipe(shareReplay(1));
+    this.itemlocationDisplayList = [];
+    const locations$ = this.deviceReplenishmentOnDemandService.getAvailableItemLocations(this.deviceId, item.ItemId)
+      .pipe(shareReplay(1));
+
     locations$.subscribe(itemLocation => {
       itemLocation.forEach(location => {
-        if(location.DeviceActive) {
-          this.itemlocations.push(location);
-          const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceId.toString());
-          this.itemlocationDisplayList.push(itemlocationRow);
-         }
+        const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceId.toString());
+        this.itemlocationDisplayList.push(itemlocationRow);
       })
     });
 
@@ -171,9 +156,60 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
     let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
-      if (selectedOk && !isNaN(+data.selectedrow.value)) {
+      if (selectedOk&& !isNaN(+data.selectedrow.value)) {
         this.selectedSource = +data.selectedrow.value;
+        this.enterPickQuantity(item);
+        return;
       }
     });
+
+    this.itemsToPick = [];
+    this.selectedSource = 0;
+    this.requestedAmount = 0
+  }
+
+  enterPickQuantity(item: IItemReplenishmentOnDemand) {
+    const properties = new PopupWindowProperties();
+    this.requestedAmount = 0;
+
+    const data: IQuantityEditorPopupData = {
+      popuptitle: this.quantityEditorPopupTite,
+      quantityDescritpion: item.ItemFormattedGenericName,
+      quantitySubDescritpion: item.ItemBrandName,
+      packSize: item.PackSize,
+      requestedQuantity: this.requestedAmount,
+      unitOfIssue: item.UnitOfIssue
+    };
+
+    properties.data = data;
+
+    let component = this.popupWindowService.show(QuantityEditorPopupComponent, properties) as unknown as QuantityEditorPopupComponent;
+    component.dismiss.pipe(take(1)).subscribe(selectedOk => {
+      if (selectedOk && !isNaN(+data.requestedQuantity)) {
+        this.requestedAmount = +data.requestedQuantity;
+        return;
+      }
+    });
+
+    this.itemsToPick = [];
+    this.selectedSource = 0;
+    this.requestedAmount = 0
+  }
+
+  private loadAssignedItems() {
+    this.assignedItems$ = this.deviceReplenishmentOnDemandService.getDeviceAssignedItems(this.deviceId).pipe(shareReplay(1));
+  }
+
+  private onRefreshDeviceItems() {
+    this.loadAssignedItems();
+  }
+
+  private handlePickSuccess() {
+    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
+  }
+
+  private handlePickFailure() {
+    this.itemsToPick = [];
+    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE', 'INTERNAL_TRANS_PICKQUEUE_FAILED_MSG');
   }
 }

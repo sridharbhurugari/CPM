@@ -1,0 +1,34 @@
+<oc-popupwindow-layout [windowFooter]="true">
+  <ng-container class="ocwindowheader">
+    <div>{{data.popuptitle | translate}}</div>
+  </ng-container>
+  <ng-container class="ocwindowcontent">
+    <div>
+      <p style="font-size: 20px;">{{data.quantityDescritpion | translate}}</p>
+      <p *ngIf="data.quantitySubDescritpion.length > 0" style="font-size: 15px;">{{data.quantitySubDescritpion | translate}}</p>
+      <p style="font-size: 10px;">{{'PACKSIZE' | translate}}: {{data.packSize}}</p>
+    </div>
+    <div class="cpmheaderrow">
+      <oc-numeric [units]="data.packSize == 1 ? data.unitOfIssue : ('PACKS' | translate)"
+        [(ngModel)]="packsToPick"
+        [disabled]="true"
+        [maxValue]="999999"
+        [maxDecimalDigit]="0"
+        (ngModelChange)="pickQtyChanged()">
+      </oc-numeric>
+    </div>
+    <div *ngIf="data.packSize > 1">
+      <p style="font-size: 12px;">{{'ONDEMAND_QUANTITY_TO_PICK' | translate}} {{quantityToPick}} {{data.unitOfIssue}}</p>
+    </div>
+  </ng-container>
+  <ng-container class="ocwindowfooter">
+  <oc-footer>
+    <div class="ocleftalign">
+      <oc-button-action [buttonText]="'CANCEL' | translate" (click) ="cancel()"></oc-button-action>
+    </div>
+    <div class="ocrightalign">
+      <oc-button-action [buttonText]="'OK' | translate" (click) ="continue()"></oc-button-action>
+    </div>
+  </oc-footer>
+</ng-container>
+</oc-popupwindow-layout>
