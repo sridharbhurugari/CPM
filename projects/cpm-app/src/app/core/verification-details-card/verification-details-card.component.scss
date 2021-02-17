@@ -282,9 +282,6 @@
           align-items: center;
           justify-content: left;
           flex-direction: row;
-          :hover{
-              cursor: pointer;
-          }
 
           .label {
             position: relative;
@@ -328,6 +325,10 @@
       }
     }
   }
+}
+
+.row:hover{
+  cursor: pointer;
 }
 
 #exceptions-icon {
