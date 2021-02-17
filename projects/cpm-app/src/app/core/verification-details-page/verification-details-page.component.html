@@ -13,8 +13,8 @@
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
       [rejectReasons]="rejectReasons"
-      (saveVerificationEvent)="onSaveVerificationEvent($event)"
       [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
+      (saveVerificationEvent)="onSaveVerificationEvent($event)"
       (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)">
     </app-verification-details-card>
   </div>

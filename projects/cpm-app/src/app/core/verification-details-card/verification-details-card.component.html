@@ -26,13 +26,6 @@
                   [customColumnSortOrder]="columnSortDirection"
                   (columnSelected)="columnSelected($event)">
                   </div>
-                  <div app-col-header-sortable class="data-title"
-                  [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED"
-                  [paddingLeft]="30"
-                  [currentSortPropertyName]="currentSortPropertyName"
-                  [customColumnSortOrder]="columnSortDirection"
-                  (columnSelected)="columnSelected($event)">
-                  </div>
                   <div class="data-spacer"></div>
                 </div>
               </div>
@@ -42,22 +35,32 @@
                 <div class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
                 (click)='medicationClicked(row)'
                 [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
-                  <div class="label">
-                    <div class="text-label">
-                      <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>
-                      <div>{{ row.ItemTradeName }}</div>
-                    </div>
+                <div class="label" [ngStyle]="{maxWidth: 95 - calculateMaxLabelWidth(row) + '%'}">
+                  <app-validation-icon *ngIf="true"
+                    id="scan-icon"
+                    [iconWidth]="30"
+                    [iconHeight]="30"
+                    [iconString]="'scan'"
+                    toastTileResourceKey=""
+                    toastMsgResourceKey="{{'message'}}"
+                    toastType="{{'warn'}}">
+                  </app-validation-icon>
+                  <div class="text-label">
+                    <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>
+                    <div class="sub-name">{{ row.ItemTradeName }}</div>
+                  </div>
                   </div>
                   <div class="data">
-                    <app-cp-clickable-icon *ngIf="row.RequiredVerification"
-                    [width]="30"
-                    [height]="30"
+                    <app-cp-clickable-icon *ngIf="row.Exception" id="exception-icon"
+                    [icon]="'notification-active'"
                     [theme]="'danger'"
-                    [label]="'REQUIRED' | translate"
-                    [icon]="'alert-no-tail'"
-                    (clickEvent)="onRequiredIconClick()">
+                    [label]="'EXCEPTION' | translate">
                     </app-cp-clickable-icon>
-                  </div>
+                    <app-cp-clickable-icon *ngIf="row.HasOutputDeviceVerification" id="output-device-icon"
+                    [icon]="'notification-active'"
+                    [label]="'OUTPUT_DEVICE' | translate">
+                  </app-cp-clickable-icon>
+                </div>
                 </div>
               </div>
             </div>

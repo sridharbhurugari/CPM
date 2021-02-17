@@ -57,7 +57,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
-  readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
   ngUnsubscribe = new Subject();
   currentSortPropertyName: string;
@@ -65,6 +64,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   destinationLine1: string;
   destinationLine2: string;
   destinationType: string;
+  rowIconWidthPercent = 13; // Static for row icon width
 
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
@@ -144,6 +144,17 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.showAlert();
   }
 
+  showAlert(): void {
+    //if(this.selectedVerificationDestinationDetail.Exception) {
+      var exceptionMsg;
+      this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
+      this.toastService.error('error title', exceptionMsg, {
+        timeout: 5000,
+        pauseOnHover: false
+      });
+    // }
+  }
+
   removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
     const removalSet = new Set(verificationDestinationDetailsToRemove);
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
@@ -159,6 +170,12 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     return verificationDestinationDetail.Id;
+  }
+
+  calculateMaxLabelWidth(verificationDestinationDetail: VerificationDestinationDetail) {
+    let widthIconOutputDevice = verificationDestinationDetail.HasOutputDeviceVerification ? this.rowIconWidthPercent: 0;
+    let widthIconException = verificationDestinationDetail.Exception ? this.rowIconWidthPercent: 0;
+    return widthIconOutputDevice + widthIconException;
   }
 
   /* istanbul ignore next */
@@ -212,17 +229,6 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
       this.destinationType = verificationDestinationDetails[0].DestinationType;
     }
-  }
-
-  showAlert(): void {
-    //if(this.selectedVerificationDestinationDetail.Exception) {
-      var exceptionMsg;
-      this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
-      this.toastService.error('error title', exceptionMsg, {
-        timeout: 5000,
-        pauseOnHover: false
-      });
-    // }
   }
 
   private setTranslations(): void {

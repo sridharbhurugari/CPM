@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-cp-data-card',
@@ -9,6 +9,10 @@ export class CpDataCardComponent implements OnInit {
 
   @Input() showLoading: boolean = false;
   @Input() title: string;
+  @Input() iconString: string;
+  @Input() iconTheme: string;
+  @Input() toastType: string;
+  @Input() toastMsgResourceKey: string;
   @Input() data1: string;
   @Input() dataLabel1: string;
   @Input() data2: string;
@@ -16,9 +20,9 @@ export class CpDataCardComponent implements OnInit {
   @Input() data3: string;
   @Input() dataLabel3: string;
 
+
   constructor() { }
 
   ngOnInit() {
   }
-
 }

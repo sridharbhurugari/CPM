@@ -229,7 +229,6 @@
 
           .label-title {
             display: flex;
-            width: 80%;
             height: 100%;
             align-items: center;
             justify-content: left;
@@ -242,7 +241,6 @@
             height: 100%;
             align-items: center;
             justify-content: left;
-
           }
 
           .data-spacer {
@@ -283,40 +281,67 @@
           direction: ltr;
           align-items: center;
           justify-content: left;
+          flex-direction: row;
           :hover{
               cursor: pointer;
           }
 
           .label {
+            position: relative;
             display: flex;
             flex-direction: row;
-            width: 75%;
             height: 100%;
             padding-left: 10px;
+          }
+
+
+          .text-label {
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
             overflow: hidden;
           }
 
           .bold-name {
             font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
 
-          .text-label {
-            align-items: center;
-            justify-content: left;
-            font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+          .sub-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
 
           .data {
+            padding: 0 10px 0 10px;
             display: flex;
-            width: 25%;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
+            flex-direction: row;
+            flex: 1;
+            justify-content: flex-end;
             font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
           }
         }
       }
     }
   }
+}
+
+#exceptions-icon {
+  padding-right: 10px
+}
+
+#output-device-icon {
+  padding-left: 10px;
+}
+
+#scan-icon {
+  position: absolute;
+  top: -13px;
+  right: 0;
+  z-index: 1;
 }
 

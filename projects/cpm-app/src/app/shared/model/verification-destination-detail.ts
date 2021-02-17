@@ -10,12 +10,6 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
     }
   }
 
-  Exception: boolean;
-  ForcedOutputDeviceChecking: boolean;
-  get RequiredVerification(): boolean {
-    return this.Exception || this.ForcedOutputDeviceChecking;
-  }
-
   Id: Guid;
   PicklistLineId: Guid;
   OrderId: string;
@@ -24,10 +18,8 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   DestinationLine1: string;
   DestinationLine2: string;
   DestinationStringValue: string;
-
   DeviceDescription: string;
   OutputDevice: string;
-
   ItemFormattedGenericName: string;
   ItemTradeName: string;
   UnitsOfIssue: string;
@@ -43,6 +35,8 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   PriorityDescription: string;
   VerifiedDate: Date;
   RejectReason: string;
+  Exception: boolean;
+  HasOutputDeviceVerification: boolean;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

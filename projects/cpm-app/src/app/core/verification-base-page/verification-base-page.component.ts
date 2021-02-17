@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
@@ -49,13 +49,11 @@ export class VerificationBasePageComponent implements OnInit {
     private systemConfigurationService: SystemConfigurationService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private changeDetectorRef: ChangeDetectorRef,
     private verificationService: VerificationService
     ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.LoadTransientData();
         this.initializeNavigationParameters();
-        // this.changeDetectorRef.detectChanges()
       })
     }
 
