@@ -154,8 +154,11 @@
               </app-cp-clickable-icon>
             </div>
           </div>
-          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail">
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && this.verificationDestinationDetails.length > 0">
             {{ 'SELECT_SCAN_MED' | translate }}
+          </div>
+          <div class="no-details" *ngIf="this.verificationDestinationDetails.length === 0">
+            {{ 'PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE' | translate }}
           </div>
         </div>
       </div>

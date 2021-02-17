@@ -14,7 +14,7 @@ import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 
-describe('VerificationDetailsCardComponent', () => {
+fdescribe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
   let fixture: ComponentFixture<VerificationDetailsCardComponent>;
 
@@ -25,7 +25,7 @@ describe('VerificationDetailsCardComponent', () => {
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
   translateService = {
-    get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+    get: jasmine.createSpy('get').and.returnValue(of('')),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
   };
 
@@ -72,7 +72,7 @@ describe('VerificationDetailsCardComponent', () => {
 
     expect(component.destinationType).toBe(newItem.DestinationType);
     expect(component.destinationLine1).toBe(newItem.DestinationLine1);
-    expect(component.destinationLine2).toBe(newItem.DestinationLine2)
+    expect(component.destinationLine2).toBe(newItem.DestinationLine2);
   });
 
   describe('Sorting', () => {

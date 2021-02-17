@@ -100,14 +100,20 @@ export class VerificationDetailsCardComponent implements OnInit {
       return;
     }
 
-    const index = this.verificationDestinationDetails.findIndex(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
-    if(index === -1)
+    const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
+    if(!match)
     {
       this.verificationDetailBarcodeScanUnexpected.emit(data);
       return;
     }
 
-    this.selectedVerificationDestinationDetail = this.verificationDestinationDetails[index];
+    if(this.selectedVerificationDestinationDetail) {
+      // TODO - Figure out how we approve on scan
+      // var itemToApprove = this.selectedVerificationDestinationDetail;
+      // this.approveItem(itemToApprove);
+    }
+
+    this.selectedVerificationDestinationDetail = match;
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -131,9 +137,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     console.log('button approve clicked');
-    console.log(selectedVerificationDestinationDetail);
-    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
-    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
+    this.approveItem(selectedVerificationDestinationDetail);
   }
 
   onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
@@ -142,6 +146,12 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   onRequiredIconClick() {
     this.showAlert();
+  }
+
+  approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
+    console.log(selectedVerificationDestinationDetail);
+    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
+    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
   }
 
   removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {

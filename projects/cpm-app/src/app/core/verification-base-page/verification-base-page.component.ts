@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
@@ -49,13 +49,11 @@ export class VerificationBasePageComponent implements OnInit {
     private systemConfigurationService: SystemConfigurationService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private changeDetectorRef: ChangeDetectorRef,
     private verificationService: VerificationService
     ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.LoadTransientData();
         this.initializeNavigationParameters();
-        // this.changeDetectorRef.detectChanges()
       })
     }
 
@@ -125,7 +123,7 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   processScannedBarcodeData(result: IBarcodeData): void {
-      // TODO - This should probably check if it is an XR2 Picking Label and that it is shown on the screen?
+      // TODO - This should probably check if it is an XR2 Picking Label and that it is actually supposed to show it?
       // Right now, you can scan something that has aged off and it will still show.
       // If we move the verification to here, we can handle it better on all views.
       this.barcodeScannedSubject.next(result);
