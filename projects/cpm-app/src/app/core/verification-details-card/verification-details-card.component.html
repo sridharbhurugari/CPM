@@ -1,138 +1,164 @@
 <ng-container class="ocactiondetails">
-    <div class="loading" *ngIf="!this.verificationDestinationDetails">
-      <oc-svgicon icon="spin" theme="dark"></oc-svgicon>
+  <div class="loading" *ngIf="!this.verificationDestinationDetails">
+    <oc-svgicon icon="spin" theme="dark"></oc-svgicon>
+  </div>
+  <div class="card" *ngIf="this.verificationDestinationDetails">
+    <div class="card-header ocactionheader">
+      <div class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
+        {{destinationLine1}}
+      </div>
+      <div class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
+        <div class="cpm-action-title-multi-line-bold">{{destinationLine1}}</div>
+          <div>{{destinationLine2}}</div>
+      </div>
     </div>
-    <div class="card" *ngIf="this.verificationDestinationDetails">
-        <div class="card-header ocactionheader">
-            <div class="cpmactiontitle" *ngIf="this.verificationDestinationDetails[0].DestinationType===this.destinationTypes.Area">
-              {{this.verificationDestinationDetails[0].DestinationStringValue}}
+    <div class="card-body cbody">
+      <div class="left-panel">
+        <div class="scroll-container">
+          <div class="scroll-container-content">
+            <div class="header">
+              <div class="header-content">
+                <div class="table-labels">
+                  <div app-col-header-sortable class="label-title"
+                  [columnPropertyName]="itemVerificationPropertyName" headerResourceKey="DESCRIPTION"
+                  [paddingLeft]="5"
+                  [currentSortPropertyName]="currentSortPropertyName"
+                  [customColumnSortOrder]="columnSortDirection"
+                  (columnSelected)="columnSelected($event)">
+                  </div>
+                  <div app-col-header-sortable class="data-title"
+                  [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED"
+                  [paddingLeft]="30"
+                  [currentSortPropertyName]="currentSortPropertyName"
+                  [customColumnSortOrder]="columnSortDirection"
+                  (columnSelected)="columnSelected($event)">
+                  </div>
+                  <div class="data-spacer"></div>
+                </div>
+              </div>
             </div>
-            <div class="cpmactiontitleMultiLine" *ngIf="this.verificationDestinationDetails[0].DestinationType!==this.destinationTypes.Area">
-              <div class="cpmactiontitleMultiLineBold">{{this.verificationDestinationDetails[0].DestinationLine1}}</div>
-              <div>{{this.verificationDestinationDetails[0].DestinationLine2}}</div>
-            </div>
-        </div>
-        <div class="card-body cbody">
-            <div class="leftPanel">
-                <div class="scroll-container">
-                    <div class="scroll-container-content">
-                      <div class="header">
-                        <div class="header-content">
-                          <div class="table-labels">
-                            <div app-col-header-sortable class="label-title" 
-                              [columnPropertyName]="itemVerificationPropertyName" headerResourceKey="DESCRIPTION"
-                              [paddingLeft]="5"
-                              [currentSortPropertyName]="currentSortPropertyName"
-                              [customColumnSortOrder]="columnSortDirection"
-                              (columnSelected)="columnSelected($event)">
-                            </div>
-                            <div app-col-header-sortable class="data-title" 
-                              [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED"
-                              [paddingLeft]="30"
-                              [currentSortPropertyName]="currentSortPropertyName"
-                              [customColumnSortOrder]="columnSortDirection"
-                              (columnSelected)="columnSelected($event)">
-                            </div>  
-                            <div class="data-spacer"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="body">
-                        <div class="body-content">
-                          <div class="row"
-                            *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId" (click)='medicationClicked(row)' [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
-                            <div class="label">
-                              <div class="text-label">
-                                <div class="boldName">{{ row.ItemFormattedGenericName }}</div> 
-                                <div>{{ row.ItemTradeName }}</div>
-                              </div>
-                            </div>
-                            <div class="data">
-                                <app-cp-clickable-icon *ngIf="row.RequiredVerification"
-                                [width]="30"
-                                [height]="30"
-                                [theme]="'danger'"
-                                [label]="'REQUIRED' | translate"
-                                [icon]="'alert-no-tail'"
-                                (clickEvent)="Alert()">
-                                </app-cp-clickable-icon>
-                              </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="footer"></div>
+            <div class="body">
+              <div class="body-content">
+                <div class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
+                (click)='medicationClicked(row)'
+                [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
+                  <div class="label">
+                    <div class="text-label">
+                      <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>
+                      <div>{{ row.ItemTradeName }}</div>
                     </div>
                   </div>
+                  <div class="data">
+                    <app-cp-clickable-icon *ngIf="row.RequiredVerification"
+                    [width]="30"
+                    [height]="30"
+                    [theme]="'danger'"
+                    [label]="'REQUIRED' | translate"
+                    [icon]="'alert-no-tail'"
+                    (clickEvent)="onRequiredIconClick()">
+                    </app-cp-clickable-icon>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="rightPanel">
-                <div class="detailContainer">
-                    <div  *ngIf="this.selectedVerificationDestinationDetail">
-                        <div class="detailHeader">
-                          {{ 'ITEM_ID' | translate }}
-                        </div>
-                        <div class="detailBody">
-                          {{this.selectedVerificationDestinationDetail.ItemId}}
-                        </div>
-                        <hr class="Solid">
-                        <div class="detailHeader">
-                          {{ 'PICK_LOCATION' | translate }}
-                        </div>
-                        <div class="detailBody">
-                          {{this.selectedVerificationDestinationDetail.DeviceDescription || this.deviceDescription}}
-                          <span style="padding-left: 10px; padding-right: 10px;" *ngIf="this.selectedVerificationDestinationDetail.OutputDevice">-</span>
-                          {{this.selectedVerificationDestinationDetail.OutputDevice}}
-                        </div>
-                        <hr class="Solid">
-                        <div class=detailsLeftRightContainer>
-                            <div class="vdetailLeft">
-                                <div class="detailHeader">
-                                  {{ 'REQUESTED_QUANTITY' | translate }}
-                                </div>
-                                <div class="detailBodyLarge">
-                                  {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
-                                </div>
-                            </div>
-                            <div class= vdetailRight>
-                                <div class="detailHeader">
-                                  <span> {{ 'PICKED_QUANTITY' | translate }}</span>
-                                  <span style="padding-left: 30px; margin-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity != this.selectedVerificationDestinationDetail.FillQuantity">
-                                    <ng-container part="icon">
-                                      <app-validation-icon
-                                          iconString="warning" toastTileResourceKey="" toastMsgResourceKey="PICK_VERIFICATION_TOTAL_MSG"
-                                          toastType="warn"
-                                          iconWidth=50
-                                          iconHeight=50
-                                          iconTheme="warning">
-                                      </app-validation-icon>
-                                   </ng-container>
-                                  </span>  
-                                </div>
-                                <div class="detailBodyLarge">
-                                  {{this.selectedVerificationDestinationDetail.FillQuantity}}
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="Solid">
-                        <div class="detailHeader">
-                          {{ 'PICKED_BY' | translate }}
-                        </div>
-                        <div class="detailBodySmall">
-                          {{ this.selectedVerificationDestinationDetail.FillUserName }}
-                        </div>
-                        <hr class="Solid">
-                         <div class="detailHeader">
-                          {{ 'PICKED_TIME' | translate }}
-                        </div>
-                        <div class="detailBodySmall">
-                          {{ getOrderDate(this.selectedVerificationDestinationDetail) }}
-                        </div>
-                        <hr class="Solid">
-                    </div>
-                    <div class="noDetails" *ngIf="!this.selectedVerificationDestinationDetail">
-                        {{ 'SELECT_SCAN_MED' | translate }}
-                    </div>
-               </div>
-            </div>
+            <div class="footer"></div>
+          </div>
         </div>
+      </div>
+      <div class="right-panel">
+        <div class="detail-container">
+          <div  *ngIf="this.selectedVerificationDestinationDetail" class="details">
+            <div class = details-information>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'ITEM_ID' | translate }}
+                </div>
+                <div class="detail-body">
+                  {{this.selectedVerificationDestinationDetail.ItemId}}
+                </div>
+              </span>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'PICK_LOCATION' | translate }}
+                </div>
+                <div class="detail-body">
+                  {{this.deviceDescription}}
+                  <span style="padding-left: 10px; padding-right: 10px;" *ngIf="this.selectedVerificationDestinationDetail.OutputDevice">-</span>
+                  {{this.selectedVerificationDestinationDetail.OutputDevice}}
+                </div>
+              </span>
+              <span class="section">
+                <div class="details-left-right-container">
+                  <div class="v-detail-left">
+                    <div class="detail-header">
+                      {{ 'REQUESTED_QUANTITY' | translate }}
+                    </div>
+                    <div class="detail-body-large">
+                      {{this.selectedVerificationDestinationDetail.RequestedQuantity}}
+                    </div>
+                  </div>
+                  <div class= v-detail-right>
+                    <div class="detail-header">
+                    <span> {{ 'PICKED_QUANTITY' | translate }}</span>
+                    <span style="padding-left: 30px; padding-top: -10px;" *ngIf="this.selectedVerificationDestinationDetail.RequestedQuantity !== this.selectedVerificationDestinationDetail.FillQuantity">
+                      <ng-container part="icon">
+                        <app-validation-icon
+                        iconString="warning" toastTileResourceKey="" toastMsgResourceKey="PICK_VERIFICATION_TOTAL_MSG"
+                        toastType="warn"
+                        iconWidth=30
+                        iconHeight=30
+                        iconTheme="warning">
+                        </app-validation-icon>
+                      </ng-container>
+                    </span>
+                    </div>
+                    <div class="detail-body-large">
+                      {{this.selectedVerificationDestinationDetail.FillQuantity}}
+                    </div>
+                  </div>
+                </div>
+              </span>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'PICKED_BY' | translate }}
+                </div>
+                <div class="detail-body-small">
+                  {{ this.selectedVerificationDestinationDetail.FillUserName }}
+                </div>
+              </span>
+              <span class="section">
+                <div class="detail-header">
+                  {{ 'PICKED_TIME' | translate }}
+                </div>
+                <div class="detail-body-small">
+                  {{ getOrderDate(this.selectedVerificationDestinationDetail) }}
+                </div>
+              </span>
+            </div>
+            <div class="details-actions">
+              <app-cp-clickable-icon
+              [width]="40"
+              [height]="40"
+              [theme]="'danger'"
+              [label]="'REJECT' | translate"
+              [icon]="'close'"
+              (clickEvent)="onRejectClick(this.selectedVerificationDestinationDetail)">
+              </app-cp-clickable-icon>
+              <app-cp-clickable-icon
+              [width]="40"
+              [height]="40"
+              [theme]="'primary'"
+              [label]="'APPROVE' | translate"
+              [icon]="'checkmark'"
+              (clickEvent)="onApproveClick(this.selectedVerificationDestinationDetail)">
+              </app-cp-clickable-icon>
+            </div>
+          </div>
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail">
+            {{ 'SELECT_SCAN_MED' | translate }}
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </ng-container>

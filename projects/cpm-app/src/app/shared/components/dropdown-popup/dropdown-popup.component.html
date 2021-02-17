@@ -3,26 +3,27 @@
       <div>{{data.popuptitle | translate}}</div>
     </ng-container>
     <ng-container class="ocwindowcontent">
-      
-      <div class="cpmheaderrow"> 
-        <p style="font-size: 20px; padding-right: 25px;">{{data.dropdowntitle | translate}}</p>         
+
+      <div class="cpmheaderrow">
+        <p style="font-size: 20px; padding-right: 25px;">{{data.dropdowntitle | translate}}</p>
         <oc-singleselect
-              [popupDirection]="'AUTO'"              
+              [popupDirection]="'AUTO'"
               [tableData]="data.dropdownrows"
               [selectedItem]="data.defaultrow"
+              [selectText]="selectText"
               componentWidth="300"
               (selectionChanged)="onSelectionChanged($event)">
-        </oc-singleselect>                                
-      </div>  
+        </oc-singleselect>
+      </div>
       <div>
-        <oc-checkbox #checkBox *ngIf="data.showCheckbox"                       
+        <oc-checkbox #checkBox *ngIf="data.showCheckbox"
               [displayField]="data.checkboxLabel | translate"
               [selected]="data.checkboxSelected"
               (selection)="onSelect($event.selectedState)"
               style="position:relative; left:420px">
-        </oc-checkbox> 
+        </oc-checkbox>
       </div>
-              
+
     </ng-container>
     <ng-container class="ocwindowfooter">
     <oc-footer>
@@ -30,7 +31,7 @@
         <oc-button-action [buttonText]="'CANCEL' | translate" (click) ="cancel()"></oc-button-action>
       </div>
       <div class="ocrightalign">
-        <oc-button-action [buttonText]="'OK' | translate" (click) ="continue()"></oc-button-action>
+        <oc-button-action [disabled]="disableOK" [buttonText]="'OK' | translate" (click) ="continue()"></oc-button-action>
       </div>
     </oc-footer>
   </ng-container>

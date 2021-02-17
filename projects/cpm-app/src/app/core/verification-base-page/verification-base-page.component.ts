@@ -1,4 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -17,14 +20,19 @@ export class VerificationBasePageComponent implements OnInit {
 
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
+  rejectReasons: Observable<string[]>;
 
-  constructor(private wpfInteropService: WpfInteropService) {
+  constructor(
+    private wpfInteropService: WpfInteropService,
+    private verificationService: VerificationService
+    ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.navigationParameters.Route = this.initialRoute;
       }) }
 
   ngOnInit() {
     this.initializeNavigationParameters();
+    this.loadRejectReasons();
   }
 
   initializeNavigationParameters(): void {
@@ -40,4 +48,7 @@ export class VerificationBasePageComponent implements OnInit {
     this.savedPageConfiguration = event;
   }
 
+  private loadRejectReasons(): void {
+    this.rejectReasons = this.verificationService.getVerificationRejectReasons();
+  }
 }

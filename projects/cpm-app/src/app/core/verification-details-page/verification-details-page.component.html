@@ -8,10 +8,13 @@
   <div class="content">
     <app-verification-dashboard
     [verificationDashboardData]="verificationDashboardData | async"
+    [dashboardUpdate$]="dashboardUpdateSubject.asObservable()"
     ></app-verification-dashboard>
     <app-verification-details-card
+      [verificationDestinationDetails]="verificationDestinationDetails | async"
+      [rejectReasons]="rejectReasons"
       [deviceDescription]="this.navigationParameters.DeviceDescription"
-      [verificationDestinationDetails]="verificationDestinationDetails | async">
+      (saveVerificationEvent)="onSaveVerificationEvent($event)">
     </app-verification-details-card>
   </div>
 </ng-container>
