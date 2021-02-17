@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Observable, of, merge, Subject } from 'rxjs';
@@ -39,7 +39,7 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   templateUrl: './underfilled-picklist-lines-page.component.html',
   styleUrls: ['./underfilled-picklist-lines-page.component.scss']
 })
-export class UnderfilledPicklistLinesPageComponent implements OnInit {
+export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy {
   ngUnsubscribe = new Subject();
   itemHeaderKey = 'DESCRIPTION_ID';
   qohHeaderKey = 'PHARMACY_QOH';
@@ -139,6 +139,11 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit {
     } catch (e) {
       console.log('UnderfilledPicklistLinesPageComponent.ngOnInit ERROR', e);
     }
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   ngAfterViewInit() {
