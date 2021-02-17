@@ -30,7 +30,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
-  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
+  private xr2PickingBarcodeScannedSubscription: Subscription;
 
 
   private backRoute = VerificationRouting.OrderPage;
@@ -60,7 +60,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
    }
 
   ngOnInit() {
-    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationDestinationItems();
     this.loadVerificationDashboardData();
   }
@@ -72,7 +72,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
+    this.xr2PickingBarcodeScannedSubscription.unsubscribe();
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {

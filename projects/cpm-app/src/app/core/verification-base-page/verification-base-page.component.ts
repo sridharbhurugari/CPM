@@ -94,7 +94,7 @@ export class VerificationBasePageComponent implements OnInit {
     this.displayExpectedPickingBarcodeScan();
   }
 
-  onVerificationDetailBarcodeScanUnexpected(data: IBarcodeData) {
+  onVerificationDetailBarcodeScanUnexpected() {
     this.displayUnexpectedBarcodeScanInDetails();
   }
 

@@ -56,6 +56,7 @@ describe('VerificationDetailsCardComponent', () => {
     component = fixture.componentInstance;
     barcodeScannedInputSubject = new Subject<IBarcodeData>();
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
+    spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
     fixture.detectChanges();
   });
 
@@ -130,4 +131,69 @@ describe('VerificationDetailsCardComponent', () => {
       expect(toastService.error).toHaveBeenCalledTimes(1);
     });
   })
+
+  describe('Scans', () => {
+    it('should emit message on non item scan', () => {
+      var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.verificationDetailBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should emit message on non matching item scan', () => {
+      const newItem = new VerificationDestinationDetail(null);
+      newItem.DestinationType = 'type';
+      newItem.DestinationLine1 = 'DL0';
+      newItem.DestinationLine2 = 'DL1',
+      newItem.ItemId = 'Item1'
+
+      const newList = [
+        Object.assign({}, newItem)
+      ];
+
+      component.verificationDestinationDetails = newList;
+
+      var barcodeData = { ItemId: '1'} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.verificationDetailBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set selected data on matching item scan', () => {
+      const newItem = new VerificationDestinationDetail(null);
+      newItem.DestinationType = 'type';
+      newItem.DestinationLine1 = 'DL0';
+      newItem.DestinationLine2 = 'DL1',
+      newItem.ItemId = '1'
+      
+      const newList = [
+        Object.assign({}, newItem)
+      ];
+
+      component.verificationDestinationDetails = newList;
+
+      var barcodeData = { ItemId: '1'} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.selectedVerificationDestinationDetail.ItemId).toEqual('1');
+    });
+  });
+
+  describe('Child Actions', () => {
+    it('should remove item from list after verification save', () => {
+      const newItem = new VerificationDestinationDetail(null);
+      newItem.DestinationType = 'type';
+      newItem.DestinationLine1 = 'DL0';
+      newItem.DestinationLine2 = 'DL1',
+      newItem.ItemId = '1'
+      
+      const newList = [
+        Object.assign({}, newItem)
+      ];
+
+      component.verificationDestinationDetails = newList;
+      component.selectedVerificationDestinationDetail = newItem;
+
+      component.removeVerifiedDetails(newList);
+      expect(component.selectedVerificationDestinationDetail).toEqual(null);
+      expect(component.verificationDestinationDetails.length).toEqual(0);
+    });
+  });
 });

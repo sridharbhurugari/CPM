@@ -114,5 +114,10 @@ describe('VerificationBasePageComponent', () => {
       component.onNonXr2PickingBarcodeScanUnexpected();
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
+
+    it('should show unexpected scan dialog on item or label scan', () => {
+      component.onVerificationDetailBarcodeScanUnexpected();
+      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
+    });
   });
 });
