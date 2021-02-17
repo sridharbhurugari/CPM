@@ -21,6 +21,8 @@ import { ItemManagementComponent } from '../item-management/item-management.comp
 import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
 import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
+import { SourceLocationDropdownPopupComponent } from '../../shared/components/source-location-dropdown-popup/source-location-dropdown-popup.component';
+import { ISourceLocationDropdownPopupData } from '../../shared/model/i-source-location-dropdown-popup-data';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',
@@ -124,7 +126,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
     this.itemLocationDetails$.subscribe(locations => {
       locations.forEach((location) => {
-        if(location.ItemId === item.ItemId && location.DeviceId != this.deviceId) {
+        if(location.ItemId === item.ItemId &&
+           location.DeviceId != this.deviceId &&
+           location.DeviceType != "2100") {
           const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceLocationId.toString());
           itemlocationDisplayList.push(itemlocationRow);
         }
@@ -139,22 +143,17 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     const properties = new PopupWindowProperties();
 
     const defaultDisplayItem = itemlocationDisplayList.find(x => x.value.length > 0);
-    const data: IDropdownPopupData = {
+    const data: ISourceLocationDropdownPopupData = {
       popuptitle: this.popupTitle,
       dropdowntitle: this.dropdowntitle,
       dropdownrows: itemlocationDisplayList,
       defaultrow: defaultDisplayItem,
-      showCheckbox: false,
-      checkboxLabel: "",
-      checkboxSelected: false,
-      checkboxHideSelection: rowItemsToHideCheckbox,
       selectedrow: defaultDisplayItem,
-      selectedcheckbox: false
     };
 
     properties.data = data;
 
-    let component = this.popupWindowService.show(DropdownPopupComponent, properties) as unknown as DropdownPopupComponent;
+    let component = this.popupWindowService.show(SourceLocationDropdownPopupComponent, properties) as unknown as SourceLocationDropdownPopupComponent;
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
       if (selectedOk&& !isNaN(+data.selectedrow.value)) {
         this.selectedSource = +data.selectedrow.value;
@@ -195,7 +194,6 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
         this.requestedAmount = 0
       }
     });
-
   }
 
   private loadAssignedItems() {
