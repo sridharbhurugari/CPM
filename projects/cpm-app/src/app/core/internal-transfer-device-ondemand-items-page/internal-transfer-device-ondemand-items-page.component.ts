@@ -14,12 +14,13 @@ import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { IItemReplenishmentOnDemandItemLocations } from '../../api-core/data-contracts/i-item-replenishment-ondemand-item-locations';
 import { toArray } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
 import { ItemManagementComponent } from '../item-management/item-management.component';
 import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
+import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
+import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',
@@ -28,8 +29,10 @@ import { QuantityEditorPopupComponent } from '../../shared/components/quantity-e
 })
 export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit {
   assignedItems$: Observable<IItemReplenishmentOnDemand[]>;
+  itemLocationDetails$: Observable<IItemLocationDetail[]>;
   device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
+
 
   deviceId: number;
   itemsToPick: IItemReplenishmentOnDemand[] = new Array();
@@ -41,7 +44,6 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   itemlocationDisplayList: SingleselectRowItem[] = [];
   defaultDisplayItem: SingleselectRowItem;
   rowItemsToHideCheckbox: SingleselectRowItem[] = [];
-  itemlocations: IItemReplenishmentOnDemandItemLocations[] = [];
 
   popupTitle: string;
   dropdowntitle: string;
@@ -53,6 +55,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     private location: Location,
     private simpleDialogService: SimpleDialogService,
     private deviceReplenishmentOnDemandService: DeviceReplenishmentOnDemandService,
+    private itemLocaitonDetailsService: ItemLocaitonDetailsService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
     coreEventConnectionService: CoreEventConnectionService
@@ -100,8 +103,6 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     }
 
     this.selectItemSource(item);
-
-    this.pick();
   }
 
   pick() {
@@ -125,17 +126,18 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     this.rowItemsToHideCheckbox = [];
     this.selectedSource = 0;
 
-    this.itemlocations = [];
     this.itemlocationDisplayList = [];
-    const locations$ = this.deviceReplenishmentOnDemandService.getAvailableItemLocations(this.deviceId, item.ItemId)
-      .pipe(shareReplay(1));
 
-    locations$.subscribe(itemLocation => {
-      itemLocation.forEach(location => {
-        const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceId.toString());
-        this.itemlocationDisplayList.push(itemlocationRow);
+    this.loadAssignedItemsSourceLocations(item.ItemId);
+
+    this.itemLocationDetails$.pipe(map(locations => {
+      locations.forEach((location) => {
+        if(location.ItemId === item.ItemId && location.DeviceId != this.deviceId) {
+          const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceId.toString());
+          this.itemlocationDisplayList.push(itemlocationRow);
+        }
       })
-    });
+    }));
 
     this.defaultDisplayItem = this.itemlocationDisplayList.find(x => x.value.length > 0);
 
@@ -187,6 +189,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
       if (selectedOk && !isNaN(+data.requestedQuantity)) {
         this.requestedAmount = +data.requestedQuantity;
+        this.pick();
         return;
       }
     });
@@ -198,6 +201,11 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
   private loadAssignedItems() {
     this.assignedItems$ = this.deviceReplenishmentOnDemandService.getDeviceAssignedItems(this.deviceId).pipe(shareReplay(1));
+  }
+
+  private loadAssignedItemsSourceLocations(itemId: string) {
+    this.itemLocationDetails$ = this.itemLocaitonDetailsService.get(itemId)
+      .pipe(shareReplay(1));
   }
 
   private onRefreshDeviceItems() {

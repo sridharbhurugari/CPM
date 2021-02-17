@@ -26,13 +26,6 @@ export class DeviceReplenishmentOnDemandService {
     });
   }
 
-  getAvailableItemLocations(deviceId: number, itemId: string): Observable<IItemReplenishmentOnDemandItemLocations[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/OnDemand/AvailableLocations/${itemId}`);
-    return this.httpClient.get<IItemReplenishmentOnDemandItemLocations[]>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
   pickDeviceItemNeeds(deviceId: number, pickInfo: IInterDeviceTransferOnDemandPickRequest): Observable<any> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/OnDemand`);
     return this.httpClient.post(url, pickInfo, {
