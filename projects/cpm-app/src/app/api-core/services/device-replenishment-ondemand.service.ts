@@ -3,9 +3,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
-import { IInterDeviceTransferPickRequest } from '../data-contracts/i-inter-device-transfer-pick-request';
 import { IItemReplenishmentOnDemand } from '../data-contracts/i-item-replenishment-ondemand';
-import { IItemReplenishmentOnDemandItemLocations } from '../data-contracts/i-item-replenishment-ondemand-item-locations';
 import { IInterDeviceTransferOnDemandPickRequest } from '../data-contracts/i-inter-device-transfer-ondemand-pick-request';
 
 @Injectable({

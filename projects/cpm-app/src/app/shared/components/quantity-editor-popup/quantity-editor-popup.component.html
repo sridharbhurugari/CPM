@@ -1,13 +1,14 @@
-<oc-popupwindow-layout [windowFooter]="true">
+<oc-popupwindow-layout [windowInfo]="true" [windowFooter]="true">
   <ng-container class="ocwindowheader">
     <div>{{data.popuptitle | translate}}</div>
   </ng-container>
-  <ng-container class="ocwindowcontent">
+  <ng-container class="ocwindowinfo">
     <div>
-      <p style="font-size: 20px;">{{data.quantityDescritpion | translate}}</p>
-      <p *ngIf="data.quantitySubDescritpion.length > 0" style="font-size: 15px;">{{data.quantitySubDescritpion | translate}}</p>
+      <p style="font-size: 15px;">{{data.quantityDescritpion}}</p>
       <p style="font-size: 10px;">{{'PACKSIZE' | translate}}: {{data.packSize}}</p>
     </div>
+  </ng-container>
+  <ng-container class="ocwindowcontent">
     <div class="cpmheaderrow">
       <oc-numeric [units]="data.packSize == 1 ? data.unitOfIssue : ('PACKS' | translate)"
         [(ngModel)]="packsToPick"

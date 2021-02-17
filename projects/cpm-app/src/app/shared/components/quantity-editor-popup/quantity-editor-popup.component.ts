@@ -20,7 +20,8 @@ export class QuantityEditorPopupComponent implements OnInit, IPopupWindowContain
   constructor() { }
 
   ngOnInit() {
-    this.packsToPick = this.data.packSize
+    this.packsToPick = 0
+    this.pickQtyChanged();
   }
 
   cancel() {

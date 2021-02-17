@@ -41,10 +41,6 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
   ngUnsubscribe = new Subject();
 
-  itemlocationDisplayList: SingleselectRowItem[] = [];
-  defaultDisplayItem: SingleselectRowItem;
-  rowItemsToHideCheckbox: SingleselectRowItem[] = [];
-
   popupTitle: string;
   dropdowntitle: string;
   quantityEditorPopupTite: string;
@@ -98,11 +94,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   onSelect(item: IItemReplenishmentOnDemand) {
     this.itemsToPick.push(item);
 
-    if(item.AvailablePharmacyLocationCount < 1) {
-      return;
+    if(item.AvailablePharmacyLocationCount > 0) {
+      this.selectItemSource(item);
     }
-
-    this.selectItemSource(item);
   }
 
   pick() {
@@ -122,35 +116,39 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   }
 
   selectItemSource(item: IItemReplenishmentOnDemand){
-    const properties = new PopupWindowProperties();
-    this.rowItemsToHideCheckbox = [];
-    this.selectedSource = 0;
+    const itemlocationDisplayList: SingleselectRowItem[] = [];
 
-    this.itemlocationDisplayList = [];
+    this.selectedSource = 0;
 
     this.loadAssignedItemsSourceLocations(item.ItemId);
 
-    this.itemLocationDetails$.pipe(map(locations => {
+    this.itemLocationDetails$.subscribe(locations => {
       locations.forEach((location) => {
         if(location.ItemId === item.ItemId && location.DeviceId != this.deviceId) {
-          const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceId.toString());
-          this.itemlocationDisplayList.push(itemlocationRow);
+          const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceLocationId.toString());
+          itemlocationDisplayList.push(itemlocationRow);
         }
       })
-    }));
 
-    this.defaultDisplayItem = this.itemlocationDisplayList.find(x => x.value.length > 0);
+      this.showSouceSelection(item, itemlocationDisplayList);
+    });
+  }
 
+  private showSouceSelection(item: IItemReplenishmentOnDemand, itemlocationDisplayList: SingleselectRowItem[]) {
+    const rowItemsToHideCheckbox: SingleselectRowItem[] = [];
+    const properties = new PopupWindowProperties();
+
+    const defaultDisplayItem = itemlocationDisplayList.find(x => x.value.length > 0);
     const data: IDropdownPopupData = {
       popuptitle: this.popupTitle,
       dropdowntitle: this.dropdowntitle,
-      dropdownrows: this.itemlocationDisplayList,
-      defaultrow: this.defaultDisplayItem,
+      dropdownrows: itemlocationDisplayList,
+      defaultrow: defaultDisplayItem,
       showCheckbox: false,
       checkboxLabel: "",
       checkboxSelected: false,
-      checkboxHideSelection: this.rowItemsToHideCheckbox,
-      selectedrow: this.defaultDisplayItem,
+      checkboxHideSelection: rowItemsToHideCheckbox,
+      selectedrow: defaultDisplayItem,
       selectedcheckbox: false
     };
 
@@ -161,13 +159,13 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
       if (selectedOk&& !isNaN(+data.selectedrow.value)) {
         this.selectedSource = +data.selectedrow.value;
         this.enterPickQuantity(item);
-        return;
+      }
+      else {
+        this.itemsToPick = [];
+        this.selectedSource = 0;
+        this.requestedAmount = 0
       }
     });
-
-    this.itemsToPick = [];
-    this.selectedSource = 0;
-    this.requestedAmount = 0
   }
 
   enterPickQuantity(item: IItemReplenishmentOnDemand) {
@@ -190,13 +188,14 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
       if (selectedOk && !isNaN(+data.requestedQuantity)) {
         this.requestedAmount = +data.requestedQuantity;
         this.pick();
-        return;
+      }
+      else {
+        this.itemsToPick = [];
+        this.selectedSource = 0;
+        this.requestedAmount = 0
       }
     });
 
-    this.itemsToPick = [];
-    this.selectedSource = 0;
-    this.requestedAmount = 0
   }
 
   private loadAssignedItems() {
