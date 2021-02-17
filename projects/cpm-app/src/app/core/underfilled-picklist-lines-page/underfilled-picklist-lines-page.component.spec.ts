@@ -95,9 +95,12 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const popupDismissedSubject = new Subject<boolean>();
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
     const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
-    const workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName: () => of(''), UnTrack: () => of() };
+    const workstationTrackerService: Partial<WorkstationTrackerService> = { 
+      GetWorkstationName: () => of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}),
+      UnTrack: () => of() 
+    };
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
-    spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
+    spyOn(workstationTrackerService, 'GetWorkstationName').and.returnValue(of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}));
 
     pickingEventConnectionService = {
       updateUnfilledPicklistLineSubject: new Subject(),
