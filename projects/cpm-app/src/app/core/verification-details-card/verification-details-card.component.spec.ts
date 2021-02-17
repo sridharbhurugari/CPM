@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -13,14 +13,16 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 
-fdescribe('VerificationDetailsCardComponent', () => {
+describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
   let fixture: ComponentFixture<VerificationDetailsCardComponent>;
 
   let translateService: Partial<TranslateService>;
   let popupWindowService: Partial<PopupWindowService>;
   let toastService: Partial<ToastService>;
+  let barcodeScannedInputSubject: Subject<IBarcodeData>;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
@@ -52,6 +54,8 @@ fdescribe('VerificationDetailsCardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationDetailsCardComponent);
     component = fixture.componentInstance;
+    barcodeScannedInputSubject = new Subject<IBarcodeData>();
+    component.barcodeScannedEventSubject = barcodeScannedInputSubject;
     fixture.detectChanges();
   });
 
