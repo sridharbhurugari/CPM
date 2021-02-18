@@ -289,7 +289,7 @@
   "PACKSIZE":"包裝尺寸",
   "PACKSIZE_MIN":"包裝尺寸最小值",
   "PACKSIZE_MAX":"包裝尺寸最大值",
-  "HIGHPRIORITY": "優先選取（{{count}})"
+  "HIGHPRIORITY": "優先選取（{{count}})",
   "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" : "Return",
   "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" : "Restock",
   "HYPHEN_SEPARATOR": "-"

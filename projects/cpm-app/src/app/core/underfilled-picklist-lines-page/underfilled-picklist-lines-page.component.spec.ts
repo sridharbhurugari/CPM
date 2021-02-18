@@ -32,7 +32,10 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let pickingEventConnectionService: Partial<PickingEventConnectionService>;
   let wpfInteropService: Partial<WpfInteropService>;
   let printWithBaseData: jasmine.Spy;
-  let workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName: () => of(''), UnTrack: () => of() };
+  let workstationTrackerService: Partial<WorkstationTrackerService> = { 
+      GetWorkstationName: () => of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}),
+      UnTrack: () => of() 
+    };
   const date = new Date();
   const pickListLinesData: UnderfilledPicklistLine[] = [{
     IsChecked: false, PicklistLineId: 'pllid1241',
@@ -95,8 +98,9 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const popupDismissedSubject = new Subject<boolean>();
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
     const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
+
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
-    spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
+    spyOn(workstationTrackerService, 'GetWorkstationName').and.returnValue(of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}));
     spyOn(workstationTrackerService, 'UnTrack').and.returnValue(of(['']));
 
     pickingEventConnectionService = {
