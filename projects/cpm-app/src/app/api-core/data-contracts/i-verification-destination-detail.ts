@@ -19,13 +19,13 @@ export interface IVerificationDestinationDetail {
   FillDate: Date;
   FillUserId: string;
   FillUserName: string;
-  IsIssueScanRequired: boolean
+  IsIssueScanRequired: boolean;
   VerifiedStatus: string;
   VerifiedDate: Date;
   Exception: boolean;
-  HasOutputDeviceVerification: boolean
+  HasOutputDeviceVerification: boolean;
   DeviceDescription: string;
   OutputDevice: string;
   PriorityDescription: string;
-  NeedsScan: boolean;
+  IsSafetyStockItem: boolean;
 }

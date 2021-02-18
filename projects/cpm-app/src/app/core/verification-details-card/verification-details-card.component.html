@@ -36,7 +36,7 @@
                 (click)='medicationClicked(row)'
                 [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
                 <div class="label" [ngStyle]="{maxWidth: 95 - calculateMaxLabelWidth(row) + '%'}">
-                  <app-validation-icon *ngIf="row.NeedsScan"
+                  <app-validation-icon *ngIf="row.IsSafetyStockItem"
                     id="scan-icon"
                     [iconWidth]="30"
                     [iconHeight]="30"
