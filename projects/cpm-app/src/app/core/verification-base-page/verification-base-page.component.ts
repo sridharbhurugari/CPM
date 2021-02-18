@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-=======
-import { Component, Input, OnInit, Output } from '@angular/core';
->>>>>>> fe-620684-xr2-verification-scanning
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
@@ -56,21 +52,12 @@ export class VerificationBasePageComponent implements OnInit {
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
     private verificationService: VerificationService
-<<<<<<< HEAD
-    ) {
-      this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
-        this.LoadTransientData();
-        this.initializeNavigationParameters();
-      })
-    }
-=======
   ) {
     this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
       this.LoadTransientData();
       this.initializeNavigationParameters();
     });
   }
->>>>>>> fe-620684-xr2-verification-scanning
 
   ngOnInit() {
     this.LoadTransientData();
