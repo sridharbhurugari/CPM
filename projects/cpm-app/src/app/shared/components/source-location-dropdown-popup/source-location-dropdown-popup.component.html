@@ -1,15 +1,15 @@
 <oc-popupwindow-layout [windowFooter]="true">
   <ng-container class="ocwindowheader">
-    <div>{{data.popuptitle | translate}}</div>
+    <div>{{data.popupTitle | translate}}</div>
   </ng-container>
   <ng-container class="ocwindowcontent">
 
     <div class="cpmheaderrow">
-      <p style="font-size: 20px; padding-right: 25px;">{{data.dropdowntitle | translate}}</p>
+      <p style="font-size: 20px; padding-right: 25px;">{{data.dropdownTitle | translate}}</p>
       <oc-singleselect
             [popupDirection]="'AUTO'"
-            [tableData]="data.dropdownrows"
-            [selectedItem]="data.defaultrow"
+            [tableData]="data.dropdownRows"
+            [selectedItem]="data.defaultRow"
             componentWidth="300"
             (selectionChanged)="onSelectionChanged($event)">
       </oc-singleselect>

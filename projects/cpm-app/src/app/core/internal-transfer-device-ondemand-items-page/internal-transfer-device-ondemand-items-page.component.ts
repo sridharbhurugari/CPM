@@ -12,12 +12,8 @@ import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
-import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
-import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { toArray } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
-import { ItemManagementComponent } from '../item-management/item-management.component';
 import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
 import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
@@ -44,7 +40,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   ngUnsubscribe = new Subject();
 
   popupTitle: string;
-  dropdowntitle: string;
+  dropdownTitle: string;
   quantityEditorPopupTite: string;
 
   constructor(
@@ -63,9 +59,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
     this.loadAssignedItems();
 
-    coreEventConnectionService.refreshDeviceOnDemandSubject
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(message => {
+    coreEventConnectionService.refreshDeviceOnDemandSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(message => {
       try {
         this.onRefreshDeviceItems();
       }
@@ -79,7 +73,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     this.translateService.get('ONDEMAND_SOURCE_POPUP_TITLE').subscribe((res: string) => {
       this.popupTitle = res;});
     this.translateService.get('ONDEMAND_SOURCE_DROPDOWN_TITLE').subscribe((res: string) => {
-      this.dropdowntitle = res;});
+      this.dropdownTitle = res;});
     this.translateService.get('ONDEMAND_QUANTITY_EDITOR_TITLE').subscribe((res: string) => {
       this.quantityEditorPopupTite = res;});
     }
@@ -144,19 +138,19 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
     const defaultDisplayItem = itemlocationDisplayList.find(x => x.value.length > 0);
     const data: ISourceLocationDropdownPopupData = {
-      popuptitle: this.popupTitle,
-      dropdowntitle: this.dropdowntitle,
-      dropdownrows: itemlocationDisplayList,
-      defaultrow: defaultDisplayItem,
-      selectedrow: defaultDisplayItem,
+      popupTitle: this.popupTitle,
+      dropdownTitle: this.dropdownTitle,
+      dropdownRows: itemlocationDisplayList,
+      defaultRow: defaultDisplayItem,
+      selectedRow: defaultDisplayItem,
     };
 
     properties.data = data;
 
     let component = this.popupWindowService.show(SourceLocationDropdownPopupComponent, properties) as unknown as SourceLocationDropdownPopupComponent;
     component.dismiss.pipe(take(1)).subscribe(selectedOk => {
-      if (selectedOk&& !isNaN(+data.selectedrow.value)) {
-        this.selectedSource = +data.selectedrow.value;
+      if (selectedOk&& !isNaN(+data.selectedRow.value)) {
+        this.selectedSource = +data.selectedRow.value;
         this.enterPickQuantity(item);
       }
       else {
@@ -172,7 +166,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     this.requestedAmount = 0;
 
     const data: IQuantityEditorPopupData = {
-      popuptitle: this.quantityEditorPopupTite,
+      popupTitle: this.quantityEditorPopupTite,
       quantityDescritpion: item.ItemFormattedGenericName,
       quantitySubDescritpion: item.ItemBrandName,
       packSize: item.PackSize,

@@ -19,7 +19,7 @@ export class SourceLocationDropdownPopupComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.selectedRowItem = this.data.defaultrow;
+    this.selectedRowItem = this.data.defaultRow;
   }
 
   cancel() {
@@ -27,7 +27,7 @@ export class SourceLocationDropdownPopupComponent implements OnInit {
   }
 
   continue() {
-    this.data.selectedrow = this.selectedRowItem;
+    this.data.selectedRow = this.selectedRowItem;
     this.dismiss.next(true);
   }
 

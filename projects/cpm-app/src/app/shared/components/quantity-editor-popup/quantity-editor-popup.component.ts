@@ -2,7 +2,6 @@ import { Component, OnInit, Output } from '@angular/core';
 import { IPopupWindowContainer } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
 import { IQuantityEditorPopupData } from '../../model/i-quantity-editor-popup-data';
-
 @Component({
   selector: 'app-quantity-editor-popup',
   templateUrl: './quantity-editor-popup.component.html',

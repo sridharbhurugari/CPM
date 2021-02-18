@@ -1,5 +1,5 @@
 export interface IQuantityEditorPopupData {
-    popuptitle: string,
+    popupTitle: string,
     quantityDescritpion: string,
     quantitySubDescritpion: string,
     packSize: number,

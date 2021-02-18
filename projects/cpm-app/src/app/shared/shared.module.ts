@@ -34,6 +34,7 @@ import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-gene
 import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.component';
 import { QuantityEditorPopupComponent } from './components/quantity-editor-popup/quantity-editor-popup.component';
 import { SourceLocationDropdownPopupComponent } from './components/source-location-dropdown-popup/source-location-dropdown-popup.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -118,6 +119,6 @@ import { SourceLocationDropdownPopupComponent } from './components/source-locati
     DropdownPopupComponent,
     QuantityEditorPopupComponent,
     SourceLocationDropdownPopupComponent
-  ]
+  ],
 })
 export class SharedModule { }
