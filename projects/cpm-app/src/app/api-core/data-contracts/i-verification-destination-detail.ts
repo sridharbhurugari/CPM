@@ -27,4 +27,5 @@ export interface IVerificationDestinationDetail {
   DeviceDescription: string;
   OutputDevice: string;
   PriorityDescription: string;
+  NeedsScan: boolean;
 }

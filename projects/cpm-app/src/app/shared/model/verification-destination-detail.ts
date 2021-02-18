@@ -37,6 +37,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   RejectReason: string;
   Exception: boolean;
   HasOutputDeviceVerification: boolean;
+  NeedsScan: boolean = true; // For testing
 
   private getDestinationStringValue(): string {
     var stringValues = [];
