@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+=======
+import { Component, Input, OnInit, Output } from '@angular/core';
+>>>>>>> fe-620684-xr2-verification-scanning
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { Guid } from 'guid-typescript';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -14,12 +19,11 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
-  selector: 'app-verification-base-page',
-  templateUrl: './verification-base-page.component.html',
-  styleUrls: ['./verification-base-page.component.scss']
+  selector: "app-verification-base-page",
+  templateUrl: "./verification-base-page.component.html",
+  styleUrls: ["./verification-base-page.component.scss"],
 })
 export class VerificationBasePageComponent implements OnInit {
-
   private barcodeScannedSubscription: Subscription;
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
@@ -31,31 +35,42 @@ export class VerificationBasePageComponent implements OnInit {
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
   rejectReasons: Observable<string[]>;
+  displayedDialog: PopupDialogComponent;
 
   ngUnsubscribe = new Subject();
   popupTimeoutSeconds: number;
   translations$: Observable<any>;
 
   translatables = [
-    'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN',
-    'BARCODESCAN_DIALOGWARNING_TITLE',
-    'OK',
-    'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN',
+    "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN",
+    "BARCODESCAN_DIALOGWARNING_TITLE",
+    "OK",
+    "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN",
   ];
 
-  constructor(private wpfInteropService: WpfInteropService,
+  constructor(
+    private wpfInteropService: WpfInteropService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private systemConfigurationService: SystemConfigurationService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
     private verificationService: VerificationService
+<<<<<<< HEAD
     ) {
       this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
         this.LoadTransientData();
         this.initializeNavigationParameters();
       })
     }
+=======
+  ) {
+    this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
+      this.LoadTransientData();
+      this.initializeNavigationParameters();
+    });
+  }
+>>>>>>> fe-620684-xr2-verification-scanning
 
   ngOnInit() {
     this.LoadTransientData();
@@ -65,9 +80,11 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   private LoadTransientData() {
-    this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').subscribe(result => {
-      this.popupTimeoutSeconds = Number(result.Value);
-    });
+    this.systemConfigurationService
+      .GetConfigurationValues("TIMEOUTS", "POP_UP_MESSAGE_TIMEOUT")
+      .subscribe((result) => {
+        this.popupTimeoutSeconds = Number(result.Value);
+      });
     this.setTranslations();
   }
 
@@ -94,7 +111,7 @@ export class VerificationBasePageComponent implements OnInit {
     this.displayExpectedPickingBarcodeScan();
   }
 
-  onVerificationDetailBarcodeScanUnexpected(data: IBarcodeData) {
+  onVerificationDetailBarcodeScanUnexpected() {
     this.displayUnexpectedBarcodeScanInDetails();
   }
 
@@ -108,8 +125,14 @@ export class VerificationBasePageComponent implements OnInit {
       return;
     }
 
-    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((scannedBarcode: string) =>
-      this.barcodeDataService.getData(scannedBarcode).subscribe((result: IBarcodeData) => this.processScannedBarcodeData(result))
+    this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe((scannedBarcode: string) =>
+      this.barcodeDataService
+        .getData(scannedBarcode)
+        .subscribe((result: IBarcodeData) =>
+          this.processScannedBarcodeData(result)
+        )
     );
   }
 
@@ -123,10 +146,11 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   processScannedBarcodeData(result: IBarcodeData): void {
-      // TODO - This should probably check if it is an XR2 Picking Label and that it is shown on the screen?
-      // Right now, you can scan something that has aged off and it will still show.
-      // If we move the verification to here, we can handle it better on all views.
-      this.barcodeScannedSubject.next(result);
+    // TODO - This should probably check if it is an XR2 Picking Label and that it is actually supposed to show it?
+    // Right now, you can scan something that has aged off and it will still show.
+    // If we move the verification to here, we can handle it better on all views.
+    this.clearDisplayedDialog();
+    this.barcodeScannedSubject.next(result);
   }
 
   private unsubscribeIfValidSubscription(subscription: Subscription): void {
@@ -144,34 +168,55 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   private displayExpectedPickingBarcodeScan(): void {
-    this.translations$.subscribe(translations => {
-      const properties = new PopupDialogProperties('Role-Status-Warning');
-      properties.titleElementText = translations.BARCODESCAN_DIALOGWARNING_TITLE;
-      properties.messageElementText = translations.PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN;
+    this.clearDisplayedDialog();
+    this.translations$.subscribe((translations) => {
+      const properties = new PopupDialogProperties("Role-Status-Warning");
+      properties.titleElementText =
+        translations.BARCODESCAN_DIALOGWARNING_TITLE;
+      properties.messageElementText =
+        translations.PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN;
       properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
       properties.dialogDisplayType = PopupDialogType.Warning;
       properties.timeoutLength = this.popupTimeoutSeconds;
-      this.dialogService.showOnce(properties);
+      properties.uniqueId = Guid.create().toString();
+      this.displayedDialog = this.dialogService.showOnce(properties);
     });
   }
 
   private displayUnexpectedBarcodeScanInDetails(): void {
-    this.translations$.subscribe(translations => {
-      const properties = new PopupDialogProperties('Role-Status-Warning');
-      properties.titleElementText = translations.BARCODESCAN_DIALOGWARNING_TITLE;
-      properties.messageElementText = translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
+    this.clearDisplayedDialog();
+    this.translations$.subscribe((translations) => {
+      const properties = new PopupDialogProperties("Role-Status-Warning");
+      properties.titleElementText =
+        translations.BARCODESCAN_DIALOGWARNING_TITLE;
+      properties.messageElementText =
+        translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
       properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
       properties.dialogDisplayType = PopupDialogType.Warning;
       properties.timeoutLength = this.popupTimeoutSeconds;
-      this.dialogService.showOnce(properties);
+      properties.uniqueId = Guid.create().toString();
+      this.displayedDialog = this.dialogService.showOnce(properties);
     });
   }
 
   private loadRejectReasons(): void {
     this.rejectReasons = this.verificationService.getVerificationRejectReasons();
+  }
+
+  /* istanbul ignore next */
+  private clearDisplayedDialog() {
+    try {
+      if (this.displayedDialog) {
+        this.displayedDialog.onCloseClicked();
+      }
+    } catch (err) {
+      // Eat it - this happens if it was closed - this should be fixed in the Dialog so it doesnt crash
+    }
+
+
   }
 }

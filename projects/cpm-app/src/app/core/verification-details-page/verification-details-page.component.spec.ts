@@ -28,7 +28,7 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 
-fdescribe('VerificationDetailsPageComponent', () => {
+describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
   let fixture: ComponentFixture<VerificationDetailsPageComponent>;
   const popupDismissedSubject = new Subject<boolean>();

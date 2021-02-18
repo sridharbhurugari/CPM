@@ -22,8 +22,9 @@ describe('UnderfilledPicklistsComponent', () => {
   let event: IColHeaderSortChanged = {ColumnPropertyName:"OrderId",SortDirection:"asc"};
   let saveSucceededSpy = jasmine.createSpy('saveSucceeded').and.returnValue(of({}));
   const wpfActionControllerService: Partial<WpfActionControllerService> = { ExecuteContinueNavigationAction : () => {}};
-  const workstationTrackerService: Partial<WorkstationTrackerService> = { 
-    GetWorkstationShortName : () => of(''), Track : () => of([]),
+  const workstationTrackerService: Partial<WorkstationTrackerService> = {
+    Track : () => of([]),
+    GetWorkstationName: () => of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}),
     GetWorkstationNames : () => of([{WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}])
   };
   const translateService: Partial<TranslateService> = { get : () => of() };

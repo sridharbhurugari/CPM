@@ -1,10 +1,11 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
+import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -29,7 +30,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
-  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
+  private xr2PickingBarcodeScannedSubscription: Subscription;
 
 
   private backRoute = VerificationRouting.OrderPage;
@@ -47,7 +48,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
 
   translatables = [
-    'LOADING'
+    'LOADING',
+    'PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE'
   ];
 
   constructor(
@@ -58,7 +60,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
    }
 
   ngOnInit() {
-    this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.loadVerificationDestinationItems();
     this.loadVerificationDashboardData();
   }
@@ -70,7 +72,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
+    this.xr2PickingBarcodeScannedSubscription.unsubscribe();
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
@@ -130,10 +132,44 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
     this.verificationService.getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).subscribe(
       (verificationDestinationViewData) => {
-        this.headerTitle = of(verificationDestinationViewData.PriorityDescription);
-        this.headerSubTitle = of(`${verificationDestinationViewData.DeviceDescription} - ${verificationDestinationViewData.OrderId} - ${this.transformDateTime(new Date(verificationDestinationViewData.FillDate))}`);
+        this.generateHeaderTitle(verificationDestinationViewData)
+        this.generateHeaderSubTitle(verificationDestinationViewData);
         this.verificationDestinationItems = of(verificationDestinationViewData.DetailItems);
       }), shareReplay(1);
+  }
+
+  private generateHeaderTitle(verificationDetailViewData: IVerificationDestinationViewData){
+    if(verificationDetailViewData.PriorityDescription) {
+      this.headerTitle = of(verificationDetailViewData.PriorityDescription);
+    } else {
+      forkJoin(this.translations$).subscribe(r => {
+        const translations = r[0];
+        this.headerTitle = of(translations.PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE);
+      });
+    }
+  }
+
+  private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationViewData) {
+    var stringResult = ''
+    if(verificationDetailViewData.DeviceDescription) {
+      stringResult += verificationDetailViewData.DeviceDescription;
+    }
+
+    if(verificationDetailViewData.OrderId) {
+      if(stringResult !== '') {
+        stringResult += ' - ';
+      }
+
+      stringResult += verificationDetailViewData.OrderId;
+    }
+
+    if(verificationDetailViewData.FillDate) {
+      if(stringResult !== '') {
+        stringResult += ' - ';
+      }
+      stringResult += this.transformDateTime(verificationDetailViewData.FillDate);;
+    }
+    this.headerSubTitle = of(stringResult);
   }
 
   private loadVerificationDashboardData(): void {

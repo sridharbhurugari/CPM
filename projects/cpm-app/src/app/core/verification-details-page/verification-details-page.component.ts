@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Subject, Observable, of, Subscription } from 'rxjs';
+import { Subject, Observable, of, Subscription, forkJoin } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -17,6 +17,7 @@ import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
+import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -49,9 +50,11 @@ export class VerificationDetailsPageComponent implements OnInit {
   headerTitle: Observable<string>;
   translations$: Observable<any>;
 
+  validDestinationDetails: boolean = true;
 
   translatables = [
-    'LOADING'
+    'LOADING',
+    'PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE'
   ];
 
   FillDate: string;
@@ -62,17 +65,18 @@ export class VerificationDetailsPageComponent implements OnInit {
     private verificationService: VerificationService,
     private logService: LogService,
   ) {
-    this.setTranslations();
   }
 
   ngOnInit() {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.LoadData();
+    this.setTranslations();
   }
 
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
   }
 
   private LoadData() {
@@ -95,13 +99,23 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   onBackEvent(): void {
-    const navigationParams = {
-      OrderId: this.navigationParameters.OrderId,
-      DeviceId: this.navigationParameters.DeviceId,
-      DestinationId: null,
-      Route: this.backRoute
-    } as IVerificationNavigationParameters
-    this.xr2xr2PickingBarcodeScannedSubscription.unsubscribe();
+    let navigationParams: IVerificationNavigationParameters;
+    if(this.validDestinationDetails) {
+      navigationParams = {
+        OrderId: this.navigationParameters.OrderId,
+        DeviceId: this.navigationParameters.DeviceId,
+        DestinationId: null,
+        Route: this.backRoute
+      } as IVerificationNavigationParameters;
+    } else {
+      navigationParams = {
+        OrderId: null,
+        DeviceId: null,
+        DestinationId: null,
+        Route: VerificationRouting.OrderPage
+      } as IVerificationNavigationParameters;
+    }
+
     this.pageNavigationEvent.emit(navigationParams);
   }
 
@@ -117,10 +131,45 @@ export class VerificationDetailsPageComponent implements OnInit {
 
     this.verificationService.getVerificationDestinationDetails(this.navigationParameters.DestinationId, this.navigationParameters.OrderId, this.navigationParameters.DeviceId).subscribe(
       (verificationDetailViewData) => {
-        this.headerTitle = of(verificationDetailViewData.PriorityDescription);
-        this.headerSubTitle = of(`${verificationDetailViewData.DeviceDescription} - ${verificationDetailViewData.OrderId} - ${this.transformDateTime(new Date(verificationDetailViewData.FillDate))}`);
+        this.generateHeaderTitle(verificationDetailViewData);
+        this.generateHeaderSubTitle(verificationDetailViewData);
         this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems);
       }), shareReplay(1);
+  }
+
+  private generateHeaderTitle(verificationDetailViewData: IVerificationDestinationDetailViewData){
+    if(verificationDetailViewData.PriorityDescription) {
+      this.headerTitle = of(verificationDetailViewData.PriorityDescription);
+    } else {
+      forkJoin(this.translations$).subscribe(r => {
+        const translations = r[0];
+        this.headerTitle = of(translations.PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE);
+        this.validDestinationDetails = false;
+      });
+    }
+  }
+
+  private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationDetailViewData) {
+    var stringResult = ''
+    if(verificationDetailViewData.DeviceDescription) {
+      stringResult += verificationDetailViewData.DeviceDescription;
+    }
+
+    if(verificationDetailViewData.OrderId) {
+      if(stringResult !== '') {
+        stringResult += ' - ';
+      }
+
+      stringResult += verificationDetailViewData.OrderId;
+    }
+
+    if(verificationDetailViewData.FillDate) {
+      if(stringResult !== '') {
+        stringResult += ' - ';
+      }
+      stringResult += this.transformDateTime(verificationDetailViewData.FillDate);
+    }
+    this.headerSubTitle = of(stringResult);
   }
 
   private loadVerificationDashboardData(): void {

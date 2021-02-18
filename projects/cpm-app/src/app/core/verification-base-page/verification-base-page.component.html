@@ -19,6 +19,6 @@
     [barcodeScannedEventSubject]="barcodeScannedSubject"
     (pageNavigationEvent)="onPageNavigationEvent($event)"
     [rejectReasons] = "rejectReasons | async"
-    (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)">
+    (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected()">
   </app-verification-details-page>
 </div>

@@ -51,6 +51,7 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   datePropertyName = nameof<UnderfilledPicklist>('CompletedDate');
 
   workstation: string;
+  workstationFriendlyName: string;
   okButtonText: string;
   orderInUseTitle: string;
 
@@ -79,7 +80,10 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.translateService.get('OK').subscribe(s => this.okButtonText = s);
     this.translateService.get('ORDER_IN_USE_TITLE').subscribe(s => this.orderInUseTitle = s);
-    this.workstationTrackerService.GetWorkstationShortName().subscribe(s => this.workstation = s);
+    this.workstationTrackerService.GetWorkstationName().subscribe(s => {
+      this.workstationFriendlyName = s.WorkstationFriendlyName;
+      this.workstation = s.WorkstationShortName;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -102,7 +106,8 @@ export class UnderfilledPicklistsComponent implements AfterViewInit, OnInit {
       Id: orderId,
       Operation: OperationType.Unfilled,
       ConnectionId: null,
-      WorkstationShortName: this.workstation
+      WorkstationShortName: this.workstation,
+      WorkstationFriendlyName: this.workstationFriendlyName
     };
     this.workstationTrackerService.GetWorkstationNames(workstationTrackerData).subscribe((success : IWorkstationNameData[]) => {
       if (success.length > 0) {
