@@ -39,7 +39,7 @@
             </div>
             <div class="body">
               <div class="body-content">
-                <div class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
+                <div id="{{row.Id}}" class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
                 (click)='medicationClicked(row)'
                 [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
                   <div class="label">

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
 import { flatMap, Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
@@ -114,6 +114,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     this.selectedVerificationDestinationDetail = match;
+    this.scrollToRowId(match.Id.toString());
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -237,5 +238,14 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
+  }
+
+  private scrollToRowId(id: string){
+    try {
+      var el = document.getElementById(id);
+      el.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
