@@ -1,7 +1,7 @@
 <ng-container>
   <app-cp-general-header
-  [title]="this.navigationParameters.PriorityCodeDescription"
-  [subtitle]="getHeaderSubtitle()"
+  [title]="headerTitle | async"
+  [subtitle]="headerSubTitle | async"
   [showSearchBox]="false"
   (backEvent)="onBackEvent()">
   </app-cp-general-header>
@@ -13,8 +13,9 @@
     <app-verification-details-card
       [verificationDestinationDetails]="verificationDestinationDetails | async"
       [rejectReasons]="rejectReasons"
-      [deviceDescription]="this.navigationParameters.DeviceDescription"
-      (saveVerificationEvent)="onSaveVerificationEvent($event)">
+      (saveVerificationEvent)="onSaveVerificationEvent($event)"
+      [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
+      (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)">
     </app-verification-details-card>
   </div>
 </ng-container>

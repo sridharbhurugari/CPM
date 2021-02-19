@@ -300,5 +300,9 @@
   "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" : "Return",
   "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" : "Restock",
   "HYPHEN_SEPARATOR": "-",
-  "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item."
+  "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item.",
+  "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Unknown bar code scanned.  Scan an XR2 Picking Bar Code to continue.",
+  "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN": "Unknown bar code scanned.  Scan an Item displayed or an XR2 Picking Bar Code to continue.",
+  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE": "XR2 Picking Bar Code not found for verification",
+  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "No items to verify"
 }
