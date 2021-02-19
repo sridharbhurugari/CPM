@@ -51,6 +51,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   translations$: Observable<any>;
 
   validDestinationDetails: boolean = true;
+  IsBoxBarcodeVerified: boolean;
 
   translatables = [
     'LOADING',
@@ -71,6 +72,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.LoadData();
     this.setTranslations();
+    this.IsBoxBarcodeVerified = this.navigationParameters.RoutedByScan;
   }
 
   ngOnDestroy(): void {
@@ -87,10 +89,12 @@ export class VerificationDetailsPageComponent implements OnInit {
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
       // TODO: Save anything in progress at the Item Card level
+      this.IsBoxBarcodeVerified = true;
       if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
         this.navigationParameters.DeviceId = data.DeviceId;
+        this.navigationParameters.RoutedByScan = true;
         this.LoadData();
       }
     } else {

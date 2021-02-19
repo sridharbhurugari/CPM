@@ -14,6 +14,7 @@
       [verificationDestinationDetails]="verificationDestinationDetails | async"
       [rejectReasons]="rejectReasons"
       [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
+      [IsBoxBarcodeVerified]="IsBoxBarcodeVerified"
       (saveVerificationEvent)="onSaveVerificationEvent($event)"
       (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)">
     </app-verification-details-card>

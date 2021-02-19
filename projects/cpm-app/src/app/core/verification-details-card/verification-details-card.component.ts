@@ -48,23 +48,22 @@ export class VerificationDetailsCardComponent implements OnInit {
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() IsBoxBarcodeVerified: boolean;
 
   private barcodeScannedEventSubscription: Subscription;
-
-  private _verificationDestinationDetails : VerificationDestinationDetail[]
-
-  selectedVerificationDestinationDetail : VerificationDestinationDetail;
+  private _verificationDestinationDetails : VerificationDestinationDetail[];
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
 
-  ngUnsubscribe = new Subject();
+  selectedVerificationDestinationDetail : VerificationDestinationDetail;
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
   destinationLine2: string;
   destinationType: string;
   rowIconWidthPercent = 13; // Static for row icon width
+  ngUnsubscribe = new Subject();
 
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
@@ -92,28 +91,20 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onBarcodeScannedEvent(data: IBarcodeData): void {
-    //TODO If Item, check for Item in control - jump to it if present.
-    // If not an item in the control - or not an item barcode, Fire event alerting incorect barcode scanned - display popup
     if(!data.ItemId)
     {
-      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      this.handleFailedBarcodeScan(data);
       return;
     }
 
     const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(!match)
     {
-      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      this.handleFailedBarcodeScan(data);
       return;
     }
 
-    if(this.selectedVerificationDestinationDetail) {
-      // TODO - Figure out how we approve on scan
-      // var itemToApprove = this.selectedVerificationDestinationDetail;
-      // this.approveItem(itemToApprove);
-    }
-
-    this.selectedVerificationDestinationDetail = match;
+    this.handleSuccessfulBarcodeScan(match, data);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -184,6 +175,18 @@ export class VerificationDetailsCardComponent implements OnInit {
     let widthIconOutputDevice = verificationDestinationDetail.HasOutputDeviceVerification ? this.rowIconWidthPercent: 0;
     let widthIconException = verificationDestinationDetail.Exception ? this.rowIconWidthPercent: 0;
     return widthIconOutputDevice + widthIconException;
+  }
+
+  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+    if(this.selectedVerificationDestinationDetail && this.IsBoxBarcodeVerified) {
+      this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
+    }
+
+    this.selectedVerificationDestinationDetail = item;
+  }
+
+  private handleFailedBarcodeScan(data: IBarcodeData) {
+    this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
   /* istanbul ignore next */
