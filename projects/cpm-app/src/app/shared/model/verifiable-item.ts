@@ -4,7 +4,7 @@ import { VerificationDestinationDetail } from './verification-destination-detail
 
 export class VerifiableItem implements IVerifiableItem {
 
-  constructor(verifiableItem: IVerifiableItem) {
+  constructor(verifiableItem:IVerifiableItem) {
     Object.assign(this, verifiableItem);
   }
 
@@ -17,9 +17,6 @@ export class VerifiableItem implements IVerifiableItem {
   FillDate: Date;
   VerifiedStatus: string;
   RejectReason: string;
-  TransactionScannedBarcodeProductId: string;
-  TransactionScannedBarcodeFormat: string;
-  TransactionScannedRawBarcode: string;
 
   static fromVerificationDestinationDetail(verificationDestinationDetail: VerificationDestinationDetail) {
     return new this({
@@ -31,7 +28,7 @@ export class VerifiableItem implements IVerifiableItem {
       PicklistLineId: verificationDestinationDetail.PicklistLineId,
       FillDate: verificationDestinationDetail.FillDate,
       VerifiedStatus: verificationDestinationDetail.VerifiedStatus,
-      RejectReason: verificationDestinationDetail.RejectReason,
+      RejectReason: verificationDestinationDetail.RejectReason
     });
   }
 }

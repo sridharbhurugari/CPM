@@ -4,13 +4,31 @@
   </div>
   <div class="card" *ngIf="this.verificationDestinationDetails">
     <div class="card-header ocactionheader">
-      <div class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
+      <span class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
+        <app-validation-icon *ngIf="!this.IsBoxBarcodeVerified"
+        id="scan-icon"
+        [iconWidth]="30"
+        [iconHeight]="30"
+        [iconString]="'scan'"
+        toastTileResourceKey=""
+        toastMsgResourceKey="{{'SCAN_ITEM_PRODUCT'}}"
+        toastType="{{'warn'}}">
+        </app-validation-icon>
         {{destinationLine1}}
-      </div>
-      <div class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
-        <div class="cpm-action-title-multi-line-bold">{{destinationLine1}}</div>
-          <div>{{destinationLine2}}</div>
-      </div>
+      </span>
+      <span class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
+        <app-validation-icon *ngIf="!this.IsBoxBarcodeVerified"
+        id="scan-icon"
+        [iconWidth]="30"
+        [iconHeight]="30"
+        [iconString]="'scan'"
+        toastTileResourceKey=""
+        toastMsgResourceKey="{{'SCAN_ITEM_PRODUCT'}}"
+        toastType="{{'warn'}}">
+        </app-validation-icon>
+        <span class="cpm-action-title-multi-line-bold">{{destinationLine1}}</span>
+        <span>{{destinationLine2}}</span>
+      </span>
     </div>
     <div class="card-body cbody">
       <div class="left-panel">

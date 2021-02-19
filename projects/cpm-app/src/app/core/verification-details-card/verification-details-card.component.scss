@@ -51,21 +51,22 @@
 }
 
 .cpm-action-title {
-    vertical-align: middle;
-    font-size: 28px;
-    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-    color: white;
-    flex: 1px;
-    padding-left: 20px;
+  display: inline-flex;
+  font-size: 28px;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: white;
+  padding-left: 20px;
+  position: relative;
 }
 
 .cpm-action-title-multi-line {
-  vertical-align: middle;
+  display: inline-flex;
+  flex-direction: column;
   font-size: 22px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
   color: white;
-  flex: 1px;
   padding-left: 20px;
+  position: relative;
 }
 
 .cpm-action-title-multi-line-bold {

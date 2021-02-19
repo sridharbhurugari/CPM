@@ -88,7 +88,6 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
-      // TODO: Save anything in progress at the Item Card level
       this.IsBoxBarcodeVerified = true;
       if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
         this.navigationParameters.OrderId = data.OrderId;

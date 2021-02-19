@@ -178,11 +178,12 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
-    if(this.selectedVerificationDestinationDetail && this.IsBoxBarcodeVerified) {
-      this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
-    }
-
     this.selectedVerificationDestinationDetail = item;
+    if(this.IsBoxBarcodeVerified) {
+      this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
+    } else {
+      this.verificationDetailBarcodeScanUnexpected.emit(); // Change dialog
+    }
   }
 
   private handleFailedBarcodeScan(data: IBarcodeData) {

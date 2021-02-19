@@ -28,4 +28,5 @@ export interface IVerificationDestinationDetail {
   OutputDevice: string;
   PriorityDescription: string;
   IsSafetyStockItem: boolean;
+  IsMedBarcodeVerified: boolean;
 }

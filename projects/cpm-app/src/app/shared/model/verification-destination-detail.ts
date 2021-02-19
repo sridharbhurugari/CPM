@@ -38,7 +38,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   Exception: boolean;
   HasOutputDeviceVerification: boolean;
   IsSafetyStockItem: boolean;
-  IsMedBarcodeVerified: boolean = false;
+  IsMedBarcodeVerified: boolean;
 
   private getDestinationStringValue(): string {
     var stringValues = [];
