@@ -11,7 +11,7 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
-import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogService, PopupDialogType, PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
 import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
 import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
@@ -42,6 +42,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   popupTitle: string;
   dropdownTitle: string;
   quantityEditorPopupTite: string;
+  noLocationsMessage: string;
 
   constructor(
     private popupWindowService: PopupWindowService,
@@ -52,7 +53,8 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     private itemLocaitonDetailsService: ItemLocaitonDetailsService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
-    coreEventConnectionService: CoreEventConnectionService
+    coreEventConnectionService: CoreEventConnectionService,
+    private dialogService: PopupDialogService
   ) {
     this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
@@ -76,8 +78,10 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
       this.dropdownTitle = res;});
     this.translateService.get('ONDEMAND_QUANTITY_EDITOR_TITLE').subscribe((res: string) => {
       this.quantityEditorPopupTite = res;});
+    this.translateService.get('ONDEMAND_NO_SOURCE_LOCATION').subscribe((res: string) => {
+      this.noLocationsMessage = res;});
     }
-
+    
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -92,6 +96,18 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
 
     if(item.AvailablePharmacyLocationCount > 0) {
       this.selectItemSource(item);
+    } else {
+      const properties = new PopupDialogProperties("No_Locations");
+      this.translateService.get("OK").subscribe((result) => {
+        properties.primaryButtonText = result;
+      });
+      properties.titleElementText = this.popupTitle;
+      properties.messageElementText = this.noLocationsMessage;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Error;
+      properties.timeoutLength = 0;
+      this.dialogService.showOnce(properties);
     }
   }
 
@@ -122,7 +138,8 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
       locations.forEach((location) => {
         if(location.ItemId === item.ItemId &&
            location.DeviceId != this.deviceId &&
-           location.DeviceType != "2100") {
+           location.DeviceType != "2100" &&
+           location.DeviceType != "2040") {
           const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceLocationId.toString());
           itemlocationDisplayList.push(itemlocationRow);
         }

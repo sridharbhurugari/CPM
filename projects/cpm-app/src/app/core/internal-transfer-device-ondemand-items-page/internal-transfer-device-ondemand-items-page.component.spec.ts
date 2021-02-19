@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { ButtonActionModule, FooterModule, LayoutModule, PopupWindowService } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService, PopupWindowService } from '@omnicell/webcorecomponents';
 import { Subject, of } from 'rxjs';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
@@ -126,6 +126,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DevicesService, useValue: { get: () => of('') } },
+        { provide: PopupDialogService, useValue: { showOnce: () => of('') } },
         { provide: 'env', useValue: { } },
         { provide: 'configEndpointKey', useValue: { } },
       ]
