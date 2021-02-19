@@ -43,6 +43,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   dropdownTitle: string;
   quantityEditorPopupTite: string;
   noLocationsMessage: string;
+  qoh: string;
 
   constructor(
     private popupWindowService: PopupWindowService,
@@ -80,7 +81,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
       this.quantityEditorPopupTite = res;});
     this.translateService.get('ONDEMAND_NO_SOURCE_LOCATION').subscribe((res: string) => {
       this.noLocationsMessage = res;});
-    }
+    this.translateService.get('QOH').subscribe((res: string) => {
+      this.qoh = res;});
+ }
     
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -140,7 +143,8 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
            location.DeviceId != this.deviceId &&
            location.DeviceType != "2100" &&
            location.DeviceType != "2040") {
-          const itemlocationRow = new SingleselectRowItem(location.DeviceDescription, location.DeviceLocationId.toString());
+          const locationDescription = `${location.DeviceDescription} - ${this.qoh}:${location.QuantityOnHand}`;
+          const itemlocationRow = new SingleselectRowItem(locationDescription, location.DeviceLocationId.toString());
           itemlocationDisplayList.push(itemlocationRow);
         }
       })
