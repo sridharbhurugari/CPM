@@ -5,8 +5,8 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IVerifiableItem } from '../data-contracts/i-verifiable-item';
 import { IVerificationDashboardData } from '../data-contracts/i-verification-dashboard-data';
-import { IVerificationDestinationDetail } from '../data-contracts/i-verification-destination-detail';
-import { IVerificationDestinationItem } from '../data-contracts/i-verification-destination-item';
+import { IVerificationDestinationDetailViewData } from "../data-contracts/i-verification-destination-detail-view-data";
+import { IVerificationDestinationViewData } from '../data-contracts/i-verification-destination-view-data';
 import { IVerificationOrderItem } from '../data-contracts/i-verification-order-item';
 
 @Injectable({
@@ -27,9 +27,9 @@ export class VerificationService {
     });
   }
 
-  getVerificationDestinations(deviceId: string, orderId: string): Observable<IVerificationDestinationItem[]> {
+  getVerificationDestinations(deviceId: string, orderId: string): Observable<IVerificationDestinationViewData> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destinations/${deviceId}/${orderId}`);
-    return this.httpClient.get<IVerificationDestinationItem[]>(url, {
+    return this.httpClient.get<IVerificationDestinationViewData>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
@@ -41,9 +41,10 @@ export class VerificationService {
     });
   }
 
-  getVerificationDestinationDetails(destinationId: string, orderId: string, deviceId: number): Observable<IVerificationDestinationDetail[]> {
+  getVerificationDestinationDetails(destinationId: string, orderId: string, deviceId: number): Observable<IVerificationDestinationDetailViewData> {
+    console.log('verificationservice get')
     const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destination/${destinationId}/${orderId}/${deviceId}`);
-    return this.httpClient.get<IVerificationDestinationDetail[]>(url, {
+    return this.httpClient.get<IVerificationDestinationDetailViewData>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
