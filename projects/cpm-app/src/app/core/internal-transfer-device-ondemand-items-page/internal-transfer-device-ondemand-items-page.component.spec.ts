@@ -15,6 +15,7 @@ import { Component, Input } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { DevicesService } from '../../api-core/services/devices.service';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-list',
@@ -80,7 +81,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
     spyOn(locationService, 'back');
 
     coreEventConnectionService = {
-      refreshDeviceNeedsSubject: new Subject(),
+      refreshDeviceOnDemandSubject: new Subject(),
     };
 
     simpleDialogService = {
@@ -124,6 +125,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
+        { provide: DevicesService, useValue: { get: () => of('') } },
         { provide: 'env', useValue: { } },
         { provide: 'configEndpointKey', useValue: { } },
       ]
@@ -132,7 +134,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
   }));
 
   beforeEach(() => {
-    spyOn(coreEventConnectionService.refreshDeviceNeedsSubject, "subscribe").and.callThrough();
+    spyOn(coreEventConnectionService.refreshDeviceOnDemandSubject, "subscribe").and.callThrough();
     getDeviceAssignedItems.and.returnValue(of(assignedItemsData));
     fixture = TestBed.createComponent(InternalTransferDeviceOndemandItemsPageComponent);
     component = fixture.componentInstance;
