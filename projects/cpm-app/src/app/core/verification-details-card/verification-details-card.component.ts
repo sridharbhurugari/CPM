@@ -241,6 +241,10 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.destinationLine1 = verificationDestinationDetails[0].DestinationLine1;
       this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
       this.destinationType = verificationDestinationDetails[0].DestinationType;
+    } else {
+      this.destinationLine1 = null;
+      this.destinationLine2 = null;
+      this.destinationType = null;
     }
   }
 
