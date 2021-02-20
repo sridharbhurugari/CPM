@@ -42,6 +42,8 @@ export class VerificationBasePageComponent implements OnInit {
     "BARCODESCAN_DIALOGWARNING_TITLE",
     "OK",
     "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN",
+    "BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE",
+    "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
   ];
 
   constructor(
@@ -100,6 +102,10 @@ export class VerificationBasePageComponent implements OnInit {
 
   onVerificationDetailBarcodeScanUnexpected() {
     this.displayUnexpectedBarcodeScanInDetails();
+  }
+
+  onVerificationBoxBarcodeRequired() {
+    this.displayBoxBarcodeScanRequired();
   }
 
   private setTranslations(): void {
@@ -177,9 +183,27 @@ export class VerificationBasePageComponent implements OnInit {
     this.translations$.subscribe((translations) => {
       const properties = new PopupDialogProperties("Role-Status-Warning");
       properties.titleElementText =
-        translations.BARCODESCAN_DIALOGWARNING_TITLE;
+        translations.Bar;
       properties.messageElementText =
         translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
+      properties.primaryButtonText = translations.OK;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Warning;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      properties.uniqueId = Guid.create().toString();
+      this.displayedDialog = this.dialogService.showOnce(properties);
+    });
+  }
+
+  private displayBoxBarcodeScanRequired(): void {
+    this.clearDisplayedDialog();
+    this.translations$.subscribe((translations) => {
+      const properties = new PopupDialogProperties("Role-Status-Warning");
+      properties.titleElementText =
+        translations.BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE;
+      properties.messageElementText =
+        translations.BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK;
       properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;

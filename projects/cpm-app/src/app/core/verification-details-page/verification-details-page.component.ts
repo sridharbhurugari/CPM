@@ -27,6 +27,7 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
+  @Output() verificationBoxBarcodeRequired: EventEmitter<IBarcodeData> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
@@ -124,6 +125,10 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   onVerificationDetailBarcodeScanUnexpected(data: IBarcodeData) {
     this.verificationDetailBarcodeScanUnexpected.emit(data);
+  }
+
+  onVerificationBoxBarcodeRequired() {
+    this.verificationBoxBarcodeRequired.emit();
   }
 
   private loadVerificationDestinationDetails(): void {

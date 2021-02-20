@@ -44,6 +44,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
+  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
@@ -182,7 +183,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     if(this.IsBoxBarcodeVerified) {
       this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
     } else {
-      this.verificationDetailBarcodeScanUnexpected.emit(); // Change dialog
+      this.verificationBoxBarcodeRequired.emit();
     }
   }
 

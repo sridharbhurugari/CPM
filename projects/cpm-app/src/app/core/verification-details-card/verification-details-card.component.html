@@ -176,7 +176,10 @@
               </app-cp-clickable-icon>
             </div>
           </div>
-          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && this.verificationDestinationDetails.length > 0">
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && !IsBoxBarcodeVerified && this.verificationDestinationDetails.length > 0">
+            {{ 'SCAN_BOX_BARCODE' | translate }}
+          </div>
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && IsBoxBarcodeVerified && this.verificationDestinationDetails.length > 0">
             {{ 'SELECT_SCAN_MED' | translate }}
           </div>
           <div class="no-details" *ngIf="this.verificationDestinationDetails.length === 0">
