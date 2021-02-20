@@ -163,6 +163,10 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.selectedVerificationDestinationDetail = null;
   }
 
+  containsSafetyStockMedication() {
+    return this.verificationDestinationDetails.filter(x => x.IsSafetyStockItem).length > 0;
+  }
+
   /* istanbul ignore next */
   trackByItemId(index: number, verificationDestinationDetail: any): Guid {
     if (!verificationDestinationDetail) {

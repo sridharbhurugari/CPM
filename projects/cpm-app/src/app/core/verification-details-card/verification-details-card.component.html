@@ -5,25 +5,25 @@
   <div class="card" *ngIf="this.verificationDestinationDetails">
     <div class="card-header ocactionheader">
       <span class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
-        <app-validation-icon *ngIf="!this.IsBoxBarcodeVerified"
+        <app-validation-icon *ngIf="containsSafetyStockMedication() && !this.IsBoxBarcodeVerified"
         id="scan-icon"
         [iconWidth]="30"
         [iconHeight]="30"
         [iconString]="'scan'"
         toastTileResourceKey=""
-        toastMsgResourceKey="{{'SCAN_ITEM_PRODUCT'}}"
+        toastMsgResourceKey="{{'SCAN_BOX_BARCODE'}}"
         toastType="{{'warn'}}">
         </app-validation-icon>
         {{destinationLine1}}
       </span>
       <span class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
-        <app-validation-icon *ngIf="!this.IsBoxBarcodeVerified"
+        <app-validation-icon *ngIf="containsSafetyStockMedication() && !this.IsBoxBarcodeVerified"
         id="scan-icon"
         [iconWidth]="30"
         [iconHeight]="30"
         [iconString]="'scan'"
         toastTileResourceKey=""
-        toastMsgResourceKey="{{'SCAN_ITEM_PRODUCT'}}"
+        toastMsgResourceKey="{{'SCAN_BOX_BARCODE'}}"
         toastType="{{'warn'}}">
         </app-validation-icon>
         <span class="cpm-action-title-multi-line-bold">{{destinationLine1}}</span>
