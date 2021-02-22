@@ -222,7 +222,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' saveVerificaiton - handleSaveVerificationSuccess failed: ' + exception);
+          this.constructor.name + ' saveVerification - handleSaveVerificationSuccess failed: ' + exception);
       }
     }, error => {
       try {
@@ -230,7 +230,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' saveVerificaiton - handleSaveVerificationError failed: ' + exception);
+          this.constructor.name + ' saveVerification - handleSaveVerificationError failed: ' + exception);
       }
     });
   }
@@ -250,6 +250,6 @@ export class VerificationDetailsPageComponent implements OnInit {
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
     verificationDestinationDetails.map(detail => detail.Saving = false);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' saveVerificaiton - handleSaveVerificationError failed: ' + error);
+      this.constructor.name + ' saveVerification - handleSaveVerificationError failed: ' + error);
   }
 }

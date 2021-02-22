@@ -163,6 +163,7 @@
               [theme]="'danger'"
               [label]="'REJECT' | translate"
               [icon]="'close'"
+              [disabled]="selectedVerificationDestinationDetail.Saving"
               (clickEvent)="onRejectClick(this.selectedVerificationDestinationDetail)">
               </app-cp-clickable-icon>
               <app-cp-clickable-icon
@@ -171,7 +172,7 @@
               [theme]="'primary'"
               [label]="'APPROVE' | translate"
               [icon]="'checkmark'"
-              [disabled]="selectedVerificationDestinationDetail.IsSafetyStockItem && !selectedVerificationDestinationDetail.IsMedBarcodeVerified"
+              [disabled]="selectedVerificationDestinationDetail.IsSafetyStockItem && !selectedVerificationDestinationDetail.IsMedBarcodeVerified || selectedVerificationDestinationDetail.Saving"
               (clickEvent)="onApproveClick(this.selectedVerificationDestinationDetail)">
               </app-cp-clickable-icon>
             </div>
