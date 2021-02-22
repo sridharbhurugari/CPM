@@ -297,5 +297,19 @@
   "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" : "Return",
   "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" : "Restock",
   "HYPHEN_SEPARATOR": "-",
-  "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item."
+  "XR2_PICK_VERIFICATION_EXCEPTION": "XR2 encountered an exception while dispensing this item.",
+  "INTERNAL_TRANSFER_TOGGLE_NEEDS_BASED": "Needs Based",
+  "INTERNAL_TRANSFER_TOGGLE_ON_DEMAND": "On-Demand",
+  "DEVICE_ONDEMAND": "Device Items: On-Demand",
+  "SOURCE_LOCACTION_COUNT": "# Source Locations",
+  "AVAIABLE_PHARMACY_QOH": "Available Pharmacy QOH",
+  "ONDEMAND_SOURCE_POPUP_TITLE": "On-Demand Source Location Selection",
+  "ONDEMAND_SOURCE_DROPDOWN_TITLE": "Source Location",
+  "ONDEMAND_QUANTITY_EDITOR_TITLE": "On-Demand Pick Quantity",
+  "ONDEMAND_QUANTITY_TO_PICK": "Quantity to pick: ",
+  "ONDEMAND_NO_SOURCE_LOCATION": "Selected item is not available in any other valid locations",
+  "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Unknown bar code scanned.  Scan an XR2 Picking Bar Code to continue.",
+  "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN": "Unknown bar code scanned.  Scan an Item displayed or an XR2 Picking Bar Code to continue.",
+  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE": "XR2 Picking Bar Code not found for verification",
+  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "No items to verify"
 }

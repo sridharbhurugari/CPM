@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class InternalTransferDeviceSummariesPageComponent implements OnInit {
   deviceNeeds$: Observable<IDeviceReplenishmentNeed[]>;
   ngUnsubscribe = new Subject();
+  isTransferByNeeds: boolean;
 
   constructor(
     coreEventConnectionService: CoreEventConnectionService,
@@ -40,6 +41,7 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
 
   private onRefreshDeviceNeeds(): void {
     this.loadDeviceNeeds();
+    this.isTransferByNeeds = true;
   }
 
   private loadDeviceNeeds(): void {
@@ -47,9 +49,19 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isTransferByNeeds = true;
   }
 
   deviceSelected(deviceId: number) {
-    this.router.navigate(['core/internalTransfer/deviceReplenishmentNeeds/', deviceId]);
+    if (this.isTransferByNeeds) {
+      this.router.navigate(['core/internalTransfer/deviceReplenishmentNeeds/', deviceId]);
+      return;
+    }
+
+    this.router.navigate(['core/internalTransfer/deviceReplenishmentOnDemand/', deviceId]);
+  }
+
+  tranferByNeedsChanged(isTransferByNeeds: boolean) {
+    this.isTransferByNeeds = isTransferByNeeds;
   }
 }

@@ -1,13 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InternalTransferDeviceSummariesPageComponent } from './internal-transfer-device-summaries-page.component';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { of, Subject } from 'rxjs';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Component, Input } from '@angular/core';
 import { CoreEventConnectionService } from
   "../../api-core/services/core-event-connection.service";import { Router } from '@angular/router';
+import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 ;
 
 @Component({
@@ -16,6 +15,7 @@ import { CoreEventConnectionService } from
 })
 class MockDeviceNeedsList {
   @Input()deviceNeeds: IDeviceReplenishmentNeed[];
+  @Input()tranferDefaultvalue: boolean;
 }
 
 describe('InternalTransferDeviceSummariesPageComponent', () => {
@@ -36,9 +36,10 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
 
 
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         InternalTransferDeviceSummariesPageComponent,
         MockDeviceNeedsList,
+        MockButtonToggle
       ],
       providers: [
         { provide: Router, useValue: { } },
@@ -55,6 +56,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceSummariesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    component.isTransferByNeeds = true;
   });
 
   it('should create', () => {
@@ -75,5 +77,4 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
         expect(deviceReplenishmentNeedsService.get).toHaveBeenCalled();
       });
   });
-
 });

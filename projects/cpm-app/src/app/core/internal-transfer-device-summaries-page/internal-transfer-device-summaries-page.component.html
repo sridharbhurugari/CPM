@@ -1,1 +1,5 @@
-<app-internal-transfer-device-list [deviceNeeds]="deviceNeeds$ | async" (deviceSelected)="deviceSelected($event)"></app-internal-transfer-device-list>
+<app-internal-transfer-device-list
+    [deviceNeeds]="deviceNeeds$ | async"
+    [tranferDefaultvalue]="isTransferByNeeds"
+    (deviceSelected)="deviceSelected($event)"
+    (isTransferByNeeds)="tranferByNeedsChanged($event)"></app-internal-transfer-device-list>
