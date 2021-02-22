@@ -30,7 +30,7 @@ describe('VerificationDestinationPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
-  
+
   const navigationParams = {
     OrderId: 'OrderID1',
     DeviceId: 1,
@@ -38,7 +38,8 @@ describe('VerificationDestinationPageComponent', () => {
     DestinationId: 'dest1',
     PriorityCodeDescription: 'prioritycodedesc1',
     Date: new Date(1, 1, 1, 1, 1, 1, 1),
-    Route:  VerificationRouting.DetailsPage
+    Route:  VerificationRouting.DetailsPage,
+    RoutedByScan: false
   } as IVerificationNavigationParameters;
 
   const detailItem = {} as IVerificationDestinationItem;

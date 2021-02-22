@@ -210,8 +210,10 @@ export class VerificationDetailsPageComponent implements OnInit {
   private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     console.log('approveVerification');
     console.log(verificationDestinationDetails);
+    verificationDestinationDetails
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
+      detail.Saving = true;
       return VerifiableItem.fromVerificationDestinationDetail(detail);
       }))
     .subscribe(success => {
@@ -240,9 +242,14 @@ export class VerificationDetailsPageComponent implements OnInit {
       CompleteOutputDevices: verificationDestinationDetails.filter(x => x.HasOutputDeviceVerification).length
      } as IVerificationDashboardData
 
+    verificationDestinationDetails.map(detail => detail.Saving = false);
     this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
     this.dashboardUpdateSubject.next(dashboardDataAdded);
   }
 
-  private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {}
+  private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
+    verificationDestinationDetails.map(detail => detail.Saving = false);
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+      this.constructor.name + ' saveVerificaiton - handleSaveVerificationError failed: ' + error);
+  }
 }

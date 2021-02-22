@@ -9,7 +9,7 @@
   "BACK": "Back",
   "BAG": "Bag",
   "BAGS": "Bags",
-  "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK": "A box barcode is required before scanning medications for safety stock. \n\nScan the current box bar code before continuing to verify.",
+  "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK": "A box barcode is required before scanning medications for safety stock. \n\nScan the XR2 picking label to begin verification.",
   "BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE": "Box Barcode Required",
   "BARCODESCAN_DIALOGWARNING_TITLE": "Bar Code Not Recognized",
   "BARCODESCAN_DIALOGWARNING_MESSAGE": "The bar code scanned is not recognized. Please scan a correct bar code.",
