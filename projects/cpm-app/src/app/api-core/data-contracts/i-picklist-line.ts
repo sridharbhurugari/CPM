@@ -1,3 +1,5 @@
+import { IPicklistLinePackSize } from "./picking/i-picklist-line-pack-size";
+
 export interface IPicklistLine {
     ItemId: string;
     DestinationDeviceId: number;
@@ -11,4 +13,5 @@ export interface IPicklistLine {
     SourceDeviceLocationId: number;
     DestinationDeviceTypeId: number;
     PickQuantity: number;
+    PackSizes: IPicklistLinePackSize[];
 }

@@ -30,6 +30,7 @@ import { WpfActionPaths } from "../constants/wpf-action-paths";
 import { IAdjustQoh } from "../../api-core/data-contracts/i-adjust-qoh";
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { IPicklistLinePackSize } from '../../api-core/data-contracts/picking/i-picklist-line-pack-size';
 
 @Component({
   selector: 'app-internal-transfer-pick-page',
@@ -45,7 +46,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   picklistLineIds$: Observable<Guid[]>;
   totalLines$: Observable<number>;
-  picklistLineIndex = 0;
+  picklistLineIndex = 0; m
 
   currentLine$: Observable<IPicklistLine>;
   isLastLine$: Observable<boolean>;
@@ -62,6 +63,8 @@ export class InternalTransferPickPageComponent implements OnDestroy {
 
   isHighPriorityAvailable: boolean;
   ngUnsubscribe = new Subject();
+
+  requestStatus: string = 'none';
 
   constructor(
     activatedRoute: ActivatedRoute,
@@ -97,12 +100,14 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(msg => {this.onHighPriorityReceived();});
     this.isHighPriorityAvailable = false;
-    wpfInteropService.wpfViewModelActivated.subscribe(() => this.continueLoadCurrentLineDetails());
+    wpfInteropService.wpfViewModelActivated
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.continueLoadCurrentLineDetails());
   }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete(); 
+    this.ngUnsubscribe.complete();
   }
 
   pickTotalChanged(pickTotals: IInternalTransferPackSizePick[]) {
@@ -150,20 +155,26 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   }
 
   private pickItem(completePickData: ICompletePickData) {
+    this.requestStatus = 'picking';
     let scanInfo = completePickData.safetyStockScanInfo;
     if (!scanInfo && completePickData.secondaryScanInfo && completePickData.secondaryScanInfo.ItemId == completePickData.line.ItemId) {
       scanInfo = completePickData.secondaryScanInfo;
     }
 
-    let packPicks = new PicklistLineFillData(completePickData.line, this.pickItemTotals, this._pickTotal, scanInfo, completePickData.productScanRequired);
+    let packPicks = new PicklistLineFillData(completePickData.line, this.pickItemTotals, this._pickTotal, scanInfo, completePickData.productScanRequired, this.guidedPickData.isOnDemandTransfer);
 
-    this.picklistLinesService.completePick(packPicks).pipe(take(1)).subscribe(x => {
+    this.picklistLinesService.completePick(packPicks).subscribe(x => {
+      this.clearRequestStatus();
       if (completePickData.isLast) {
         this.navigateContinue();
       } else {
         this.next();
       }
-    });
+    }, err => this.clearRequestStatus());
+  }
+
+  private clearRequestStatus() {
+    this.requestStatus = 'none';
   }
 
   private next() {
@@ -173,7 +184,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
   }
 
   private completeZeroPick() {
-    forkJoin(this.currentLine$, this.isLastLine$).pipe(take(1)).subscribe(results => {
+    forkJoin(this.currentLine$, this.isLastLine$).subscribe(results => {
       this._pickTotal = 0;
       const line = results[0];
       const isLast = results[1];
@@ -194,11 +205,15 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     this.isLastLine$ = this.totalLines$.pipe(map(x => x === this.picklistLineIndex + 1));
     this.currentNeedsDetails$ = this.currentLine$.pipe(switchMap(x =>
        this.deviceReplenishmentNeedsService.getDeviceNeedsForItem(x.DestinationDeviceId, x.ItemId, x.OrderId)), shareReplay(1));
-    this.currentNeedsDetails$.pipe(take(1)).subscribe(x => {
-      if (!x || !x.length) {
-        this.completeZeroPick();
-      } else {
+    forkJoin(this.currentLine$, this.currentNeedsDetails$).subscribe(results => {
+      let line = results[0];
+      let isOnDemand = this.isOnDemand(line.PackSizes);
+      let needs = results[1];
+      let stillNeedsReplenished = needs && needs.length && needs.some(n => n.DeviceQuantityNeeded > 0);
+      if (isOnDemand || stillNeedsReplenished) {
         this.continueLoadCurrentLineDetails();
+      } else {
+        this.completeZeroPick();
       }
     });
   }
@@ -210,7 +225,18 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     this.itemNeedPicks$ = forkJoin(this.currentNeedsDetails$, this.currentLine$).pipe(map(results => {
       const itemNeeds = results[0];
       const line = results[1];
-      return itemNeeds.map(n => new InternalTransferPick(n, line.PickQuantity));
+      if(this.isOnDemand(line.PackSizes)) {
+        return line.PackSizes.map(p => {
+          let packSize = p.PackSize;
+          let packSizeNeed = itemNeeds.find(x => x.PackSize == packSize);
+          return new InternalTransferPick(packSizeNeed, p.RequestedQuantityInPacks);
+        });
+      }
+
+      return itemNeeds.filter(n => n.DeviceQuantityNeeded > 0).map(n => {
+        let packsNeeded = n.Xr2Item ? n.DeviceQuantityNeeded / n.PackSize : line.PickQuantity;
+        return new InternalTransferPick(n, packsNeeded)
+      });
     }));
 
     this.guidedPickData$ = forkJoin(this.currentLine$, itemLocationDetails$, orderItemPendingQtys$, this.totalLines$, this.safetyStockScanConfig$, this.safetyStockQuickAdvanceConfig$).pipe(map(results => {
@@ -235,6 +261,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
         isLastLine: this.picklistLineIndex == (totalLines - 1),
         picklistLine: currentLine,
         highPriorityAvailable: this.isHighPriorityAvailable,
+        isOnDemandTransfer: this.isOnDemand(currentLine.PackSizes),
       };
 
       return guidedPickData;
@@ -249,5 +276,11 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     if (this.guidedPickData.pickLocation.DeviceType == DeviceTypeId.CarouselDeviceTypeId) {
       this.carouselLocationAccessService.clearLightbar(this.guidedPickData.pickLocation.DeviceId).pipe(take(1)).subscribe();
     }
+  }
+
+  private isOnDemand(linePackSizes: IPicklistLinePackSize[]): boolean {
+    return linePackSizes && 
+           linePackSizes.length &&
+           linePackSizes.some(p => p.IsOnDemand);
   }
 }

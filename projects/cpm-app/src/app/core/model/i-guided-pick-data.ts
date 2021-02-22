@@ -15,4 +15,5 @@ export interface IGuidedPickData {
   isLastLine: boolean;
   picklistLine: IPicklistLine;
   highPriorityAvailable: boolean;
+  isOnDemandTransfer: boolean;
 }

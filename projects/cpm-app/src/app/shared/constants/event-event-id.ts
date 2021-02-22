@@ -8,6 +8,7 @@ export class EventEventId {
     public static readonly OcsUnavailableEvent: string = 'OcsUnavailableEvent';
     public static readonly OcsAvailableEvent: string = 'OcsAvailableEvent';
     public static readonly RefreshDeviceNeeds: string = 'RefreshDeviceNeeds';
+    public static readonly RefreshDeviceOnDemand: string = 'RefreshDeviceOnDemand';
 
  // Common Hardware Events: ..\OCAP-Framework\Omnicell.Hardware.Common\Events\
     public static readonly DeviceOperationResultEvent: string = 'DeviceOperationResultEvent';

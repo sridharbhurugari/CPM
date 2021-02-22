@@ -32,6 +32,9 @@ import { ValidationContainerComponent } from './components/validation-container/
 import { SafetyStockProductComponent } from './components/safety-stock-product/safety-stock-product.component';
 import { CpGeneralHeaderComponent } from './components/cp-general-header/cp-general-header.component';
 import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.component';
+import { QuantityEditorPopupComponent } from './components/quantity-editor-popup/quantity-editor-popup.component';
+import { SourceLocationDropdownPopupComponent } from './components/source-location-dropdown-popup/source-location-dropdown-popup.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -63,6 +66,8 @@ import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.comp
     SafetyStockProductComponent,
     CpGeneralHeaderComponent,
     CpDataCardComponent,
+    QuantityEditorPopupComponent,
+    SourceLocationDropdownPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -104,12 +109,16 @@ import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.comp
     ValidationIconComponent,
     CpGeneralHeaderComponent,
     CpDataCardComponent,
+    QuantityEditorPopupComponent,
+    SourceLocationDropdownPopupComponent
   ],
   entryComponents: [
     TextResultPopupComponent,
     ConfirmPopupComponent,
     SpinnerPopupComponent,
-    DropdownPopupComponent
-  ]
+    DropdownPopupComponent,
+    QuantityEditorPopupComponent,
+    SourceLocationDropdownPopupComponent
+  ],
 })
 export class SharedModule { }

@@ -7,12 +7,13 @@ import { IPicklistLinePackSizeFillData } from '../i-picklist-line-pack-size-fill
 import { IPickTransactionScanDetails } from './i-pick-transaction-scan-details';
 
 export class PicklistLineFillData implements IPicklistLineFillData {
-    constructor(line: IPicklistLine, packSizeFills: IInternalTransferPackSizePick[], pickTotal: number, barcodeData: IBarcodeData, productScanRequired: boolean) {
+    constructor(line: IPicklistLine, packSizeFills: IInternalTransferPackSizePick[], pickTotal: number, barcodeData: IBarcodeData, productScanRequired: boolean, isOnDemandTransfer: boolean) {
         this.PicklistLineId = line.PicklistLineId;
         this.PickDeviceLocationId = line.SourceDeviceLocationId;
         this.TotalPickQuantity = pickTotal;
         this.TotalNeededQuantity = sumValues(packSizeFills, x => x.DeviceQuantityNeeded);
         this.PackSizeFills = new Array<IPicklistLinePackSizeFillData>();
+        this.IsOnDemandTransfer = isOnDemandTransfer;
 
         packSizeFills.forEach(pick => {
             const packFill: IPicklistLinePackSizeFillData = {
@@ -58,4 +59,5 @@ export class PicklistLineFillData implements IPicklistLineFillData {
     PackSizeFills: IPicklistLinePackSizeFillData[];
     PickTransactionScanDetails: IPickTransactionScanDetails;
     TotalNeededQuantity: number;
+    IsOnDemandTransfer: boolean;
 }
