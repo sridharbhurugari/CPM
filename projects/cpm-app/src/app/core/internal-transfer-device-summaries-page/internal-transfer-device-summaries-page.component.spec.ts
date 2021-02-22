@@ -25,6 +25,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
   let getDeviceItemNeeds: jasmine.Spy;
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
+  let router: Partial<Router>;
 
   beforeEach(async(() => {
     getDeviceItemNeeds = jasmine.createSpy('get');
@@ -44,7 +45,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
         MockTranslatePipe,
       ],
       providers: [
-        { provide: Router, useValue: { } },
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ActivatedRoute, useValue: { queryParamMap : new Subject() } },
@@ -59,6 +60,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceSummariesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
   });
 
   it('should create', () => {
@@ -78,5 +80,41 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
         coreEventConnectionService.refreshDeviceNeedsSubject.next();
         expect(deviceReplenishmentNeedsService.get).toHaveBeenCalled();
       });
+  });
+
+  describe('setIsNeedsBasedTransfer', () => {
+    it('should update query param', () => {
+      var value = false;
+      component.setIsNeedsBasedTransfer(value);
+      let expectedQueryParams = jasmine.objectContaining({ isNeedsBased: value });
+      let expectedExtras = jasmine.objectContaining({ queryParams: expectedQueryParams });
+      expect(router.navigate).toHaveBeenCalledWith([], expectedExtras);
+    });
+  });
+
+  describe('isTransferByNeeds true', () => {
+    beforeEach(() => {
+      component.isTransferByNeeds = true;
+    });
+
+    describe('deviceSelected', () => {
+      it('should navigate to needs screen', () => {
+        component.deviceSelected(5);
+        expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('deviceReplenishmentNeeds')]));
+      });
+    });
+  });
+
+  describe('isTransferByNeeds false', () => {
+    beforeEach(() => {
+      component.isTransferByNeeds = false;
+    });
+
+    describe('deviceSelected', () => {
+      it('should navigate to on demand screen', () => {
+        component.deviceSelected(5);
+        expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('deviceReplenishmentOnDemand')]));
+      });
+    });
   });
 });

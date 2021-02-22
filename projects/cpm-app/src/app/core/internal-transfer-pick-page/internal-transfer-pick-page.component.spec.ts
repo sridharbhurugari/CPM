@@ -32,6 +32,10 @@ describe('InternalTransferPickPageComponent', () => {
   let picklistLinesService: Partial<PicklistLinesService>;
   let wpfActionController: Partial<WpfActionControllerService>;
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
+  let needsBased: boolean;
+
+  let onDemandOrderId = 'od-3928';
+  let needsBasedOrderId = 'nb-3928';
 
   let picktotals: IInternalTransferPackSizePick[] = [
     { PackSize: 1, PacksToPick: 800, QuantityToPick: 800, DeviceQuantityNeeded: 800, },
@@ -53,13 +57,25 @@ describe('InternalTransferPickPageComponent', () => {
       SourceDeviceLocationId: deviceLocationId,
       PicklistLineId: Guid.create().toString(),
     };
+    let onDemandPicklistLine: Partial<IPicklistLine> = {
+      ItemId: '8392', 
+      SourceDeviceLocationId: deviceLocationId,
+      PicklistLineId: Guid.create().toString(),
+      PackSizes: [
+        { PackSize: 1, RequestedQuantityInPacks: 5, IsOnDemand: true },
+      ],
+    };
     let picklistLines = [ picklistLine, { ItemId: '', SourceDeviceLocationId: 3298, PicklistLineId: Guid.create().toString(), } ];
+    let onDemandLines = [ onDemandPicklistLine, { ItemId: '', SourceDeviceLocationId: 3298, PicklistLineId: Guid.create().toString(), } ];
     let picklistLineIds = picklistLines.map(x => x.PicklistLineId);
+    let onDemandPicklistLineIds = onDemandLines.map(x => x.PicklistLineId);
+    let allLines = picklistLines.concat(onDemandLines);
   
     picklistLinesService = { 
-      get: (plid: Guid) => { return of(picklistLines.find(x => x.PicklistLineId == plid.toString()) as IPicklistLine) },
+      get: (plid: Guid) => { return of(allLines.find(x => x.PicklistLineId == plid.toString()) as IPicklistLine) },
       completePick: jasmine.createSpy('completePick').and.returnValue(of(true)),
     };
+
     wpfActionController = { 
       ExecuteBackAction: jasmine.createSpy('ExecuteBackAction'), 
       ExecuteActionName: jasmine.createSpy('ExecuteActionName'), 
@@ -75,6 +91,30 @@ describe('InternalTransferPickPageComponent', () => {
       highPriorityInterruptSubject: new Subject(),
     };
 
+    let picklistLineIdsService = { 
+      getLineIdsForWorkstation: (orderId: string) => { 
+        if (orderId == needsBasedOrderId) {
+          return of(picklistLineIds);
+        }else{
+          return of(onDemandPicklistLineIds);
+        }
+      } 
+    };
+
+    let activatedRoute = {
+      snapshot: { 
+        queryParamMap : { 
+          get: () => {
+            if(needsBased){
+              return needsBasedOrderId;
+            }else{
+              return onDemandOrderId;
+            }
+          } 
+        } 
+      }
+    };
+
     TestBed.configureTestingModule({
       declarations: [ 
         InternalTransferPickPageComponent,
@@ -84,8 +124,8 @@ describe('InternalTransferPickPageComponent', () => {
       imports: [
       ],
       providers: [
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
-        { provide: PicklistLineIdsService, useValue: { getLineIdsForWorkstation: () => { return of(picklistLineIds); } } },
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: PicklistLineIdsService, useValue: picklistLineIdsService },
         { provide: OcapHttpConfigurationService, useValue: { get: () => { return { clientId: '' } } } },
         { provide: SystemConfigurationService, useValue: { getPickingSafetyStockConfig: () => of(safetyStockConfig), getSafetyStockQuickAdvanceConfig: () => of(quickAdvanceConfig) } },
         { provide: PicklistLinesService, useValue: picklistLinesService }, 
@@ -112,66 +152,92 @@ describe('InternalTransferPickPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('hold', () => {
-    describe('isLast true', () => {
-      it('should call ExecuteActionName continue', () => {
-        component.hold(true);
-        expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
+  describe('needs based pick', () => {
+    beforeEach(() => {
+      needsBased = true;
+    });
+    describe('hold', () => {
+      describe('isLast true', () => {
+        it('should call ExecuteActionName continue', () => {
+          component.hold(true);
+          expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
+        });
       });
     });
-  });
 
-  describe('completePick', () => {
-    it('should call PicklistLinesService completePick', () => {
-      component.pickTotalChanged(picktotals);
-      component.completePick({
-        isLast: false,
-        line: { } as IPicklistLine,
-        pickTotal: 50,
-        productScanRequired: false,
-        safetyStockScanInfo: null,
-        secondaryScanInfo: null,
-      });
-      expect(picklistLinesService.completePick).toHaveBeenCalled();
-    });
-
-    describe('for last item', () => {
-      it('should call ExecuteActionName continue', () => {
+    describe('completePick', () => {
+      it('should call PicklistLinesService completePick', () => {
         component.pickTotalChanged(picktotals);
         component.completePick({
-          isLast: true,
-          line: { } as IPicklistLine,
+          isLast: false,
+          line: {} as IPicklistLine,
           pickTotal: 50,
           productScanRequired: false,
           safetyStockScanInfo: null,
           secondaryScanInfo: null,
         });
-        expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
+        expect(picklistLinesService.completePick).toHaveBeenCalled();
+      });
+
+      describe('for last item', () => {
+        it('should call ExecuteActionName continue', () => {
+          component.pickTotalChanged(picktotals);
+          component.completePick({
+            isLast: true,
+            line: {} as IPicklistLine,
+            pickTotal: 50,
+            productScanRequired: false,
+            safetyStockScanInfo: null,
+            secondaryScanInfo: null,
+          });
+          expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith('Continue');
+        });
       });
     });
-  });
 
-  describe('adjustQoh', () => {
-    it('should call ExecuteActionNameWithData', () => {
-      component.adjustQoh({
-        ItemId: 'test',
-        DeviceLocationId: 12345,
+    describe('adjustQoh', () => {
+      it('should call ExecuteActionNameWithData', () => {
+        component.adjustQoh({
+          ItemId: 'test',
+          DeviceLocationId: 12345,
+        });
+        expect(wpfActionController.ExecuteActionNameWithData).toHaveBeenCalled();
       });
-      expect(wpfActionController.ExecuteActionNameWithData).toHaveBeenCalled();
     });
-  });
 
-  describe('pickNow', () => {
-    it('should call wpf with High Priority', () => {
-      component.pickNow();
-      expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith(WpfActionPaths.HighPriorityPickNow);
+    describe('pickNow', () => {
+      it('should call wpf with High Priority', () => {
+        component.pickNow();
+        expect(wpfActionController.ExecuteActionName).toHaveBeenCalledWith(WpfActionPaths.HighPriorityPickNow);
+      });
     });
-  });
 
-  describe('High priority event', () => {
-    it('should set bool', () => {
+    describe('High priority event', () => {
+      it('should set bool', () => {
         coreEventConnectionService.highPriorityInterruptSubject.next();
         expect(component.isHighPriorityAvailable).toBeTruthy();
       });
+    });
+  });
+
+  describe('on demand pick', () => {
+    beforeEach(() => {
+      needsBased = false;
+    });
+
+    describe('completePick', () => {
+      it('should call PicklistLinesService completePick', () => {
+        component.pickTotalChanged(picktotals);
+        component.completePick({
+          isLast: false,
+          line: {} as IPicklistLine,
+          pickTotal: 50,
+          productScanRequired: false,
+          safetyStockScanInfo: null,
+          secondaryScanInfo: null,
+        });
+        expect(picklistLinesService.completePick).toHaveBeenCalled();
+      });
+    });
   });
 });
