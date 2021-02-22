@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService, PopupWindowService } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, LayoutModule, PopupDialogService, PopupDialogType, PopupWindowService } from '@omnicell/webcorecomponents';
 import { Subject, of } from 'rxjs';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
@@ -16,6 +16,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DevicesService } from '../../api-core/services/devices.service';
+import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
+import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-list',
@@ -28,15 +30,19 @@ class MockInternalTransferDeviceOndemandItemsListComponent {
 describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
   let component: InternalTransferDeviceOndemandItemsPageComponent;
   let fixture: ComponentFixture<InternalTransferDeviceOndemandItemsPageComponent>;
+  let popupDismissedSubject = new Subject<boolean>();
 
   let locationService: Partial<Location>;
-  let popupWindowService: Partial<PopupWindowService>;
+  let popupWindowService: Partial<PopupWindowService> = {
+    show: jasmine.createSpy('show'),
+  };
   let simpleDialogService: Partial<SimpleDialogService>;
   let getDeviceAssignedItems: jasmine.Spy;
   let get: jasmine.Spy;
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentOnDemandService: Partial<DeviceReplenishmentOnDemandService>;
   let itemLocaitonDetailsService: Partial<ItemLocaitonDetailsService>;
+  let popupDialogService: Partial<PopupDialogService>;
 
   let assignedItemsData: IItemReplenishmentOnDemand[] = [{
     ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
@@ -72,13 +78,24 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
     ItemId: "677373", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
     DeviceQuantityOnHand: 10, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
     DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
-    AvailablePharmacyLocationCount: 3, AvailablePharmacyQty: 20
+    AvailablePharmacyLocationCount: 0, AvailablePharmacyQty: 20
   },
   ];
 
   beforeEach(async(() => {
     locationService = { back: () => { } };
     spyOn(locationService, 'back');
+
+    const popupResult: Partial<ConfirmPopupComponent> = { dismiss: popupDismissedSubject };
+    popupWindowService = {
+      show: jasmine.createSpy('show').and.callFake((x, y) => {
+        if (y.data.requestedQuantity == 0) {
+          y.data.requestedQuantity = 2;
+        }
+
+        return popupResult;
+      }),
+    };
 
     coreEventConnectionService = {
       refreshDeviceOnDemandSubject: new Subject(),
@@ -92,10 +109,18 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
     getDeviceAssignedItems = jasmine.createSpy('getDeviceAssignedItems');
     deviceReplenishmentOnDemandService = {
       getDeviceAssignedItems: getDeviceAssignedItems,
-      pickDeviceItemNeeds: () => of([])
+      pickDeviceItemNeeds: jasmine.createSpy('pickDeviceItemNeeds').and.returnValue(of()),
     }
 
-    get = jasmine.createSpy('get');
+    let locationSource: Partial<IItemLocationDetail> = {
+      ItemId: "39301",
+      DeviceId: 999,
+      DeviceType: "2020",
+      DeviceDescription: "source",
+      DeviceLocationId: 32892,
+      QuantityOnHand: 500,
+    };
+    get = jasmine.createSpy('get').and.returnValue(of([ locationSource ]));
     itemLocaitonDetailsService = {
       get: get
     }
@@ -126,7 +151,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DevicesService, useValue: { get: () => of([]) } },
-        { provide: PopupDialogService, useValue: { showOnce: () => of('') } },
+        { provide: PopupDialogService, useValue: { showOnce: jasmine.createSpy('showOnce') } },
         { provide: 'env', useValue: { } },
         { provide: 'configEndpointKey', useValue: { } },
       ]
@@ -141,9 +166,55 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.assignedItems$ = of(assignedItemsData);
+    popupDialogService = TestBed.get(PopupDialogService);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('onSelect', () => {
+    describe('given item assigned to other devices', () => {
+      beforeEach(() => {
+        let item = assignedItemsData.find(x => x.AvailablePharmacyLocationCount > 0);
+        component.onSelect(item);
+      });
+
+      it('should prompt for source', () => {
+        expect(popupWindowService.show).toHaveBeenCalled();
+      });
+
+      describe('and source selected', () => {
+        beforeEach(() => {
+          popupDismissedSubject.next(true);
+        });
+
+        it('should prompt for quantity', () => {
+          expect(popupWindowService.show).toHaveBeenCalled();
+        })
+
+        describe('and quantity entered', () => {
+          beforeEach(() => {
+            popupDismissedSubject.next(true);
+          });
+
+          it('should add the pick', () => {
+            expect(deviceReplenishmentOnDemandService.pickDeviceItemNeeds).toHaveBeenCalled();
+          })
+
+        })
+      })
+    });
+
+    describe('given item is not assigned to other devices', () => {
+      beforeEach(() => {
+        let item = assignedItemsData.find(x => x.AvailablePharmacyLocationCount == 0);
+        component.onSelect(item);
+      });
+
+      it('should display error', () => {
+        expect(popupDialogService.showOnce).toHaveBeenCalledWith(jasmine.objectContaining({ dialogDisplayType: PopupDialogType.Error }));
+      });
+    });
+  })
 });
