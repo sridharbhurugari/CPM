@@ -49,16 +49,23 @@ export class VerificationService {
     });
   }
 
-  saveVerification(verifiableItem: Array<IVerifiableItem>): Observable<boolean> {
-    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/save');
-    return this.httpClient.post<boolean>(url, verifiableItem, {
+  getVerificationRejectReasons(): Observable<string[]> {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/rejectreasons');
+    return this.httpClient.get<string[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
 
-  getVerificationRejectReasons(): Observable<string[]> {
-    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/rejectreasons');
-    return this.httpClient.get<string[]>(url, {
+  saveVerification(verifiableItems: Array<IVerifiableItem>): Observable<boolean> {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/save');
+    return this.httpClient.post<boolean>(url, verifiableItems, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  sendNullSafetyStockTransaction(itemId: string, scannedBarcode: string): Observable<boolean> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/nullsafetystocktransaction/${itemId}/${scannedBarcode}`);
+    return this.httpClient.post<boolean>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
