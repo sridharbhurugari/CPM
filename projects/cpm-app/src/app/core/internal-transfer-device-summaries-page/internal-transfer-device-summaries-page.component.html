@@ -1,5 +1,10 @@
 <app-internal-transfer-device-list
     [deviceNeeds]="deviceNeeds$ | async"
-    [tranferDefaultvalue]="isTransferByNeeds"
-    (deviceSelected)="deviceSelected($event)"
-    (isTransferByNeeds)="tranferByNeedsChanged($event)"></app-internal-transfer-device-list>
+    (deviceSelected)="deviceSelected($event)">
+    <oc-button-toggle
+        [switchtype]="'secondary'"
+        [onLabel]="'INTERNAL_TRANSFER_TOGGLE_NEEDS_BASED' | translate"
+        [offLabel]="'INTERNAL_TRANSFER_TOGGLE_ON_DEMAND' | translate"
+        [ngModel]="transferByNeeds"
+        (valueChange)="setIsNeedsBasedTransfer($event)"></oc-button-toggle>
+</app-internal-transfer-device-list>

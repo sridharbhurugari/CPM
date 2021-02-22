@@ -5,8 +5,9 @@ import { of, Subject } from 'rxjs';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Component, Input } from '@angular/core';
 import { CoreEventConnectionService } from
-  "../../api-core/services/core-event-connection.service";import { Router } from '@angular/router';
+  "../../api-core/services/core-event-connection.service";import { ActivatedRoute, Router } from '@angular/router';
 import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 ;
 
 @Component({
@@ -39,12 +40,14 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
       declarations: [
         InternalTransferDeviceSummariesPageComponent,
         MockDeviceNeedsList,
-        MockButtonToggle
+        MockButtonToggle,
+        MockTranslatePipe,
       ],
       providers: [
         { provide: Router, useValue: { } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
+        { provide: ActivatedRoute, useValue: { queryParamMap : new Subject() } },
       ]
     })
     .compileComponents();
@@ -56,7 +59,6 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceSummariesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    component.isTransferByNeeds = true;
   });
 
   it('should create', () => {

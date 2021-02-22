@@ -1,12 +1,6 @@
 <div class="cpmheaderrow">
   <app-header-container>
-    <oc-button-toggle
-    [disabled]="'false'"
-    [switchtype]="'secondary'"
-    [onLabel]="'INTERNAL_TRANSFER_TOGGLE_NEEDS_BASED' | translate"
-    [offLabel]="'INTERNAL_TRANSFER_TOGGLE_ON_DEMAND' | translate"
-    [(ngModel)]="transferByNeeds"
-    (valueChange)="onTransferByNeedsChanged()"></oc-button-toggle>
+      <ng-content></ng-content>
   </app-header-container>
   <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>

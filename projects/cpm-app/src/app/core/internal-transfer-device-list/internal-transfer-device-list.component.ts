@@ -20,17 +20,14 @@ export class InternalTransferDeviceListComponent implements OnInit {
   ]
 
   searchTextFilter: string;
+
+  @Input()
   transferByNeeds: boolean;
 
   @Input()
   set deviceNeeds(value: IDeviceReplenishmentNeed[]) {
     this._deviceNeeds = value;
     this.windowService.dispatchResizeEvent();
-  }
-
-  @Input()
-  set tranferDefaultvalue(value: boolean) {
-    this.transferByNeeds = value;
   }
 
   get deviceNeeds(): IDeviceReplenishmentNeed[] {
@@ -45,9 +42,6 @@ export class InternalTransferDeviceListComponent implements OnInit {
   @Output()
   deviceSelected: EventEmitter<number> = new EventEmitter<number>();
 
-  @Output()
-  isTransferByNeeds: EventEmitter<boolean> = new EventEmitter<boolean>();
-
   constructor(
     private windowService: WindowService
   ) { }
@@ -61,9 +55,5 @@ export class InternalTransferDeviceListComponent implements OnInit {
         this.searchTextFilter = data;
         this.windowService.dispatchResizeEvent();
       });
-  }
-
-  onTransferByNeedsChanged() {
-    this.isTransferByNeeds.emit(this.transferByNeeds);
   }
 }
