@@ -125,7 +125,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
-        { provide: DevicesService, useValue: { get: () => of('') } },
+        { provide: DevicesService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: { showOnce: () => of('') } },
         { provide: 'env', useValue: { } },
         { provide: 'configEndpointKey', useValue: { } },
