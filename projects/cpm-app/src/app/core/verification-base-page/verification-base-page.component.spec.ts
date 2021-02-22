@@ -5,6 +5,7 @@ import { of, Subject } from 'rxjs';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 import { VerificationBasePageComponent } from './verification-base-page.component';
@@ -17,7 +18,8 @@ describe('VerificationPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ VerificationBasePageComponent ],
       providers: [
-        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }},
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+        { provide: WindowService, useValue: { getHash: () => '' } },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })

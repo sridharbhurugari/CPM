@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
@@ -21,8 +22,14 @@ export class VerificationBasePageComponent implements OnInit {
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
 
-  constructor(private wpfInteropService: WpfInteropService) {
-      this.wpfInteropService.wpfViewModelActivated.pipe(takeUntil(this._ngUnsubscribe)).subscribe(() => {
+  constructor(
+    private wpfInteropService: WpfInteropService,
+    private windowService: WindowService,
+  ) {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
         this.navigationParameters.Route = this.initialRoute;
       }) }
 

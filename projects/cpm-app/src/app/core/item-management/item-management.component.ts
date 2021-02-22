@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ItemManagement } from '../model/item-management';
 import { ItemManagementService } from '../../api-core/services/item-management.service';
 import { filter, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
-import { ActivatedRoute } from '@angular/router';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-item-management',
@@ -32,9 +32,9 @@ export class ItemManagementComponent implements OnInit, OnDestroy {
   constructor(private itemManagementService: ItemManagementService,
     private wpfActionControllerService: WpfActionControllerService,
     private wpfInteropService: WpfInteropService,
-    private activatedRoute: ActivatedRoute,
+    private windowService: WindowService,
   ) {
-    let hash = `#/${this.activatedRoute.snapshot.routeConfig.path}`;
+    let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
       .subscribe(() => {
@@ -44,6 +44,6 @@ export class ItemManagementComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._ngUnsubscribe.next();
-    this._ngUnsubscribe.complete()
+    this._ngUnsubscribe.complete();
   }
 }

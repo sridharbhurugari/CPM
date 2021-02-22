@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item';
-import { Observable, of, Subscription } from 'rxjs';
-import { map, switchMap, shareReplay } from 'rxjs/operators';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { map, switchMap, shareReplay, takeUntil, filter } from 'rxjs/operators';
 import { SearchBoxComponent, PopupDialogService, PopupDialogComponent, PopupDialogProperties, PopupDialogType } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -15,13 +15,17 @@ import { Xr2ExceptionsService } from '../../api-xr2/services/xr2-exceptions.serv
 import { ColHeaderSortableComponent } from '../../shared/components/col-header-sortable/col-header-sortable.component';
 import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
 import { BarcodeScanService } from 'oal-core';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { WindowService } from '../../shared/services/window-service';
 @Component({
   selector: 'app-xr2-exceptions-page',
   templateUrl: './xr2-exceptions-page.component.html',
   styleUrls: ['./xr2-exceptions-page.component.scss']
 })
 
-export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
+export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _ngUnsubscribe: Subject<void> = new Subject();
+
   readonly trayIDPropertyName = nameof<Xr2ExceptionsItem>("TrayID");
   readonly trayTypePropertyName = nameof<Xr2ExceptionsItem>("TrayDescription");
   readonly exceptionPocketsPropertyName = nameof<Xr2ExceptionsItem>("ExceptionPockets");
@@ -49,9 +53,17 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
     private exceptionsListService: Xr2ExceptionsService,
     private dialogService: PopupDialogService,
     private wpfActionControllerService: WpfActionControllerService,
-    private _barcodeScanService: BarcodeScanService
-
-  ) { }
+    private _barcodeScanService: BarcodeScanService,
+    private wpfInteropService: WpfInteropService,
+    private windowService: WindowService,
+  ) {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      }); 
+  }
 
   ngOnInit() {
 
@@ -103,6 +115,8 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit {
   ngOnDestroy(): void {
     if (this.searchSub) { this.searchSub.unsubscribe(); }
     if (this.barcodeScannedSubscription) { this.barcodeScannedSubscription.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
   onBarcodeScanExcludedKeyPressEvent(event: KeyboardEvent) {

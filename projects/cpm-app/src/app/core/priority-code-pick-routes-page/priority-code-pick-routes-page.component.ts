@@ -4,8 +4,9 @@ import { PriorityCodePickRoutesService } from '../../api-core/services/priority-
 import { IPriorityCodePickRoute } from '../../api-core/data-contracts/i-priority-code-pick-route';
 import * as _ from 'lodash';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-priority-code-pick-routes-page',
@@ -20,9 +21,9 @@ export class PriorityCodePickRoutesPageComponent implements OnInit, OnDestroy {
     private priorityCodePickRoutesService: PriorityCodePickRoutesService,
     private router: Router,
     private wpfInteropService: WpfInteropService,
-    private activatedRoute: ActivatedRoute,
+    private windowService: WindowService,
   ) {
-    let hash = `#/${this.activatedRoute.snapshot.routeConfig.path}`;
+    let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
       .subscribe(() => {
