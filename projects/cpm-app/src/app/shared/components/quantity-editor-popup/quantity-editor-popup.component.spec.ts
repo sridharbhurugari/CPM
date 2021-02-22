@@ -45,4 +45,30 @@ describe('QuantityEditorPopupComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('cancel', () => {
+    it('should dismiss with false', () => {
+      spyOn(component.dismiss, 'next');
+      component.cancel();
+      expect(component.dismiss.next).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe('continue', () => {
+    it('should dismiss with resultValue from textValue and true', () => {
+      component.quantityToPick = 100;
+      spyOn(component.dismiss, 'next');
+      component.continue();
+      expect(component.data.requestedQuantity).toEqual(component.quantityToPick);
+      expect(component.dismiss.next).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('pickQtyChanged', () => {
+    it('should set quantityToPick', () => {
+      component.packsToPick = 2;
+      component.pickQtyChanged();
+      expect(component.quantityToPick).toEqual(10);
+    });
+  });
 });
