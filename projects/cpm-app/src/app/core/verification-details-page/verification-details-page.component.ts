@@ -124,7 +124,9 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   onVerificationDetailBarcodeScanUnexpected(data: IBarcodeData) {
-    this.verificationService.sendNullSafetyStockTransaction(data.ItemId, data.BarCodeScanned);
+    if(this.childVerificationDetailsCardComponent.containsSafetyStockMedication()) {
+      this.verificationService.sendNullSafetyStockTransaction(null, data.BarCodeScanned);
+    }
     this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
