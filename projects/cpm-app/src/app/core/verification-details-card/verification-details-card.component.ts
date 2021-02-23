@@ -164,7 +164,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   containsSafetyStockMedication() {
-    return this.verificationDestinationDetails.filter(x => x.IsSafetyStockItem).length > 0;
+    return this.verificationDestinationDetails.some(x => x.IsSafetyStockItem);
   }
 
   /* istanbul ignore next */
