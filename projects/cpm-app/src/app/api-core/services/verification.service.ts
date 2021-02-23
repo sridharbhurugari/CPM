@@ -63,8 +63,8 @@ export class VerificationService {
     });
   }
 
-  sendNullSafetyStockTransaction(itemId: string, scannedBarcode: string): Observable<boolean> {
-    var url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/nullsafetystocktransaction/${itemId}/${scannedBarcode}`);
+  sendNullSafetyStockTransaction(scannedBarcode: string): Observable<boolean> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/nullsafetystocktransaction/${scannedBarcode}`);
     return this.httpClient.post<boolean>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
