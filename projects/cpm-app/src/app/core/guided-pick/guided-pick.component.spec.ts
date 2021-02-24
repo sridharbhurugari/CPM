@@ -93,6 +93,7 @@ describe('GuidedPickComponent', () => {
       quickAdvanceOnScan: false,
       totalLines: 5,
       highPriorityAvailable: false,
+      isOnDemandTransfer: false,
     };
     spyOn(component.pickCompleted, 'emit').and.callThrough();
   });

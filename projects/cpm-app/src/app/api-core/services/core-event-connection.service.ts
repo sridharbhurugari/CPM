@@ -10,6 +10,7 @@ import { IRefreshDeviceNeedsEvent } from "../events/i-refresh-device-needs";
 import { takeUntil } from 'rxjs/operators';
 import { IHighPriorityInterrupt } from "../events/i-high-priority-interrupt";
 import { EventEventId } from '../../shared/constants/event-event-id';
+import { IRefreshDeviceOnDemandEvent } from '../events/i-refresh-device-ondemand';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class CoreEventConnectionService implements OnDestroy {
   public carouselFaultedSubject = new Subject<ICarouselFaultedEvent>();
   public carouselReadySubject = new Subject<ICarouselReadyEvent>();
   public refreshDeviceNeedsSubject = new Subject<IRefreshDeviceNeedsEvent>();
+  public refreshDeviceOnDemandSubject = new Subject<IRefreshDeviceOnDemandEvent>();
   public highPriorityInterruptSubject = new Subject<IHighPriorityInterrupt>();
   public ngUnsubscribe = new Subject();
 
@@ -91,6 +93,10 @@ export class CoreEventConnectionService implements OnDestroy {
 
         if (message.$type.includes(EventEventId.RefreshDeviceNeeds)) {
           this.refreshDeviceNeedsSubject.next();
+        }
+
+        if (message.$type.includes(EventEventId.RefreshDeviceOnDemand)) {
+          this.refreshDeviceOnDemandSubject.next();
         }
 
         if (message.$type.includes(EventEventId.HighPriorityPickRequestEvent)) {

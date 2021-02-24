@@ -1,5 +1,6 @@
 <app-guided-pick
     [guidedPickData]="guidedPickData$ | async"
+    [requestStatus]="requestStatus"
     (pickCompleted)="completePick($event)"
     (holdClicked)="hold($event)"
     (pauseClicked)="pause()"

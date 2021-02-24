@@ -16,10 +16,12 @@ import { UnderfilledPicklistLinesPageComponent } from "./underfilled-picklist-li
 import { InternalTransferPickPageComponent } from './internal-transfer-pick-page/internal-transfer-pick-page.component';
 import { VerificationBasePageComponent } from './verification-base-page/verification-base-page.component';
 import { LoadingComponent } from './loading/loading.component';
+import { InternalTransferDeviceOndemandItemsPageComponent } from './internal-transfer-device-ondemand-items-page/internal-transfer-device-ondemand-items-page.component';
 
 const routes: Routes = [
   { path: 'internalTransfer/deviceReplenishmentNeeds', component: InternalTransferDeviceSummariesPageComponent },
   { path: 'internalTransfer/deviceReplenishmentNeeds/:deviceId', component: InternalTransferDeviceNeedsPageComponent },
+  { path: 'internalTransfer/deviceReplenishmentOnDemand/:deviceId', component: InternalTransferDeviceOndemandItemsPageComponent },
   { path: 'guidedinvmgmt/manualcyclecount', component: GuidedinvmgmtManualcyclecountPageComponent },
   { path: 'hardwareLease/requestLease', component: HardwareLeasePageComponent },
   { path: 'itemmanagement', component: ItemManagementComponent },

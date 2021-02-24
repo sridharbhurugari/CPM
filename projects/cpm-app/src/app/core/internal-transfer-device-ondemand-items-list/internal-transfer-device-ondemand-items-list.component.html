@@ -1,0 +1,48 @@
+<div class="cpmheaderrow">
+  <app-header-container></app-header-container>
+  <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
+<oc-grid #ocgrid ocgridfilter="false"
+  appGridSortCol [initialSortPropertyName]="itemDescriptionPropertyName" [orderableValues]="assignedItems" (valuesReordered)="assignedItems = $event">
+  <ng-container class="ocgridheader">
+      <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+          [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="ITEM">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+          [columnPropertyName]="qohPropertyName" headerResourceKey="QOH">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+          [columnPropertyName]="pendingPickPropertyName" headerResourceKey="QTY_PENDING_PICK">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+          [columnPropertyName]="AvailablePharmacyLocationCountPropertyName" headerResourceKey="SOURCE_LOCACTION_COUNT">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+          [columnPropertyName]="AvailablePharmacyQtyPropertyName" headerResourceKey="AVAIABLE_PHARMACY_QOH">
+      </div>
+  </ng-container>
+  <ng-container class="ocgridbody">
+      <div class="row"
+        *ngFor="let assignedItem of (assignedItems | searchPipe:searchTextFilter:searchPropertyNames)"
+        (click)="selectedItem.emit(assignedItem)">
+          <div class="col" [attr.data-title]="'ITEM' | translate">
+              <div>{{assignedItem.ItemFormattedGenericName}}</div>
+              <div>{{assignedItem.ItemBrandName}}</div>
+              <div class="packSize" *ngIf="assignedItem.Xr2Item === true">{{assignedItem.DisplayPackageSize}}</div>
+          </div>
+          <div class="col" [attr.data-title]="'QOH' | translate">
+              <span>{{assignedItem.DisplayDeviceQuantityOnHand}}</span>
+              <div class="packs" *ngIf="assignedItem.Xr2Item === true">{{assignedItem.DisplayQohNumberOfPackages}}</div>
+          </div>
+          <div class="col" [attr.data-title]="'QTY_PENDING_PICK' | translate">
+              <span>{{assignedItem.PendingDevicePickQuantity}}</span>
+          </div>
+          <div class="col" [attr.data-title]="'SOURCE_LOCACTION_COUNT' | translate">
+              <span>{{assignedItem.AvailablePharmacyLocationCount}}</span>
+          </div>
+          <div class="col" [attr.data-title]="'AVAIABLE_PHARMACY_QOH' | translate">
+              <span>{{assignedItem.AvailablePharmacyQty}}</span>
+          </div>
+      </div>
+  </ng-container>
+</oc-grid>

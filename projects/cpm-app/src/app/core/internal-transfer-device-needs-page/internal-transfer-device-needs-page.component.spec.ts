@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InternalTransferDeviceNeedsPageComponent } from './internal-transfer-device-needs-page.component';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
@@ -102,7 +101,6 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     coreEventConnectionService = {
       refreshDeviceNeedsSubject: new Subject(),
     };
-
 
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
