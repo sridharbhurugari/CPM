@@ -3,15 +3,22 @@
     [savedPageConfiguration]="savedPageConfiguration"
     (pageNavigationEvent)="onPageNavigationEvent($event)"
     (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)"
-  ></app-verification-order-page>
+    [barcodeScannedEventSubject]="barcodeScannedSubject"
+    (nonXr2PickingBarcodeScanUnexpected)="onNonXr2PickingBarcodeScanUnexpected()">
+  </app-verification-order-page>
   <app-verification-destination-page *ngSwitchCase="verificationRouting.DestinationPage"
-  [savedPageConfiguration]="savedPageConfiguration"
-  [navigationParameters]="navigationParameters"
-  (pageNavigationEvent)="onPageNavigationEvent($event)"
-  (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)">
+    [savedPageConfiguration]="savedPageConfiguration"
+    [navigationParameters]="navigationParameters"
+    [barcodeScannedEventSubject]="barcodeScannedSubject"
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
+    (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)"
+    (nonXr2PickingBarcodeScanUnexpected)="onNonXr2PickingBarcodeScanUnexpected()">
   </app-verification-destination-page>
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
-  [navigationParameters]="navigationParameters"
-  (pageNavigationEvent)="onPageNavigationEvent($event)">
+    [navigationParameters]="navigationParameters"
+    [barcodeScannedEventSubject]="barcodeScannedSubject"
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
+    [rejectReasons] = "rejectReasons | async"
+    (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected()">
   </app-verification-details-page>
 </div>

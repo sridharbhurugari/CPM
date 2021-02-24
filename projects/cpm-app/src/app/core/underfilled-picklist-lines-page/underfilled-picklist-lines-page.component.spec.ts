@@ -6,7 +6,6 @@ import { of, Subject } from 'rxjs';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute, Router, Route } from '@angular/router';
 import { HeaderContainerComponent } from '../../shared/components/header-container/header-container.component';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
 import { TableBodyService } from '../../shared/services/printing/table-body.service';
 import { UnfilledPdfGridReportService } from '../../shared/services/printing/unfilled-pdf-grid-report-service';
@@ -14,17 +13,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
-import { MockedDatePipe} from '../testing/mock-date-pipe.spec';
+import { MockedDatePipe } from '../testing/mock-date-pipe.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { DatePipe } from '@angular/common';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
-import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { ResetPickRoutesService } from '../../api-core/services/reset-pick-routes';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
-import { WorkstationTrackerData } from '../../api-core/data-contracts/workstation-tracker-data';
 import { WorkstationTrackerService } from '../../api-core/services/workstation-tracker.service';
 import { PickingEventConnectionService } from '../../api-core/services/picking-event-connection.service';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 describe('UnderfilledPicklistLinesPageComponent', () => {
   let component: UnderfilledPicklistLinesPageComponent;
@@ -32,7 +30,12 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   let routerMock: Partial<Router>;
   let simpleDialogService: Partial<SimpleDialogService>;
   let pickingEventConnectionService: Partial<PickingEventConnectionService>;
+  let wpfInteropService: Partial<WpfInteropService>;
   let printWithBaseData: jasmine.Spy;
+  let workstationTrackerService: Partial<WorkstationTrackerService> = { 
+      GetWorkstationName: () => of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}),
+      UnTrack: () => of() 
+    };
   const date = new Date();
   const pickListLinesData: UnderfilledPicklistLine[] = [{
     IsChecked: false, PicklistLineId: 'pllid1241',
@@ -79,14 +82,14 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     ItemFormatedDescription: '5% dextrose in water 1000ml bag', ItemBrandDescription: 'Tylenol', ItemIdDescription: '001EEE',
     AreaDesctiptionForReport: '#Childeren Hospital', patientNameForReport: 'Aaron, Derron', DestinationOmniForReport: 'POD 3B ext28270'
   },
-];
+  ];
 
   beforeEach(async(() => {
     routerMock = { navigate: () => of<boolean>().toPromise() };
     spyOn(routerMock, 'navigate');
     printWithBaseData = jasmine.createSpy('navigate');
-    const pdfGridReportService: Partial<UnfilledPdfGridReportService> = {
-      printWithBaseData
+    const unfilledPdfGridReportService: Partial<UnfilledPdfGridReportService> = {
+      printMe: () => of(true)
     };
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
@@ -95,13 +98,18 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     const popupDismissedSubject = new Subject<boolean>();
     spyOn(DatePipe.prototype, 'transform').and.returnValue('M/d/yyyy h:mm:ss a');
     const popupResult: Partial<DropdownPopupComponent> = { dismiss: popupDismissedSubject };
-    const workstationTrackerService: Partial<WorkstationTrackerService> = { GetWorkstationShortName: () => of(''), UnTrack: () => of() };
+
     const showSpy = jasmine.createSpy('show').and.returnValue(popupResult);
-    spyOn(workstationTrackerService, 'GetWorkstationShortName').and.returnValue(of(''));
+    spyOn(workstationTrackerService, 'GetWorkstationName').and.returnValue(of({WorkstationShortName: 'Wks001', WorkstationFriendlyName: 'Workstation 1'}));
+    spyOn(workstationTrackerService, 'UnTrack').and.returnValue(of(['']));
 
     pickingEventConnectionService = {
       updateUnfilledPicklistLineSubject: new Subject(),
       removedUnfilledPicklistLineSubject: new Subject()
+    };
+
+    wpfInteropService = {
+      wpfViewModelClosing: new Subject()
     };
 
     TestBed.configureTestingModule({
@@ -115,21 +123,26 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
       ],
       providers: [
         { provide: UnderfilledPicklistLinesService, useValue: { get: () => of([]) } },
-        { provide: UnderfilledPicklistsService, useValue: { getForOrder: () => of(''),
-        doesUserHaveDeletePicklistPermissions: () => of(true) } },
+        {
+          provide: UnderfilledPicklistsService, useValue: {
+            getForOrder: () => of(''),
+            doesUserHaveDeletePicklistPermissions: () => of(true)
+          }
+        },
 
         { provide: ResetPickRoutesService, useValue: { reset: () => of() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap : { get: () => '' } } } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => '' } } } },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
-        { provide: UnfilledPdfGridReportService, useValue: pdfGridReportService },
+        { provide: UnfilledPdfGridReportService, useValue: unfilledPdfGridReportService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
         { provide: WorkstationTrackerService, useValue: workstationTrackerService },
         { provide: PopupDialogService, useValue: simpleDialogService },
-        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService},
+        { provide: PickingEventConnectionService, useValue: pickingEventConnectionService },
         { provide: Router, useValue: routerMock },
         { provide: Location, useValue: location },
+        { provide: WpfInteropService, useValue: wpfInteropService },
       ],
       imports: [
         FooterModule,
@@ -137,17 +150,17 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         ButtonActionModule,
       ]
     })
-    .overrideComponent(UnderfilledPicklistLinesComponent, {
-      set: {
-        template: ''
-      }
-    })
-    .overrideComponent(HeaderContainerComponent, {
-      set: {
-        template: ''
-      }
-    })
-    .compileComponents();
+      .overrideComponent(UnderfilledPicklistLinesComponent, {
+        set: {
+          template: ''
+        }
+      })
+      .overrideComponent(HeaderContainerComponent, {
+        set: {
+          template: ''
+        }
+      })
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -155,7 +168,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.picklistLines$ = of(pickListLinesData);
-    component.reportPickListLines$ = component.picklistLines$;
+    component.picklistLines = pickListLinesData;
   });
 
   it('should create', () => {
@@ -163,12 +176,12 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   });
 
   describe('Unfilled record selection', () => {
-    it('Should get report data ', fakeAsync(() => {
-      component.reportPickListLines$ = of(pickListLinesData);
+    it('Should NOT get report data OnInit ', fakeAsync(() => {
+      component.picklistLines = pickListLinesData;
       const getReportFields = spyOn(component, 'getReportData').and.callThrough();
       component.ngOnInit();
       tick();
-      expect(getReportFields).toHaveBeenCalledTimes(1);
+      expect(getReportFields).toHaveBeenCalledTimes(0);
     }));
   });
 
@@ -211,8 +224,12 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
     });
 
     it('should NOT be visible', () => {
-      TestBed.overrideProvider(UnderfilledPicklistsService, {useValue: { getForOrder: () => of(''),
-      doesUserHaveDeletePicklistPermissions: () => of(true) }});
+      TestBed.overrideProvider(UnderfilledPicklistsService, {
+        useValue: {
+          getForOrder: () => of(''),
+          doesUserHaveDeletePicklistPermissions: () => of(true)
+        }
+      });
       expect(component.buttonVisible === false);
     });
   });
@@ -243,13 +260,13 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
         component.reportBaseData$ = of(baseData);
         component.picklist$ = of(pickList);
       });
-      it('should display error dialog', () => {
-        printWithBaseData.and.returnValue(of(false));
-        component.requestStatus = 'none';
-        component.print();
-        expect(simpleDialogService.displayErrorOk).toHaveBeenCalled();
-      });
     });
   });
 
+  describe('View Closing', () => {
+    it('should call to untrack', () => {
+      component.unTrack();
+      expect(workstationTrackerService.UnTrack).toHaveBeenCalled();
+    });
+  });
 });

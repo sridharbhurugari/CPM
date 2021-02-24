@@ -20,20 +20,23 @@ describe('DropdownPopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DropdownPopupComponent, MockTranslatePipe ],
+      declarations: [
+        DropdownPopupComponent,
+        MockTranslatePipe
+      ],
       imports: [
-        PopupWindowModule,        
+        PopupWindowModule,
         ButtonActionModule,
         FooterModule,
         SingleselectDropdownModule,
-        CheckboxModule 
+        CheckboxModule
       ]
     })
     .compileComponents();
     defaultrowdata = new SingleselectRowItem("test", "test", true);
     data = {
       popuptitle: 'TEST POPUP',
-      dropdowntitle: 'TEST DROPDOWN',    
+      dropdowntitle: 'TEST DROPDOWN',
       dropdownrows: dropdownrowdata,
       defaultrow: defaultrowdata,
       showCheckbox: true,
@@ -41,7 +44,8 @@ describe('DropdownPopupComponent', () => {
       checkboxSelected: true,
       checkboxHideSelection: dropdownrowdata,
       selectedrow: defaultrowdata,
-      selectedcheckbox: true
+      selectedcheckbox: true,
+      selectText: ''
     };
   }));
 
@@ -59,7 +63,7 @@ describe('DropdownPopupComponent', () => {
   describe('cancel', () => {
     it('should dismiss with false', () => {
       spyOn(component.dismiss, 'next');
-      component.cancel();      
+      component.cancel();
       expect(component.dismiss.next).toHaveBeenCalledWith(false);
     });
   });
@@ -87,7 +91,7 @@ describe('DropdownPopupComponent', () => {
   });
 
   describe('onSelect', () => {
-    it('should set checkboxSelected to true', () => {      
+    it('should set checkboxSelected to true', () => {
       var expectedValue = true;
       component.onSelect(expectedValue);
       expect(component.checkboxSelected).toBe(expectedValue);

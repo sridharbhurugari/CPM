@@ -37,6 +37,23 @@ describe('VerificationDestinationQueueComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set filters on item list setter if saved configuration exists', () => {
+    component.savedPageConfiguration = {} as IVerificationPageConfiguration;
+    const expectedSearchTextFilter = "filter";
+    const expectedSort =  {
+      ColumnPropertyName: 'name',
+      SortDirection: 'asc'
+    } as IColHeaderSortChanged;
+
+    component.savedPageConfiguration.colHeaderSortDestination = expectedSort;
+    component.savedPageConfiguration.searchTextFilterDestination = "filter";
+
+    component.unfilteredVerificationDestinationItems = [];
+
+    expect(component.searchTextFilter).toBe(expectedSearchTextFilter);
+    expect(component.columnSortDirection).toBe(expectedSort.SortDirection);
+  })
+
   describe('Eventing', () => {
     it('should emit click event on grid row click', () => {
       const gridClickEventSpy = spyOn(component.gridRowClickEvent, 'emit');

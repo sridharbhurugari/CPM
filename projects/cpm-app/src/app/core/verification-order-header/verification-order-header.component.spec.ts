@@ -31,4 +31,14 @@ describe('VerificationOrderHeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit a text filter if loaded in saved configuration', () => {
+    const searchTextFilterEventSpy = spyOn(component.searchTextFilterEvent, 'emit')
+    component.savedPageConfiguration = {} as IVerificationPageConfiguration;
+    component.savedPageConfiguration.searchTextFilterOrder = "filter";
+
+    component.ngAfterViewInit();
+
+    expect(searchTextFilterEventSpy).toHaveBeenCalledTimes(1);
+  })
 });

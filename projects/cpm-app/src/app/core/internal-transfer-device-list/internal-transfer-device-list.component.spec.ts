@@ -10,21 +10,24 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockGridSortCol } from '../../shared/testing/mock-grid-sort-col.spec';
+import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 
 describe('InternalTransferDeviceListComponent', () => {
   let component: InternalTransferDeviceListComponent;
   let fixture: ComponentFixture<InternalTransferDeviceListComponent>;
+  let transferByNeeds: boolean;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        InternalTransferDeviceListComponent, 
+      declarations: [
+        InternalTransferDeviceListComponent,
         MockTranslatePipe,
         MockSearchBox,
         MockSearchPipe,
         MockColHeaderSortable,
         MockAppHeaderContainer,
         MockGridSortCol,
+        MockButtonToggle,
       ],
       imports: [
         GridModule,
@@ -40,6 +43,7 @@ describe('InternalTransferDeviceListComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    component.transferByNeeds = true;
   });
 
   it('should create', () => {

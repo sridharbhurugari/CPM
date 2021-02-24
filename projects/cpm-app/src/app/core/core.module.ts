@@ -42,6 +42,8 @@ import { VerificationDetailsPageComponent } from './verification-details-page/ve
 import { VerificationDashboardComponent } from './verification-dashboard/verification-dashboard.component';
 import { LoadingComponent } from './loading/loading.component';
 import { VerificationDetailsCardComponent } from './verification-details-card/verification-details-card.component';
+import { InternalTransferDeviceOndemandItemsPageComponent } from './internal-transfer-device-ondemand-items-page/internal-transfer-device-ondemand-items-page.component';
+import { InternalTransferDeviceOndemandItemsListComponent } from './internal-transfer-device-ondemand-items-list/internal-transfer-device-ondemand-items-list.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +82,8 @@ import { VerificationDetailsCardComponent } from './verification-details-card/ve
     VerificationDashboardComponent,
     LoadingComponent,
     VerificationDetailsCardComponent,
+    InternalTransferDeviceOndemandItemsPageComponent,
+    InternalTransferDeviceOndemandItemsListComponent,
   ],
   imports: [
     CommonModule,
