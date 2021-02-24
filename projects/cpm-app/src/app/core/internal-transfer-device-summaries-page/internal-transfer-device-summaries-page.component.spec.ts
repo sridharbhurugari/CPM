@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InternalTransferDeviceSummariesPageComponent } from './internal-transfer-device-summaries-page.component';
-import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { of, Subject } from 'rxjs';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Component, Input } from '@angular/core';
 import { CoreEventConnectionService } from
-  "../../api-core/services/core-event-connection.service";import { Router } from '@angular/router';
+  "../../api-core/services/core-event-connection.service";import { ActivatedRoute, Router } from '@angular/router';
+import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 ;
 
 @Component({
@@ -16,6 +16,7 @@ import { CoreEventConnectionService } from
 })
 class MockDeviceNeedsList {
   @Input()deviceNeeds: IDeviceReplenishmentNeed[];
+  @Input()tranferDefaultvalue: boolean;
 }
 
 describe('InternalTransferDeviceSummariesPageComponent', () => {
@@ -24,6 +25,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
   let getDeviceItemNeeds: jasmine.Spy;
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
+  let router: Partial<Router>;
 
   beforeEach(async(() => {
     getDeviceItemNeeds = jasmine.createSpy('get');
@@ -36,14 +38,17 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
 
 
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         InternalTransferDeviceSummariesPageComponent,
         MockDeviceNeedsList,
+        MockButtonToggle,
+        MockTranslatePipe,
       ],
       providers: [
-        { provide: Router, useValue: { } },
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
+        { provide: ActivatedRoute, useValue: { queryParamMap : new Subject() } },
       ]
     })
     .compileComponents();
@@ -55,6 +60,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceSummariesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
   });
 
   it('should create', () => {
@@ -76,4 +82,39 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
       });
   });
 
+  describe('setIsNeedsBasedTransfer', () => {
+    it('should update query param', () => {
+      var value = false;
+      component.setIsNeedsBasedTransfer(value);
+      let expectedQueryParams = jasmine.objectContaining({ isNeedsBased: value });
+      let expectedExtras = jasmine.objectContaining({ queryParams: expectedQueryParams });
+      expect(router.navigate).toHaveBeenCalledWith([], expectedExtras);
+    });
+  });
+
+  describe('isTransferByNeeds true', () => {
+    beforeEach(() => {
+      component.isTransferByNeeds = true;
+    });
+
+    describe('deviceSelected', () => {
+      it('should navigate to needs screen', () => {
+        component.deviceSelected(5);
+        expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('deviceReplenishmentNeeds')]));
+      });
+    });
+  });
+
+  describe('isTransferByNeeds false', () => {
+    beforeEach(() => {
+      component.isTransferByNeeds = false;
+    });
+
+    describe('deviceSelected', () => {
+      it('should navigate to on demand screen', () => {
+        component.deviceSelected(5);
+        expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('deviceReplenishmentOnDemand')]));
+      });
+    });
+  });
 });
