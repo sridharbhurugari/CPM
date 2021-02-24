@@ -53,7 +53,7 @@
                 <div class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
                 (click)='medicationClicked(row)'
                 [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
-                <div class="label" [ngStyle]="{maxWidth: 95 - calculateMaxLabelWidth(row) + '%'}">
+                <div class="label" [ngStyle]="{maxWidth: 95 - calculateDynamicIconWidth(row) + '%'}">
                   <app-validation-icon *ngIf="row.IsSafetyStockItem && !row.IsMedBarcodeVerified"
                     id="scan-icon"
                     [iconWidth]="30"

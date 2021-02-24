@@ -140,15 +140,6 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.showAlert();
   }
 
-  showAlert(): void {
-    var exceptionMsg;
-    this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
-    this.toastService.error('error title', exceptionMsg, {
-      timeout: 5000,
-      pauseOnHover: false
-    });
-  }
-
   approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
     console.log(selectedVerificationDestinationDetail);
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
@@ -167,6 +158,12 @@ export class VerificationDetailsCardComponent implements OnInit {
     return this.verificationDestinationDetails.some(x => x.IsSafetyStockItem);
   }
 
+  calculateDynamicIconWidth(verificationDestinationDetail: VerificationDestinationDetail) {
+    let widthIconOutputDevice = verificationDestinationDetail.HasOutputDeviceVerification ? this.rowIconWidthPercent: 0;
+    let widthIconException = verificationDestinationDetail.Exception ? this.rowIconWidthPercent: 0;
+    return widthIconOutputDevice + widthIconException;
+  }
+
   /* istanbul ignore next */
   trackByItemId(index: number, verificationDestinationDetail: any): Guid {
     if (!verificationDestinationDetail) {
@@ -176,10 +173,14 @@ export class VerificationDetailsCardComponent implements OnInit {
     return verificationDestinationDetail.Id;
   }
 
-  calculateMaxLabelWidth(verificationDestinationDetail: VerificationDestinationDetail) {
-    let widthIconOutputDevice = verificationDestinationDetail.HasOutputDeviceVerification ? this.rowIconWidthPercent: 0;
-    let widthIconException = verificationDestinationDetail.Exception ? this.rowIconWidthPercent: 0;
-    return widthIconOutputDevice + widthIconException;
+   /* istanbul ignore next */
+   showAlert(): void {
+    var exceptionMsg;
+    this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
+    this.toastService.error('error title', exceptionMsg, {
+      timeout: 5000,
+      pauseOnHover: false
+    });
   }
 
   private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {

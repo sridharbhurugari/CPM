@@ -210,7 +210,6 @@ export class VerificationDetailsPageComponent implements OnInit {
   private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     console.log('approveVerification');
     console.log(verificationDestinationDetails);
-    verificationDestinationDetails
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
       detail.Saving = true;

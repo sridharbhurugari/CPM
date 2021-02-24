@@ -160,6 +160,7 @@ export class VerificationBasePageComponent implements OnInit {
     return !this.isValidSubscription(variable);
   }
 
+  /* istanbul ignore next */
   private displayExpectedPickingBarcodeScan(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -178,6 +179,7 @@ export class VerificationBasePageComponent implements OnInit {
     });
   }
 
+  /* istanbul ignore next */
   private displayUnexpectedBarcodeScanInDetails(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -196,6 +198,7 @@ export class VerificationBasePageComponent implements OnInit {
     });
   }
 
+  /* istanbul ignore next */
   private displayBoxBarcodeScanRequired(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
