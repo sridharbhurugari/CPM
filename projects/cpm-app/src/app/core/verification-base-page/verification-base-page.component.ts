@@ -55,13 +55,7 @@ export class VerificationBasePageComponent implements OnInit {
     private translateService: TranslateService,
     private verificationService: VerificationService,
   ) {
-    let hash = this.windowService.getHash();
-    this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {
-        this.LoadTransientData();
-        this.initializeNavigationParameters();
-      });
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -210,5 +204,16 @@ export class VerificationBasePageComponent implements OnInit {
     }
 
 
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.LoadTransientData();
+        this.initializeNavigationParameters();
+      });
   }
 }

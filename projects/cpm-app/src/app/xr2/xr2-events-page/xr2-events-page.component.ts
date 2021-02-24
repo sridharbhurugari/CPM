@@ -95,12 +95,7 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit, OnDestroy 
     this.ClickedRow = function (index) {
       this.HighlightRow = index;
     }
-    let hash = this.windowService.getHash();
-    this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
-      .subscribe(() => {
-        this.ngOnInit();
-      });
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -403,6 +398,16 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit, OnDestroy 
         }), shareReplay(1));
       }
     }
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      });
   }
 
 }

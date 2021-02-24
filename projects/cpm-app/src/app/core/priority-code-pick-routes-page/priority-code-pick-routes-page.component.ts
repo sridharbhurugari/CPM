@@ -23,12 +23,7 @@ export class PriorityCodePickRoutesPageComponent implements OnInit, OnDestroy {
     private wpfInteropService: WpfInteropService,
     private windowService: WindowService,
   ) {
-    let hash = this.windowService.getHash();
-    this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
-      .subscribe(() => {
-        this.ngOnInit();
-      });
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -45,5 +40,15 @@ export class PriorityCodePickRoutesPageComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._ngUnsubscribe.next();
     this._ngUnsubscribe.complete()
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      });
   }
 }

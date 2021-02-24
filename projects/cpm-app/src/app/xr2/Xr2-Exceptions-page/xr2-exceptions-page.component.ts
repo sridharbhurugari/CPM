@@ -57,12 +57,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit, OnDest
     private wpfInteropService: WpfInteropService,
     private windowService: WindowService,
   ) {
-    let hash = this.windowService.getHash();
-    this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
-      .subscribe(() => {
-        this.ngOnInit();
-      }); 
+    this.setupDataRefresh(); 
   }
 
   ngOnInit() {
@@ -251,5 +246,15 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit, OnDest
     properties.dialogDisplayType = PopupDialogType.Warning;
     properties.timeoutLength = this.popupTimeoutSeconds;
     this.dialogService.showOnce(properties);
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      });
   }
 }

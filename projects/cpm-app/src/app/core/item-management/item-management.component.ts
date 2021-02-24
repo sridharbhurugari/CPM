@@ -34,16 +34,21 @@ export class ItemManagementComponent implements OnInit, OnDestroy {
     private wpfInteropService: WpfInteropService,
     private windowService: WindowService,
   ) {
+    this.setupDataRefresh();
+  }
+
+  ngOnDestroy() {
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
     let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
       .subscribe(() => {
         this.ngOnInit();
       });
-  }
-
-  ngOnDestroy() {
-    this._ngUnsubscribe.next();
-    this._ngUnsubscribe.complete();
   }
 }
