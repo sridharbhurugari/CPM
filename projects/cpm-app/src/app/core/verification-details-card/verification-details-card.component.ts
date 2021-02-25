@@ -58,6 +58,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
 
   selectedVerificationDestinationDetail : VerificationDestinationDetail;
+  scanToAdvanceVerificationDestinationDetail: VerificationDestinationDetail;
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
@@ -184,9 +185,19 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+    // If we have a scan to advance item (already checked for validity) and
+    // that item is currently selected, approve it
+    if(this.scanToAdvanceVerificationDestinationDetail
+      && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail) {
+      this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+    }
+
     this.selectedVerificationDestinationDetail = item;
+
     if(this.IsBoxBarcodeVerified) {
-      this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
+      item.IsMedBarcodeVerified = true;
+      // Item is now box and med verified, save it for potential scan to advance
+      this.scanToAdvanceVerificationDestinationDetail = item;
     } else {
       this.verificationBoxBarcodeRequired.emit();
     }
