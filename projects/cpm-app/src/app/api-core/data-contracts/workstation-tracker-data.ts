@@ -5,4 +5,5 @@ export class WorkstationTrackerData {
   WorkstationShortName: string;
   Operation: OperationType;
   ConnectionId: string;
+  WorkstationFriendlyName: string;
 }

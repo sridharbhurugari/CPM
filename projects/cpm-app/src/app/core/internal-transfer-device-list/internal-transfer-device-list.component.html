@@ -1,11 +1,13 @@
 <div class="cpmheaderrow">
-    <app-header-container></app-header-container>
-    <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  <app-header-container>
+      <ng-content></ng-content>
+  </app-header-container>
+  <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
 <oc-grid #ocgrid ocgridfilter="false"
     appGridSortCol
     [initialSortPropertyName]="deviceDescriptionPropertyName"
-    [orderableValues]="deviceNeeds" 
+    [orderableValues]="deviceNeeds"
     (valuesReordered)="deviceNeeds = $event">
     <ng-container class="ocgridheader">
         <div class="first" data-colwrap="true"></div>
@@ -17,8 +19,8 @@
         </div>
     </ng-container>
     <ng-container class="ocgridbody">
-        <div class="row" 
-             *ngFor="let deviceNeed of (deviceNeeds | searchPipe:searchTextFilter:searchPropertyNames)" 
+        <div class="row"
+             *ngFor="let deviceNeed of (deviceNeeds | searchPipe:searchTextFilter:searchPropertyNames)"
              (click)="deviceSelected.emit(deviceNeed.DeviceId)">
             <div class="first">
             </div>

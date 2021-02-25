@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonToggleModule, GridModule } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
@@ -25,6 +26,7 @@ describe('VerificationOrderPageComponent', () => {
   let fixture: ComponentFixture<VerificationOrderPageComponent>;
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
+  let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -55,7 +57,11 @@ describe('VerificationOrderPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VerificationOrderPageComponent);
     component = fixture.componentInstance;
+    component.barcodeScannedEventSubject = barcodeScannedInputSubject;
     fixture.detectChanges();
+    spyOn(component.pageNavigationEvent, 'emit');
+    spyOn(component.nonXr2PickingBarcodeScanUnexpected, 'emit');
+    spyOn(component.pageConfigurationUpdateEvent, 'emit');
   });
 
   it('should create', () => {
@@ -64,12 +70,10 @@ describe('VerificationOrderPageComponent', () => {
 
   describe('Eventing', () => {
     it('should navigate page on grid click event', () => {
-      const navigateEventSpy = spyOn(component.pageNavigationEvent, 'emit');
       const mockItem = new VerificationOrderItem(null);
 
       component.onGridRowClickEvent(mockItem);
-
-      expect(navigateEventSpy).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     });
 
     it('should set search text on search filter event', () => {
@@ -86,6 +90,22 @@ describe('VerificationOrderPageComponent', () => {
       component.onSortEvent(event);
 
       expect(component.colHeaderSort).toBe(event);
+    });
+
+    it('should handle XR2 Picking Barcode Scan', () => {
+      var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.nonXr2PickingBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(0);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
+      expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle non XR2 Picking Barcode Scan', () => {
+      var barcodeData = {BarCodeFormat: 'UP', BarCodeScanned: '123456789012', IsXr2PickingBarcode: false} as IBarcodeData;
+      barcodeScannedInputSubject.next(barcodeData);
+      expect(component.nonXr2PickingBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+      expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(0);
+      expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(0);
     });
   });
 });

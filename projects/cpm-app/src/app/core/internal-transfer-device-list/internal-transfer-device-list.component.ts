@@ -22,6 +22,9 @@ export class InternalTransferDeviceListComponent implements OnInit {
   searchTextFilter: string;
 
   @Input()
+  transferByNeeds: boolean;
+
+  @Input()
   set deviceNeeds(value: IDeviceReplenishmentNeed[]) {
     this._deviceNeeds = value;
     this.windowService.dispatchResizeEvent();
@@ -45,7 +48,7 @@ export class InternalTransferDeviceListComponent implements OnInit {
 
   ngOnInit() {
   }
-  
+
   ngAfterViewInit(): void {
     this.searchElement.searchOutput$
       .subscribe(data => {

@@ -32,6 +32,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   FillUserName: string;
   IsIssueScanRequired: boolean
   VerifiedStatus: string;
+  PriorityDescription: string;
   VerifiedDate: Date;
   RejectReason: string;
   Exception: boolean;

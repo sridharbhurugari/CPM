@@ -7,14 +7,15 @@ import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
-import { Observable } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -22,6 +23,8 @@ import { DestinationTypes } from '../../shared/constants/destination-types';
   styleUrls: ['./verification-details-card.component.scss']
 })
 export class VerificationDetailsCardComponent implements OnInit {
+
+  @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
 
   constructor(
     private translateService: TranslateService,
@@ -33,6 +36,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
     console.log('setting data');
      this._verificationDestinationDetails = value;
+     this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);
   }
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
@@ -43,6 +47,9 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
+  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+
+  private barcodeScannedEventSubscription: Subscription;
 
   private _verificationDestinationDetails : VerificationDestinationDetail[]
 
@@ -51,6 +58,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
 
+  ngUnsubscribe = new Subject();
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
@@ -67,7 +75,44 @@ export class VerificationDetailsCardComponent implements OnInit {
   translations$: Observable<any>;
 
   ngOnInit() {
+    if(this.barcodeScannedEventSubscription) {
+      this.barcodeScannedEventSubscription.unsubscribe();
+    }
+    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.setTranslations();
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    if(this.barcodeScannedEventSubscription) {
+      this.barcodeScannedEventSubscription.unsubscribe();
+    }
+  }
+
+  onBarcodeScannedEvent(data: IBarcodeData): void {
+    //TODO If Item, check for Item in control - jump to it if present.
+    // If not an item in the control - or not an item barcode, Fire event alerting incorect barcode scanned - display popup
+    if(!data.ItemId)
+    {
+      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      return;
+    }
+
+    const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
+    if(!match)
+    {
+      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      return;
+    }
+
+    if(this.selectedVerificationDestinationDetail) {
+      // TODO - Figure out how we approve on scan
+      // var itemToApprove = this.selectedVerificationDestinationDetail;
+      // this.approveItem(itemToApprove);
+    }
+
+    this.selectedVerificationDestinationDetail = match;
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -91,9 +136,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     console.log('button approve clicked');
-    console.log(selectedVerificationDestinationDetail);
-    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
-    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
+    this.approveItem(selectedVerificationDestinationDetail);
   }
 
   onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
@@ -102,6 +145,12 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   onRequiredIconClick() {
     this.showAlert();
+  }
+
+  approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
+    console.log(selectedVerificationDestinationDetail);
+    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
+    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
   }
 
   removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
