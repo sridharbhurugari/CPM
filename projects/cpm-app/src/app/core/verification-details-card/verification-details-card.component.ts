@@ -154,8 +154,12 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.selectedVerificationDestinationDetail = null;
   }
 
-  containsSafetyStockMedication() {
-    return this.verificationDestinationDetails.some(x => x.IsSafetyStockItem);
+  containsSafetyStockMedication(items: VerificationDestinationDetail[]) {
+    if(!items) {
+      return false;
+    }
+
+    return items.some(x => x.IsSafetyStockItem);
   }
 
   calculateDynamicIconWidth(verificationDestinationDetail: VerificationDestinationDetail) {

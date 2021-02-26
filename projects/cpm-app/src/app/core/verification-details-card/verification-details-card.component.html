@@ -5,7 +5,7 @@
   <div class="card" *ngIf="this.verificationDestinationDetails">
     <div class="card-header ocactionheader">
       <span class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
-        <app-validation-icon *ngIf="containsSafetyStockMedication() && !this.IsBoxBarcodeVerified"
+        <app-validation-icon *ngIf="containsSafetyStockMedication(this.verificationDestinationDetails) && !this.IsBoxBarcodeVerified"
         id="scan-icon"
         [iconWidth]="30"
         [iconHeight]="30"
@@ -17,14 +17,14 @@
         {{destinationLine1}}
       </span>
       <span class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
-        <app-validation-icon *ngIf="containsSafetyStockMedication() && !this.IsBoxBarcodeVerified"
+        <app-validation-icon *ngIf="containsSafetyStockMedication(this.verificationDestinationDetails) && !this.IsBoxBarcodeVerified"
         id="scan-icon"
-        [iconWidth]="30"
-        [iconHeight]="30"
+        [iconWidth]="40"
+        [iconHeight]="40"
         [iconString]="'scan'"
         toastTileResourceKey=""
         toastMsgResourceKey="{{'SCAN_BOX_BARCODE'}}"
-        toastType="{{'warn'}}">
+        toastType="{{'error'}}">
         </app-validation-icon>
         <span class="cpm-action-title-multi-line-bold">{{destinationLine1}}</span>
         <span>{{destinationLine2}}</span>
@@ -56,12 +56,12 @@
                 <div class="label" [ngStyle]="{maxWidth: 95 - calculateDynamicIconWidth(row) + '%'}">
                   <app-validation-icon *ngIf="row.IsSafetyStockItem && !row.IsMedBarcodeVerified"
                     id="scan-icon"
-                    [iconWidth]="30"
-                    [iconHeight]="30"
+                    [iconWidth]="40"
+                    [iconHeight]="40"
                     [iconString]="'scan'"
                     toastTileResourceKey=""
                     toastMsgResourceKey="{{'SCAN_ITEM_PRODUCT'}}"
-                    toastType="{{'warn'}}">
+                    toastType="{{'error'}}">
                   </app-validation-icon>
                   <div class="text-label">
                     <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>

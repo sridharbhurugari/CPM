@@ -31,10 +31,10 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
-
-  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
   @Input() rejectReasons: string[];
 
+
+  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
   private backRoute = VerificationRouting.DestinationPage;
   private loggingCategory = LoggingCategory.Verification;
 
@@ -73,7 +73,6 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
     this.LoadData();
     this.setTranslations();
-    this.IsBoxBarcodeVerified = this.navigationParameters.RoutedByScan;
   }
 
   ngOnDestroy(): void {
@@ -141,6 +140,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       (verificationDetailViewData) => {
         this.generateHeaderTitle(verificationDetailViewData);
         this.generateHeaderSubTitle(verificationDetailViewData);
+        this.generateSafetyStockSettings(verificationDetailViewData.DetailItems);
         this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems);
       }), shareReplay(1);
   }
@@ -178,6 +178,10 @@ export class VerificationDetailsPageComponent implements OnInit {
       stringResult += this.transformDateTime(verificationDetailViewData.FillDate);
     }
     this.headerSubTitle = of(stringResult);
+  }
+
+  private generateSafetyStockSettings(verificationDetailViewData: IVerificationDestinationDetail[]) {
+    this.IsBoxBarcodeVerified = this.navigationParameters.RoutedByScan || !verificationDetailViewData.some(x => x.IsSafetyStockItem);
   }
 
   private loadVerificationDashboardData(): void {
