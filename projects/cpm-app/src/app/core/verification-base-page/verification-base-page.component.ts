@@ -5,10 +5,6 @@ import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
-
-
-import { ToastService } from '@omnicell/webcorecomponents';
-import { map, shareReplay } from 'rxjs/operators';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { filter, takeUntil } from 'rxjs/operators';
