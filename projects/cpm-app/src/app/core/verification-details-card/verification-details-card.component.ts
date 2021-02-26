@@ -36,7 +36,6 @@ export class VerificationDetailsCardComponent implements OnInit {
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
     console.log('setting data');
      this._verificationDestinationDetails = value;
-     this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);
   }
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
@@ -152,7 +151,6 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
       return !removalSet.has(verificationDestinationDetail);
     });
-    this.selectedVerificationDestinationDetail = null;
   }
 
   containsSafetyStockMedication() {
