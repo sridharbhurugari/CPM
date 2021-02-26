@@ -69,7 +69,6 @@ export class VerificationOrderQueueComponent implements OnInit {
   readonly devicePropertyName = nameof<VerificationOrderItem>('DeviceDescription');
   readonly completePropertyName = nameof<VerificationOrderItem>('CompleteVerificationPercentage');
   readonly requiredPropertyName = nameof<VerificationOrderItem>('RequiredVerificationPercentage');
-  readonly exceptionsPropertyName = nameof<VerificationOrderItem>('CompleteExceptions');
   readonly datePropertyName = nameof<VerificationOrderItem>('FillDate');
 
   searchPipe: SearchPipe = new SearchPipe();

@@ -57,7 +57,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
-  readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
   ngUnsubscribe = new Subject();
   currentSortPropertyName: string;

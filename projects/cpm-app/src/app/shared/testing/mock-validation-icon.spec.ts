@@ -16,4 +16,13 @@ export class MockValidationIconComponent {
 
   @Input()
   toastType: 'info' | 'warn' | 'error'
+
+  @Input()
+  iconTheme: 'dark';
+
+  @Input()
+  iconHeight = 50;
+
+  @Input()
+  iconWidth = 50;
 }

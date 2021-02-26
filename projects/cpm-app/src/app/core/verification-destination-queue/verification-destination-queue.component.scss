@@ -9,6 +9,10 @@
   font-size: 22px;
 }
 
+.row {
+  cursor: pointer;
+}
+
 .first-column {
   padding-left: 30px;
 }
@@ -19,17 +23,17 @@
 }
 
 .width-destination {
-  width: 640px;
+  width: 680px;
 }
 
 .width-verification {
-  width: 180px;
+  width: 200px;
 }
 
 .width-exceptions {
-  width: 180px;
+  width: 200px;
 }
 
 .width-output-device {
-  width: 280px;
+  width: 200px;
 }
