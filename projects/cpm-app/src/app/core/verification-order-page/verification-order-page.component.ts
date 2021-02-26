@@ -105,6 +105,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     this.verificationOrderItems = this.verificationService.getVerificationOrders().pipe(
       map((verificationOrderItems) => {
         return verificationOrderItems.map((verificationItem) => {
+          console.log(verificationItem);
           return new VerificationOrderItem(verificationItem);
         });
       }), shareReplay(1)

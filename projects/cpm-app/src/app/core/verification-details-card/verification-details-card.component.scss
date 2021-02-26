@@ -229,7 +229,6 @@
 
           .label-title {
             display: flex;
-            width: 80%;
             height: 100%;
             align-items: center;
             justify-content: left;
@@ -242,7 +241,6 @@
             height: 100%;
             align-items: center;
             justify-content: left;
-
           }
 
           .data-spacer {
@@ -283,6 +281,7 @@
           direction: ltr;
           align-items: center;
           justify-content: left;
+          flex-direction: row;
           :hover{
               cursor: pointer;
           }
@@ -290,7 +289,6 @@
           .label {
             display: flex;
             flex-direction: row;
-            width: 75%;
             height: 100%;
             padding-left: 10px;
             overflow: hidden;
@@ -307,16 +305,24 @@
           }
 
           .data {
+            padding: 0 10px 0 10px;
             display: flex;
-            width: 25%;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
+            flex: 1;
+            flex-direction: row;
+            justify-content: flex-end;
             font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
           }
         }
       }
     }
   }
+}
+
+#exceptions-icon {
+  padding-right: 10px
+}
+
+#output-device-icon {
+  padding-left: 10px;
 }
 

@@ -15,9 +15,34 @@
   align-items: center;
 }
 
+.row {
+  cursor: pointer;
+}
+
 .priority-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+
+  .priority-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .priority-icons {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+#exceptions-icon {
+  padding-right: 10px
+}
+
+#output-device-icon {
+  padding-left: 10px
 }
 
 .order {
@@ -26,11 +51,11 @@
 }
 
 .width-type {
-  width: 320px;
+  width: 550px;
 }
 
 .width-device {
-  width: 228px;
+  width: 178px;
 }
 
 .width-complete {
@@ -41,10 +66,8 @@
   width: 160px;
 }
 
-.width-exceptions {
-  width: 180px;
-}
-
 .width-date {
   width: 150px;
 }
+
+
