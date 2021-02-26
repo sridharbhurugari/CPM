@@ -12,7 +12,7 @@ import { WindowService } from './window-service';
   providedIn: 'root'
 })
 export class WpfInteropService {
-  wpfViewModelActivated: Subject<null> = new Subject();
+  wpfViewModelActivated: Subject<string> = new Subject<string>();
   wpfViewModelClosing: Subject<null> = new Subject();
 
   constructor(
@@ -56,10 +56,10 @@ export class WpfInteropService {
       });
     };
 
-    this.windowService.nativeWindow['wpfViewModelActivated'] = () => {
-      this.zone.run(() => {
-        this.wpfViewModelActivated.next();
-      });
+    this.windowService.nativeWindow['wpfViewModelActivated'] = (hash: string) => {
+      this.zone.run((hashValue: string) => {
+        this.wpfViewModelActivated.next(hashValue);
+      }, undefined, [ hash ]);
     };
 
     this.windowService.nativeWindow['wpfViewModelClosing'] = () => {
