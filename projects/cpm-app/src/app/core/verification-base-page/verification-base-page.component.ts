@@ -188,7 +188,7 @@ export class VerificationBasePageComponent implements OnInit {
     this.translations$.subscribe((translations) => {
       const properties = new PopupDialogProperties("Role-Status-Warning");
       properties.titleElementText =
-        translations.INVALID_SCAN_BARCODE_HEADER;
+        translations.BARCODESCAN_DIALOGWARNING_TITLE;
       properties.messageElementText =
         translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
       properties.primaryButtonText = translations.OK;
