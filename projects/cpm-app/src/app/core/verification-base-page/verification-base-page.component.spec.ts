@@ -12,6 +12,7 @@ import { IConfigurationValue } from '../../shared/interfaces/i-configuration-val
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { PopupDialogServiceStub } from '../../shared/testing/popup-dialog-service-stub';
 
@@ -57,7 +58,9 @@ describe('VerificationBasePageComponent', () => {
           provide: TranslateService,
           useValue: { get: (x: string) => of(`{x}_TRANSLATED`) },
         },
-        { provide: VerificationService, useValue: verificationService }
+        { provide: VerificationService, useValue: verificationService },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+        { provide: WindowService, useValue: { getHash: () => '' } },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
