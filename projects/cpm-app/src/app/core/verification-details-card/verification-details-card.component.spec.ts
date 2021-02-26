@@ -228,18 +228,18 @@ describe('VerificationDetailsCardComponent', () => {
       const item2 = new VerificationDestinationDetail(null);
       const item3 = new VerificationDestinationDetail(null);
       item1.IsSafetyStockItem = true;
-      component.verificationDestinationDetails = [item1, item2, item3];
+      const items = [item1, item2, item3];
 
-      expect(component.containsSafetyStockMedication()).toBeTruthy();
+      expect(component.containsSafetyStockMedication(items)).toBeTruthy();
     });
 
     it('should not contain safety stock item', () => {
       const item1 = new VerificationDestinationDetail(null);
       const item2 = new VerificationDestinationDetail(null);
       const item3 = new VerificationDestinationDetail(null);
-      component.verificationDestinationDetails = [item1, item2, item3];
+      const items = [item1, item2, item3];
 
-      expect(component.containsSafetyStockMedication()).toBeFalsy();
+      expect(component.containsSafetyStockMedication(items)).toBeFalsy();
     });
 
     it('should emit barcode unexpected event on scan if not formatted correctly', ()=> {
