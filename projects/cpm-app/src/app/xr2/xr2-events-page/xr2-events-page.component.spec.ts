@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA, EventEmitter } from "@angular/core";
 import { Xr2EventsPageComponent } from './xr2-events-page.component';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { GridModule, FooterModule, LayoutModule, SvgIconModule, SearchModule, ButtonActionModule, SingleselectComponent } from '@omnicell/webcorecomponents';
-import { of, never, Observable } from 'rxjs';
+import { of, never, Observable, Subject } from 'rxjs';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
@@ -20,6 +20,8 @@ import { Xr2EventsService } from '../../api-xr2/services/xr2-events.service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { WindowService } from '../../shared/services/window-service';
 
 describe('Xr2EventsPageComponent', () => {
   let component: Xr2EventsPageComponent;
@@ -105,6 +107,8 @@ describe('Xr2EventsPageComponent', () => {
           provide: TranslateService,
           useValue: { get: (x: string) => of(`{x}_TRANSLATED`) },
         },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+        { provide: WindowService, useValue: { getHash: () => '' } },
       ]
     })
       .compileComponents();
