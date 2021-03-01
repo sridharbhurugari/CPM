@@ -18,6 +18,7 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
 import { VerificationOrderQueueComponent } from '../verification-order-queue/verification-order-queue.component';
+import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 
 import { VerificationOrderPageComponent } from './verification-order-page.component';
 
@@ -41,8 +42,8 @@ describe('VerificationOrderPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ VerificationOrderPageComponent, VerificationOrderHeaderComponent,
         VerificationOrderQueueComponent, MockColHeaderSortable, MockAppHeaderContainer,
-        MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpDataLabelComponent, MockCpClickableIconComponent],
-      imports: [GridModule, ButtonToggleModule],
+        MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpDataLabelComponent, MockCpClickableIconComponent, MockButtonToggle],
+      imports: [GridModule],
       providers: [
         { provide: HttpClient, useValue: { get: () => {}} },
         { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
