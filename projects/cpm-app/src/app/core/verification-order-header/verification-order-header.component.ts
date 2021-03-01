@@ -28,7 +28,6 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.configureSearchHandler();
-    this.setDefaultRequiredOrder();
     this.loadSavedPageConfigurations();
   }
 
@@ -46,25 +45,24 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
 
   private loadSavedPageConfigurations() {
     if (!this.savedPageConfiguration) {
+      this.valueChange.emit(this.isRequired);
        return;
     }
 
     const savedSearchFilter = this.savedPageConfiguration.searchTextFilterOrder;
-    const savedRequiredOrders = this.savedPageConfiguration.requiredOrders;
-
+      const savedRequiredOrders = this.savedPageConfiguration.requiredOrders;
+      this.valueChange.emit(savedRequiredOrders);
+      this.isRequired = savedRequiredOrders;
+  
     if (savedSearchFilter) {
         this.searchElement.sendSearchData(savedSearchFilter);
         this.searchTextFilterEvent.emit(savedSearchFilter);
     }
-
-      this.valueChange.emit(savedRequiredOrders);
-      this.isRequired = savedRequiredOrders;
   }
 
   setIsRequiredVerification(event) {
     this.valueChange.emit(event);
     this.isRequired = event;
-    console.log("setIsRequiredVerification",event);
   }
 
   setDefaultRequiredOrder(){

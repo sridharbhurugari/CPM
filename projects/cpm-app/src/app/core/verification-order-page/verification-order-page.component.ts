@@ -45,7 +45,6 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   ngOnInit() {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
-    this.loadVerificationOrderItems();
   }
 
   ngAfterContentChecked() {
@@ -100,8 +99,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   }
 
   setIsRequiredVerification(event: boolean): void {
-    this.requiredOrders = event;
-    this.loadVerificationOrderItems();
+      this.requiredOrders = event;
+      this.loadVerificationOrderItems();
   }
 
   onSortEvent(event: IColHeaderSortChanged): void {
