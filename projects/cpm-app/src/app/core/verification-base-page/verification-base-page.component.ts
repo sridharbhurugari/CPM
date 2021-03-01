@@ -47,7 +47,7 @@ export class VerificationBasePageComponent implements OnInit {
     "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
   ];
 
-  @ViewChild(VerificationOrderPageComponent, null) childVerificationOrderPageComponent: VerificationOrderPageComponent;
+  @ViewChild(VerificationOrderPageComponent, { static: false }) childVerificationOrderPageComponent: VerificationOrderPageComponent;
 
   constructor(
     private wpfInteropService: WpfInteropService,
@@ -240,7 +240,9 @@ export class VerificationBasePageComponent implements OnInit {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
         this.ngOnInit();
-        this.childVerificationOrderPageComponent.ngOnInit();
+        if(this.childVerificationOrderPageComponent) {
+          this.childVerificationOrderPageComponent.ngOnInit();
+        }
       });
   }
 }
