@@ -64,10 +64,4 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
     this.valueChange.emit(event);
     this.isRequired = event;
   }
-
-  setDefaultRequiredOrder(){
-    this.isRequired = true;
-    this.valueChange.emit(this.isRequired);
-  }
-
 }
