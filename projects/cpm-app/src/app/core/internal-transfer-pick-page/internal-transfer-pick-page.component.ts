@@ -225,7 +225,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     this.itemNeedPicks$ = forkJoin(this.currentNeedsDetails$, this.currentLine$).pipe(map(results => {
       const itemNeeds = results[0];
       const line = results[1];
-      if(this.isOnDemand(line.PackSizes)) {
+      if(line.PackSizes && line.PackSizes.length > 0) {
         return line.PackSizes.map(p => {
           let packSize = p.PackSize;
           let packSizeNeed = itemNeeds.find(x => x.PackSize == packSize);
