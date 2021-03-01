@@ -14,6 +14,7 @@ import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verifi
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { VerificationOrderPageComponent } from '../verification-order-page/verification-order-page.component';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: "app-verification-base-page",
@@ -50,6 +51,7 @@ export class VerificationBasePageComponent implements OnInit {
   @ViewChild(VerificationOrderPageComponent, { static: false }) childVerificationOrderPageComponent: VerificationOrderPageComponent;
 
   constructor(
+    private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
@@ -236,8 +238,9 @@ export class VerificationBasePageComponent implements OnInit {
 
   /* istanbul ignore next */
   private setupDataRefresh() {
+    let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
-      .pipe(takeUntil(this.ngUnsubscribe))
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
         this.ngOnInit();
         if(this.childVerificationOrderPageComponent) {
