@@ -217,7 +217,6 @@ describe('VerificationDetailsCardComponent', () => {
       component.selectedVerificationDestinationDetail = newItem;
 
       component.removeVerifiedDetails(newList);
-      expect(component.selectedVerificationDestinationDetail).toEqual(null);
       expect(component.verificationDestinationDetails.length).toEqual(0);
     });
   });
