@@ -6,6 +6,7 @@ import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IItemReplenishmentNeed } from '../data-contracts/i-item-replenishment-need';
 import { IInterDeviceTransferPickRequest } from '../data-contracts/i-inter-device-transfer-pick-request';
+import { IItemReplenishmentOnDemand } from '../data-contracts/i-item-replenishment-ondemand';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,7 @@ export class DeviceReplenishmentNeedsService {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
   getDeviceNeedsForItem(deviceId: number, itemId: string, orderId: string): Observable<IItemReplenishmentNeed[]> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}?itemId=${itemId}&orderId=${orderId}`);
     return this.httpClient.get<IItemReplenishmentNeed[]>(url, {
@@ -39,9 +41,16 @@ export class DeviceReplenishmentNeedsService {
     });
   }
 
-  pickDeviceItemNeeds(deviceId: number, items: IInterDeviceTransferPickRequest[]): Observable<any> {
+  getDeviceAssignedItems(deviceId: number): Observable<IItemReplenishmentOnDemand[]> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/OnDemand`);
+    return this.httpClient.get<IItemReplenishmentOnDemand[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  pickDeviceItemNeeds(deviceId: number, pickInfo: IInterDeviceTransferPickRequest[]): Observable<any> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/InterDeviceTransfer/${deviceId}/picklists`);
-    return this.httpClient.post(url, items, {
+    return this.httpClient.post(url, pickInfo, {
       headers: this.ocapHttpHeadersService.getHeaders(),
     });
   }

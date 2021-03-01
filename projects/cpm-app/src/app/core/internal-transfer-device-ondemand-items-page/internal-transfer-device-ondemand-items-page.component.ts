@@ -5,7 +5,6 @@ import { Subject } from 'rxjs';
 import { map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
-import { DeviceReplenishmentOnDemandService } from '../../api-core/services/device-replenishment-ondemand.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { Location } from '@angular/common';
@@ -19,6 +18,9 @@ import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaito
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 import { SourceLocationDropdownPopupComponent } from '../../shared/components/source-location-dropdown-popup/source-location-dropdown-popup.component';
 import { ISourceLocationDropdownPopupData } from '../../shared/model/i-source-location-dropdown-popup-data';
+import { IInterDeviceTransferPickPackSizeRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-packsize-request';
+import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
+import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',
@@ -50,7 +52,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     private translateService: TranslateService,
     private location: Location,
     private simpleDialogService: SimpleDialogService,
-    private deviceReplenishmentOnDemandService: DeviceReplenishmentOnDemandService,
+    private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     private itemLocaitonDetailsService: ItemLocaitonDetailsService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
@@ -84,7 +86,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     this.translateService.get('QOH').subscribe((res: string) => {
       this.qoh = res;});
  }
-    
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -117,15 +119,25 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   pick() {
     if (this.itemsToPick.length > 0 && this.selectedSource > 0 && this.requestedAmount > 0) {
       const itemPicked = this.itemsToPick.pop();
-      const pickInfo = {
+      const pickItems: IInterDeviceTransferPickRequest[] = new Array<IInterDeviceTransferPickRequest>();
+      let packSizes: IInterDeviceTransferPickPackSizeRequest[] = [];
+
+      const item = {
+        PackSize: itemPicked.PackSize,
+        RequestedQuantityInPacks: this.requestedAmount/itemPicked.PackSize,
+        IsOnDemand: true
+      }
+      packSizes.push(item);
+
+      const pickItem = {
         ItemId: itemPicked.ItemId,
         QuantityToPick: this.requestedAmount,
         SourceDeviceLocationId: this.selectedSource,
-        PackSize: itemPicked.PackSize,
-        RequestedQuantityInPacks: this.requestedAmount/itemPicked.PackSize,
+        PackSizes: packSizes
       };
 
-      this.deviceReplenishmentOnDemandService.pickDeviceItemNeeds(this.deviceId, pickInfo).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
+      pickItems.push(pickItem);
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, pickItems).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
       this.onRefreshDeviceItems();
     }
   }
@@ -212,7 +224,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   }
 
   private loadAssignedItems() {
-    this.assignedItems$ = this.deviceReplenishmentOnDemandService.getDeviceAssignedItems(this.deviceId).pipe(shareReplay(1));
+    this.assignedItems$ = this.deviceReplenishmentNeedsService.getDeviceAssignedItems(this.deviceId).pipe(shareReplay(1));
   }
 
   private loadAssignedItemsSourceLocations(itemId: string) {

@@ -10,7 +10,6 @@ import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { InternalTransferDeviceOndemandItemsPageComponent } from './internal-transfer-device-ondemand-items-page.component';
 import { Location } from '@angular/common';
-import { DeviceReplenishmentOnDemandService } from '../../api-core/services/device-replenishment-ondemand.service';
 import { Component, Input } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,6 +17,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
+import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-list',
@@ -40,7 +40,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
   let getDeviceAssignedItems: jasmine.Spy;
   let get: jasmine.Spy;
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
-  let deviceReplenishmentOnDemandService: Partial<DeviceReplenishmentOnDemandService>;
+  let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
   let itemLocaitonDetailsService: Partial<ItemLocaitonDetailsService>;
   let popupDialogService: Partial<PopupDialogService>;
 
@@ -107,7 +107,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
     };
 
     getDeviceAssignedItems = jasmine.createSpy('getDeviceAssignedItems');
-    deviceReplenishmentOnDemandService = {
+    deviceReplenishmentNeedsService = {
       getDeviceAssignedItems: getDeviceAssignedItems,
       pickDeviceItemNeeds: jasmine.createSpy('pickDeviceItemNeeds').and.returnValue(of()),
     }
@@ -144,7 +144,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
       ],
       providers: [
         { provide: Location, useValue: locationService },
-        { provide: DeviceReplenishmentOnDemandService, useValue: deviceReplenishmentOnDemandService },
+        { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: TranslateService, useValue: { get: () => of('') } },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PopupWindowService, useValue: popupWindowService },
@@ -199,7 +199,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
           });
 
           it('should add the pick', () => {
-            expect(deviceReplenishmentOnDemandService.pickDeviceItemNeeds).toHaveBeenCalled();
+            expect(deviceReplenishmentNeedsService.pickDeviceItemNeeds).toHaveBeenCalled();
           })
 
         })
