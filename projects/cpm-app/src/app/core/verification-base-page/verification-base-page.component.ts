@@ -1,17 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { filter, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
@@ -48,17 +49,15 @@ export class VerificationBasePageComponent implements OnInit {
 
   constructor(
     private wpfInteropService: WpfInteropService,
+    private windowService: WindowService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private systemConfigurationService: SystemConfigurationService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
   ) {
-    this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
-      this.LoadTransientData();
-      this.initializeNavigationParameters();
-    });
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -185,7 +184,7 @@ export class VerificationBasePageComponent implements OnInit {
     this.translations$.subscribe((translations) => {
       const properties = new PopupDialogProperties("Role-Status-Warning");
       properties.titleElementText =
-        translations.Bar;
+        translations.BARCODESCAN_DIALOGWARNING_TITLE;
       properties.messageElementText =
         translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
       properties.primaryButtonText = translations.OK;
@@ -232,5 +231,16 @@ export class VerificationBasePageComponent implements OnInit {
     }
 
 
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.LoadTransientData();
+        this.initializeNavigationParameters();
+      });
   }
 }
