@@ -190,7 +190,8 @@ export class VerificationDetailsCardComponent implements OnInit {
     // If we have a scan to advance item (already checked for validity) and
     // that item is currently selected, approve it
     if(this.scanToAdvanceVerificationDestinationDetail
-      && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail) {
+      && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
+      && this.scanToAdvanceVerificationDestinationDetail !== item) {
       this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
     }
 
@@ -249,6 +250,7 @@ export class VerificationDetailsCardComponent implements OnInit {
                 detail.RejectReason = data.selectedrow.value;
               });
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
+              this.selectedVerificationDestinationDetail = null;
             }
         });
     });

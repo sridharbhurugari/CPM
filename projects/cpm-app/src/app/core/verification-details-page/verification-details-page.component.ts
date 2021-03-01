@@ -247,6 +247,9 @@ export class VerificationDetailsPageComponent implements OnInit {
 
     verificationDestinationDetails.map(detail => detail.Saving = false);
     this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
+    if(verificationDestinationDetails.includes(this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail)) {
+      this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = null;
+    }
     this.dashboardUpdateSubject.next(dashboardDataAdded);
   }
 
