@@ -34,7 +34,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
-    console.log('setting data');
      this._verificationDestinationDetails = value;
      this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);

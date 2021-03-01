@@ -12,6 +12,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
+import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 
 @Component({
@@ -78,7 +79,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
       console.log('Details Page Xr2 Barcode!')
-
+      
       const navigationParams = {
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
@@ -136,7 +137,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       (verificationDestinationViewData) => {
         this.generateHeaderTitle(verificationDestinationViewData)
         this.generateHeaderSubTitle(verificationDestinationViewData);
-        this.verificationDestinationItems = of(verificationDestinationViewData.DetailItems);
+        this.verificationDestinationItems = of(verificationDestinationViewData.DetailItems.map((x) => { return new VerificationDestinationItem(x); }));
       }), shareReplay(1);
   }
 
