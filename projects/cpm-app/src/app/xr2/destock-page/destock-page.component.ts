@@ -27,7 +27,8 @@ export class DestockPageComponent implements OnInit {
   currentSortPropertyName: string;
   screenState: DestockPageComponent.ListState = DestockPageComponent.ListState.NoData;
   ngUnsubscribe = new Subject();
-  lastErrorMessage: string;
+  lastErrorMessage: string;  
+  eventDateString: string;
 
   searchFields = [
     nameof<IDestockTypeInfo>('Xr2DestockType_Display'),
@@ -94,14 +95,22 @@ setDestockService()
   }
   onDeviceSelectionChanged($event) {
     if(this.selectedDeviceInformation !== $event)
-    {
-    this.screenState = DestockPageComponent.ListState.MakingDataRequest;
-    this.selectedDeviceInformation = $event;
+    {    
+      this.selectedDeviceInformation = $event;
+      this.refreshData();    
+    }
+  }
+
+  onManualRefresh() {
+    this.refreshData();
+  }
+
+  private refreshData(){
+    this.screenState = DestockPageComponent.ListState.MakingDataRequest;    
     this.setDestockService();
-    this.requestDeviceDestockTypeInfo$.subscribe();
+    this.requestDeviceDestockTypeInfo$.subscribe();    
     console.log('onDeviceSelectionChanged DeviceId: ');
     console.log(this.selectedDeviceInformation.DeviceId);
-    }
   }
 
   private onDataReceived(event: DestockDataEvent) {
@@ -109,9 +118,10 @@ setDestockService()
       if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;
       }
-      //this.deviceDestockTypeInfo.next(event.DestockTypeInfoData);
+      //this.deviceDestockTypeInfo.next(event.DestockTypeInfoData);      
       this.deviceDestockTypeInfo = event.DestockTypeInfoData;
       this.screenState = DestockPageComponent.ListState.Display;
+      this.eventDateString = event.EventDateString;      
 // todo
     } catch (e) {
       this.screenState = DestockPageComponent.ListState.Error;

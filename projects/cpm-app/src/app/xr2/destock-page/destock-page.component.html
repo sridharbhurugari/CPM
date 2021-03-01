@@ -10,13 +10,13 @@
       <oc-progress-animation #myLoader *ngSwitchCase="'MakingDataRequest'" [data]="{size: 3}"></oc-progress-animation>
       <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'WaitingForData'">
         <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
-      </div>
+      </div>          
     <!-- display data -->
      <app-destock-typeinfo *ngSwitchCase="'Display'"
       [deviceDestockTypeInfo]="deviceDestockTypeInfo"
       [searchTextFilter]="searchTextFilter"
       (printLabel)="onPrint($event)">
-     </app-destock-typeinfo>
+     </app-destock-typeinfo>     
     <!-- No data scenarios -->
      <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'NoData'">
       <oc-svgicon icon="logowithtext" theme="primary" height="300" width="300"></oc-svgicon>
@@ -30,5 +30,8 @@
           <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
          </div>
   </body>
+  
+  <app-destock-footer [eventTime]="eventDateString" (refreshEvent)="onManualRefresh()"></app-destock-footer>
+
 
 

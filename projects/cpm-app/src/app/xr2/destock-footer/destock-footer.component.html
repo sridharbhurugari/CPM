@@ -1,0 +1,11 @@
+<ng-container class="ocactionfooter">
+    <oc-footer>
+        <div class="ocleftalign">
+            <oc-button-action [buttonText]="'REFRESH' | translate" (click)="onRefreshClick()"></oc-button-action>
+        </div>  
+        &nbsp;     
+        <div class="refresh-label" *ngIf="eventTime != null">{{'LAST_UPDATED' | translate}}:</div> 
+        &nbsp;  
+        <div class="last-refresh">{{ eventTime }}</div> 
+   </oc-footer>
+</ng-container>

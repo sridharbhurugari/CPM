@@ -30,6 +30,7 @@ import { DestockPageComponent } from './destock-page/destock-page.component';
 import { DestockTypeInfoComponent } from './destock-typeinfo/destock-typeinfo.component';
 import { DestockHeaderComponent } from './destock-header/destock-header.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
+import { DestockFooterComponent } from './destock-footer/destock-footer.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
     DestockPageComponent,
     DestockTypeInfoComponent,
     DestockHeaderComponent,
+    DestockFooterComponent,
   ],
   imports: [
     CommonModule,
