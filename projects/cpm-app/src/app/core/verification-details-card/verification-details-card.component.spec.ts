@@ -14,6 +14,7 @@ import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { Guid } from 'guid-typescript';
 
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
@@ -265,7 +266,7 @@ describe('VerificationDetailsCardComponent', () => {
     it('should emit barcode required event and select item on scan without xr2 picking label scanned', ()=> {
       const requiredBarcodeSpy = spyOn(component.verificationBoxBarcodeRequired, 'emit');
       const data = {ItemId: 'itemId'} as IBarcodeData;
-      const item = {ItemId: 'itemId'} as VerificationDestinationDetail
+      const item = {ItemId: 'itemId', Id: Guid.create()} as VerificationDestinationDetail
       component.verificationDestinationDetails = [item];
       component.IsBoxBarcodeVerified = false;
 
@@ -278,7 +279,7 @@ describe('VerificationDetailsCardComponent', () => {
 
     it('should verify med barcode and select item on scan with xr2 picking label scanned', ()=> {
       const data = {ItemId: 'itemId'} as IBarcodeData;
-      const item = {ItemId: 'itemId'} as VerificationDestinationDetail
+      const item = {ItemId: 'itemId', Id: Guid.create()} as VerificationDestinationDetail
       component.verificationDestinationDetails = [item];
       component.IsBoxBarcodeVerified = true;
 

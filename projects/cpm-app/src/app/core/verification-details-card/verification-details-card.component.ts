@@ -265,6 +265,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
+  /* istanbul ignore next */
   private scrollToRowId(id: string){
     try {
       var el = document.getElementById(id);
