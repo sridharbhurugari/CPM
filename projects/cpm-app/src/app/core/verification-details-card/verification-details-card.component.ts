@@ -149,7 +149,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
     /* istanbul ignore next */
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId);
+      this.constructor.name + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
 
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
@@ -259,7 +259,7 @@ export class VerificationDetailsCardComponent implements OnInit {
                 detail.RejectReason = data.selectedrow.value;
                 /* istanbul ignore next */
                 this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-                  this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId);
+                  this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId + ' trackById: ' + detail.Id);
               });
                 
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);

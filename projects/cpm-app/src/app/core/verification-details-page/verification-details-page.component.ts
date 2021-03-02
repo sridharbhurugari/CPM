@@ -216,8 +216,10 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     /* istanbul ignore next */
+    verificationDestinationDetails.map(detail => {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' Saving Verifications');
+      this.constructor.name + ' Saving Verifications, trackById: ' + detail.Id);
+    })
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
       detail.Saving = true;
@@ -256,13 +258,15 @@ export class VerificationDetailsPageComponent implements OnInit {
     }
     this.dashboardUpdateSubject.next(dashboardDataAdded);
     /* istanbul ignore next */
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' Saving Verifications Complete');
+    verificationDestinationDetails.map(detail => {    
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+      this.constructor.name + ' Saving Verifications Complete, trackById: ' + detail.Id);
+    });
   }
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
     verificationDestinationDetails.map(detail => detail.Saving = false);
-    /* istanbul ignore next */
+    /* istanbul ignore next */ 
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
       this.constructor.name + ' Saving Verifications failed: ' + error);
   }
