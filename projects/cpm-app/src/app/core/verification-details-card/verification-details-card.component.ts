@@ -188,7 +188,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
       this.selectedVerificationDestinationDetail = item;
-      this.scrollToRowId(item.Id.toString());
+      this.scrollToRowId(item.Id);
     if(this.IsBoxBarcodeVerified) {
       this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
     } else {
@@ -266,9 +266,9 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  private scrollToRowId(id: string){
+  private scrollToRowId(id: Guid){
     try {
-      var el = document.getElementById(id);
+      var el = document.getElementById(id.toString());
       el.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
     } catch (error) {
       console.log(error);
