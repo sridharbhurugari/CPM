@@ -6,6 +6,7 @@ import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { parseBool } from '../../shared/functions/parseBool';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-internal-transfer-device-summaries-page',
@@ -24,6 +25,7 @@ export class InternalTransferDeviceSummariesPageComponent {
     private router: Router,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     private activatedRoute: ActivatedRoute,
+    wpfInteropService: WpfInteropService,
   ) {
     coreEventConnectionService.refreshDeviceNeedsSubject
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -44,6 +46,9 @@ export class InternalTransferDeviceSummariesPageComponent {
           this.isTransferByNeeds = parseBool(stringValue);
         }
       });
+    wpfInteropService.wpfViewModelActivated
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(s => this.loadDeviceNeeds());
   }
 
   ngOnDestroy() {
