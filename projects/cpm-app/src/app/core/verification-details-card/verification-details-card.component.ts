@@ -16,6 +16,10 @@ import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/d
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { LogService } from '../../api-core/services/log-service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -25,11 +29,13 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 export class VerificationDetailsCardComponent implements OnInit {
 
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
+  private _loggingCategory = LoggingCategory.Verification;
 
   constructor(
     private translateService: TranslateService,
     private popupWindowService: PopupWindowService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private logService: LogService
     ) { }
 
   @Input()
@@ -127,7 +133,8 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
-    console.log('button approve clicked');
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Button Approve Clicked');
     this.approveItem(selectedVerificationDestinationDetail);
   }
 
@@ -140,7 +147,10 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
-    console.log(selectedVerificationDestinationDetail);
+    /* istanbul ignore next */
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId);
+
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
   }
@@ -247,7 +257,11 @@ export class VerificationDetailsCardComponent implements OnInit {
               selectedVerificationDestinationDetails.forEach((detail) => {
                 detail.VerifiedStatus = VerificationStatusTypes.Rejected;
                 detail.RejectReason = data.selectedrow.value;
+                /* istanbul ignore next */
+                this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+                  this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId);
               });
+                
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
               this.selectedVerificationDestinationDetail = null;
             }

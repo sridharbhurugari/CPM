@@ -87,6 +87,9 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
+
     if(data.IsXr2PickingBarcode) {
       this.IsBoxBarcodeVerified = true;
       if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
@@ -212,8 +215,9 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
-    console.log('approveVerification');
-    console.log(verificationDestinationDetails);
+    /* istanbul ignore next */
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+      this.constructor.name + ' Saving Verifications');
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
       detail.Saving = true;
@@ -225,7 +229,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' saveVerification - handleSaveVerificationSuccess failed: ' + exception);
+          this.constructor.name + ' handleSaveVerificationSuccess failed: ' + exception);
       }
     }, error => {
       try {
@@ -233,7 +237,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' saveVerification - handleSaveVerificationError failed: ' + exception);
+          this.constructor.name + ' handleSaveVerificationFailure failed: ' + exception);
       }
     });
   }
@@ -251,11 +255,15 @@ export class VerificationDetailsPageComponent implements OnInit {
       this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = null;
     }
     this.dashboardUpdateSubject.next(dashboardDataAdded);
+    /* istanbul ignore next */
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+      this.constructor.name + ' Saving Verifications Complete');
   }
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
     verificationDestinationDetails.map(detail => detail.Saving = false);
+    /* istanbul ignore next */
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' saveVerification - handleSaveVerificationError failed: ' + error);
+      this.constructor.name + ' Saving Verifications failed: ' + error);
   }
 }

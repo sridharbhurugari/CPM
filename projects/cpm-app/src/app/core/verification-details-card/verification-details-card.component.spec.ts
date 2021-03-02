@@ -14,6 +14,7 @@ import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { LogService } from '../../api-core/services/log-service';
 
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
@@ -23,6 +24,7 @@ describe('VerificationDetailsCardComponent', () => {
   let popupWindowService: Partial<PopupWindowService>;
   let toastService: Partial<ToastService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData>;
+  let logService: Partial<LogService>;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
@@ -37,6 +39,10 @@ describe('VerificationDetailsCardComponent', () => {
     info: jasmine.createSpy('info'),
   };
 
+  logService = {
+    logMessageAsync: jasmine.createSpy('logMessageAsync')
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDetailsCardComponent,
@@ -46,6 +52,7 @@ describe('VerificationDetailsCardComponent', () => {
         { provide: TranslateService, useValue: translateService},
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: ToastService, useValue: toastService },
+        { provide: LogService, useValue: logService },
       ]
     })
     .compileComponents();
