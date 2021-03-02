@@ -5,6 +5,7 @@ import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
+import { LogService } from '../../api-core/services/log-service';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -30,6 +31,7 @@ describe('VerificationDestinationPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
+  let logService: Partial<LogService>;
 
   const navigationParams = {
     OrderId: 'OrderID1',
@@ -64,6 +66,10 @@ describe('VerificationDestinationPageComponent', () => {
     getVerificationDashboardData: () => of()
   };
 
+  logService = {
+    logMessageAsync: jasmine.createSpy('logMessageAsync')
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent, VerificationDashboardComponent,
@@ -72,7 +78,8 @@ describe('VerificationDestinationPageComponent', () => {
       imports: [GridModule],
       providers: [
         { provide: TranslateService, useValue: translateService },
-        { provide: VerificationService, useValue: verificationService }
+        { provide: VerificationService, useValue: verificationService },
+        { provide: LogService, useValue: logService },
       ]
     })
     .compileComponents();
