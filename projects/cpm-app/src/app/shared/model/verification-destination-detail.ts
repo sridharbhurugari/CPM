@@ -40,6 +40,9 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   IsSafetyStockItem: boolean;
   IsMedBarcodeVerified: boolean;
   Saving: boolean;
+  TransactionScannedBarcodeProductId: string;
+  TransactionScannedBarcodeFormat: string;
+  TransactionScannedRawBarcode: string;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

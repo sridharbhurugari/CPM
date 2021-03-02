@@ -10,4 +10,8 @@ export interface IVerifiableItem {
   FillDate: Date;
   VerifiedStatus: string;
   RejectReason: string;
+  TransactionScannedBarcodeProductId: string;
+  TransactionScannedBarcodeFormat: string;
+  TransactionScannedRawBarcode: string;
+
 }

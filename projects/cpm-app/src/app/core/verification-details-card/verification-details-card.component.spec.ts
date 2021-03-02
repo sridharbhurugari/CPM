@@ -190,11 +190,15 @@ describe('VerificationDetailsCardComponent', () => {
     });
 
     it('should set selected data on matching item scan', () => {
+      const expectedBarcodeScanned = 'ABC';
+      const expectedProductId = '123';
+      const expectedBarcodeFormat = 'MC';
+      const expectedItemId = '1';
       const newItem = new VerificationDestinationDetail(null);
       newItem.DestinationType = 'type';
       newItem.DestinationLine1 = 'DL0';
       newItem.DestinationLine2 = 'DL1',
-      newItem.ItemId = '1'
+      newItem.ItemId = expectedItemId
 
       const newList = [
         Object.assign({}, newItem)
@@ -202,9 +206,12 @@ describe('VerificationDetailsCardComponent', () => {
 
       component.verificationDestinationDetails = newList;
 
-      var barcodeData = { ItemId: '1'} as IBarcodeData;
+      var barcodeData = { ItemId: expectedItemId, BarCodeScanned: expectedBarcodeScanned, ProductId: expectedProductId, BarCodeFormat: expectedBarcodeFormat} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
-      expect(component.selectedVerificationDestinationDetail.ItemId).toEqual('1');
+      expect(component.selectedVerificationDestinationDetail.ItemId).toEqual(expectedItemId);
+      expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeFormat).toEqual(expectedBarcodeFormat);
+      expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeProductId).toEqual(expectedProductId);
+      expect(component.selectedVerificationDestinationDetail.TransactionScannedRawBarcode).toEqual(expectedBarcodeScanned);
     });
   });
 
