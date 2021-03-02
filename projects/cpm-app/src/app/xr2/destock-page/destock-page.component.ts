@@ -28,7 +28,7 @@ export class DestockPageComponent implements OnInit {
   screenState: DestockPageComponent.ListState = DestockPageComponent.ListState.NoData;
   ngUnsubscribe = new Subject();
   lastErrorMessage: string;  
-  eventDateString: string;
+  eventDateTime: Date;
 
   searchFields = [
     nameof<IDestockTypeInfo>('Xr2DestockType_Display'),
@@ -103,10 +103,7 @@ setDestockService()
 
   onRefreshClick() {
     this.refreshData();
-  }
-  //onManualRefresh() {
-  //  this.refreshData();
-  //}
+  }  
 
   private refreshData(){
     this.screenState = DestockPageComponent.ListState.MakingDataRequest;    
@@ -120,11 +117,10 @@ setDestockService()
     try {
       if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;
-      }
-      //this.deviceDestockTypeInfo.next(event.DestockTypeInfoData);      
+      }            
       this.deviceDestockTypeInfo = event.DestockTypeInfoData;
       this.screenState = DestockPageComponent.ListState.Display;
-      this.eventDateString = event.EventDateString;      
+      this.eventDateTime = event.EventDateTime;      
 // todo
     } catch (e) {
       this.screenState = DestockPageComponent.ListState.Error;

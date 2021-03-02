@@ -10,6 +10,6 @@ export class DestockDataEvent  implements IDestockDataEvent {
 
   //DestockDataMessage info:
   CorrelationId: string;
-  EventDateString: string;
+  EventDateTime: Date;
   DestockTypeInfoData: DestockTypeInfo[];
 }

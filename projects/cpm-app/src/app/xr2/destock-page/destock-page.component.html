@@ -37,9 +37,9 @@
             <oc-button-action [buttonText]="'REFRESH' | translate" (click)="onRefreshClick()"></oc-button-action>
         </div>  
         &nbsp;     
-        <div class="refresh-label" *ngIf="eventDateString != null">{{'LAST_UPDATED' | translate}}:</div> 
+        <div class="refresh-label" *ngIf="eventDateTime != null">{{'LAST_UPDATED' | translate}}:</div> 
         &nbsp;  
-        <div class="last-refresh">{{ eventDateString }}</div> 
+        <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div> 
    </oc-footer>
 </ng-container>
 

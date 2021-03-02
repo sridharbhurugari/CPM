@@ -5,6 +5,6 @@ export interface IDestockDataEvent {
   DeviceId: number;
     //DestockDataMessage info:
     CorrelationId: string;
-    EventDateString: string;
+    EventDateTime: Date;
     DestockTypeInfoData: IDestockTypeInfo[];
 }
