@@ -270,6 +270,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.destinationLine1 = null;
     this.destinationLine2 = null;
     this.destinationType = null;
+    this.selectedVerificationDestinationDetail = null;
   }
 
   private setTranslations(): void {

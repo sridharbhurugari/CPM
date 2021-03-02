@@ -84,6 +84,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   private LoadData() {
     this.loadVerificationDashboardData();
     this.loadVerificationDestinationDetails();
+    this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = null;
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
