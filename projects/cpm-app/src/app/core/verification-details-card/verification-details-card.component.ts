@@ -110,6 +110,9 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
     this.selectedVerificationDestinationDetail = destinationDetail;
+    if(!destinationDetail.IsSafetyStockItem || this.IsBoxBarcodeVerified && destinationDetail.IsMedBarcodeVerified) {
+      this.scanToAdvanceVerificationDestinationDetail = destinationDetail;
+    }
   }
 
   columnSelected(event: IColHeaderSortChanged): void {

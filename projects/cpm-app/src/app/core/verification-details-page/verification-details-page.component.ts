@@ -89,7 +89,17 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
+
+      // If a valid safety stock item is in cache, approve it on valid box scan
+      if(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail
+        && this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail === this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail) {
+        this.childVerificationDetailsCardComponent.approveItem(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail);
+      }
+
+      // Verify the current box
       this.IsBoxBarcodeVerified = true;
+
+      // Load new data
       if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
