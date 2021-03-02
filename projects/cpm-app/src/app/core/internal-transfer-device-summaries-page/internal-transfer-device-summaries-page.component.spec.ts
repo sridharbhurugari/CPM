@@ -8,6 +8,7 @@ import { CoreEventConnectionService } from
   "../../api-core/services/core-event-connection.service";import { ActivatedRoute, Router } from '@angular/router';
 import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 ;
 
 @Component({
@@ -26,6 +27,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
   let router: Partial<Router>;
+  let wpfInteropService: Partial<WpfInteropService>;
 
   beforeEach(async(() => {
     getDeviceItemNeeds = jasmine.createSpy('get');
@@ -34,6 +36,9 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
     };
     coreEventConnectionService = {
       refreshDeviceNeedsSubject: new Subject(),
+    };
+    wpfInteropService = {
+      wpfViewModelActivated: new Subject<string>(),
     };
 
 
@@ -49,6 +54,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ActivatedRoute, useValue: { queryParamMap : new Subject() } },
+        { provide: WpfInteropService, useValue: wpfInteropService },
       ]
     })
     .compileComponents();
