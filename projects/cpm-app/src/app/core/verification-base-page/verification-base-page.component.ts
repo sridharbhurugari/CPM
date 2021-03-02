@@ -47,6 +47,8 @@ export class VerificationBasePageComponent implements OnInit {
     "BARCODESCAN_DIALOGWARNING_TITLE",
     "OK",
     "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN",
+    "BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE",
+    "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
   ];
 
   constructor(
@@ -105,6 +107,10 @@ export class VerificationBasePageComponent implements OnInit {
     this.displayUnexpectedBarcodeScanInDetails();
   }
 
+  onVerificationBoxBarcodeRequired() {
+    this.displayBoxBarcodeScanRequired();
+  }
+
   private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
   }
@@ -157,6 +163,7 @@ export class VerificationBasePageComponent implements OnInit {
     return !this.isValidSubscription(variable);
   }
 
+  /* istanbul ignore next */
   private displayExpectedPickingBarcodeScan(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -175,6 +182,7 @@ export class VerificationBasePageComponent implements OnInit {
     });
   }
 
+  /* istanbul ignore next */
   private displayUnexpectedBarcodeScanInDetails(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -183,6 +191,25 @@ export class VerificationBasePageComponent implements OnInit {
         translations.BARCODESCAN_DIALOGWARNING_TITLE;
       properties.messageElementText =
         translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
+      properties.primaryButtonText = translations.OK;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Warning;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      properties.uniqueId = Guid.create().toString();
+      this.displayedDialog = this.dialogService.showOnce(properties);
+    });
+  }
+
+  /* istanbul ignore next */
+  private displayBoxBarcodeScanRequired(): void {
+    this.clearDisplayedDialog();
+    this.translations$.subscribe((translations) => {
+      const properties = new PopupDialogProperties("Role-Status-Warning");
+      properties.titleElementText =
+        translations.BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE;
+      properties.messageElementText =
+        translations.BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK;
       properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;

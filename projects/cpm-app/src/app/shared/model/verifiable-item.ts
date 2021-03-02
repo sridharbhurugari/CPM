@@ -17,9 +17,6 @@ export class VerifiableItem implements IVerifiableItem {
   FillDate: Date;
   VerifiedStatus: string;
   RejectReason: string;
-  TransactionScannedBarcodeProductId: string;
-  TransactionScannedBarcodeFormat: string;
-  TransactionScannedRawBarcode: string;
 
   static fromVerificationDestinationDetail(verificationDestinationDetail: VerificationDestinationDetail) {
     return new this({
@@ -31,10 +28,7 @@ export class VerifiableItem implements IVerifiableItem {
       PicklistLineId: verificationDestinationDetail.PicklistLineId,
       FillDate: verificationDestinationDetail.FillDate,
       VerifiedStatus: verificationDestinationDetail.VerifiedStatus,
-      RejectReason: verificationDestinationDetail.RejectReason,
-      TransactionScannedBarcodeProductId: null,
-      TransactionScannedBarcodeFormat: null,
-      TransactionScannedRawBarcode: null
+      RejectReason: verificationDestinationDetail.RejectReason
     });
   }
 }
