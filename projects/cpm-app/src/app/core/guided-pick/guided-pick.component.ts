@@ -32,6 +32,9 @@ export class GuidedPickComponent implements OnDestroy {
   private _awaitingScanSubscription: Subscription;
 
   @Input()
+  requestStatus: string;
+
+  @Input()
   set guidedPickData(value: IGuidedPickData) {
     this._guidedPickData = value;
     this.clearScanSubscriptions();

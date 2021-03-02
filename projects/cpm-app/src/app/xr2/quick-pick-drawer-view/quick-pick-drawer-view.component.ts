@@ -71,7 +71,7 @@ export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
     private hardwareLeaseService: HardwareLeaseService,
     wpfInteropService: WpfInteropService
   ) {
-    wpfInteropService.wpfViewModelActivated.subscribe(() => {
+    wpfInteropService.wpfViewModelActivated.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       if(this.detailedDrawer && this.detailedDrawer.Status <= QuickPickControlDataStatus.OrderReady){
         this.onCloseQuickPickDrawerDetails();
       }

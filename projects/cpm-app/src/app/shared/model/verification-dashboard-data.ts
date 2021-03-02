@@ -17,4 +17,6 @@ export class VerificationDashboardData implements IVerificationDashboardData {
   RequiredStatuses: number;
   CompleteExceptions: number;
   RequiredExceptions: number;
+  CompleteOutputDevices: number;
+  RequiredOutputDevices: number;
 }

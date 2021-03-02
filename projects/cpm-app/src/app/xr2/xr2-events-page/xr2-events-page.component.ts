@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, Pipe, PipeTransform } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
-import { map, switchMap, shareReplay } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, Pipe, PipeTransform, OnDestroy } from '@angular/core';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { map, switchMap, shareReplay, filter, takeUntil } from 'rxjs/operators';
 import { SearchBoxComponent, DaterangeComponent, SingleselectDropdownModule, SingleselectComponent, CheckboxComponent } from '@omnicell/webcorecomponents';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -15,6 +15,8 @@ import { Xr2EventsItem } from '../model/xr2-events-item';
 import { TranslateService } from '@ngx-translate/core';
 import { Xr2DevicesList } from '../model/xr2-devices-list';
 import { SingleselectRowItem } from '../../core/model/SingleselectRowItem';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-xr2-events-page',
@@ -22,7 +24,9 @@ import { SingleselectRowItem } from '../../core/model/SingleselectRowItem';
   styleUrls: ['./xr2-events-page.component.scss']
 })
 
-export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
+export class Xr2EventsPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _ngUnsubscribe: Subject<void> = new Subject();
+
   readonly eventLevelPropertyName = nameof<Xr2EventsItem>("EventLevel");
   readonly eventDescriptionPropertyName = nameof<Xr2EventsItem>("EventDescription");
   readonly eventDateTimePropertyName = nameof<Xr2EventsItem>("EventDateTime");
@@ -83,12 +87,15 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
     private eventsListService: Xr2EventsService,
     private wpfActionControllerService: WpfActionControllerService,
     private translateService: TranslateService,
-    private systemConfigurationService: SystemConfigurationService
+    private systemConfigurationService: SystemConfigurationService,
+    private wpfInteropService: WpfInteropService,
+    private windowService: WindowService,
   ) {
     this.initalizeHeaders();
     this.ClickedRow = function (index) {
       this.HighlightRow = index;
     }
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -194,6 +201,8 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     if (this.searchSub) { this.searchSub.unsubscribe(); }
+    this._ngUnsubscribe.next();
+    this._ngUnsubscribe.complete();
   }
 
   navigatedetailspage(events: IXr2EventsItem, clickevent: any) {
@@ -389,6 +398,16 @@ export class Xr2EventsPageComponent implements OnInit, AfterViewInit {
         }), shareReplay(1));
       }
     }
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      });
   }
 
 }

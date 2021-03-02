@@ -4,13 +4,31 @@
   </div>
   <div class="card" *ngIf="this.verificationDestinationDetails">
     <div class="card-header ocactionheader">
-      <div class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
+      <span class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
+        <app-validation-icon *ngIf="containsSafetyStockMedication(this.verificationDestinationDetails) && !this.IsBoxBarcodeVerified"
+        id="scan-icon"
+        [iconWidth]="40"
+        [iconHeight]="40"
+        [iconString]="'scan'"
+        toastTileResourceKey=""
+        toastMsgResourceKey="{{'SCAN_BOX_BARCODE'}}"
+        toastType="{{'warn'}}">
+        </app-validation-icon>
         {{destinationLine1}}
-      </div>
-      <div class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
-        <div class="cpm-action-title-multi-line-bold">{{destinationLine1}}</div>
-          <div>{{destinationLine2}}</div>
-      </div>
+      </span>
+      <span class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
+        <app-validation-icon *ngIf="containsSafetyStockMedication(this.verificationDestinationDetails) && !this.IsBoxBarcodeVerified"
+        id="scan-icon"
+        [iconWidth]="40"
+        [iconHeight]="40"
+        [iconString]="'scan'"
+        toastTileResourceKey=""
+        toastMsgResourceKey="{{'SCAN_BOX_BARCODE'}}"
+        toastType="{{'warn'}}">
+        </app-validation-icon>
+        <span class="cpm-action-title-multi-line-bold">{{destinationLine1}}</span>
+        <span>{{destinationLine2}}</span>
+      </span>
     </div>
     <div class="card-body cbody">
       <div class="left-panel">
@@ -26,13 +44,6 @@
                   [customColumnSortOrder]="columnSortDirection"
                   (columnSelected)="columnSelected($event)">
                   </div>
-                  <div app-col-header-sortable class="data-title"
-                  [columnPropertyName]="requiredVerificationPropertyName" headerResourceKey="REQUIRED"
-                  [paddingLeft]="30"
-                  [currentSortPropertyName]="currentSortPropertyName"
-                  [customColumnSortOrder]="columnSortDirection"
-                  (columnSelected)="columnSelected($event)">
-                  </div>
                   <div class="data-spacer"></div>
                 </div>
               </div>
@@ -42,22 +53,32 @@
                 <div id="{{row.Id}}" class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
                 (click)='medicationClicked(row)'
                 [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
-                  <div class="label">
-                    <div class="text-label">
-                      <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>
-                      <div>{{ row.ItemTradeName }}</div>
-                    </div>
+                <div class="label" [ngStyle]="{maxWidth: 95 - calculateDynamicIconWidth(row) + '%'}">
+                  <app-validation-icon *ngIf="row.IsSafetyStockItem && !row.IsMedBarcodeVerified"
+                    id="scan-icon"
+                    [iconWidth]="40"
+                    [iconHeight]="40"
+                    [iconString]="'scan'"
+                    toastTileResourceKey=""
+                    toastMsgResourceKey="{{'SCAN_ITEM_PRODUCT'}}"
+                    toastType="{{'warn'}}">
+                  </app-validation-icon>
+                  <div class="text-label">
+                    <div class="bold-name">{{ row.ItemFormattedGenericName }}</div>
+                    <div class="sub-name">{{ row.ItemTradeName }}</div>
+                  </div>
                   </div>
                   <div class="data">
-                    <app-cp-clickable-icon *ngIf="row.RequiredVerification"
-                    [width]="30"
-                    [height]="30"
+                    <app-cp-clickable-icon *ngIf="row.Exception" id="exception-icon"
+                    [icon]="'notification-active'"
                     [theme]="'danger'"
-                    [label]="'REQUIRED' | translate"
-                    [icon]="'alert-no-tail'"
-                    (clickEvent)="onRequiredIconClick()">
+                    [label]="'EXCEPTION' | translate">
                     </app-cp-clickable-icon>
-                  </div>
+                    <app-cp-clickable-icon *ngIf="row.HasOutputDeviceVerification" id="output-device-icon"
+                    [icon]="'notification-active'"
+                    [label]="'OUTPUT_DEVICE' | translate">
+                  </app-cp-clickable-icon>
+                </div>
                 </div>
               </div>
             </div>
@@ -142,6 +163,7 @@
               [theme]="'danger'"
               [label]="'REJECT' | translate"
               [icon]="'close'"
+              [disabled]="selectedVerificationDestinationDetail.Saving"
               (clickEvent)="onRejectClick(this.selectedVerificationDestinationDetail)">
               </app-cp-clickable-icon>
               <app-cp-clickable-icon
@@ -150,11 +172,15 @@
               [theme]="'primary'"
               [label]="'APPROVE' | translate"
               [icon]="'checkmark'"
+              [disabled]="selectedVerificationDestinationDetail.IsSafetyStockItem && !selectedVerificationDestinationDetail.IsMedBarcodeVerified || selectedVerificationDestinationDetail.Saving"
               (clickEvent)="onApproveClick(this.selectedVerificationDestinationDetail)">
               </app-cp-clickable-icon>
             </div>
           </div>
-          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && this.verificationDestinationDetails.length > 0">
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && !IsBoxBarcodeVerified && this.verificationDestinationDetails.length > 0">
+            {{ 'SCAN_BOX_BARCODE' | translate }}
+          </div>
+          <div class="no-details" *ngIf="!this.selectedVerificationDestinationDetail && IsBoxBarcodeVerified && this.verificationDestinationDetails.length > 0">
             {{ 'SELECT_SCAN_MED' | translate }}
           </div>
           <div class="no-details" *ngIf="this.verificationDestinationDetails.length === 0">

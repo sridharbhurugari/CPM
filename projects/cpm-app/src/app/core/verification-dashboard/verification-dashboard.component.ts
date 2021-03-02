@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
@@ -11,12 +11,12 @@ import { VerificationDashboardData } from '../../shared/model/verification-dashb
 })
 export class VerificationDashboardComponent implements OnInit {
 
-  constructor() { }
-
   @Input() verificationDashboardData: VerificationDashboardData;
   @Input() dashboardUpdate$: Observable<IVerificationDashboardData>;
 
   public ngUnsubscribe = new Subject();
+
+  constructor() { }
 
   ngOnInit() {
     if(this.dashboardUpdate$) {
@@ -32,5 +32,13 @@ export class VerificationDashboardComponent implements OnInit {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  showIcon(iconString: string, completed: number, required: number) {
+    if(required > completed) {
+      return iconString
+    }
+
+    return '';
   }
 }

@@ -35,6 +35,15 @@ describe('CpGeneralHeaderComponent', () => {
       component.onBackClick();
 
       expect(backEventSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should send search event if has search text filter on load', () => {
+      const searchTextEventSpy = spyOn(component.searchTextFilterEvent, 'emit');
+      component.searchFilterText = "Filter";
+
+      component.ngAfterViewInit();
+
+      expect(searchTextEventSpy).toHaveBeenCalledTimes(1);
     })
   })
 });

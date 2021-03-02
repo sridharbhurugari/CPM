@@ -8,6 +8,8 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ItemManagement } from '../model/item-management';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { ActivatedRoute } from '@angular/router';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-item-management-list',
@@ -40,6 +42,7 @@ describe('ItemManagementComponent', () => {
           useFactory: wpfActionControllerServiceStub
         },
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+        { provide: WindowService, useValue: { getHash: () => '' } },
       ]
     })
     .compileComponents();

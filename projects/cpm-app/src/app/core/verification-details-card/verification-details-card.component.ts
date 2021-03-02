@@ -34,7 +34,6 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
-    console.log('setting data');
      this._verificationDestinationDetails = value;
      this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);
@@ -44,27 +43,27 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
+  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() IsBoxBarcodeVerified: boolean;
 
   private barcodeScannedEventSubscription: Subscription;
-
-  private _verificationDestinationDetails : VerificationDestinationDetail[]
-
-  selectedVerificationDestinationDetail : VerificationDestinationDetail;
+  private _verificationDestinationDetails : VerificationDestinationDetail[];
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
-  readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
-  ngUnsubscribe = new Subject();
+  selectedVerificationDestinationDetail : VerificationDestinationDetail;
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
   destinationLine2: string;
   destinationType: string;
+  rowIconWidthPercent = 13; // Static for row icon width
+  ngUnsubscribe = new Subject();
 
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
@@ -92,29 +91,20 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onBarcodeScannedEvent(data: IBarcodeData): void {
-    //TODO If Item, check for Item in control - jump to it if present.
-    // If not an item in the control - or not an item barcode, Fire event alerting incorect barcode scanned - display popup
     if(!data.ItemId)
     {
-      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      this.handleFailedBarcodeScan(data);
       return;
     }
 
     const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(!match)
     {
-      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      this.handleFailedBarcodeScan(data);
       return;
     }
 
-    if(this.selectedVerificationDestinationDetail) {
-      // TODO - Figure out how we approve on scan
-      // var itemToApprove = this.selectedVerificationDestinationDetail;
-      // this.approveItem(itemToApprove);
-    }
-
-    this.selectedVerificationDestinationDetail = match;
-    this.scrollToRowId(match.Id.toString());
+    this.handleSuccessfulBarcodeScan(match, data);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -163,6 +153,20 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.selectedVerificationDestinationDetail = null;
   }
 
+  containsSafetyStockMedication(items: VerificationDestinationDetail[]) {
+    if(!items) {
+      return false;
+    }
+
+    return items.some(x => x.IsSafetyStockItem);
+  }
+
+  calculateDynamicIconWidth(verificationDestinationDetail: VerificationDestinationDetail) {
+    let widthIconOutputDevice = verificationDestinationDetail.HasOutputDeviceVerification ? this.rowIconWidthPercent: 0;
+    let widthIconException = verificationDestinationDetail.Exception ? this.rowIconWidthPercent: 0;
+    return widthIconOutputDevice + widthIconException;
+  }
+
   /* istanbul ignore next */
   trackByItemId(index: number, verificationDestinationDetail: any): Guid {
     if (!verificationDestinationDetail) {
@@ -170,6 +174,30 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     return verificationDestinationDetail.Id;
+  }
+
+   /* istanbul ignore next */
+   showAlert(): void {
+    var exceptionMsg;
+    this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
+    this.toastService.error('error title', exceptionMsg, {
+      timeout: 5000,
+      pauseOnHover: false
+    });
+  }
+
+  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+      this.selectedVerificationDestinationDetail = item;
+      this.scrollToRowId(item.Id.toString());
+    if(this.IsBoxBarcodeVerified) {
+      this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
+    } else {
+      this.verificationBoxBarcodeRequired.emit();
+    }
+  }
+
+  private handleFailedBarcodeScan(data: IBarcodeData) {
+    this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
   /* istanbul ignore next */
@@ -222,18 +250,15 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.destinationLine1 = verificationDestinationDetails[0].DestinationLine1;
       this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
       this.destinationType = verificationDestinationDetails[0].DestinationType;
+    } else {
+      this.resetPageDisplay();
     }
   }
 
-  showAlert(): void {
-    //if(this.selectedVerificationDestinationDetail.Exception) {
-      var exceptionMsg;
-      this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
-      this.toastService.error('error title', exceptionMsg, {
-        timeout: 5000,
-        pauseOnHover: false
-      });
-    // }
+  private resetPageDisplay() {
+    this.destinationLine1 = null;
+    this.destinationLine2 = null;
+    this.destinationType = null;
   }
 
   private setTranslations(): void {

@@ -5,19 +5,17 @@ import { ISelectionStateChanged } from '../../shared/model/i-selection-state-cha
 import { IInternalTransferPackSizePick } from './i-internal-transfer-pack-size-pick';
 
 export class InternalTransferPick implements IItemReplenishmentNeed, ISelectable<InternalTransferPick>, IInternalTransferPackSizePick {
-    private _isSelected: boolean;
+    private _isSelected: boolean = true;
+    private _originalPacksQuantity: number;
     private _packsToPick: number;
 
-    constructor(replensihmentNeed: IItemReplenishmentNeed, pickQuantity: number) {
+    constructor(replensihmentNeed: IItemReplenishmentNeed, pickQuantityInPacks: number) {
         Object.assign(this, replensihmentNeed);
-        this._isSelected = true;
-        this.PacksNeeded = this.Xr2Item ? this.DeviceQuantityNeeded / this.PackSize : pickQuantity;
-        this._packsToPick = this.PacksNeeded;
+        this._originalPacksQuantity = pickQuantityInPacks;
+        this._packsToPick = pickQuantityInPacks;
     }
 
     SelectionStateChanged: EventEmitter<ISelectionStateChanged<InternalTransferPick>> = new EventEmitter<ISelectionStateChanged<InternalTransferPick>>();
-
-    PacksNeeded: number;
 
     ItemId: string;
     ItemFormattedGenericName: string;
@@ -58,7 +56,7 @@ export class InternalTransferPick implements IItemReplenishmentNeed, ISelectable
         }
 
         this._isSelected = value;
-        this._packsToPick = value ? this.PacksNeeded : 0;
+        this._packsToPick = value ? this._originalPacksQuantity : 0;
     }
 
     get PacksToPick(): number {

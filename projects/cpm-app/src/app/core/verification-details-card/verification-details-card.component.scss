@@ -45,27 +45,29 @@
   width: 100%;
   align-items: center;
   justify-content: center;
+  text-align: center;
   font-size: 20px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
   font-weight: 500;
 }
 
 .cpm-action-title {
-    vertical-align: middle;
-    font-size: 28px;
-    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-    color: white;
-    flex: 1px;
-    padding-left: 20px;
+  display: inline-flex;
+  font-size: 28px;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: white;
+  padding-left: 20px;
+  position: relative;
 }
 
 .cpm-action-title-multi-line {
-  vertical-align: middle;
+  display: inline-flex;
+  flex-direction: column;
   font-size: 22px;
   font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
   color: white;
-  flex: 1px;
   padding-left: 20px;
+  position: relative;
 }
 
 .cpm-action-title-multi-line-bold {
@@ -229,7 +231,6 @@
 
           .label-title {
             display: flex;
-            width: 80%;
             height: 100%;
             align-items: center;
             justify-content: left;
@@ -242,7 +243,6 @@
             height: 100%;
             align-items: center;
             justify-content: left;
-
           }
 
           .data-spacer {
@@ -283,40 +283,68 @@
           direction: ltr;
           align-items: center;
           justify-content: left;
-          :hover{
-              cursor: pointer;
-          }
+          flex-direction: row;
 
           .label {
+            position: relative;
             display: flex;
             flex-direction: row;
-            width: 75%;
             height: 100%;
             padding-left: 10px;
+          }
+
+
+          .text-label {
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
             overflow: hidden;
           }
 
           .bold-name {
             font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
 
-          .text-label {
-            align-items: center;
-            justify-content: left;
-            font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+          .sub-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
 
           .data {
+            padding: 0 10px 0 10px;
             display: flex;
-            width: 25%;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
+            flex-direction: row;
+            flex: 1;
+            justify-content: flex-end;
             font-family: "Segoe UI","Helvetica Neue", "Helvetica", "Arial", "sans-serif";
           }
         }
       }
     }
   }
+}
+
+.row:hover{
+  cursor: pointer;
+}
+
+#exceptions-icon {
+  padding-right: 10px
+}
+
+#output-device-icon {
+  padding-left: 10px;
+}
+
+#scan-icon {
+  position: absolute;
+  top: -13px;
+  right: 0;
+  z-index: 1;
 }
 
