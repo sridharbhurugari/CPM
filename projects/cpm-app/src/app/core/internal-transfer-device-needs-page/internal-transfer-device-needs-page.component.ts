@@ -17,6 +17,7 @@ import { IAngularReportBaseData } from '../../api-core/data-contracts/i-angular-
 import * as _ from 'lodash';
 import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
+import { IInterDeviceTransferPickPackSizeRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-packsize-request';
 
 @Component({
   selector: 'app-internal-transfer-device-needs-page',
@@ -139,18 +140,30 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
     if (this.itemsToPick.length > 0) {
       this.requestStatus = 'picking';
       var picksByItemId = _.groupBy(this.itemsToPick, x => x.ItemId);
-      const items: IInterDeviceTransferPickRequest[] = new Array<IInterDeviceTransferPickRequest>();
-      for(var itemId in picksByItemId){
+
+      const pickItems: IInterDeviceTransferPickRequest[] = new Array<IInterDeviceTransferPickRequest>();
+      for(var itemId in picksByItemId) {
         const itemPicks = picksByItemId[itemId];
-        const item = {
+        let packSizes: IInterDeviceTransferPickPackSizeRequest[] = [];
+        for(var itemPick of itemPicks) {
+           const packSizeInfo = {
+             PackSize: itemPick.PackSize,
+             RequestedQuantityInPacks: Math.ceil(itemPick.DeviceQuantityNeeded/itemPick.PackSize),
+             IsOnDemand: false
+           }
+          packSizes.push(packSizeInfo)
+        }
+
+        const pickItem = {
           ItemId: itemId,
           QuantityToPick: itemPicks.map(x => x.DeviceQuantityNeeded).reduce((total, value) => total + value),
-          SourceDeviceLocationId: itemPicks[0].PickLocationDeviceLocationId
+          SourceDeviceLocationId: itemPicks[0].PickLocationDeviceLocationId,
+          PackSizes: packSizes
         };
-        items.push(item);
+        pickItems.push(pickItem);
       }
 
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, items).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
+      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, pickItems).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
     } else {
       this.simpleDialogService.displayErrorOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_NONE_SELECTED');
     }
