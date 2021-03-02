@@ -2,6 +2,7 @@ import { EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { IDevice } from '../../api-core/data-contracts/i-device';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
 import { nameof } from '../../shared/functions/nameof';
 import { WindowService } from '../../shared/services/window-service';
@@ -39,6 +40,9 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
   get assignedItems(): IItemReplenishmentOnDemand[] {
     return this._assignedItems;
   }
+
+  @Input()
+  device: IDevice;
 
   @ViewChild('ocsearchbox', {
     static: true

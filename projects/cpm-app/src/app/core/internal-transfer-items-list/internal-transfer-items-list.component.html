@@ -1,8 +1,8 @@
 <div class="cpmheaderrow">
-    <app-header-container></app-header-container>
-    <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+  <app-header-container [title]="'DEVICE' | translate">{{device.Description}}</app-header-container>
+  <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
-<oc-grid #ocgrid ocgridfilter="false" 
+<oc-grid #ocgrid ocgridfilter="false"
     appGridSortCol [initialSortPropertyName]="itemDescriptionPropertyName" [orderableValues]="itemNeeds" (valuesReordered)="itemNeeds = $event"
     appGridMultiSelect (selectionChanged)="selectedItemsChanged($event)">
     <ng-container class="ocgridheader">

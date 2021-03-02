@@ -12,15 +12,15 @@ import * as _ from 'lodash';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType, PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
-import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
-import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
 import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
-import { SourceLocationDropdownPopupComponent } from '../../shared/components/source-location-dropdown-popup/source-location-dropdown-popup.component';
-import { ISourceLocationDropdownPopupData } from '../../shared/model/i-source-location-dropdown-popup-data';
 import { IInterDeviceTransferPickPackSizeRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-packsize-request';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
+import { ISourceLocationDropdownPopupData } from '../../shared/model/i-source-location-dropdown-popup-data';
+import { SourceLocationDropdownPopupComponent } from '../../shared/components/source-location-dropdown-popup/source-location-dropdown-popup.component';
+import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
+import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',
@@ -155,9 +155,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
            location.DeviceId != this.deviceId &&
            location.DeviceType != "2100" &&
            location.DeviceType != "2040") {
-          const locationDescription = `${location.DeviceDescription} - ${this.qoh}:${location.QuantityOnHand}`;
-          const itemlocationRow = new SingleselectRowItem(locationDescription, location.DeviceLocationId.toString());
-          itemlocationDisplayList.push(itemlocationRow);
+            const locationDescription = `${location.DeviceDescription} - ${this.qoh}:${location.QuantityOnHand}`;
+            const itemlocationRow = new SingleselectRowItem(locationDescription, location.DeviceLocationId.toString());
+              itemlocationDisplayList.push(itemlocationRow);
         }
       })
 
@@ -166,10 +166,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   }
 
   private showSouceSelection(item: IItemReplenishmentOnDemand, itemlocationDisplayList: SingleselectRowItem[]) {
-    const rowItemsToHideCheckbox: SingleselectRowItem[] = [];
     const properties = new PopupWindowProperties();
-
     const defaultDisplayItem = itemlocationDisplayList.find(x => x.value.length > 0);
+
     const data: ISourceLocationDropdownPopupData = {
       popupTitle: this.popupTitle,
       dropdownTitle: this.dropdownTitle,
