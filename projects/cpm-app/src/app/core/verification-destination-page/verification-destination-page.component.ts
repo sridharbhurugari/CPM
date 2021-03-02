@@ -78,7 +78,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
       console.log('Details Page Xr2 Barcode!')
-
+      
       const navigationParams = {
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
