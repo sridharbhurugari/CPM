@@ -9,7 +9,6 @@ import { IVerificationNavigationParameters } from '../../shared/interfaces/i-ver
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
-
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { VerifiableItem } from '../../shared/model/verifiable-item';
 import { LogService } from '../../api-core/services/log-service';
@@ -28,13 +27,14 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
+  @Output() verificationBoxBarcodeRequired: EventEmitter<IBarcodeData> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
-
-  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
   @Input() rejectReasons: string[];
 
+
+  private xr2xr2PickingBarcodeScannedSubscription: Subscription;
   private backRoute = VerificationRouting.DestinationPage;
   private loggingCategory = LoggingCategory.Verification;
 
@@ -52,6 +52,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   translations$: Observable<any>;
 
   validDestinationDetails: boolean = true;
+  IsBoxBarcodeVerified: boolean;
 
   translatables = [
     'LOADING',
@@ -87,11 +88,12 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
-      // TODO: Save anything in progress at the Item Card level
+      this.IsBoxBarcodeVerified = true;
       if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
         this.navigationParameters.DeviceId = data.DeviceId;
+        this.navigationParameters.RoutedByScan = true;
         this.LoadData();
       }
     } else {
@@ -124,6 +126,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
+  onVerificationBoxBarcodeRequired() {
+    this.verificationBoxBarcodeRequired.emit();
+  }
+
   private loadVerificationDestinationDetails(): void {
     // TODO - Determine what to do here if data cannot be loaded for some reason - perhaps they scanned something already verified.
     if(!this.navigationParameters || !this.navigationParameters.DestinationId || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
@@ -134,6 +140,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       (verificationDetailViewData) => {
         this.generateHeaderTitle(verificationDetailViewData);
         this.generateHeaderSubTitle(verificationDetailViewData);
+        this.generateSafetyStockSettings(verificationDetailViewData.DetailItems);
         this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems);
       }), shareReplay(1);
   }
@@ -173,6 +180,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.headerSubTitle = of(stringResult);
   }
 
+  private generateSafetyStockSettings(verificationDetailViewData: IVerificationDestinationDetail[]) {
+    this.IsBoxBarcodeVerified = this.navigationParameters.RoutedByScan || !verificationDetailViewData.some(x => x.IsSafetyStockItem);
+  }
+
   private loadVerificationDashboardData(): void {
     if(!this.navigationParameters || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
       return;
@@ -205,6 +216,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     console.log(verificationDestinationDetails);
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
+      detail.Saving = true;
       return VerifiableItem.fromVerificationDestinationDetail(detail);
       }))
     .subscribe(success => {
@@ -213,7 +225,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' saveVerificaiton - handleSaveVerificationSuccess failed: ' + exception);
+          this.constructor.name + ' saveVerification - handleSaveVerificationSuccess failed: ' + exception);
       }
     }, error => {
       try {
@@ -221,7 +233,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } catch(exception) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' saveVerificaiton - handleSaveVerificationError failed: ' + exception);
+          this.constructor.name + ' saveVerification - handleSaveVerificationError failed: ' + exception);
       }
     });
   }
@@ -233,9 +245,14 @@ export class VerificationDetailsPageComponent implements OnInit {
       CompleteOutputDevices: verificationDestinationDetails.filter(x => x.HasOutputDeviceVerification).length
      } as IVerificationDashboardData
 
+    verificationDestinationDetails.map(detail => detail.Saving = false);
     this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
     this.dashboardUpdateSubject.next(dashboardDataAdded);
   }
 
-  private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {}
+  private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
+    verificationDestinationDetails.map(detail => detail.Saving = false);
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
+      this.constructor.name + ' saveVerification - handleSaveVerificationError failed: ' + error);
+  }
 }

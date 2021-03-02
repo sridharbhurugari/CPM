@@ -5,4 +5,5 @@ export interface IVerificationNavigationParameters {
   OrderId: string;
   DestinationId: string;
   Route: VerificationRouting;
+  RoutedByScan: boolean;
 }

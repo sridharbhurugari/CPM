@@ -30,13 +30,16 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   FillDate: Date;
   FillUserId: string;
   FillUserName: string;
-  IsIssueScanRequired: boolean
+  IsIssueScanRequired: boolean;
   VerifiedStatus: string;
   PriorityDescription: string;
   VerifiedDate: Date;
   RejectReason: string;
   Exception: boolean;
   HasOutputDeviceVerification: boolean;
+  IsSafetyStockItem: boolean;
+  IsMedBarcodeVerified: boolean;
+  Saving: boolean;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

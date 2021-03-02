@@ -1,10 +1,8 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 
@@ -12,10 +10,13 @@ import { BarcodeDataService } from '../../api-core/services/barcode-data.service
 import { ToastService } from '@omnicell/webcorecomponents';
 import { map, shareReplay } from 'rxjs/operators';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { filter, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
@@ -46,21 +47,21 @@ export class VerificationBasePageComponent implements OnInit {
     "BARCODESCAN_DIALOGWARNING_TITLE",
     "OK",
     "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN",
+    "BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE",
+    "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
   ];
 
   constructor(
     private wpfInteropService: WpfInteropService,
+    private windowService: WindowService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private systemConfigurationService: SystemConfigurationService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
   ) {
-    this.wpfInteropService.wpfViewModelActivated.subscribe(() => {
-      this.LoadTransientData();
-      this.initializeNavigationParameters();
-    });
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -104,6 +105,10 @@ export class VerificationBasePageComponent implements OnInit {
 
   onVerificationDetailBarcodeScanUnexpected() {
     this.displayUnexpectedBarcodeScanInDetails();
+  }
+
+  onVerificationBoxBarcodeRequired() {
+    this.displayBoxBarcodeScanRequired();
   }
 
   private setTranslations(): void {
@@ -158,6 +163,7 @@ export class VerificationBasePageComponent implements OnInit {
     return !this.isValidSubscription(variable);
   }
 
+  /* istanbul ignore next */
   private displayExpectedPickingBarcodeScan(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -176,6 +182,7 @@ export class VerificationBasePageComponent implements OnInit {
     });
   }
 
+  /* istanbul ignore next */
   private displayUnexpectedBarcodeScanInDetails(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -184,6 +191,25 @@ export class VerificationBasePageComponent implements OnInit {
         translations.BARCODESCAN_DIALOGWARNING_TITLE;
       properties.messageElementText =
         translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
+      properties.primaryButtonText = translations.OK;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Warning;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      properties.uniqueId = Guid.create().toString();
+      this.displayedDialog = this.dialogService.showOnce(properties);
+    });
+  }
+
+  /* istanbul ignore next */
+  private displayBoxBarcodeScanRequired(): void {
+    this.clearDisplayedDialog();
+    this.translations$.subscribe((translations) => {
+      const properties = new PopupDialogProperties("Role-Status-Warning");
+      properties.titleElementText =
+        translations.BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE;
+      properties.messageElementText =
+        translations.BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK;
       properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
@@ -209,5 +235,16 @@ export class VerificationBasePageComponent implements OnInit {
     }
 
 
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.LoadTransientData();
+        this.initializeNavigationParameters();
+      });
   }
 }

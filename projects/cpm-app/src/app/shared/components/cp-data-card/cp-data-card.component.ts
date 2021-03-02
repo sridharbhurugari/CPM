@@ -20,7 +20,6 @@ export class CpDataCardComponent implements OnInit {
   @Input() data3: string;
   @Input() dataLabel3: string;
 
-
   constructor() { }
 
   ngOnInit() {

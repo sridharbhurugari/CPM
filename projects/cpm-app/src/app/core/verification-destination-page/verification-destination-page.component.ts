@@ -78,7 +78,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   onBarcodeScannedEvent(data: IBarcodeData) {
     if(data.IsXr2PickingBarcode) {
       console.log('Details Page Xr2 Barcode!')
-
+      
       const navigationParams = {
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
@@ -86,7 +86,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
         DestinationId: data.DestinationId,
         PriorityCodeDescription: '',
         Date: new Date(),
-        Route:  VerificationRouting.DetailsPage
+        Route:  VerificationRouting.DetailsPage,
+        RoutedByScan: true
       } as IVerificationNavigationParameters
 
       const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -116,7 +117,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       DeviceId: this.navigationParameters.DeviceId,
       OrderId: this.navigationParameters.OrderId,
       DestinationId: verificationDestinationItem.DestinationId,
-      Route: this.continueRoute
+      Route: this.continueRoute,
+      RoutedByScan: false
     } as IVerificationNavigationParameters;
 
     const savedPageConfiguration = this.createSavedPageConfiguration();
