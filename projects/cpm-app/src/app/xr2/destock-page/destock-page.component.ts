@@ -101,9 +101,12 @@ setDestockService()
     }
   }
 
-  onManualRefresh() {
+  onRefreshClick() {
     this.refreshData();
   }
+  //onManualRefresh() {
+  //  this.refreshData();
+  //}
 
   private refreshData(){
     this.screenState = DestockPageComponent.ListState.MakingDataRequest;    

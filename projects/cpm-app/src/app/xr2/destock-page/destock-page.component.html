@@ -29,9 +29,19 @@
          <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchDefault>
           <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
          </div>
-  </body>
+  </body>  
   
-  <app-destock-footer [eventTime]="eventDateString" (refreshEvent)="onManualRefresh()"></app-destock-footer>
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+        <div class="ocleftalign">
+            <oc-button-action [buttonText]="'REFRESH' | translate" (click)="onRefreshClick()"></oc-button-action>
+        </div>  
+        &nbsp;     
+        <div class="refresh-label" *ngIf="eventDateString != null">{{'LAST_UPDATED' | translate}}:</div> 
+        &nbsp;  
+        <div class="last-refresh">{{ eventDateString }}</div> 
+   </oc-footer>
+</ng-container>
 
 
 
