@@ -9,6 +9,7 @@ import { CoreEventConnectionService } from
 import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { WindowService } from '../../shared/services/window-service';
 ;
 
 @Component({
@@ -55,6 +56,7 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ActivatedRoute, useValue: { queryParamMap : new Subject() } },
         { provide: WpfInteropService, useValue: wpfInteropService },
+        { provide: WindowService, useValue: { getHash: () => null } },
       ]
     })
     .compileComponents();
