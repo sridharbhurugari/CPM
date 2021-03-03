@@ -34,7 +34,7 @@
   <ng-container class="ocactionfooter">
     <oc-footer>
         <div class="ocleftalign">
-            <oc-button-action [buttonText]="'REFRESH' | translate" (click)="onRefreshClick()"></oc-button-action>
+            <oc-button-action [buttonText]="'REFRESH' | translate" [disabled]="selectedDeviceInformation.DeviceId === 0" (click)="onRefreshClick()"></oc-button-action>
         </div>  
         &nbsp;     
         <div class="refresh-label" *ngIf="eventDateTime != null">{{'LAST_UPDATED' | translate}}:</div> 
