@@ -1,9 +1,8 @@
-import { AfterViewInit, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Component, Input } from '@angular/core';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
-import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
 import { nameof } from '../../shared/functions/nameof';
 import { WindowService } from '../../shared/services/window-service';
 

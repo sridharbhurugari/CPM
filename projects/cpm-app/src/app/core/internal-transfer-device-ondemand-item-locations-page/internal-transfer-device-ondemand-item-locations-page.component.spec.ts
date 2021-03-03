@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ButtonActionModule, FooterModule, LayoutModule  } from '@omnicell/webcorecomponents';
+import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { InternalTransferDeviceOndemandItemLocationsPageComponent } from './internal-transfer-device-ondemand-item-locations-page.component';
 
@@ -8,7 +10,11 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InternalTransferDeviceOndemandItemLocationsPageComponent ]
+      declarations: [ InternalTransferDeviceOndemandItemLocationsPageComponent ],
+      imports: [
+        LayoutModule,
+        FooterModule,
+        ButtonActionModule,]
     })
     .compileComponents();
   }));

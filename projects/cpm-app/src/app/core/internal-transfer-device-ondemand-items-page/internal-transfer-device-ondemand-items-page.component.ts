@@ -6,23 +6,13 @@ import { map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DevicesService } from '../../api-core/services/devices.service';
-import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { Location } from '@angular/common';
 import * as _ from 'lodash';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
-import { PopupDialogProperties, PopupDialogService, PopupDialogType, PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
+import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { TranslateService } from '@ngx-translate/core';
-import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
-import { IInterDeviceTransferPickPackSizeRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-packsize-request';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
-import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
-import { ISourceLocationDropdownPopupData } from '../../shared/model/i-source-location-dropdown-popup-data';
-import { SourceLocationDropdownPopupComponent } from '../../shared/components/source-location-dropdown-popup/source-location-dropdown-popup.component';
-import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
-import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
-import { IInternalTransferDeviceOnDemandItemLocationsPopupData } from '../../shared/model/i-internal-transfer-device-ondemand-item-locations-popup-data';
-import { InternalTransferDeviceOndemandItemLocationsPopupComponent } from '../../shared/components/internal-transfer-device-ondemand-item-locations-popup/internal-transfer-device-ondemand-item-locations-popup.component';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',

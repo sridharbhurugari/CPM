@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogService } from '@omnicell/webcorecomponents';
-import { isThisSecond } from 'date-fns';
-import { constructor } from 'lodash';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';

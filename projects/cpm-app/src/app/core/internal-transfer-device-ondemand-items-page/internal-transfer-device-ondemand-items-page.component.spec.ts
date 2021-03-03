@@ -146,8 +146,6 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: Location, useValue: locationService },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: TranslateService, useValue: { get: () => of('') } },
-        { provide: SimpleDialogService, useValue: simpleDialogService },
-        { provide: PopupWindowService, useValue: popupWindowService },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DevicesService, useValue: { get: () => of([]) } },
@@ -172,49 +170,4 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  describe('onSelect', () => {
-    describe('given item assigned to other devices', () => {
-      beforeEach(() => {
-        let item = assignedItemsData.find(x => x.AvailablePharmacyLocationCount > 0);
-        component.onSelect(item);
-      });
-
-      it('should prompt for source', () => {
-        expect(popupWindowService.show).toHaveBeenCalled();
-      });
-
-      describe('and source selected', () => {
-        beforeEach(() => {
-          popupDismissedSubject.next(true);
-        });
-
-        it('should prompt for quantity', () => {
-          expect(popupWindowService.show).toHaveBeenCalled();
-        })
-
-        describe('and quantity entered', () => {
-          beforeEach(() => {
-            popupDismissedSubject.next(true);
-          });
-
-          it('should add the pick', () => {
-            expect(deviceReplenishmentNeedsService.pickDeviceItemNeeds).toHaveBeenCalled();
-          })
-
-        })
-      })
-    });
-
-    describe('given item is not assigned to other devices', () => {
-      beforeEach(() => {
-        let item = assignedItemsData.find(x => x.AvailablePharmacyLocationCount == 0);
-        component.onSelect(item);
-      });
-
-      it('should display error', () => {
-        expect(popupDialogService.showOnce).toHaveBeenCalledWith(jasmine.objectContaining({ dialogDisplayType: PopupDialogType.Error }));
-      });
-    });
-  })
 });
