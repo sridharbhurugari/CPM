@@ -68,7 +68,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
         DestinationId: data.DestinationId,
         PriorityCodeDescription: '',
         Date: new Date(),
-        Route:  VerificationRouting.DetailsPage
+        Route:  VerificationRouting.DetailsPage,
+        RoutedByScan: true
       } as IVerificationNavigationParameters
 
       const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -84,7 +85,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       OrderId: verificationOrderItem.OrderId,
       DeviceId: verificationOrderItem.DeviceId,
       DestinationId: null,
-      Route: this.continueRoute
+      Route: this.continueRoute,
+      RoutedByScan: false
     } as IVerificationNavigationParameters
 
     const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -105,6 +107,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     this.verificationOrderItems = this.verificationService.getVerificationOrders().pipe(
       map((verificationOrderItems) => {
         return verificationOrderItems.map((verificationItem) => {
+          console.log(verificationItem);
           return new VerificationOrderItem(verificationItem);
         });
       }), shareReplay(1)

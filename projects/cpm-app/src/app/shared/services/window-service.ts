@@ -26,4 +26,12 @@ export class WindowService {
       this.nativeWindow.dispatchEvent(new Event('resize'));
     }
   }
+
+  getHash() {
+    if(!this.nativeWindow) {
+      return;
+    }
+
+    return this.nativeWindow.location.hash;
+  }
 }
