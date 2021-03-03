@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { map, shareReplay, take, takeUntil } from 'rxjs/operators';
@@ -21,6 +21,8 @@ import { ISourceLocationDropdownPopupData } from '../../shared/model/i-source-lo
 import { SourceLocationDropdownPopupComponent } from '../../shared/components/source-location-dropdown-popup/source-location-dropdown-popup.component';
 import { QuantityEditorPopupComponent } from '../../shared/components/quantity-editor-popup/quantity-editor-popup.component';
 import { IQuantityEditorPopupData } from '../../shared/model/i-quantity-editor-popup-data';
+import { IInternalTransferDeviceOnDemandItemLocationsPopupData } from '../../shared/model/i-internal-transfer-device-ondemand-item-locations-popup-data';
+import { InternalTransferDeviceOndemandItemLocationsPopupComponent } from '../../shared/components/internal-transfer-device-ondemand-item-locations-popup/internal-transfer-device-ondemand-item-locations-popup.component';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-page',
@@ -48,12 +50,11 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   qoh: string;
 
   constructor(
-    private popupWindowService: PopupWindowService,
+
+    private router: Router,
     private translateService: TranslateService,
     private location: Location,
-    private simpleDialogService: SimpleDialogService,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
-    private itemLocaitonDetailsService: ItemLocaitonDetailsService,
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
     coreEventConnectionService: CoreEventConnectionService,
@@ -75,16 +76,6 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   }
 
   ngOnInit() {
-    this.translateService.get('ONDEMAND_SOURCE_POPUP_TITLE').subscribe((res: string) => {
-      this.popupTitle = res;});
-    this.translateService.get('ONDEMAND_SOURCE_DROPDOWN_TITLE').subscribe((res: string) => {
-      this.dropdownTitle = res;});
-    this.translateService.get('ONDEMAND_QUANTITY_EDITOR_TITLE').subscribe((res: string) => {
-      this.quantityEditorPopupTite = res;});
-    this.translateService.get('ONDEMAND_NO_SOURCE_LOCATION').subscribe((res: string) => {
-      this.noLocationsMessage = res;});
-    this.translateService.get('QOH').subscribe((res: string) => {
-      this.qoh = res;});
  }
 
   ngOnDestroy() {
@@ -97,10 +88,8 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   }
 
   onSelect(item: IItemReplenishmentOnDemand) {
-    this.itemsToPick.push(item);
-
     if(item.AvailablePharmacyLocationCount > 0) {
-      this.selectItemSource(item);
+      this.itemSelected(item);
     } else {
       const properties = new PopupDialogProperties("No_Locations");
       this.translateService.get("OK").subscribe((result) => {
@@ -116,131 +105,15 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     }
   }
 
-  pick() {
-    if (this.itemsToPick.length > 0 && this.selectedSource > 0 && this.requestedAmount > 0) {
-      const itemPicked = this.itemsToPick.pop();
-      const pickItems: IInterDeviceTransferPickRequest[] = new Array<IInterDeviceTransferPickRequest>();
-      let packSizes: IInterDeviceTransferPickPackSizeRequest[] = [];
-
-      const item = {
-        PackSize: itemPicked.PackSize,
-        RequestedQuantityInPacks: this.requestedAmount/itemPicked.PackSize,
-        IsOnDemand: true
-      }
-      packSizes.push(item);
-
-      const pickItem = {
-        ItemId: itemPicked.ItemId,
-        QuantityToPick: this.requestedAmount,
-        SourceDeviceLocationId: this.selectedSource,
-        PackSizes: packSizes
-      };
-
-      pickItems.push(pickItem);
-      this.deviceReplenishmentNeedsService.pickDeviceItemNeeds(this.deviceId, pickItems).subscribe(x => this.handlePickSuccess(), e => this.handlePickFailure());
-      this.onRefreshDeviceItems();
-    }
-  }
-
-  selectItemSource(item: IItemReplenishmentOnDemand){
-    const itemlocationDisplayList: SingleselectRowItem[] = [];
-
-    this.selectedSource = 0;
-
-    this.loadAssignedItemsSourceLocations(item.ItemId);
-
-    this.itemLocationDetails$.subscribe(locations => {
-      locations.forEach((location) => {
-        if(location.ItemId === item.ItemId &&
-           location.DeviceId != this.deviceId &&
-           location.DeviceType != "2100" &&
-           location.DeviceType != "2040") {
-            const locationDescription = `${location.DeviceDescription} - ${this.qoh}:${location.QuantityOnHand}`;
-            const itemlocationRow = new SingleselectRowItem(locationDescription, location.DeviceLocationId.toString());
-              itemlocationDisplayList.push(itemlocationRow);
-        }
-      })
-
-      this.showSouceSelection(item, itemlocationDisplayList);
-    });
-  }
-
-  private showSouceSelection(item: IItemReplenishmentOnDemand, itemlocationDisplayList: SingleselectRowItem[]) {
-    const properties = new PopupWindowProperties();
-    const defaultDisplayItem = itemlocationDisplayList.find(x => x.value.length > 0);
-
-    const data: ISourceLocationDropdownPopupData = {
-      popupTitle: this.popupTitle,
-      dropdownTitle: this.dropdownTitle,
-      dropdownRows: itemlocationDisplayList,
-      defaultRow: defaultDisplayItem,
-      selectedRow: defaultDisplayItem,
-    };
-
-    properties.data = data;
-
-    let component = this.popupWindowService.show(SourceLocationDropdownPopupComponent, properties) as unknown as SourceLocationDropdownPopupComponent;
-    component.dismiss.pipe(take(1)).subscribe(selectedOk => {
-      if (selectedOk&& !isNaN(+data.selectedRow.value)) {
-        this.selectedSource = +data.selectedRow.value;
-        this.enterPickQuantity(item);
-      }
-      else {
-        this.itemsToPick = [];
-        this.selectedSource = 0;
-        this.requestedAmount = 0
-      }
-    });
-  }
-
-  enterPickQuantity(item: IItemReplenishmentOnDemand) {
-    const properties = new PopupWindowProperties();
-    this.requestedAmount = 0;
-
-    const data: IQuantityEditorPopupData = {
-      popupTitle: this.quantityEditorPopupTite,
-      quantityDescritpion: item.ItemFormattedGenericName,
-      quantitySubDescritpion: item.ItemBrandName,
-      packSize: item.PackSize,
-      requestedQuantity: this.requestedAmount,
-      unitOfIssue: item.UnitOfIssue
-    };
-
-    properties.data = data;
-
-    let component = this.popupWindowService.show(QuantityEditorPopupComponent, properties) as unknown as QuantityEditorPopupComponent;
-    component.dismiss.pipe(take(1)).subscribe(selectedOk => {
-      if (selectedOk && !isNaN(+data.requestedQuantity)) {
-        this.requestedAmount = +data.requestedQuantity;
-        this.pick();
-      }
-      else {
-        this.itemsToPick = [];
-        this.selectedSource = 0;
-        this.requestedAmount = 0
-      }
-    });
+  private itemSelected(item: IItemReplenishmentOnDemand) {
+    this.router.navigate(['core/internalTransfer/deviceReplenishmentOnDemand/ItemSource/deviceId', this.deviceId, 'itemId', item.ItemId, 'packSize', item.PackSize]);
   }
 
   private loadAssignedItems() {
     this.assignedItems$ = this.deviceReplenishmentNeedsService.getDeviceAssignedItems(this.deviceId).pipe(shareReplay(1));
   }
 
-  private loadAssignedItemsSourceLocations(itemId: string) {
-    this.itemLocationDetails$ = this.itemLocaitonDetailsService.get(itemId)
-      .pipe(shareReplay(1));
-  }
-
   private onRefreshDeviceItems() {
     this.loadAssignedItems();
-  }
-
-  private handlePickSuccess() {
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
-  }
-
-  private handlePickFailure() {
-    this.itemsToPick = [];
-    this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_FAILED_TITLE', 'INTERNAL_TRANS_PICKQUEUE_FAILED_MSG');
   }
 }

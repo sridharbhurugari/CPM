@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UnderfilledPicklistsPageComponent } from './underfilled-picklists-page/underfilled-picklists-page.component';
 import { UnderfilledPicklistsComponent } from './underfilled-picklists/underfilled-picklists.component';
 
-import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule, ToastModule, ButtonToggleModule, ProgressAnimationModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, LayoutModule, FooterModule, SearchModule, InputsModule, SvgIconModule, ToastModule, ButtonToggleModule, ProgressAnimationModule, PopupWindowModule } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
 import { UnderfilledPicklistLinesPageComponent } from './underfilled-picklist-lines-page/underfilled-picklist-lines-page.component';
 import { UnderfilledPicklistLinesComponent } from './underfilled-picklist-lines/underfilled-picklist-lines.component';
@@ -44,6 +44,8 @@ import { LoadingComponent } from './loading/loading.component';
 import { VerificationDetailsCardComponent } from './verification-details-card/verification-details-card.component';
 import { InternalTransferDeviceOndemandItemsPageComponent } from './internal-transfer-device-ondemand-items-page/internal-transfer-device-ondemand-items-page.component';
 import { InternalTransferDeviceOndemandItemsListComponent } from './internal-transfer-device-ondemand-items-list/internal-transfer-device-ondemand-items-list.component';
+import { InternalTransferDeviceOndemandItemLocationsPageComponent } from './internal-transfer-device-ondemand-item-locations-page/internal-transfer-device-ondemand-item-locations-page.component';
+import { InternalTransferDeviceOndemandItemLocationListComponent } from './internal-transfer-device-ondemand-item-location-list/internal-transfer-device-ondemand-item-location-list.component';
 
 @NgModule({
   declarations: [
@@ -84,23 +86,27 @@ import { InternalTransferDeviceOndemandItemsListComponent } from './internal-tra
     VerificationDetailsCardComponent,
     InternalTransferDeviceOndemandItemsPageComponent,
     InternalTransferDeviceOndemandItemsListComponent,
+    InternalTransferDeviceOndemandItemLocationsPageComponent,
+    InternalTransferDeviceOndemandItemLocationListComponent,
   ],
   imports: [
-    CommonModule,
-    GridModule,
-    TranslateModule,
-    RouterModule,
     ButtonActionModule,
-    LayoutModule,
-    FooterModule,
-    SharedModule,
-    InputsModule,
-    SearchModule,
-    SvgIconModule,
-    FormsModule,
-    ToastModule,
-    CoreRoutingModule,
     ButtonToggleModule,
+    CommonModule,
+    CoreRoutingModule,
+    FooterModule,
+    FormsModule,
+    GridModule,
+    InputsModule,
+    LayoutModule,
     ProgressAnimationModule,
-  ],})
+    PopupWindowModule,
+    RouterModule,
+    SearchModule,
+    SharedModule,
+    SvgIconModule,
+    ToastModule,
+    TranslateModule,
+  ],
+})
 export class CoreModule { }

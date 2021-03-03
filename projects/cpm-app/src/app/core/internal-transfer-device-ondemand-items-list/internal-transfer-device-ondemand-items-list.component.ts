@@ -1,9 +1,10 @@
-import { EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { IDevice } from '../../api-core/data-contracts/i-device';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
+import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
 import { nameof } from '../../shared/functions/nameof';
 import { WindowService } from '../../shared/services/window-service';
 
@@ -49,6 +50,11 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
   })
   searchElement: SearchBoxComponent;
 
+  @ViewChild('headerCheckContainer', {
+    static: true
+  })
+  headerCheckContainer: ElementRef;
+
   @Output()
   selectedItem: EventEmitter<IItemReplenishmentOnDemand> = new EventEmitter();
 
@@ -62,5 +68,6 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
       this.searchTextFilter = data;
       this.windowService.dispatchResizeEvent();
     });
+    fixCheckAllNoneClass(this.headerCheckContainer);
   }
 }
