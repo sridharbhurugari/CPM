@@ -54,10 +54,13 @@
             <div class="first" style="align-items: center;"></div>
             <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate">
             <div>{{exceptions.TrayID}}</div>
-            <div *ngIf="exceptions.IsReturn">
+            <div *ngIf="!exceptions.IsReturn">
+              {{'XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE' | translate}}
+            </div>
+            <div *ngIf="exceptions.IsReturn==='True'">
               {{'XR2_EXCEPTIONS_TRAY_RETURN_TYPE' | translate}}
             </div>
-            <div *ngIf="!exceptions.IsReturn">
+            <div *ngIf="exceptions.IsReturn==='False'">
               {{'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE' | translate}}
             </div>
             </div>

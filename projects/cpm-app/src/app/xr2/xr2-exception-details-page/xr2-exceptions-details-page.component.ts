@@ -44,7 +44,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   deviceName: string;
   completedDate: string;
   IsReturn: string;
-  exceptionTrayType: boolean;
+  exceptionTrayType: string;
   firstTime: boolean = true;
   currentSortPropertyName: string = this.reasonPropertyName;
   sortOrder: SortDirection = SortDirection.ascending;
@@ -70,7 +70,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
       TrayID: this.activatedRoute.snapshot.queryParamMap.get('TrayID'),
       DeviceID: this.activatedRoute.snapshot.queryParamMap.get('DeviceID'),
       CompletedDateTime: this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime'),
-      IsReturn: false,
+      IsReturn: "",
       DeviceName: "",
       ExceptionPockets: "",
       TrayDescription: ""
@@ -81,7 +81,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
     this.deviceName = this.activatedRoute.snapshot.queryParamMap.get('DeviceName');
     this.completedDate = this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime');
     this.IsReturn = this.activatedRoute.snapshot.queryParamMap.get('TrayType');
-    this.exceptionTrayType = this.IsReturn === "true" ? true: false;
+    this.exceptionTrayType = this.IsReturn;
     this.displayExceptionDetailList$ = this.exceptionDetailsListService.get(this.selectedItem).pipe(map(guidedDeviceListItems => {
       return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionDetailsItem(p)), SortDirection.ascending);
     }), shareReplay(1));

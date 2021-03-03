@@ -21,10 +21,13 @@
               <tr>
                 <td class="trayidtext">
                   {{ trayID }} {{'HYPHEN_SEPARATOR' | translate}}
-                  <span *ngIf="exceptionTrayType">
+                  <span *ngIf="exceptionTrayType==='null'">
+                    {{ "XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE" | translate }}
+                  </span>
+                  <span *ngIf="exceptionTrayType==='True'">
                     {{ "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" | translate }}
                   </span>
-                  <span *ngIf="!exceptionTrayType">
+                  <span *ngIf="exceptionTrayType==='False'">
                     {{ "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" | translate }}
                   </span>
                 </td>
