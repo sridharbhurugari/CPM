@@ -110,7 +110,7 @@ export class VerificationDetailsCardComponent implements OnInit {
       return;
     }
 
-    this.handleSuccessfulBarcodeScan(match);
+    this.handleSuccessfulBarcodeScan(match, data);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -198,7 +198,11 @@ export class VerificationDetailsCardComponent implements OnInit {
     });
   }
 
-  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail) {
+  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+    item.TransactionScannedBarcodeFormat = data.BarCodeFormat;
+    item.TransactionScannedBarcodeProductId = data.ProductId;
+    item.TransactionScannedRawBarcode = data.BarCodeScanned;
+
     // If we have a scan to advance item (already checked for validity) and
     // that item is currently selected, approve it
     if(this.scanToAdvanceVerificationDestinationDetail
