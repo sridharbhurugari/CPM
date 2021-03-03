@@ -317,5 +317,7 @@
   "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Unknown bar code scanned.  Scan an XR2 Picking Bar Code to continue.",
   "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN": "Unknown bar code scanned.  Scan an Item displayed or an XR2 Picking Bar Code to continue.",
   "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE": "XR2 Picking Bar Code not found for verification",
-  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "No items to verify"
+  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "No items to verify",
+  "REFRESH": "Refresh",
+  "LAST_UPDATED": "Last Updated"
 }

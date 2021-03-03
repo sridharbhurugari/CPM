@@ -53,7 +53,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
     Xr2QueuePageComponent,
     DestockPageComponent,
     DestockTypeInfoComponent,
-    DestockHeaderComponent,
+    DestockHeaderComponent,    
   ],
   imports: [
     CommonModule,
