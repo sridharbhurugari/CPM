@@ -93,9 +93,10 @@ export class VerificationDetailsPageComponent implements OnInit {
 
     if(data.IsXr2PickingBarcode) {
 
-      // If a valid safety stock item is in cache, approve it on valid box scan
+      // If a valid safety stock item is in cache and its a different box, approve it on valid box scan
       if(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail
-        && this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail === this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail) {
+        && this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail === this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail
+        && this.isDifferentBox(data)) {
         this.childVerificationDetailsCardComponent.approveItem(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail);
       }
 
@@ -103,7 +104,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       this.IsBoxBarcodeVerified = true;
 
       // Load new data
-      if( this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId) {
+      if(this.isDifferentBox(data)) {
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
         this.navigationParameters.DeviceId = data.DeviceId;
@@ -194,6 +195,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.headerSubTitle = of(stringResult);
   }
 
+  private isDifferentBox(data: IBarcodeData) {
+    return this.navigationParameters.DeviceId !== data.DeviceId || data.DestinationId !== this.navigationParameters.DestinationId || data.OrderId !== this.navigationParameters.OrderId
+  }
+
   private generateSafetyStockSettings(verificationDetailViewData: IVerificationDestinationDetail[]) {
     this.IsBoxBarcodeVerified = this.navigationParameters.RoutedByScan || !verificationDetailViewData.some(x => x.IsSafetyStockItem);
   }
@@ -269,7 +274,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     }
     this.dashboardUpdateSubject.next(dashboardDataAdded);
     /* istanbul ignore next */
-    verificationDestinationDetails.map(detail => {    
+    verificationDestinationDetails.map(detail => {
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
       this.constructor.name + ' Saving Verifications Complete, trackById: ' + detail.Id);
     });
@@ -277,7 +282,7 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
     verificationDestinationDetails.map(detail => detail.Saving = false);
-    /* istanbul ignore next */ 
+    /* istanbul ignore next */
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
       this.constructor.name + ' Saving Verifications failed: ' + error);
   }
