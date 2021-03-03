@@ -110,7 +110,7 @@ export class VerificationDetailsCardComponent implements OnInit {
       return;
     }
 
-    this.handleSuccessfulBarcodeScan(match, data);
+    this.handleSuccessfulBarcodeScan(match);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
@@ -198,7 +198,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     });
   }
 
-  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail) {
     // If we have a scan to advance item (already checked for validity) and
     // that item is currently selected, approve it
     if(this.scanToAdvanceVerificationDestinationDetail
@@ -264,7 +264,7 @@ export class VerificationDetailsCardComponent implements OnInit {
                 this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
                   this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId + ' trackById: ' + detail.Id);
               });
-                
+
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
               this.selectedVerificationDestinationDetail = null;
             }

@@ -182,4 +182,27 @@ describe('VerificationDetailsPageComponent', () => {
       barcodeScannedInputSubject.next(differentDevicePickingBarcodeScanned);
       expect(mockVerificationService.getVerificationDestinationDetails).toHaveBeenCalledTimes(4);
     });
+
+    it('should approve safety stock item on valid box barcode scan with valid cached item and on selected detail item', () => {
+      const saveSpy = spyOn(component.childVerificationDetailsCardComponent.saveVerificationEvent, 'emit');
+      const item = new VerificationDestinationDetail(null);
+      const barcode = {IsXr2PickingBarcode: true} as IBarcodeData;
+      component.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail = item;
+      component.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = item;
+
+      component.onBarcodeScannedEvent(barcode);
+
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not approve item if no cached item on box barcode scan', () => {
+      const saveSpy = spyOn(component.childVerificationDetailsCardComponent.saveVerificationEvent, 'emit');
+      component.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail = null;
+      component.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = null;
+      const barcode = {IsXr2PickingBarcode: true} as IBarcodeData;
+
+      component.onBarcodeScannedEvent(barcode);
+
+      expect(saveSpy).toHaveBeenCalledTimes(0);
+    });
   });

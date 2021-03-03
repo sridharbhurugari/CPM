@@ -293,5 +293,82 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.selectedVerificationDestinationDetail).toBe(item);
       expect(item.IsMedBarcodeVerified).toBeTruthy();
     });
-  })
+  });
+
+  describe('Scan to advance', () => {
+    it('should cache safety stock item on successful barcode scan', () => {
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+      component.scanToAdvanceVerificationDestinationDetail = null;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+    });
+
+    it('should not approve safety stock item if no cached item', () => {
+      const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+      component.selectedVerificationDestinationDetail = item;
+      component.scanToAdvanceVerificationDestinationDetail = null;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(saveEventSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should approve safety stock item if on selected item', () => {
+      const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      const scanToAdvanceItem = new VerificationDestinationDetail(null);
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+      component.selectedVerificationDestinationDetail = scanToAdvanceItem;
+      component.scanToAdvanceVerificationDestinationDetail = scanToAdvanceItem;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+      expect(saveEventSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Scan to advance', () => {
+    it('should not cache the clicked medication if not verified', () => {
+      const item = new VerificationDestinationDetail(null);
+      item.IsSafetyStockItem = true;
+      component.IsBoxBarcodeVerified = false;
+      item.IsMedBarcodeVerified = false;
+
+      component.medicationClicked(item);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(undefined);
+    });
+
+    it('should cache the clicked medication as scan to advance item if not a safety stock item', () => {
+      const item = new VerificationDestinationDetail(null);
+      item.IsSafetyStockItem = false;
+
+      component.medicationClicked(item);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+    });
+
+    it('should cache the clicked medication as scan to advance item if med and box verified', () => {
+      const item = new VerificationDestinationDetail(null);
+      item.IsSafetyStockItem = true;
+      component.IsBoxBarcodeVerified = true;
+      item.IsMedBarcodeVerified = true;
+
+      component.medicationClicked(item);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+    });
+  });
 });
