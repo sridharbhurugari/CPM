@@ -23,7 +23,7 @@ class MockInternalTransferItemsListComponent {
   @Input()item: IItemReplenishmentOnDemand;
 }
 
-fdescribe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
+describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
   let component: InternalTransferDeviceOndemandItemLocationsPageComponent;
   let fixture: ComponentFixture<InternalTransferDeviceOndemandItemLocationsPageComponent>;
   let locationService: Partial<Location>;
@@ -41,7 +41,7 @@ fdescribe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
     };
 
     coreEventConnectionService = {
-      refreshDeviceNeedsSubject: new Subject(),
+      refreshDeviceOnDemandSubject: new Subject(),
     };
 
     let assignedItemsData: IItemReplenishmentOnDemand[] = [{
