@@ -73,7 +73,7 @@ describe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
     component = fixture.componentInstance;
     component.item = selectedItemsData;
     component.itemLocations = itemLocationsData;
-    component.selecteditemLocation = selectedLocationsData;
+    component.selectedItemLocation = selectedLocationsData;
     fixture.detectChanges();
   });
 
