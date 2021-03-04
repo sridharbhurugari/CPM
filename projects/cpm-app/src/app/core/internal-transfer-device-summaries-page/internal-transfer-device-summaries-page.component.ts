@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { parseBool } from '../../shared/functions/parseBool';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: 'app-internal-transfer-device-summaries-page',
@@ -24,6 +26,8 @@ export class InternalTransferDeviceSummariesPageComponent {
     private router: Router,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     private activatedRoute: ActivatedRoute,
+    private windowService: WindowService,
+    private wpfInteropService: WpfInteropService,
   ) {
     coreEventConnectionService.refreshDeviceNeedsSubject
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -36,6 +40,7 @@ export class InternalTransferDeviceSummariesPageComponent {
         }
       });
     this.loadDeviceNeeds();
+    this.setupDataRefresh();
     this.activatedRoute.queryParamMap
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(q => {
@@ -75,5 +80,15 @@ export class InternalTransferDeviceSummariesPageComponent {
       relativeTo: this.activatedRoute,
       queryParams: queryParams 
     });
+  }
+  
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.loadDeviceNeeds();
+      });
   }
 }

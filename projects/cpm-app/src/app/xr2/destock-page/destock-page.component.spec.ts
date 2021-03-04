@@ -14,9 +14,10 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { DestockEventConnectionService } from '../services/destock-event-connection.service';
 import { DestockDataEvent } from '../model/destock-data-event';
 import { TranslateService } from '@ngx-translate/core';
-import { ProgressAnimationComponent } from '@omnicell/webcorecomponents';
+import { ProgressAnimationComponent, FooterModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
 import { MockDestockTypeInfoComponent } from '../../shared/testing/mock-destock-typeinfo-component.spec';
+import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DestockPageComponent } from './destock-page.component';
 
 describe('DestockPageComponent', () => {
@@ -48,8 +49,9 @@ describe('DestockPageComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ DestockPageComponent, MockDestockHeaderComponent, MockDestockTypeInfoComponent, ProgressAnimationComponent ],
-      imports: [],
+      declarations: [ DestockPageComponent, MockDestockHeaderComponent, MockDestockTypeInfoComponent, ProgressAnimationComponent, MockTranslatePipe ],
+      imports: [ ButtonActionModule,        
+        FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: SimpleDialogService, useValue: simpleDialogService },

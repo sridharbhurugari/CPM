@@ -17,8 +17,15 @@
   height:500px;
   overflow-y:hidden;
 }
-
 .fillWidth {
   width:100%;
   justify-items: center;
 }
+.refresh-label {
+  font-size: 14px;
+    font: caption
+}
+.last-refresh {    
+    font-size: 14px;
+    font: caption
+  }
