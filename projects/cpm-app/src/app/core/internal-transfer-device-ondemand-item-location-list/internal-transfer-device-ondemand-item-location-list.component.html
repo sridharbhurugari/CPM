@@ -1,5 +1,5 @@
 <div class="cpmheaderrow">
-  <app-header-container>
+  <app-header-container *ngIf="item">
     {{item.ItemFormattedGenericName}}: <p style="font-size: 12px;">{{'PACK_SIZE' | translate}} {{item.PackSize}}</p>
   </app-header-container>
   <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
@@ -28,7 +28,7 @@
         <span>{{itemLocation.QuantityOnHand}}</span>
       </div>
       <div class="col" [attr.data-title]="'ONDEMAND_REQUEST_QUANTITY' | translate">
-        <div *ngIf="itemLocation.DeviceLocationId === selecteditemLocation.DeviceLocationId">
+        <div *ngIf="selectedItemLocation && itemLocation.DeviceLocationId === selectedItemLocation.DeviceLocationId">
           <oc-numeric [units]="item.PackSize == 1 ? item.UnitOfIssue : ('PACKS' | translate)"
                       [(ngModel)]="itemLocation.Quantity"
                       [disabled]="math.floor(itemLocation.QuantityOnHand/item.PackSize) > 1"

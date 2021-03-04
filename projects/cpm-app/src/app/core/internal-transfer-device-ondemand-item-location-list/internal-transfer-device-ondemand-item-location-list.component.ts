@@ -13,7 +13,7 @@ import { WindowService } from '../../shared/services/window-service';
 })
 export class InternalTransferDeviceOndemandItemLocationListComponent implements AfterViewInit {
 
-  _itemLocations: IItemLocationDetail[];
+  _itemLocations: IItemLocationDetail[] = [];
 
   readonly locationDescriptionPropertyName: string = nameof<IItemLocationDetail>('LocationDescription');
   readonly quantityOnHandPropertyName: string = nameof<IItemLocationDetail>('QuantityOnHand');
@@ -27,10 +27,14 @@ export class InternalTransferDeviceOndemandItemLocationListComponent implements 
 
   searchTextFilter: string;
 
-  selecteditemLocation: IItemLocationDetail;
+  selectedItemLocation: IItemLocationDetail;
 
   @Input()
   set itemLocations(value: IItemLocationDetail[]) {
+    if(this.selectedItemLocation) {
+      this.selectedItemLocation = null;
+    }
+
     this._itemLocations = value;
     this.windowService.dispatchResizeEvent();
   }
@@ -70,22 +74,22 @@ export class InternalTransferDeviceOndemandItemLocationListComponent implements 
       return;
     }
 
-    if(typeof this.selecteditemLocation === "undefined") {
-      this.selecteditemLocation = itemLocation;
-      this.selecteditemLocation.Quantity = 1
+    if(typeof this.selectedItemLocation === "undefined") {
+      this.selectedItemLocation = itemLocation;
+      this.selectedItemLocation.Quantity = 1
       this.isSelected.emit(true);
       this.selectedItem.emit(itemLocation)
       return;
     }
 
-    if(itemLocation.DeviceLocationId === this.selecteditemLocation.DeviceLocationId) {
+    if(itemLocation.DeviceLocationId === this.selectedItemLocation.DeviceLocationId) {
       return;
     }
 
-    this.selecteditemLocation = itemLocation;
+    this.selectedItemLocation = itemLocation;
 
     this.itemLocations.forEach(itemLocation => {
-      if(itemLocation.DeviceLocationId === this.selecteditemLocation.DeviceLocationId) {
+      if(itemLocation.DeviceLocationId === this.selectedItemLocation.DeviceLocationId) {
         itemLocation.Quantity = 1
         this.isSelected.emit(true);
         this.selectedItem.emit(itemLocation)
