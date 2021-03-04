@@ -16,6 +16,10 @@ import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/d
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { LogService } from '../../api-core/services/log-service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -25,18 +29,18 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 export class VerificationDetailsCardComponent implements OnInit {
 
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
+  private _loggingCategory = LoggingCategory.Verification;
 
   constructor(
     private translateService: TranslateService,
     private popupWindowService: PopupWindowService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private logService: LogService
     ) { }
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
-    console.log('setting data');
      this._verificationDestinationDetails = value;
-     this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);
   }
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
@@ -44,27 +48,28 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
+  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() IsBoxBarcodeVerified: boolean;
 
   private barcodeScannedEventSubscription: Subscription;
-
-  private _verificationDestinationDetails : VerificationDestinationDetail[]
-
-  selectedVerificationDestinationDetail : VerificationDestinationDetail;
+  private _verificationDestinationDetails : VerificationDestinationDetail[];
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
-  readonly requiredVerificationPropertyName = nameof<VerificationDestinationDetail>('RequiredVerification');
 
-  ngUnsubscribe = new Subject();
+  selectedVerificationDestinationDetail : VerificationDestinationDetail;
+  scanToAdvanceVerificationDestinationDetail: VerificationDestinationDetail;
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
   destinationLine2: string;
   destinationType: string;
+  rowIconWidthPercent = 13; // Static for row icon width
+  ngUnsubscribe = new Subject();
 
   destinationTypes: typeof DestinationTypes = DestinationTypes;
 
@@ -92,32 +97,27 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onBarcodeScannedEvent(data: IBarcodeData): void {
-    //TODO If Item, check for Item in control - jump to it if present.
-    // If not an item in the control - or not an item barcode, Fire event alerting incorect barcode scanned - display popup
     if(!data.ItemId)
     {
-      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      this.handleFailedBarcodeScan(data);
       return;
     }
 
     const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(!match)
     {
-      this.verificationDetailBarcodeScanUnexpected.emit(data);
+      this.handleFailedBarcodeScan(data);
       return;
     }
 
-    if(this.selectedVerificationDestinationDetail) {
-      // TODO - Figure out how we approve on scan
-      // var itemToApprove = this.selectedVerificationDestinationDetail;
-      // this.approveItem(itemToApprove);
-    }
-
-    this.selectedVerificationDestinationDetail = match;
+    this.handleSuccessfulBarcodeScan(match, data);
   }
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
     this.selectedVerificationDestinationDetail = destinationDetail;
+    if(!destinationDetail.IsSafetyStockItem || this.IsBoxBarcodeVerified && destinationDetail.IsMedBarcodeVerified) {
+      this.scanToAdvanceVerificationDestinationDetail = destinationDetail;
+    }
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
@@ -136,7 +136,8 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
-    console.log('button approve clicked');
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Button Approve Clicked');
     this.approveItem(selectedVerificationDestinationDetail);
   }
 
@@ -149,7 +150,10 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
-    console.log(selectedVerificationDestinationDetail);
+    /* istanbul ignore next */
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
+
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
   }
@@ -159,7 +163,20 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
       return !removalSet.has(verificationDestinationDetail);
     });
-    this.selectedVerificationDestinationDetail = null;
+  }
+
+  containsSafetyStockMedication(items: VerificationDestinationDetail[]) {
+    if(!items) {
+      return false;
+    }
+
+    return items.some(x => x.IsSafetyStockItem);
+  }
+
+  calculateDynamicIconWidth(verificationDestinationDetail: VerificationDestinationDetail) {
+    let widthIconOutputDevice = verificationDestinationDetail.HasOutputDeviceVerification ? this.rowIconWidthPercent: 0;
+    let widthIconException = verificationDestinationDetail.Exception ? this.rowIconWidthPercent: 0;
+    return widthIconOutputDevice + widthIconException;
   }
 
   /* istanbul ignore next */
@@ -169,6 +186,44 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     return verificationDestinationDetail.Id;
+  }
+
+   /* istanbul ignore next */
+   showAlert(): void {
+    var exceptionMsg;
+    this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
+    this.toastService.error('error title', exceptionMsg, {
+      timeout: 5000,
+      pauseOnHover: false
+    });
+  }
+
+  private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+    item.TransactionScannedBarcodeFormat = data.BarCodeFormat;
+    item.TransactionScannedBarcodeProductId = data.ProductId;
+    item.TransactionScannedRawBarcode = data.BarCodeScanned;
+
+    // If we have a scan to advance item (already checked for validity) and
+    // that item is currently selected, approve it
+    if(this.scanToAdvanceVerificationDestinationDetail
+      && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
+      && this.scanToAdvanceVerificationDestinationDetail !== item) {
+      this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+    }
+
+    this.selectedVerificationDestinationDetail = item;
+
+    if(this.IsBoxBarcodeVerified) {
+      item.IsMedBarcodeVerified = true;
+      // Item is now box and med verified, save it for potential scan to advance
+      this.scanToAdvanceVerificationDestinationDetail = item;
+    } else {
+      this.verificationBoxBarcodeRequired.emit();
+    }
+  }
+
+  private handleFailedBarcodeScan(data: IBarcodeData) {
+    this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
   /* istanbul ignore next */
@@ -209,8 +264,13 @@ export class VerificationDetailsCardComponent implements OnInit {
               selectedVerificationDestinationDetails.forEach((detail) => {
                 detail.VerifiedStatus = VerificationStatusTypes.Rejected;
                 detail.RejectReason = data.selectedrow.value;
+                /* istanbul ignore next */
+                this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+                  this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId + ' trackById: ' + detail.Id);
               });
+
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
+              this.selectedVerificationDestinationDetail = null;
             }
         });
     });
@@ -221,21 +281,20 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.destinationLine1 = verificationDestinationDetails[0].DestinationLine1;
       this.destinationLine2 = verificationDestinationDetails[0].DestinationLine2;
       this.destinationType = verificationDestinationDetails[0].DestinationType;
+    } else {
+      this.resetPageDisplay();
     }
   }
 
-  showAlert(): void {
-    //if(this.selectedVerificationDestinationDetail.Exception) {
-      var exceptionMsg;
-      this.translateService.get('XR2_PICK_VERIFICATION_EXCEPTION').subscribe(result => { exceptionMsg = result; });
-      this.toastService.error('error title', exceptionMsg, {
-        timeout: 5000,
-        pauseOnHover: false
-      });
-    // }
+  private resetPageDisplay() {
+    this.destinationLine1 = null;
+    this.destinationLine2 = null;
+    this.destinationType = null;
+    this.selectedVerificationDestinationDetail = null;
   }
 
   private setTranslations(): void {
     this.translations$ = this.translateService.get(this.translatables);
   }
+
 }

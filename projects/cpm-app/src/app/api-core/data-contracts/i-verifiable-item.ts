@@ -13,4 +13,5 @@ export interface IVerifiableItem {
   TransactionScannedBarcodeProductId: string;
   TransactionScannedBarcodeFormat: string;
   TransactionScannedRawBarcode: string;
+
 }

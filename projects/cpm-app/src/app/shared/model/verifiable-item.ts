@@ -21,6 +21,7 @@ export class VerifiableItem implements IVerifiableItem {
   TransactionScannedBarcodeFormat: string;
   TransactionScannedRawBarcode: string;
 
+
   static fromVerificationDestinationDetail(verificationDestinationDetail: VerificationDestinationDetail) {
     return new this({
       DestinationId: verificationDestinationDetail.DestinationId,
@@ -32,9 +33,9 @@ export class VerifiableItem implements IVerifiableItem {
       FillDate: verificationDestinationDetail.FillDate,
       VerifiedStatus: verificationDestinationDetail.VerifiedStatus,
       RejectReason: verificationDestinationDetail.RejectReason,
-      TransactionScannedBarcodeProductId: null,
-      TransactionScannedBarcodeFormat: null,
-      TransactionScannedRawBarcode: null
+      TransactionScannedBarcodeProductId: verificationDestinationDetail.TransactionScannedBarcodeProductId,
+      TransactionScannedBarcodeFormat: verificationDestinationDetail.TransactionScannedBarcodeFormat,
+      TransactionScannedRawBarcode: verificationDestinationDetail.TransactionScannedRawBarcode
     });
   }
 }

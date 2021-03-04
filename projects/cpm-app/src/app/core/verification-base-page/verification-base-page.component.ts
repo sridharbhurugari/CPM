@@ -6,14 +6,15 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { VerificationService } from '../../api-core/services/verification.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { filter, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
-import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { VerificationOrderPageComponent } from '../verification-order-page/verification-order-page.component';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: "app-verification-base-page",
@@ -21,14 +22,14 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   styleUrls: ["./verification-base-page.component.scss"],
 })
 export class VerificationBasePageComponent implements OnInit {
-  private barcodeScannedSubscription: Subscription;
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
-  barcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
+  private barcodeScannedSubscription: Subscription;
   private initialRoute = VerificationRouting.OrderPage;
 
+  barcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
   rejectReasons: Observable<string[]>;
@@ -43,11 +44,15 @@ export class VerificationBasePageComponent implements OnInit {
     "BARCODESCAN_DIALOGWARNING_TITLE",
     "OK",
     "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN",
+    "BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE",
+    "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
   ];
 
+  @ViewChild(VerificationOrderPageComponent, { static: false }) childVerificationOrderPageComponent: VerificationOrderPageComponent;
+
   constructor(
-    private wpfInteropService: WpfInteropService,
     private windowService: WindowService,
+    private wpfInteropService: WpfInteropService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private systemConfigurationService: SystemConfigurationService,
@@ -99,6 +104,10 @@ export class VerificationBasePageComponent implements OnInit {
 
   onVerificationDetailBarcodeScanUnexpected() {
     this.displayUnexpectedBarcodeScanInDetails();
+  }
+
+  onVerificationBoxBarcodeRequired() {
+    this.displayBoxBarcodeScanRequired();
   }
 
   private setTranslations(): void {
@@ -153,6 +162,7 @@ export class VerificationBasePageComponent implements OnInit {
     return !this.isValidSubscription(variable);
   }
 
+  /* istanbul ignore next */
   private displayExpectedPickingBarcodeScan(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -171,6 +181,7 @@ export class VerificationBasePageComponent implements OnInit {
     });
   }
 
+  /* istanbul ignore next */
   private displayUnexpectedBarcodeScanInDetails(): void {
     this.clearDisplayedDialog();
     this.translations$.subscribe((translations) => {
@@ -179,6 +190,25 @@ export class VerificationBasePageComponent implements OnInit {
         translations.BARCODESCAN_DIALOGWARNING_TITLE;
       properties.messageElementText =
         translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
+      properties.primaryButtonText = translations.OK;
+      properties.showPrimaryButton = true;
+      properties.showSecondaryButton = false;
+      properties.dialogDisplayType = PopupDialogType.Warning;
+      properties.timeoutLength = this.popupTimeoutSeconds;
+      properties.uniqueId = Guid.create().toString();
+      this.displayedDialog = this.dialogService.showOnce(properties);
+    });
+  }
+
+  /* istanbul ignore next */
+  private displayBoxBarcodeScanRequired(): void {
+    this.clearDisplayedDialog();
+    this.translations$.subscribe((translations) => {
+      const properties = new PopupDialogProperties("Role-Status-Warning");
+      properties.titleElementText =
+        translations.BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE;
+      properties.messageElementText =
+        translations.BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK;
       properties.primaryButtonText = translations.OK;
       properties.showPrimaryButton = true;
       properties.showSecondaryButton = false;
@@ -210,10 +240,12 @@ export class VerificationBasePageComponent implements OnInit {
   private setupDataRefresh() {
     let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
-        this.LoadTransientData();
-        this.initializeNavigationParameters();
+        this.ngOnInit();
+        if(this.childVerificationOrderPageComponent) {
+          this.childVerificationOrderPageComponent.ngOnInit();
+        }
       });
   }
 }

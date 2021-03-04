@@ -13,6 +13,10 @@
   <app-cp-data-card
   [showLoading]="!verificationDashboardData"
   [title]="'EXCEPTIONS' | translate"
+  [iconString]="showIcon('notification-active', verificationDashboardData?.CompleteExceptions, verificationDashboardData?.RequiredExceptions)"
+  [iconTheme]="'danger'"
+  [toastMsgResourceKey]="'EXCEPTION_MSG'"
+  [toastType]="'error'"
   [data1]="verificationDashboardData?.CompleteExceptions?.toString()"
   [dataLabel1]="'COMPLETE' | translate"
   [data2]="verificationDashboardData?.RequiredExceptions?.toString()"
@@ -22,9 +26,12 @@
   <app-cp-data-card
   [showLoading]="!verificationDashboardData"
   [title]="'OUTPUT_DEVICE' | translate"
-  [data1]="'0'"
+  [iconString]="showIcon('notification-active', verificationDashboardData?.CompleteOutputDevices, verificationDashboardData?.RequiredOutputDevices)"
+  [toastMsgResourceKey]="'OUTPUT_DEVICE_MSG'"
+  [toastType]="'warn'"
+  [data1]="verificationDashboardData?.CompleteOutputDevices?.toString()"
   [dataLabel1]="'COMPLETE' | translate"
-  [data2]="'0'"
+  [data2]="verificationDashboardData?.RequiredOutputDevices?.toString()"
   [dataLabel2]="'REQUIRED' | translate"
   >
   </app-cp-data-card>

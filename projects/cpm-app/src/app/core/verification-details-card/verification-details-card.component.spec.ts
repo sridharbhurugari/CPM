@@ -14,6 +14,7 @@ import { ToastService } from '@omnicell/webcorecomponents';
 
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { LogService } from '../../api-core/services/log-service';
 
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
@@ -23,6 +24,7 @@ describe('VerificationDetailsCardComponent', () => {
   let popupWindowService: Partial<PopupWindowService>;
   let toastService: Partial<ToastService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData>;
+  let logService: Partial<LogService>;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
@@ -37,6 +39,10 @@ describe('VerificationDetailsCardComponent', () => {
     info: jasmine.createSpy('info'),
   };
 
+  logService = {
+    logMessageAsync: jasmine.createSpy('logMessageAsync')
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDetailsCardComponent,
@@ -46,6 +52,7 @@ describe('VerificationDetailsCardComponent', () => {
         { provide: TranslateService, useValue: translateService},
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: ToastService, useValue: toastService },
+        { provide: LogService, useValue: logService },
       ]
     })
     .compileComponents();
@@ -56,7 +63,6 @@ describe('VerificationDetailsCardComponent', () => {
     component = fixture.componentInstance;
     barcodeScannedInputSubject = new Subject<IBarcodeData>();
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
-    spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
     fixture.detectChanges();
   });
 
@@ -80,6 +86,14 @@ describe('VerificationDetailsCardComponent', () => {
     expect(component.destinationLine2).toBe(newItem.DestinationLine2);
   });
 
+  it('should set group data/titles on item list set to null if empty', () => {
+    component.verificationDestinationDetails = [];
+
+    expect(component.destinationType).toBe(null);
+    expect(component.destinationLine1).toBe(null);
+    expect(component.destinationLine2).toBe(null);
+  });
+
   describe('Sorting', () => {
     it('should set sort order on column selected event', () => {
       const mockSortEvent = {} as IColHeaderSortChanged;
@@ -96,7 +110,7 @@ describe('VerificationDetailsCardComponent', () => {
   });
 
 
-  describe('Formatting', () => {
+  describe('Formatting/Styling', () => {
     it('should get formated datetime', () => {
       const mockdetail = new VerificationDestinationDetail(null);
       const expectedDate = new Date(1, 1, 1, 1, 1, 1, 1);
@@ -104,6 +118,22 @@ describe('VerificationDetailsCardComponent', () => {
       mockdetail.FillDate = expectedDate;
 
       expect(component.getOrderDate(mockdetail)).toBe(expectedDate.toLocaleString('en-US'));
+    });
+
+    it('should calculate icon withs for the rows dynamically', () => {
+      const expectedWidth1 = component.rowIconWidthPercent;
+      const expectedWidth2 = component.rowIconWidthPercent * 2;
+      const expectedWidth3 = 0;
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      item1.HasOutputDeviceVerification = true;
+      item2.HasOutputDeviceVerification = true;
+      item2.Exception = true;
+
+      expect(component.calculateDynamicIconWidth(item1)).toBe(expectedWidth1);
+      expect(component.calculateDynamicIconWidth(item2)).toBe(expectedWidth2);
+      expect(component.calculateDynamicIconWidth(item3)).toBe(expectedWidth3);
     });
   });
 
@@ -134,12 +164,14 @@ describe('VerificationDetailsCardComponent', () => {
 
   describe('Scans', () => {
     it('should emit message on non item scan', () => {
+      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
       var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
-      expect(component.verificationDetailBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+      expect(unexpectedBarcodeSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should emit message on non matching item scan', () => {
+      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
       const newItem = new VerificationDestinationDetail(null);
       newItem.DestinationType = 'type';
       newItem.DestinationLine1 = 'DL0';
@@ -154,25 +186,32 @@ describe('VerificationDetailsCardComponent', () => {
 
       var barcodeData = { ItemId: '1'} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
-      expect(component.verificationDetailBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+      expect(unexpectedBarcodeSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should set selected data on matching item scan', () => {
+      const expectedBarcodeScanned = 'ABC';
+      const expectedProductId = '123';
+      const expectedBarcodeFormat = 'MC';
+      const expectedItemId = '1';
       const newItem = new VerificationDestinationDetail(null);
       newItem.DestinationType = 'type';
       newItem.DestinationLine1 = 'DL0';
       newItem.DestinationLine2 = 'DL1',
-      newItem.ItemId = '1'
-      
+      newItem.ItemId = expectedItemId
+
       const newList = [
         Object.assign({}, newItem)
       ];
 
       component.verificationDestinationDetails = newList;
 
-      var barcodeData = { ItemId: '1'} as IBarcodeData;
+      var barcodeData = { ItemId: expectedItemId, BarCodeScanned: expectedBarcodeScanned, ProductId: expectedProductId, BarCodeFormat: expectedBarcodeFormat} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
-      expect(component.selectedVerificationDestinationDetail.ItemId).toEqual('1');
+      expect(component.selectedVerificationDestinationDetail.ItemId).toEqual(expectedItemId);
+      expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeFormat).toEqual(expectedBarcodeFormat);
+      expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeProductId).toEqual(expectedProductId);
+      expect(component.selectedVerificationDestinationDetail.TransactionScannedRawBarcode).toEqual(expectedBarcodeScanned);
     });
   });
 
@@ -183,7 +222,7 @@ describe('VerificationDetailsCardComponent', () => {
       newItem.DestinationLine1 = 'DL0';
       newItem.DestinationLine2 = 'DL1',
       newItem.ItemId = '1'
-      
+
       const newList = [
         Object.assign({}, newItem)
       ];
@@ -192,8 +231,151 @@ describe('VerificationDetailsCardComponent', () => {
       component.selectedVerificationDestinationDetail = newItem;
 
       component.removeVerifiedDetails(newList);
-      expect(component.selectedVerificationDestinationDetail).toEqual(null);
       expect(component.verificationDestinationDetails.length).toEqual(0);
+    });
+  });
+
+  describe('Safety Stock', ()=> {
+    it('should contain safety stock item', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      item1.IsSafetyStockItem = true;
+      const items = [item1, item2, item3];
+
+      expect(component.containsSafetyStockMedication(items)).toBeTruthy();
+    });
+
+    it('should not contain safety stock item', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const items = [item1, item2, item3];
+
+      expect(component.containsSafetyStockMedication(items)).toBeFalsy();
+    });
+
+    it('should emit barcode unexpected event on scan if not formatted correctly', ()=> {
+      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
+      const data = {} as IBarcodeData;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(unexpectedBarcodeSpy).toHaveBeenCalledTimes(1);
+    });
+
+
+    it('should emit barcode unexpected event on scan if item is not found', ()=> {
+      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
+      const data = {ItemId: 'itemId1'} as IBarcodeData;
+      component.verificationDestinationDetails = [{ItemId: 'itemId2'} as VerificationDestinationDetail]
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(unexpectedBarcodeSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should emit barcode required event and select item on scan without xr2 picking label scanned', ()=> {
+      const requiredBarcodeSpy = spyOn(component.verificationBoxBarcodeRequired, 'emit');
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = false;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(component.selectedVerificationDestinationDetail).toBe(item);
+      expect(requiredBarcodeSpy).toHaveBeenCalledTimes(1);
+    });
+
+
+    it('should verify med barcode and select item on scan with xr2 picking label scanned', ()=> {
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(component.selectedVerificationDestinationDetail).toBe(item);
+      expect(item.IsMedBarcodeVerified).toBeTruthy();
+    });
+  });
+
+  describe('Scan to advance', () => {
+    it('should cache safety stock item on successful barcode scan', () => {
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+      component.scanToAdvanceVerificationDestinationDetail = null;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+    });
+
+    it('should not approve safety stock item if no cached item', () => {
+      const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+      component.selectedVerificationDestinationDetail = item;
+      component.scanToAdvanceVerificationDestinationDetail = null;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(saveEventSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should approve safety stock item if on selected item', () => {
+      const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
+      const data = {ItemId: 'itemId'} as IBarcodeData;
+      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      const scanToAdvanceItem = new VerificationDestinationDetail(null);
+      component.verificationDestinationDetails = [item];
+      component.IsBoxBarcodeVerified = true;
+      component.selectedVerificationDestinationDetail = scanToAdvanceItem;
+      component.scanToAdvanceVerificationDestinationDetail = scanToAdvanceItem;
+
+      component.onBarcodeScannedEvent(data);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+      expect(saveEventSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Scan to advance', () => {
+    it('should not cache the clicked medication if not verified', () => {
+      const item = new VerificationDestinationDetail(null);
+      item.IsSafetyStockItem = true;
+      component.IsBoxBarcodeVerified = false;
+      item.IsMedBarcodeVerified = false;
+
+      component.medicationClicked(item);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(undefined);
+    });
+
+    it('should cache the clicked medication as scan to advance item if not a safety stock item', () => {
+      const item = new VerificationDestinationDetail(null);
+      item.IsSafetyStockItem = false;
+
+      component.medicationClicked(item);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
+    });
+
+    it('should cache the clicked medication as scan to advance item if med and box verified', () => {
+      const item = new VerificationDestinationDetail(null);
+      item.IsSafetyStockItem = true;
+      component.IsBoxBarcodeVerified = true;
+      item.IsMedBarcodeVerified = true;
+
+      component.medicationClicked(item);
+
+      expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
     });
   });
 });
