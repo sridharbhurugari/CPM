@@ -1,10 +1,14 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
+import { LogVerbosity } from 'oal-core';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationOrderItem } from '../../api-core/data-contracts/i-verification-order-item';
+import { LogService } from '../../api-core/services/log-service';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -28,6 +32,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
+  private _loggingCategory = LoggingCategory.Verification;
 
   ngUnsubscribe = new Subject();
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
@@ -38,7 +43,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   constructor(
     private verificationService: VerificationService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private logService: LogService,
     ) { }
 
   ngOnInit() {
@@ -57,6 +63,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
       console.log('Details Page Xr2 Barcode!')
