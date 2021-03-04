@@ -198,7 +198,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       searchTextFilterOrder: this.savedPageConfiguration.searchTextFilterOrder,
       colHeaderSortOrder: this.savedPageConfiguration.colHeaderSortOrder,
       searchTextFilterDestination: this.searchTextFilter,
-      colHeaderSortDestination: this.colHeaderSort
+      colHeaderSortDestination: this.colHeaderSort,
+      requiredOrders: this.savedPageConfiguration.requiredOrders
     } as IVerificationPageConfiguration;
   }
 

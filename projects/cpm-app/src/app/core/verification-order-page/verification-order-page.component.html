@@ -2,6 +2,7 @@
   <app-verification-order-header
   [savedPageConfiguration]="savedPageConfiguration"
   (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
+  (valueChange)="setIsRequiredVerification($event)"
   ></app-verification-order-header>
   <app-verification-order-queue
   [unfilteredVerificationOrderItems]="verificationOrderItems | async"
