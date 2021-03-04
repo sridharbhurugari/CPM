@@ -55,14 +55,6 @@ describe('InternalTransferDeviceOndemandItemsListComponent', () => {
   },
   ];
 
-  let outputDevceDats: OutputDevice[] = [{
-    DeviceId: "1", Label: "Device Label", IsActive: true
-  }];
-
-  let deviceData: IDevice = {
-    Id: 12345, Description: "test Device",  DeviceType: "2103",  OutputDevices: outputDevceDats
-  };
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ InternalTransferDeviceOndemandItemsListComponent,
@@ -87,7 +79,6 @@ describe('InternalTransferDeviceOndemandItemsListComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceOndemandItemsListComponent);
     component = fixture.componentInstance;
     component.assignedItems = assignedItemsData;
-    component.device = deviceData;
     fixture.detectChanges();
   });
 

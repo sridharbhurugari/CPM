@@ -149,7 +149,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DevicesService, useValue: { get: () => of([]) } },
-        { provide: PopupDialogService, useValue: { showOnce: jasmine.createSpy('showOnce') } },
+        { provide: PopupDialogService, useValue: popupWindowService },
         { provide: 'env', useValue: { } },
         { provide: 'configEndpointKey', useValue: { } },
       ]

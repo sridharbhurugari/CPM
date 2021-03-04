@@ -24,7 +24,7 @@ import { IDevice } from '../../api-core/data-contracts/i-device';
 })
 class MockInternalTransferItemsListComponent {
   @Input()itemNeeds: IItemReplenishmentNeed[]
-  @Input()device: IDevice;
+  @Input()deviceDescription: string;
 }
 
 describe('InternalTransferDeviceNeedsPageComponent', () => {
@@ -87,6 +87,15 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     },
   ];
 
+  let deviceData: IDevice[] = [
+    {
+      Id: 8,
+      Description: 'Test',
+      DeviceType: null,
+      OutputDevices: null,
+    }
+  ];
+
   const needs = [
       {
         Xr2Item: true
@@ -96,10 +105,12 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
   beforeEach(async(() => {
     locationService = { back: () => { } };
     spyOn(locationService, 'back');
+
     printWithBaseData = jasmine.createSpy('printWithBaseData');
     let pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData: printWithBaseData
     };
+
     coreEventConnectionService = {
       refreshDeviceNeedsSubject: new Subject(),
     };
@@ -130,7 +141,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
         { provide: Location, useValue: locationService },
-        { provide: DevicesService, useValue: { get: () => of([]) } },
+        { provide: DevicesService, useValue: { get: () => of(deviceData) } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
         { provide: PdfGridReportService, useValue: pdfGridReportService },
@@ -150,6 +161,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.itemNeeds$ = of(deviceNeedData);
+    component.deviceDescription$ = of("device description");
     component.reportItemNeeds$ = component.itemNeeds$;
   });
 

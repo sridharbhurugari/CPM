@@ -30,12 +30,12 @@
       <div class="col" [attr.data-title]="'ONDEMAND_REQUEST_QUANTITY' | translate">
         <div *ngIf="itemLocation.DeviceLocationId === selecteditemLocation.DeviceLocationId">
           <oc-numeric [units]="item.PackSize == 1 ? item.UnitOfIssue : ('PACKS' | translate)"
-            [(ngModel)]="itemLocation.Quantity"
-            [disabled]="math.floor(itemLocation.QuantityOnHand/item.PackSize) > 1"
-            [maxValue]="math.floor(itemLocation.QuantityOnHand/item.PackSize)"
-            [maxDecimalDigit]="0"
-            (ngModelChange)="pickQtyChanged(itemLocation)">
-              </oc-numeric>
+                      [(ngModel)]="itemLocation.Quantity"
+                      [disabled]="math.floor(itemLocation.QuantityOnHand/item.PackSize) > 1"
+                      [maxValue]="math.floor(itemLocation.QuantityOnHand/item.PackSize)"
+                      [maxDecimalDigit]="0"
+                      (ngModelChange)="pickQtyChanged(itemLocation)">
+          </oc-numeric>
           <div *ngIf="item.PackSize > 0">
             <span style="font-size: 12px;">{{'ONDEMAND_QUANTITY_TO_PICK' | translate}} {{itemLocation.Quantity * item.PackSize}} {{item.UnitOfIssue}}</span>
           </div>

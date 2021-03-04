@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
-import { map, shareReplay, take, takeUntil } from 'rxjs/operators';
-import { IDevice } from '../../api-core/data-contracts/i-device';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { Location } from '@angular/common';
@@ -22,9 +21,8 @@ import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-
 export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit {
   assignedItems$: Observable<IItemReplenishmentOnDemand[]>;
   itemLocationDetails$: Observable<IItemLocationDetail[]>;
-  device$: Observable<IDevice>;
   colHeaders$: Observable<any>;
-
+  deviceDescription$: Observable<string>
 
   deviceId: number;
   itemsToPick: IItemReplenishmentOnDemand[] = new Array();
@@ -51,7 +49,9 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     private dialogService: PopupDialogService
   ) {
     this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
-    this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
+    this.deviceDescription$ = devicesService.get()
+       .pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)))
+       .pipe(map(d => d.Description));
 
     this.loadAssignedItems();
 

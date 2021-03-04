@@ -49,7 +49,7 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   }
 
   @Input()
-  device: IDevice;
+  deviceDescription: string;
 
   @ViewChild('ocsearchbox', {
     static: true

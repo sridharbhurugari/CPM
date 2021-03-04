@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogService } from '@omnicell/webcorecomponents';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';
@@ -39,7 +37,6 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
   ngUnsubscribe = new Subject();
 
   constructor(
-    private translateService: TranslateService,
     private location: Location,
     private simpleDialogService: SimpleDialogService,
     private itemLocaitonDetailsService: ItemLocaitonDetailsService,
@@ -47,7 +44,6 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
     activatedRoute: ActivatedRoute,
     devicesService: DevicesService,
     coreEventConnectionService: CoreEventConnectionService,
-    private dialogService: PopupDialogService
   ) {
     this.selectedItem = activatedRoute.snapshot.paramMap.get('itemId');
     this.selecetdPackSize = Number.parseInt(activatedRoute.snapshot.paramMap.get('packSize'));

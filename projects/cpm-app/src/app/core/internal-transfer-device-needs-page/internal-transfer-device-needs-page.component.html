@@ -5,7 +5,7 @@
     <ng-container class="ocactiondetails">
         <app-internal-transfer-items-list
           [itemNeeds]="itemNeeds$ | async"
-          [device]="device$ | async"
+          [deviceDescription]="deviceDescription$ | async"
           (selectionChanged)="onSelect($event)"></app-internal-transfer-items-list>
     </ng-container>
     <ng-container class="ocactionfooter">

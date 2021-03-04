@@ -2,7 +2,7 @@
   <ng-container class="ocactiondetails">
     <app-internal-transfer-device-ondemand-items-list
       [assignedItems]="assignedItems$ | async"
-      [device]="device$ | async"
+      [deviceDescription]="deviceDescription$ | async"
       (selectedItem)="onSelect($event)">
     </app-internal-transfer-device-ondemand-items-list>
   </ng-container>

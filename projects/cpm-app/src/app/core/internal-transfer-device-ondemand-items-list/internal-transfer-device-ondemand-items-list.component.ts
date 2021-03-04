@@ -43,7 +43,7 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
   }
 
   @Input()
-  device: IDevice;
+  deviceDescription: string;
 
   @ViewChild('ocsearchbox', {
     static: true
