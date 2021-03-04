@@ -5,4 +5,5 @@ export interface IVerificationPageConfiguration {
   colHeaderSortOrder: IColHeaderSortChanged;
   searchTextFilterDestination: string;
   colHeaderSortDestination: IColHeaderSortChanged;
+  requiredOrders: boolean;
 }

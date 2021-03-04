@@ -38,6 +38,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
+  requiredOrders: boolean = true;
+ 
 
   continueRoute = VerificationRouting.DestinationPage;
 
@@ -49,7 +51,6 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   ngOnInit() {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
-    this.loadVerificationOrderItems();
   }
 
   ngAfterContentChecked() {
@@ -107,12 +108,17 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     this.searchTextFilter = filterText;
   }
 
+  setIsRequiredVerification(event: boolean): void {
+      this.requiredOrders = event;
+      this.loadVerificationOrderItems();
+  }
+
   onSortEvent(event: IColHeaderSortChanged): void {
     this.colHeaderSort = event;
   }
 
   private loadVerificationOrderItems(): void {
-    this.verificationOrderItems = this.verificationService.getVerificationOrders().pipe(
+      this.verificationOrderItems = this.verificationService.getVerificationOrders(this.requiredOrders).pipe(
       map((verificationOrderItems) => {
         return verificationOrderItems.map((verificationItem) => {
           console.log(verificationItem);
@@ -125,7 +131,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   private createSavedPageConfiguration() {
     return {
       searchTextFilterOrder: this.searchTextFilter,
-      colHeaderSortOrder: this.colHeaderSort
+      colHeaderSortOrder: this.colHeaderSort,
+      requiredOrders: this.requiredOrders
     } as IVerificationPageConfiguration;
   }
 }
