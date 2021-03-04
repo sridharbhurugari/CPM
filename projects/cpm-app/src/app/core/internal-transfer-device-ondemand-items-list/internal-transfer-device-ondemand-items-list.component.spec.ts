@@ -2,9 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
-import { IDevice } from '../../api-core/data-contracts/i-device';
 import { IItemReplenishmentOnDemand } from '../../api-core/data-contracts/i-item-replenishment-ondemand';
-import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockGridSortCol } from '../../shared/testing/mock-grid-sort-col.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
@@ -79,6 +77,7 @@ describe('InternalTransferDeviceOndemandItemsListComponent', () => {
     fixture = TestBed.createComponent(InternalTransferDeviceOndemandItemsListComponent);
     component = fixture.componentInstance;
     component.assignedItems = assignedItemsData;
+    component.deviceDescription = "device Description";
     fixture.detectChanges();
   });
 

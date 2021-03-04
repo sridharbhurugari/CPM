@@ -50,11 +50,6 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
   })
   searchElement: SearchBoxComponent;
 
-  @ViewChild('headerCheckContainer', {
-    static: true
-  })
-  headerCheckContainer: ElementRef;
-
   @Output()
   selectedItem: EventEmitter<IItemReplenishmentOnDemand> = new EventEmitter();
 
@@ -68,6 +63,5 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
       this.searchTextFilter = data;
       this.windowService.dispatchResizeEvent();
     });
-    fixCheckAllNoneClass(this.headerCheckContainer);
   }
 }
