@@ -57,10 +57,10 @@
             <div *ngIf="!exceptions.IsReturn">
               {{'XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE' | translate}}
             </div>
-            <div *ngIf="exceptions.IsReturn==='True'">
+            <div *ngIf="exceptions.IsReturn===trayTypeReturn">
               {{'XR2_EXCEPTIONS_TRAY_RETURN_TYPE' | translate}}
             </div>
-            <div *ngIf="exceptions.IsReturn==='False'">
+            <div *ngIf="exceptions.IsReturn===trayTypeRestock">
               {{'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE' | translate}}
             </div>
             </div>

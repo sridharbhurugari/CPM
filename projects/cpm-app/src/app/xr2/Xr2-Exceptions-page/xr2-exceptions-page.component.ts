@@ -46,6 +46,8 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit, OnDest
   rawBarcodeMessage: string = '';
   popupTimeoutSeconds: number;
   searchFields = [this.trayIDPropertyName, this.exceptionPocketsPropertyName, this.trayTypePropertyName, this.deviceNamePropertyName];
+  trayTypeRestock:string='False';
+  trayTypeReturn:string='True';
   private barcodeScannedSubscription: Subscription;
   constructor(
     private translateService: TranslateService,

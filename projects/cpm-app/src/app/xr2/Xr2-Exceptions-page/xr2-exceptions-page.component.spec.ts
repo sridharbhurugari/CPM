@@ -85,13 +85,6 @@ describe('Xr2ExceptionsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('column selected ', () => {
-  //   component.displayExceptionsList$.source;
-  //   component.displayExceptionsList$ = component.displayExceptionsList$.pipe(map(exceptions => {
-  //     return this.sort(exceptions, "desc");
-  //   }));
-  //   expect(component.columnSelected(event));
-  // });
   describe('navigation on page', () => {
     it('navigates details page', () => {
       component.navigatedetailspage(eventSelected);
