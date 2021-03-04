@@ -305,10 +305,10 @@ describe('VerificationDetailsCardComponent', () => {
     });
   });
 
-  describe('Scan to advance', () => {
-    it('should cache safety stock item on successful barcode scan', () => {
+  describe('Scan to advance - scanning', () => {
+    it('should cache scan to advance item on successful barcode scan', () => {
       const data = {ItemId: 'itemId'} as IBarcodeData;
-      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      const item = {ItemId: 'itemId',  Id: Guid.create()} as VerificationDestinationDetail;
       component.verificationDestinationDetails = [item];
       component.IsBoxBarcodeVerified = true;
       component.scanToAdvanceVerificationDestinationDetail = null;
@@ -318,10 +318,10 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
     });
 
-    it('should not approve safety stock item if no cached item', () => {
+    it('should not approve scan to advance item if no cached item', () => {
       const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
       const data = {ItemId: 'itemId'} as IBarcodeData;
-      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      const item = {ItemId: 'itemId', Id: Guid.create()} as VerificationDestinationDetail;
       component.verificationDestinationDetails = [item];
       component.IsBoxBarcodeVerified = true;
       component.selectedVerificationDestinationDetail = item;
@@ -332,10 +332,10 @@ describe('VerificationDetailsCardComponent', () => {
       expect(saveEventSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('should approve safety stock item if on selected item', () => {
+    it('should approve scan to advance item if on selected item', () => {
       const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
       const data = {ItemId: 'itemId'} as IBarcodeData;
-      const item = {ItemId: 'itemId'} as VerificationDestinationDetail;
+      const item = {ItemId: 'itemId', Id: Guid.create()} as VerificationDestinationDetail;
       const scanToAdvanceItem = new VerificationDestinationDetail(null);
       component.verificationDestinationDetails = [item];
       component.IsBoxBarcodeVerified = true;
@@ -349,7 +349,7 @@ describe('VerificationDetailsCardComponent', () => {
     });
   });
 
-  describe('Scan to advance', () => {
+  describe('Scan to advance - clicking', () => {
     it('should not cache the clicked medication if not verified', () => {
       const item = new VerificationDestinationDetail(null);
       item.IsSafetyStockItem = true;

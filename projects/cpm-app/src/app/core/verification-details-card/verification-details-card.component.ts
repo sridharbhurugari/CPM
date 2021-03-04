@@ -199,10 +199,6 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
-
-      this.selectedVerificationDestinationDetail = item;
-      this.scrollToRowId(item.Id);
-
     item.TransactionScannedBarcodeFormat = data.BarCodeFormat;
     item.TransactionScannedBarcodeProductId = data.ProductId;
     item.TransactionScannedRawBarcode = data.BarCodeScanned;
@@ -212,10 +208,11 @@ export class VerificationDetailsCardComponent implements OnInit {
     if(this.scanToAdvanceVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail !== item) {
-      this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
-    }
+        this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+      }
 
-    this.selectedVerificationDestinationDetail = item;
+      this.selectedVerificationDestinationDetail = item;
+      this.scrollToRowId(item.Id);
 
     if(this.IsBoxBarcodeVerified) {
       item.IsMedBarcodeVerified = true;
