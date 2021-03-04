@@ -1,4 +1,10 @@
 <div class="cpmheaderrow header-container">
-  <oc-button-toggle [onLabel]="'REQUIRED' | translate" [offLabel]="'ALL' | translate"></oc-button-toggle>
+  <oc-button-toggle 
+  [switchtype]="'secondary'"
+  [onLabel]="'REQUIRED' | translate" 
+  [offLabel]="'ALL' | translate"
+  [ngModel]="isRequired"
+  (valueChange)="setIsRequiredVerification($event)">
+  </oc-button-toggle>
   <oc-search-box #searchBox [placeHolderText]="'SEARCH_CYCLECOUNT' | translate"></oc-search-box>
 </div>

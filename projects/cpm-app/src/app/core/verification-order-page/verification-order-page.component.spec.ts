@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ButtonToggleModule, GridModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { LogService } from '../../api-core/services/log-service';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
@@ -18,6 +19,7 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
 import { VerificationOrderQueueComponent } from '../verification-order-queue/verification-order-queue.component';
+import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 
 import { VerificationOrderPageComponent } from './verification-order-page.component';
 
@@ -27,7 +29,8 @@ describe('VerificationOrderPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let verificationService: Partial<VerificationService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
-
+  let logService: Partial<LogService>;
+  
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
@@ -37,18 +40,23 @@ describe('VerificationOrderPageComponent', () => {
     getVerificationOrders: () => of([]),
   };
 
+  logService = {
+    logMessageAsync: jasmine.createSpy('logMessageAsync')
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationOrderPageComponent, VerificationOrderHeaderComponent,
         VerificationOrderQueueComponent, MockColHeaderSortable, MockAppHeaderContainer,
-        MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpDataLabelComponent, MockCpClickableIconComponent],
-      imports: [GridModule, ButtonToggleModule],
+        MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpDataLabelComponent, MockCpClickableIconComponent, MockButtonToggle],
+      imports: [GridModule],
       providers: [
         { provide: HttpClient, useValue: { get: () => {}} },
         { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
         { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
         { provide: TranslateService, useValue: translateService },
         { provide: VerificationService, useValue: verificationService },
+        { provide: LogService, useValue: logService },
       ]
     })
     .compileComponents();

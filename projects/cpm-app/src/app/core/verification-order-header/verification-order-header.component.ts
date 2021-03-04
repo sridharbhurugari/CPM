@@ -12,6 +12,8 @@ import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verifi
 export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
+  @Output() valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  isRequired: boolean = true;
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
@@ -43,10 +45,17 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
 
   private loadSavedPageConfigurations() {
     if (!this.savedPageConfiguration) {
-      return;
+      this.valueChange.emit(this.isRequired);
+       return;
     }
 
     const savedSearchFilter = this.savedPageConfiguration.searchTextFilterOrder;
+    const savedRequiredOrders = this.savedPageConfiguration.requiredOrders;
+
+    if(savedRequiredOrders !== undefined){
+      this.valueChange.emit(savedRequiredOrders);
+      this.isRequired = savedRequiredOrders;
+    }
 
     if (savedSearchFilter) {
         this.searchElement.sendSearchData(savedSearchFilter);
@@ -54,4 +63,8 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
     }
   }
 
+  setIsRequiredVerification(event) {
+    this.valueChange.emit(event);
+    this.isRequired = event;
+  }
 }

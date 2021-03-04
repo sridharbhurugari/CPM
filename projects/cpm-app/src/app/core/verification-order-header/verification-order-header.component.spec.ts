@@ -5,6 +5,7 @@ import { MockCpGeneralHeaderComponent } from '../../shared/testing/mock-cp-gener
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
+import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 
 import { VerificationOrderHeaderComponent } from './verification-order-header.component';
 
@@ -15,9 +16,8 @@ describe('VerificationOrderHeaderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationOrderHeaderComponent, MockCpGeneralHeaderComponent,
-        MockAppHeaderContainer, MockTranslatePipe, MockSearchBox],
-      imports: [ButtonToggleModule]
-    })
+        MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,  MockButtonToggle],
+      })
     .compileComponents();
   }));
 
@@ -36,6 +36,7 @@ describe('VerificationOrderHeaderComponent', () => {
     const searchTextFilterEventSpy = spyOn(component.searchTextFilterEvent, 'emit')
     component.savedPageConfiguration = {} as IVerificationPageConfiguration;
     component.savedPageConfiguration.searchTextFilterOrder = "filter";
+    component.savedPageConfiguration.requiredOrders = true;
 
     component.ngAfterViewInit();
 

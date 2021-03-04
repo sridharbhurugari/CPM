@@ -1,10 +1,14 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
+import { LogVerbosity } from 'oal-core';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationOrderItem } from '../../api-core/data-contracts/i-verification-order-item';
+import { LogService } from '../../api-core/services/log-service';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -28,22 +32,25 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
+  private _loggingCategory = LoggingCategory.Verification;
 
   ngUnsubscribe = new Subject();
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
+  requiredOrders: boolean = true;
+ 
 
   continueRoute = VerificationRouting.DestinationPage;
 
   constructor(
     private verificationService: VerificationService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private logService: LogService,
     ) { }
 
   ngOnInit() {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
-    this.loadVerificationOrderItems();
   }
 
   ngAfterContentChecked() {
@@ -57,6 +64,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
       console.log('Details Page Xr2 Barcode!')
@@ -99,12 +108,17 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     this.searchTextFilter = filterText;
   }
 
+  setIsRequiredVerification(event: boolean): void {
+      this.requiredOrders = event;
+      this.loadVerificationOrderItems();
+  }
+
   onSortEvent(event: IColHeaderSortChanged): void {
     this.colHeaderSort = event;
   }
 
   private loadVerificationOrderItems(): void {
-    this.verificationOrderItems = this.verificationService.getVerificationOrders().pipe(
+      this.verificationOrderItems = this.verificationService.getVerificationOrders(this.requiredOrders).pipe(
       map((verificationOrderItems) => {
         return verificationOrderItems.map((verificationItem) => {
           console.log(verificationItem);
@@ -117,7 +131,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   private createSavedPageConfiguration() {
     return {
       searchTextFilterOrder: this.searchTextFilter,
-      colHeaderSortOrder: this.colHeaderSort
+      colHeaderSortOrder: this.colHeaderSort,
+      requiredOrders: this.requiredOrders
     } as IVerificationPageConfiguration;
   }
 }

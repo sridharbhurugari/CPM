@@ -5,19 +5,16 @@ import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
-
-
-import { ToastService } from '@omnicell/webcorecomponents';
-import { map, shareReplay } from 'rxjs/operators';
 import { VerificationService } from '../../api-core/services/verification.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { filter, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
-import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { VerificationOrderPageComponent } from '../verification-order-page/verification-order-page.component';
+import { WindowService } from '../../shared/services/window-service';
 
 @Component({
   selector: "app-verification-base-page",
@@ -25,14 +22,14 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   styleUrls: ["./verification-base-page.component.scss"],
 })
 export class VerificationBasePageComponent implements OnInit {
-  private barcodeScannedSubscription: Subscription;
 
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
 
-  barcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
+  private barcodeScannedSubscription: Subscription;
   private initialRoute = VerificationRouting.OrderPage;
 
+  barcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
   rejectReasons: Observable<string[]>;
@@ -51,9 +48,11 @@ export class VerificationBasePageComponent implements OnInit {
     "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
   ];
 
+  @ViewChild(VerificationOrderPageComponent, { static: false }) childVerificationOrderPageComponent: VerificationOrderPageComponent;
+
   constructor(
-    private wpfInteropService: WpfInteropService,
     private windowService: WindowService,
+    private wpfInteropService: WpfInteropService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private systemConfigurationService: SystemConfigurationService,
@@ -241,10 +240,12 @@ export class VerificationBasePageComponent implements OnInit {
   private setupDataRefresh() {
     let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
-        this.LoadTransientData();
-        this.initializeNavigationParameters();
+        this.ngOnInit();
+        if(this.childVerificationOrderPageComponent) {
+          this.childVerificationOrderPageComponent.ngOnInit();
+        }
       });
   }
 }

@@ -16,6 +16,10 @@ import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/d
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { LogService } from '../../api-core/services/log-service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { LogVerbosity } from 'oal-core';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -25,17 +29,18 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 export class VerificationDetailsCardComponent implements OnInit {
 
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
+  private _loggingCategory = LoggingCategory.Verification;
 
   constructor(
     private translateService: TranslateService,
     private popupWindowService: PopupWindowService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private logService: LogService
     ) { }
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
      this._verificationDestinationDetails = value;
-     this.selectedVerificationDestinationDetail = null;
      this.setDetailsGroupData(value);
   }
   get verificationDestinationDetails(): VerificationDestinationDetail[]{
@@ -57,6 +62,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
 
   selectedVerificationDestinationDetail : VerificationDestinationDetail;
+  scanToAdvanceVerificationDestinationDetail: VerificationDestinationDetail;
   currentSortPropertyName: string;
   columnSortDirection: string;
   destinationLine1: string;
@@ -109,6 +115,9 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   medicationClicked(destinationDetail: VerificationDestinationDetail): void {
     this.selectedVerificationDestinationDetail = destinationDetail;
+    if(!destinationDetail.IsSafetyStockItem || this.IsBoxBarcodeVerified && destinationDetail.IsMedBarcodeVerified) {
+      this.scanToAdvanceVerificationDestinationDetail = destinationDetail;
+    }
   }
 
   columnSelected(event: IColHeaderSortChanged): void {
@@ -127,7 +136,8 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
-    console.log('button approve clicked');
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Button Approve Clicked');
     this.approveItem(selectedVerificationDestinationDetail);
   }
 
@@ -140,7 +150,10 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
-    console.log(selectedVerificationDestinationDetail);
+    /* istanbul ignore next */
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
+
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
   }
@@ -150,7 +163,6 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
       return !removalSet.has(verificationDestinationDetail);
     });
-    this.selectedVerificationDestinationDetail = null;
   }
 
   containsSafetyStockMedication(items: VerificationDestinationDetail[]) {
@@ -187,10 +199,28 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private handleSuccessfulBarcodeScan(item: VerificationDestinationDetail, data: IBarcodeData) {
+
       this.selectedVerificationDestinationDetail = item;
       this.scrollToRowId(item.Id);
+
+    item.TransactionScannedBarcodeFormat = data.BarCodeFormat;
+    item.TransactionScannedBarcodeProductId = data.ProductId;
+    item.TransactionScannedRawBarcode = data.BarCodeScanned;
+
+    // If we have a scan to advance item (already checked for validity) and
+    // that item is currently selected, approve it
+    if(this.scanToAdvanceVerificationDestinationDetail
+      && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
+      && this.scanToAdvanceVerificationDestinationDetail !== item) {
+      this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+    }
+
+    this.selectedVerificationDestinationDetail = item;
+
     if(this.IsBoxBarcodeVerified) {
-      this.selectedVerificationDestinationDetail.IsMedBarcodeVerified = true;
+      item.IsMedBarcodeVerified = true;
+      // Item is now box and med verified, save it for potential scan to advance
+      this.scanToAdvanceVerificationDestinationDetail = item;
     } else {
       this.verificationBoxBarcodeRequired.emit();
     }
@@ -238,8 +268,13 @@ export class VerificationDetailsCardComponent implements OnInit {
               selectedVerificationDestinationDetails.forEach((detail) => {
                 detail.VerifiedStatus = VerificationStatusTypes.Rejected;
                 detail.RejectReason = data.selectedrow.value;
+                /* istanbul ignore next */
+                this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+                  this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId + ' trackById: ' + detail.Id);
               });
+
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
+              this.selectedVerificationDestinationDetail = null;
             }
         });
     });
@@ -259,6 +294,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.destinationLine1 = null;
     this.destinationLine2 = null;
     this.destinationType = null;
+    this.selectedVerificationDestinationDetail = null;
   }
 
   private setTranslations(): void {

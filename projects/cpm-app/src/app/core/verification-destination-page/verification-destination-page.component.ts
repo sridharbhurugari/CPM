@@ -1,12 +1,16 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LogVerbosity } from 'oal-core';
 import { forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
+import { LogService } from '../../api-core/services/log-service';
 import { VerificationService } from '../../api-core/services/verification.service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
@@ -32,9 +36,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   private xr2PickingBarcodeScannedSubscription: Subscription;
 
-
   private backRoute = VerificationRouting.OrderPage;
   private continueRoute = VerificationRouting.DetailsPage;
+
+  private _loggingCategory = LoggingCategory.Verification;
 
   ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
@@ -46,7 +51,6 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   colHeaderSort: IColHeaderSortChanged;
   translations$: Observable<any>;
 
-
   translatables = [
     'LOADING',
     'PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE'
@@ -55,7 +59,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   constructor(
     private translateService: TranslateService,
     private verificationService: VerificationService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private logService: LogService
   ) { this.setTranslations();
    }
 
@@ -76,9 +81,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
-    if(data.IsXr2PickingBarcode) {
-      console.log('Details Page Xr2 Barcode!')
-      
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
+
+    if(data.IsXr2PickingBarcode) {    
       const navigationParams = {
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
@@ -136,7 +142,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       (verificationDestinationViewData) => {
         this.generateHeaderTitle(verificationDestinationViewData)
         this.generateHeaderSubTitle(verificationDestinationViewData);
-        this.verificationDestinationItems = of(verificationDestinationViewData.DetailItems);
+        this.verificationDestinationItems = of(verificationDestinationViewData.DetailItems.map((x) => { return new VerificationDestinationItem(x); }));
       }), shareReplay(1);
   }
 
@@ -192,7 +198,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       searchTextFilterOrder: this.savedPageConfiguration.searchTextFilterOrder,
       colHeaderSortOrder: this.savedPageConfiguration.colHeaderSortOrder,
       searchTextFilterDestination: this.searchTextFilter,
-      colHeaderSortDestination: this.colHeaderSort
+      colHeaderSortDestination: this.colHeaderSort,
+      requiredOrders: this.savedPageConfiguration.requiredOrders
     } as IVerificationPageConfiguration;
   }
 
