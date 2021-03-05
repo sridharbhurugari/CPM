@@ -23,7 +23,7 @@ describe('Xr2ExceptionsPageComponent', () => {
   let component: Xr2ExceptionsPageComponent;
   let fixture: ComponentFixture<Xr2ExceptionsPageComponent>;
   let event: IColHeaderSortChanged = { ColumnPropertyName: "TrayID", SortDirection: "asc" };
-  let eventSelected: IXr2ExceptionsItem = { TrayID: "c00004", DeviceID: "5", CompletedDateTime: "2020-06-01 07:41:19.763", TrayDescription: "", ExceptionPockets: "", DeviceName: "",IsReturn: false };
+  let eventSelected: IXr2ExceptionsItem = { TrayID: "c00004", DeviceID: "5", CompletedDateTime: "2020-06-01 07:41:19.763", TrayDescription: "", ExceptionPockets: "", DeviceName: "",IsReturn: "False" };
   let xr2ExceptionsService: Partial<Xr2ExceptionsService>;
   let wpfActionControllerService: Partial<WpfActionControllerService>;
   let systemConfigurationService: Partial<SystemConfigurationService>;
@@ -32,6 +32,7 @@ describe('Xr2ExceptionsPageComponent', () => {
   let barcodeScanService: Partial<BarcodeScanService>;
   let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
   let mockPopupDialogService: PopupDialogService;
+ 
   beforeEach(async(() => {
     xr2ExceptionsService = {
       get: () => of([]),
@@ -85,13 +86,6 @@ describe('Xr2ExceptionsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('column selected ', () => {
-    component.displayExceptionsList$.source;
-    component.displayExceptionsList$ = component.displayExceptionsList$.pipe(map(exceptions => {
-      return this.sort(exceptions, "desc");
-    }));
-    expect(component.columnSelected(event));
-  });
   describe('navigation on page', () => {
     it('navigates details page', () => {
       component.navigatedetailspage(eventSelected);
@@ -130,6 +124,48 @@ describe('Xr2ExceptionsPageComponent', () => {
       component.rawBarcodeMessage = "C00000";
       component.showthedetailspageordialog();
       component.navigatedetailspage(eventSelected)
+    });
+  });
+  describe("Should show tray type as unknown ", () => {
+    it("tray value be null", () => {
+      let selectedItem: IXr2ExceptionsItem = {
+        TrayID: 'c00003',
+        DeviceID: '7',
+        CompletedDateTime: '2020-06-01 07:41:19.763',
+        DeviceName: '',
+        ExceptionPockets: '',
+        TrayDescription: '',
+        IsReturn:'null'
+       };
+     component.getTrayTypeDisplay(selectedItem)
+    });
+  });
+  describe("Should show tray type as Return ", () => {
+    it("tray value be True", () => {
+      let selectedItem: IXr2ExceptionsItem = {
+        TrayID: 'c00003',
+        DeviceID: '7',
+        CompletedDateTime: '2020-06-01 07:41:19.763',
+        DeviceName: '',
+        ExceptionPockets: '',
+        TrayDescription: '',
+        IsReturn:'True'
+       };
+     component.getTrayTypeDisplay(selectedItem)
+    });
+  });
+  describe("Should show tray type as Restock ", () => {
+    it("tray value be False", () => {
+      let selectedItem: IXr2ExceptionsItem = {
+        TrayID: 'c00003',
+        DeviceID: '7',
+        CompletedDateTime: '2020-06-01 07:41:19.763',
+        DeviceName: '',
+        ExceptionPockets: '',
+        TrayDescription: '',
+        IsReturn:'False'
+       };
+     component.getTrayTypeDisplay(selectedItem)
     });
   });
   describe("Should call  windows key down event", () => {

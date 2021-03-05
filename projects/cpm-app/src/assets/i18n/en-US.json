@@ -319,5 +319,6 @@
   "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE": "XR2 Picking Bar Code not found for verification",
   "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "No items to verify",
   "REFRESH": "Refresh",
-  "LAST_UPDATED": "Last Updated"
+  "LAST_UPDATED": "Last Updated",
+  "XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE":"Unknown"
 }
