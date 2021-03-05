@@ -17,6 +17,7 @@ import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item'
 import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
 import { ValidationBadgeModule } from '@omnicell/webcorecomponents';
 import { SystemMessageModule } from '@omnicell/webcorecomponents';
+import { TrayTypes } from '../../shared/constants/tray-types';
 @Component({
   selector: 'app-xr2-exception-details-page',
   templateUrl: './Xr2-Exception-details-page.component.html',
@@ -109,6 +110,22 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
 
   navigateBack() {
     this.wpfActionController.ExecuteBackAction();
+  }
+
+  getTrayTypeDisplay():string
+  {
+     if(this.exceptionTrayType===TrayTypes.trayTypeUnknown)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE';
+     }
+     else if(this.exceptionTrayType===TrayTypes.trayTypeReturn)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_RETURN_TYPE';
+     }
+     else if(this.exceptionTrayType===TrayTypes.trayTypeRestock)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE';
+     }
   }
 
   parseRowsData(items: Xr2ExceptionDetailsItem[]) {

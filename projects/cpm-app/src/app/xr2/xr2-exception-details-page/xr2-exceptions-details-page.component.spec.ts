@@ -67,17 +67,17 @@ describe('Xr2ExceptionDetailsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('column selected ', () => {
-    component.displayExceptionDetailList$ = component.displayExceptionDetailList$.pipe(map(exceptions => {
-        return this.sort(exceptions, 'desc');
-    }));
-    expect(component.columnSelected(event));
-  });
-
   describe('navigateBack', () => {
     it('makes expected calls', () => {
       component.navigateBack();
       expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalled();
     });
   });
+
+  describe("Should show tray type as unknown ", () => {
+    it("tray value be null", () => {
+     component.getTrayTypeDisplay()
+    });
+  });
+  
 });

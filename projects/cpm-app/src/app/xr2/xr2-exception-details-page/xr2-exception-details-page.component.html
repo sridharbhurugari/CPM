@@ -21,14 +21,9 @@
               <tr>
                 <td class="trayidtext">
                   {{ trayID }} {{'HYPHEN_SEPARATOR' | translate}}
-                  <span *ngIf="exceptionTrayType===trayTypeUnknown">
-                    {{ "XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE" | translate }}
-                  </span>
-                  <span *ngIf="exceptionTrayType===trayTypeReturn">
-                    {{ "XR2_EXCEPTIONS_TRAY_RETURN_TYPE" | translate }}
-                  </span>
-                  <span *ngIf="exceptionTrayType===trayTypeRestock">
-                    {{ "XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE" | translate }}
+                  
+                  <span >
+                    {{ getTrayTypeDisplay() | translate }}
                   </span>
                 </td>
                 <td class="traytypetext">{{ trayType }}</td>

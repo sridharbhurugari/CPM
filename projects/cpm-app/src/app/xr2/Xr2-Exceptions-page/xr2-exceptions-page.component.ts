@@ -17,6 +17,7 @@ import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception
 import { BarcodeScanService } from 'oal-core';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { WindowService } from '../../shared/services/window-service';
+import { TrayTypes } from '../../shared/constants/tray-types';
 @Component({
   selector: 'app-xr2-exceptions-page',
   templateUrl: './xr2-exceptions-page.component.html',
@@ -46,8 +47,7 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit, OnDest
   rawBarcodeMessage: string = '';
   popupTimeoutSeconds: number;
   searchFields = [this.trayIDPropertyName, this.exceptionPocketsPropertyName, this.trayTypePropertyName, this.deviceNamePropertyName];
-  trayTypeRestock:string='False';
-  trayTypeReturn:string='True';
+
   private barcodeScannedSubscription: Subscription;
   constructor(
     private translateService: TranslateService,
@@ -116,6 +116,22 @@ export class Xr2ExceptionsPageComponent implements OnInit, AfterViewInit, OnDest
     this._ngUnsubscribe.complete();
   }
 
+  getTrayTypeDisplay(exceptions:IXr2ExceptionsItem):string
+  {
+     if(!exceptions.IsReturn)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE';
+     }
+     else if(exceptions.IsReturn===TrayTypes.trayTypeReturn)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_RETURN_TYPE';
+     }
+     else if(exceptions.IsReturn===TrayTypes.trayTypeRestock)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE';
+     }
+  }
+ 
   onBarcodeScanExcludedKeyPressEvent(event: KeyboardEvent) {
     let isInputComplete = this._barcodeScanService.handleKeyInput(event);
     let isScannerInput = this._barcodeScanService.isScannerInput();
