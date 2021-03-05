@@ -80,6 +80,15 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
     this.requestedAmount = selectedItem.Quantity * this.selecetdPackSize;
   }
 
+  onItemSelected(isSelected: boolean ) {
+    if(isSelected) {
+      this.requestStatus = 'selected';
+      return;
+    }
+
+    this.requestStatus = 'none';
+  }
+
   pick() {
     if (this.itemsToPick.length > 0 && this.selectedSource > 0 && this.requestedAmount > 0) {
       this.requestStatus = 'picking'
@@ -105,15 +114,6 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
       this.onRefreshDeviceItems();
       this.requestStatus = 'none'
     }
-  }
-
-  onItemSelected(isSelected: boolean ) {
-    if(isSelected) {
-      this.requestStatus = 'selected';
-      return;
-    }
-
-    this.requestStatus = 'none';
   }
 
   goBack() {
@@ -145,6 +145,8 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
   }
 
   private handlePickSuccess() {
+    this.selectedSource = 0;
+    this.requestedAmount = 0;
     this.simpleDialogService.displayInfoOk('INTERNAL_TRANS_PICKQUEUE_SENT_TITLE', 'INTERNAL_TRANS_PICKQUEUE_SENT_OK');
   }
 

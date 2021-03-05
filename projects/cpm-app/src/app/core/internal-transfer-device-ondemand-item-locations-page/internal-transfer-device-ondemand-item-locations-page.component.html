@@ -17,7 +17,7 @@
           </div>
           <div class="ocrightalign">
             <oc-button-action
-                [disabled]="requestStatus != 'selected'"
+                [disabled]="requestStatus === 'none'"
                 [buttonIcon]="requestStatus === 'picking' ? 'spin' : 'clear'"
                 [buttonText]="'INTERNAL_TRANS_PICKQUEUE_BUTTON' | translate"
                 (click)="pick()">

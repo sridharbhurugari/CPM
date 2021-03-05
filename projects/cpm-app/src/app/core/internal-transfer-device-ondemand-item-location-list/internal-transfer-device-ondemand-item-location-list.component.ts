@@ -32,7 +32,7 @@ export class InternalTransferDeviceOndemandItemLocationListComponent implements 
   @Input()
   set itemLocations(value: IItemLocationDetail[]) {
     if(this.selectedItemLocation) {
-      this.selectedItemLocation = null;
+      delete this.selectedItemLocation;
     }
 
     this._itemLocations = value;
@@ -101,7 +101,8 @@ export class InternalTransferDeviceOndemandItemLocationListComponent implements 
   }
 
   pickQtyChanged(itemLocation: IItemLocationDetail) {
-    if(itemLocation.Quantity === 0) {
+    if(itemLocation.Quantity == 0) {
+      this.selectedItem.emit(itemLocation)
       this.isSelected.emit(false)
     }
 
