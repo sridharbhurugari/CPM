@@ -317,7 +317,7 @@
   "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Code à barres numérisé inconnu. Numérisez un code à barres de sélection XR2 pour continuer.",
   "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN": "Code à barres numérisé inconnu. Numérisez un produit affiché ou un code à barres de sélection XR2 pour continuer.",
   "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE": "Code à barres de sélection XR2 introuvable pour vérification",
-  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "Aucun produit à vérifier"
+  "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "Aucun produit à vérifier",
   "REFRESH": "Refresh",
   "LAST_UPDATED": "Last Updated"
 }
