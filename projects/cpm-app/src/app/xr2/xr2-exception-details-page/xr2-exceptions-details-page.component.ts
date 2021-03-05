@@ -53,9 +53,6 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   selectedItem: Xr2ExceptionsItem;
   alphaValues: Array<string> = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
     "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-    trayTypeUnknown:string='null';
-    trayTypeRestock:string='False';
-    trayTypeReturn:string='True';
   constructor(
     private activatedRoute: ActivatedRoute,
     private wpfActionController: WpfActionControllerService,
