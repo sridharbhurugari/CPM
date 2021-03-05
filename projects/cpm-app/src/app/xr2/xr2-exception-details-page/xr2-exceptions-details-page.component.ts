@@ -17,6 +17,7 @@ import { Xr2ExceptionsItem } from '../model/xr2-exceptions-item'
 import { IXr2ExceptionsItem } from '../../api-xr2/data-contracts/i-xr2-exception-item';
 import { ValidationBadgeModule } from '@omnicell/webcorecomponents';
 import { SystemMessageModule } from '@omnicell/webcorecomponents';
+import { TrayTypes } from '../../shared/constants/tray-types';
 @Component({
   selector: 'app-xr2-exception-details-page',
   templateUrl: './Xr2-Exception-details-page.component.html',
@@ -44,7 +45,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
   deviceName: string;
   completedDate: string;
   IsReturn: string;
-  exceptionTrayType: boolean;
+  exceptionTrayType: string;
   firstTime: boolean = true;
   currentSortPropertyName: string = this.reasonPropertyName;
   sortOrder: SortDirection = SortDirection.ascending;
@@ -70,7 +71,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
       TrayID: this.activatedRoute.snapshot.queryParamMap.get('TrayID'),
       DeviceID: this.activatedRoute.snapshot.queryParamMap.get('DeviceID'),
       CompletedDateTime: this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime'),
-      IsReturn: false,
+      IsReturn: "",
       DeviceName: "",
       ExceptionPockets: "",
       TrayDescription: ""
@@ -81,7 +82,7 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
     this.deviceName = this.activatedRoute.snapshot.queryParamMap.get('DeviceName');
     this.completedDate = this.activatedRoute.snapshot.queryParamMap.get('CompletedDateTime');
     this.IsReturn = this.activatedRoute.snapshot.queryParamMap.get('TrayType');
-    this.exceptionTrayType = this.IsReturn === "true" ? true: false;
+    this.exceptionTrayType = this.IsReturn;
     this.displayExceptionDetailList$ = this.exceptionDetailsListService.get(this.selectedItem).pipe(map(guidedDeviceListItems => {
       return this.sort(guidedDeviceListItems.map(p => new Xr2ExceptionDetailsItem(p)), SortDirection.ascending);
     }), shareReplay(1));
@@ -106,6 +107,22 @@ export class Xr2ExceptionDetailsPageComponent implements OnInit {
 
   navigateBack() {
     this.wpfActionController.ExecuteBackAction();
+  }
+
+  getTrayTypeDisplay():string
+  {
+     if(this.exceptionTrayType===TrayTypes.trayTypeUnknown)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE';
+     }
+     else if(this.exceptionTrayType===TrayTypes.trayTypeReturn)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_RETURN_TYPE';
+     }
+     else if(this.exceptionTrayType===TrayTypes.trayTypeRestock)
+     {
+      return 'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE';
+     }
   }
 
   parseRowsData(items: Xr2ExceptionDetailsItem[]) {

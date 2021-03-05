@@ -54,12 +54,7 @@
             <div class="first" style="align-items: center;"></div>
             <div class="col col-trayid" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_ID' | translate">
             <div>{{exceptions.TrayID}}</div>
-            <div *ngIf="exceptions.IsReturn">
-              {{'XR2_EXCEPTIONS_TRAY_RETURN_TYPE' | translate}}
-            </div>
-            <div *ngIf="!exceptions.IsReturn">
-              {{'XR2_EXCEPTIONS_TRAY_RESTOCK_TYPE' | translate}}
-            </div>
+            <div> {{getTrayTypeDisplay(exceptions) | translate}} </div>
             </div>
             <div class="col col-traytype" [attr.data-title]="'XR2_EXCEPTIONS_TRAY_DESCRIPTION' | translate">{{exceptions.TrayDescription}}</div>
             <div class="col col-pockets" [attr.data-title]="'XR2_EXCEPTIONS_POCKETS' | translate">{{exceptions.ExceptionPockets}} Pockets</div>

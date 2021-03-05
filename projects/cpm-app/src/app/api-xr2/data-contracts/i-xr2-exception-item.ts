@@ -5,5 +5,5 @@ export interface IXr2ExceptionsItem {
   DeviceName: string;
   CompletedDateTime: string;
   DeviceID: string;
-  IsReturn: boolean;
+  IsReturn: string;
 }
