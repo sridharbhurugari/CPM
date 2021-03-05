@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
 import { flatMap, Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
@@ -208,10 +208,11 @@ export class VerificationDetailsCardComponent implements OnInit {
     if(this.scanToAdvanceVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail !== item) {
-      this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
-    }
+        this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+      }
 
-    this.selectedVerificationDestinationDetail = item;
+      this.selectedVerificationDestinationDetail = item;
+      this.scrollToRowId(item.Id);
 
     if(this.IsBoxBarcodeVerified) {
       item.IsMedBarcodeVerified = true;
@@ -297,4 +298,13 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.translations$ = this.translateService.get(this.translatables);
   }
 
+  /* istanbul ignore next */
+  private scrollToRowId(id: Guid){
+    try {
+      var el = document.getElementById(id.toString());
+      el.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
