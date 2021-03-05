@@ -66,6 +66,16 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
   }
 
   ngOnInit() {
+    this.translateService.get('ONDEMAND_SOURCE_POPUP_TITLE').subscribe((res: string) => {
+      this.popupTitle = res;});
+    this.translateService.get('ONDEMAND_SOURCE_DROPDOWN_TITLE').subscribe((res: string) => {
+      this.dropdownTitle = res;});
+    this.translateService.get('ONDEMAND_QUANTITY_EDITOR_TITLE').subscribe((res: string) => {
+      this.quantityEditorPopupTite = res;});
+    this.translateService.get('ONDEMAND_NO_SOURCE_LOCATION').subscribe((res: string) => {
+      this.noLocationsMessage = res;});
+    this.translateService.get('QOH').subscribe((res: string) => {
+      this.qoh = res;});
  }
 
   ngOnDestroy() {
