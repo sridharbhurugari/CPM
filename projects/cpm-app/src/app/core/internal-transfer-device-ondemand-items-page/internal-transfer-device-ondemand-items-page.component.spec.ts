@@ -81,7 +81,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
   ];
 
   let deviceData: IDevice[] = [{
-    Id: 1,
+    Id: 999,
     Description: "Descritpion",
     DeviceType: "Device Type",
     OutputDevices: []

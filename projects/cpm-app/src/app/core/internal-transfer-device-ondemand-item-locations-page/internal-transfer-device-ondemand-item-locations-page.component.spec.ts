@@ -89,4 +89,11 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('goBack', () => {
+    it('should call wpfActionControllerService.back', () => {
+      component.goBack();
+      expect(locationService.back).toHaveBeenCalled();
+    });
+  });
 });
