@@ -1,4 +1,4 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
 import { LogVerbosity } from 'oal-core';
 import { Observable, of, Subject, Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
+import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
 
 
 @Component({
@@ -42,6 +43,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
  
 
   continueRoute = VerificationRouting.DestinationPage;
+
+  @ViewChild(VerificationOrderHeaderComponent, { static: false }) childVerificationOrderHeaderComponent: VerificationOrderHeaderComponent;
 
   constructor(
     private verificationService: VerificationService,
