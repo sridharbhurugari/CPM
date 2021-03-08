@@ -31,6 +31,22 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
     this.loadSavedPageConfigurations();
   }
 
+  setIsRequiredVerification(event) {
+    this.valueChange.emit(event);
+    this.isRequired = event;
+  }
+
+   /* istanbul ignore next */
+  fromWPFNgOnInit() {
+    this.savedPageConfiguration = {
+      searchTextFilterOrder: '',
+      requiredOrders: true
+    } as IVerificationPageConfiguration;
+
+    this.ngOnInit();
+    this.ngAfterViewInit();
+  }
+
   private configureSearchHandler() {
     this.searchElement.searchOutput$
       .pipe(
@@ -57,14 +73,9 @@ export class VerificationOrderHeaderComponent implements OnInit, AfterViewInit {
       this.isRequired = savedRequiredOrders;
     }
 
-    if (savedSearchFilter) {
+    if (savedSearchFilter !== undefined) {
         this.searchElement.sendSearchData(savedSearchFilter);
         this.searchTextFilterEvent.emit(savedSearchFilter);
     }
-  }
-
-  setIsRequiredVerification(event) {
-    this.valueChange.emit(event);
-    this.isRequired = event;
   }
 }

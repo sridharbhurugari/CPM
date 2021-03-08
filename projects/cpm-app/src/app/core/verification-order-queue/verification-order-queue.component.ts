@@ -38,9 +38,10 @@ export class VerificationOrderQueueComponent implements OnInit {
   @Input()
   set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
     this._unfilteredVerficationOrderItems = value;
-    this.filteredVerificationOrderItems = value
-    if(this.savedPageConfiguration) {
+    if(this.savedPageConfiguration && value) {
       this.loadSavedConfigurations();
+    } else {
+      this.filteredVerificationOrderItems = this.filterBySearchText(this.searchTextFilter, value);
     }
     this.resizeGrid();
   }
@@ -128,11 +129,15 @@ export class VerificationOrderQueueComponent implements OnInit {
     if (this.savedPageConfiguration.searchTextFilterOrder) {
       this.searchTextFilter = this.savedPageConfiguration.searchTextFilterOrder;
     }
+
+    this.savedPageConfiguration = null;
   }
 
    /* istanbul ignore next */
    private filterBySearchText(text: string, unfilteredArray: VerificationOrderItem[]) {
-    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
+     if(!unfilteredArray) return [];
+
+     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
   /* istanbul ignore next */

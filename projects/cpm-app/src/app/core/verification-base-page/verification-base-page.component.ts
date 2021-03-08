@@ -244,8 +244,8 @@ export class VerificationBasePageComponent implements OnInit {
       .subscribe(() => {
         this.ngOnInit();
         if(this.childVerificationOrderPageComponent) {
-          this.childVerificationOrderPageComponent.ngOnInit();
-          this.childVerificationOrderPageComponent.childVerificationOrderHeaderComponent.ngAfterViewInit();
+          this.childVerificationOrderPageComponent.fromWPFNgOnInit();
+          this.childVerificationOrderPageComponent.childVerificationOrderHeaderComponent.fromWPFNgOnInit();
         }
       });
   }
