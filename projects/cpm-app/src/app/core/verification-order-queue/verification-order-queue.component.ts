@@ -38,6 +38,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   @Input()
   set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
     this._unfilteredVerficationOrderItems = value;
+    this._filteredVerificationOrderItems = value;
     if(this.savedPageConfiguration && value) {
       this.loadSavedConfigurations();
     } else {
