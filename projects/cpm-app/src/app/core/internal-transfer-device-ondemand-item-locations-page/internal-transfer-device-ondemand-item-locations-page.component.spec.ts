@@ -31,6 +31,22 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
 
+  let assignedItemsData: IItemReplenishmentOnDemand[] = [{
+    ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
+    DeviceQuantityOnHand: 10, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
+    DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+    AvailablePharmacyLocationCount: 3, AvailablePharmacyQty: 20
+  },]
+
+  let selectedLocationsData: IItemLocationDetail = {
+    ItemId: "I12345", ItemTradeName: "Item Trade Name", ItemFormattedGenericName: "Item Formatted Generic Name",
+    UnitOfIssue: "EA", QuantityOnHand: 139, ExpirationDate: "", ExpirationDateGranularity: null,
+    LocationDescription: "Location Description 1", DeviceLocationId: 1, DeviceId: 1234, DeviceDescription: "Device Description",
+    DeviceType: "Device Type", PackageFormType: "Package Form Type", PackageFormName: "Package Form Name",
+    DeviceOwnerShortName: "Device Owner Short Name", DeviceDefaultOwner: null, CarouselDisplayQuantity: 139, Description: "Description",
+    Quantity: 2, DeviceLocation: null, SafetyStockIssueScan: false
+  };
+
   beforeEach(async(() => {
     locationService = { back: () => { } };
     spyOn(locationService, 'back');
@@ -44,17 +60,11 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
       refreshDeviceOnDemandSubject: new Subject(),
     };
 
-    let assignedItemsData: IItemReplenishmentOnDemand[] = [{
-      ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
-      DeviceQuantityOnHand: 10, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
-      DisplayPackageSize: '10', DisplayNumberOfPackages: '4', DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
-      AvailablePharmacyLocationCount: 3, AvailablePharmacyQty: 20
-    },]
-
     deviceReplenishmentNeedsService = {
       pickDeviceItemNeeds: () => of(),
       getDeviceAssignedItems: () => of(assignedItemsData)
     };
+    spyOn(deviceReplenishmentNeedsService, 'pickDeviceItemNeeds');
 
     TestBed.configureTestingModule({
       declarations: [
@@ -90,10 +100,53 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('goBack', () => {
-    it('should call wpfActionControllerService.back', () => {
-      component.goBack();
-      expect(locationService.back).toHaveBeenCalled();
+  describe('given the back button is clicked', () => {
+    describe('goBack', () => {
+      beforeEach(() => {
+        component.goBack();
+      });
+
+      it('should call wpfActionControllerService.back', () => {
+        expect(locationService.back).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('given a valid location was just selected', () => {
+    describe('onItemSelected - true', () => {
+      beforeEach(() => {
+        component.onItemSelected(true);
+      });
+
+      it('should set requestStatus to selected', () => {
+        expect(component.requestStatus).toEqual('selected');
+      });
+    });
+  });
+
+  describe('given an invalid location was just selected', () => {
+    describe('onItemSelected - false', () => {
+      beforeEach(() => {
+        component.onItemSelected(false);
+      });
+
+      it('should set requestStatus to selected', () => {
+        expect(component.requestStatus).toEqual('none');
+      });
+    });
+  });
+
+  describe('given an invalid location was just selected', () => {
+    describe('onSelectedItem', () => {
+      beforeEach(() => {
+        component.onSelectedItem(selectedLocationsData);
+      });
+
+      it('should set requestStatus to none', () => {
+        expect(component.itemsToPick.length).toEqual(1);
+        expect(component.selectedSource).toEqual(selectedLocationsData.DeviceLocationId);
+        expect(component.requestedAmount).toEqual(selectedLocationsData.Quantity * component.selecetdPackSize);
+      });
     });
   });
 });

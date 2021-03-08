@@ -13,7 +13,7 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { InternalTransferDeviceOndemandItemLocationListComponent } from './internal-transfer-device-ondemand-item-location-list.component';
 
-fdescribe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
+describe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
   let component: InternalTransferDeviceOndemandItemLocationListComponent;
   let fixture: ComponentFixture<InternalTransferDeviceOndemandItemLocationListComponent>;
 
