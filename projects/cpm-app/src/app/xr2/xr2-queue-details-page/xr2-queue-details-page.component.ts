@@ -23,6 +23,7 @@ import { IAddOrUpdatePicklistQueueItemMesssage } from '../../api-xr2/events/i-ad
 import { PicklistQueueGroupKey } from '../model/picklist-queue-group-key';
 import { IRemovePicklistQueueItemMessage } from '../../api-xr2/events/i-remove-picklist-queue-item-message';
 import { Xr2QueueMultiSelectService } from '../services/xr2-queue-multi-select.service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
 
 
 @Component({
@@ -36,8 +37,9 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
 
-  private _multiSelectMode = false;
-  private _loggingCategory: string;
+  private _multiSelectMode: boolean = false;
+  private _loggingCategory: string = LoggingCategory.Xr2Queue;
+  private _componentName: string = "Xr2QueueDetailsPageComponent";
 
   picklistsQueueItems: Observable<IPicklistQueueItem[]>;
   selectedItems: Set<PicklistQueueItem> = new Set<PicklistQueueItem>();
@@ -116,7 +118,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       }
 
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-        this.constructor.name + 'Reroute clicked - rerouting current selected item/items');
+        this._componentName + 'Reroute clicked - rerouting current selected item/items');
       this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
@@ -124,13 +126,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + 'Release clicked - releasing current selected item/items');
+      this._componentName + 'Release clicked - releasing current selected item/items');
     this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + 'Print clicked - printing current selected item/items');
+      this._componentName + 'Print clicked - printing current selected item/items');
     this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
@@ -170,7 +172,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
           } catch(exception) {
             /* istanbul ignore next */
             this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-              this.constructor.name + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotSuccess failed: ' + exception);
+              this._componentName + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotSuccess failed: ' + exception);
           }
         }, error => {
           try {
@@ -178,7 +180,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
           } catch(exception) {
             /* istanbul ignore next */
             this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-              this.constructor.name + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotError failed: ' + exception);
+              this._componentName + ' sendQueueItemsToRobot - handleSendQueueItemsToRobotError failed: ' + exception);
           }
         });
   }
@@ -194,7 +196,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         } catch(exception) {
           /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' rerouteQueueItems - handleRerouteQueueItemsSuccess failed: ' + exception);
+            this._componentName + ' rerouteQueueItems - handleRerouteQueueItemsSuccess failed: ' + exception);
         }
       }, error => {
         try {
@@ -202,7 +204,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         } catch(exception) {
           /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' rerouteQueueItems - handleRerouteQueueItemsError failed: ' + exception);
+            this._componentName + ' rerouteQueueItems - handleRerouteQueueItemsError failed: ' + exception);
         }
       });
   }
@@ -222,7 +224,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         } catch(exception) {
           /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' printQueueItems - handlePrintQueueItemsSuccess failed: ' + exception);
+            this._componentName + ' printQueueItems - handlePrintQueueItemsSuccess failed: ' + exception);
         }
       }, error => {
         try {
@@ -230,7 +232,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
         } catch(exception) {
           /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            this.constructor.name + ' printQueueItems - handlePrintQueueItemsError failed: ' + exception);
+            this._componentName + ' printQueueItems - handlePrintQueueItemsError failed: ' + exception);
         }
       });
   }
@@ -285,7 +287,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       } catch (e) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-          this.constructor.name + ' addOrUpdatePicklistQueueItemSubject - handlePicklistQueueItemAddorUpdateSubject failed: ' + e);
+          this._componentName + ' addOrUpdatePicklistQueueItemSubject - handlePicklistQueueItemAddorUpdateSubject failed: ' + e);
       }
     });
 
@@ -297,7 +299,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       } catch (e) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-          this.constructor.name + ' picklistQueueItemListUpdateSubject - handlePicklistQueueItemListUpdateSubject failed: ' + e);
+          this._componentName + ' picklistQueueItemListUpdateSubject - handlePicklistQueueItemListUpdateSubject failed: ' + e);
       }});
 
     this.picklistQueueEventConnectionService.removePicklistQueueItemSubject
@@ -308,7 +310,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       } catch (e) {
         /* istanbul ignore next */
         this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-          this.constructor.name + ' removePicklistQueueItemSubject - handleRemovePicklistQueueItemSubject failed: ' + e);
+          this._componentName + ' removePicklistQueueItemSubject - handleRemovePicklistQueueItemSubject failed: ' + e);
       }
     });
   }
@@ -325,7 +327,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   /* istanbul ignore next */
   private handleSendQueueItemsToRobotError(picklistQueueItems: PicklistQueueItem[], error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this.constructor.name + ' handleSendQueueItemsToRobotError - Failed To Save: ' + error);
+      this._componentName + ' handleSendQueueItemsToRobotError - Failed To Save: ' + error);
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = false;
     });
@@ -343,7 +345,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   /* istanbul ignore next */
   private handleRerouteQueueItemsError(picklistQueueItems: PicklistQueueItem[], error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this.constructor.name + ' handleRerouteQueueItemsError - Failed To Save: ' + error);
+      this._componentName + ' handleRerouteQueueItemsError - Failed To Save: ' + error);
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = false;
     });
@@ -361,7 +363,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
   /* istanbul ignore next */
   private handlePrintQueueItemsLabelsError(picklistQueueItems: PicklistQueueItem[], error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this.constructor.name + ' handlePrintQueueItemsLabelsError - Failed To Save: ' + error);
+      this._componentName + ' handlePrintQueueItemsLabelsError - Failed To Save: ' + error);
     _.forEach(picklistQueueItems, (item) => {
       item.Saving = false;
     });

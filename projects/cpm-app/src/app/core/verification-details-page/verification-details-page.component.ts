@@ -36,7 +36,8 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
   private backRoute = VerificationRouting.DestinationPage;
-  private loggingCategory = LoggingCategory.Verification;
+  private _loggingCategory = LoggingCategory.Verification;
+  private _componentName = "VerificationDetailsPageComponent";
 
   ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
@@ -88,8 +89,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   onBarcodeScannedEvent(data: IBarcodeData) {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
 
@@ -233,8 +234,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   private saveVerification(verificationDestinationDetails: VerificationDestinationDetail[]): void {
     /* istanbul ignore next */
     verificationDestinationDetails.map(detail => {
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' Saving Verifications, trackById: ' + detail.Id);
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this._componentName + ' Saving Verifications, trackById: ' + detail.Id);
     })
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
@@ -246,16 +247,16 @@ export class VerificationDetailsPageComponent implements OnInit {
         this.handleSaveVerificationSuccess(verificationDestinationDetails);
       } catch(exception) {
         /* istanbul ignore next */
-        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' handleSaveVerificationSuccess failed: ' + exception);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this._componentName + ' handleSaveVerificationSuccess failed: ' + exception);
       }
     }, error => {
       try {
         this.handleSaveVerificationFailure(verificationDestinationDetails, error);
       } catch(exception) {
         /* istanbul ignore next */
-        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-          this.constructor.name + ' handleSaveVerificationFailure failed: ' + exception);
+        this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+          this._componentName + ' handleSaveVerificationFailure failed: ' + exception);
       }
     });
   }
@@ -275,15 +276,15 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.dashboardUpdateSubject.next(dashboardDataAdded);
     /* istanbul ignore next */
     verificationDestinationDetails.map(detail => {
-      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' Saving Verifications Complete, trackById: ' + detail.Id);
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this._componentName + ' Saving Verifications Complete, trackById: ' + detail.Id);
     });
   }
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
     verificationDestinationDetails.map(detail => detail.Saving = false);
     /* istanbul ignore next */
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this.loggingCategory,
-      this.constructor.name + ' Saving Verifications failed: ' + error);
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this._componentName + ' Saving Verifications failed: ' + error);
   }
 }

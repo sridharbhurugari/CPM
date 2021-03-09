@@ -35,11 +35,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2PickingBarcodeScannedSubscription: Subscription;
-
   private backRoute = VerificationRouting.OrderPage;
   private continueRoute = VerificationRouting.DetailsPage;
-
-  private _loggingCategory = LoggingCategory.Verification;
+  private _loggingCategory: string = LoggingCategory.Verification;
+  private _componentName: string = "VerificationDestinationPageComponent";
 
   ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
@@ -82,9 +81,9 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
+      this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
-    if(data.IsXr2PickingBarcode) {    
+    if(data.IsXr2PickingBarcode) {
       const navigationParams = {
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,

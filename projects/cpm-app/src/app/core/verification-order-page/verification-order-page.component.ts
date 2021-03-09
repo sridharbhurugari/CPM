@@ -33,14 +33,15 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
   private xr2xr2PickingBarcodeScannedSubscription: Subscription;
-  private _loggingCategory = LoggingCategory.Verification;
+  private _loggingCategory: string = LoggingCategory.Verification;
+  private _componentName: string = "VerificationOrderPageComponent";
 
   ngUnsubscribe = new Subject();
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
   requiredOrders: boolean = true;
- 
+
 
   continueRoute = VerificationRouting.DestinationPage;
 
@@ -68,7 +69,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   onBarcodeScannedEvent(data: IBarcodeData) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' Barcode Scanned: ' + data.BarCodeScanned);
+      this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
       console.log('Details Page Xr2 Barcode!')
