@@ -40,7 +40,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
   requiredOrders: boolean = true;
- 
+
 
   continueRoute = VerificationRouting.DestinationPage;
 
@@ -118,6 +118,11 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   onSortEvent(event: IColHeaderSortChanged): void {
     this.colHeaderSort = event;
+  }
+
+   /* istanbul ignore next */
+  fromWPFNgOnInit() {
+    this.ngOnInit();
   }
 
   private loadVerificationOrderItems(): void {
