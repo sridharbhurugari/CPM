@@ -39,8 +39,10 @@ export class VerificationOrderQueueComponent implements OnInit {
   set unfilteredVerificationOrderItems(value: VerificationOrderItem[]) {
     this._unfilteredVerficationOrderItems = value;
     this._filteredVerificationOrderItems = value;
-    if(this.savedPageConfiguration && value) {
+
+    if(this.isInitialLoad && value) {
       this.loadSavedConfigurations();
+      this.isInitialLoad = false;
     } else {
       this.filteredVerificationOrderItems = this.filterBySearchText(this.searchTextFilter, value);
     }
@@ -80,6 +82,7 @@ export class VerificationOrderQueueComponent implements OnInit {
   searchFields = [nameof<VerificationOrderItem>('PriorityCodeDescription'), nameof<VerificationOrderItem>('OrderId')];
   translatables = [];
   translations$: Observable<any>;
+  isInitialLoad = true;
 
 
   constructor(private translateService: TranslateService) { }
@@ -130,8 +133,6 @@ export class VerificationOrderQueueComponent implements OnInit {
     if (this.savedPageConfiguration.searchTextFilterOrder) {
       this.searchTextFilter = this.savedPageConfiguration.searchTextFilterOrder;
     }
-
-    this.savedPageConfiguration = null;
   }
 
    /* istanbul ignore next */
