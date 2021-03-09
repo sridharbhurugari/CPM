@@ -128,7 +128,7 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
   }
 
   private loadAssignedItemsSourceLocations() {
-    const itemLocations$ = this.itemLocaitonDetailsService.get(this.selectedItem).pipe(shareReplay(1));
+    const itemLocations$ = this.itemLocaitonDetailsService.getInternalTransfer(this.selectedItem).pipe(shareReplay(1));
     this.itemLocationDetails$ = itemLocations$.pipe(map(locations => {
       return locations.filter(location =>
         location.ItemId === this.selectedItem &&
