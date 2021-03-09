@@ -22,7 +22,7 @@ export class ItemLocaitonDetailsService {
   }
 
   getInternalTransfer(itemId: string): Observable<IItemLocationDetail[]> {
-    let url = this.ocapUrlBuilderService.buildUrl(`/api/itemLocationDetails/InternalTransfers?itemId=${itemId}`);
+    let url = this.ocapUrlBuilderService.buildUrl(`/api/standard/itemLocationDetails/InternalTransfers?itemId=${itemId}`);
     return this.httpClient.get<IItemLocationDetail[]>(url, { headers: this.ocapHttpHeadersService.getHeaders() });
   }
 }

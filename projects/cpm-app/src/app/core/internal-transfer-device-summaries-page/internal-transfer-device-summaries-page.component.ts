@@ -78,10 +78,11 @@ export class InternalTransferDeviceSummariesPageComponent {
     queryParams[this.needsBasedKey] = value;
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams: queryParams 
+      queryParams: queryParams
     });
+    this.isTransferByNeeds = value;
   }
-  
+
   /* istanbul ignore next */
   private setupDataRefresh() {
     let hash = this.windowService.getHash();
