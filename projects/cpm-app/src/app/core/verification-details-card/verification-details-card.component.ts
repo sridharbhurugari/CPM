@@ -29,14 +29,13 @@ import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 export class VerificationDetailsCardComponent implements OnInit {
 
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
-  private _loggingCategory = LoggingCategory.Verification;
+  @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
+  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
 
-  constructor(
-    private translateService: TranslateService,
-    private popupWindowService: PopupWindowService,
-    private toastService: ToastService,
-    private logService: LogService
-    ) { }
+  @Input() deviceDescription : string;
+  @Input() rejectReasons: string[];
+  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() IsBoxBarcodeVerified: boolean;
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -47,16 +46,10 @@ export class VerificationDetailsCardComponent implements OnInit {
       return this._verificationDestinationDetails;
   }
 
-  @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
-  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
-
-  @Input() deviceDescription : string;
-  @Input() rejectReasons: string[];
-  @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
-  @Input() IsBoxBarcodeVerified: boolean;
-
   private barcodeScannedEventSubscription: Subscription;
   private _verificationDestinationDetails : VerificationDestinationDetail[];
+  private _loggingCategory: string = LoggingCategory.Verification;
+  private _componentName: string = "VerificationDetailsCardComponent";
 
   readonly itemVerificationPropertyName = nameof<VerificationDestinationDetail>('ItemFormattedGenericName');
   readonly verifiedVerificationPropertyName = nameof<VerificationDestinationDetail>('VerifiedStatus');
@@ -79,6 +72,13 @@ export class VerificationDetailsCardComponent implements OnInit {
   ];
 
   translations$: Observable<any>;
+
+  constructor(
+    private translateService: TranslateService,
+    private popupWindowService: PopupWindowService,
+    private toastService: ToastService,
+    private logService: LogService
+    ) { }
 
   ngOnInit() {
     if(this.barcodeScannedEventSubscription) {
@@ -137,7 +137,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' Button Approve Clicked');
+      this._componentName + ' Button Approve Clicked');
     this.approveItem(selectedVerificationDestinationDetail);
   }
 
@@ -152,7 +152,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
     /* istanbul ignore next */
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this.constructor.name + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
+      this._componentName + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
 
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
@@ -267,7 +267,7 @@ export class VerificationDetailsCardComponent implements OnInit {
                 detail.RejectReason = data.selectedrow.value;
                 /* istanbul ignore next */
                 this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-                  this.constructor.name + ' Rejecting Item Id: ' + detail.ItemId + ' trackById: ' + detail.Id);
+                  this._componentName + ' Rejecting Item Id: ' + detail.ItemId + ' trackById: ' + detail.Id);
               });
 
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
