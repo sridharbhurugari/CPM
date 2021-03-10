@@ -242,10 +242,11 @@ export class VerificationBasePageComponent implements OnInit {
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
+        this.savedPageConfiguration = null;
         this.ngOnInit();
         if(this.childVerificationOrderPageComponent) {
-          this.childVerificationOrderPageComponent.ngOnInit();
-          this.childVerificationOrderPageComponent.childVerificationOrderHeaderComponent.ngAfterViewInit();
+          this.childVerificationOrderPageComponent.fromWPFNgOnInit();
+          this.childVerificationOrderPageComponent.childVerificationOrderHeaderComponent.fromWPFNgOnInit();
         }
       });
   }
