@@ -136,7 +136,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
   /* istanbul ignore next */
   private handleSendToRobotGroupedError(picklistQueueGrouped: PicklistQueueGrouped, error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this._componentName + 'handleSendToRobotGroupedError - Failed To Save: ' + error);
+      this._componentName + ' handleSendToRobotGroupedError - Failed To Save: ' + error);
     picklistQueueGrouped.Saving = false;
     this.displayFailedToSaveDialog();
   }
@@ -163,7 +163,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
 
   private handleGetGroupedFilteredError(picklistQueueGrouped: PicklistQueueGrouped, error: any) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Error, this._loggingCategory,
-      this._componentName + 'handleGetGroupedFilteredError - Failed To Save: ' + error);
+      this._componentName + ' handleGetGroupedFilteredError - Failed To Save: ' + error);
     picklistQueueGrouped.Saving = false;
     this.displayFailedToRefresh();
   }
@@ -207,7 +207,7 @@ export class Xr2QueueGroupingPageComponent implements OnInit, OnDestroy {
         } catch (e) {
           /* istanbul ignore next */
           this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-            `${this._componentName} picklistQueueGroupedListUpdateSubject - handlepicklistQueueGroupedListUpdateSubject failed: ${e}`);
+            this._componentName +  ' picklistQueueGroupedListUpdateSubject - handlepicklistQueueGroupedListUpdateSubject failed: ' + e);
         }
 
       });

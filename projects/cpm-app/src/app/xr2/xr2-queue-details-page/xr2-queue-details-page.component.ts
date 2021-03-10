@@ -118,7 +118,7 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
       }
 
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-        this._componentName + 'Reroute clicked - rerouting current selected item/items');
+        this._componentName + ' Reroute clicked - rerouting current selected item/items');
       this.rerouteQueueItems([...picklistQueueItems]);
       this.clearMultiSelect();
     });
@@ -126,13 +126,13 @@ export class Xr2QueueDetailsPageComponent implements OnInit, OnDestroy {
 
   processRelease(picklistQueueItems: Set<PicklistQueueItem>): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + 'Release clicked - releasing current selected item/items');
+      this._componentName + ' Release clicked - releasing current selected item/items');
     this.sendQueueItemsToRobot([...picklistQueueItems]);
   }
 
   processPrint(picklistQueueItems: Set<PicklistQueueItem>): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + 'Print clicked - printing current selected item/items');
+      this._componentName + ' Print clicked - printing current selected item/items');
     this.printQueueItemsLabels([...picklistQueueItems]);
     this.clearMultiSelect();
   }
