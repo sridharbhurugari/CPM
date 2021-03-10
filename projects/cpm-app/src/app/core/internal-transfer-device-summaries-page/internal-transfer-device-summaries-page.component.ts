@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
@@ -14,12 +14,12 @@ import { WindowService } from '../../shared/services/window-service';
   templateUrl: './internal-transfer-device-summaries-page.component.html',
   styleUrls: ['./internal-transfer-device-summaries-page.component.scss']
 })
-export class InternalTransferDeviceSummariesPageComponent {
+export class InternalTransferDeviceSummariesPageComponent implements OnInit {
   private needsBasedKey: string = 'isNeedsBased';
 
   deviceNeeds$: Observable<IDeviceReplenishmentNeed[]>;
   ngUnsubscribe = new Subject();
-  isTransferByNeeds: boolean = true;
+  transferByNeeds: boolean = true;
 
   constructor(
     coreEventConnectionService: CoreEventConnectionService,
@@ -46,14 +46,22 @@ export class InternalTransferDeviceSummariesPageComponent {
       .subscribe(q => {
         var stringValue = q.get(this.needsBasedKey);
         if (stringValue) {
-          this.isTransferByNeeds = parseBool(stringValue);
+          this.transferByNeeds = parseBool(stringValue);
         }
       });
+  }
+
+  ngOnInit() {
+    this.transferByNeeds = true;
   }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  isTransferByNeeds(): Observable<boolean> {
+    return of(this.transferByNeeds)
   }
 
   private onRefreshDeviceNeeds(): void {
@@ -65,7 +73,7 @@ export class InternalTransferDeviceSummariesPageComponent {
   }
 
   deviceSelected(deviceId: number) {
-    if (this.isTransferByNeeds) {
+    if (this.transferByNeeds) {
       this.router.navigate(['core/internalTransfer/deviceReplenishmentNeeds/', deviceId]);
       return;
     }
@@ -74,13 +82,14 @@ export class InternalTransferDeviceSummariesPageComponent {
   }
 
   setIsNeedsBasedTransfer(value: boolean) {
+    this.transferByNeeds = value;
+
     let queryParams: Params = { };
     queryParams[this.needsBasedKey] = value;
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: queryParams
     });
-    this.isTransferByNeeds = value;
   }
 
   /* istanbul ignore next */
@@ -91,5 +100,5 @@ export class InternalTransferDeviceSummariesPageComponent {
       .subscribe(() => {
         this.loadDeviceNeeds();
       });
-  }
+    }
 }

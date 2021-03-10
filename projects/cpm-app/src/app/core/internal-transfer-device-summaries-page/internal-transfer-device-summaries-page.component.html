@@ -1,6 +1,6 @@
 <app-internal-transfer-device-list
     [deviceNeeds]="deviceNeeds$ | async"
-    [transferByNeeds]="'isTransferByNeeds'"
+    [transferByNeeds]="isTransferByNeeds() | async"
     (deviceSelected)="deviceSelected($event)">
     <oc-button-toggle
         [switchtype]="'secondary'"
