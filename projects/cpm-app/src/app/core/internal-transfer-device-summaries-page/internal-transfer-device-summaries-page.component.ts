@@ -60,7 +60,7 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
     this.ngUnsubscribe.complete();
   }
 
-  isTransferByNeeds(): Observable<boolean> {
+  get isTransferByNeeds(): Observable<boolean> {
     return of(this.transferByNeeds)
   }
 

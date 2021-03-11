@@ -30,6 +30,7 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
   let simpleDialogService: Partial<SimpleDialogService>;
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
+  let itemLocaitonDetailsService: Partial<ItemLocaitonDetailsService>;
 
   let assignedItemsData: IItemReplenishmentOnDemand[] = [{
     ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
@@ -64,6 +65,11 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
       pickDeviceItemNeeds: () => of(),
       getDeviceAssignedItems: () => of(assignedItemsData)
     };
+
+    itemLocaitonDetailsService = {
+      get: () => of([]),
+      getInternalTransfer: () => of([selectedLocationsData])
+    };
     spyOn(deviceReplenishmentNeedsService, 'pickDeviceItemNeeds');
 
     TestBed.configureTestingModule({
@@ -80,7 +86,7 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
       providers: [
         { provide: Location, useValue: locationService },
         { provide: SimpleDialogService, useValue: simpleDialogService },
-        { provide: ItemLocaitonDetailsService, useValue: { get: () => of([]) } },
+        { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService},
         { provide: DevicesService, useValue: { get: () => of([]) }},
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '' } } } },

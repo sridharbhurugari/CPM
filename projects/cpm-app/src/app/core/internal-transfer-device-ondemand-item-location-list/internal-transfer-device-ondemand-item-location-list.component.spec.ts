@@ -13,7 +13,7 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { InternalTransferDeviceOndemandItemLocationListComponent } from './internal-transfer-device-ondemand-item-location-list.component';
 
-describe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
+fdescribe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
   let component: InternalTransferDeviceOndemandItemLocationListComponent;
   let fixture: ComponentFixture<InternalTransferDeviceOndemandItemLocationListComponent>;
 
@@ -108,6 +108,7 @@ describe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
   describe('given a location is selected with no previous selected location', () => {
     describe('locationSelected', () => {
       beforeEach(() => {
+        delete component.selectedItemLocation;
         component.locationSelected(selectedLocationsData);
       });
 

@@ -19,6 +19,7 @@ import { WindowService } from '../../shared/services/window-service';
 class MockDeviceNeedsList {
   @Input()deviceNeeds: IDeviceReplenishmentNeed[];
   @Input()tranferDefaultvalue: boolean;
+  @Input()transferByNeeds: boolean;
 }
 
 describe('InternalTransferDeviceSummariesPageComponent', () => {
@@ -100,27 +101,27 @@ describe('InternalTransferDeviceSummariesPageComponent', () => {
     });
   });
 
-  describe('isTransferByNeeds true', () => {
-    beforeEach(() => {
-      component.isTransferByNeeds = true;
-    });
-
+  describe('given TransferByNeeds true', () => {
     describe('deviceSelected', () => {
-      it('should navigate to needs screen', () => {
+      beforeEach(() => {
+        component.transferByNeeds = true;
         component.deviceSelected(5);
+      });
+
+      it('should navigate to needs screen', () => {
         expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('deviceReplenishmentNeeds')]));
       });
     });
   });
 
-  describe('isTransferByNeeds false', () => {
-    beforeEach(() => {
-      component.isTransferByNeeds = false;
-    });
-
+  describe('given TransferByNeeds false', () => {
     describe('deviceSelected', () => {
-      it('should navigate to on demand screen', () => {
+      beforeEach(() => {
+        component.transferByNeeds = false;
         component.deviceSelected(5);
+      });
+
+      it('should navigate to on demand screen', () => {
         expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('deviceReplenishmentOnDemand')]));
       });
     });

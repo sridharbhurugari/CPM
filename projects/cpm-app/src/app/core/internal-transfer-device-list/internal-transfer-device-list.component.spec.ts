@@ -11,11 +11,17 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { MockGridSortCol } from '../../shared/testing/mock-grid-sort-col.spec';
 import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
+import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 
 describe('InternalTransferDeviceListComponent', () => {
   let component: InternalTransferDeviceListComponent;
   let fixture: ComponentFixture<InternalTransferDeviceListComponent>;
-  let transferByNeeds: boolean;
+
+  let deviceNeedsData: IDeviceReplenishmentNeed[] = [
+    { DeviceId: 1, DeviceDescription: "Device Description 1", ItemsBelowReorderLevel: 6, AssignedItems: 4 },
+    { DeviceId: 2, DeviceDescription: "Device Description 2", ItemsBelowReorderLevel: 2, AssignedItems: 10 },
+    { DeviceId: 3, DeviceDescription: "Device Description 3", ItemsBelowReorderLevel: 0, AssignedItems: 4 },
+  ]
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,8 +48,8 @@ describe('InternalTransferDeviceListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(InternalTransferDeviceListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
     component.transferByNeeds = true;
+    component.deviceNeeds = deviceNeedsData;
   });
 
   it('should create', () => {
