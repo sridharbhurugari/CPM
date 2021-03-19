@@ -13,14 +13,15 @@ import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 
 import { InternalTransferDeviceOndemandItemLocationListComponent } from './internal-transfer-device-ondemand-item-location-list.component';
 
-fdescribe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
+describe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
   let component: InternalTransferDeviceOndemandItemLocationListComponent;
   let fixture: ComponentFixture<InternalTransferDeviceOndemandItemLocationListComponent>;
 
   let selectedItemsData: IItemReplenishmentOnDemand = {
     ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
     DeviceQuantityOnHand: 10, DeviceParLevel: 10, DeviceRestockLevel: 200, PendingDevicePickQuantity: 5,
-    DisplayPackageSize: 'Pack Size: 5', DisplayNumberOfPackages: '4', DisplayDeviceQuantityOnHand: "10", DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
+    DisplayPackageSize: 'Pack Size: 5', DisplayNumberOfPackages: '4', DisplayDeviceQuantityOnHand: "10",
+    DisplayQohNumberOfPackages: '10', PackSize: 5, Xr2Item: true, UnitOfIssue: 'EA',
     AvailablePharmacyLocationCount: 3, AvailablePharmacyQty: 20
   };
 
@@ -109,6 +110,7 @@ fdescribe('InternalTransferDeviceOndemandItemLocationListComponent', () => {
     describe('locationSelected', () => {
       beforeEach(() => {
         delete component.selectedItemLocation;
+        selectedLocationsData.QuantityOnHand = 140;
         component.locationSelected(selectedLocationsData);
       });
 
