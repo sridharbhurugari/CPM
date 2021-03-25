@@ -253,7 +253,8 @@ export class VerificationDetailsCardComponent implements OnInit {
             checkboxHideSelection: rowsToHideCheckbox,
             selectedrow: defaultRejectReasonDisplayItem,
             selectedcheckbox: false,
-            selectText: translations.REASON
+            selectText: translations.REASON,
+            sortTableData: false
         };
 
         properties.data = data;
