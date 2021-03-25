@@ -19,6 +19,8 @@ import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-he
 import { MockDestockTypeInfoComponent } from '../../shared/testing/mock-destock-typeinfo-component.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DestockPageComponent } from './destock-page.component';
+import { WindowService } from '../../shared/services/window-service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 describe('DestockPageComponent', () => {
   let component: DestockPageComponent ;
@@ -56,7 +58,9 @@ describe('DestockPageComponent', () => {
       providers: [
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: DestockService, useValue: destockService},
-        { provide: DestockEventConnectionService, useValue: destockEventConnectionService}
+        { provide: DestockEventConnectionService, useValue: destockEventConnectionService},
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
+        { provide: WindowService, useValue: { getHash: () => '' } }
        ]
     })
     .compileComponents();
