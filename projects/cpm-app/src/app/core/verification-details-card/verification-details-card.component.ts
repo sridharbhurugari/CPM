@@ -254,7 +254,7 @@ export class VerificationDetailsCardComponent implements OnInit {
             selectedrow: defaultRejectReasonDisplayItem,
             selectedcheckbox: false,
             selectText: translations.REASON,
-            sortTableData: false
+            autoSort: false
         };
 
         properties.data = data;

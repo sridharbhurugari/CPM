@@ -132,7 +132,7 @@ export class EditDeviceSequenceComponent implements OnInit {
       selectedrow: this.defaultDisplayItem,
       selectedcheckbox: false,
       selectText: '',
-      sortTableData: true
+      autoSort: true
     };
 
     properties.data = data;
