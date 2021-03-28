@@ -38,10 +38,11 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   ngUnsubscribe = new Subject();
   verificationOrderItems: Observable<IVerificationOrderItem[]>;
+  allVerificationOrderItems: Observable<IVerificationOrderItem[]>;
   searchTextFilter: string;
   colHeaderSort: IColHeaderSortChanged;
   requiredOrders: boolean = true;
-
+  
 
   continueRoute = VerificationRouting.DestinationPage;
 
@@ -55,6 +56,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   ngOnInit() {
     this.xr2xr2PickingBarcodeScannedSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.loadVerificationOrderItems();
+    this.allVerificationOrderItems = this.verificationOrderItems;
   }
 
   ngAfterContentChecked() {
@@ -113,8 +116,12 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   }
 
   setIsRequiredVerification(event: boolean): void {
-      this.requiredOrders = event;
-      this.loadVerificationOrderItems();
+    this.requiredOrders = event;
+    if(this.requiredOrders === true || this.requiredOrders === undefined){
+      this.LoadRequiredVerificationOrderItems();
+    } else {
+      this.LoadAllVerificationOrderItems();
+    }
   }
 
   onSortEvent(event: IColHeaderSortChanged): void {
@@ -127,7 +134,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   }
 
   private loadVerificationOrderItems(): void {
-      this.verificationOrderItems = this.verificationService.getVerificationOrders(this.requiredOrders).pipe(
+      this.verificationOrderItems = this.verificationService.getVerificationOrders().pipe(
       map((verificationOrderItems) => {
         return verificationOrderItems.map((verificationItem) => {
           console.log(verificationItem);
@@ -135,6 +142,18 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
         });
       }), shareReplay(1)
     );
+  }
+
+  private LoadRequiredVerificationOrderItems(): void {
+    this.verificationOrderItems =  this.allVerificationOrderItems.pipe(
+      map(verificationOrderItems => 
+        verificationOrderItems.filter(x => x.CompleteVerificationPercentage < x.RequiredVerificationPercentage || x.HasExceptions || x.HasOutputDeviceVerification)));
+  }
+
+  private LoadAllVerificationOrderItems(): void {
+    this.verificationOrderItems = this.allVerificationOrderItems.pipe(
+       map(verificationOrderItems => 
+         verificationOrderItems.filter(x => x.CompleteVerificationPercentage !== 100 || x.HasExceptions || x.HasOutputDeviceVerification)));
   }
 
   private createSavedPageConfiguration() {
