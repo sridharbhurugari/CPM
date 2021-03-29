@@ -117,7 +117,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   setIsRequiredVerification(event: boolean): void {
     this.requiredOrders = event;
-    if(this.requiredOrders === true || this.requiredOrders === undefined){
+    if(this.requiredOrders){
       this.LoadRequiredVerificationOrderItems();
     } else {
       this.LoadAllVerificationOrderItems();
