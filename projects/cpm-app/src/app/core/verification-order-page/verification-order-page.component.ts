@@ -151,9 +151,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
   }
 
   private LoadAllVerificationOrderItems(): void {
-    this.verificationOrderItems = this.allVerificationOrderItems.pipe(
-       map(verificationOrderItems => 
-         verificationOrderItems.filter(x => x.CompleteVerificationPercentage !== 100 || x.HasExceptions || x.HasOutputDeviceVerification)));
+    this.verificationOrderItems = this.allVerificationOrderItems;
   }
 
   private createSavedPageConfiguration() {
