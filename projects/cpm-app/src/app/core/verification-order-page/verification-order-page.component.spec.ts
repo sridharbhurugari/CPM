@@ -91,6 +91,13 @@ describe('VerificationOrderPageComponent', () => {
       expect(component.searchTextFilter).toBe(event);
     });
 
+    it('should set required verification on toggle button event', () => {
+      const event = true;
+      component.setIsRequiredVerification(event);
+
+      expect(component.requiredOrders).toBe(event);
+    });
+
     it('should set sort on sort event', () => {
       const event = {} as IColHeaderSortChanged;
       event.SortDirection = 'asc';
