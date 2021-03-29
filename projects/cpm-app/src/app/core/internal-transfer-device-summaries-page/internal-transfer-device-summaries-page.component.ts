@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IDeviceReplenishmentNeed } from '../../api-core/data-contracts/i-device-replenishment-need';
 import { Observable, of, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { WindowService } from '../../shared/services/window-service';
   templateUrl: './internal-transfer-device-summaries-page.component.html',
   styleUrls: ['./internal-transfer-device-summaries-page.component.scss']
 })
-export class InternalTransferDeviceSummariesPageComponent implements OnInit {
+export class InternalTransferDeviceSummariesPageComponent implements OnDestroy {
   private needsBasedKey: string = 'isNeedsBased';
 
   deviceNeeds$: Observable<IDeviceReplenishmentNeed[]>;
@@ -49,10 +49,6 @@ export class InternalTransferDeviceSummariesPageComponent implements OnInit {
           this.transferByNeeds = parseBool(stringValue);
         }
       });
-  }
-
-  ngOnInit() {
-    this.transferByNeeds = true;
   }
 
   ngOnDestroy() {

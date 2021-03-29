@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i
   templateUrl: './internal-transfer-device-ondemand-item-locations-page.component.html',
   styleUrls: ['./internal-transfer-device-ondemand-item-locations-page.component.scss']
 })
-export class InternalTransferDeviceOndemandItemLocationsPageComponent implements OnInit {
+export class InternalTransferDeviceOndemandItemLocationsPageComponent implements OnInit, OnDestroy {
   selectedItem$: Observable<IItemReplenishmentOnDemand>;
   itemLocationDetails$: Observable<IItemLocationDetail[]>;
   device$: Observable<IDevice>;
@@ -66,6 +66,7 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
   }
 
   ngOnInit() {
+    this.requestStatus = 'none';
   }
 
   ngOnDestroy() {
