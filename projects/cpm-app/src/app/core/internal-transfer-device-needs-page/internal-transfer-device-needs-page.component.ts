@@ -58,7 +58,7 @@ export class InternalTransferDeviceNeedsPageComponent implements OnInit {
   ) {
     this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.device$ = devicesService.get().pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)));
-    this.deviceDescription$ = this.device$.pipe(map(d => d.Description));
+    this.deviceDescription$ = this.device$.pipe(shareReplay(1), map(d => d.Description));
     this.reportTitle$ = this.device$.pipe(switchMap(d => {
       return translateService.get('DEVICE_NEEDS_REPORT_TITLE', { deviceDescription: d.Description });
     }));

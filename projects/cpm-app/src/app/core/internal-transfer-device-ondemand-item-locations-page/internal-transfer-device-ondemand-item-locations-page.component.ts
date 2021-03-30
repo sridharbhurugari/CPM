@@ -51,7 +51,7 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
     this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
 
     this.device$ = devicesService.get().pipe(shareReplay(1), map((devices: IDevice[]) => devices.find(d => d.Id === this.deviceId)));
-    this.deviceDescription$ = this.device$.pipe(map((d: IDevice) => d.Description));
+    this.deviceDescription$ = this.device$.pipe(shareReplay(1), map((d: IDevice) => d.Description));
     this.loadSelectedItem();
     this.loadAssignedItemsSourceLocations();
 
