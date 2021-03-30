@@ -14,6 +14,7 @@ import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-
 import { DevicesService } from '../../api-core/services/devices.service';
 import { ActivatedRoute } from '@angular/router';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { IDevice } from '../../api-core/data-contracts/i-device';
 @Component({
   selector: 'app-internal-transfer-device-ondemand-item-location-list',
   template: ''
@@ -21,6 +22,7 @@ import { CoreEventConnectionService } from '../../api-core/services/core-event-c
 class MockInternalTransferItemsListComponent {
   @Input()itemLocations: IItemLocationDetail[]
   @Input()item: IItemReplenishmentOnDemand;
+  @Input()destinationDeviceDescription: string;
 }
 
 describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
@@ -31,6 +33,7 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
   let coreEventConnectionService: Partial<CoreEventConnectionService>;
   let deviceReplenishmentNeedsService: Partial<DeviceReplenishmentNeedsService>;
   let itemLocaitonDetailsService: Partial<ItemLocaitonDetailsService>;
+  let deviceService: Partial<DevicesService>;
 
   let assignedItemsData: IItemReplenishmentOnDemand[] = [{
     ItemId: "39301", ItemFormattedGenericName: "abacavir-lamivudine 600-300 mg TABLET", ItemBrandName: 'EPZICOM',
@@ -46,6 +49,13 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
     DeviceType: "Device Type", PackageFormType: "Package Form Type", PackageFormName: "Package Form Name",
     DeviceOwnerShortName: "Device Owner Short Name", DeviceDefaultOwner: null, CarouselDisplayQuantity: 139, Description: "Description",
     Quantity: 2, DeviceLocation: null, SafetyStockIssueScan: false
+  };
+
+  let device: IDevice = {
+    Description: "Test",
+    Id: 1,
+    OutputDevices: null,
+    DeviceType: "2010"
   };
 
   beforeEach(async(() => {
@@ -72,6 +82,10 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
     };
     spyOn(deviceReplenishmentNeedsService, 'pickDeviceItemNeeds');
 
+    deviceService = {
+      get: () => of([device]),
+    }
+
     TestBed.configureTestingModule({
       declarations: [
         InternalTransferDeviceOndemandItemLocationsPageComponent,
@@ -88,8 +102,8 @@ describe('InternalTransferDeviceOndemandItemLocationsPageComponent', () => {
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService},
-        { provide: DevicesService, useValue: { get: () => of([]) }},
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '' } } } },
+        { provide: DevicesService, useValue: deviceService},
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '1' } } } },
         { provide: CoreEventConnectionService, useValue: coreEventConnectionService },
       ]
     })
