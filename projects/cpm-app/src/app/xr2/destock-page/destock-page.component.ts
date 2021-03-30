@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { finalize, catchError, map, shareReplay, tap, takeUntil } from 'rxjs/operators';
+import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from 'rxjs/operators';
 import { IDestockTypeInfo } from '../../api-xr2/data-contracts/i-destock-type-info';
 import { DestockService } from '../../api-xr2/services/destock.service';
 import { nameof } from '../../shared/functions/nameof';
@@ -11,6 +11,9 @@ import { DestockTypeInfo } from '../model/destock-type-info';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { DestockEventConnectionService } from '../services/destock-event-connection.service';
 import { DestockDataEvent } from '../model/destock-data-event';
+import { WindowService } from '../../shared/services/window-service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+
 @Component({
   selector: 'app-destock-page',
   templateUrl: './destock-page.component.html',
@@ -36,7 +39,11 @@ export class DestockPageComponent implements OnInit {
 
   constructor(private destockService: DestockService,
     private simpleDialogService: SimpleDialogService,
-    private destockEventConnectionService: DestockEventConnectionService) { }
+    private destockEventConnectionService: DestockEventConnectionService,
+    private windowService: WindowService,
+    private wpfInteropService: WpfInteropService) { 
+      this.setupDataRefresh();
+    }
 
   ngOnInit() {
 
@@ -162,6 +169,17 @@ setDestockService()
         this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
       }
     );
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {   
+        this.eventDateTime = null;        
+        this.refreshData();        
+      });
   }
 
 }
