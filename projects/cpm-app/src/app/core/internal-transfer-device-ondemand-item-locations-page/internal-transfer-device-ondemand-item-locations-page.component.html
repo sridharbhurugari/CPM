@@ -6,6 +6,7 @@
     <app-internal-transfer-device-ondemand-item-location-list
       [item]="selectedItem$ | async"
       [itemLocations]="itemLocationDetails$ | async"
+      [destinationDeviceDescription]="deviceDescription$ | async"
       (selectedItem)="onSelectedItem($event)"
       (isSelected)="onItemSelected($event)">
     </app-internal-transfer-device-ondemand-item-location-list>

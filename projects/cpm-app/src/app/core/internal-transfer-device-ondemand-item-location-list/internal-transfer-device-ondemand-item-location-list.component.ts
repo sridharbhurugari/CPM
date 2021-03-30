@@ -46,6 +46,9 @@ export class InternalTransferDeviceOndemandItemLocationListComponent implements 
   @Input()
   item: IItemReplenishmentOnDemand;
 
+  @Input()
+  destinationDeviceDescription: string;
+
   @ViewChild('ocsearchbox', {
     static: true
   })

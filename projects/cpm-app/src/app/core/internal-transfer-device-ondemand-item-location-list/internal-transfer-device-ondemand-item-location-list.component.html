@@ -1,7 +1,8 @@
 <div class="cpmheaderrow">
-  <app-header-container *ngIf="item">
-    {{item.ItemFormattedGenericName}}: <p style="font-size: 12px;">{{'PACK_SIZE' | translate}} {{item.PackSize}}</p>
+  <app-header-container *ngIf="item" [title]="'ITEM' | translate">
+    {{item.ItemFormattedGenericName}}: <div style="font-size: 12px;">{{'PACK_SIZE' | translate}} {{item.PackSize}}</div>
   </app-header-container>
+  <app-header-container [title]="'DEVICE' | translate">{{destinationDeviceDescription}}</app-header-container>
   <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
 <oc-grid #ocgrid ocgridfilter="false"
