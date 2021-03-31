@@ -11,6 +11,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
@@ -28,7 +29,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
-  @Output() displayWarningDialogEvent: EventEmitter<any> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
 
@@ -93,8 +94,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
     } else {
       this.displayWarningDialogEvent.emit({
-        TitleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
-        MsgResourceKey: 'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN'
+        titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
+        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN'
       });
     }
   }

@@ -18,6 +18,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { VerificationDetailsCardComponent } from '../verification-details-card/verification-details-card.component';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -26,7 +27,7 @@ import { IVerificationDestinationDetailViewData } from '../../api-core/data-cont
 export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
-  @Output() displayWarningDialogEvent: EventEmitter<any> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;

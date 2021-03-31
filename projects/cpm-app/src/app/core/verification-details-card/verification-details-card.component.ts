@@ -20,6 +20,7 @@ import { LogService } from '../../api-core/services/log-service';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -30,7 +31,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
-  @Output() displayWarningDialogEvent: EventEmitter<any> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
@@ -101,7 +102,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
-        messageResourceKey: 'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN'
+        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN'
       });
       return;
     }
@@ -111,7 +112,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'MEDICATION_NONEXISTENT_BOX_TITLE',
-        messageResourceKey: 'MEDICATION_NONEXISTENT_BOX_MESSAGE'
+        msgResourceKey: 'MEDICATION_NONEXISTENT_BOX_MESSAGE'
       });
       return;
     }
@@ -227,7 +228,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     } else {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'SCAN_PICKING_LABEL_FIRST_TITLE',
-        messageResourceKey: 'SCAN_PICKING_LABEL_FIRST_MESSAGE',
+        msgResourceKey: 'SCAN_PICKING_LABEL_FIRST_MESSAGE',
       });
     }
   }
