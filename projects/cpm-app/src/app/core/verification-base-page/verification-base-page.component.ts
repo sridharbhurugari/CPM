@@ -1,6 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
-import { Guid } from 'guid-typescript';
+import { PopupDialogComponent, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
@@ -15,6 +14,7 @@ import { SystemConfigurationService } from '../../shared/services/system-configu
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { VerificationOrderPageComponent } from '../verification-order-page/verification-order-page.component';
 import { WindowService } from '../../shared/services/window-service';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 
 @Component({
   selector: "app-verification-base-page",
@@ -39,15 +39,6 @@ export class VerificationBasePageComponent implements OnInit {
   popupTimeoutSeconds: number;
   translations$: Observable<any>;
 
-  translatables = [
-    "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN",
-    "BARCODESCAN_DIALOGWARNING_TITLE",
-    "OK",
-    "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN",
-    "BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE",
-    "BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK"
-  ];
-
   @ViewChild(VerificationOrderPageComponent, { static: false }) childVerificationOrderPageComponent: VerificationOrderPageComponent;
 
   constructor(
@@ -59,24 +50,15 @@ export class VerificationBasePageComponent implements OnInit {
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
     private verificationService: VerificationService,
+    private simpleDialogService: SimpleDialogService
   ) {
     this.setupDataRefresh();
   }
 
   ngOnInit() {
-    this.LoadTransientData();
     this.hookupEventHandlers();
     this.initializeNavigationParameters();
     this.loadRejectReasons();
-  }
-
-  private LoadTransientData() {
-    this.systemConfigurationService
-      .GetConfigurationValues("TIMEOUTS", "POP_UP_MESSAGE_TIMEOUT")
-      .subscribe((result) => {
-        this.popupTimeoutSeconds = Number(result.Value);
-      });
-    this.setTranslations();
   }
 
   ngOnDestroy(): void {
@@ -98,20 +80,9 @@ export class VerificationBasePageComponent implements OnInit {
     this.savedPageConfiguration = event;
   }
 
-  onNonXr2PickingBarcodeScanUnexpected() {
-    this.displayExpectedPickingBarcodeScan();
-  }
-
-  onVerificationDetailBarcodeScanUnexpected() {
-    this.displayUnexpectedBarcodeScanInDetails();
-  }
-
-  onVerificationBoxBarcodeRequired() {
-    this.displayBoxBarcodeScanRequired();
-  }
-
-  private setTranslations(): void {
-    this.translations$ = this.translateService.get(this.translatables);
+  onDisplayWarningDialogEvent(contents: any) {
+    this.clearDisplayedDialog();
+    this.displayWarningDialog(contents.TitleResourceKey, contents.MsgResourceKey);
   }
 
   /* istanbul ignore next */
@@ -163,60 +134,8 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  private displayExpectedPickingBarcodeScan(): void {
-    this.clearDisplayedDialog();
-    this.translations$.subscribe((translations) => {
-      const properties = new PopupDialogProperties("Role-Status-Warning");
-      properties.titleElementText =
-        translations.BARCODESCAN_DIALOGWARNING_TITLE;
-      properties.messageElementText =
-        translations.PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN;
-      properties.primaryButtonText = translations.OK;
-      properties.showPrimaryButton = true;
-      properties.showSecondaryButton = false;
-      properties.dialogDisplayType = PopupDialogType.Warning;
-      properties.timeoutLength = this.popupTimeoutSeconds;
-      properties.uniqueId = Guid.create().toString();
-      this.displayedDialog = this.dialogService.showOnce(properties);
-    });
-  }
-
-  /* istanbul ignore next */
-  private displayUnexpectedBarcodeScanInDetails(): void {
-    this.clearDisplayedDialog();
-    this.translations$.subscribe((translations) => {
-      const properties = new PopupDialogProperties("Role-Status-Warning");
-      properties.titleElementText =
-        translations.BARCODESCAN_DIALOGWARNING_TITLE;
-      properties.messageElementText =
-        translations.PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN;
-      properties.primaryButtonText = translations.OK;
-      properties.showPrimaryButton = true;
-      properties.showSecondaryButton = false;
-      properties.dialogDisplayType = PopupDialogType.Warning;
-      properties.timeoutLength = this.popupTimeoutSeconds;
-      properties.uniqueId = Guid.create().toString();
-      this.displayedDialog = this.dialogService.showOnce(properties);
-    });
-  }
-
-  /* istanbul ignore next */
-  private displayBoxBarcodeScanRequired(): void {
-    this.clearDisplayedDialog();
-    this.translations$.subscribe((translations) => {
-      const properties = new PopupDialogProperties("Role-Status-Warning");
-      properties.titleElementText =
-        translations.BARCODESCAN_DIALOGWARNING_BOXBARCODE_REQUIRED_TITLE;
-      properties.messageElementText =
-        translations.BARCODESCAN_BOXBARCODE_REQUIRED_SAFETY_STOCK;
-      properties.primaryButtonText = translations.OK;
-      properties.showPrimaryButton = true;
-      properties.showSecondaryButton = false;
-      properties.dialogDisplayType = PopupDialogType.Warning;
-      properties.timeoutLength = this.popupTimeoutSeconds;
-      properties.uniqueId = Guid.create().toString();
-      this.displayedDialog = this.dialogService.showOnce(properties);
-    });
+  private displayWarningDialog(titleResourceKey: string, msgResourceKey: string) {
+    this.simpleDialogService.displayWarningOk(titleResourceKey, msgResourceKey);
   }
 
   private loadRejectReasons(): void {

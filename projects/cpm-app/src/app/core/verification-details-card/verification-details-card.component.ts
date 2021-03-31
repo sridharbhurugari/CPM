@@ -30,7 +30,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
-  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
@@ -68,7 +68,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   translatables = [
     'REJECT_PICK',
-    'REASON',
+    'REASON'
   ];
 
   translations$: Observable<any>;
@@ -99,14 +99,20 @@ export class VerificationDetailsCardComponent implements OnInit {
   onBarcodeScannedEvent(data: IBarcodeData): void {
     if(!data.ItemId)
     {
-      this.handleFailedBarcodeScan(data);
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
+        messageResourceKey: 'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN'
+      });
       return;
     }
 
     const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(!match)
     {
-      this.handleFailedBarcodeScan(data);
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'MEDICATION_NONEXISTENT_BOX_TITLE',
+        messageResourceKey: 'MEDICATION_NONEXISTENT_BOX_MESSAGE'
+      });
       return;
     }
 
@@ -219,12 +225,11 @@ export class VerificationDetailsCardComponent implements OnInit {
       // Item is now box and med verified, save it for potential scan to advance
       this.scanToAdvanceVerificationDestinationDetail = item;
     } else {
-      this.verificationBoxBarcodeRequired.emit();
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'SCAN_PICKING_LABEL_FIRST_TITLE',
+        messageResourceKey: 'SCAN_PICKING_LABEL_FIRST_MESSAGE',
+      });
     }
-  }
-
-  private handleFailedBarcodeScan(data: IBarcodeData) {
-    this.verificationDetailBarcodeScanUnexpected.emit(data);
   }
 
   /* istanbul ignore next */

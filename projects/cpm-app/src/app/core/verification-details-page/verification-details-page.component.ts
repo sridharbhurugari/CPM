@@ -26,8 +26,7 @@ import { IVerificationDestinationDetailViewData } from '../../api-core/data-cont
 export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
-  @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
-  @Output() verificationBoxBarcodeRequired: EventEmitter<IBarcodeData> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
@@ -138,12 +137,8 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.pageNavigationEvent.emit(navigationParams);
   }
 
-  onVerificationDetailBarcodeScanUnexpected(data: IBarcodeData) {
-    this.verificationDetailBarcodeScanUnexpected.emit(data);
-  }
-
-  onVerificationBoxBarcodeRequired() {
-    this.verificationBoxBarcodeRequired.emit();
+  onDisplayWarningDialogEvent(contents: any) {
+    this.displayWarningDialogEvent.emit(contents);
   }
 
   private loadVerificationDestinationDetails(): void {

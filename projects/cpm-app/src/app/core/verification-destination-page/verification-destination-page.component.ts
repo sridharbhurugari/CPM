@@ -27,7 +27,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
-  @Output() nonXr2PickingBarcodeScanUnexpected: EventEmitter<null> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<any> = new EventEmitter();
 
 
   @Input() navigationParameters: IVerificationNavigationParameters;
@@ -99,7 +99,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       this.pageNavigationEvent.emit(navigationParams);
       this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
     } else {
-        this.nonXr2PickingBarcodeScanUnexpected.emit();
+        this.displayWarningDialogEvent.emit({
+          TitleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
+          MsgResourceKey: 'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN'
+        });
     }
   }
 

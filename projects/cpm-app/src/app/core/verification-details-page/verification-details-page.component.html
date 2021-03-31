@@ -16,8 +16,7 @@
       [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
       [IsBoxBarcodeVerified]="IsBoxBarcodeVerified"
       (saveVerificationEvent)="onSaveVerificationEvent($event)"
-      (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected($event)"
-      (verificationBoxBarcodeRequired)="onVerificationBoxBarcodeRequired()">
+      (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)">
     </app-verification-details-card>
   </div>
 </ng-container>
