@@ -15,6 +15,7 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { VerificationOrderPageComponent } from '../verification-order-page/verification-order-page.component';
 import { WindowService } from '../../shared/services/window-service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 
 @Component({
   selector: "app-verification-base-page",
@@ -46,9 +47,6 @@ export class VerificationBasePageComponent implements OnInit {
     private wpfInteropService: WpfInteropService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
-    private systemConfigurationService: SystemConfigurationService,
-    private dialogService: PopupDialogService,
-    private translateService: TranslateService,
     private verificationService: VerificationService,
     private simpleDialogService: SimpleDialogService
   ) {
@@ -80,9 +78,9 @@ export class VerificationBasePageComponent implements OnInit {
     this.savedPageConfiguration = event;
   }
 
-  onDisplayWarningDialogEvent(contents: any) {
+  onDisplayWarningDialogEvent(contents: IDialogContents) {
     this.clearDisplayedDialog();
-    this.displayWarningDialog(contents.TitleResourceKey, contents.MsgResourceKey);
+    this.displayWarningDialog(contents.titleResourceKey, contents.msgResourceKey);
   }
 
   /* istanbul ignore next */
@@ -135,7 +133,9 @@ export class VerificationBasePageComponent implements OnInit {
 
   /* istanbul ignore next */
   private displayWarningDialog(titleResourceKey: string, msgResourceKey: string) {
-    this.simpleDialogService.displayWarningOk(titleResourceKey, msgResourceKey);
+    this.simpleDialogService.getWarningOkPopup(titleResourceKey, msgResourceKey).subscribe((dialog) => {
+      this.displayedDialog = dialog;
+    });
   }
 
   private loadRejectReasons(): void {
