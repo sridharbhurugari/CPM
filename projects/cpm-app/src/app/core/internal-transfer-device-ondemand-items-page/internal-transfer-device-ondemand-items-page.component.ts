@@ -51,7 +51,7 @@ export class InternalTransferDeviceOndemandItemsPageComponent implements OnInit 
     this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
     this.deviceDescription$ = devicesService.get()
        .pipe(shareReplay(1), map(devices => devices.find(d => d.Id === this.deviceId)))
-       .pipe(map(d => d.Description));
+       .pipe(shareReplay(1), map(d => d.Description));
 
     this.loadAssignedItems();
 
