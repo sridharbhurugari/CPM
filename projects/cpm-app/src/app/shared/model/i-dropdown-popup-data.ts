@@ -12,4 +12,5 @@ export interface IDropdownPopupData {
     selectedrow: SingleselectRowItem,
     selectedcheckbox: boolean,
     selectText: string,
+    autoSort:boolean
 }

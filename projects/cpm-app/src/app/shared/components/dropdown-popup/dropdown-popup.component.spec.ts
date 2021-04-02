@@ -45,7 +45,8 @@ describe('DropdownPopupComponent', () => {
       checkboxHideSelection: dropdownrowdata,
       selectedrow: defaultrowdata,
       selectedcheckbox: true,
-      selectText: ''
+      selectText: '',
+      autoSort: true
     };
   }));
 

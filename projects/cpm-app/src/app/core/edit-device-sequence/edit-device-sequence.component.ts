@@ -131,7 +131,8 @@ export class EditDeviceSequenceComponent implements OnInit {
       checkboxHideSelection: this.rowItemsToHideCheckbox,
       selectedrow: this.defaultDisplayItem,
       selectedcheckbox: false,
-      selectText: ''
+      selectText: '',
+      autoSort: true
     };
 
     properties.data = data;
