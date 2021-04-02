@@ -9,6 +9,7 @@ import { BarcodeDataService } from '../../api-core/services/barcode-data.service
 import { VerificationService } from '../../api-core/services/verification.service';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IConfigurationValue } from '../../shared/interfaces/i-configuration-value';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
@@ -113,13 +114,8 @@ describe('VerificationBasePageComponent', () => {
       expect(component.barcodeScannedSubject.next).toHaveBeenCalledWith(barcodeData);
     });
 
-    it('should show unexpected scan dialog when event received', () => {
-      component.onNonXr2PickingBarcodeScanUnexpected();
-      expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
-    });
-
-    it('should show unexpected scan dialog on item or label scan', () => {
-      component.onVerificationDetailBarcodeScanUnexpected();
+    it('should show scan dialog when event received', () => {
+      component.onDisplayWarningDialogEvent({} as IDialogContents);
       expect(mockPopupDialogService.showOnce).toHaveBeenCalled();
     });
   });

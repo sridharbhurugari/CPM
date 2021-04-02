@@ -28,8 +28,6 @@ import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
   styleUrls: ['./verification-details-card.component.scss']
 })
 export class VerificationDetailsCardComponent implements OnInit {
-
-  @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
