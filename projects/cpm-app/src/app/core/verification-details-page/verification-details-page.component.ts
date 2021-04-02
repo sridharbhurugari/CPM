@@ -19,6 +19,7 @@ import { VerificationDetailsCardComponent } from '../verification-details-card/v
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
+import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -43,6 +44,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   verificationDestinationItems: Observable<VerificationDestinationItem[]>;
   verificationDashboardData: Observable<VerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
+  completedDestinationDetails: Observable<IVerificationDestinationDetail[]>;
   dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject();
   itemBarcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
 
@@ -153,7 +155,10 @@ export class VerificationDetailsPageComponent implements OnInit {
         this.generateHeaderTitle(verificationDetailViewData);
         this.generateHeaderSubTitle(verificationDetailViewData);
         this.generateSafetyStockSettings(verificationDetailViewData.DetailItems);
-        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems);
+        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems.filter(item => item.VerifiedStatus === VerificationStatusTypes.Unverified));
+        this.completedDestinationDetails = of(verificationDetailViewData.DetailItems.filter((item) => {
+        item.VerifiedStatus === VerificationStatusTypes.Rejected || item.VerifiedStatus === VerificationStatusTypes.Verified
+        }));
       }), shareReplay(1);
   }
 

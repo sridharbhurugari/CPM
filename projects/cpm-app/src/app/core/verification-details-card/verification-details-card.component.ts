@@ -37,6 +37,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
   @Input() IsBoxBarcodeVerified: boolean;
+  @Input() completedDestinationDetails: VerificationDestinationDetail[];
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -110,10 +111,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(!match)
     {
-      this.displayWarningDialogEvent.emit({
-        titleResourceKey: 'MEDICATION_NONEXISTENT_BOX_TITLE',
-        msgResourceKey: 'MEDICATION_NONEXISTENT_BOX_MESSAGE'
-      });
+      this.handleItemNotFound(data);
       return;
     }
 
@@ -233,6 +231,30 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
   }
 
+  handleItemNotFound(data: IBarcodeData): void {
+    let dialogTitleKey = '';
+    let dialogMsgKey = '';
+
+    // Check if item has already been completed
+    const completedItem = this.getCompletedVerification(data)
+
+    if(!completedItem) {
+      dialogTitleKey = 'MEDICATION_NONEXISTENT_BOX_TITLE';
+      dialogMsgKey = 'MEDICATION_NONEXISTENT_BOX_MESSAGE';
+    } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified) {
+      dialogTitleKey = 'MEDICATION_ALREADY_VERIFIED_TITLE'
+      dialogMsgKey = 'MEDICATION_ALREADY_VERIFIED_MESSAGE';
+    } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
+      dialogTitleKey = 'MEDICATION_ALREADY_REJECTED_TITLE'
+      dialogMsgKey = 'MEDICATION_ALREADY_REJECTED_MESSAGE';
+    }
+
+    this.displayWarningDialogEvent.emit({
+      titleResourceKey: dialogTitleKey,
+      msgResourceKey: dialogMsgKey
+    });
+  }
+
   /* istanbul ignore next */
   private displayRejectPopupDialog(selectedVerificationDestinationDetails: VerificationDestinationDetail[]): void {
 
@@ -281,6 +303,10 @@ export class VerificationDetailsCardComponent implements OnInit {
             }
         });
     });
+  }
+
+  private getCompletedVerification(data: IBarcodeData) {
+    return this.completedDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
   }
 
   private setDetailsGroupData(verificationDestinationDetails: VerificationDestinationDetail[]): void {
