@@ -157,7 +157,7 @@ export class VerificationDetailsPageComponent implements OnInit {
         this.generateSafetyStockSettings(verificationDetailViewData.DetailItems);
         this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems.filter(item => item.VerifiedStatus === VerificationStatusTypes.Unverified));
         this.completedDestinationDetails = of(verificationDetailViewData.DetailItems.filter((item) => {
-        item.VerifiedStatus === VerificationStatusTypes.Rejected || item.VerifiedStatus === VerificationStatusTypes.Verified
+        return item.VerifiedStatus === VerificationStatusTypes.Rejected || item.VerifiedStatus === VerificationStatusTypes.Verified
         }));
       }), shareReplay(1);
   }

@@ -161,6 +161,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
+    this.completedDestinationDetails.push(selectedVerificationDestinationDetail);
   }
 
   removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
@@ -299,6 +300,7 @@ export class VerificationDetailsCardComponent implements OnInit {
               });
 
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
+              this.completedDestinationDetails.push(...selectedVerificationDestinationDetails);
               this.selectedVerificationDestinationDetail = null;
             }
         });
