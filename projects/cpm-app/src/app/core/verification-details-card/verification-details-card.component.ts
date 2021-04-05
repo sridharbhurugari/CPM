@@ -224,7 +224,7 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.scanToAdvanceVerificationDestinationDetail = item;
     } else {
       this.displayWarningDialogEvent.emit({
-        titleResourceKey: 'SCAN_PICKING_LABEL_FIRST_TITLE',
+        titleResourceKey: 'ITEM_SCAN_TITLE',
         msgResourceKey: 'SCAN_PICKING_LABEL_FIRST_MESSAGE',
       });
     }
@@ -238,14 +238,14 @@ export class VerificationDetailsCardComponent implements OnInit {
     const completedItem = this.getCompletedVerification(data)
 
     if(!completedItem) {
-      dialogTitleKey = 'MEDICATION_NONEXISTENT_BOX_TITLE';
-      dialogMsgKey = 'MEDICATION_NONEXISTENT_BOX_MESSAGE';
-    } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified) {
-      dialogTitleKey = 'MEDICATION_ALREADY_VERIFIED_TITLE'
-      dialogMsgKey = 'MEDICATION_ALREADY_VERIFIED_MESSAGE';
-    } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
-      dialogTitleKey = 'MEDICATION_ALREADY_REJECTED_TITLE'
-      dialogMsgKey = 'MEDICATION_ALREADY_REJECTED_MESSAGE';
+      dialogTitleKey = 'INVALID_SCAN_TITLE';
+      dialogMsgKey = 'ITEM_INVALID_FOR_DESTINATION_MESSAGE';
+    } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified
+      || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
+      dialogTitleKey = 'ITEM_SCAN_TITLE'
+      dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
+    } else {
+      return;
     }
 
     this.displayWarningDialogEvent.emit({
