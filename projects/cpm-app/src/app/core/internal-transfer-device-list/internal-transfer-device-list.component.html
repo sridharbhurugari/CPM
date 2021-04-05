@@ -4,7 +4,7 @@
   </app-header-container>
   <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
-<oc-grid #ocgrid ocgridfilter="false"
+<oc-grid *ngIf="transferByNeeds" #ocgrid ocgridfilter="false"
     appGridSortCol
     [initialSortPropertyName]="deviceDescriptionPropertyName"
     [orderableValues]="deviceNeeds"
@@ -28,7 +28,36 @@
                 <span>{{deviceNeed.DeviceDescription}}</span>
             </div>
             <div class="col" [attr.data-title]="'BELOW_RESTOCK' | translate">
-                <span>{{deviceNeed.ItemsBelowReorderLevel}} {{'ITEMS' | translate}}</span>
+              <span>{{deviceNeed.ItemsBelowReorderLevel}} {{'ITEMS' | translate}}</span>
+            </div>
+        </div>
+    </ng-container>
+</oc-grid>
+<oc-grid *ngIf="!transferByNeeds" #ocgrid ocgridfilter="false"
+    appGridSortCol
+    [initialSortPropertyName]="deviceDescriptionPropertyName"
+    [orderableValues]="deviceNeeds"
+    (valuesReordered)="deviceNeeds = $event">
+    <ng-container class="ocgridheader">
+        <div class="first" data-colwrap="true"></div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+            [columnPropertyName]='deviceDescriptionPropertyName' headerResourceKey='DEVICE'>
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true"
+            [columnPropertyName]='assignedCountPropertyName' headerResourceKey='ASSIGNED_ITEMS'>
+        </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+        <div class="row"
+             *ngFor="let deviceNeed of (deviceNeeds | searchPipe:searchTextFilter:searchPropertyNames)"
+             (click)="deviceSelected.emit(deviceNeed.DeviceId)">
+            <div class="first">
+            </div>
+            <div class="col" [attr.data-title]="'DEVICE' | translate">
+                <span>{{deviceNeed.DeviceDescription}}</span>
+            </div>
+            <div class="col" [attr.data-title]="'ASSIGNED_ITEMS' | translate">
+              <span>{{deviceNeed.AssignedItems}} {{'ITEMS' | translate}}</span>
             </div>
         </div>
     </ng-container>

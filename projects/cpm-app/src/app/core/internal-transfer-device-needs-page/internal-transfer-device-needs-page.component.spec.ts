@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { PdfPrintService } from '../../api-core/services/pdf-print-service';
 import { CoreEventConnectionService } from "../../api-core/services/core-event-connection.service";
+import { IDevice } from '../../api-core/data-contracts/i-device';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -23,6 +24,7 @@ import { CoreEventConnectionService } from "../../api-core/services/core-event-c
 })
 class MockInternalTransferItemsListComponent {
   @Input()itemNeeds: IItemReplenishmentNeed[]
+  @Input()deviceDescription: string;
 }
 
 describe('InternalTransferDeviceNeedsPageComponent', () => {
@@ -85,6 +87,15 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     },
   ];
 
+  let deviceData: IDevice[] = [
+    {
+      Id: 8,
+      Description: 'Test',
+      DeviceType: null,
+      OutputDevices: null,
+    }
+  ];
+
   const needs = [
       {
         Xr2Item: true
@@ -94,10 +105,12 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
   beforeEach(async(() => {
     locationService = { back: () => { } };
     spyOn(locationService, 'back');
+
     printWithBaseData = jasmine.createSpy('printWithBaseData');
     let pdfGridReportService: Partial<PdfGridReportService> = {
       printWithBaseData: printWithBaseData
     };
+
     coreEventConnectionService = {
       refreshDeviceNeedsSubject: new Subject(),
     };
@@ -128,7 +141,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '8' } } } },
         { provide: Location, useValue: locationService },
-        { provide: DevicesService, useValue: { get: () => of([]) } },
+        { provide: DevicesService, useValue: { get: () => of(deviceData) } },
         { provide: DeviceReplenishmentNeedsService, useValue: deviceReplenishmentNeedsService },
         { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
         { provide: PdfGridReportService, useValue: pdfGridReportService },
@@ -148,6 +161,7 @@ describe('InternalTransferDeviceNeedsPageComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.itemNeeds$ = of(deviceNeedData);
+    component.deviceDescription$ = of("device description");
     component.reportItemNeeds$ = component.itemNeeds$;
   });
 

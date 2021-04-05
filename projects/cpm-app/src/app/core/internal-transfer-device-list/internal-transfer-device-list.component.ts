@@ -14,6 +14,7 @@ export class InternalTransferDeviceListComponent implements OnInit {
 
   readonly deviceDescriptionPropertyName: string = nameof<IDeviceReplenishmentNeed>('DeviceDescription');
   readonly countPropertyName: string = nameof<IDeviceReplenishmentNeed>('ItemsBelowReorderLevel');
+  readonly assignedCountPropertyName: string = nameof<IDeviceReplenishmentNeed>('AssignedItems');
 
   searchPropertyNames: string[] = [
     this.deviceDescriptionPropertyName,

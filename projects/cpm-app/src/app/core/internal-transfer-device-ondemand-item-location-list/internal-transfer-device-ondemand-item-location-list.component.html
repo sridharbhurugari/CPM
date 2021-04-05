@@ -1,0 +1,47 @@
+<div class="cpmheaderrow">
+  <app-header-container *ngIf="item" [title]="'ITEM' | translate">
+    {{item.ItemFormattedGenericName}}: <div style="font-size: 12px;">{{'PACK_SIZE' | translate}} {{item.PackSize}}</div>
+  </app-header-container>
+  <app-header-container [title]="'DEVICE' | translate">{{destinationDeviceDescription}}</app-header-container>
+  <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+</div>
+<oc-grid #ocgrid ocgridfilter="false"
+  appGridSortCol [initialSortPropertyName]="locationDescriptionPropertyName" [orderableValues]="itemLocations" (valuesReordered)="itemLocations = $event">
+  <ng-container class="ocgridheader">
+      <div app-col-header-sortable class="col" ocGridColResize data-width="450" data-colwrap="true"
+          [columnPropertyName]="locationDescriptionPropertyName" headerResourceKey="ONDEMAND_ITEM_LOCATION">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+          [columnPropertyName]="quantityOnHandPropertyName" headerResourceKey="QOH">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-colwrap="true" [wrap]="true"
+          [columnPropertyName]="quantityPropertyName" headerResourceKey="ONDEMAND_REQUEST_QUANTITY">
+      </div>
+  </ng-container>
+  <ng-container class="ocgridbody">
+    <div class="row"
+      *ngFor="let itemLocation of (itemLocations | searchPipe:searchTextFilter:searchPropertyNames)"
+      (click)="locationSelected(itemLocation)">
+      <div class="col" [attr.data-title]="'ONDEMAND_LOCATION_EXPIRE_DATE' | translate">
+        <div>{{itemLocation.LocationDescription}}</div>
+      </div>
+      <div class="col" [attr.data-title]="'QOH' | translate">
+        <span>{{itemLocation.QuantityOnHand}}</span>
+      </div>
+      <div class="col" [attr.data-title]="'ONDEMAND_REQUEST_QUANTITY' | translate">
+        <div *ngIf="selectedItemLocation && itemLocation.DeviceLocationId === selectedItemLocation.DeviceLocationId">
+          <oc-numeric [units]="item.PackSize == 1 ? item.UnitOfIssue : ('PACKS' | translate)"
+                      [(ngModel)]="itemLocation.Quantity"
+                      [disabled]="math.floor(itemLocation.QuantityOnHand/item.PackSize) > 1"
+                      [maxValue]="math.floor(itemLocation.QuantityOnHand/item.PackSize)"
+                      [maxDecimalDigit]="0"
+                      (ngModelChange)="pickQtyChanged(itemLocation)">
+          </oc-numeric>
+          <div *ngIf="item.PackSize > 0">
+            <span style="font-size: 12px;">{{'ONDEMAND_QUANTITY_TO_PICK' | translate}} {{itemLocation.Quantity * item.PackSize}} {{item.UnitOfIssue}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</oc-grid>

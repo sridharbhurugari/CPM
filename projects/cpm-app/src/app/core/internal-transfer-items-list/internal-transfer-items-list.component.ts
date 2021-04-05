@@ -6,6 +6,7 @@ import { WindowService } from '../../shared/services/window-service';
 import { IGridSelectionChanged } from '../../shared/events/i-grid-selection-changed';
 import { CheckboxValues } from '../../shared/constants/checkbox-values';
 import { fixCheckAllNoneClass } from '../../shared/functions/fixCheckAllNoneClass';
+import { IDevice } from '../../api-core/data-contracts/i-device';
 
 @Component({
   selector: 'app-internal-transfer-items-list',
@@ -46,6 +47,9 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   get itemNeeds(): IItemReplenishmentNeed[] {
     return this._itemNeeds;
   }
+
+  @Input()
+  deviceDescription: string;
 
   @ViewChild('ocsearchbox', {
     static: true

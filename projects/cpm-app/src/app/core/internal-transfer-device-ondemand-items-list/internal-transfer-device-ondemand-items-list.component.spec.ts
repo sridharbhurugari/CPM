@@ -76,7 +76,8 @@ describe('InternalTransferDeviceOndemandItemsListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(InternalTransferDeviceOndemandItemsListComponent);
     component = fixture.componentInstance;
-    component.assignedItems = assignedItemsData
+    component.assignedItems = assignedItemsData;
+    component.deviceDescription = "device Description";
     fixture.detectChanges();
   });
 

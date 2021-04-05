@@ -1,5 +1,5 @@
 <div class="cpmheaderrow">
-  <app-header-container></app-header-container>
+  <app-header-container [title]="'DEVICE' | translate">{{deviceDescription}}</app-header-container>
   <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
 <oc-grid #ocgrid ocgridfilter="false"

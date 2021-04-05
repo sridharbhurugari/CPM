@@ -1,0 +1,29 @@
+<oc-action-layout>
+  <ng-container class="ocactionheader">
+    <div class="cpmactiontitle">{{'ONDEMAND_SOURCE_TITLE' | translate}}</div>
+  </ng-container>
+  <ng-container class="ocactiondetails">
+    <app-internal-transfer-device-ondemand-item-location-list
+      [item]="selectedItem$ | async"
+      [itemLocations]="itemLocationDetails$ | async"
+      [destinationDeviceDescription]="deviceDescription$ | async"
+      (selectedItem)="onSelectedItem($event)"
+      (isSelected)="onItemSelected($event)">
+    </app-internal-transfer-device-ondemand-item-location-list>
+  </ng-container>
+  <ng-container class="ocactionfooter">
+      <oc-footer>
+          <div class="ocleftalign">
+              <oc-button-action [disabled]="false" [buttonText]="'BACK' | translate" (click)="goBack()"></oc-button-action>
+          </div>
+          <div class="ocrightalign">
+            <oc-button-action
+                [disabled]="requestStatus === 'none'"
+                [buttonIcon]="requestStatus === 'picking' ? 'spin' : 'clear'"
+                [buttonText]="'INTERNAL_TRANS_PICKQUEUE_BUTTON' | translate"
+                (click)="pick()">
+            </oc-button-action>
+        </div>
+  </oc-footer>
+  </ng-container>
+</oc-action-layout>

@@ -309,16 +309,25 @@
   "DEVICE_ONDEMAND": "Device Items: On-Demand",
   "SOURCE_LOCACTION_COUNT": "# Source Locations",
   "AVAIABLE_PHARMACY_QOH": "Available Pharmacy QOH",
+
+  "ONDEMAND_SOURCE_TITLE": "On-Demand Source Location",
+  "ONDEMAND_ITEM_LOCATION": "Item Location",
+  "ONDEMAND_REQUEST_QUANTITY": "Requested Quantity",
+
   "ONDEMAND_SOURCE_POPUP_TITLE": "On-Demand Source Location Selection",
   "ONDEMAND_SOURCE_DROPDOWN_TITLE": "Source Location",
   "ONDEMAND_QUANTITY_EDITOR_TITLE": "On-Demand Pick Quantity",
   "ONDEMAND_QUANTITY_TO_PICK": "Quantity to pick: ",
-  "ONDEMAND_NO_SOURCE_LOCATION": "Selected item is not available in any other valid locations",
+
+  "ONDEMAND_NO_SOURCE_LOCATION": "Selected item is not available because item is not in the device workflow, is assigned to an inactive device, or is not assigned at CPM.",
   "PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN": "Unknown bar code scanned.  Scan an XR2 Picking Bar Code to continue.",
   "PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN": "Unknown bar code scanned.  Scan an Item displayed or an XR2 Picking Bar Code to continue.",
   "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_TITLE": "XR2 Picking Bar Code not found for verification",
   "PICK_VERIFICATION_DETAILS_NO_DATA_FOUND_MESSAGE": "No items to verify",
   "REFRESH": "Refresh",
   "LAST_UPDATED": "Last Updated",
-  "XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE":"Unknown"
+  "XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE":"Unknown",
+
+  "ASSIGNED_ITEMS": "Assigned"
+
 }

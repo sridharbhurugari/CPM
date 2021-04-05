@@ -17,6 +17,7 @@ import { InternalTransferPickPageComponent } from './internal-transfer-pick-page
 import { VerificationBasePageComponent } from './verification-base-page/verification-base-page.component';
 import { LoadingComponent } from './loading/loading.component';
 import { InternalTransferDeviceOndemandItemsPageComponent } from './internal-transfer-device-ondemand-items-page/internal-transfer-device-ondemand-items-page.component';
+import { InternalTransferDeviceOndemandItemLocationsPageComponent } from './internal-transfer-device-ondemand-item-locations-page/internal-transfer-device-ondemand-item-locations-page.component';
 
 const routes: Routes = [
   { path: 'internalTransfer/deviceReplenishmentNeeds', component: InternalTransferDeviceSummariesPageComponent },
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'internalTransfer/guidedpicking', component: InternalTransferPickPageComponent },
   { path: 'verification', component: VerificationBasePageComponent },
   { path: 'loading', component: LoadingComponent },
+  { path: 'internalTransfer/deviceReplenishmentOnDemand/ItemSource/deviceId/:deviceId/itemId/:itemId/packSize/:packSize', component: InternalTransferDeviceOndemandItemLocationsPageComponent },
 ];
 
 @NgModule({
