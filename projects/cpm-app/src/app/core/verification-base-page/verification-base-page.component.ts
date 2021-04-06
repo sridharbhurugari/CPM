@@ -1,4 +1,3 @@
-import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
 import { Observable, Subject, Subscription } from 'rxjs';
