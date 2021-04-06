@@ -95,7 +95,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
     } else {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
-        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN'
+        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_PICKING_BARCODE_SCAN',
+        msgParams: null
       });
     }
   }

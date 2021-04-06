@@ -10,7 +10,6 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
-import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { VerificationOrderPageComponent } from '../verification-order-page/verification-order-page.component';
 import { WindowService } from '../../shared/services/window-service';
@@ -80,7 +79,7 @@ export class VerificationBasePageComponent implements OnInit {
 
   onDisplayWarningDialogEvent(contents: IDialogContents) {
     this.clearDisplayedDialog();
-    this.displayWarningDialog(contents.titleResourceKey, contents.msgResourceKey);
+    this.displayWarningDialog(contents.titleResourceKey, contents.msgResourceKey, contents.msgParams);
   }
 
   /* istanbul ignore next */
@@ -132,8 +131,8 @@ export class VerificationBasePageComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  private displayWarningDialog(titleResourceKey: string, msgResourceKey: string) {
-    this.simpleDialogService.getWarningOkPopup(titleResourceKey, msgResourceKey).subscribe((dialog) => {
+  private displayWarningDialog(titleResourceKey: string, msgResourceKey: string, msgParams? : Object) {
+    this.simpleDialogService.getWarningOkPopup(titleResourceKey, msgResourceKey, msgParams).subscribe((dialog) => {
       this.displayedDialog = dialog;
     });
   }

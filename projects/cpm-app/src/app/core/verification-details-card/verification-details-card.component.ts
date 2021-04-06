@@ -101,7 +101,8 @@ export class VerificationDetailsCardComponent implements OnInit {
     {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
-        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN'
+        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN',
+        msgParams: null
       });
       return;
     }
@@ -226,6 +227,7 @@ export class VerificationDetailsCardComponent implements OnInit {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'ITEM_SCAN_TITLE',
         msgResourceKey: 'SCAN_PICKING_LABEL_FIRST_MESSAGE',
+        msgParams : null
       });
     }
   }
@@ -233,6 +235,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   handleItemNotFound(data: IBarcodeData): void {
     let dialogTitleKey = '';
     let dialogMsgKey = '';
+    let dialogMsgParams = null;
 
     // Check if item has already been completed
     const completedItem = this.getCompletedVerification(data)
@@ -244,14 +247,22 @@ export class VerificationDetailsCardComponent implements OnInit {
       || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
       dialogTitleKey = 'ITEM_SCAN_TITLE'
       dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
+      dialogMsgParams = { itemName: this.getFormattedItemDialogName(completedItem) }
     } else {
       return;
     }
 
     this.displayWarningDialogEvent.emit({
       titleResourceKey: dialogTitleKey,
-      msgResourceKey: dialogMsgKey
+      msgResourceKey: dialogMsgKey,
+      msgParams: dialogMsgParams
     });
+  }
+
+  /* istanbul ignore next */
+  private getFormattedItemDialogName(completedItem: VerificationDestinationDetail) {
+    let seperator = completedItem.ItemFormattedGenericName && completedItem.ItemTradeName ? ', ' : '';
+    return `${completedItem.ItemFormattedGenericName}${seperator}${completedItem.ItemTradeName}`;
   }
 
   /* istanbul ignore next */

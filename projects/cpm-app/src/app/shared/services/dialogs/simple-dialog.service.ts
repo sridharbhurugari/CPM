@@ -20,56 +20,56 @@ export class SimpleDialogService {
     this.cancelButtonText$ = translateService.get('CANCEL').pipe(shareReplay(1));
   }
 
-  displayWarningOk(titleResourceKey: string, messageResourceKey: string) {
-    this.displayOk(titleResourceKey, messageResourceKey, PopupDialogType.Warning);
+  displayWarningOk(titleResourceKey: string, messageResourceKey: string, messageParams?: Object) {
+    this.displayOk(titleResourceKey, messageResourceKey, PopupDialogType.Warning, messageParams);
   }
 
-  getWarningOkPopup(titleResourceKey: string, messageResourceKey: string): Observable<PopupDialogComponent> {
-    return this.getOkPopup(titleResourceKey, messageResourceKey, PopupDialogType.Warning);
+  getWarningOkPopup(titleResourceKey: string, messageResourceKey: string, messageParams?: Object): Observable<PopupDialogComponent> {
+    return this.getOkPopup(titleResourceKey, messageResourceKey, PopupDialogType.Warning, messageParams);
   }
 
-  getWarningCancelPopup(titleResourceKey: string, messageResourceKey: string): Observable<PopupDialogComponent> {
-    return this.getCancelPopup(titleResourceKey, messageResourceKey, PopupDialogType.Warning);
+  getWarningCancelPopup(titleResourceKey: string, messageResourceKey: string, messageParams?: Object): Observable<PopupDialogComponent> {
+    return this.getCancelPopup(titleResourceKey, messageResourceKey, PopupDialogType.Warning, messageParams);
   }
 
-  displayErrorOk(titleResourceKey: string, messageResourceKey: string) {
-    this.displayOk(titleResourceKey, messageResourceKey, PopupDialogType.Error);
+  displayErrorOk(titleResourceKey: string, messageResourceKey: string, messageParams?: Object) {
+    this.displayOk(titleResourceKey, messageResourceKey, PopupDialogType.Error, messageParams);
   }
 
-  displayInfoOk(titleResourceKey: string, messageResourceKey: string) {
-    this.displayOk(titleResourceKey, messageResourceKey, PopupDialogType.Info);
+  displayInfoOk(titleResourceKey: string, messageResourceKey: string, messageParams?: Object) {
+    this.displayOk(titleResourceKey, messageResourceKey, PopupDialogType.Info, messageParams);
   }
 
-  private displayOk(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType) {
+  private displayOk(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType, messageParams?: Object) {
     const title$ = this.translateService.get(titleResourceKey);
-    const message$ = this.translateService.get(messageResourceKey);
+    const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
     forkJoin(title$, message$, this.okButtonText$).subscribe(r => {
       this.display(uniqueId, r[0], r[1], r[2], type);
     });
   }
 
-  private displayCancel(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType) {
+  private displayCancel(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType, messageParams?: Object) {
     const title$ = this.translateService.get(titleResourceKey);
-    const message$ = this.translateService.get(messageResourceKey);
+    const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
     forkJoin(title$, message$, this.cancelButtonText$).subscribe(r => {
       this.display(uniqueId, r[0], r[1], r[2], type);
     });
   }
 
-  private getOkPopup(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType): Observable<PopupDialogComponent> {
+  private getOkPopup(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType, messageParams?: Object): Observable<PopupDialogComponent> {
     const title$ = this.translateService.get(titleResourceKey);
-    const message$ = this.translateService.get(messageResourceKey);
+    const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
     return forkJoin(title$, message$, this.cancelButtonText$).pipe(map(r => {
       return this.display(uniqueId, r[0], r[1], r[2], type);
     }));
   }
 
-  private getCancelPopup(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType): Observable<PopupDialogComponent> {
+  private getCancelPopup(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType, messageParams?: Object): Observable<PopupDialogComponent> {
     const title$ = this.translateService.get(titleResourceKey);
-    const message$ = this.translateService.get(messageResourceKey);
+    const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
     return forkJoin(title$, message$, this.cancelButtonText$).pipe(map(r => {
       return this.display(uniqueId, r[0], r[1], r[2], type);

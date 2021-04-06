@@ -1,4 +1,5 @@
 export interface IDialogContents {
   titleResourceKey: string,
-  msgResourceKey: string
+  msgResourceKey: string,
+  msgParams: Object
 }
