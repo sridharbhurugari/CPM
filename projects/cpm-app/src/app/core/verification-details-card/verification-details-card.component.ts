@@ -245,11 +245,11 @@ export class VerificationDetailsCardComponent implements OnInit {
       dialogMsgKey = 'ITEM_INVALID_FOR_DESTINATION_MESSAGE';
     } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified
       || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
-      dialogTitleKey = 'ITEM_SCAN_TITLE'
+      dialogTitleKey = 'ITEM_SCAN_TITLE';
       dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
       dialogMsgParams = { itemFormattedGenericName: completedItem.ItemFormattedGenericName,
                           itemTradeName: completedItem.ItemTradeName
-                        }
+                        };
     } else {
       return;
     }
