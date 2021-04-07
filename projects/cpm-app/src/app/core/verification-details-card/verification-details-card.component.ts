@@ -247,7 +247,9 @@ export class VerificationDetailsCardComponent implements OnInit {
       || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
       dialogTitleKey = 'ITEM_SCAN_TITLE'
       dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
-      dialogMsgParams = { itemName: this.getFormattedItemDialogName(completedItem) }
+      dialogMsgParams = { itemFormattedGenericName: completedItem.ItemFormattedGenericName,
+                          itemTradeName: completedItem.ItemTradeName
+                        }
     } else {
       return;
     }
@@ -257,12 +259,6 @@ export class VerificationDetailsCardComponent implements OnInit {
       msgResourceKey: dialogMsgKey,
       msgParams: dialogMsgParams
     });
-  }
-
-  /* istanbul ignore next */
-  private getFormattedItemDialogName(completedItem: VerificationDestinationDetail) {
-    let seperator = completedItem.ItemFormattedGenericName && completedItem.ItemTradeName ? ', ' : '';
-    return `${completedItem.ItemFormattedGenericName}${seperator}${completedItem.ItemTradeName}`;
   }
 
   /* istanbul ignore next */

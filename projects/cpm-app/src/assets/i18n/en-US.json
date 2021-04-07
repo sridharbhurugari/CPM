@@ -96,7 +96,7 @@
   "IN_PROGRESS": "In Progress",
   "IN_STOCK": "In Stock",
   "ITEM_ID": "Item ID",
-  "ITEM_ALREADY_VERIFIED_MESSAGE": "Item has previously been approved or rejected - {{itemName}}.",
+  "ITEM_ALREADY_VERIFIED_MESSAGE": "Item has previously been approved or rejected. <br/><br/> {{itemFormattedGenericName}} <br/> {{itemTradeName}}",
   "ITEM_INVALID_FOR_DESTINATION_MESSAGE": "The item scanned is invalid for the destination.",
   "INVALID_SCAN_TITLE": "Invalid Scan",
   "ITEM_SCAN_TITLE": "Item Scan",
