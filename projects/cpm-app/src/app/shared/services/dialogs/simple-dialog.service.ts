@@ -62,7 +62,7 @@ export class SimpleDialogService {
     const title$ = this.translateService.get(titleResourceKey);
     const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
-    return forkJoin(title$, message$, this.cancelButtonText$).pipe(map(r => {
+    return forkJoin(title$, message$, this.okButtonText$).pipe(map(r => {
       return this.display(uniqueId, r[0], r[1], r[2], type);
     }));
   }
