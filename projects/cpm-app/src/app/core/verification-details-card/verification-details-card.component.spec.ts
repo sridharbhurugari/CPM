@@ -144,6 +144,7 @@ describe('VerificationDetailsCardComponent', () => {
     it('should send event with verified item on appove click', () => {
       const verificationItem = new VerificationDestinationDetail(null);
       const saveSpy =  spyOn(component.saveVerificationEvent, 'emit');
+      component.completedDestinationDetails = [];
 
       component.onApproveClick(verificationItem);
 
@@ -167,14 +168,15 @@ describe('VerificationDetailsCardComponent', () => {
 
   describe('Scans', () => {
     it('should emit message on non item scan', () => {
-      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
+      const unexpectedBarcodeSpy = spyOn(component.displayWarningDialogEvent, 'emit');
       var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
       expect(unexpectedBarcodeSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should emit message on non matching item scan', () => {
-      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
+      const unexpectedBarcodeSpy = spyOn(component.displayWarningDialogEvent, 'emit');
+      component.completedDestinationDetails = [];
       const newItem = new VerificationDestinationDetail(null);
       newItem.DestinationType = 'type';
       newItem.DestinationLine1 = 'DL0';
@@ -259,7 +261,7 @@ describe('VerificationDetailsCardComponent', () => {
     });
 
     it('should emit barcode unexpected event on scan if not formatted correctly', ()=> {
-      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
+      const unexpectedBarcodeSpy = spyOn(component.displayWarningDialogEvent, 'emit');
       const data = {} as IBarcodeData;
 
       component.onBarcodeScannedEvent(data);
@@ -269,7 +271,8 @@ describe('VerificationDetailsCardComponent', () => {
 
 
     it('should emit barcode unexpected event on scan if item is not found', ()=> {
-      const unexpectedBarcodeSpy = spyOn(component.verificationDetailBarcodeScanUnexpected, 'emit');
+      const unexpectedBarcodeSpy = spyOn(component.displayWarningDialogEvent, 'emit');
+      component.completedDestinationDetails = [];
       const data = {ItemId: 'itemId1'} as IBarcodeData;
       component.verificationDestinationDetails = [{ItemId: 'itemId2'} as VerificationDestinationDetail]
 
@@ -279,7 +282,7 @@ describe('VerificationDetailsCardComponent', () => {
     });
 
     it('should emit barcode required event and select item on scan without xr2 picking label scanned', ()=> {
-      const requiredBarcodeSpy = spyOn(component.verificationBoxBarcodeRequired, 'emit');
+      const requiredBarcodeSpy = spyOn(component.displayWarningDialogEvent, 'emit');
       const data = {ItemId: 'itemId'} as IBarcodeData;
       const item = {ItemId: 'itemId', Id: Guid.create()} as VerificationDestinationDetail
       component.verificationDestinationDetails = [item];
@@ -334,6 +337,7 @@ describe('VerificationDetailsCardComponent', () => {
 
     it('should approve scan to advance item if on selected item', () => {
       const saveEventSpy = spyOn(component.saveVerificationEvent, 'emit');
+      component.completedDestinationDetails = [];
       const data = {ItemId: 'itemId'} as IBarcodeData;
       const item = {ItemId: 'itemId', Id: Guid.create()} as VerificationDestinationDetail;
       const scanToAdvanceItem = new VerificationDestinationDetail(null);

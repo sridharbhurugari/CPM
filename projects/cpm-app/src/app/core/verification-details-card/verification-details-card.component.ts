@@ -20,6 +20,7 @@ import { LogService } from '../../api-core/services/log-service';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -27,15 +28,14 @@ import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
   styleUrls: ['./verification-details-card.component.scss']
 })
 export class VerificationDetailsCardComponent implements OnInit {
-
-  @Output() verificationDetailBarcodeScanUnexpected: EventEmitter<IBarcodeData> = new EventEmitter();
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
-  @Output() verificationBoxBarcodeRequired: EventEmitter<void> = new EventEmitter();
+  @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
   @Input() IsBoxBarcodeVerified: boolean;
+  @Input() completedDestinationDetails: VerificationDestinationDetail[];
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -68,7 +68,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
   translatables = [
     'REJECT_PICK',
-    'REASON',
+    'REASON'
   ];
 
   translations$: Observable<any>;
@@ -99,14 +99,18 @@ export class VerificationDetailsCardComponent implements OnInit {
   onBarcodeScannedEvent(data: IBarcodeData): void {
     if(!data.ItemId)
     {
-      this.handleFailedBarcodeScan(data);
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
+        msgResourceKey: 'PICK_VERIFICATION_EXPECTED_ITEM_OR_PICKING_LABEL_SCAN',
+        msgParams: null
+      });
       return;
     }
 
     const match = this.verificationDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
     if(!match)
     {
-      this.handleFailedBarcodeScan(data);
+      this.handleItemNotFound(data);
       return;
     }
 
@@ -156,6 +160,7 @@ export class VerificationDetailsCardComponent implements OnInit {
 
     selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
     this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
+    this.completedDestinationDetails.push(selectedVerificationDestinationDetail);
   }
 
   removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
@@ -219,12 +224,41 @@ export class VerificationDetailsCardComponent implements OnInit {
       // Item is now box and med verified, save it for potential scan to advance
       this.scanToAdvanceVerificationDestinationDetail = item;
     } else {
-      this.verificationBoxBarcodeRequired.emit();
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'ITEM_SCAN_TITLE',
+        msgResourceKey: 'SCAN_PICKING_LABEL_FIRST_MESSAGE',
+        msgParams : null
+      });
     }
   }
 
-  private handleFailedBarcodeScan(data: IBarcodeData) {
-    this.verificationDetailBarcodeScanUnexpected.emit(data);
+  handleItemNotFound(data: IBarcodeData): void {
+    let dialogTitleKey = '';
+    let dialogMsgKey = '';
+    let dialogMsgParams = null;
+
+    // Check if item has already been completed
+    const completedItem = this.getCompletedVerification(data)
+
+    if(!completedItem) {
+      dialogTitleKey = 'INVALID_SCAN_TITLE';
+      dialogMsgKey = 'ITEM_INVALID_FOR_DESTINATION_MESSAGE';
+    } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified
+      || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
+      dialogTitleKey = 'ITEM_SCAN_TITLE';
+      dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
+      dialogMsgParams = { itemFormattedGenericName: completedItem.ItemFormattedGenericName,
+                          itemTradeName: completedItem.ItemTradeName
+                        };
+    } else {
+      return;
+    }
+
+    this.displayWarningDialogEvent.emit({
+      titleResourceKey: dialogTitleKey,
+      msgResourceKey: dialogMsgKey,
+      msgParams: dialogMsgParams
+    });
   }
 
   /* istanbul ignore next */
@@ -272,10 +306,15 @@ export class VerificationDetailsCardComponent implements OnInit {
               });
 
               this.saveVerificationEvent.emit(selectedVerificationDestinationDetails);
+              this.completedDestinationDetails.push(...selectedVerificationDestinationDetails);
               this.selectedVerificationDestinationDetail = null;
             }
         });
     });
+  }
+
+  private getCompletedVerification(data: IBarcodeData) {
+    return this.completedDestinationDetails.find(x => x.ItemId.toUpperCase() === data.ItemId.toUpperCase());
   }
 
   private setDetailsGroupData(verificationDestinationDetails: VerificationDestinationDetail[]): void {
