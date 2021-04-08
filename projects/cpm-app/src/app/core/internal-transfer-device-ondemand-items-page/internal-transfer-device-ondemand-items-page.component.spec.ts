@@ -18,6 +18,7 @@ import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/con
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
 import { DeviceReplenishmentNeedsService } from '../../api-core/services/device-replenishment-needs.service';
 import { IDevice } from '../../api-core/data-contracts/i-device';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-items-list',
@@ -151,6 +152,7 @@ describe('InternalTransferDeviceOndemandItemsPageComponent', () => {
         { provide: ItemLocaitonDetailsService, useValue: itemLocaitonDetailsService },
         { provide: DevicesService, useValue: { get: () => of(deviceData) } },
         { provide: PopupDialogService, useValue: popupWindowService },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '999' } } } },
         { provide: 'env', useValue: { } },
         { provide: 'configEndpointKey', useValue: { } },
       ]
