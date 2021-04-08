@@ -20,4 +20,5 @@ export class VerificationOrderItem implements IVerificationOrderItem {
   FillDate: Date;
   HasOutputDeviceVerification: boolean;
   HasExceptions: boolean;
+  PriorityVerificationGrouping: boolean;
 }
