@@ -30,7 +30,7 @@ describe('VerificationOrderPageComponent', () => {
   let verificationService: Partial<VerificationService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
   let logService: Partial<LogService>;
-  
+
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
     getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
@@ -68,7 +68,7 @@ describe('VerificationOrderPageComponent', () => {
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
     fixture.detectChanges();
     spyOn(component.pageNavigationEvent, 'emit');
-    spyOn(component.nonXr2PickingBarcodeScanUnexpected, 'emit');
+    spyOn(component.displayWarningDialogEvent, 'emit');
     spyOn(component.pageConfigurationUpdateEvent, 'emit');
   });
 
@@ -110,7 +110,7 @@ describe('VerificationOrderPageComponent', () => {
     it('should handle XR2 Picking Barcode Scan', () => {
       var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
-      expect(component.nonXr2PickingBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(0);
+      expect(component.displayWarningDialogEvent.emit).toHaveBeenCalledTimes(0);
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
       expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(1);
     });
@@ -118,7 +118,7 @@ describe('VerificationOrderPageComponent', () => {
     it('should handle non XR2 Picking Barcode Scan', () => {
       var barcodeData = {BarCodeFormat: 'UP', BarCodeScanned: '123456789012', IsXr2PickingBarcode: false} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
-      expect(component.nonXr2PickingBarcodeScanUnexpected.emit).toHaveBeenCalledTimes(1);
+      expect(component.displayWarningDialogEvent.emit).toHaveBeenCalledTimes(1);
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(0);
       expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(0);
     });

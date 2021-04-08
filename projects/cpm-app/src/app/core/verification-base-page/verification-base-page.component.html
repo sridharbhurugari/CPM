@@ -1,10 +1,10 @@
 <div class="content" [ngSwitch]="navigationParameters.Route">
   <app-verification-order-page *ngSwitchCase="verificationRouting.OrderPage"
     [savedPageConfiguration]="savedPageConfiguration"
+    [barcodeScannedEventSubject]="barcodeScannedSubject"
     (pageNavigationEvent)="onPageNavigationEvent($event)"
     (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)"
-    [barcodeScannedEventSubject]="barcodeScannedSubject"
-    (nonXr2PickingBarcodeScanUnexpected)="onNonXr2PickingBarcodeScanUnexpected()">
+    (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)">
   </app-verification-order-page>
   <app-verification-destination-page *ngSwitchCase="verificationRouting.DestinationPage"
     [savedPageConfiguration]="savedPageConfiguration"
@@ -12,14 +12,13 @@
     [barcodeScannedEventSubject]="barcodeScannedSubject"
     (pageNavigationEvent)="onPageNavigationEvent($event)"
     (pageConfigurationUpdateEvent)="onPageConfigurationUpdateEvent($event)"
-    (nonXr2PickingBarcodeScanUnexpected)="onNonXr2PickingBarcodeScanUnexpected()">
+    (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)">
   </app-verification-destination-page>
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
     [navigationParameters]="navigationParameters"
     [barcodeScannedEventSubject]="barcodeScannedSubject"
-    (pageNavigationEvent)="onPageNavigationEvent($event)"
     [rejectReasons] = "rejectReasons | async"
-    (verificationDetailBarcodeScanUnexpected)="onVerificationDetailBarcodeScanUnexpected()"
-    (verificationBoxBarcodeRequired)="onVerificationBoxBarcodeRequired()">
+    (pageNavigationEvent)="onPageNavigationEvent($event)"
+    (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)">
   </app-verification-details-page>
 </div>
