@@ -14,4 +14,5 @@ export interface IVerificationOrderItem {
   FillDate: Date;
   HasOutputDeviceVerification: boolean;
   HasExceptions: boolean;
+  PriorityVerificationGrouping: boolean;
 }
