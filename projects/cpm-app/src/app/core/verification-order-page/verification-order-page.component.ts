@@ -79,11 +79,11 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       console.log('Details Page Xr2 Barcode!')
 
       const navigationParams = {
+        PriorityCodeDescription: '',
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
         DeviceDescription: '',
         DestinationId: data.DestinationId,
-        PriorityCodeDescription: '',
         Date: new Date(),
         Route:  VerificationRouting.DetailsPage,
         RoutedByScan: true
@@ -103,6 +103,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   onGridRowClickEvent(verificationOrderItem: VerificationOrderItem): void {
     const navigationParams = {
+      PriorityCodeDescription: verificationOrderItem.PriorityCodeDescription,
       OrderId: verificationOrderItem.OrderId,
       DeviceId: verificationOrderItem.DeviceId,
       DestinationId: null,

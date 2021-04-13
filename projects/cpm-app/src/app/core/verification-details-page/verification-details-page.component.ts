@@ -123,6 +123,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     let navigationParams: IVerificationNavigationParameters;
     if(this.validDestinationDetails) {
       navigationParams = {
+        PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
         OrderId: this.navigationParameters.OrderId,
         DeviceId: this.navigationParameters.DeviceId,
         DestinationId: null,
@@ -130,6 +131,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } as IVerificationNavigationParameters;
     } else {
       navigationParams = {
+        PriorityCodeDescription: null,
         OrderId: null,
         DeviceId: null,
         DestinationId: null,
@@ -211,7 +213,11 @@ export class VerificationDetailsPageComponent implements OnInit {
     }
 
     this.verificationDashboardData = this.verificationService
-    .getVerificationDashboardData(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+    .getVerificationDashboardData(
+      this.navigationParameters.PriorityCodeDescription,
+      this.navigationParameters.DeviceId.toString(),
+       this.navigationParameters.OrderId
+       ).pipe(
       map((verificationDashboardData) => {
         return new VerificationDashboardData(verificationDashboardData)
       }), shareReplay(1)

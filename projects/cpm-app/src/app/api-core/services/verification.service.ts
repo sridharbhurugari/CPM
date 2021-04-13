@@ -34,8 +34,8 @@ export class VerificationService {
     });
   }
 
-  getVerificationDashboardData(deviceId: string, orderId: string):  Observable<IVerificationDashboardData> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/dashboard/${deviceId}/${orderId}`);
+  getVerificationDashboardData(priorityCodeDescription: string, deviceId: string, orderId: string):  Observable<IVerificationDashboardData> {
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/dashboard/${priorityCodeDescription}/${deviceId}/${orderId}`);
     return this.httpClient.get<IVerificationDashboardData>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });

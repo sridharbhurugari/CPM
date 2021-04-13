@@ -190,7 +190,11 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     }
 
     this.verificationDashboardData = this.verificationService
-    .getVerificationDashboardData(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+    .getVerificationDashboardData(
+     this.navigationParameters.PriorityCodeDescription,
+     this.navigationParameters.DeviceId.toString(),
+     this.navigationParameters.OrderId,
+    ).pipe(
       map((verificationDashboardData) => {
         return new VerificationDashboardData(verificationDashboardData)
       }), shareReplay(1)

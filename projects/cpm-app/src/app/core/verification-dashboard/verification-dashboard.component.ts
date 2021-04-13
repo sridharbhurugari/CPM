@@ -36,7 +36,7 @@ export class VerificationDashboardComponent implements OnInit {
 
   showIcon(iconString: string, completed: number, required: number) {
     if(required > completed) {
-      return iconString
+      return iconString;
     }
 
     return '';
