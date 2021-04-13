@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { DevicesService } from "../../api-core/services/devices.service";
 import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
@@ -7,18 +8,18 @@ import { WindowService } from "../../shared/services/window-service";
 import { Xr2QueueGroupingHeaderComponent } from "../xr2-queue-grouping-header/xr2-queue-grouping-header.component";
 
 @Component({
-  selector: 'app-destock-header',
-  templateUrl: './destock-header.component.html',
-  styleUrls: ['./destock-header.component.scss']
+  selector: 'app-utilization-header',
+  templateUrl: './utilization-header.component.html',
+  styleUrls: ['./utilization-header.component.scss']
 })
-export class DestockHeaderComponent extends Xr2QueueGroupingHeaderComponent implements OnInit {
+export class UtilizationHeaderComponent extends Xr2QueueGroupingHeaderComponent implements OnInit {
   constructor(private windowServicex: WindowService,
               private ocapHttpConfigurationServicex: OcapHttpConfigurationService,
               private devicesServicex: DevicesService,
+              private router: Router,
               private translateServicex: TranslateService) {
     super(windowServicex, ocapHttpConfigurationServicex, devicesServicex, translateServicex);
   }
-  @Output() backEvent: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnInit() {
     super.ngOnInit();
@@ -39,4 +40,12 @@ export class DestockHeaderComponent extends Xr2QueueGroupingHeaderComponent impl
     };
     // this.deviceInformationList.push(allDevicesInfo);
   }
+
+  onDestockClick(): void  {
+    this.router.navigate(['xr2/destock']);
+  }
+
 }
+
+
+

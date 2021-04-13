@@ -1,13 +1,4 @@
 <div class="cpmheaderrow header-container">
-  <div class= "back-button">
-    <app-cp-clickable-icon
-        [width]="35"
-        [height]="35"
-        [theme]="'dark'"
-        [icon]="'back'"
-        (clickEvent)="onBackClick()">
-    </app-cp-clickable-icon>
-  </div>
   <oc-singleselect
     [tableData] = "outputDeviceDisplayList"
     [selectedItem] = "defaultDeviceDisplayItem"
@@ -19,5 +10,9 @@
     [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
     (selectionChanged)="onDeviceSelectionChanged($event)">
     </oc-singleselect>
-<oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+    <oc-button-action
+    [buttonText]="'Destock' | translate"
+    (click)="onDestockClick()">
+</oc-button-action>
+<!-- <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box> -->
 </div>

@@ -1,40 +1,60 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from 'rxjs/operators';
-import { IDestockTypeInfo } from '../../api-xr2/data-contracts/i-destock-type-info';
-import { DestockService } from '../../api-xr2/services/destock.service';
+//import { IUtilizationPocketSummaryInfo } from '../../api-xr2/data-contracts/i-utilization-unassigned-medication-info';
+import { UtilizationService } from '../../api-xr2/services/utilization.service';
 import { nameof } from '../../shared/functions/nameof';
+import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { DestockTypeInfo } from '../model/destock-type-info';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
-import { DestockEventConnectionService } from '../services/destock-event-connection.service';
-import { DestockDataEvent } from '../model/destock-data-event';
+import { UtilizationEventConnectionService } from '../services/utilization-event-connection.service';
+import { UtilizationDataEvent } from '../model/utilization-data-event';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
-  selector: 'app-destock-page',
-  templateUrl: './destock-page.component.html',
-  styleUrls: ['./destock-page.component.scss']
+  selector: 'app-utilization-page',
+  templateUrl: './utilization-page.component.html',
+  styleUrls: ['./utilization-page.component.scss']
 })
-export class DestockPageComponent implements OnInit {
+export class UtilizationPageComponent implements OnInit {
+
+  @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   selectedDeviceInformation: SelectableDeviceInfo;
-  requestDeviceDestockTypeInfo$: Observable<number> ;
-  deviceDestockTypeInfo: DestockTypeInfo[];
+  requestDeviceUtilizationPocketSummaryInfo$: Observable<number> ;
+  deviceUtilizationPocketSummaryInfo: any[];
   searchTextFilter: string;
   currentSortPropertyName: string;
-  screenState: DestockPageComponent.ListState = DestockPageComponent.ListState.NoData;
+  screenState: UtilizationPageComponent.ListState = UtilizationPageComponent.ListState.NoData;
   ngUnsubscribe = new Subject();
   lastErrorMessage: string;
   eventDateTime: Date;
 
-  searchFields = [
-    nameof<IDestockTypeInfo>('Xr2DestockType_Display'),
-  ];
+  expiredLoaded: boolean = true;
+  expiredItems: number = 0;
+  expiredDoses: number = 0;
 
-  constructor(private destockService: DestockService,
+  expiringThisMonthLoaded: boolean = true;
+  expiringThisMonthItems: number = 0;
+  expiringThisMonthDoses: number = 0;
+
+  notAssignedLoaded: boolean = true;
+  notAssignedItems: number = 0;
+  notAssignedDoses: number = 0;
+
+  pocketsWithErrorsLoaded: boolean = true;
+  pocketsWithErrorsItems: number = 0;
+  pocketsWithErrorsDoses: number = 0;
+
+  overstockedLoaded: boolean = true;
+  overstockedItems: number = 0;
+  overstockedDoses: number = 0;
+
+  constructor(private utilizationService: UtilizationService,
     private simpleDialogService: SimpleDialogService,
-    private destockEventConnectionService: DestockEventConnectionService,
+    private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService) {
       this.setupDataRefresh();
@@ -47,14 +67,14 @@ export class DestockPageComponent implements OnInit {
       this.selectedDeviceInformation = new SelectableDeviceInfo(null);
       this.selectedDeviceInformation.DeviceId = 0;
     }
-    this.setDestockService();
+    this.setUtilizationService();
    }
   /* istanbul ignore next */
   ngAfterViewInit(): void {
-    this.destockEventConnectionService.DestockIncomingDataSubject
+    this.utilizationEventConnectionService.UtilizationIncomingDataSubject
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onDataReceived(event));
-    this.destockEventConnectionService.DestockIncomingDataErrorSubject
+    this.utilizationEventConnectionService.UtilizationIncomingDataErrorSubject
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onDataError(event));
   }
@@ -64,26 +84,26 @@ export class DestockPageComponent implements OnInit {
     this.ngUnsubscribe.next();
   }
 
-setDestockService()
+setUtilizationService()
 {
-      // Destock Service
-      this.requestDeviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(shareReplay(1),
+      // Utilization Service
+      this.requestDeviceUtilizationPocketSummaryInfo$ = this.utilizationService.get(this.selectedDeviceInformation.DeviceId).pipe(shareReplay(1),
       finalize(() => {
-        // if(this.screenState === DestockPageComponent.ListState.Error)
+        // if(this.screenState === UtilizationPageComponent.ListState.Error)
         // {return;}
         if(this.selectedDeviceInformation.DeviceId === 0)
         {
-          this.screenState = DestockPageComponent.ListState.NoData;
+          this.screenState = UtilizationPageComponent.ListState.NoData;
         }
         else
         {
-          this.screenState = DestockPageComponent.ListState.WaitingForData;
+          this.screenState = UtilizationPageComponent.ListState.WaitingForData;
         }
         console.log('on complete');
       }),
       catchError(error => {
         this.lastErrorMessage = String(error .message);
-        this.screenState = DestockPageComponent.ListState.Error;
+        this.screenState = UtilizationPageComponent.ListState.Error;
         console.log('on error', error .message);
         throw error;
     }),
@@ -108,26 +128,26 @@ setDestockService()
   }
 
   private refreshData(){
-    this.screenState = DestockPageComponent.ListState.MakingDataRequest;
-    this.setDestockService();
-    this.requestDeviceDestockTypeInfo$.subscribe();
+    this.screenState = UtilizationPageComponent.ListState.MakingDataRequest;
+    this.setUtilizationService();
+    this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
     console.log('onDeviceSelectionChanged DeviceId: ');
     console.log(this.selectedDeviceInformation.DeviceId);
   }
 
-  private onDataReceived(event: DestockDataEvent) {
+  private onDataReceived(event: UtilizationDataEvent) {
     try {
       if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;
       }
-      this.deviceDestockTypeInfo = event.DestockTypeInfoData;
-      this.screenState = DestockPageComponent.ListState.Display;
+      this.deviceUtilizationPocketSummaryInfo = event.UtilizationData;
+      this.screenState = UtilizationPageComponent.ListState.Display;
       this.eventDateTime = event.EventDateTime;
 // todo
     } catch (e) {
-      this.screenState = DestockPageComponent.ListState.Error;
+      this.screenState = UtilizationPageComponent.ListState.Error;
       this.lastErrorMessage = e.message;
-      console.log('DestockPageComponent.onDataReceived ERROR');
+      console.log('UtilizationPageComponent.onDataReceived ERROR');
       console.log(e);
     }
   }
@@ -137,33 +157,13 @@ setDestockService()
       if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;
       }
-      this.screenState = DestockPageComponent.ListState.Error;
+      this.screenState = UtilizationPageComponent.ListState.Error;
     } catch (e) {
-      this.screenState = DestockPageComponent.ListState.Error;
+      this.screenState = UtilizationPageComponent.ListState.Error;
       this.lastErrorMessage = e.message;
-      console.log('DestockPageComponent.onDataError ERROR');
+      console.log('UtilizationPageComponent.onDataError ERROR');
       console.log(e);
     }
-  }
-
-  onPrint(event: DestockTypeInfo)
-  {
-    // DeviceId
-    console.log(this.selectedDeviceInformation.DeviceId);
-    // barcode
-    console.log(event.Barcode);
-    // label text
-    console.log(event.Xr2DestockType_Display);
-    // qty of labels to print:
-    console.log(event.BinCount);
-    this.destockService.print(this.selectedDeviceInformation.DeviceId, event.Barcode, event.Xr2DestockType_Display, event.BinCount).subscribe(
-      s => {
-        this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
-      },
-      f => {
-        this.simpleDialogService.displayErrorOk('PRINT_FAILED_DIALOG_TITLE', 'PRINT_FAILED_DIALOG_MESSAGE');
-      }
-    );
   }
 
   /* istanbul ignore next */
@@ -178,13 +178,12 @@ setDestockService()
   }
 
 }
-export namespace DestockPageComponent
+export namespace UtilizationPageComponent
 {
     export enum ListState
     {
         MakingDataRequest = 'MakingDataRequest', // Request data from XR2. Data will arive as an event
         WaitingForData = 'WaitingForData',       // Data request completed and we are waiting for XR2's event to come back
-        Printing = 'Printing',                   // Printing labels - (optional choice to lock screen)
         Error = 'Error',                         // There was an error
         NoData = 'NoData',                       // No data to display (no device was selected)
         Display = 'Display'                      // Display data

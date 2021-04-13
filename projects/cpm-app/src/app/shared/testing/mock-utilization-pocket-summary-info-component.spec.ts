@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { UtilizationPocketSummaryInfo } from '../../xr2/model/utilization-unassigned-medication-info';
 
 @Component({
-  selector: 'app-utilization-pocket-summary-info',
+  selector: 'app-destock-typeinfo',
   template: ''
 })
 
