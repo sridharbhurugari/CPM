@@ -72,6 +72,34 @@ describe('VerificationOrderQueueComponent', () => {
       expect(component.currentSortPropertyName).toBe(expectedColumnName);
       expect(component.columnSortDirection).toBe(expectedSortDirection);
     });
+
+    it('should filter items based on order ID', () => {
+      const item1 = new VerificationOrderItem(null);
+      const item2 = new VerificationOrderItem(null);
+      const item3 = new VerificationOrderItem(null);
+      item1.OrderId = "1";
+      item2.OrderId = "2";
+      item3.OrderId = "24HR";
+      component.unfilteredVerificationOrderItems = [
+        item1,
+        item2,
+        item3
+      ];
+
+      component.searchTextFilter = "1";
+      const searchResults1 = component.filteredVerificationOrderItems.slice();
+      component.searchTextFilter = "2";
+      const searchResults2 = component.filteredVerificationOrderItems.slice();
+      component.searchTextFilter = "24HR";
+      const searchResults3 = component.filteredVerificationOrderItems.slice();
+      component.searchTextFilter = "";
+      const searchResults4 = component.filteredVerificationOrderItems.slice();
+
+      expect(searchResults1[0]).toBe(item1);
+      expect(searchResults2[0]).toBe(item2);
+      expect(searchResults3[0]).toBe(item3);
+      expect(searchResults4.length).toBe(component.unfilteredVerificationOrderItems.length);
+    });
   });
 
   describe('Configurations', () => {

@@ -22,6 +22,7 @@ import { VerificationOrderQueueComponent } from '../verification-order-queue/ver
 import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 
 import { VerificationOrderPageComponent } from './verification-order-page.component';
+import { map } from 'rxjs/operators';
 
 describe('VerificationOrderPageComponent', () => {
   let component: VerificationOrderPageComponent;
@@ -121,6 +122,83 @@ describe('VerificationOrderPageComponent', () => {
       expect(component.displayWarningDialogEvent.emit).toHaveBeenCalledTimes(1);
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(0);
       expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('Required/All loading', () => {
+    it('should load required items on required toggle', () => {
+      const item1 = new VerificationOrderItem(null);
+      const item2 = new VerificationOrderItem(null);
+      const item3 = new VerificationOrderItem(null);
+      const item4 = new VerificationOrderItem(null);
+      const item5 = new VerificationOrderItem(null);
+
+      // Should not show - complete
+      item1.RequiredVerificationPercentage = 90;
+      item1.CompleteVerificationPercentage = 100;
+
+      // Should show - exception
+      item2.HasExceptions = true;
+      item2.RequiredVerificationPercentage = 90;
+      item2.CompleteVerificationPercentage = 100;
+
+      // Should not show - complete, no exceptions or output device
+      item3.HasExceptions = false;
+      item3.HasOutputDeviceVerification = false;
+      item3.RequiredVerificationPercentage = 90;
+      item3.CompleteVerificationPercentage = 100;
+
+      // Should show - not complete
+      item4.RequiredVerificationPercentage = 90;
+      item4.CompleteVerificationPercentage = 50;
+
+      // Should show - output device
+      item5.RequiredVerificationPercentage = 90;
+      item5.CompleteVerificationPercentage = 100;
+      item5.HasOutputDeviceVerification = true;
+
+      component.allVerificationOrderItems = of([item1, item2, item3, item4, item5]);
+
+      component.setIsRequiredVerification(true);
+
+      component.allVerificationOrderItems.pipe(map((array) => {
+        expect(array).toBe([item2, item4, item5]);
+      }));
+    });
+
+    fit('should load all items on all toggle', () => {
+      const item1 = new VerificationOrderItem(null);
+      const item2 = new VerificationOrderItem(null);
+      const item3 = new VerificationOrderItem(null);
+      const item4 = new VerificationOrderItem(null);
+      const item5 = new VerificationOrderItem(null);
+
+      item1.RequiredVerificationPercentage = 90;
+      item1.CompleteVerificationPercentage = 100;
+
+      item2.HasExceptions = true;
+      item2.RequiredVerificationPercentage = 90;
+      item2.CompleteVerificationPercentage = 100;
+
+      item3.HasExceptions = false;
+      item3.HasOutputDeviceVerification = false;
+      item3.RequiredVerificationPercentage = 90;
+      item3.CompleteVerificationPercentage = 100;
+
+      item4.RequiredVerificationPercentage = 90;
+      item4.CompleteVerificationPercentage = 50;
+
+      item5.RequiredVerificationPercentage = 90;
+      item5.CompleteVerificationPercentage = 100;
+      item5.HasOutputDeviceVerification = true;
+
+      component.allVerificationOrderItems = of([item1, item2, item3, item4, item5]);
+
+      component.setIsRequiredVerification(false);
+
+      component.allVerificationOrderItems.pipe(map((array) => {
+        expect(array).toBe([item1, item2, item3, item4, item5]);
+      }));
     });
   });
 });
