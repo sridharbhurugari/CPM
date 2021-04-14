@@ -7,4 +7,5 @@ export interface IVerificationNavigationParameters {
   DestinationId: string;
   Route: VerificationRouting;
   RoutedByScan: boolean;
+  PriorityVerificationGrouping: boolean;
 }

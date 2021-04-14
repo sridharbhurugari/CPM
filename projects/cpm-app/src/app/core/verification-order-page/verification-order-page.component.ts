@@ -15,6 +15,7 @@ import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
+import { PriorityCodePickRoutesComponent } from '../priority-code-pick-routes/priority-code-pick-routes.component';
 import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
 
 
@@ -79,14 +80,15 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       console.log('Details Page Xr2 Barcode!')
 
       const navigationParams = {
-        PriorityCodeDescription: '',
+        PriorityCodeDescription: '', // TODO - Scanning
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
         DeviceDescription: '',
         DestinationId: data.DestinationId,
         Date: new Date(),
         Route:  VerificationRouting.DetailsPage,
-        RoutedByScan: true
+        RoutedByScan: true,
+        PriorityVerificationGrouping: null // TODO - Scanning
       } as IVerificationNavigationParameters
 
       const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -108,7 +110,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       DeviceId: verificationOrderItem.DeviceId,
       DestinationId: null,
       Route: this.continueRoute,
-      RoutedByScan: false
+      RoutedByScan: false,
+      PriorityVerificationGrouping: verificationOrderItem.PriorityVerificationGrouping
     } as IVerificationNavigationParameters
 
     const savedPageConfiguration = this.createSavedPageConfiguration();
