@@ -20,7 +20,7 @@ import { IVerificationDashboardData } from '../../api-core/data-contracts/i-veri
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
-import { IDashboardDataParameters } from '../../shared/interfaces/i-dashboard-data-parameters';
+import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',

@@ -13,7 +13,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { IDashboardDataParameters } from '../../shared/interfaces/i-dashboard-data-parameters';
+import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';

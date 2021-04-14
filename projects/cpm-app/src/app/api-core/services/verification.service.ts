@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IDashboardDataParameters } from '../../shared/interfaces/i-dashboard-data-parameters';
+import { IDashboardDataParameters } from '../data-contracts/i-dashboard-data-parameters';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IVerifiableItem } from '../data-contracts/i-verifiable-item';
