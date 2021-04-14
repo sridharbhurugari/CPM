@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { DevicesService } from "../../api-core/services/devices.service";
 import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
@@ -15,6 +16,7 @@ export class DestockHeaderComponent extends Xr2QueueGroupingHeaderComponent impl
   constructor(private windowServicex: WindowService,
               private ocapHttpConfigurationServicex: OcapHttpConfigurationService,
               private devicesServicex: DevicesService,
+              private router: Router,
               private translateServicex: TranslateService) {
     super(windowServicex, ocapHttpConfigurationServicex, devicesServicex, translateServicex);
   }
@@ -38,5 +40,8 @@ export class DestockHeaderComponent extends Xr2QueueGroupingHeaderComponent impl
       IsActive: true
     };
     // this.deviceInformationList.push(allDevicesInfo);
+  }
+  onNavigateBack(): void  {
+    this.router.navigate(['xr2/utilization']);
   }
 }

@@ -16,7 +16,7 @@ export class UtilizationService {
     ) { }
 
   public get(xr2DeviceId: number): Observable<number> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/utilization`);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/PocketUtilization`);
     const params = { xr2DeviceId: xr2DeviceId.toString() };
 
     const results = this.httpClient.get<number>( url, {

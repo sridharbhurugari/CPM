@@ -1,11 +1,7 @@
   <app-utilization-header
     [savedPageConfiguration]="savedPageConfiguration"
-    (backEvent)="onBackClick()"
-    (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
     (selectionChangedEvent)="onDeviceSelectionChanged($event)">
   </app-utilization-header>
-
-
 
   <div class="dashboard">
     <app-cp-data-card

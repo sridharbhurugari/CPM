@@ -1,10 +1,9 @@
+import * as _ from 'lodash';
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from 'rxjs/operators';
-//import { IUtilizationPocketSummaryInfo } from '../../api-xr2/data-contracts/i-utilization-unassigned-medication-info';
 import { UtilizationService } from '../../api-xr2/services/utilization.service';
 import { nameof } from '../../shared/functions/nameof';
-import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
@@ -12,6 +11,10 @@ import { UtilizationEventConnectionService } from '../services/utilization-event
 import { UtilizationDataEvent } from '../model/utilization-data-event';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { ExpiringMedicationInfo } from '../model/utilization-expiring-medication-info';
+import { EventEventId } from '../../shared/constants/event-event-id';
+import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
+import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
 
 @Component({
   selector: 'app-utilization-page',
@@ -20,7 +23,6 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 })
 export class UtilizationPageComponent implements OnInit {
 
-  @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceUtilizationPocketSummaryInfo$: Observable<number> ;
@@ -32,7 +34,8 @@ export class UtilizationPageComponent implements OnInit {
   lastErrorMessage: string;
   eventDateTime: Date;
 
-  expiredLoaded: boolean = true;
+  expiringData: ExpiringMedicationInfo[];
+  expiredLoaded: boolean = false;
   expiredItems: number = 0;
   expiredDoses: number = 0;
 
@@ -40,14 +43,17 @@ export class UtilizationPageComponent implements OnInit {
   expiringThisMonthItems: number = 0;
   expiringThisMonthDoses: number = 0;
 
+  notAssignedData: UnassignedMedicationInfo[];
   notAssignedLoaded: boolean = true;
   notAssignedItems: number = 0;
   notAssignedDoses: number = 0;
 
+  pocketsWithErrorsData: ErroredMedicationInfo[];
   pocketsWithErrorsLoaded: boolean = true;
   pocketsWithErrorsItems: number = 0;
   pocketsWithErrorsDoses: number = 0;
 
+  overstockedData: any[];
   overstockedLoaded: boolean = true;
   overstockedItems: number = 0;
   overstockedDoses: number = 0;
@@ -97,7 +103,8 @@ setUtilizationService()
         }
         else
         {
-          this.screenState = UtilizationPageComponent.ListState.WaitingForData;
+          this.screenState = UtilizationPageComponent.ListState.NoData;
+          // this.screenState = UtilizationPageComponent.ListState.WaitingForData;
         }
         console.log('on complete');
       }),
@@ -137,9 +144,30 @@ setUtilizationService()
 
   private onDataReceived(event: UtilizationDataEvent) {
     try {
+      // only process events for our device
       if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;
       }
+
+     // Event types: ExpiringMedsReceived  UnassignedMedsReceived  ErroredMedsReceived
+     switch(event.EventId) {
+      case EventEventId.ExpiringMedsReceived : {
+        this.expiringData = event.UtilizationData as ExpiringMedicationInfo[];
+
+
+      }
+      case EventEventId.UnassignedMedsReceived  : {
+        this.notAssignedData = event.UtilizationData as UnassignedMedicationInfo[];
+        this.SetNotAssigned();
+      }
+      case EventEventId.ErroredMedsReceived  : {
+
+        this.pocketsWithErrorsData = event.UtilizationData as ErroredMedicationInfo[];
+
+      }
+    }
+
+
       this.deviceUtilizationPocketSummaryInfo = event.UtilizationData;
       this.screenState = UtilizationPageComponent.ListState.Display;
       this.eventDateTime = event.EventDateTime;
@@ -150,6 +178,13 @@ setUtilizationService()
       console.log('UtilizationPageComponent.onDataReceived ERROR');
       console.log(e);
     }
+  }
+
+  public SetNotAssigned()
+  {
+    this.notAssignedItems = _.countBy(this.notAssignedData, 'ItemCode')[0];
+    this.notAssignedDoses = _.sumBy(this.notAssignedData, 'Inventory');
+    this.notAssignedLoaded = true;
   }
 
   private onDataError(event) {

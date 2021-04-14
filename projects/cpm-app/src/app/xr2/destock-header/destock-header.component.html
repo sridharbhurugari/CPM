@@ -1,11 +1,12 @@
 <div class="cpmheaderrow header-container">
+  <div  class="header-container-left">
   <div class= "back-button">
     <app-cp-clickable-icon
         [width]="35"
         [height]="35"
         [theme]="'dark'"
         [icon]="'back'"
-        (clickEvent)="onBackClick()">
+        (clickEvent)="onNavigateBack()">
     </app-cp-clickable-icon>
   </div>
   <oc-singleselect
@@ -19,5 +20,6 @@
     [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
     (selectionChanged)="onDeviceSelectionChanged($event)">
     </oc-singleselect>
+  </div>
 <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
