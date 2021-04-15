@@ -39,22 +39,22 @@ export class UtilizationPageComponent implements OnInit {
   expiredItems: number = 0;
   expiredDoses: number = 0;
 
-  expiringThisMonthLoaded: boolean = true;
+  expiringThisMonthLoaded: boolean = false;
   expiringThisMonthItems: number = 0;
   expiringThisMonthDoses: number = 0;
 
   notAssignedData: UnassignedMedicationInfo[];
-  notAssignedLoaded: boolean = true;
-  notAssignedItems: number = 0;
-  notAssignedDoses: number = 0;
+  notAssignedLoaded: boolean = false;
+  notAssignedItems: number = 999;
+  notAssignedDoses: number = 999;
 
   pocketsWithErrorsData: ErroredMedicationInfo[];
-  pocketsWithErrorsLoaded: boolean = true;
+  pocketsWithErrorsLoaded: boolean = false;
   pocketsWithErrorsItems: number = 0;
   pocketsWithErrorsDoses: number = 0;
 
   overstockedData: any[];
-  overstockedLoaded: boolean = true;
+  overstockedLoaded: boolean = false;
   overstockedItems: number = 0;
   overstockedDoses: number = 0;
 
@@ -103,8 +103,7 @@ setUtilizationService()
         }
         else
         {
-          this.screenState = UtilizationPageComponent.ListState.NoData;
-          // this.screenState = UtilizationPageComponent.ListState.WaitingForData;
+          this.screenState = UtilizationPageComponent.ListState.WaitingForData;
         }
         console.log('on complete');
       }),
@@ -115,10 +114,7 @@ setUtilizationService()
         throw error;
     }),
       );
-
 }
-
-
   onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
   }
@@ -136,6 +132,11 @@ setUtilizationService()
 
   private refreshData(){
     this.screenState = UtilizationPageComponent.ListState.MakingDataRequest;
+    this.expiredLoaded = false;
+    this.expiringThisMonthLoaded = false;
+    this.notAssignedLoaded = false;
+    this.pocketsWithErrorsLoaded = false;
+    this.overstockedLoaded = false;
     this.setUtilizationService();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
     console.log('onDeviceSelectionChanged DeviceId: ');
@@ -153,6 +154,8 @@ setUtilizationService()
      switch(event.EventId) {
       case EventEventId.ExpiringMedsReceived : {
         this.expiringData = event.UtilizationData as ExpiringMedicationInfo[];
+        this.SetExpired();
+        this.SetExpiringThisMonth();
         break;
       }
       case EventEventId.UnassignedMedsReceived  : {
@@ -162,13 +165,14 @@ setUtilizationService()
       }
       case EventEventId.ErroredMedsReceived  : {
         this.pocketsWithErrorsData = event.UtilizationData as ErroredMedicationInfo[];
+        this.SetPocketsWithErrors()
         break;
       }
     }
       this.deviceUtilizationPocketSummaryInfo = event.UtilizationData;
       this.screenState = UtilizationPageComponent.ListState.Display;
       this.eventDateTime = event.EventDateTime;
-// todo
+
     } catch (e) {
       this.screenState = UtilizationPageComponent.ListState.Error;
       this.lastErrorMessage = e.message;
@@ -177,11 +181,55 @@ setUtilizationService()
     }
   }
 
+  public SetExpired()
+  {
+    const exp = _.filter(this.expiringData, e => { return e.ExpiredCount > 0;});
+    this.expiredItems = _(exp).countBy('ItemCode').size();
+    // Check if null or unassigned
+    if (this.expiredItems == null)
+    {
+      this.expiredItems = 0;
+    }
+    this.expiredDoses = _.sumBy(this.expiringData, 'ExpiredCount');
+    this.expiredLoaded = true;
+  }
+
+  public SetExpiringThisMonth()
+  {
+    const exp = _.filter(this.expiringData, e => { return e.ExpiringCount > 0;});
+    this.expiringThisMonthItems = _(exp).countBy('ItemCode').size();
+    // Check if null or unassigned
+    if (this.expiringThisMonthItems == null)
+    {
+      this.expiringThisMonthItems = 0;
+    }
+    this.expiringThisMonthDoses = _.sumBy(this.expiringData, 'ExpiringCount');
+    this.expiringThisMonthLoaded = true;
+  }
+
   public SetNotAssigned()
   {
-    this.notAssignedItems = _.countBy(this.notAssignedData, 'ItemCode')[0];
+    this.notAssignedItems = _(this.notAssignedData).countBy('ItemCode').size();
+    // Check if null or unassigned
+    if (this.notAssignedItems == null)
+    {
+      this.notAssignedItems = 0;
+    }
     this.notAssignedDoses = _.sumBy(this.notAssignedData, 'Inventory');
-    this.notAssignedLoaded = false;
+    this.notAssignedLoaded = true;
+  }
+
+  public SetPocketsWithErrors()
+  {
+    this.pocketsWithErrorsItems = _(this.pocketsWithErrorsData).countBy('ItemCode').size();
+    // Check if null or unassigned
+    if (this.pocketsWithErrorsItems == null)
+    {
+      this.pocketsWithErrorsItems = 0;
+    }
+    this.pocketsWithErrorsDoses = _.sumBy(this.pocketsWithErrorsData, 'ErrorsCount');
+    this.pocketsWithErrorsLoaded = true;
+    this.overstockedLoaded = true;
   }
 
   private onDataError(event) {

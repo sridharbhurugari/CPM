@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { Router } from "@angular/router";
 import { SingleselectDropdownModule } from '@omnicell/webcorecomponents';
 import { Input, Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -11,6 +12,7 @@ import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-co
 import { IOcapHttpConfiguration } from '../../shared/interfaces/i-ocap-http-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Guid } from 'guid-typescript';
+import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { DestockHeaderComponent } from './destock-header.component';
 
 @Component({
@@ -68,12 +70,13 @@ describe('DestockHeaderComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ DestockHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
+      declarations: [ DestockHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe, MockCpClickableIconComponent],
       imports: [ SingleselectDropdownModule],
       providers: [
         { provide: DevicesService, useValue: devicesService},
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: WindowService, useValue: [] },
+        { provide: Router, useValue: [] },
         { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
       ]
     })

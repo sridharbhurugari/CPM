@@ -10,11 +10,14 @@
     [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
     (selectionChanged)="onDeviceSelectionChanged($event)">
     </oc-singleselect>
+    <span class="details-text">
+      {{'Pocket Utilization' | translate}}
+    </span>
     <oc-button-action
     [buttonText]="'Destock' | translate"
     mode="secondary"
     style = "margin-left:20px;"
     (click)="onDestockClick()">
 </oc-button-action>
-<!-- <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box> -->
+<oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate" style = "display: none;"></oc-search-box>
 </div>
