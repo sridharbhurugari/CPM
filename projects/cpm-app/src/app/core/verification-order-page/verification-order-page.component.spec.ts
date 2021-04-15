@@ -166,7 +166,7 @@ describe('VerificationOrderPageComponent', () => {
       }));
     });
 
-    fit('should load all items on all toggle', () => {
+    it('should load all items on all toggle', () => {
       const item1 = new VerificationOrderItem(null);
       const item2 = new VerificationOrderItem(null);
       const item3 = new VerificationOrderItem(null);
