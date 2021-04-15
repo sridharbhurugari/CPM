@@ -153,21 +153,18 @@ setUtilizationService()
      switch(event.EventId) {
       case EventEventId.ExpiringMedsReceived : {
         this.expiringData = event.UtilizationData as ExpiringMedicationInfo[];
-
-
+        break;
       }
       case EventEventId.UnassignedMedsReceived  : {
         this.notAssignedData = event.UtilizationData as UnassignedMedicationInfo[];
         this.SetNotAssigned();
+        break;
       }
       case EventEventId.ErroredMedsReceived  : {
-
         this.pocketsWithErrorsData = event.UtilizationData as ErroredMedicationInfo[];
-
+        break;
       }
     }
-
-
       this.deviceUtilizationPocketSummaryInfo = event.UtilizationData;
       this.screenState = UtilizationPageComponent.ListState.Display;
       this.eventDateTime = event.EventDateTime;
@@ -184,7 +181,7 @@ setUtilizationService()
   {
     this.notAssignedItems = _.countBy(this.notAssignedData, 'ItemCode')[0];
     this.notAssignedDoses = _.sumBy(this.notAssignedData, 'Inventory');
-    this.notAssignedLoaded = true;
+    this.notAssignedLoaded = false;
   }
 
   private onDataError(event) {

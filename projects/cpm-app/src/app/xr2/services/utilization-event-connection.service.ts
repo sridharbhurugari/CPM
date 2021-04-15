@@ -33,21 +33,22 @@ export class UtilizationEventConnectionService {
       switch(event.EventId) {
       case EventEventId.ExpiringMedsReceived : {
         console.log(event);
-        this.UtilizationIncomingDataSubject.next({
-            EventId: event.EventId,
-            DeviceId: event.DeviceId,
-            CorrelationId: event.ExpiringMedicationsReceivedMessage.CorrelationId,
-            EventDateTime: event.ExpiringMedicationsReceivedMessage.EventDateTime,
-            // Cast is needed because the message is not being serialized properly (vanilla)
-            UtilizationData: event.ExpiringMedicationsReceivedMessage.ExpiringMedicationInfoList.$values as ExpiringMedicationInfo[]
-        });
+        const e: UtilizationDataEvent = {
+          EventId: event.EventId,
+          DeviceId: parseInt(event.ExpiringMedicationsReceivedMessage.DeviceId),
+          CorrelationId: event.ExpiringMedicationsReceivedMessage.CorrelationId,
+          EventDateTime: event.ExpiringMedicationsReceivedMessage.EventDateTime,
+          // Cast is needed because the message is not being serialized properly (vanilla)
+          UtilizationData: event.ExpiringMedicationsReceivedMessage.ExpiringMedicationInfoList.$values as ExpiringMedicationInfo[]
+      }
+        this.UtilizationIncomingDataSubject.next(e);
         return;
       }
       case EventEventId.UnassignedMedsReceived  : {
         console.log(event);
         this.UtilizationIncomingDataSubject.next({
             EventId: event.EventId,
-            DeviceId: event.DeviceId,
+            DeviceId: parseInt(event.UnassignedMedicationsReceivedMessage.DeviceId),
             CorrelationId: event.UnassignedMedicationsReceivedMessage.CorrelationId,
             EventDateTime: event.UnassignedMedicationsReceivedMessage.EventDateTime,
             // Cast is needed because the message is not being serialized properly (vanilla)
@@ -59,7 +60,7 @@ export class UtilizationEventConnectionService {
         console.log(event);
         this.UtilizationIncomingDataSubject.next({
             EventId: event.EventId,
-            DeviceId: event.DeviceId,
+            DeviceId: parseInt(event.ErroredMedicationsReceivedMessage.DeviceId),
             CorrelationId: event.ErroredMedicationsReceivedMessage.CorrelationId,
             EventDateTime: event.ErroredMedicationsReceivedMessage.EventDateTime,
             // Cast is needed because the message is not being serialized properly (vanilla)

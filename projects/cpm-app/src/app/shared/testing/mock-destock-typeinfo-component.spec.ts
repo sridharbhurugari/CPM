@@ -1,13 +1,13 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
-import { UtilizationPocketSummaryInfo } from '../../xr2/model/utilization-unassigned-medication-info';
+import { DestockTypeInfo } from '../../xr2/model/destock-type-info';
 
 @Component({
-  selector: 'app-utilization-pocket-summary-info',
+  selector: 'app-destock-type-info',
   template: ''
 })
 
-export class MockUtilizationPocketSummaryInfoComponent {
-  @Input() deviceUtilizationPocketSummaryInfo: UtilizationPocketSummaryInfo[];
+export class MockDestockTypeInfoComponent {
+  @Input() deviceDestockTypeInfo: DestockTypeInfo[];
   @Input() searchTextFilter: string;
-  @Output() printLabel: EventEmitter<UtilizationPocketSummaryInfo> = new EventEmitter<UtilizationPocketSummaryInfo>();
+  @Output() printLabel: EventEmitter<DestockTypeInfo> = new EventEmitter<DestockTypeInfo>();
 }

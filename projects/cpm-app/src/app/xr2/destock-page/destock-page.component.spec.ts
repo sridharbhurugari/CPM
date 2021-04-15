@@ -16,7 +16,6 @@ import { DestockDataEvent } from '../model/destock-data-event';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgressAnimationComponent, FooterModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
-import { MockUtilizationPocketSummaryInfoComponent } from '../../shared/testing/mock-utilization-pocket-summary-info-component.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DestockPageComponent } from './destock-page.component';
 import { WindowService } from '../../shared/services/window-service';
@@ -51,7 +50,7 @@ describe('DestockPageComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ DestockPageComponent, MockDestockHeaderComponent, MockUtilizationPocketSummaryInfoComponent, ProgressAnimationComponent, MockTranslatePipe ],
+      declarations: [ DestockPageComponent, MockDestockHeaderComponent, ProgressAnimationComponent, MockTranslatePipe ],
       imports: [ ButtonActionModule,
         FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
