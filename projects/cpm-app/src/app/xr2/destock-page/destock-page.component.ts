@@ -11,6 +11,7 @@ import { DestockEventConnectionService } from '../services/destock-event-connect
 import { DestockDataEvent } from '../model/destock-data-event';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
   selector: 'app-destock-page',
@@ -18,6 +19,7 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   styleUrls: ['./destock-page.component.scss']
 })
 export class DestockPageComponent implements OnInit {
+  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceDestockTypeInfo$: Observable<number> ;
   deviceDestockTypeInfo: DestockTypeInfo[];
