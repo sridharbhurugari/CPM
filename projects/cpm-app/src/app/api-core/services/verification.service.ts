@@ -38,14 +38,14 @@ export class VerificationService {
   getVerificationDashboardData(params: IDashboardDataParameters):  Observable<IVerificationDashboardData> {
     const url = this.ocapUrlBuilderService.buildUrl( `/api/targetedpickverification/dashboard`);
     return this.httpClient.post<IVerificationDashboardData>(url, params, {
-      headers: this.ocapHttpHeadersService.getHeaders(),
+      headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
 
   getVerificationDestinationDetails(destinationId: string, orderId: string, deviceId: number): Observable<IVerificationDestinationDetailViewData> {
     const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/destination/${destinationId}/${orderId}/${deviceId}`);
     return this.httpClient.get<IVerificationDestinationDetailViewData>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders(),
+      headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
 
