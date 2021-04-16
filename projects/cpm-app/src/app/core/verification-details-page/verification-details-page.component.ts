@@ -20,6 +20,7 @@ import { IVerificationDashboardData } from '../../api-core/data-contracts/i-veri
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
+import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -123,17 +124,21 @@ export class VerificationDetailsPageComponent implements OnInit {
     let navigationParams: IVerificationNavigationParameters;
     if(this.validDestinationDetails) {
       navigationParams = {
+        PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
         OrderId: this.navigationParameters.OrderId,
         DeviceId: this.navigationParameters.DeviceId,
         DestinationId: null,
-        Route: this.backRoute
+        Route: this.backRoute,
+        PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
       } as IVerificationNavigationParameters;
     } else {
       navigationParams = {
+        PriorityCodeDescription: null,
         OrderId: null,
         DeviceId: null,
         DestinationId: null,
-        Route: VerificationRouting.OrderPage
+        Route: VerificationRouting.OrderPage,
+        PriorityVerificationGrouping: null
       } as IVerificationNavigationParameters;
     }
 
@@ -210,8 +215,16 @@ export class VerificationDetailsPageComponent implements OnInit {
       return;
     }
 
+    const dashboardParams = {
+      OrderId: this.navigationParameters.OrderId,
+      DeviceId: this.navigationParameters.DeviceId,
+      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      RoutedByScan: this.navigationParameters.RoutedByScan,
+      PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
+    } as IDashboardDataParameters
+
     this.verificationDashboardData = this.verificationService
-    .getVerificationDashboardData(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+    .getVerificationDashboardData(dashboardParams).pipe(
       map((verificationDashboardData) => {
         return new VerificationDashboardData(verificationDashboardData)
       }), shareReplay(1)
