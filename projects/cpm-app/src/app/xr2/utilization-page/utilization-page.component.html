@@ -40,15 +40,6 @@
     [dataLabel2]="'Dose(s)' | translate"
     [data2]="pocketsWithErrorsDoses.toString()"    >
     </app-cp-data-card>
-    <app-cp-data-card
-    [showLoading]="!overstockedLoaded"
-    [title]="'Overstocked' | translate"
-    [iconString]="'detail'"
-    [dataLabel1]="'Item(s)' | translate"
-    [data1]="'NA'"
-    [dataLabel2]="'Dose(s)' | translate"
-    [data2]="'NA'" >
-    </app-cp-data-card>
   </div>
   <body [ngSwitch]="screenState">
 

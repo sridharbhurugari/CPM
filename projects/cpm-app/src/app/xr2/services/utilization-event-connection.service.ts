@@ -35,11 +35,10 @@ export class UtilizationEventConnectionService {
         console.log(event);
         const e: UtilizationDataEvent = {
           EventId: event.EventId,
-          DeviceId: parseInt(event.ExpiringMedicationsReceivedMessage.DeviceId),
-          CorrelationId: event.ExpiringMedicationsReceivedMessage.CorrelationId,
-          EventDateTime: event.ExpiringMedicationsReceivedMessage.EventDateTime,
+          DeviceId: event.DeviceId,
+          EventDateTime: event.EventDateTime,
           // Cast is needed because the message is not being serialized properly (vanilla)
-          UtilizationData: event.ExpiringMedicationsReceivedMessage.ExpiringMedicationInfoList.$values as ExpiringMedicationInfo[]
+          UtilizationData: event.ExpiringMedicationInfoList.$values as ExpiringMedicationInfo[]
       }
         this.UtilizationIncomingDataSubject.next(e);
         return;
@@ -47,24 +46,22 @@ export class UtilizationEventConnectionService {
       case EventEventId.UnassignedMedsReceived  : {
         console.log(event);
         this.UtilizationIncomingDataSubject.next({
-            EventId: event.EventId,
-            DeviceId: parseInt(event.UnassignedMedicationsReceivedMessage.DeviceId),
-            CorrelationId: event.UnassignedMedicationsReceivedMessage.CorrelationId,
-            EventDateTime: event.UnassignedMedicationsReceivedMessage.EventDateTime,
+          EventId: event.EventId,
+          DeviceId: event.DeviceId,
+          EventDateTime: event.EventDateTime,
             // Cast is needed because the message is not being serialized properly (vanilla)
-            UtilizationData: event.UnassignedMedicationsReceivedMessage.UnassignedMedicationInfoList.$values as UnassignedMedicationInfo[]
+            UtilizationData: event.UnassignedMedicationInfoList.$values as UnassignedMedicationInfo[]
         });
         return;
       }
       case EventEventId.ErroredMedsReceived  : {
         console.log(event);
         this.UtilizationIncomingDataSubject.next({
-            EventId: event.EventId,
-            DeviceId: parseInt(event.ErroredMedicationsReceivedMessage.DeviceId),
-            CorrelationId: event.ErroredMedicationsReceivedMessage.CorrelationId,
-            EventDateTime: event.ErroredMedicationsReceivedMessage.EventDateTime,
+          EventId: event.EventId,
+          DeviceId: event.DeviceId,
+          EventDateTime: event.EventDateTime,
             // Cast is needed because the message is not being serialized properly (vanilla)
-            UtilizationData: event.ErroredMedicationsReceivedMessage.ErroredMedicationInfoList.$values as ErroredMedicationInfo[]
+            UtilizationData: event.ErroredMedicationInfoList.$values as ErroredMedicationInfo[]
         });
         return;
       }

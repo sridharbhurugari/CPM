@@ -53,11 +53,6 @@ export class UtilizationPageComponent implements OnInit {
   pocketsWithErrorsItems: number = 0;
   pocketsWithErrorsDoses: number = 0;
 
-  overstockedData: any[];
-  overstockedLoaded: boolean = false;
-  overstockedItems: number = 0;
-  overstockedDoses: number = 0;
-
   constructor(private utilizationService: UtilizationService,
     private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
@@ -136,7 +131,7 @@ setUtilizationService()
     this.expiringThisMonthLoaded = false;
     this.notAssignedLoaded = false;
     this.pocketsWithErrorsLoaded = false;
-    this.overstockedLoaded = false;
+
     this.setUtilizationService();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
     console.log('onDeviceSelectionChanged DeviceId: ');
@@ -229,7 +224,6 @@ setUtilizationService()
     }
     this.pocketsWithErrorsDoses = _.sumBy(this.pocketsWithErrorsData, 'ErrorsCount');
     this.pocketsWithErrorsLoaded = true;
-    this.overstockedLoaded = true;
   }
 
   private onDataError(event) {
