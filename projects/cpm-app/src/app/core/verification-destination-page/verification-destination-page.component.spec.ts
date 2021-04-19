@@ -41,7 +41,8 @@ describe('VerificationDestinationPageComponent', () => {
     PriorityCodeDescription: 'prioritycodedesc1',
     Date: new Date(1, 1, 1, 1, 1, 1, 1),
     Route:  VerificationRouting.DetailsPage,
-    RoutedByScan: false
+    RoutedByScan: false,
+    PriorityVerificationGrouping: false
   } as IVerificationNavigationParameters;
 
   const detailItem = {} as IVerificationDestinationItem;

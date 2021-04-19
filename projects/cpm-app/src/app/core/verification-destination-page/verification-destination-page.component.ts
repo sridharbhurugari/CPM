@@ -13,6 +13,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -90,10 +91,11 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
         DeviceId: data.DeviceId,
         DeviceDescription: '',
         DestinationId: data.DestinationId,
-        PriorityCodeDescription: '',
+        PriorityCodeDescription: '', // TODO - scanning
         Date: new Date(),
         Route:  VerificationRouting.DetailsPage,
-        RoutedByScan: true
+        RoutedByScan: true,
+        PriorityVerificationGrouping: null // TODO - scanning
       } as IVerificationNavigationParameters
 
       const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -189,8 +191,16 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       return;
     }
 
+    const dashboardParams = {
+      OrderId: this.navigationParameters.OrderId,
+      DeviceId: this.navigationParameters.DeviceId,
+      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      RoutedByScan: this.navigationParameters.RoutedByScan,
+      PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
+    } as IDashboardDataParameters
+
     this.verificationDashboardData = this.verificationService
-    .getVerificationDashboardData(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).pipe(
+    .getVerificationDashboardData(dashboardParams).pipe(
       map((verificationDashboardData) => {
         return new VerificationDashboardData(verificationDashboardData)
       }), shareReplay(1)

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { IDashboardDataParameters } from '../data-contracts/i-dashboard-data-parameters';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IVerifiableItem } from '../data-contracts/i-verifiable-item';
@@ -34,9 +35,9 @@ export class VerificationService {
     });
   }
 
-  getVerificationDashboardData(deviceId: string, orderId: string):  Observable<IVerificationDashboardData> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/dashboard/${deviceId}/${orderId}`);
-    return this.httpClient.get<IVerificationDashboardData>(url, {
+  getVerificationDashboardData(params: IDashboardDataParameters):  Observable<IVerificationDashboardData> {
+    const url = this.ocapUrlBuilderService.buildUrl( `/api/targetedpickverification/dashboard`);
+    return this.httpClient.post<IVerificationDashboardData>(url, params, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
