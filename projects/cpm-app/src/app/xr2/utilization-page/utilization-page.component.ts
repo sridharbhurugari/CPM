@@ -138,7 +138,7 @@ setUtilizationService()
     console.log(this.selectedDeviceInformation.DeviceId);
   }
 
-  private onDataReceived(event: UtilizationDataEvent) {
+  onDataReceived(event: UtilizationDataEvent) {
     try {
       // only process events for our device
       if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
@@ -180,11 +180,6 @@ setUtilizationService()
   {
     const exp = _.filter(this.expiringData, e => { return e.ExpiredCount > 0;});
     this.expiredItems = _(exp).countBy('ItemCode').size();
-    // Check if null or unassigned
-    if (this.expiredItems == null)
-    {
-      this.expiredItems = 0;
-    }
     this.expiredDoses = _.sumBy(this.expiringData, 'ExpiredCount');
     this.expiredLoaded = true;
   }
@@ -193,11 +188,6 @@ setUtilizationService()
   {
     const exp = _.filter(this.expiringData, e => { return e.ExpiringCount > 0;});
     this.expiringThisMonthItems = _(exp).countBy('ItemCode').size();
-    // Check if null or unassigned
-    if (this.expiringThisMonthItems == null)
-    {
-      this.expiringThisMonthItems = 0;
-    }
     this.expiringThisMonthDoses = _.sumBy(this.expiringData, 'ExpiringCount');
     this.expiringThisMonthLoaded = true;
   }
@@ -217,16 +207,11 @@ setUtilizationService()
   public SetPocketsWithErrors()
   {
     this.pocketsWithErrorsItems = _(this.pocketsWithErrorsData).countBy('ItemCode').size();
-    // Check if null or unassigned
-    if (this.pocketsWithErrorsItems == null)
-    {
-      this.pocketsWithErrorsItems = 0;
-    }
     this.pocketsWithErrorsDoses = _.sumBy(this.pocketsWithErrorsData, 'ErrorsCount');
     this.pocketsWithErrorsLoaded = true;
   }
 
-  private onDataError(event) {
+ onDataError(event) {
     try {
       if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;

@@ -22,6 +22,8 @@ import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medica
 import { ExpiringMedicationInfo } from '../model/utilization-expiring-medication-info';
 import { doesNotThrow } from 'assert';
 import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
+import { EventEventId } from '../../shared/constants/event-event-id';
+import { stubFalse } from 'lodash';
 
 describe('UtilizationPageComponent', () => {
   let component: UtilizationPageComponent ;
@@ -74,19 +76,28 @@ describe('UtilizationPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  describe('Set NotAssigned', () => {
+
+  describe('onDataReceived NotAssigned', () => {
 
     beforeEach(() => {
+      component.notAssignedItems = 0;
+      component.notAssignedDoses = 0;
       component.notAssignedLoaded = false;
+      component.selectedDeviceInformation.DeviceId = 4;
     });
 
     it('Check when empty', () => {
       let data: UnassignedMedicationInfo[]
       component.notAssignedData = data;
-      component.SetNotAssigned();
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.UnassignedMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
 
-      expect(component.notAssignedItems==0).toBe(true);
-      expect(component.notAssignedDoses==(0)).toBe(true);
+      expect(component.notAssignedItems).toBe(0);
+      expect(component.notAssignedDoses).toBe(0);
       expect(component.notAssignedLoaded).toBe(true);
     });
 
@@ -108,11 +119,51 @@ describe('UtilizationPageComponent', () => {
        };
       let data: UnassignedMedicationInfo[] = [ a1, b1, b2 ]
       component.notAssignedData = data;
-      component.SetNotAssigned();
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.UnassignedMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
 
-      expect(component.notAssignedItems==2).toBe(true);
-      expect(component.notAssignedDoses==(11 + 21 + 22)).toBe(true);
+      expect(component.notAssignedItems).toBe(2);
+      expect(component.notAssignedDoses).toBe(11 + 21 + 22);
       expect(component.notAssignedLoaded).toBe(true);
+    });
+
+    it('Check Different DeviceId gets rejected', () => {
+      let a1: UnassignedMedicationInfo = {
+        ItemCode: 'a',
+        PocketTypeId: 1,
+        Inventory: 11
+       };
+       let b1: UnassignedMedicationInfo = {
+        ItemCode: 'b',
+        PocketTypeId: 1,
+        Inventory: 21
+       };
+       let b2: UnassignedMedicationInfo = {
+        ItemCode: 'b',
+        PocketTypeId: 2,
+        Inventory: 22
+       };
+      let data: UnassignedMedicationInfo[] = [ a1, b1, b2 ]
+      component.notAssignedData = data;
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.UnassignedMedsReceived,
+        DeviceId: 999,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
+
+      expect(component.notAssignedItems).toBe(0);
+      expect(component.notAssignedDoses).toBe(0);
+      expect(component.notAssignedLoaded).toBe(false);
+    });
+
+    it('Check for Error', () => {
+      component.onDataReceived(null);
+      expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
     });
   });
 
@@ -120,15 +171,21 @@ describe('UtilizationPageComponent', () => {
 
     beforeEach(() => {
       component.pocketsWithErrorsLoaded = false;
+      component.selectedDeviceInformation.DeviceId = 4;
     });
 
     it('Check when empty', () => {
       let data: ErroredMedicationInfo[];
       component.pocketsWithErrorsData = data;
-      component.SetPocketsWithErrors();
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.ErroredMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
 
-      expect(component.pocketsWithErrorsItems==0).toBe(true);
-      expect(component.pocketsWithErrorsDoses==0).toBe(true);
+      expect(component.pocketsWithErrorsItems).toBe(0);
+      expect(component.pocketsWithErrorsDoses).toBe(0);
       expect(component.pocketsWithErrorsLoaded).toBe(true);
     });
 
@@ -150,10 +207,15 @@ describe('UtilizationPageComponent', () => {
        };
       let data: ErroredMedicationInfo[] = [ a1, b1, b2 ]
       component.pocketsWithErrorsData = data;
-      component.SetPocketsWithErrors();
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.ErroredMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
 
-      expect(component.pocketsWithErrorsItems==2).toBe(true);
-      expect(component.pocketsWithErrorsDoses==(11 + 21 + 22)).toBe(true);
+      expect(component.pocketsWithErrorsItems).toBe(2);
+      expect(component.pocketsWithErrorsDoses).toBe(11 + 21 + 22);
       expect(component.pocketsWithErrorsLoaded).toBe(true);
     });
   });
@@ -162,16 +224,26 @@ describe('UtilizationPageComponent', () => {
 
     beforeEach(() => {
       component.expiredLoaded = false;
+      component.selectedDeviceInformation.DeviceId = 4;
     });
 
     it('Check when empty', () => {
       let data: ExpiringMedicationInfo[];
       component.expiringData = data;
-      component.SetExpired();
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.ExpiringMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
 
-      expect(component.expiredItems==0).toBe(true);
-      expect(component.expiredDoses==0).toBe(true);
+      expect(component.expiredItems).toBe(0);
+      expect(component.expiredDoses).toBe(0);
       expect(component.expiredLoaded).toBe(true);
+
+      expect(component.expiringThisMonthItems).toBe(0);
+      expect(component.expiringThisMonthDoses).toBe(0);
+      expect(component.expiringThisMonthLoaded).toBe(true);
     });
 
     it('Check Count and Sums', () => {
@@ -205,67 +277,71 @@ describe('UtilizationPageComponent', () => {
        };
       let data: ExpiringMedicationInfo[] = [ a1, b1, b2, c1 ]
       component.expiringData = data;
-      component.SetExpired();
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.ExpiringMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: data};
+      component.onDataReceived(event);
 
-      expect(component.expiredItems==2).toBe(true);
-      expect(component.expiredDoses==(11 + 21 + 22 + 0)).toBe(true);
+      expect(component.expiredItems).toBe(2);
+      expect(component.expiredDoses).toBe(11 + 21 + 22 + 0);
       expect(component.expiredLoaded).toBe(true);
+
+      expect(component.expiringThisMonthItems).toBe(2);
+      expect(component.expiringThisMonthDoses).toBe(0 + 2 + 3 + 4);
+      expect(component.expiringThisMonthLoaded).toBe(true);
     });
   });
 
-  describe('Set ExpiringThisMonth', () => {
+  it('onRefreshClick', () => {
+
+    component.screenState = UtilizationPageComponent.ListState.Error;
+    component.expiredLoaded = true;
+    component.expiringThisMonthLoaded = true;
+    component.notAssignedLoaded = true;
+    component.pocketsWithErrorsLoaded = true;
+    component.onRefreshClick();
+
+    expect(utilizationService.get).toHaveBeenCalled();
+    expect(component.screenState).not.toBe(UtilizationPageComponent.ListState.Error);
+    expect(component.expiredLoaded).not.toBe(true);
+    expect(component.expiringThisMonthLoaded).not.toBe(true);
+    expect(component.notAssignedLoaded).not.toBe(true);
+    expect(component.pocketsWithErrorsLoaded).not.toBe(true);
+
+  });
+
+  describe('onDataError', () => {
 
     beforeEach(() => {
-      component.expiringThisMonthLoaded = false;
+      component.screenState = UtilizationPageComponent.ListState.WaitingForData;
+      component.selectedDeviceInformation.DeviceId = 4;
+    });
+    it('Same Device', () => {
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.ExpiringMedsReceived,
+        DeviceId: 4,
+        EventDateTime: new Date(),
+        UtilizationData: null };
+      component.onDataError(event);
+      expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
     });
 
-    it('Check when empty', () => {
-      let data: ExpiringMedicationInfo[];
-      component.expiringData = data;
-      component.SetExpiringThisMonth();
-
-      expect(component.expiringThisMonthItems==0).toBe(true);
-      expect(component.expiringThisMonthDoses==0).toBe(true);
-      expect(component.expiringThisMonthLoaded).toBe(true);
+    it('Wrong device', () => {
+      let event: UtilizationDataEvent = {
+        EventId: EventEventId.ExpiringMedsReceived,
+        DeviceId: 999,
+        EventDateTime: new Date(),
+        UtilizationData: null };
+      component.onDataError(event);
+      expect(component.screenState).toBe(UtilizationPageComponent.ListState.WaitingForData);
+    });
+    it('Missing related event info', () => {
+      component.onDataError(null);
+      expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
     });
 
-    it('Check Count and Sums', () => {
-      let a1: ExpiringMedicationInfo = {
-        ExpiredCount: 11,
-        ExpiringCount: 0,
-        ItemCode: 'a',
-        PocketTypeId: 1,
-        Inventory: 111
-       };
-       let b1: ExpiringMedicationInfo = {
-        ExpiredCount: 21,
-        ExpiringCount: 2,
-        ItemCode: 'b',
-        PocketTypeId: 1,
-        Inventory: 221
-       };
-       let b2: ExpiringMedicationInfo = {
-        ExpiredCount: 22,
-        ExpiringCount: 3,
-        ItemCode: 'b',
-        PocketTypeId: 2,
-        Inventory: 222
-       };
-       let c1: ExpiringMedicationInfo = {
-        ExpiredCount: 0,
-        ExpiringCount: 4,
-        ItemCode: 'c',
-        PocketTypeId: 1,
-        Inventory: 331
-       };
-      let data: ExpiringMedicationInfo[] = [ a1, b1, b2, c1 ]
-      component.expiringData = data;
-      component.SetExpiringThisMonth();
-
-      expect(component.expiringThisMonthItems==2).toBe(true);
-      expect(component.expiringThisMonthDoses==(0 + 2 + 3 + 4)).toBe(true);
-      expect(component.expiringThisMonthLoaded).toBe(true);
-    });
   });
-});
 
+});
