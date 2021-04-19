@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { merge, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../../api-core/data-contracts/i-barcode-data';
 import { ISafetyStockProductData } from '../../model/i-safety-stock-product-data';
@@ -12,7 +12,7 @@ import { QuantityTrackingService } from '../../services/quantity-tracking.servic
   templateUrl: './safety-stock-product.component.html',
   styleUrls: ['./safety-stock-product.component.scss']
 })
-export class SafetyStockProductComponent {
+export class SafetyStockProductComponent implements OnDestroy {
   private _safetyStockProductData: ISafetyStockProductData;
   private _subscriptions: Subscription[] = [];
   private _scanNeeded: boolean;
@@ -68,6 +68,10 @@ export class SafetyStockProductComponent {
     private barcodeSafetyStockService: BarcodeSafetyStockService,
     private quantityTrackingService: QuantityTrackingService,
   ) {
+  }
+
+  ngOnDestroy(): void {
+    this.clearSubscriptions();
   }
 
   private handleBarcodeData(barcodeData: IBarcodeData) {
