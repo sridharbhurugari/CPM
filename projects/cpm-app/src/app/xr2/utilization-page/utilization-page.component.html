@@ -44,8 +44,8 @@
   <body [ngSwitch]="screenState">
 
     <!-- waiting: -->
-      <oc-progress-animation #myLoader *ngSwitchCase="'MakingDataRequest'" [data]="{size: 3}"></oc-progress-animation>
-      <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'WaitingForData'">
+      <oc-progress-animation #myLoader *ngIf="!xr2StorageCapacityDisplaysLoaded" [data]="{size: 3}"></oc-progress-animation>
+      <div class="iconcontainer" [class.fillWidth]="true" *ngIf="!xr2StorageCapacityDisplaysLoaded">
         <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
       </div>
     <!-- display data -->
@@ -55,9 +55,35 @@
       (printLabel)="onPrint($event)">
      </app-utilization-typeinfo> -->
     <!-- No data scenarios -->
-     <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'NoData'">
-      <oc-svgicon icon="logowithtext" theme="primary" height="300" width="300"></oc-svgicon>
-     </div>
+
+     <ng-container class="ocactiondetails">
+      <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="false" ocgridallowhover="false" *ngIf="xr2StorageCapacityDisplaysLoaded">
+        <ng-container class="ocgridheader">
+          <div class="first" data-colwrap="true"></div>
+          <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">{{'XR2_UTILIZATION_TYPE_HEADER' | translate}}
+          </div>
+          <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'XR2_UTILIZATION_PERCENTAGE_USED_HEADER' | translate}}
+          </div>
+          <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'XR2_UTILIZATION_POCKETS_REMAINING_HEADER' | translate}}
+          </div>
+        </ng-container>
+        <ng-container class="ocgridbody">
+          <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDisplays">
+            <div class="first" style="align-items: center;"></div>
+            <div class="first col width-type" [attr.data-title]="'TYPE' | translate">
+              {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
+            </div>
+            <div class="col width-type" [attr.data-title]="'TYPE' | translate">
+              {{xr2StorageCapacityDisplay.PercentageUsed}}%
+            </div>
+            <div class="col width-type" [attr.data-title]="'TYPE' | translate">
+              {{xr2StorageCapacityDisplay.PocketsRemaining}}
+            </div>
+          </div>
+        </ng-container>
+      </oc-grid>
+    </ng-container>
+
     <!-- Printing in progress -->
      <span *ngSwitchCase="'Printing'">Printing</span>
     <!-- Error state -->

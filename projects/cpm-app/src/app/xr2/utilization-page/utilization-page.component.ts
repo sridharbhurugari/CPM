@@ -15,6 +15,7 @@ import { ExpiringMedicationInfo } from '../model/utilization-expiring-medication
 import { EventEventId } from '../../shared/constants/event-event-id';
 import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
 import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
+import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 
 @Component({
   selector: 'app-utilization-page',
@@ -53,6 +54,9 @@ export class UtilizationPageComponent implements OnInit {
   pocketsWithErrorsItems: number = 0;
   pocketsWithErrorsDoses: number = 0;
 
+  xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[];
+  xr2StorageCapacityDisplaysLoaded: boolean = false;
+
   constructor(private utilizationService: UtilizationService,
     private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
@@ -78,6 +82,9 @@ export class UtilizationPageComponent implements OnInit {
     this.utilizationEventConnectionService.UtilizationIncomingDataErrorSubject
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onDataError(event));
+    this.utilizationEventConnectionService.Xr2StorageCapacityDisplayEventSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(event => this.onXr2StorageCapacityDisplayEventReceived(event));
   }
 
   ngOnDestroy(): void {
@@ -131,6 +138,7 @@ setUtilizationService()
     this.expiringThisMonthLoaded = false;
     this.notAssignedLoaded = false;
     this.pocketsWithErrorsLoaded = false;
+    this.xr2StorageCapacityDisplaysLoaded = false;
 
     this.setUtilizationService();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
@@ -174,6 +182,11 @@ setUtilizationService()
       console.log('UtilizationPageComponent.onDataReceived ERROR');
       console.log(e);
     }
+  }
+
+  private onXr2StorageCapacityDisplayEventReceived(xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[]) {
+    this.xr2StorageCapacityDisplays = xr2StorageCapacityDisplays;
+    this.xr2StorageCapacityDisplaysLoaded = true;
   }
 
   public SetExpired()
