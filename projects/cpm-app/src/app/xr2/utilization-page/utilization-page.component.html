@@ -2,7 +2,7 @@
     [savedPageConfiguration]="savedPageConfiguration"
     (selectionChangedEvent)="onDeviceSelectionChanged($event)">
   </app-utilization-header>
-
+<body>
   <div class="dashboard">
     <app-cp-data-card
     [showLoading]="!expiredLoaded"
@@ -41,8 +41,8 @@
     [data2]="pocketsWithErrorsDoses.toString()"    >
     </app-cp-data-card>
   </div>
-  <body [ngSwitch]="screenState">
 
+  <div class="dashboard" [ngSwitch]="screenState">
     <!-- waiting: -->
       <oc-progress-animation #myLoader *ngSwitchCase="'MakingDataRequest'" [data]="{size: 3}"></oc-progress-animation>
       <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'WaitingForData'">
@@ -66,8 +66,8 @@
          <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchDefault>
           <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
          </div>
-  </body>
-
+        </div>
+      </body>
   <ng-container class="ocactionfooter">
     <oc-footer>
         <div class="ocleftalign">
