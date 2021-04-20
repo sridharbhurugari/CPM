@@ -2,7 +2,7 @@
   (selectionChangedEvent)="onDeviceSelectionChanged($event)">
 </app-utilization-header>
 
-<body>
+
   <div class="dashboard">
     <app-cp-data-card [showLoading]="!expiredLoaded" [title]="'Expired' | translate" [iconString]="'detail'"
       [dataLabel1]="'Item(s)' | translate" [data1]="expiredItems.toString()" [dataLabel2]="'Dose(s)' | translate"
@@ -77,8 +77,6 @@
 
 
 
-
-</body>
 
 <ng-container class="ocactionfooter">
   <oc-footer>
