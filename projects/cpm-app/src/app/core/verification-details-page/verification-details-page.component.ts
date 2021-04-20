@@ -20,7 +20,7 @@ import { IVerificationDashboardData } from '../../api-core/data-contracts/i-veri
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
-import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
+import { IVerificationDataParameters } from '../../api-core/data-contracts/i-verification-data-parameters';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -221,7 +221,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       RoutedByScan: this.navigationParameters.RoutedByScan,
       PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
-    } as IDashboardDataParameters
+    } as IVerificationDataParameters
 
     this.verificationDashboardData = this.verificationService
     .getVerificationDashboardData(dashboardParams).pipe(

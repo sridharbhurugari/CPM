@@ -13,7 +13,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
+import { IVerificationDataParameters } from '../../api-core/data-contracts/i-verification-data-parameters';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -144,7 +144,15 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       return;
     }
 
-    this.verificationService.getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).subscribe(
+    const destinationParams = {
+      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      OrderId: this.navigationParameters.OrderId,
+      DeviceId: this.navigationParameters.DeviceId,
+      RoutedByScan: this.navigationParameters.RoutedByScan,
+      PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
+    } as IVerificationDataParameters
+
+    this.verificationService.getVerificationDestinations(destinationParams).subscribe(
       (verificationDestinationViewData) => {
         this.generateHeaderTitle(verificationDestinationViewData)
         this.generateHeaderSubTitle(verificationDestinationViewData);
@@ -197,7 +205,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
       RoutedByScan: this.navigationParameters.RoutedByScan,
       PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
-    } as IDashboardDataParameters
+    } as IVerificationDataParameters
 
     this.verificationDashboardData = this.verificationService
     .getVerificationDashboardData(dashboardParams).pipe(
