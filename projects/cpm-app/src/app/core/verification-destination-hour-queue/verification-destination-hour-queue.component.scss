@@ -1,0 +1,47 @@
+:host{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+}
+
+.row {
+  cursor: pointer;
+}
+
+.first-column {
+  padding-left: 30px;
+}
+
+.centered-content {
+  display: flex;
+  justify-content: center;
+}
+
+.width-order {
+  width: 180px
+}
+
+.width-destination {
+  width: 390px;
+}
+
+.width-verification {
+  width: 180px;
+}
+
+.width-exceptions {
+  width: 180px;
+}
+
+.width-output-device {
+  width: 200px;
+}
+
+.width-fill-date-time {
+  width: 150px;
+}

@@ -23,6 +23,7 @@ export class VerificationDestinationItem implements IVerificationDestinationItem
   RequiredExceptions: number;
   CompleteOutputDevice: number;
   RequiredOutputDevice: number;
+  FillDateTime: Date;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

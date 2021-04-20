@@ -14,4 +14,5 @@ export interface IVerificationDestinationItem {
   RequiredExceptions: number;
   CompleteOutputDevice: number;
   RequiredOutputDevice: number;
+  FillDateTime: Date;
 }
