@@ -1,70 +1,60 @@
-  <app-utilization-header
-    [savedPageConfiguration]="savedPageConfiguration"
-    (selectionChangedEvent)="onDeviceSelectionChanged($event)">
-  </app-utilization-header>
+<app-utilization-header [savedPageConfiguration]="savedPageConfiguration"
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)">
+</app-utilization-header>
+
 <body>
   <div class="dashboard">
-    <app-cp-data-card
-    [showLoading]="!expiredLoaded"
-    [title]="'Expired' | translate"
-    [iconString]="'detail'"
-    [dataLabel1]="'Item(s)' | translate"
-    [data1]="expiredItems.toString()"
-    [dataLabel2]="'Dose(s)' | translate"
-    [data2]="expiredDoses.toString()"    >
+    <app-cp-data-card [showLoading]="!expiredLoaded" [title]="'Expired' | translate" [iconString]="'detail'"
+      [dataLabel1]="'Item(s)' | translate" [data1]="expiredItems.toString()" [dataLabel2]="'Dose(s)' | translate"
+      [data2]="expiredDoses.toString()">
     </app-cp-data-card>
-    <app-cp-data-card
-    [showLoading]="!expiringThisMonthLoaded"
-    [title]="'Expiring this Month' | translate"
-    [iconString]="'detail'"
-    [dataLabel1]="'Item(s)' | translate"
-    [data1]="expiringThisMonthItems.toString()"
-    [dataLabel2]="'Dose(s)' | translate"
-    [data2]="expiringThisMonthDoses.toString()"    >
+    <app-cp-data-card [showLoading]="!expiringThisMonthLoaded" [title]="'Expiring this Month' | translate"
+      [iconString]="'detail'" [dataLabel1]="'Item(s)' | translate" [data1]="expiringThisMonthItems.toString()"
+      [dataLabel2]="'Dose(s)' | translate" [data2]="expiringThisMonthDoses.toString()">
     </app-cp-data-card>
-    <app-cp-data-card
-    [showLoading]="!notAssignedLoaded"
-    [title]="'Not Assigned' | translate"
-    [iconString]="'detail'"
-    [dataLabel1]="'Item(s)' | translate"
-    [data1]="notAssignedItems.toString()"
-    [dataLabel2]="'Dose(s)' | translate"
-    [data2]="notAssignedDoses.toString()"    >
+    <app-cp-data-card [showLoading]="!notAssignedLoaded" [title]="'Not Assigned' | translate" [iconString]="'detail'"
+      [dataLabel1]="'Item(s)' | translate" [data1]="notAssignedItems.toString()" [dataLabel2]="'Dose(s)' | translate"
+      [data2]="notAssignedDoses.toString()">
     </app-cp-data-card>
-    <app-cp-data-card
-    [showLoading]="!pocketsWithErrorsLoaded"
-    [title]="'Pockets with Errors' | translate"
-    [iconString]="'detail'"
-    [dataLabel1]="'Item(s)' | translate"
-    [data1]="pocketsWithErrorsItems.toString()"
-    [dataLabel2]="'Dose(s)' | translate"
-    [data2]="pocketsWithErrorsDoses.toString()"    >
+    <app-cp-data-card [showLoading]="!pocketsWithErrorsLoaded" [title]="'Pockets with Errors' | translate"
+      [iconString]="'detail'" [dataLabel1]="'Item(s)' | translate" [data1]="pocketsWithErrorsItems.toString()"
+      [dataLabel2]="'Dose(s)' | translate" [data2]="pocketsWithErrorsDoses.toString()">
     </app-cp-data-card>
   </div>
 
   <div class="dashboard" [ngSwitch]="screenState">
     <!-- waiting: -->
-      <oc-progress-animation #myLoader *ngIf="!xr2StorageCapacityDisplaysLoaded" [data]="{size: 3}"></oc-progress-animation>
-      <div class="iconcontainer" [class.fillWidth]="true" *ngIf="!xr2StorageCapacityDisplaysLoaded">
-        <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
-      </div>
+    <oc-progress-animation #myLoader *ngIf="!xr2StorageCapacityDisplaysLoaded" [data]="{size: 3}">
+    </oc-progress-animation>
+    <div class="iconcontainer" [class.fillWidth]="true" *ngIf="!xr2StorageCapacityDisplaysLoaded">
+      <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
+    </div>
     <!-- display data -->
-     <!-- <app-utilization-typeinfo *ngSwitchCase="'Display'"
-      [deviceUtilizationPocketInfoInfo]="deviceUtilizationPocketInfoInfo"
-      [searchTextFilter]="searchTextFilter"
-      (printLabel)="onPrint($event)">
-     </app-utilization-typeinfo> -->
-    <!-- No data scenarios -->
 
-     <ng-container class="ocactiondetails">
-      <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="false" ocgridallowhover="false" *ngIf="xr2StorageCapacityDisplaysLoaded">
+    <!-- Printing in progress -->
+    <span *ngSwitchCase="'Printing'">Printing</span>
+    <!-- Error state -->
+    <span *ngSwitchCase="'Error'">Error</span>
+    <!-- Unexpected (default fallback)-->
+    <!--  <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchDefault>
+      <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
+    </div>-->
+  </div>
+
+
+  <div class="dashboard" [ngSwitch]="screenState">
+      <oc-grid #ocgrid ocgridfilter="false" ocgridheadersearch="false" ocgridallowhover="false"
+        *ngIf="xr2StorageCapacityDisplaysLoaded">
         <ng-container class="ocgridheader">
           <div class="first" data-colwrap="true"></div>
-          <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">{{'XR2_UTILIZATION_TYPE_HEADER' | translate}}
+          <div class="col width-type" ocGridColResize data-width="300" data-colwrap="true">
+            {{'XR2_UTILIZATION_TYPE_HEADER' | translate}}
           </div>
-          <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">{{'XR2_UTILIZATION_PERCENTAGE_USED_HEADER' | translate}}
+          <div class="col width-type" ocGridColResize data-width="630" data-colwrap="true">
+            {{'XR2_UTILIZATION_PERCENTAGE_USED_HEADER' | translate}}
           </div>
-          <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">{{'XR2_UTILIZATION_POCKETS_REMAINING_HEADER' | translate}}
+          <div class="col width-type" ocGridColResize data-width="340" data-colwrap="true">
+            {{'XR2_UTILIZATION_POCKETS_REMAINING_HEADER' | translate}}
           </div>
         </ng-container>
         <ng-container class="ocgridbody">
@@ -82,29 +72,20 @@
           </div>
         </ng-container>
       </oc-grid>
-    </ng-container>
+    </div>
 
-    <!-- Printing in progress -->
-     <span *ngSwitchCase="'Printing'">Printing</span>
-    <!-- Error state -->
-     <span *ngSwitchCase="'Error'">Error</span>
-    <!-- Unexpected (default fallback)-->
-         <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchDefault>
-          <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
-         </div>
-        </div>
-      </body>
-  <ng-container class="ocactionfooter">
-    <oc-footer>
-        <div class="ocleftalign">
-            <oc-button-action [buttonText]="'REFRESH' | translate" [disabled]="selectedDeviceInformation.DeviceId === 0" (click)="onRefreshClick()"></oc-button-action>
-        </div>
-        &nbsp;
-        <div class="refresh-label" *ngIf="eventDateTime != null">{{'LAST_UPDATED' | translate}}:</div>
-        &nbsp;
-        <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div>
-   </oc-footer>
+
+</body>
+
+<ng-container class="ocactionfooter">
+  <oc-footer>
+    <div class="ocleftalign">
+      <oc-button-action [buttonText]="'REFRESH' | translate" [disabled]="selectedDeviceInformation.DeviceId === 0"
+        (click)="onRefreshClick()"></oc-button-action>
+    </div>
+    &nbsp;
+    <div class="refresh-label" *ngIf="eventDateTime != null">{{'LAST_UPDATED' | translate}}:</div>
+    &nbsp;
+    <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div>
+  </oc-footer>
 </ng-container>
-
-
-
