@@ -102,7 +102,9 @@
           </span>
         </div>
         <div class="col width-fill-date-time" [attr.data-title]="'DATE' | translate">
-          {{verificationDestinationItem.FillDateTime}}
+          <span class="centered-content">
+            {{this.transformDateTime(verificationDestinationItem)}}
+          </span>
       </div>
       </div>
     </ng-container>

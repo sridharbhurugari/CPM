@@ -3,6 +3,7 @@ import { Guid } from 'guid-typescript';
 export interface IVerificationDestinationItem {
 
   Id: Guid;
+  DeviceId: number;
   OrderId: string;
   DestinationId: string;
   DestinationType: string;

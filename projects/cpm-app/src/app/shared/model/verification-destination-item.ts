@@ -11,6 +11,7 @@ export class VerificationDestinationItem implements IVerificationDestinationItem
   }
 
   Id: Guid;
+  DeviceId: number;
   OrderId: string;
   DestinationId: string;
   DestinationType: string;

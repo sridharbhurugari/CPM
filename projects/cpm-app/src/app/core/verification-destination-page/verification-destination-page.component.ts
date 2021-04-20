@@ -126,8 +126,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   onGridRowClickEvent(verificationDestinationItem: VerificationDestinationItem): void {
     const navigationParams = {
-      DeviceId: this.navigationParameters.DeviceId,
-      OrderId: this.navigationParameters.OrderId,
+      DeviceId: verificationDestinationItem.DeviceId,
+      OrderId: verificationDestinationItem.OrderId,
       DestinationId: verificationDestinationItem.DestinationId,
       Route: this.continueRoute,
       RoutedByScan: false

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -75,7 +76,9 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
   translations$: Observable<any>;
 
 
-  constructor() { }
+  constructor(
+    private translateService: TranslateService
+  ) { }
 
   ngOnInit() {
   }
@@ -108,6 +111,11 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
     if (this.savedPageConfiguration.searchTextFilterDestination) {
       this.searchTextFilter = this.savedPageConfiguration.searchTextFilterDestination;
     }
+  }
+
+  transformDateTime(item: VerificationDestinationItem): string {
+    const formattedDate = new Date(item.FillDateTime).toLocaleString(this.translateService.getDefaultLang());
+    return formattedDate;
   }
 
   /* istanbul ignore next */
