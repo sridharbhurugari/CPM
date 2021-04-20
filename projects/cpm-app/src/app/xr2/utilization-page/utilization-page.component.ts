@@ -55,7 +55,6 @@ export class UtilizationPageComponent implements OnInit {
   pocketsWithErrorsDoses: number = 0;
 
   xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[];
-  xr2StorageCapacityDisplaysLoaded: boolean = false;
 
   constructor(private utilizationService: UtilizationService,
     private simpleDialogService: SimpleDialogService,
@@ -138,7 +137,6 @@ setUtilizationService()
     this.expiringThisMonthLoaded = false;
     this.notAssignedLoaded = false;
     this.pocketsWithErrorsLoaded = false;
-    this.xr2StorageCapacityDisplaysLoaded = false;
 
     this.setUtilizationService();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
@@ -185,8 +183,8 @@ setUtilizationService()
   }
 
   private onXr2StorageCapacityDisplayEventReceived(xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[]) {
-    this.xr2StorageCapacityDisplays = xr2StorageCapacityDisplays;
-    this.xr2StorageCapacityDisplaysLoaded = true;
+    this.xr2StorageCapacityDisplays = xr2StorageCapacityDisplays as Xr2StorageCapacityDisplay[] ;
+    this.screenState = UtilizationPageComponent.ListState.Display;
   }
 
   public SetExpired()
