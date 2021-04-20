@@ -26,7 +26,7 @@ export class UtilizationEventConnectionService {
         .subscribe(event => this.configureEventHandlers(event));
    }
 
-   private configureEventHandlers(event: any): void {
+   configureEventHandlers(event: any): void {
     try {
       if (event === undefined) {
         return;
