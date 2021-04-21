@@ -196,13 +196,13 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
       this.router.navigate(['core/picklists/underfilled']);
     });
   }
- 
+
   unTrack() {
     this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe();
   }
 
   getReportData(datePipe: DatePipe): UnderfilledPicklistLine[] {
-    const underfilled = JSON.parse(JSON.stringify(this.picklistLines));
+    const underfilled = this.child.picklistLines;
 
     underfilled.forEach(element => {
       const date = element.FillDate;
