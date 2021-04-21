@@ -56,6 +56,18 @@ export class UtilizationPageComponent implements OnInit {
 
   xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[];
 
+
+  readonly pocketTypeDefinitionName = nameof<Xr2StorageCapacityDisplay>(
+    "PocketTypeDefinition"
+  );
+  readonly percentageUsedName = nameof<Xr2StorageCapacityDisplay>(
+    "PercentageUsed"
+  );
+  readonly pocketsRemainingName = nameof<Xr2StorageCapacityDisplay>(
+    "PocketsRemaining"
+  );
+
+
   constructor(private utilizationService: UtilizationService,
     private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
@@ -84,6 +96,10 @@ export class UtilizationPageComponent implements OnInit {
     this.utilizationEventConnectionService.Xr2StorageCapacityDisplayEventSubject
     .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onXr2StorageCapacityDisplayEventReceived(event));
+
+      if (this.windowService.nativeWindow) {
+        this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+      }
   }
 
   ngOnDestroy(): void {
@@ -220,6 +236,10 @@ setUtilizationService()
     this.pocketsWithErrorsItems = _(this.pocketsWithErrorsData).countBy('ItemCode').size();
     this.pocketsWithErrorsDoses = _.sumBy(this.pocketsWithErrorsData, 'ErrorsCount');
     this.pocketsWithErrorsLoaded = true;
+  }
+
+  orderChanged(orderedItems: Xr2StorageCapacityDisplay[]) {
+    this.xr2StorageCapacityDisplays = orderedItems;
   }
 
  onDataError(event) {
