@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from 'rxjs/operators';
 import { UtilizationService } from '../../api-xr2/services/utilization.service';
@@ -16,6 +16,7 @@ import { EventEventId } from '../../shared/constants/event-event-id';
 import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
 import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
+import { GridComponent } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-utilization-page',
@@ -55,6 +56,20 @@ export class UtilizationPageComponent implements OnInit {
   pocketsWithErrorsDoses: number = 0;
 
   xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[];
+
+
+  readonly pocketTypeDefinitionName = nameof<Xr2StorageCapacityDisplay>(
+    "PocketTypeDefinition"
+  );
+  readonly percentageUsedName = nameof<Xr2StorageCapacityDisplay>(
+    "PercentageUsed"
+  );
+  readonly pocketsRemainingName = nameof<Xr2StorageCapacityDisplay>(
+    "PocketsRemaining"
+  );
+
+  @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
+
 
   constructor(private utilizationService: UtilizationService,
     private simpleDialogService: SimpleDialogService,
@@ -184,6 +199,7 @@ setUtilizationService()
 
   private onXr2StorageCapacityDisplayEventReceived(xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[]) {
     this.xr2StorageCapacityDisplays = xr2StorageCapacityDisplays as Xr2StorageCapacityDisplay[] ;
+    this.resizeGrid();
     this.screenState = UtilizationPageComponent.ListState.Display;
   }
 
@@ -220,6 +236,18 @@ setUtilizationService()
     this.pocketsWithErrorsItems = _(this.pocketsWithErrorsData).countBy('ItemCode').size();
     this.pocketsWithErrorsDoses = _.sumBy(this.pocketsWithErrorsData, 'ErrorsCount');
     this.pocketsWithErrorsLoaded = true;
+  }
+
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
+  }
+
+  orderChanged(orderedItems: Xr2StorageCapacityDisplay[]) {
+    this.xr2StorageCapacityDisplays = orderedItems;
   }
 
  onDataError(event) {
