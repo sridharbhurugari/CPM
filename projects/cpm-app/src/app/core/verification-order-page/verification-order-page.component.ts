@@ -15,7 +15,6 @@ import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
-import { PriorityCodePickRoutesComponent } from '../priority-code-pick-routes/priority-code-pick-routes.component';
 import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
 
 
@@ -80,7 +79,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       console.log('Details Page Xr2 Barcode!')
 
       const navigationParams = {
-        PriorityCodeDescription: '', // TODO - Scanning
+        PriorityCode: '', // TODO - Scanning
         OrderId: data.OrderId,
         DeviceId: data.DeviceId,
         DeviceDescription: '',
@@ -105,7 +104,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   onGridRowClickEvent(verificationOrderItem: VerificationOrderItem): void {
     const navigationParams = {
-      PriorityCodeDescription: verificationOrderItem.PriorityCodeDescription,
+      PriorityCode: verificationOrderItem.PriorityCode,
       OrderId: verificationOrderItem.OrderId,
       DeviceId: verificationOrderItem.DeviceId,
       DestinationId: null,

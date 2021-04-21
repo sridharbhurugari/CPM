@@ -1,5 +1,5 @@
 export interface IVerificationDataParameters {
-  PriorityCodeDescription: string;
+  PriorityCode: string;
   OrderId: string;
   DeviceId: number;
   RoutedByScan: boolean;

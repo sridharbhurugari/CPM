@@ -124,7 +124,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     let navigationParams: IVerificationNavigationParameters;
     if(this.validDestinationDetails) {
       navigationParams = {
-        PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+        PriorityCode: this.navigationParameters.PriorityCode,
         OrderId: this.navigationParameters.OrderId,
         DeviceId: this.navigationParameters.DeviceId,
         DestinationId: null,
@@ -133,7 +133,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } as IVerificationNavigationParameters;
     } else {
       navigationParams = {
-        PriorityCodeDescription: null,
+        PriorityCode: null,
         OrderId: null,
         DeviceId: null,
         DestinationId: null,
@@ -218,7 +218,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     const dashboardParams = {
       OrderId: this.navigationParameters.OrderId,
       DeviceId: this.navigationParameters.DeviceId,
-      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      PriorityCode: this.navigationParameters.PriorityCode,
       RoutedByScan: this.navigationParameters.RoutedByScan,
       PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
     } as IVerificationDataParameters

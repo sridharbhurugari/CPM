@@ -38,7 +38,7 @@ describe('VerificationDestinationPageComponent', () => {
     DeviceId: 1,
     DeviceDescription: 'devdesc1',
     DestinationId: 'dest1',
-    PriorityCodeDescription: 'prioritycodedesc1',
+    PriorityCode: 'prioritycode',
     Date: new Date(1, 1, 1, 1, 1, 1, 1),
     Route:  VerificationRouting.DetailsPage,
     RoutedByScan: false,

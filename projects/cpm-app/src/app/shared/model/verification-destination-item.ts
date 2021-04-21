@@ -18,6 +18,8 @@ export class VerificationDestinationItem implements IVerificationDestinationItem
   DestinationLine1: string;
   DestinationLine2: string;
   DestinationStringValue: string;
+  PriorityCode: string;
+  PriorityCodeDescription: string;
   CompleteVerifications: number;
   TotalVerifications: number;
   CompleteExceptions: number;
@@ -25,6 +27,7 @@ export class VerificationDestinationItem implements IVerificationDestinationItem
   CompleteOutputDevice: number;
   RequiredOutputDevice: number;
   FillDateTime: Date;
+  PriorityVerificationGrouping: boolean;
 
   private getDestinationStringValue(): string {
     var stringValues = [];

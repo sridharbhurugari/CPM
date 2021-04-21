@@ -9,6 +9,9 @@ export interface IVerificationDestinationItem {
   DestinationType: string;
   DestinationLine1: string;
   DestinationLine2: string;
+  DestinationStringValue: string;
+  PriorityCode: string;
+  PriorityCodeDescription: string;
   CompleteVerifications: number;
   TotalVerifications: number;
   CompleteExceptions: number;
@@ -16,4 +19,5 @@ export interface IVerificationDestinationItem {
   CompleteOutputDevice: number;
   RequiredOutputDevice: number;
   FillDateTime: Date;
+  PriorityVerificationGrouping: boolean;
 }
