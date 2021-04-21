@@ -1,19 +1,20 @@
-<div class="card">
+<div class="card" [ngStyle]="{width: width, height: height}">
 
-  <div class="card-content" >
-    <oc-svgicon #icon style="position: absolute;" [height]="30" [width]="30" [icon]="iconString" [theme]="iconTheme" (click)="iconClicked()"></oc-svgicon>
-    <app-validation-icon *ngIf="!showLoading"
-    id="icon"
-    [iconWidth]="30"
-    [iconHeight]="30"
-    [iconString]="iconString"
-    iconTheme="{{iconTheme}}"
-    toastTileResourceKey=""
-    toastMsgResourceKey="{{toastMsgResourceKey}}"
-    toastType="{{toastType}}">
-    </app-validation-icon>
-    <div class="card-header">
+  <div class="card-content">
+
+
+
+    <div class="card-header" [ngStyle]="{'grid-template-columns': 'auto ' + iconSize}">
       {{title}}
+      <oc-svgicon [icon]="iconString" (click)="OnIconClicked()" *ngIf="iconString && !showLoading && !toastType"></oc-svgicon>
+      <app-validation-icon class="simple" *ngIf="!showLoading && toastType"
+      id="icon"
+      [iconString]="iconString"
+      iconTheme="{{iconTheme}}"
+      toastTileResourceKey=""
+      toastMsgResourceKey="{{toastMsgResourceKey}}"
+      toastType="{{toastType}}">
+      </app-validation-icon>
     </div>
     <div class="loading" *ngIf="showLoading">
       <oc-svgicon icon="spin" theme="dark"></oc-svgicon>

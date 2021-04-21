@@ -4,20 +4,23 @@
 
 
 <div class="dashboard">
-  <app-cp-data-card [showLoading]="!expiredLoaded" [title]="'Expired' | translate" [iconString]="'detail'"
+  <app-cp-data-card [showLoading]="!expiredLoaded" [title]="'Expired' | translate" [iconString]="'details'"
     [dataLabel1]="'Item(s)' | translate" [data1]="expiredItems.toString()" [dataLabel2]="'Dose(s)' | translate"
-    [data2]="expiredDoses.toString()">
+    [data2]="expiredDoses.toString()"
+    [iconTheme]="'danger'"
+    [height]="'100px'"
+    [width]="'200px'">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!expiringThisMonthLoaded" [title]="'Expiring this Month' | translate"
-    [iconString]="'detail'" [dataLabel1]="'Item(s)' | translate" [data1]="expiringThisMonthItems.toString()"
+    [iconString]="'details'" [dataLabel1]="'Item(s)' | translate" [data1]="expiringThisMonthItems.toString()"
     [dataLabel2]="'Dose(s)' | translate" [data2]="expiringThisMonthDoses.toString()">
   </app-cp-data-card>
-  <app-cp-data-card [showLoading]="!notAssignedLoaded" [title]="'Not Assigned' | translate" [iconString]="'detail'"
+  <app-cp-data-card [showLoading]="!notAssignedLoaded" [title]="'Not Assigned' | translate" [iconString]="'details'"
     [dataLabel1]="'Item(s)' | translate" [data1]="notAssignedItems.toString()" [dataLabel2]="'Dose(s)' | translate"
     [data2]="notAssignedDoses.toString()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!pocketsWithErrorsLoaded" [title]="'Pockets with Errors' | translate"
-    [iconString]="'detail'" [dataLabel1]="'Item(s)' | translate" [data1]="pocketsWithErrorsItems.toString()"
+    [iconString]="'details'" [dataLabel1]="'Item(s)' | translate" [data1]="pocketsWithErrorsItems.toString()"
     [dataLabel2]="'Dose(s)' | translate" [data2]="pocketsWithErrorsDoses.toString()">
   </app-cp-data-card>
 </div>

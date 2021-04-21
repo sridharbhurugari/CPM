@@ -19,7 +19,7 @@
                             <div app-tab-contents [tabKey]="'IN_STOCK'"
                                 style="text-align: center; font-size: 40px; font-weight: bold;">
                                 <div>{{ guidedPickData?.pickLocation?.QuantityOnHand }} / {{ guidedPickData?.pharmacyQoh }}</div>
-                                <button 
+                                <button
                                     [disabled]="requestStatus != 'none'"
                                     class="ocbtn secondary"
                                     (click)="adjustClicked.next(getAdjustQohData())">
@@ -59,7 +59,7 @@
                     <ng-container part="icon">
                         <app-validation-icon
                             [style.visibility]="!pickTotal || !guidedPickData || pickTotal <= guidedPickData?.pickLocation?.QuantityOnHand ? 'hidden' : 'visible'"
-                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_TOTAL_MSG"
+                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_TOTAL_MSG" iconHeight=50px iconWidth=50px
                             toastType="error">
                         </app-validation-icon>
                     </ng-container>
@@ -79,7 +79,7 @@
                     </ng-container>
                     <ng-container part="icon">
                         <app-validation-icon [style.visibility]="expDateInPast ? 'visible' : 'hidden'"
-                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_EXPIRED_MSG"
+                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_EXPIRED_MSG" iconHeight=50px iconWidth=50px
                             toastType="warn">
                         </app-validation-icon>
                     </ng-container>
@@ -101,11 +101,11 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action 
+                <oc-button-action
                     [disabled]="requestStatus != 'none'"
                     [buttonText]="'PAUSE' | translate" (click)="pauseClicked.next()">
                 </oc-button-action>
-                <oc-button-action 
+                <oc-button-action
                     [disabled]="requestStatus != 'none'"
                     mode="critical"
                     [style.visibility]="isHighPriorityAvailable ? 'visible' : 'hidden'"
@@ -116,7 +116,7 @@
             <div class="ocrightalign">
                 <oc-button-action
                     [disabled]="requestStatus != 'none'"
-                    [buttonText]="'HOLD' | translate" 
+                    [buttonText]="'HOLD' | translate"
                     (click)="holdClicked.next(guidedPickData?.isLastLine)">
                 </oc-button-action>
                 <oc-button-action

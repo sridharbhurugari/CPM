@@ -24,10 +24,10 @@ export class ValidationIconComponent implements OnInit {
   toastType: 'info' | 'warn' | 'error'
 
   @Input()
-  iconHeight = 50;
-  
+  iconHeight;
+
   @Input()
-  iconWidth = 50;
+  iconWidth;
 
   constructor(
     private toastService: ToastService,

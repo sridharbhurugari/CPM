@@ -9,7 +9,10 @@ export class CpDataCardComponent implements OnInit {
 
   @Input() showLoading: boolean = false;
   @Input() title: string;
+  @Input() width: string = "300px";
+  @Input() height: string = "100px";
   @Input() iconString: string;
+  @Input() iconSize: string = "10%";
   @Input() iconTheme: string;
   @Input() toastType: string;
   @Input() toastMsgResourceKey: string;
@@ -19,10 +22,11 @@ export class CpDataCardComponent implements OnInit {
   @Input() dataLabel2: string;
   @Input() data3: string;
   @Input() dataLabel3: string;
-  @Output() iconClicked: EventEmitter<any> = new EventEmitter();
-  constructor() { }
-  iconClicked() {
 
+  @Output() iconClicked: EventEmitter<string> = new EventEmitter<string>();
+  constructor() { }
+  OnIconClicked() {
+    this.iconClicked.emit(this.title);
   }
   ngOnInit() {
   }
