@@ -109,6 +109,7 @@ export class VerificationDetailsPageComponent implements OnInit {
 
       // Load new data
       if(this.isDifferentBox(data)) {
+        // TODO: Add Priority
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
         this.navigationParameters.DeviceId = data.DeviceId;
