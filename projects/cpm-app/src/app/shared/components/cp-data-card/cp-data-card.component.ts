@@ -19,9 +19,11 @@ export class CpDataCardComponent implements OnInit {
   @Input() dataLabel2: string;
   @Input() data3: string;
   @Input() dataLabel3: string;
-
+  @Output() iconClicked: EventEmitter<any> = new EventEmitter();
   constructor() { }
+  iconClicked() {
 
+  }
   ngOnInit() {
   }
 }
