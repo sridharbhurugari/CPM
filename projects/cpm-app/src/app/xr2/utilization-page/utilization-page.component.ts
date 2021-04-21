@@ -96,10 +96,6 @@ export class UtilizationPageComponent implements OnInit {
     this.utilizationEventConnectionService.Xr2StorageCapacityDisplayEventSubject
     .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onXr2StorageCapacityDisplayEventReceived(event));
-
-      if (this.windowService.nativeWindow) {
-        this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
-      }
   }
 
   ngOnDestroy(): void {
@@ -200,6 +196,9 @@ setUtilizationService()
 
   private onXr2StorageCapacityDisplayEventReceived(xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[]) {
     this.xr2StorageCapacityDisplays = xr2StorageCapacityDisplays as Xr2StorageCapacityDisplay[] ;
+    if (this.windowService.nativeWindow) {
+      this.windowService.nativeWindow.dispatchEvent(new Event('resize'));
+    }
     this.screenState = UtilizationPageComponent.ListState.Display;
   }
 
