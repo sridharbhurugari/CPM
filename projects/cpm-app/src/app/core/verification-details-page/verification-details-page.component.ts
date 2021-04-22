@@ -30,9 +30,11 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
+  @Output() displayYesNoDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() approveAllClickSubject: Observable<void>;
   @Input() rejectReasons: string[];
 
 
@@ -101,7 +103,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       if(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail
         && this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail === this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail
         && this.isDifferentBox(data)) {
-        this.childVerificationDetailsCardComponent.approveItem(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail);
+        this.childVerificationDetailsCardComponent.approveItems([this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail]);
       }
 
       // Verify the current box
@@ -147,6 +149,10 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   onDisplayWarningDialogEvent(contents: any) {
     this.displayWarningDialogEvent.emit(contents);
+  }
+
+  onDisplayYesNoDialogEvent(contents: any) {
+    this.displayYesNoDialogEvent.emit(contents);
   }
 
   private loadVerificationDestinationDetails(): void {
@@ -283,7 +289,7 @@ export class VerificationDetailsPageComponent implements OnInit {
      } as IVerificationDashboardData
 
     verificationDestinationDetails.map(detail => detail.Saving = false);
-    this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
+    this.childVerificationDetailsCardComponent.completeAndRemoveVerifiedDetails(verificationDestinationDetails);
     if(verificationDestinationDetails.includes(this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail)) {
       this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = null;
     }

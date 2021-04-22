@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
@@ -27,6 +27,7 @@ describe('VerificationDetailsCardComponent', () => {
   let popupWindowService: Partial<PopupWindowService>;
   let toastService: Partial<ToastService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData>;
+  let approveAllClickSubject: Subject<void>;
   let logService: Partial<LogService>;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
@@ -50,7 +51,7 @@ describe('VerificationDetailsCardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDetailsCardComponent,
          MockColHeaderSortable, MockTranslatePipe,  MockCpClickableIconComponent, MockValidationIconComponent ],
-      imports: [SvgIconModule],
+      imports: [SvgIconModule, ButtonActionModule],
       providers: [
         { provide: TranslateService, useValue: translateService},
         { provide: PopupWindowService, useValue: popupWindowService },
@@ -65,7 +66,9 @@ describe('VerificationDetailsCardComponent', () => {
     fixture = TestBed.createComponent(VerificationDetailsCardComponent);
     component = fixture.componentInstance;
     barcodeScannedInputSubject = new Subject<IBarcodeData>();
+    approveAllClickSubject = new Subject<void>();
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
+    component.approveAllClickSubject = approveAllClickSubject;
     fixture.detectChanges();
   });
 
@@ -227,6 +230,7 @@ describe('VerificationDetailsCardComponent', () => {
       newItem.DestinationLine1 = 'DL0';
       newItem.DestinationLine2 = 'DL1',
       newItem.ItemId = '1'
+      component.completedDestinationDetails = [];
 
       const newList = [
         Object.assign({}, newItem)
@@ -235,7 +239,7 @@ describe('VerificationDetailsCardComponent', () => {
       component.verificationDestinationDetails = newList;
       component.selectedVerificationDestinationDetail = newItem;
 
-      component.removeVerifiedDetails(newList);
+      component.completeAndRemoveVerifiedDetails(newList);
       expect(component.verificationDestinationDetails.length).toEqual(0);
     });
   });

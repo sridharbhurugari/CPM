@@ -30,10 +30,12 @@ import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 export class VerificationDetailsCardComponent implements OnInit {
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
+  @Output() displayYesNoDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() approveAllClickSubject: Observable<void>;
   @Input() IsBoxBarcodeVerified: boolean;
   @Input() completedDestinationDetails: VerificationDestinationDetail[];
 
@@ -47,6 +49,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private barcodeScannedEventSubscription: Subscription;
+  private approveAllClickSubscription: Subscription;
   private _verificationDestinationDetails : VerificationDestinationDetail[];
   private _loggingCategory: string = LoggingCategory.Verification;
   private _componentName: string = "VerificationDetailsCardComponent";
@@ -81,10 +84,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    if(this.barcodeScannedEventSubscription) {
-      this.barcodeScannedEventSubscription.unsubscribe();
-    }
-    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.setSubscriptions();
     this.setTranslations();
   }
 
@@ -139,10 +139,19 @@ export class VerificationDetailsCardComponent implements OnInit {
     return orderDate;
   }
 
+  onApproveAllClick() {
+    this.displayYesNoDialogEvent.emit({
+      titleResourceKey: 'APPROVE_ALL',
+      msgResourceKey: 'APPROVE_ALL_DIALOG_MESSAGE',
+      msgParams: null
+    });
+
+  }
+
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this._componentName + ' Button Approve Clicked');
-    this.approveItem(selectedVerificationDestinationDetail);
+    this.approveItems([selectedVerificationDestinationDetail]);
   }
 
   onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
@@ -153,21 +162,37 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.showAlert();
   }
 
-  approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
-    /* istanbul ignore next */
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
-
-    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
-    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
-    this.completedDestinationDetails.push(selectedVerificationDestinationDetail);
+  onApproveAllPopupConfirmClick() {
+    const itemsToApprove = this.getVerifiableDetailItems();
+    this.approveItems(itemsToApprove);
   }
 
-  removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
+  approveItems(verificationDestinationDetails: VerificationDestinationDetail[]) {
+    /* istanbul ignore next */
+    verificationDestinationDetails.forEach((item) => {
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+        this._componentName + ' Approving ItemId: ' + item.ItemId + ' trackById: ' + item.Id);
+
+      item.VerifiedStatus = VerificationStatusTypes.Verified;
+    })
+    this.saveVerificationEvent.emit(verificationDestinationDetails);
+  }
+
+  completeAndRemoveVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
     const removalSet = new Set(verificationDestinationDetailsToRemove);
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
       return !removalSet.has(verificationDestinationDetail);
     });
+    this.completedDestinationDetails.push(...verificationDestinationDetailsToRemove);
+  }
+
+  containsVerifiableItem(items: VerificationDestinationDetail[]) {
+    if(!items) {
+      return false;
+    }
+
+    return items.some((item) =>
+    (!item.IsSafetyStockItem) || (item.IsSafetyStockItem && item.IsMedBarcodeVerified));
   }
 
   containsSafetyStockMedication(items: VerificationDestinationDetail[]) {
@@ -176,6 +201,11 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     return items.some(x => x.IsSafetyStockItem);
+  }
+
+  getVerifiableDetailItems(): VerificationDestinationDetail[] {
+    return this.verificationDestinationDetails.filter((detail) =>
+    (!detail.IsSafetyStockItem) || (detail.IsSafetyStockItem && detail.IsMedBarcodeVerified));
   }
 
   calculateDynamicIconWidth(verificationDestinationDetail: VerificationDestinationDetail) {
@@ -213,7 +243,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     if(this.scanToAdvanceVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail !== item) {
-        this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+        this.approveItems([this.scanToAdvanceVerificationDestinationDetail]);
       }
 
       this.selectedVerificationDestinationDetail = item;
@@ -332,6 +362,17 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.destinationLine2 = null;
     this.destinationType = null;
     this.selectedVerificationDestinationDetail = null;
+  }
+
+  private setSubscriptions() {
+    if(this.barcodeScannedEventSubscription) {
+      this.barcodeScannedEventSubscription.unsubscribe();
+    }
+    if(this.approveAllClickSubscription) {
+      this.approveAllClickSubscription.unsubscribe();
+    }
+    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.approveAllClickSubscription = this.approveAllClickSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.onApproveAllPopupConfirmClick());
   }
 
   private setTranslations(): void {

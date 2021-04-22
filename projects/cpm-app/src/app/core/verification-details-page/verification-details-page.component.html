@@ -15,9 +15,11 @@
       [completedDestinationDetails]="completedDestinationDetails | async"
       [rejectReasons]="rejectReasons"
       [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
+      [approveAllClickSubject]="approveAllClickSubject"
       [IsBoxBarcodeVerified]="IsBoxBarcodeVerified"
       (saveVerificationEvent)="onSaveVerificationEvent($event)"
-      (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)">
+      (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)"
+      (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)">
     </app-verification-details-card>
   </div>
 </ng-container>
