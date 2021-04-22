@@ -7,21 +7,31 @@
   <app-cp-data-card [showLoading]="!expiredLoaded" [title]="'Expired' | translate" [iconString]="'details'"
     [dataLabel1]="'Item(s)' | translate" [data1]="expiredItems.toString()" [dataLabel2]="'Dose(s)' | translate"
     [data2]="expiredDoses.toString()"
-    [iconTheme]="'danger'"
     [height]="'100px'"
-    [width]="'200px'">
+    [width]="'200px'"
+    (iconClicked)="showExpiredDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!expiringThisMonthLoaded" [title]="'Expiring this Month' | translate"
-    [iconString]="'details'" [dataLabel1]="'Item(s)' | translate" [data1]="expiringThisMonthItems.toString()"
-    [dataLabel2]="'Dose(s)' | translate" [data2]="expiringThisMonthDoses.toString()">
+    [iconString]="'details'"
+    [dataLabel1]="'Item(s)' | translate" [data1]="expiringThisMonthItems.toString()"
+    [dataLabel2]="'Dose(s)' | translate" [data2]="expiringThisMonthDoses.toString()"
+    [height]="'100px'"
+    [width]="'200px'"
+    (iconClicked)="showExpiredDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!notAssignedLoaded" [title]="'Not Assigned' | translate" [iconString]="'details'"
     [dataLabel1]="'Item(s)' | translate" [data1]="notAssignedItems.toString()" [dataLabel2]="'Dose(s)' | translate"
-    [data2]="notAssignedDoses.toString()">
+    [data2]="notAssignedDoses.toString()"
+    [height]="'100px'"
+    [width]="'200px'"
+    (iconClicked)="showExpiredDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!pocketsWithErrorsLoaded" [title]="'Pockets with Errors' | translate"
     [iconString]="'details'" [dataLabel1]="'Item(s)' | translate" [data1]="pocketsWithErrorsItems.toString()"
-    [dataLabel2]="'Dose(s)' | translate" [data2]="pocketsWithErrorsDoses.toString()">
+    [dataLabel2]="'Dose(s)' | translate" [data2]="pocketsWithErrorsDoses.toString()"
+    [height]="'100px'"
+    [width]="'200px'"
+    (iconClicked)="showExpiredDetails()">
   </app-cp-data-card>
 </div>
 

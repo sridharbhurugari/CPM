@@ -59,7 +59,7 @@
                     <ng-container part="icon">
                         <app-validation-icon
                             [style.visibility]="!pickTotal || !guidedPickData || pickTotal <= guidedPickData?.pickLocation?.QuantityOnHand ? 'hidden' : 'visible'"
-                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_TOTAL_MSG" iconHeight=50px iconWidth=50px
+                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_TOTAL_MSG"
                             toastType="error">
                         </app-validation-icon>
                     </ng-container>
@@ -79,7 +79,7 @@
                     </ng-container>
                     <ng-container part="icon">
                         <app-validation-icon [style.visibility]="expDateInPast ? 'visible' : 'hidden'"
-                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_EXPIRED_MSG" iconHeight=50px iconWidth=50px
+                            iconString="alert" toastTileResourceKey="" toastMsgResourceKey="PICK_ITEM_EXPIRED_MSG"
                             toastType="warn">
                         </app-validation-icon>
                     </ng-container>

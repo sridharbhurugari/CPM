@@ -1,36 +1,38 @@
 <div class="card" [ngStyle]="{width: width, height: height}">
 
   <div class="card-content">
-
-
-
     <div class="card-header" [ngStyle]="{'grid-template-columns': 'auto ' + iconSize}">
-      {{title}}
-      <oc-svgicon [icon]="iconString" (click)="OnIconClicked()" *ngIf="iconString && !showLoading && !toastType"></oc-svgicon>
-      <app-validation-icon class="simple" *ngIf="!showLoading && toastType"
-      id="icon"
-      [iconString]="iconString"
-      iconTheme="{{iconTheme}}"
-      toastTileResourceKey=""
-      toastMsgResourceKey="{{toastMsgResourceKey}}"
-      toastType="{{toastType}}">
+      <div class="card-header-text" >{{title}} </div>
+
+      <oc-svgicon class="card-header-icon" [icon]="iconString" [theme]="iconTheme" (click)="OnIconClicked()" *ngIf="iconString && !showLoading && !toastType"></oc-svgicon>
+      <app-validation-icon class="card-header-icon" *ngIf="!showLoading && toastType"
+       id="icon"
+       [iconString]="iconString"
+       iconTheme="{{iconTheme}}"
+       [iconHeight]="'any'"
+       [iconWidth]="'any'"
+       toastTileResourceKey=""
+       toastMsgResourceKey="{{toastMsgResourceKey}}"
+       toastType="{{toastType}}">
       </app-validation-icon>
     </div>
+
     <div class="loading" *ngIf="showLoading">
       <oc-svgicon icon="spin" theme="dark"></oc-svgicon>
     </div>
+
     <div class="card-body" *ngIf="!showLoading">
       <app-cp-data-label *ngIf="data1"
-      [data]="data1"
-      [label]="dataLabel1">
+       [data]="data1"
+       [label]="dataLabel1">
       </app-cp-data-label>
       <app-cp-data-label *ngIf="data2"
-      [data]="data2"
-      [label]="dataLabel2">
+       [data]="data2"
+       [label]="dataLabel2">
       </app-cp-data-label>
       <app-cp-data-label *ngIf="data3"
-      [data]="data3"
-      [label]="dataLabel3">
+       [data]="data3"
+       [label]="dataLabel3">
     </app-cp-data-label>
   </div>
 </div>

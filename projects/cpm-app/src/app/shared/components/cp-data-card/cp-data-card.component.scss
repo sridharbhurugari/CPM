@@ -18,13 +18,21 @@
 .card-header {
   display: grid;
   width: 100%;
-  word-wrap: break-word;
-  padding-bottom: 1%;
-  padding-top: 1%;
-  text-align: center;
-  font-weight: bold;
   border-bottom: 1px solid gray;
-
+}
+.card-header-text {
+  word-wrap: break-word;
+  padding-bottom: 2%;
+  padding-top: 1%;
+  padding-left: 5%;
+  text-align: left;
+  font-weight: bold;
+}
+.card-header-icon {
+  justify-items: end;
+  align-items: center;
+  padding-bottom: 2%;
+  padding-top: 2%;
 }
 
 .card-body {
