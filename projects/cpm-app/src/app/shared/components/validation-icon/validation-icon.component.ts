@@ -25,7 +25,7 @@ export class ValidationIconComponent implements OnInit {
 
   @Input()
   iconHeight = 50;
-
+  
   @Input()
   iconWidth = 50;
 
