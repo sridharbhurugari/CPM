@@ -3,7 +3,7 @@
 </app-utilization-header>
 
 
-<div class="dashboard">
+<div class="dashboard" *ngIf="screenState != 'NoData'">
   <app-cp-data-card [showLoading]="!expiredLoaded"
     [title]="'Expired' | translate"
     [iconString]="expiredDoses > 0 ? 'details' : null"
