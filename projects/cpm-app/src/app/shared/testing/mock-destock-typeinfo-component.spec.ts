@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { DestockTypeInfo } from '../../xr2/model/destock-type-info';
 
 @Component({
-  selector: 'app-destock-typeinfo',
+  selector: 'app-destock-type-info',
   template: ''
 })
 

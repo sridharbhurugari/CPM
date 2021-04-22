@@ -4,8 +4,6 @@ import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from '
 import { IDestockTypeInfo } from '../../api-xr2/data-contracts/i-destock-type-info';
 import { DestockService } from '../../api-xr2/services/destock.service';
 import { nameof } from '../../shared/functions/nameof';
-import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
-import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { DestockTypeInfo } from '../model/destock-type-info';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
@@ -13,6 +11,7 @@ import { DestockEventConnectionService } from '../services/destock-event-connect
 import { DestockDataEvent } from '../model/destock-data-event';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
   selector: 'app-destock-page',
@@ -20,8 +19,6 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   styleUrls: ['./destock-page.component.scss']
 })
 export class DestockPageComponent implements OnInit {
-
-  @Input() xr2QueueNavigationParameters: IXr2QueueNavigationParameters;
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceDestockTypeInfo$: Observable<number> ;
@@ -30,7 +27,7 @@ export class DestockPageComponent implements OnInit {
   currentSortPropertyName: string;
   screenState: DestockPageComponent.ListState = DestockPageComponent.ListState.NoData;
   ngUnsubscribe = new Subject();
-  lastErrorMessage: string;  
+  lastErrorMessage: string;
   eventDateTime: Date;
 
   searchFields = [
@@ -41,7 +38,7 @@ export class DestockPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private destockEventConnectionService: DestockEventConnectionService,
     private windowService: WindowService,
-    private wpfInteropService: WpfInteropService) { 
+    private wpfInteropService: WpfInteropService) {
       this.setupDataRefresh();
     }
 
@@ -102,20 +99,20 @@ setDestockService()
   }
   onDeviceSelectionChanged($event) {
     if(this.selectedDeviceInformation !== $event)
-    {    
+    {
       this.selectedDeviceInformation = $event;
-      this.refreshData();    
+      this.refreshData();
     }
   }
 
   onRefreshClick() {
     this.refreshData();
-  }  
+  }
 
   private refreshData(){
-    this.screenState = DestockPageComponent.ListState.MakingDataRequest;    
+    this.screenState = DestockPageComponent.ListState.MakingDataRequest;
     this.setDestockService();
-    this.requestDeviceDestockTypeInfo$.subscribe();    
+    this.requestDeviceDestockTypeInfo$.subscribe();
     console.log('onDeviceSelectionChanged DeviceId: ');
     console.log(this.selectedDeviceInformation.DeviceId);
   }
@@ -124,10 +121,10 @@ setDestockService()
     try {
       if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
         return;
-      }            
+      }
       this.deviceDestockTypeInfo = event.DestockTypeInfoData;
       this.screenState = DestockPageComponent.ListState.Display;
-      this.eventDateTime = event.EventDateTime;      
+      this.eventDateTime = event.EventDateTime;
 // todo
     } catch (e) {
       this.screenState = DestockPageComponent.ListState.Error;
@@ -176,9 +173,9 @@ setDestockService()
     let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {   
-        this.eventDateTime = null;        
-        this.refreshData();        
+      .subscribe(() => {
+        this.eventDateTime = null;
+        this.refreshData();
       });
   }
 

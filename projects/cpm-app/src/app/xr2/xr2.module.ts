@@ -29,6 +29,8 @@ import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component
 import { DestockPageComponent } from './destock-page/destock-page.component';
 import { DestockTypeInfoComponent } from './destock-typeinfo/destock-typeinfo.component';
 import { DestockHeaderComponent } from './destock-header/destock-header.component';
+import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
+import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 
 @NgModule({
@@ -53,7 +55,9 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
     Xr2QueuePageComponent,
     DestockPageComponent,
     DestockTypeInfoComponent,
-    DestockHeaderComponent,    
+    DestockHeaderComponent,
+    UtilizationPageComponent,
+    UtilizationHeaderComponent,
   ],
   imports: [
     CommonModule,

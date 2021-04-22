@@ -1,0 +1,20 @@
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+
+  .details-text {
+    font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 30px;
+    color: gray;
+    font-weight: lighter;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 20px;
+  }
+}
