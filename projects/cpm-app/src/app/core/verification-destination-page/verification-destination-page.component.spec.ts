@@ -21,6 +21,7 @@ import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { VerificationDashboardComponent } from '../verification-dashboard/verification-dashboard.component';
+import { VerificationDestinationHourQueueComponent } from '../verification-destination-hour-queue/verification-destination-hour-queue.component';
 import { VerificationDestinationQueueComponent } from '../verification-destination-queue/verification-destination-queue.component';
 
 import { VerificationDestinationPageComponent } from './verification-destination-page.component';
@@ -73,9 +74,9 @@ describe('VerificationDestinationPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent, VerificationDashboardComponent,
-      MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
-      MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent, MockCpDataCardComponent],
+      declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent, VerificationDestinationHourQueueComponent,
+         VerificationDashboardComponent, MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer,
+         MockTranslatePipe, MockSearchBox, MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent, MockCpDataCardComponent],
       imports: [GridModule],
       providers: [
         { provide: TranslateService, useValue: translateService },

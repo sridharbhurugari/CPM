@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
+import { of } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -15,12 +17,22 @@ import { VerificationDestinationHourQueueComponent } from './verification-destin
 describe('VerificationDestinationHourQueueComponent', () => {
   let component: VerificationDestinationHourQueueComponent;
   let fixture: ComponentFixture<VerificationDestinationHourQueueComponent>;
+  let translateService: Partial<TranslateService>;
+
+  translateService = {
+    get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+    getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+  };
+
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDestinationHourQueueComponent, MockColHeaderSortable,
         MockAppHeaderContainer, MockTranslatePipe, MockSearchPipe, MockCpDataLabelComponent],
-      imports: [GridModule]
+      imports: [GridModule],
+      providers: [
+        { provide: TranslateService, useValue: translateService }
+      ]
     })
     .compileComponents();
   }));
