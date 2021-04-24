@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
@@ -64,8 +65,8 @@ describe('VerificationDestinationPageComponent', () => {
   };
 
   verificationService = {
-    getVerificationDestinations: () => of(verificationDestinationViewData),
-    getVerificationDashboardData: () => of()
+    getVerificationDestinations: jasmine.createSpy('getVerificationDestinations').and.returnValue(of(verificationDestinationViewData)),
+    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of())
   };
 
   logService = {
@@ -101,6 +102,30 @@ describe('VerificationDestinationPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Rendering hour or destination queue', () => {
+    it('should render destination queue on non grouping order', () => {
+      component.navigationParameters = {
+        PriorityVerificationGrouping: false
+      } as IVerificationNavigationParameters
+
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationHourQueueComponent))).toBeFalsy();
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationQueueComponent))).toBeTruthy();
+    });
+
+    it('should render hour queue on grouping order', () => {
+      component.navigationParameters = {
+        PriorityVerificationGrouping: true
+      } as IVerificationNavigationParameters
+
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationHourQueueComponent))).toBeTruthy();
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationQueueComponent))).toBeFalsy();
+    });
   });
 
   describe('Eventing', () => {
