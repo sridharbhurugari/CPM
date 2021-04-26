@@ -46,4 +46,5 @@ export class EventEventId {
     public static readonly ExpiringMedsReceived: string = 'ExpiringMedsReceived';
     public static readonly UnassignedMedsReceived: string = 'UnassignedMedsReceived';
     public static readonly ErroredMedsReceived: string = 'ErroredMedsReceived';
+    public static readonly Xr2StorageCapacityDisplayEvent: string = 'Xr2StorageCapacityDisplayEvent';
 }

@@ -24,6 +24,7 @@ import { doesNotThrow } from 'assert';
 import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
 import { EventEventId } from '../../shared/constants/event-event-id';
 import { stubFalse } from 'lodash';
+import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 
 describe('UtilizationPageComponent', () => {
   let component: UtilizationPageComponent ;
@@ -48,6 +49,7 @@ describe('UtilizationPageComponent', () => {
     utilizationEventConnectionService = {
       UtilizationIncomingDataSubject: new Subject<UtilizationDataEvent>(),
       UtilizationIncomingDataErrorSubject: new Subject<any>(),
+      Xr2StorageCapacityDisplayEventSubject: new Subject<Xr2StorageCapacityDisplay[]>(),
       ngUnsubscribe: new Subject()
     };
 

@@ -7,6 +7,7 @@ import { UtilizationDataEvent } from '../model/utilization-data-event';
 import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
 import { ExpiringMedicationInfo } from '../model/utilization-expiring-medication-info';
 import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
+import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +15,7 @@ export class UtilizationEventConnectionService {
 
   public UtilizationIncomingDataSubject = new Subject<UtilizationDataEvent>();
   public UtilizationIncomingDataErrorSubject = new Subject<any>();
+  public Xr2StorageCapacityDisplayEventSubject = new Subject<Xr2StorageCapacityDisplay[]>();
   public ngUnsubscribe = new Subject();
 
   constructor(
@@ -29,7 +31,7 @@ export class UtilizationEventConnectionService {
       if (event === undefined) {
         return;
       }
-      // Event types: ExpiringMedsReceived  UnassignedMedsReceived  ErroredMedsReceived
+      // Event types: ExpiringMedsReceived  UnassignedMedsReceived  ErroredMedsReceived, Xr2StorageCapacityDisplayEvent
       switch(event.EventId) {
       case EventEventId.ExpiringMedsReceived : {
         console.log(event);
@@ -68,6 +70,12 @@ export class UtilizationEventConnectionService {
       case EventEventId.UtilizationDataErrorEvent : {
         console.log(event);
         this.UtilizationIncomingDataErrorSubject.next(event);
+        return;
+      }
+
+      case EventEventId.Xr2StorageCapacityDisplayEvent : {
+        console.log(event);
+        this.Xr2StorageCapacityDisplayEventSubject.next(event.Xr2StorageCapacityDisplays.$values as Xr2StorageCapacityDisplay[]);
         return;
       }
     }
