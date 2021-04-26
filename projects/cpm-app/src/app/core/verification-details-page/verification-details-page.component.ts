@@ -59,7 +59,6 @@ export class VerificationDetailsPageComponent implements OnInit {
   translations$: Observable<any>;
 
   validDestinationDetails: boolean = true;
-  approveAllSaving: boolean = false;
   IsBoxBarcodeVerified: boolean;
 
   translatables = [
@@ -291,7 +290,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       CompleteOutputDevices: verificationDestinationDetails.filter(x => x.HasOutputDeviceVerification).length
      } as IVerificationDashboardData
 
-    this.approveAllSaving = false;
+    this.childVerificationDetailsCardComponent.approveAllSaving = false;
     verificationDestinationDetails.map(detail => detail.Saving = false);
     this.childVerificationDetailsCardComponent.completeAndRemoveVerifiedDetails(verificationDestinationDetails);
     if(verificationDestinationDetails.includes(this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail)) {
@@ -306,7 +305,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
-    this.approveAllSaving = false;
+    this.childVerificationDetailsCardComponent.approveAllSaving = false;
     verificationDestinationDetails.map(detail => detail.Saving = false);
     /* istanbul ignore next */
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
