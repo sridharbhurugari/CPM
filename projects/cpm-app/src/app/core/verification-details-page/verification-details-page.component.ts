@@ -21,6 +21,7 @@ import { IVerificationDestinationDetailViewData } from '../../api-core/data-cont
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
+import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -44,8 +45,8 @@ export class VerificationDetailsPageComponent implements OnInit {
   private _componentName = "VerificationDetailsPageComponent";
 
   ngUnsubscribe = new Subject();
-  verificationDestinationItems: Observable<VerificationDestinationItem[]>;
-  verificationDashboardData: Observable<VerificationDashboardData>;
+  verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
+  verificationDashboardData: Observable<IVerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
   completedDestinationDetails: Observable<IVerificationDestinationDetail[]>;
   dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject();
@@ -166,10 +167,11 @@ export class VerificationDetailsPageComponent implements OnInit {
         this.generateHeaderTitle(verificationDetailViewData);
         this.generateHeaderSubTitle(verificationDetailViewData);
         this.generateSafetyStockSettings(verificationDetailViewData.DetailItems);
-        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems.filter(item => item.VerifiedStatus === VerificationStatusTypes.Unverified));
+        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems
+          .filter((item => item.VerifiedStatus === VerificationStatusTypes.Unverified)).map((unverifiedItem) => new VerificationDestinationDetail(unverifiedItem)));
         this.completedDestinationDetails = of(verificationDetailViewData.DetailItems.filter((item) => {
         return item.VerifiedStatus === VerificationStatusTypes.Rejected || item.VerifiedStatus === VerificationStatusTypes.Verified
-        }));
+        }).map((completedItem) => new VerificationDestinationDetail(completedItem)));
       }), shareReplay(1);
   }
 
