@@ -29,7 +29,7 @@
         <span class="cpm-action-title-multi-line-bold">{{destinationLine1}}</span>
         <span>{{destinationLine2}}</span>
       </span>
-      <oc-button-action id="approve-all-button" [disabled]="!containsVerifiableItem(this.verificationDestinationDetails)"
+      <oc-button-action id="approve-all-button" [disabled]="!containsVerifiableItem(this.verificationDestinationDetails) || approveAllSaving"
       [mode]="'secondary'" [buttonText]="'APPROVE_ALL' | translate" [buttonIcon] ="'checkmark'" (click)="this.onApproveAllClick()">
       </oc-button-action>
     </div>

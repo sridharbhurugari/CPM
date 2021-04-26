@@ -144,7 +144,7 @@ describe('VerificationDetailsCardComponent', () => {
   });
 
   describe('Button Clicks', () => {
-    it('should send event with verified item on appove click', () => {
+    fit('should send event with verified item on appove click', () => {
       const verificationItem = new VerificationDestinationDetail(null);
       const saveSpy =  spyOn(component.saveVerificationEvent, 'emit');
       component.completedDestinationDetails = [];
@@ -153,6 +153,7 @@ describe('VerificationDetailsCardComponent', () => {
 
       expect(verificationItem.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
       expect(saveSpy).toHaveBeenCalledTimes(1);
+      expect(logService.logMessageAsync).toHaveBeenCalled();
     });
 
     it('should set selected upon item click', () => {
@@ -166,6 +167,88 @@ describe('VerificationDetailsCardComponent', () => {
       component.onRequiredIconClick();
 
       expect(toastService.error).toHaveBeenCalledTimes(1);
+    });
+
+    it('should disable verify all button when no items are present', () => {
+      component.verificationDestinationDetails = [];
+
+      const result = component.containsVerifiableItem(component.verificationDestinationDetails);
+
+      expect(result).toBe(false);
+    });
+
+    it('should disable verify all button when all scans required', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      item1.IsMedBarcodeVerified = false;
+      item1.IsSafetyStockItem = true;
+      item2.IsMedBarcodeVerified = false;
+      item2.IsSafetyStockItem = true;
+      item3.IsMedBarcodeVerified = false;
+      item3.IsSafetyStockItem = true;
+      item4.IsMedBarcodeVerified = false;
+      item4.IsSafetyStockItem = true;
+      component.verificationDestinationDetails = [item1, item2, item3, item4];
+
+      const result = component.containsVerifiableItem(component.verificationDestinationDetails);
+
+      expect(result).toBe(false);
+    });
+
+    it('should enable verify all button when when a required scan is met', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      item1.IsMedBarcodeVerified = false;
+      item1.IsSafetyStockItem = true;
+      item2.IsMedBarcodeVerified = false;
+      item2.IsSafetyStockItem = true;
+      item3.IsMedBarcodeVerified = false;
+      item3.IsSafetyStockItem = true;
+      item4.IsMedBarcodeVerified = true;
+      item4.IsSafetyStockItem = true;
+      component.verificationDestinationDetails = [item1, item2, item3, item4];
+
+      const result = component.containsVerifiableItem(component.verificationDestinationDetails);
+
+      expect(result).toBe(true);
+    });
+
+    fit('should verify all and send items through save event', () => {
+      const saveSpy = spyOn(component.saveVerificationEvent, 'emit');
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      const unverifiedItem = new VerificationDestinationDetail(null);
+      item1.IsMedBarcodeVerified = false;
+      item1.IsSafetyStockItem = false;
+      item1.VerifiedStatus = VerificationStatusTypes.Unverified;
+      item2.IsMedBarcodeVerified = true;
+      item2.IsSafetyStockItem = true;
+      item2.VerifiedStatus = VerificationStatusTypes.Unverified;
+      item3.IsMedBarcodeVerified = false;
+      item3.IsSafetyStockItem = false;
+      item3.VerifiedStatus = VerificationStatusTypes.Unverified;
+      item4.IsMedBarcodeVerified = true;
+      item4.IsSafetyStockItem = true;
+      item4.VerifiedStatus = VerificationStatusTypes.Unverified;
+      unverifiedItem.IsMedBarcodeVerified = false;
+      unverifiedItem.IsSafetyStockItem = true;
+      unverifiedItem.VerifiedStatus = VerificationStatusTypes.Unverified;
+      const verifiedItems = [item1, item2, item3, item4];
+      component.verificationDestinationDetails = [item1, item2, item3, item4, unverifiedItem];
+
+      component.onApproveAllPopupConfirmClick();
+
+      verifiedItems.forEach((item) => {
+        expect(item.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
+      });
+      expect(unverifiedItem.VerifiedStatus).toBe(VerificationStatusTypes.Unverified);
+      expect(saveSpy).toHaveBeenCalledWith(verifiedItems);
     });
   })
 
@@ -389,4 +472,22 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
     });
   });
+
+  describe('API Calls', () => {
+    fit('should remove items from details list on successful save', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      const verifiedItems = [item1, item2, item3];
+      component.verificationDestinationDetails = [item1, item2, item3, item4];
+      component.completedDestinationDetails = [];
+
+      component.completeAndRemoveVerifiedDetails(verifiedItems);
+
+      expect(component.verificationDestinationDetails.length).toBe(1);
+      expect(component.verificationDestinationDetails[0]).toBe(item4);
+      expect(component.completedDestinationDetails).toEqual(verifiedItems);
+    });
+  })
 });

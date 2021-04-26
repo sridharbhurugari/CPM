@@ -11,11 +11,12 @@
     [dashboardUpdate$]="dashboardUpdateSubject.asObservable()"
     ></app-verification-dashboard>
     <app-verification-details-card
-      [verificationDestinationDetails]="verificationDestinationDetails | async"
-      [completedDestinationDetails]="completedDestinationDetails | async"
-      [rejectReasons]="rejectReasons"
-      [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
-      [approveAllClickSubject]="approveAllClickSubject"
+    [verificationDestinationDetails]="verificationDestinationDetails | async"
+    [completedDestinationDetails]="completedDestinationDetails | async"
+    [rejectReasons]="rejectReasons"
+    [barcodeScannedEventSubject]="itemBarcodeScannedSubject"
+    [approveAllClickSubject]="approveAllClickSubject"
+    [approveAllSaving]="approveAllSaving"
       [IsBoxBarcodeVerified]="IsBoxBarcodeVerified"
       (saveVerificationEvent)="onSaveVerificationEvent($event)"
       (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)"

@@ -38,6 +38,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   @Input() approveAllClickSubject: Observable<void>;
   @Input() IsBoxBarcodeVerified: boolean;
   @Input() completedDestinationDetails: VerificationDestinationDetail[];
+  @Input() approveAllSaving: boolean;
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -145,7 +146,6 @@ export class VerificationDetailsCardComponent implements OnInit {
       msgResourceKey: 'APPROVE_ALL_DIALOG_MESSAGE',
       msgParams: null
     });
-
   }
 
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
@@ -163,6 +163,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   onApproveAllPopupConfirmClick() {
+    this.approveAllSaving = true;
     const itemsToApprove = this.getVerifiableDetailItems();
     this.approveItems(itemsToApprove);
   }
