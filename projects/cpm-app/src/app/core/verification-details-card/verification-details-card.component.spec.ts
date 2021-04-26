@@ -18,6 +18,7 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { Guid } from 'guid-typescript';
 
 import { LogService } from '../../api-core/services/log-service';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
@@ -144,7 +145,7 @@ describe('VerificationDetailsCardComponent', () => {
   });
 
   describe('Button Clicks', () => {
-    fit('should send event with verified item on appove click', () => {
+    it('should send event with verified item on appove click', () => {
       const verificationItem = new VerificationDestinationDetail(null);
       const saveSpy =  spyOn(component.saveVerificationEvent, 'emit');
       component.completedDestinationDetails = [];
@@ -217,7 +218,7 @@ describe('VerificationDetailsCardComponent', () => {
       expect(result).toBe(true);
     });
 
-    fit('should verify all and send items through save event', () => {
+    it('should verify all and send items through save event', () => {
       const saveSpy = spyOn(component.saveVerificationEvent, 'emit');
       const item1 = new VerificationDestinationDetail(null);
       const item2 = new VerificationDestinationDetail(null);
@@ -303,6 +304,30 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeFormat).toEqual(expectedBarcodeFormat);
       expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeProductId).toEqual(expectedProductId);
       expect(component.selectedVerificationDestinationDetail.TransactionScannedRawBarcode).toEqual(expectedBarcodeScanned);
+    });
+
+    it('should show dialog on completed item scan', () => {
+      const dialogSpy = spyOn(component.displayWarningDialogEvent, 'emit');
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const scan = {} as IBarcodeData;
+      item1.ItemId = '1';
+      item2.ItemId = '2';
+      scan.ItemId = '2';
+      item2.ItemFormattedGenericName = 'generic';
+      item2.ItemTradeName = 'trade';
+      item2.VerifiedStatus = VerificationStatusTypes.Verified;
+      const expectedDialogEvent = {
+        titleResourceKey: 'ITEM_SCAN_TITLE',
+        msgResourceKey: 'ITEM_ALREADY_VERIFIED_MESSAGE',
+        msgParams: { itemFormattedGenericName: 'generic', itemTradeName: 'trade' }
+      } as IDialogContents;
+      component.verificationDestinationDetails = [item1];
+      component.completedDestinationDetails = [item2];
+
+      component.onBarcodeScannedEvent(scan);
+
+      expect(dialogSpy).toHaveBeenCalledWith(expectedDialogEvent);
     });
   });
 
@@ -474,7 +499,7 @@ describe('VerificationDetailsCardComponent', () => {
   });
 
   describe('API Calls', () => {
-    fit('should remove items from details list on successful save', () => {
+    it('should remove items from details list on successful save', () => {
       const item1 = new VerificationDestinationDetail(null);
       const item2 = new VerificationDestinationDetail(null);
       const item3 = new VerificationDestinationDetail(null);

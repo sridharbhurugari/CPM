@@ -136,8 +136,7 @@ describe('VerificationDetailsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
-
+  describe('Button Clicks', () => {
     it('should navigate page on back event', () => {
       component.onBackEvent();
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
@@ -147,14 +146,9 @@ describe('VerificationDetailsPageComponent', () => {
       component.onBackEvent();
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     });
+  });
 
-    it('should save verification on save verification event', () => {
-      const mockItems = [new VerificationDestinationDetail(null)];
-
-      component.onSaveVerificationEvent(mockItems);
-      expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
-    });
-
+  describe('Scanning', () => {
     it('should send Item Barcodes Event when Barcode that is not a PickingBarcode is scanned', () => {
       barcodeScannedInputSubject.next(itemBarcodeScanned);
       expect(component.itemBarcodeScannedSubject.next).toHaveBeenCalledWith(itemBarcodeScanned);
@@ -209,3 +203,13 @@ describe('VerificationDetailsPageComponent', () => {
       expect(saveSpy).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('API Calls', () => {
+    it('should save verification on save verification event', () => {
+      const mockItems = [new VerificationDestinationDetail(null)];
+
+      component.onSaveVerificationEvent(mockItems);
+      expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
+    });
+  });
+});
