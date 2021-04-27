@@ -24,7 +24,7 @@
     [data2]="expiringThisMonthDoses.toString()"
     [height]="'120px'"
     [width]="'250px'"
-    (iconClicked)="showExpiredDetails()">
+    (iconClicked)="showExpiringThisMonthDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!notAssignedLoaded"
     [title]="'NOT_ASSIGNED' | translate"
@@ -35,7 +35,7 @@
     [data2]="notAssignedDoses.toString()"
     [height]="'120px'"
     [width]="'250px'"
-    (iconClicked)="showExpiredDetails()">
+    (iconClicked)="showNotAssignedDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!pocketsWithErrorsLoaded"
     [title]="'POCKETS_WITH_ERRORS' | translate"
@@ -46,7 +46,7 @@
     [data2]="pocketsWithErrorsDoses.toString()"
     [height]="'120px'"
     [width]="'250px'"
-    (iconClicked)="showExpiredDetails()">
+    (iconClicked)="showPocketsWithErrorsDetails()">
   </app-cp-data-card>
 </div>
 

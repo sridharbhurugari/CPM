@@ -27,7 +27,6 @@ import { Router } from '@angular/router';
 export class UtilizationPageComponent implements OnInit {
 
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
-  private router: Router;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceUtilizationPocketSummaryInfo$: Observable<number> ;
   deviceUtilizationPocketSummaryInfo: any[];
@@ -74,6 +73,7 @@ export class UtilizationPageComponent implements OnInit {
 
 
   constructor(private utilizationService: UtilizationService,
+    private router: Router,
     private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
@@ -284,7 +284,7 @@ setUtilizationService()
   {}
   showPocketsWithErrorsDetails()
   {
-    this.router.navigate(['xr2/detailsPocketsWithErrors']);
+    this.router.navigate(['xr2/utilization/detailsPocketsWithErrors']);
   }
 }
 export namespace UtilizationPageComponent
