@@ -65,9 +65,9 @@ export class SimpleDialogService {
     const title$ = this.translateService.get(titleResourceKey);
     const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
-    forkJoin(title$, message$, this.noButtonText$, this.yesButtonText$).pipe(map(r => {
+    forkJoin(title$, message$, this.noButtonText$, this.yesButtonText$).subscribe(r => {
       this.displaySecondary(uniqueId, r[0], r[1], r[2], r[3], type);
-    }));
+    });
   }
 
   private displayCancel(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType, messageParams?: Object) {
