@@ -76,7 +76,6 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
 
 
   constructor(
-    private translateService: TranslateService
   ) { }
 
   ngOnInit() {
