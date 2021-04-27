@@ -1,47 +1,52 @@
   <app-xr2-queue-details-header
-    [priorityDescriptionHeader]="xr2QueueNavigationParameters.priorityCodeDescription"
+    [priorityDescriptionHeader]="(device$ | async).Description"
+    [pageName] = "'POCKETS_WITH_ERRORS'"
     (backEvent)="onBackClick()"
-    (searchTextFilterEvent)='onSearchTextFilter($event)'>
+    (searchTextFilterEvent)='onSearchTextFilterEvent($event)'>
   </app-xr2-queue-details-header>
 
 <oc-grid  #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-      <div class="first" ocGridCol data-width="86" minlength = 86 data-colwrap="false">
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="'ItemId'" headerResourceKey="ITEM_ID"
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        [columnPropertyName]="'ItemDescription'" headerResourceKey="DESCRIPTION"
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+        [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" data-width="300" data-colwrap="true"
+      [columnPropertyName]="'ErrorDescription'" headerResourceKey="ErrorDescription"
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="750" data-colwrap="true"
-        [columnPropertyName]="typePropertyName" headerResourceKey='DESTOCK_MEDSTATUS_TYPE'
-        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-      </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
-        [columnPropertyName]="itemcountPropertyName" headerResourceKey='DESTOCK_MEDSTATUS_ITEMS'
-        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-      </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
-        [columnPropertyName]="bincountPropertyName" headerResourceKey='DESTOCK_MEDSTATUS_BINS'
-        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-      </div>
-      <div app-col-header-sortable class="last" data-width="80" minlength="86" data-colwrap="true"
-        [columnPropertyName]='printPropertName' headerResourceKey='PRINT'
-        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-      </div>
+      <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
+      [columnPropertyName]="'ErrorsCount'" headerResourceKey="ErrorsCount"
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+    </div>
+
     </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" *ngFor="let destockTypeInfo of deviceDestockTypeInfo| searchPipe:searchTextFilter:searchFields">
-        <div class="first">
-      </div>
-        <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_TYPE' | translate">
-          {{destockTypeInfo.Xr2DestockType_Display }}
+      <div class="row"  *ngFor="let row of (gridData$ | async) | searchPipe:searchTextFilter:searchFields">
+        <div class="col" [attr.data-title]="'ITEM_ID' | translate">
+          {{row.ItemId}}
+        </div>
+        <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
+          {{row.ItemDescription}}
+        </div>
+        <div class="col" [attr.data-title]="'POCKET_TYPE_DESCRIPTION' | translate">
+          {{row.PocketTypeDescription}}
+        </div>
+        <div class="col" [attr.data-title]="'ErrorDescription' | translate" >
+          {{row.ErrorDescription}}
+        </div>
+        <div class="last" [attr.data-title]="'ErrorsCount' | translate">
+          {{row.ErrorsCount}}
+        </div>
 
-        </div>
-        <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_ITEMS' | translate">
-          {{destockTypeInfo.ItemCount}}
-        </div>
-        <div class="col" [attr.data-title]="'DESTOCK_MEDSTATUS_BINS' | translate">
-          {{destockTypeInfo.BinCount}}
-        </div>
-        <div class="last" [attr.data-title]="'PRINT' | translate" style="text-align: center;">
-          <oc-button-action [mode]="'secondary'" [buttonIcon] ="'print'" [disabled]="destockTypeInfo.BinCount === 0" (click)="onPrint(destockTypeInfo)"></oc-button-action>
-        </div>
       </div>
     </ng-container>
   </oc-grid>

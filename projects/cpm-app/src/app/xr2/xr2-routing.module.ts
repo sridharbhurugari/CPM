@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
   { path: 'destock', component: DestockPageComponent },
   { path: 'utilization', component: UtilizationPageComponent },
-  { path: 'utilization/detailsPocketsWithErrors', component: DetailsPocketsWithErrors },
+  { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrors },
 ];
 
 @NgModule({

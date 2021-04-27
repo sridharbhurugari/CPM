@@ -284,7 +284,7 @@ setUtilizationService()
   {}
   showPocketsWithErrorsDetails()
   {
-    this.router.navigate(['xr2/utilization/detailsPocketsWithErrors']);
+    this.router.navigate(['xr2/utilization/detailsPocketsWithErrors/', this.selectedDeviceInformation.DeviceId]);
   }
 }
 export namespace UtilizationPageComponent

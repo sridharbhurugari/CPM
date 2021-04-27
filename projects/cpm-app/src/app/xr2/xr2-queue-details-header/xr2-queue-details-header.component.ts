@@ -16,6 +16,7 @@ export class Xr2QueueDetailsHeaderComponent implements OnInit, AfterViewInit {
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
 
   @Input() priorityDescriptionHeader: string;
+  @Input() pageName: string = 'DETAILS';
 
   @ViewChild('searchBox', {
     static: true

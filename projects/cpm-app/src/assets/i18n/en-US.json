@@ -341,6 +341,7 @@
   "EXPIRED":"Expired",
   "EXPIRING_THIS_MONTH":"Expiring this Month",
   "NOT_ASSIGNED":"Not Assigned",
-  "POCKETS_WITH_ERRORS":"Pockets with Errors"
+  "POCKETS_WITH_ERRORS":"Pockets with Errors",
+  "POCKET_TYPE_DESCRIPTION":"Pocket Type"
 
 }
