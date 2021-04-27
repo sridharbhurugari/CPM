@@ -45,7 +45,7 @@
       </div>
     </ng-container>
     <ng-container class="ocgridbody">
-      <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDisplays">
+      <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDisplays" (click)=NavigateToPocketDetailsPage(xr2StorageCapacityDisplay)>
         <div class="first" style="align-items: center;"></div>
         <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_TYPE_HEADER' | translate">
           {{xr2StorageCapacityDisplay.PocketTypeDefinition}}

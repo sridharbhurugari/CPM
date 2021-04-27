@@ -32,6 +32,7 @@ import { DestockHeaderComponent } from './destock-header/destock-header.componen
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
+import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
     DestockHeaderComponent,
     UtilizationPageComponent,
     UtilizationHeaderComponent,
+    UtilizationDetailsPageComponent,
   ],
   imports: [
     CommonModule,

@@ -17,6 +17,7 @@ import { ErroredMedicationInfo } from '../model/utilization-errored-medication-i
 import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 import { GridComponent } from '@omnicell/webcorecomponents';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-utilization-page',
@@ -75,7 +76,8 @@ export class UtilizationPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
-    private wpfInteropService: WpfInteropService) {
+    private wpfInteropService: WpfInteropService,
+    private router: Router) {
       this.setupDataRefresh();
     }
 
@@ -236,6 +238,18 @@ setUtilizationService()
     this.pocketsWithErrorsItems = _(this.pocketsWithErrorsData).countBy('ItemCode').size();
     this.pocketsWithErrorsDoses = _.sumBy(this.pocketsWithErrorsData, 'ErrorsCount');
     this.pocketsWithErrorsLoaded = true;
+  }
+
+  public NavigateToPocketDetailsPage(Xr2StorageCapacityDisplay : Xr2StorageCapacityDisplay) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        DeviceId: Xr2StorageCapacityDisplay.DeviceId,
+        PocketTypeId: Xr2StorageCapacityDisplay.PocketTypeId,
+        DeviceDescription: this.selectedDeviceInformation.Description
+      } ,
+      fragment: 'anchor'
+    };
+    this.router.navigate(['xr2/utilization/details'], navigationExtras );
   }
 
   private resizeGrid() {
