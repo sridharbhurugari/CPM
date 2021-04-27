@@ -27,6 +27,9 @@
           [columnPropertyName]="itemDescriptionName" headerResourceKey="XR2_UTILIZATION_ITEM_HEADER">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        [columnPropertyName]="isMultiDoseName" headerResourceKey="XR2_UTILIZATION_PACKSIZE_HEADER">
+      </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
           [columnPropertyName]="trayTypeQohName" headerResourceKey="XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
@@ -37,8 +40,11 @@
         <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDetailsDisplays">
           <div class="first" style="align-items: center;"></div>
           <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_ITEM_HEADER' | translate">
-            {{xr2StorageCapacityDisplay.ItemId}}
-            {{xr2StorageCapacityDisplay.ItemDescription}}
+            <span>{{xr2StorageCapacityDisplay.ItemDescription}}</span>
+            <span>{{xr2StorageCapacityDisplay.ItemId}}</span>
+          </div>
+          <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PACKSIZE_HEADER' | translate">
+            {{xr2StorageCapacityDisplay.IsMultiDose == true ? 'Multidose' : 1}}
           </div>
           <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
             {{xr2StorageCapacityDisplay.TrayTypeQoh}}
