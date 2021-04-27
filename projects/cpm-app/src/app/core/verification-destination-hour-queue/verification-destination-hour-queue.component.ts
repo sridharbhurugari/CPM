@@ -64,7 +64,6 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
   readonly orderPropertyName = nameof<VerificationDestinationItem>('OrderId');
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
   readonly outputDevicePropertyName = nameof<VerificationDestinationItem>('CompleteOutputDevice');
-  readonly fillDateTimePropertyName = nameof<VerificationDestinationItem>('FillDateTime');
   firstTime = true;
 
   currentSortPropertyName: string;
@@ -111,11 +110,6 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
     if (this.savedPageConfiguration.searchTextFilterDestination) {
       this.searchTextFilter = this.savedPageConfiguration.searchTextFilterDestination;
     }
-  }
-
-  transformDateTime(item: VerificationDestinationItem): string {
-    const formattedDate = new Date(item.FillDateTime).toLocaleString(this.translateService.getDefaultLang());
-    return formattedDate;
   }
 
   /* istanbul ignore next */
