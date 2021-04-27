@@ -17,6 +17,7 @@ import { ErroredMedicationInfo } from '../model/utilization-errored-medication-i
 import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 import { GridComponent } from '@omnicell/webcorecomponents';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-utilization-page',
@@ -26,6 +27,7 @@ import { GridComponent } from '@omnicell/webcorecomponents';
 export class UtilizationPageComponent implements OnInit {
 
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
+  private router: Router;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceUtilizationPocketSummaryInfo$: Observable<number> ;
   deviceUtilizationPocketSummaryInfo: any[];
@@ -281,7 +283,9 @@ setUtilizationService()
   showNotAssignedDetails()
   {}
   showPocketsWithErrorsDetails()
-  {}
+  {
+    this.router.navigate(['xr2/detailsPocketsWithErrors']);
+  }
 }
 export namespace UtilizationPageComponent
 {
