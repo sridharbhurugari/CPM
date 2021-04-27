@@ -5,6 +5,11 @@
   flex: 1;
 }
 
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}
+
 :host ::ng-deep oc-grid{
   font-size: 22px;
   height: 100%;

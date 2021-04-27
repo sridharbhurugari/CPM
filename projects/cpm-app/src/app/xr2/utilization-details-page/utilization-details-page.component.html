@@ -6,9 +6,10 @@
       </app-cp-clickable-icon>
     </div>
     <div class="details-text">
-      {{deviceDescription}} - {{header}}
+      {{deviceDescription}} - {{trayTypeDescription}}
     </div>
   </div>
+  <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
 
 <body>
@@ -37,7 +38,7 @@
         </div>
       </ng-container>
       <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDetailsDisplays">
+        <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDetailsDisplays | searchPipe:searchTextFilter:searchFields">
           <div class="first" style="align-items: center;"></div>
           <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_ITEM_HEADER' | translate">
             <span>{{xr2StorageCapacityDisplay.ItemDescription}}</span>

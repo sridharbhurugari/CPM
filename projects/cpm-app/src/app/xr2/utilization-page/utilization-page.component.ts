@@ -245,7 +245,8 @@ setUtilizationService()
       queryParams: {
         DeviceId: Xr2StorageCapacityDisplay.DeviceId,
         PocketTypeId: Xr2StorageCapacityDisplay.PocketTypeId,
-        DeviceDescription: this.selectedDeviceInformation.Description
+        DeviceDescription: this.selectedDeviceInformation.Description,
+        TrayTypeDescription: Xr2StorageCapacityDisplay.PocketTypeDefinition,
       } ,
       fragment: 'anchor'
     };
