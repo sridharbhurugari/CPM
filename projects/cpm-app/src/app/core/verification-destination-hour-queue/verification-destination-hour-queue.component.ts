@@ -75,9 +75,7 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
   translations$: Observable<any>;
 
 
-  constructor(
-    private translateService: TranslateService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
   }
