@@ -64,7 +64,6 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
   readonly orderPropertyName = nameof<VerificationDestinationItem>('OrderId');
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
   readonly outputDevicePropertyName = nameof<VerificationDestinationItem>('CompleteOutputDevice');
-  readonly fillDateTimePropertyName = nameof<VerificationDestinationItem>('FillDateTime');
   firstTime = true;
 
   currentSortPropertyName: string;
