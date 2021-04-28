@@ -274,7 +274,14 @@ setUtilizationService()
         this.refreshData();
       });
   }
-
+  showExpiredDetails()
+  {}
+  showExpiringThisMonthDetails()
+  {}
+  showNotAssignedDetails()
+  {}
+  showPocketsWithErrorsDetails()
+  {}
 }
 export namespace UtilizationPageComponent
 {
