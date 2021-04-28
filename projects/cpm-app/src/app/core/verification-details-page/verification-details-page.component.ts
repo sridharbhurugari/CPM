@@ -109,11 +109,15 @@ export class VerificationDetailsPageComponent implements OnInit {
 
       // Load new data
       if(this.isDifferentBox(data)) {
-        this.navigationParameters.OrderId = data.OrderId;
-        this.navigationParameters.DestinationId = data.DestinationId;
-        this.navigationParameters.DeviceId = data.DeviceId;
-        this.navigationParameters.RoutedByScan = true;
-        this.LoadData();
+        this.verificationService.getPickPriority(data.OrderId).subscribe((pickPriority) => {
+          this.navigationParameters.PriorityCode = pickPriority.PriorityCode
+          this.navigationParameters.OrderId = data.OrderId;
+          this.navigationParameters.DestinationId = data.DestinationId;
+          this.navigationParameters.DeviceId = data.DeviceId;
+          this.navigationParameters.RoutedByScan = true;
+          this.navigationParameters.PriorityVerificationGrouping = pickPriority.PriorityVerificationGrouping;
+          this.LoadData();
+        });
       }
     } else {
       this.itemBarcodeScannedSubject.next(data);

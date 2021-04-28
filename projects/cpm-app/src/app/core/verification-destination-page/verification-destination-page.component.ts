@@ -19,6 +19,7 @@ import { IVerificationNavigationParameters } from '../../shared/interfaces/i-ver
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
+import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 
 @Component({
   selector: 'app-verification-destination-page',
@@ -86,21 +87,24 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
-      const navigationParams = {
-        OrderId: data.OrderId,
-        DeviceId: data.DeviceId,
-        DeviceDescription: '',
-        DestinationId: data.DestinationId,
-        PriorityCode: '', // TODO - scanning
-        Date: new Date(),
-        Route:  VerificationRouting.DetailsPage,
-        RoutedByScan: true,
-        PriorityVerificationGrouping: null // TODO - scanning
-      } as IVerificationNavigationParameters
+      this.verificationService.getPickPriority(data.OrderId)
+      .subscribe((pickPriority) => {
+        const navigationParams = {
+          OrderId: data.OrderId,
+          DeviceId: data.DeviceId,
+          DeviceDescription: '',
+          DestinationId: data.DestinationId,
+          PriorityCode: pickPriority.PriorityCode,
+          Date: new Date(),
+          Route:  VerificationRouting.DetailsPage,
+          RoutedByScan: true,
+          PriorityVerificationGrouping: pickPriority.PriorityVerificationGrouping
+        } as IVerificationNavigationParameters
 
-      const savedPageConfiguration = this.createSavedPageConfiguration();
-      this.pageNavigationEvent.emit(navigationParams);
-      this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+        const savedPageConfiguration = this.createSavedPageConfiguration();
+        this.pageNavigationEvent.emit(navigationParams);
+        this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+      });
     } else {
         this.displayWarningDialogEvent.emit({
           titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',

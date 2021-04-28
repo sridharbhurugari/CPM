@@ -1,5 +1,6 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
+import { orderBy } from 'lodash';
 import { LogVerbosity } from 'oal-core';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -76,23 +77,24 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
-      console.log('Details Page Xr2 Barcode!')
+      this.verificationService.getPickPriority(data.OrderId)
+      .subscribe((pickPriority) => {
+        const navigationParams = {
+          PriorityCode: pickPriority.PriorityCode,
+          OrderId: data.OrderId,
+          DeviceId: data.DeviceId,
+          DeviceDescription: '',
+          DestinationId: data.DestinationId,
+          Date: new Date(),
+          Route:  VerificationRouting.DetailsPage,
+          RoutedByScan: true,
+          PriorityVerificationGrouping: pickPriority.PriorityVerificationGrouping
+        } as IVerificationNavigationParameters
 
-      const navigationParams = {
-        PriorityCode: '', // TODO - Scanning
-        OrderId: data.OrderId,
-        DeviceId: data.DeviceId,
-        DeviceDescription: '',
-        DestinationId: data.DestinationId,
-        Date: new Date(),
-        Route:  VerificationRouting.DetailsPage,
-        RoutedByScan: true,
-        PriorityVerificationGrouping: null // TODO - Scanning
-      } as IVerificationNavigationParameters
-
-      const savedPageConfiguration = this.createSavedPageConfiguration();
-      this.pageNavigationEvent.emit(navigationParams);
-      this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+        const savedPageConfiguration = this.createSavedPageConfiguration();
+        this.pageNavigationEvent.emit(navigationParams);
+        this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+      });
     } else {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
