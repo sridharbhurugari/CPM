@@ -74,6 +74,7 @@ export class UtilizationPageComponent implements OnInit {
 
   constructor(private utilizationService: UtilizationService,
     private router: Router,
+    private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService) {
@@ -276,9 +277,13 @@ setUtilizationService()
       });
   }
   showExpiredDetails()
-  {}
+  {
+     this.router.navigate(['xr2/utilization/detailsExpired/', this.selectedDeviceInformation.DeviceId]);
+  }
   showExpiringThisMonthDetails()
-  {}
+  {
+     this.router.navigate(['xr2/utilization/detailsExpiringThisMonth/', this.selectedDeviceInformation.DeviceId]);	
+  }
   showNotAssignedDetails()
   {}
   showPocketsWithErrorsDetails()
