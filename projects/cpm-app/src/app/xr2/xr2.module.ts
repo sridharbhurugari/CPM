@@ -31,7 +31,7 @@ import { DestockTypeInfoComponent } from './destock-typeinfo/destock-typeinfo.co
 import { DestockHeaderComponent } from './destock-header/destock-header.component';
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
-import { DetailsPocketsWithErrors } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
+import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 
 @NgModule({
@@ -59,7 +59,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
     DestockHeaderComponent,
     UtilizationPageComponent,
     UtilizationHeaderComponent,
-    DetailsPocketsWithErrors,
+    DetailsPocketsWithErrorsComponent,
   ],
   imports: [
     CommonModule,
