@@ -1,14 +1,4 @@
 <div class="cpmheaderrow header-container">
-  <div  class="header-container-left">
-  <div class= "back-button">
-    <app-cp-clickable-icon
-        [width]="35"
-        [height]="35"
-        [theme]="'dark'"
-        [icon]="'back'"
-        (clickEvent)="onNavigateBack()">
-    </app-cp-clickable-icon>
-  </div>
   <oc-singleselect
     [tableData] = "outputDeviceDisplayList"
     [selectedItem] = "defaultDeviceDisplayItem"
@@ -20,9 +10,14 @@
     [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
     (selectionChanged)="onDeviceSelectionChanged($event)">
     </oc-singleselect>
-    <div class="details-text">
-      {{'Destock' | translate}}
-    </div>
-  </div>
-<oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
+    <span class="details-text">
+      {{'Pocket Utilization' | translate}}
+    </span>
+    <oc-button-action
+    [buttonText]="'Destock' | translate"
+    mode="secondary"
+    style = "margin-left:20px;"
+    (click)="onDestockClick()">
+</oc-button-action>
+<oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate" style = "display: none;"></oc-search-box>
 </div>

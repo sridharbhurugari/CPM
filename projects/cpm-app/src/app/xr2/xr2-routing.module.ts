@@ -6,6 +6,7 @@ import { Xr2ExceptionDetailsPageComponent } from "./xr2-exception-details-page/x
 import { Xr2EventsPageComponent } from "./xr2-events-page/xr2-events-page.component";
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
 import { DestockPageComponent } from './destock-page/destock-page.component';
+import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 
 const routes: Routes = [
   { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
   { path: 'destock', component: DestockPageComponent },
+  { path: 'utilization', component: UtilizationPageComponent },
 ];
 
 @NgModule({

@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../../api-core/data-contracts/i-barcode-data';
 import { ISafetyStockProductData } from '../../model/i-safety-stock-product-data';
 import { BarcodeOverrideService } from '../../services/barcode-override.service';
@@ -64,6 +64,15 @@ describe('SafetyStockProductComponent', () => {
 
     it('should set scanNeeded true', () => {
       expect(component.scanNeeded).toBeTruthy();
+    });
+
+    describe('ngOnDestroy', () => {
+      it('should clear subscriptions', () => {
+        let subscriptions: Subscription[] = component['_subscriptions'];
+        subscriptions.forEach(s => spyOn(s, 'unsubscribe'));
+        component.ngOnDestroy();
+        subscriptions.forEach(s => expect(s.unsubscribe).toHaveBeenCalled());
+      });
     });
 
     describe('quantity changed to zero', () => {
