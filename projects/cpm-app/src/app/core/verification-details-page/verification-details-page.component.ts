@@ -7,7 +7,6 @@ import { VerificationService } from '../../api-core/services/verification.servic
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
-import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { VerifiableItem } from '../../shared/model/verifiable-item';
@@ -20,8 +19,8 @@ import { IVerificationDashboardData } from '../../api-core/data-contracts/i-veri
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
-import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
-import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
+import { IVerificationDataParameters } from '../../api-core/data-contracts/i-verification-data-parameters';
+
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -45,7 +44,6 @@ export class VerificationDetailsPageComponent implements OnInit {
   private _componentName = "VerificationDetailsPageComponent";
 
   ngUnsubscribe = new Subject();
-  verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
   verificationDashboardData: Observable<IVerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
   completedDestinationDetails: Observable<IVerificationDestinationDetail[]>;
@@ -112,6 +110,7 @@ export class VerificationDetailsPageComponent implements OnInit {
 
       // Load new data
       if(this.isDifferentBox(data)) {
+        // TODO: Add Priority
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
         this.navigationParameters.DeviceId = data.DeviceId;
@@ -127,7 +126,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     let navigationParams: IVerificationNavigationParameters;
     if(this.validDestinationDetails) {
       navigationParams = {
-        PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+        PriorityCode: this.navigationParameters.PriorityCode,
         OrderId: this.navigationParameters.OrderId,
         DeviceId: this.navigationParameters.DeviceId,
         DestinationId: null,
@@ -136,7 +135,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } as IVerificationNavigationParameters;
     } else {
       navigationParams = {
-        PriorityCodeDescription: null,
+        PriorityCode: null,
         OrderId: null,
         DeviceId: null,
         DestinationId: null,
@@ -226,10 +225,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     const dashboardParams = {
       OrderId: this.navigationParameters.OrderId,
       DeviceId: this.navigationParameters.DeviceId,
-      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      PriorityCode: this.navigationParameters.PriorityCode,
       RoutedByScan: this.navigationParameters.RoutedByScan,
       PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
-    } as IDashboardDataParameters
+    } as IVerificationDataParameters
 
     this.verificationDashboardData = this.verificationService
     .getVerificationDashboardData(dashboardParams).pipe(

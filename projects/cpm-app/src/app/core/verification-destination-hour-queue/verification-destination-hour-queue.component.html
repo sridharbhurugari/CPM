@@ -1,0 +1,101 @@
+<ng-container class="ocactiondetails">
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <!-- 1280 px total-->
+      <div app-col-header-sortable class="first" ocGridColResize data-width="240" data-colwrap="true"
+        [columnPropertyName]="orderPropertyName" headerResourceKey="ID"
+        [paddingLeft]="30"
+        [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable ocGridColResize data-width="470" data-colwrap="true"
+        [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
+        [currentSortPropertyName]="currentSortPropertyName"
+        [customColumnSortOrder]="columnSortDirection"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'VERIFICATION' | translate}}</div>
+      <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'EXCEPTIONS' | translate}}</div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="210" data-colwrap="true"
+      [columnPropertyName]="outputDevicePropertyName" headerResourceKey="OUTPUT_DEVICE"
+      [currentSortPropertyName]="currentSortPropertyName"
+      [customColumnSortOrder]="columnSortDirection"
+      (columnSelected)="columnSelected($event)">
+      </div>
+    </ng-container>
+    <ng-container class="ocgridbody" *ngIf="this.unfilteredVerificationDestinationItems">
+      <div class="row"
+      (click)="onGridRowClick(verificationDestinationItem)"
+      *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems
+      trackBy: trackByItemId">
+        <div class="col width-order" [attr.data-title]="'ID' | translate">
+          <div class="first-column" [ngStyle]="{'font-size': '20px'}">
+            {{verificationDestinationItem.OrderId}}
+          </div>
+        </div>
+        <div class="col width-destination" [ngStyle]="{'font-size': '20px'}" [attr.data-title]="'DESTINATION' | translate">
+            <div>{{verificationDestinationItem.DestinationLine1}}</div>
+            <div>{{verificationDestinationItem.DestinationLine2}}</div>
+        </div>
+        <div class="col width-verification" [attr.data-title]="'VERIFICATION' | translate">
+          <span class="centered-content">
+            <app-cp-data-label
+            [ngStyle]="{'padding-right': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationDestinationItem.CompleteVerifications"
+            [label]="'COMPLETE' | translate">
+            </app-cp-data-label>
+            /
+            <app-cp-data-label
+            [ngStyle]="{'padding-left': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationDestinationItem.TotalVerifications"
+            [label]="'TOTAL' | translate">
+            </app-cp-data-label>
+          </span>
+        </div>
+        <div class="col width-exceptions" [attr.data-title]="'EXCEPTIONS' | translate">
+          <span class="centered-content" *ngIf="verificationDestinationItem.RequiredExceptions > 0">
+            <app-cp-data-label
+            [ngStyle]="{'padding-right': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationDestinationItem.CompleteExceptions"
+            [label]="'COMPLETE' | translate">
+            </app-cp-data-label>
+            /
+            <app-cp-data-label
+            [ngStyle]="{'padding-left': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationDestinationItem.RequiredExceptions"
+            [label]="'REQUIRED' | translate">
+            </app-cp-data-label>
+          </span>
+        </div>
+        <div class="col width-output-device" [attr.data-title]="'OUTPUT_DEVICE' | translate">
+          <span class="centered-content" *ngIf="verificationDestinationItem.RequiredOutputDevice > 0">
+            <app-cp-data-label
+            [ngStyle]="{'padding-right': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationDestinationItem.CompleteOutputDevice"
+            [label]="'COMPLETE' | translate">
+            </app-cp-data-label>
+            /
+            <app-cp-data-label
+            [ngStyle]="{'padding-left': '5px'}"
+            [dataSize]=20
+            [labelSize]=13
+            [data]="verificationDestinationItem.RequiredOutputDevice"
+            [label]="'REQUIRED' | translate">
+            </app-cp-data-label>
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>

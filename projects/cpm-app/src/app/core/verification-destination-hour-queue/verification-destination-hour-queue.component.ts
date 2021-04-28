@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -11,11 +12,11 @@ import { VerificationDestinationItem } from '../../shared/model/verification-des
 import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
-  selector: 'app-verification-destination-queue',
-  templateUrl: './verification-destination-queue.component.html',
-  styleUrls: ['./verification-destination-queue.component.scss']
+  selector: 'app-verification-destination-hour-queue',
+  templateUrl: './verification-destination-hour-queue.component.html',
+  styleUrls: ['./verification-destination-hour-queue.component.scss']
 })
-export class VerificationDestinationQueueComponent implements OnInit {
+export class VerificationDestinationHourQueueComponent implements OnInit {
 
   @Output() gridRowClickEvent: EventEmitter<VerificationDestinationItem> = new EventEmitter();
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
@@ -60,12 +61,13 @@ export class VerificationDestinationQueueComponent implements OnInit {
   private _filteredVerificationDestinationItems: VerificationDestinationItem[];
   private  _searchTextFilter: string;
 
+  readonly orderPropertyName = nameof<VerificationDestinationItem>('OrderId');
   readonly destinationPropertyName = nameof<VerificationDestinationItem>('DestinationStringValue');
   readonly outputDevicePropertyName = nameof<VerificationDestinationItem>('CompleteOutputDevice');
   firstTime = true;
 
   currentSortPropertyName: string;
-  searchFields = [nameof<VerificationDestinationItem>('DestinationStringValue')]
+  searchFields = [nameof<VerificationDestinationItem>('OrderId'), nameof<VerificationDestinationItem>('DestinationStringValue')];
   columnSortDirection: string;
   searchPipe: SearchPipe = new SearchPipe();
 
