@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { IErroredMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-errored-medication-info-detail';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
 describe('DestockPageComponent', () => {
   let component: DetailsPocketsWithErrorsComponent ;
@@ -21,6 +22,7 @@ describe('DestockPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let utilizationDeailsService: Partial<UtilizationDeailsService>;
   let devicesService: Partial<DevicesService>;
+  let router: Partial<Router>;
 
   beforeEach(async(() => {
     const deviceId = 4;
@@ -37,6 +39,7 @@ describe('DestockPageComponent', () => {
       getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
     };
 
+    router = {navigate: jasmine.createSpy('navigate') };
     let activatedRoute = { snapshot: { paramMap : { get: () => deviceId } } };
 
     let erroredMedicationInfoDetail: IErroredMedicationInfoDetail[] = [];
@@ -55,7 +58,7 @@ describe('DestockPageComponent', () => {
       providers: [
         { provide: UtilizationDeailsService, useValue: utilizationDeailsService },
         { provide: DevicesService, useValue: devicesService},
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: activatedRoute },
        ]
     })
@@ -72,5 +75,34 @@ describe('DestockPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('Search filter text on search filter event', () => {
+    const filter = 'filter';
+
+    component.onSearchTextFilterEvent(filter);
+
+    expect(component.searchTextFilter).toBe(filter);
+  });
+
+  describe('Back Click Button Action', () => {
+    it('should emit back event on back click', () => {
+      component.onBackClick();
+
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization')]));
+    });
+  });
+
+  describe('Queue filtering/sorting', () => {
+    it('should set sort order on column selected event', () => {
+      const mockSortEvent = {} as IColHeaderSortChanged;
+      const expectedSortOrder = 'asc';
+      const expectedColumnName = 'column';
+      mockSortEvent.SortDirection = expectedSortOrder;
+      mockSortEvent.ColumnPropertyName = expectedColumnName;
+
+      component.columnSelected(mockSortEvent);
+
+      expect(component.currentSortPropertyName).toBe(expectedColumnName);
+    });
+  });
 });
 
