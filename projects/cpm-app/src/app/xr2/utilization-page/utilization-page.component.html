@@ -34,10 +34,10 @@
   <oc-grid #ocgrid ocgridfilter="false"  (valuesReordered)="orderChanged($event)" [orderableValues]="xr2StorageCapacityDisplays" appGridSortCol [initialSortPropertyName]="pocketTypeDefinitionName" ocgridheadersearch="false" ocgridallowhover="false" *ngSwitchCase="'Display'">
     <ng-container class="ocgridheader">
       <div class="first" data-colwrap="true"></div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="630" data-colwrap="true"
         [columnPropertyName]="pocketTypeDefinitionName" headerResourceKey="XR2_UTILIZATION_TYPE_HEADER">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="630" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
       [columnPropertyName]="percentageUsedName" headerResourceKey="XR2_UTILIZATION_PERCENTAGE_USED_HEADER">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
