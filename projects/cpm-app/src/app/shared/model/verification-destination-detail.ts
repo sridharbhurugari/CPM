@@ -38,7 +38,7 @@ export class VerificationDestinationDetail implements IVerificationDestinationDe
   Exception: boolean;
   HasOutputDeviceVerification: boolean;
   IsSafetyStockItem: boolean;
-  IsMedBarcodeVerified: boolean;
+  IsMedBarcodeVerified: boolean = false;
   Saving: boolean;
   TransactionScannedBarcodeProductId: string;
   TransactionScannedBarcodeFormat: string;
