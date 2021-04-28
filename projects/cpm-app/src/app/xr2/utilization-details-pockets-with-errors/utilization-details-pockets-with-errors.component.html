@@ -11,20 +11,20 @@
         [columnPropertyName]="'ItemId'" headerResourceKey="ITEM_ID"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="400" data-colwrap="true"
         [columnPropertyName]="'ItemDescription'" headerResourceKey="DESCRIPTION"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="175" data-colwrap="true"
         [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" data-width="300" data-colwrap="true"
-      [columnPropertyName]="'ErrorDescription'" headerResourceKey="ErrorDescription"
+      <div app-col-header-sortable class="col" data-width="350" data-colwrap="true"
+      [columnPropertyName]="'ErrorDescription'" headerResourceKey="ERROR_DESCRIPTION"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-      <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
-      [columnPropertyName]="'ErrorsCount'" headerResourceKey="ErrorsCount"
+      <div app-col-header-sortable class="last" ocGridColResize data-width="125" data-colwrap="true"
+      [columnPropertyName]="'ErrorsCount'" headerResourceKey="ERROR_COUNT"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
 
@@ -40,10 +40,10 @@
         <div class="col" [attr.data-title]="'POCKET_TYPE_DESCRIPTION' | translate">
           {{row.PocketTypeDescription}}
         </div>
-        <div class="col" [attr.data-title]="'ErrorDescription' | translate" >
+        <div class="col" [attr.data-title]="'ERROR_DESCRIPTION' | translate" >
           {{row.ErrorDescription}}
         </div>
-        <div class="last" [attr.data-title]="'ErrorsCount' | translate">
+        <div class="last" [attr.data-title]="'ERROR_COUNT' | translate">
           {{row.ErrorsCount}}
         </div>
 
