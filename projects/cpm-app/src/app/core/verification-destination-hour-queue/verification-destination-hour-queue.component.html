@@ -2,14 +2,14 @@
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
       <!-- 1280 px total-->
-      <div app-col-header-sortable class="first" ocGridColResize data-width="180" data-colwrap="true"
+      <div app-col-header-sortable class="first" ocGridColResize data-width="240" data-colwrap="true"
         [columnPropertyName]="orderPropertyName" headerResourceKey="ID"
         [paddingLeft]="30"
         [currentSortPropertyName]="currentSortPropertyName"
         [customColumnSortOrder]="columnSortDirection"
         (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable ocGridColResize data-width="390" data-colwrap="true"
+      <div app-col-header-sortable ocGridColResize data-width="470" data-colwrap="true"
         [columnPropertyName]="destinationPropertyName" headerResourceKey="DESTINATION"
         [currentSortPropertyName]="currentSortPropertyName"
         [customColumnSortOrder]="columnSortDirection"
@@ -17,14 +17,8 @@
       </div>
       <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'VERIFICATION' | translate}}</div>
       <div class="col width-type" ocGridColResize data-width="180" data-colwrap="true">{{'EXCEPTIONS' | translate}}</div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="210" data-colwrap="true"
       [columnPropertyName]="outputDevicePropertyName" headerResourceKey="OUTPUT_DEVICE"
-      [currentSortPropertyName]="currentSortPropertyName"
-      [customColumnSortOrder]="columnSortDirection"
-      (columnSelected)="columnSelected($event)">
-      </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
-      [columnPropertyName]="fillDateTimePropertyName" headerResourceKey="DATE"
       [currentSortPropertyName]="currentSortPropertyName"
       [customColumnSortOrder]="columnSortDirection"
       (columnSelected)="columnSelected($event)">
@@ -35,12 +29,12 @@
       (click)="onGridRowClick(verificationDestinationItem)"
       *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems
       trackBy: trackByItemId">
-        <div class="col width-destination" [attr.data-title]="'ID' | translate">
-          <div class="first-column">
+        <div class="col width-order" [attr.data-title]="'ID' | translate">
+          <div class="first-column" [ngStyle]="{'font-size': '20px'}">
             {{verificationDestinationItem.OrderId}}
           </div>
         </div>
-        <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
+        <div class="col width-destination" [ngStyle]="{'font-size': '20px'}" [attr.data-title]="'DESTINATION' | translate">
             <div>{{verificationDestinationItem.DestinationLine1}}</div>
             <div>{{verificationDestinationItem.DestinationLine2}}</div>
         </div>
@@ -101,13 +95,7 @@
             </app-cp-data-label>
           </span>
         </div>
-        <div class="col width-fill-date-time" [attr.data-title]="'DATE' | translate">
-          <span class="centered-content">
-            {{this.transformDateTime(verificationDestinationItem)}}
-          </span>
-      </div>
       </div>
     </ng-container>
   </oc-grid>
 </ng-container>
-
