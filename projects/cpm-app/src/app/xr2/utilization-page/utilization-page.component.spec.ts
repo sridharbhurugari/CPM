@@ -25,7 +25,8 @@ import { ErroredMedicationInfo } from '../model/utilization-errored-medication-i
 import { EventEventId } from '../../shared/constants/event-event-id';
 import { stubFalse } from 'lodash';
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
-/*
+import { Router } from '@angular/router';
+
 describe('UtilizationPageComponent', () => {
   let component: UtilizationPageComponent ;
   let fixture: ComponentFixture<UtilizationPageComponent>;
@@ -63,7 +64,8 @@ describe('UtilizationPageComponent', () => {
         { provide: UtilizationService, useValue: utilizationService},
         { provide: UtilizationEventConnectionService, useValue: utilizationEventConnectionService},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
-        { provide: WindowService, useValue: { getHash: () => '' } }
+        { provide: WindowService, useValue: { getHash: () => '' } },
+        { provide: Router, useValue: {} }
        ]
     })
     .compileComponents();
@@ -347,4 +349,4 @@ describe('UtilizationPageComponent', () => {
   });
 
 });
-*/
+
