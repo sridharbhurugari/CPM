@@ -20,17 +20,16 @@ import * as _ from 'lodash';
   styleUrls: ['./utilization-details-pockets-with-errors.component.scss']
 })
 export class DetailsPocketsWithErrors implements OnInit {
-  gridData$: Observable<IErroredMedicationInfoDetail[]>;
   device$: Observable<SelectableDeviceInfo>;
-  requestDeviceDestockTypeInfo$: Observable<number> ;
-  detailInfo: DestockTypeInfo[];
-  searchTextFilter: string;
-  currentSortPropertyName: string;
-  ngUnsubscribe = new Subject();
 
-  searchFields = [
-    nameof<IDestockTypeInfo>('Xr2DestockType_Display'),
-  ];
+  // Grid, Search and Sort:
+  gridData$: Observable<IErroredMedicationInfoDetail[]>;
+  searchTextFilter: string;
+  searchFields = ['ItemId', 'ItemDescription'];
+  currentSortPropertyName: string = 'ItemId, PocketTypeDescription, ErrorDescription';
+
+  ngUnsubscribe = new Subject();
+  ;
 
   constructor( utilizationDeailsService: UtilizationDeailsService,
     devicesService: DevicesService,
