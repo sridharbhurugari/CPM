@@ -29,7 +29,7 @@
       (click)="onGridRowClick(verificationDestinationItem)"
       *ngFor="let verificationDestinationItem of filteredVerificationDestinationItems
       trackBy: trackByItemId">
-        <div class="col width-destination" [attr.data-title]="'ID' | translate">
+        <div class="col width-order" [attr.data-title]="'ID' | translate">
           <div class="first-column" [ngStyle]="{'font-size': '20px'}">
             {{verificationDestinationItem.OrderId}}
           </div>
