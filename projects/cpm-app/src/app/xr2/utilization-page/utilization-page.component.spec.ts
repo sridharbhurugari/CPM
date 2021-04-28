@@ -1,14 +1,7 @@
 import { EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, Input, OnInit } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
-import { finalize, catchError, map, shareReplay, tap, takeUntil } from 'rxjs/operators';
 import { UtilizationService } from '../../api-xr2/services/utilization.service';
-import { nameof } from '../../shared/functions/nameof';
-import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
-import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
-import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { UtilizationEventConnectionService } from '../services/utilization-event-connection.service';
 import { UtilizationDataEvent } from '../model/utilization-data-event';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,17 +13,15 @@ import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
 import { ExpiringMedicationInfo } from '../model/utilization-expiring-medication-info';
-import { doesNotThrow } from 'assert';
 import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
 import { EventEventId } from '../../shared/constants/event-event-id';
-import { stubFalse } from 'lodash';
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
+import { Router } from '@angular/router';
 
 describe('UtilizationPageComponent', () => {
   let component: UtilizationPageComponent ;
   let fixture: ComponentFixture<UtilizationPageComponent>;
   let translateService: Partial<TranslateService>;
-  let simpleDialogService: Partial<SimpleDialogService>;
   let utilizationService: Partial<UtilizationService>;
   let utilizationEventConnectionService: Partial<UtilizationEventConnectionService>;
 
@@ -38,10 +29,7 @@ describe('UtilizationPageComponent', () => {
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
     };
-    simpleDialogService = {
-      displayErrorOk: jasmine.createSpy('displayErrorOk'),
-      displayInfoOk: jasmine.createSpy('displayInfoOk'),
-    };
+
     utilizationService = {
       get: jasmine.createSpy('get').and.returnValue(of(UtilizationService)),
     };
@@ -59,8 +47,8 @@ describe('UtilizationPageComponent', () => {
         FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: UtilizationService, useValue: utilizationService},
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: UtilizationEventConnectionService, useValue: utilizationEventConnectionService},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
         { provide: WindowService, useValue: { getHash: () => '' } }
