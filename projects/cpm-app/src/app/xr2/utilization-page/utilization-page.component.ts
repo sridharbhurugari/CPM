@@ -240,13 +240,17 @@ setUtilizationService()
     this.pocketsWithErrorsLoaded = true;
   }
 
-  public NavigateToPocketDetailsPage(Xr2StorageCapacityDisplay : Xr2StorageCapacityDisplay) {
+  public NavigateToPocketDetailsPage(rowClicked : Xr2StorageCapacityDisplay) {
+    if (rowClicked.PocketInventoryCount == 0) {
+      return;
+    }
+
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        DeviceId: Xr2StorageCapacityDisplay.DeviceId,
-        PocketTypeId: Xr2StorageCapacityDisplay.PocketTypeId,
+        DeviceId: rowClicked.DeviceId,
+        PocketTypeId: rowClicked.PocketTypeId,
         DeviceDescription: this.selectedDeviceInformation.Description,
-        TrayTypeDescription: Xr2StorageCapacityDisplay.PocketTypeDefinition,
+        TrayTypeDescription: rowClicked.PocketTypeDefinition,
       } ,
       fragment: 'anchor'
     };
