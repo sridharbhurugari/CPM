@@ -32,6 +32,7 @@ import { DestockHeaderComponent } from './destock-header/destock-header.componen
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
+import { DetailsNotAssignedComponent } from './utilization-details-not-assigned/utilization-details-not-assigned.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 
 @NgModule({
@@ -60,6 +61,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
     UtilizationPageComponent,
     UtilizationHeaderComponent,
     DetailsPocketsWithErrorsComponent,
+    DetailsNotAssignedComponent,
   ],
   imports: [
     CommonModule,

@@ -280,7 +280,9 @@ setUtilizationService()
   showExpiringThisMonthDetails()
   {}
   showNotAssignedDetails()
-  {}
+  {
+    this.router.navigate(['xr2/utilization/detailsNotAssigned/', this.selectedDeviceInformation.DeviceId]);
+  }
   showPocketsWithErrorsDetails()
   {
     this.router.navigate(['xr2/utilization/detailsPocketsWithErrors/', this.selectedDeviceInformation.DeviceId]);
