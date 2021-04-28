@@ -112,11 +112,6 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
     }
   }
 
-  transformDateTime(item: VerificationDestinationItem): string {
-    const formattedDate = new Date(item.FillDateTime).toLocaleString(this.translateService.getDefaultLang());
-    return formattedDate;
-  }
-
   /* istanbul ignore next */
   trackByItemId(index: number, verificationDestinationItem: any): Guid {
     if (!verificationDestinationItem) {
