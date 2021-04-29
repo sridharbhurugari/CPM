@@ -7,30 +7,35 @@
 
 <oc-grid  #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-      <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="530" data-colwrap="true"
         [columnPropertyName]="'ItemCode'" headerResourceKey="ITEM_ID"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
+        [columnPropertyName]="'TotalItemCodeQuantity'" headerResourceKey="XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER"
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="400" data-colwrap="true"
         [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="last" ocGridColResize data-width="280" data-colwrap="true"
-      [columnPropertyName]="'Inventory'" headerResourceKey="COUNT"
+      <div app-col-header-sortable class="last" ocGridColResize data-width="250" data-colwrap="true"
+      [columnPropertyName]="'Inventory'" headerResourceKey="XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"  *ngFor="let row of (gridData$ | async) | searchPipe:searchTextFilter:searchFields">
         <div class="col" [attr.data-title]="'ITEM_ID' | translate">
           {{row.ItemCode}}
         </div>
-
+        <div class="col" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
+          {{row.TotalItemCodeQuantity}}
+        </div>
         <div class="col" [attr.data-title]="'POCKET_TYPE_DESCRIPTION' | translate">
           {{row.PocketTypeDescription}}
         </div>
-        <div class="last" [attr.data-title]="'COUNT' | translate">
+        <div class="last" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
           {{row.Inventory}}
         </div>
 

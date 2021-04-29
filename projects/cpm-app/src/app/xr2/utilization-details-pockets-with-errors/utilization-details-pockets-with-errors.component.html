@@ -28,7 +28,6 @@
       <div class="row"  *ngFor="let row of (gridData$ | async) | searchPipe:searchTextFilter:searchFields">
         <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
           {{row.ItemDescription}}<br>{{row.ItemId}}
-
         </div>
         <div class="col" [attr.data-title]="'COUNT' | translate">
           {{row.ErrorsCount}}

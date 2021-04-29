@@ -3,4 +3,5 @@ export interface IUnassignedMedicationInfoDetail {
   PocketTypeId: number;
   PocketTypeDescription: string;
   Inventory: number;
+  TotalItemCodeQuantity: number;
 }
