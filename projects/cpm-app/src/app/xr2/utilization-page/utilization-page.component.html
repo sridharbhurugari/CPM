@@ -1,0 +1,119 @@
+<app-utilization-header [savedPageConfiguration]="savedPageConfiguration"
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)">
+</app-utilization-header>
+
+
+<div class="dashboard" *ngIf="screenState != 'NoData'">
+  <app-cp-data-card [showLoading]="!expiredLoaded"
+    [title]="'EXPIRED' | translate"
+    [iconString]="expiredDoses > 0 ? 'details' : null"
+    [dataLabel1]="expiredItems == 1 ? ('ITEM' | translate) : ('ITEMS' | translate)"
+    [data1]="expiredItems.toString()"
+    [dataLabel2]="expiredDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
+    [data2]="expiredDoses.toString()"
+    [height]="'120px'"
+    [width]="'250px'"
+    (iconClicked)="showExpiredDetails()">
+  </app-cp-data-card>
+  <app-cp-data-card [showLoading]="!expiringThisMonthLoaded"
+    [title]="'EXPIRING_THIS_MONTH' | translate"
+    [iconString]="expiringThisMonthDoses > 0 ? 'details' : null"
+    [dataLabel1]="expiringThisMonthItems == 1 ? ('ITEM' | translate) : ('ITEMS' | translate)"
+    [data1]="expiringThisMonthItems.toString()"
+    [dataLabel2]="expiringThisMonthDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
+    [data2]="expiringThisMonthDoses.toString()"
+    [height]="'120px'"
+    [width]="'250px'"
+    (iconClicked)="showExpiringThisMonthDetails()">
+  </app-cp-data-card>
+  <app-cp-data-card [showLoading]="!notAssignedLoaded"
+    [title]="'NOT_ASSIGNED' | translate"
+    [iconString]="notAssignedDoses > 0 ? 'details' : null"
+    [dataLabel1]="notAssignedItems == 1 ? ('ITEM' | translate) : ('ITEMS' | translate)"
+    [data1]="notAssignedItems.toString()"
+    [dataLabel2]="notAssignedDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
+    [data2]="notAssignedDoses.toString()"
+    [height]="'120px'"
+    [width]="'250px'"
+    (iconClicked)="showNotAssignedDetails()">
+  </app-cp-data-card>
+  <app-cp-data-card [showLoading]="!pocketsWithErrorsLoaded"
+    [title]="'POCKETS_WITH_ERRORS' | translate"
+    [iconString]="pocketsWithErrorsDoses > 0 ? 'details' : null"
+    [dataLabel1]="pocketsWithErrorsItems == 1 ? ('ITEM' | translate) : ('ITEMS' | translate)"
+    [data1]="pocketsWithErrorsItems.toString()"
+    [dataLabel2]="pocketsWithErrorsDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
+    [data2]="pocketsWithErrorsDoses.toString()"
+    [height]="'120px'"
+    [width]="'250px'"
+    (iconClicked)="showPocketsWithErrorsDetails()">
+  </app-cp-data-card>
+</div>
+
+
+<body [ngSwitch]="screenState">
+
+  <!-- waiting: -->
+  <oc-progress-animation #myLoader *ngSwitchCase="'MakingDataRequest'" [data]="{size: 3}"></oc-progress-animation>
+  <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'WaitingForData'">
+    <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
+  </div>
+  <!-- display data -->
+  <oc-grid #ocgrid ocgridfilter="false"  (valuesReordered)="orderChanged($event)" [orderableValues]="xr2StorageCapacityDisplays" appGridSortCol [initialSortPropertyName]="pocketTypeDefinitionName" ocgridheadersearch="false" ocgridallowhover="false" *ngSwitchCase="'Display'">
+    <ng-container class="ocgridheader">
+      <div class="first" data-colwrap="true"></div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        [columnPropertyName]="pocketTypeDefinitionName" headerResourceKey="XR2_UTILIZATION_TYPE_HEADER">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="630" data-colwrap="true"
+      [columnPropertyName]="percentageUsedName" headerResourceKey="XR2_UTILIZATION_PERCENTAGE_USED_HEADER">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
+      [columnPropertyName]="pocketsRemainingName" headerResourceKey="XR2_UTILIZATION_POCKETS_REMAINING_HEADER">
+      </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDisplays">
+        <div class="first" style="align-items: center;"></div>
+        <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_TYPE_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
+        </div>
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PERCENTAGE_USED_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.PercentageUsed}}%
+        </div>
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_POCKETS_REMAINING_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.PocketsRemaining}}
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+  <!-- No data scenarios -->
+  <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchCase="'NoData'">
+    <oc-svgicon icon="logowithtext" theme="primary" height="300" width="300"></oc-svgicon>
+  </div>
+  <!-- Printing in progress -->
+  <span *ngSwitchCase="'Printing'">Printing</span>
+  <!-- Error state -->
+  <span *ngSwitchCase="'Error'">Error</span>
+  <!-- Unexpected (default fallback)-->
+  <div class="iconcontainer" [class.fillWidth]="true" *ngSwitchDefault>
+    <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
+  </div>
+</body>
+
+
+
+
+
+<ng-container class="ocactionfooter">
+  <oc-footer>
+    <div class="ocleftalign">
+      <oc-button-action [buttonText]="'REFRESH' | translate" [disabled]="selectedDeviceInformation.DeviceId === 0"
+        (click)="onRefreshClick()"></oc-button-action>
+    </div>
+    &nbsp;
+    <div class="refresh-label" *ngIf="eventDateTime != null">{{'LAST_UPDATED' | translate}}:</div>
+    &nbsp;
+    <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div>
+  </oc-footer>
+</ng-container>

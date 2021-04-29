@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { GridModule, PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, GridModule, PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { LogService } from '../../api-core/services/log-service';
@@ -40,6 +40,7 @@ describe('VerificationDetailsPageComponent', () => {
   let verificationDestinationDetailsViewData : IVerificationDestinationDetailViewData;
   let toastService: Partial<ToastService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData>;
+  let approveAllClickSubject: Subject<void>;
   let popupWindowService: Partial<PopupWindowService>;
   let logService: Partial<LogService>;
   let deviceId: number = 1;
@@ -89,7 +90,7 @@ describe('VerificationDetailsPageComponent', () => {
         MockCpGeneralHeaderComponent, MockAppHeaderContainer, MockCpDataCardComponent,
         MockColHeaderSortable, MockTranslatePipe, MockSearchBox,
             MockSearchPipe, MockCpClickableIconComponent, MockValidationIconComponent ],
-      imports: [GridModule, SvgIconModule],
+      imports: [GridModule, SvgIconModule, ButtonActionModule],
       providers: [
         { provide: TranslateService, useValue: translateService },
         { provide: VerificationService, useValue: verificationService },
@@ -106,7 +107,9 @@ describe('VerificationDetailsPageComponent', () => {
     mockVerificationService = TestBed.get(VerificationService);
     component = fixture.componentInstance;
     barcodeScannedInputSubject = new Subject<IBarcodeData>();
+    approveAllClickSubject = new Subject<void>();
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
+    component.approveAllClickSubject = approveAllClickSubject;
 
     let a: IVerificationDestinationDetail;
     const mockItem = new VerificationDestinationDetail(a);
@@ -133,8 +136,7 @@ describe('VerificationDetailsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
-
+  describe('Button Clicks', () => {
     it('should navigate page on back event', () => {
       component.onBackEvent();
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
@@ -144,14 +146,9 @@ describe('VerificationDetailsPageComponent', () => {
       component.onBackEvent();
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
     });
+  });
 
-    it('should save verification on save verification event', () => {
-      const mockItems = [new VerificationDestinationDetail(null)];
-
-      component.onSaveVerificationEvent(mockItems);
-      expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
-    });
-
+  describe('Scanning', () => {
     it('should send Item Barcodes Event when Barcode that is not a PickingBarcode is scanned', () => {
       barcodeScannedInputSubject.next(itemBarcodeScanned);
       expect(component.itemBarcodeScannedSubject.next).toHaveBeenCalledWith(itemBarcodeScanned);
@@ -206,3 +203,13 @@ describe('VerificationDetailsPageComponent', () => {
       expect(saveSpy).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('API Calls', () => {
+    it('should save verification on save verification event', () => {
+      const mockItems = [new VerificationDestinationDetail(null)];
+
+      component.onSaveVerificationEvent(mockItems);
+      expect(verificationService.saveVerification).toHaveBeenCalledTimes(1);
+    });
+  });
+});

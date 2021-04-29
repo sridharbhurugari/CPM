@@ -18,7 +18,6 @@ import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verifi
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
 import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
 
-
 @Component({
   selector: 'app-verification-order-page',
   templateUrl: './verification-order-page.component.html',

@@ -41,4 +41,10 @@ export class EventEventId {
     public static readonly PicklistQueueItemListUpdateMessage: string = 'PicklistQueueItemListUpdateMessage';
     public static readonly DestockDataEvent: string = 'DestockDataEvent';
     public static readonly DestockDataErrorEvent: string = 'DestockDataErrorEvent';
+    // Utilization
+    public static readonly UtilizationDataErrorEvent: string = 'UtilizationDataErrorEvent';
+    public static readonly ExpiringMedsReceived: string = 'ExpiringMedsReceived';
+    public static readonly UnassignedMedsReceived: string = 'UnassignedMedsReceived';
+    public static readonly ErroredMedsReceived: string = 'ErroredMedsReceived';
+    public static readonly Xr2StorageCapacityDisplayEvent: string = 'Xr2StorageCapacityDisplayEvent';
 }

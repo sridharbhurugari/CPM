@@ -10,6 +10,13 @@
   flex: 1;
 }
 
+.card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .left-panel {
   overflow-y: hidden;
   border-top: solid slategrey 2px;
@@ -346,5 +353,9 @@
   top: -13px;
   right: 0;
   z-index: 1;
+}
+
+#approve-all-button {
+  padding-right: 10px
 }
 

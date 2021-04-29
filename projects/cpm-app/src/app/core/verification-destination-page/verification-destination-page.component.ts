@@ -31,7 +31,6 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
-
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;

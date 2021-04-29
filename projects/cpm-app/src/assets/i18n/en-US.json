@@ -6,6 +6,8 @@
   "AUTOFILL": "Autofill",
   "AUTOPACKAGER": "Auto Packager",
   "APPROVE": "Approve",
+  "APPROVE_ALL": "Approve All",
+  "APPROVE_ALL_DIALOG_MESSAGE": "This will approve ALL picks for the destination that do not require scanning.<br /><br />Do you want to approve ALL?",
   "BACK": "Back",
   "BAG": "Bag",
   "BAGS": "Bags",
@@ -25,6 +27,9 @@
   "BIN": "Bin",
   "BINS": "Bins",
   "QUICK_PICK_QUEUE_BINS_HEADER": "Remaining / Total Bins",
+  "XR2_UTILIZATION_TYPE_HEADER": "Type",
+  "XR2_UTILIZATION_PERCENTAGE_USED_HEADER": "% Used",
+  "XR2_UTILIZATION_POCKETS_REMAINING_HEADER": "Pockets Remaining",
   "CABINET": "Cabinet",
   "CABINETS": "Cabinets",
   "CANCEL": "Cancel",
@@ -104,6 +109,8 @@
   "ITEM": "Item",
   "ITEMS": "Items",
   "ITEMSFILLED": "Items Filled",
+  "DOSE":"Dose",
+  "DOSES":"Doses",
   "LAST_CYCLE_COUNT_DATE": "Cycle Count Due",
   "LINEITEMS": "Line Items",
   "LEASE_BUSY_TITLE": "Device Request in Progress",
@@ -332,7 +339,10 @@
   "REFRESH": "Refresh",
   "LAST_UPDATED": "Last Updated",
   "XR2_EXCEPTIONS_TRAY_UNKNOWN_TYPE":"Unknown",
-
-  "ASSIGNED_ITEMS": "Assigned"
+  "ASSIGNED_ITEMS": "Assigned",
+  "EXPIRED":"Expired",
+  "EXPIRING_THIS_MONTH":"Expiring this Month",
+  "NOT_ASSIGNED":"Not Assigned",
+  "POCKETS_WITH_ERRORS":"Pockets with Errors"
 
 }
