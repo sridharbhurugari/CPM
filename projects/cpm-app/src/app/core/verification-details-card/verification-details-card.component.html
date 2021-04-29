@@ -3,7 +3,7 @@
     <oc-svgicon icon="spin" theme="dark"></oc-svgicon>
   </div>
   <div class="card" *ngIf="this.verificationDestinationDetails">
-    <div class="card-header ocactionheader">
+    <div class="cheader">
       <span class="cpm-action-title" *ngIf="destinationType===this.destinationTypes.Area">
         <app-validation-icon *ngIf="containsSafetyStockMedication(this.verificationDestinationDetails) && !this.IsBoxBarcodeVerified"
         id="scan-icon"
@@ -18,7 +18,7 @@
       </span>
       <span class="cpm-action-title-multi-line" *ngIf="destinationType!==this.destinationTypes.Area">
         <app-validation-icon *ngIf="containsSafetyStockMedication(this.verificationDestinationDetails) && !this.IsBoxBarcodeVerified"
-        id="scan-icon"
+        id="scan-icon-header"
         [iconWidth]="40"
         [iconHeight]="40"
         [iconString]="'scan'"
@@ -33,7 +33,7 @@
       [mode]="'secondary'" [buttonText]="'APPROVE_ALL' | translate" [buttonIcon] ="'checkmark'" (click)="this.onApproveAllClick()">
       </oc-button-action>
     </div>
-    <div class="card-body cbody">
+    <div class="cbody">
       <div class="left-panel">
         <div class="scroll-container">
           <div class="scroll-container-content">
@@ -52,10 +52,9 @@
               </div>
             </div>
             <div class="body">
-              <div class="body-content">
-                <div id="{{row.Id}}" class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
-                (click)='medicationClicked(row)'
-                [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
+              <div id="{{row.Id}}" class="row" *ngFor="let row of this.verificationDestinationDetails; let i = index; trackBy: trackByItemId"
+              (click)='medicationClicked(row)'
+              [class.active]="this.verificationDestinationDetails[i] == this.selectedVerificationDestinationDetail">
                 <div class="label" [ngStyle]="{maxWidth: 95 - calculateDynamicIconWidth(row) + '%'}">
                   <app-validation-icon *ngIf="row.IsSafetyStockItem && !row.IsMedBarcodeVerified"
                     id="scan-icon"
@@ -82,10 +81,8 @@
                     [label]="'OUTPUT_DEVICE' | translate">
                   </app-cp-clickable-icon>
                 </div>
-                </div>
               </div>
             </div>
-            <div class="footer"></div>
           </div>
         </div>
       </div>
