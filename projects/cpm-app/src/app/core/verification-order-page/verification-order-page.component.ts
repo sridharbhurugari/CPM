@@ -80,7 +80,6 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       this.verificationService.getPickPriority(data.OrderId)
       .subscribe((pickPriority) => {
         const navigationParams = {
-          PriorityCode: pickPriority.PriorityCode,
           OrderId: data.OrderId,
           DeviceId: data.DeviceId,
           DeviceDescription: '',
@@ -88,6 +87,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
           Date: new Date(),
           Route:  VerificationRouting.DetailsPage,
           RoutedByScan: true,
+          PriorityCode: pickPriority.PriorityCode,
           PriorityVerificationGrouping: pickPriority.PriorityVerificationGrouping
         } as IVerificationNavigationParameters
 

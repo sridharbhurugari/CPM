@@ -19,7 +19,6 @@ import { IVerificationNavigationParameters } from '../../shared/interfaces/i-ver
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
 import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
-import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 
 @Component({
   selector: 'app-verification-destination-page',
@@ -42,6 +41,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   private continueRoute = VerificationRouting.DetailsPage;
   private _loggingCategory: string = LoggingCategory.Verification;
   private _componentName: string = "VerificationDestinationPageComponent";
+  private readonly _HourDisplayString = '24HR';
 
   ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
@@ -94,10 +94,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
           DeviceId: data.DeviceId,
           DeviceDescription: '',
           DestinationId: data.DestinationId,
-          PriorityCode: pickPriority.PriorityCode,
           Date: new Date(),
           Route:  VerificationRouting.DetailsPage,
           RoutedByScan: true,
+          PriorityCode: pickPriority.PriorityCode,
           PriorityVerificationGrouping: pickPriority.PriorityVerificationGrouping
         } as IVerificationNavigationParameters
 
@@ -179,24 +179,17 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationViewData) {
     var stringResult = ''
-    if(verificationDetailViewData.DeviceDescription) {
-      stringResult += verificationDetailViewData.DeviceDescription;
-    }
+    const deviceDescription = verificationDetailViewData.DeviceDescription ? verificationDetailViewData.DeviceDescription : '';
+    const orderId = this.navigationParameters.PriorityVerificationGrouping ? this._HourDisplayString :
+    verificationDetailViewData.OrderId ? verificationDetailViewData.OrderId: '';
+    const fillDate = verificationDetailViewData.FillDate ? this.transformDateTime(verificationDetailViewData.FillDate): '';
 
-    if(verificationDetailViewData.OrderId) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
-      }
+    stringResult += deviceDescription;
+    stringResult += stringResult.length > 0 ? ' - ' : '';
+    stringResult += orderId;
+    stringResult += stringResult.length > 0 ? ' - ' : '';
+    stringResult += fillDate;
 
-      stringResult += verificationDetailViewData.OrderId;
-    }
-
-    if(verificationDetailViewData.FillDate) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
-      }
-      stringResult += this.transformDateTime(verificationDetailViewData.FillDate);;
-    }
     this.headerSubTitle = of(stringResult);
   }
 

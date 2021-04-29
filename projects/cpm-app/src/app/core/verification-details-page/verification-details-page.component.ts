@@ -21,6 +21,7 @@ import { IVerificationDestinationDetailViewData } from '../../api-core/data-cont
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { IVerificationDataParameters } from '../../api-core/data-contracts/i-verification-data-parameters';
+
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -110,11 +111,11 @@ export class VerificationDetailsPageComponent implements OnInit {
       // Load new data
       if(this.isDifferentBox(data)) {
         this.verificationService.getPickPriority(data.OrderId).subscribe((pickPriority) => {
-          this.navigationParameters.PriorityCode = pickPriority.PriorityCode
           this.navigationParameters.OrderId = data.OrderId;
-          this.navigationParameters.DestinationId = data.DestinationId;
           this.navigationParameters.DeviceId = data.DeviceId;
+          this.navigationParameters.DestinationId = data.DestinationId;
           this.navigationParameters.RoutedByScan = true;
+          this.navigationParameters.PriorityCode = pickPriority.PriorityCode
           this.navigationParameters.PriorityVerificationGrouping = pickPriority.PriorityVerificationGrouping;
           this.LoadData();
         });
@@ -185,24 +186,16 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationDetailViewData) {
     var stringResult = ''
-    if(verificationDetailViewData.DeviceDescription) {
-      stringResult += verificationDetailViewData.DeviceDescription;
-    }
+    const deviceDescription = verificationDetailViewData.DeviceDescription ? verificationDetailViewData.DeviceDescription : '';
+    const orderId = verificationDetailViewData.OrderId ? verificationDetailViewData.OrderId: '';
+    const fillDate = verificationDetailViewData.FillDate ? this.transformDateTime(verificationDetailViewData.FillDate): '';
 
-    if(verificationDetailViewData.OrderId) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
-      }
+    stringResult += deviceDescription;
+    stringResult += stringResult.length > 0 ? ' - ' : '';
+    stringResult += orderId;
+    stringResult += stringResult.length > 0 ? ' - ' : '';
+    stringResult += fillDate;
 
-      stringResult += verificationDetailViewData.OrderId;
-    }
-
-    if(verificationDetailViewData.FillDate) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
-      }
-      stringResult += this.transformDateTime(verificationDetailViewData.FillDate);
-    }
     this.headerSubTitle = of(stringResult);
   }
 
