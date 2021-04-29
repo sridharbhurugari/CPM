@@ -51,7 +51,8 @@ describe('UtilizationPageComponent', () => {
         { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: UtilizationEventConnectionService, useValue: utilizationEventConnectionService},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
-        { provide: WindowService, useValue: { getHash: () => '' } }
+        { provide: WindowService, useValue: { getHash: () => '' } },
+        { provide: Router, useValue: {} }
        ]
     })
     .compileComponents();
@@ -335,3 +336,4 @@ describe('UtilizationPageComponent', () => {
   });
 
 });
+
