@@ -7,43 +7,36 @@
 
 <oc-grid  #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
-    <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
-      [columnPropertyName]="'ItemId'" headerResourceKey="ITEM_ID"
+    <div app-col-header-sortable class="col" ocGridColResize data-width="550" data-colwrap="true"
+      [columnPropertyName]="'ItemId'" headerResourceKey="DESCRIPTION_ID"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
-      [columnPropertyName]="'ItemDescription'" headerResourceKey="DESCRIPTION"
-      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-    </div>
-    <div app-col-header-sortable class="col" ocGridColResize data-width="150" data-colwrap="true"
+    <div app-col-header-sortable class="col" data-width="125" data-colwrap="true"
+    [columnPropertyName]="'Inventory'" headerResourceKey="TOTAL_QOH"
+    [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+  </div>
+    <div app-col-header-sortable class="col" ocGridColResize data-width="175" data-colwrap="true"
       [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="col" data-width="300" data-colwrap="true"
-    [columnPropertyName]="'Inventory'" headerResourceKey="Inventory"
-    [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-  </div>
-    <div app-col-header-sortable class="last" ocGridColResize data-width="150" data-colwrap="true"
-    [columnPropertyName]="'ExpiredCount'" headerResourceKey="ExpiredCount"
+    <div app-col-header-sortable class="last" ocGridColResize data-width="350" data-colwrap="true"
+    [columnPropertyName]="'ExpiredCount'" headerResourceKey="EXPIRED_QTY"
     [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
   </div>
 
  </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"  *ngFor="let row of (gridData$ | async) | searchPipe:searchTextFilter:searchFields">
-        <div class="col" [attr.data-title]="'ITEM_ID' | translate">
-          {{row.ItemId}}
+        <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
+          {{row.ItemDescription}}<br>{{row.ItemId}}
         </div>
-        <div class="col" [attr.data-title]="'DESCRIPTION' | translate">
-          {{row.ItemDescription}}
+        <div class="col" [attr.data-title]="'TOTAL_QOH' | translate" >
+          {{row.Inventory}}
         </div>
         <div class="col" [attr.data-title]="'POCKET_TYPE_DESCRIPTION' | translate">
           {{row.PocketTypeDescription}}
         </div>
-        <div class="col" [attr.data-title]="'INVENTORY' | translate" >
-          {{row.Inventory}}
-        </div>
-        <div class="last" [attr.data-title]="'ExpiredCount' | translate">
+        <div class="last" [attr.data-title]="'EXPIRED_QTY' | translate">
           {{row.ExpiredCount}}
         </div>
 

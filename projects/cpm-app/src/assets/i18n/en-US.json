@@ -346,6 +346,8 @@
   "POCKETS_WITH_ERRORS":"Pockets with Errors",
   "POCKET_TYPE_DESCRIPTION":"Pocket Type",
   "ERROR_COUNT":"Error Count",
-  "ERROR_DESCRIPTION":"Error Description"
-
+  "ERROR_DESCRIPTION":"Error Description",
+  "TOTAL_QOH":"Total QOH",
+  "EXPIRED_QTY":"Expired QTY",
+  "EXPIRING_QTY":"Expiring QTY"
 }
