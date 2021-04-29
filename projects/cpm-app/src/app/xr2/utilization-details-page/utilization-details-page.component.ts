@@ -44,11 +44,13 @@ export class UtilizationDetailsPageComponent implements OnInit {
     "Overstock"
   );
 
+  /* istanbul ignore next */
   constructor(private route: ActivatedRoute,
     private router: Router,
     private translateService: TranslateService,
     private xr2StorageCapacityDetailsDisplayService: Xr2StorageCapacityDetailsDisplayService) { }
 
+    /* istanbul ignore next */
   ngOnInit() {
     this.translateService.get('XR2_UTILIZATION_DETAILS_HEADER').subscribe((res: string) => {
       this.header = res;
@@ -64,16 +66,19 @@ export class UtilizationDetailsPageComponent implements OnInit {
     });
   }
 
+  /* istanbul ignore next */
   ngAfterViewInit() {
     this.searchElement.searchOutput$.subscribe((data) => {
       this.searchTextFilter = data;
     });
   }
 
+  /* istanbul ignore next */
   public onNavigateBack() {
     this.router.navigate(['xr2/utilization']);
   }
 
+  /* istanbul ignore next */
   orderChanged(orderedItems: Xr2StorageCapacityDetailsDisplay[]) {
     this.xr2StorageCapacityDetailsDisplays = orderedItems;
   }
