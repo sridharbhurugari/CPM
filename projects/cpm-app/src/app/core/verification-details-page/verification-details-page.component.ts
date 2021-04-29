@@ -115,8 +115,8 @@ export class VerificationDetailsPageComponent implements OnInit {
           this.navigationParameters.DeviceId = data.DeviceId;
           this.navigationParameters.DestinationId = data.DestinationId;
           this.navigationParameters.RoutedByScan = true;
-          this.navigationParameters.PriorityCode = pickPriority.PriorityCode
-          this.navigationParameters.PriorityVerificationGrouping = pickPriority.PriorityVerificationGrouping;
+          this.navigationParameters.PriorityCode = pickPriority ? pickPriority.PriorityCode: null,
+          this.navigationParameters.PriorityVerificationGrouping = pickPriority ? pickPriority.PriorityVerificationGrouping: null,
           this.LoadData();
         });
       }
@@ -191,15 +191,17 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationDetailViewData) {
     var stringResult = ''
-    const deviceDescription = verificationDetailViewData.DeviceDescription ? verificationDetailViewData.DeviceDescription : '';
-    const orderId = verificationDetailViewData.OrderId ? verificationDetailViewData.OrderId: '';
-    const fillDate = verificationDetailViewData.FillDate ? this.transformDateTime(verificationDetailViewData.FillDate): '';
+    const stringsToDisplay = [];
+    if(verificationDetailViewData.DeviceDescription) stringsToDisplay.push(verificationDetailViewData.DeviceDescription);
+    if(verificationDetailViewData.OrderId) stringsToDisplay.push(verificationDetailViewData.OrderId);
+    if(verificationDetailViewData.FillDate) stringsToDisplay.push(this.transformDateTime(verificationDetailViewData.FillDate));
 
-    stringResult += deviceDescription;
-    stringResult += stringResult.length > 0 ? ' - ' : '';
-    stringResult += orderId;
-    stringResult += stringResult.length > 0 ? ' - ' : '';
-    stringResult += fillDate;
+    for(let i = 0; i < stringsToDisplay.length; i++) {
+      stringResult += stringsToDisplay[i];
+      if(i !== stringsToDisplay.length - 1) {
+        stringResult += ' - '
+      }
+    }
 
     this.headerSubTitle = of(stringResult);
   }

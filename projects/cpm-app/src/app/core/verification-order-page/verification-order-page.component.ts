@@ -86,8 +86,8 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
           Date: new Date(),
           Route:  VerificationRouting.DetailsPage,
           RoutedByScan: true,
-          PriorityCode: pickPriority.PriorityCode,
-          PriorityVerificationGrouping: pickPriority.PriorityVerificationGrouping
+          PriorityCode: pickPriority ? pickPriority.PriorityCode: null,
+          PriorityVerificationGrouping: pickPriority ? pickPriority.PriorityVerificationGrouping: null,
         } as IVerificationNavigationParameters
 
         const savedPageConfiguration = this.createSavedPageConfiguration();

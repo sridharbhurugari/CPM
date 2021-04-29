@@ -96,8 +96,8 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
           Date: new Date(),
           Route:  VerificationRouting.DetailsPage,
           RoutedByScan: true,
-          PriorityCode: pickPriority.PriorityCode,
-          PriorityVerificationGrouping: pickPriority.PriorityVerificationGrouping
+          PriorityCode: pickPriority ? pickPriority.PriorityCode: null,
+          PriorityVerificationGrouping: pickPriority ? pickPriority.PriorityVerificationGrouping: null,
         } as IVerificationNavigationParameters
 
         const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -176,18 +176,22 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     }
   }
 
-  private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationViewData) {
+  private generateHeaderSubTitle(verificationDestinationViewData: IVerificationDestinationViewData) {
     var stringResult = ''
-    const deviceDescription = verificationDetailViewData.DeviceDescription ? verificationDetailViewData.DeviceDescription : '';
-    const orderId = this.navigationParameters.PriorityVerificationGrouping ? this._HourDisplayString :
-    verificationDetailViewData.OrderId ? verificationDetailViewData.OrderId: '';
-    const fillDate = verificationDetailViewData.FillDate ? this.transformDateTime(verificationDetailViewData.FillDate): '';
+    const stringsToDisplay = [];
+    if(verificationDestinationViewData.DeviceDescription) stringsToDisplay.push(verificationDestinationViewData.DeviceDescription);
+    if(verificationDestinationViewData.OrderId) {
+      this.navigationParameters.PriorityVerificationGrouping ?
+      stringsToDisplay.push(this._HourDisplayString) :stringsToDisplay.push(verificationDestinationViewData.OrderId);
+    }
+    if(verificationDestinationViewData.FillDate) stringsToDisplay.push(this.transformDateTime(verificationDestinationViewData.FillDate));
 
-    stringResult += deviceDescription;
-    stringResult += stringResult.length > 0 ? ' - ' : '';
-    stringResult += orderId;
-    stringResult += stringResult.length > 0 ? ' - ' : '';
-    stringResult += fillDate;
+    for(let i = 0; i < stringsToDisplay.length; i++) {
+      stringResult += stringsToDisplay[i];
+      if(i !== stringsToDisplay.length - 1) {
+        stringResult += ' - '
+      }
+    }
 
     this.headerSubTitle = of(stringResult);
   }
