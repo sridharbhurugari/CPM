@@ -9,6 +9,7 @@ import { DestockPageComponent } from './destock-page/destock-page.component';
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { DetailsNotAssignedComponent } from './utilization-details-not-assigned/utilization-details-not-assigned.component';
+import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 
 const routes: Routes = [
   { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'utilization', component: UtilizationPageComponent },
   { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent },
   { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent },
+  { path: 'utilization/details', component: UtilizationDetailsPageComponent },
 ];
 
 @NgModule({

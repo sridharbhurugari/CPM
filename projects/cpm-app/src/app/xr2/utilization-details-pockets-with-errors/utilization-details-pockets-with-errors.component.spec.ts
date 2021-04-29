@@ -15,7 +15,7 @@ import { IErroredMedicationInfoDetail } from '../../api-xr2/data-contracts/i-uti
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
-describe('DestockPageComponent', () => {
+describe('DetailsPocketsWithErrorsComponent', () => {
   let component: DetailsPocketsWithErrorsComponent ;
   let fixture: ComponentFixture<DetailsPocketsWithErrorsComponent>;
   let translateService: Partial<TranslateService>;
