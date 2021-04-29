@@ -40,7 +40,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   private continueRoute = VerificationRouting.DetailsPage;
   private _loggingCategory: string = LoggingCategory.Verification;
   private _componentName: string = "VerificationDestinationPageComponent";
-  private readonly _HourDisplayString = '24HR';
+  private readonly _hourDisplayString = '24HR';
 
   ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
@@ -182,7 +182,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     if(verificationDestinationViewData.DeviceDescription) stringsToDisplay.push(verificationDestinationViewData.DeviceDescription);
     if(verificationDestinationViewData.OrderId) {
       this.navigationParameters.PriorityVerificationGrouping ?
-      stringsToDisplay.push(this._HourDisplayString) :stringsToDisplay.push(verificationDestinationViewData.OrderId);
+      stringsToDisplay.push(this._hourDisplayString) :stringsToDisplay.push(verificationDestinationViewData.OrderId);
     }
     if(verificationDestinationViewData.FillDate) stringsToDisplay.push(this.transformDateTime(verificationDestinationViewData.FillDate));
 
