@@ -21,7 +21,7 @@ export class DetailsNotAssignedComponent implements OnInit {
   // Grid, Search and Sort:
   gridData$: Observable<IUnassignedMedicationInfoDetail[]>;
   searchTextFilter: string;
-  searchFields = ['ItemCode', 'ItemDescription'];
+  searchFields = ['ItemCode'];
   currentSortPropertyName: string = 'ItemCode, PocketTypeDescription';
 
   ngUnsubscribe = new Subject();
