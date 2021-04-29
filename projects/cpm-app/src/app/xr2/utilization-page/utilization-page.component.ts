@@ -73,7 +73,6 @@ export class UtilizationPageComponent implements OnInit {
 
 
   constructor(private utilizationService: UtilizationService,
-    private router: Router,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
