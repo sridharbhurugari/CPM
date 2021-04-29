@@ -17,6 +17,8 @@ import { ErroredMedicationInfo } from '../model/utilization-errored-medication-i
 import { EventEventId } from '../../shared/constants/event-event-id';
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 import { Router } from '@angular/router';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+
 
 describe('UtilizationPageComponent', () => {
   let component: UtilizationPageComponent ;
@@ -24,10 +26,16 @@ describe('UtilizationPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let utilizationService: Partial<UtilizationService>;
   let utilizationEventConnectionService: Partial<UtilizationEventConnectionService>;
+  let simpleDialogService: Partial<SimpleDialogService>;
 
   beforeEach(async(() => {
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService))
+    };
+
+    simpleDialogService = {
+      displayErrorOk: jasmine.createSpy('displayErrorOk'),
+      displayInfoOk: jasmine.createSpy('displayInfoOk'),
     };
 
     utilizationService = {
@@ -51,7 +59,8 @@ describe('UtilizationPageComponent', () => {
         { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: UtilizationEventConnectionService, useValue: utilizationEventConnectionService},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
-        { provide: WindowService, useValue: { getHash: () => '' } }
+        { provide: WindowService, useValue: { getHash: () => '' } },
+        { provide: SimpleDialogService, useValue: simpleDialogService }
        ]
     })
     .compileComponents();

@@ -8,19 +8,20 @@ import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-he
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DetailsExpiredComponent } from './utilization-details-expired.component';
 import { UtilizationDeailsService } from '../services/utilization-details.service';
-import { IDevice } from '../../api-core/data-contracts/i-device';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { IExpiredMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-expired-medication-info-detail';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
-describe('DestockPageComponent', () => {
+describe('DetailsExpiredComponent', () => {
   let component: DetailsExpiredComponent ;
   let fixture: ComponentFixture<DetailsExpiredComponent>;
   let translateService: Partial<TranslateService>;
   let utilizationDeailsService: Partial<UtilizationDeailsService>;
   let devicesService: Partial<DevicesService>;
+  let router: Partial<Router>;
 
   beforeEach(async(() => {
     const deviceId = 4;
@@ -37,6 +38,7 @@ describe('DestockPageComponent', () => {
       getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
     };
 
+    router = {navigate: jasmine.createSpy('navigate') };
     let activatedRoute = { snapshot: { paramMap : { get: () => deviceId } } };
 
     let expiredMedicationInfoDetail: IExpiredMedicationInfoDetail[] = [];
@@ -55,7 +57,7 @@ describe('DestockPageComponent', () => {
       providers: [
         { provide: UtilizationDeailsService, useValue: utilizationDeailsService },
         { provide: DevicesService, useValue: devicesService},
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: activatedRoute },
        ]
     })
@@ -72,4 +74,33 @@ describe('DestockPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('Search filter text on search filter event', () => {
+    const filter = 'filter';
+
+    component.onSearchTextFilterEvent(filter);
+
+    expect(component.searchTextFilter).toBe(filter);
+  });
+
+  describe('Back Click Button Action', () => {
+    it('should emit back event on back click', () => {
+      component.onBackClick();
+
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization')]));
+    });
+  });
+
+  describe('Queue filtering/sorting', () => {
+    it('should set sort order on column selected event', () => {
+      const mockSortEvent = {} as IColHeaderSortChanged;
+      const expectedSortOrder = 'asc';
+      const expectedColumnName = 'column';
+      mockSortEvent.SortDirection = expectedSortOrder;
+      mockSortEvent.ColumnPropertyName = expectedColumnName;
+
+      component.columnSelected(mockSortEvent);
+
+      expect(component.currentSortPropertyName).toBe(expectedColumnName);
+    });
+  });
 });
