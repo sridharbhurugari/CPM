@@ -10,4 +10,6 @@ export class Xr2StorageCapacityDetailsDisplay {
   TrayTypeQoh: number;
   TotalXr2Qoh: number;
   IsMultiDose: boolean;
+  Overstock: string;
+  Packsize: string;
 }

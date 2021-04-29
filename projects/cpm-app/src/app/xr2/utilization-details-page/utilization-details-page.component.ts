@@ -37,8 +37,11 @@ export class UtilizationDetailsPageComponent implements OnInit {
   readonly totalXr2QohName = nameof<Xr2StorageCapacityDetailsDisplay>(
     "TotalXr2Qoh"
   );
-  readonly isMultiDoseName = nameof<Xr2StorageCapacityDetailsDisplay>(
-    "IsMultiDose"
+  readonly packsizeName = nameof<Xr2StorageCapacityDetailsDisplay>(
+    "Packsize"
+  );
+  readonly overstockName = nameof<Xr2StorageCapacityDetailsDisplay>(
+    "Overstock"
   );
 
   constructor(private route: ActivatedRoute,

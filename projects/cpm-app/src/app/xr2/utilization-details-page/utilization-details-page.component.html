@@ -28,13 +28,16 @@
           [columnPropertyName]="itemDescriptionName" headerResourceKey="XR2_UTILIZATION_ITEM_HEADER">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
-        [columnPropertyName]="isMultiDoseName" headerResourceKey="XR2_UTILIZATION_PACKSIZE_HEADER">
+        [columnPropertyName]="packsizeName" headerResourceKey="XR2_UTILIZATION_PACKSIZE_HEADER">
       </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
           [columnPropertyName]="trayTypeQohName" headerResourceKey="XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER">
         </div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
           [columnPropertyName]="totalXr2QohName" headerResourceKey="XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER">
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
+          [columnPropertyName]="overstockName" headerResourceKey="XR2_UTILIZATION_OVERSTOCK_HEADER">
         </div>
       </ng-container>
       <ng-container class="ocgridbody">
@@ -45,13 +48,16 @@
             <span>{{xr2StorageCapacityDisplay.ItemId}}</span>
           </div>
           <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PACKSIZE_HEADER' | translate">
-            {{xr2StorageCapacityDisplay.IsMultiDose == true ? 'Multidose' : 1}}
+            {{xr2StorageCapacityDisplay.Packsize}}
           </div>
           <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
             {{xr2StorageCapacityDisplay.TrayTypeQoh}}
           </div>
           <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
             {{xr2StorageCapacityDisplay.TotalXr2Qoh}}
+          </div>
+          <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
+            {{xr2StorageCapacityDisplay.Overstock}}
           </div>
         </div>
       </ng-container>
