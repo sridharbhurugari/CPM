@@ -7,7 +7,6 @@ import { VerificationService } from '../../api-core/services/verification.servic
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { VerificationDashboardData } from '../../shared/model/verification-dashboard-data';
-import { VerificationDestinationItem } from '../../shared/model/verification-destination-item';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { VerifiableItem } from '../../shared/model/verifiable-item';
@@ -20,7 +19,8 @@ import { IVerificationDashboardData } from '../../api-core/data-contracts/i-veri
 import { IVerificationDestinationDetailViewData } from '../../api-core/data-contracts/i-verification-destination-detail-view-data';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
-import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
+import { IVerificationDataParameters } from '../../api-core/data-contracts/i-verification-data-parameters';
+
 @Component({
   selector: 'app-verification-details-page',
   templateUrl: './verification-details-page.component.html',
@@ -30,9 +30,11 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   @Output() pageNavigationEvent: EventEmitter<IVerificationNavigationParameters> = new EventEmitter();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
+  @Output() displayYesNoDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() approveAllClickSubject: Observable<void>;
   @Input() rejectReasons: string[];
 
 
@@ -42,8 +44,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   private _componentName = "VerificationDetailsPageComponent";
 
   ngUnsubscribe = new Subject();
-  verificationDestinationItems: Observable<VerificationDestinationItem[]>;
-  verificationDashboardData: Observable<VerificationDashboardData>;
+  verificationDashboardData: Observable<IVerificationDashboardData>;
   verificationDestinationDetails: Observable<IVerificationDestinationDetail[]>;
   completedDestinationDetails: Observable<IVerificationDestinationDetail[]>;
   dashboardUpdateSubject: Subject<IVerificationDashboardData> = new Subject();
@@ -101,7 +102,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       if(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail
         && this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail === this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail
         && this.isDifferentBox(data)) {
-        this.childVerificationDetailsCardComponent.approveItem(this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail);
+        this.childVerificationDetailsCardComponent.approveItems([this.childVerificationDetailsCardComponent.scanToAdvanceVerificationDestinationDetail]);
       }
 
       // Verify the current box
@@ -109,6 +110,7 @@ export class VerificationDetailsPageComponent implements OnInit {
 
       // Load new data
       if(this.isDifferentBox(data)) {
+        // TODO: Add Priority
         this.navigationParameters.OrderId = data.OrderId;
         this.navigationParameters.DestinationId = data.DestinationId;
         this.navigationParameters.DeviceId = data.DeviceId;
@@ -124,7 +126,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     let navigationParams: IVerificationNavigationParameters;
     if(this.validDestinationDetails) {
       navigationParams = {
-        PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+        PriorityCode: this.navigationParameters.PriorityCode,
         OrderId: this.navigationParameters.OrderId,
         DeviceId: this.navigationParameters.DeviceId,
         DestinationId: null,
@@ -133,7 +135,7 @@ export class VerificationDetailsPageComponent implements OnInit {
       } as IVerificationNavigationParameters;
     } else {
       navigationParams = {
-        PriorityCodeDescription: null,
+        PriorityCode: null,
         OrderId: null,
         DeviceId: null,
         DestinationId: null,
@@ -149,6 +151,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     this.displayWarningDialogEvent.emit(contents);
   }
 
+  onDisplayYesNoDialogEvent(contents: any) {
+    this.displayYesNoDialogEvent.emit(contents);
+  }
+
   private loadVerificationDestinationDetails(): void {
     // TODO - Determine what to do here if data cannot be loaded for some reason - perhaps they scanned something already verified.
     if(!this.navigationParameters || !this.navigationParameters.DestinationId || !this.navigationParameters.OrderId || !this.navigationParameters.DeviceId) {
@@ -160,10 +166,11 @@ export class VerificationDetailsPageComponent implements OnInit {
         this.generateHeaderTitle(verificationDetailViewData);
         this.generateHeaderSubTitle(verificationDetailViewData);
         this.generateSafetyStockSettings(verificationDetailViewData.DetailItems);
-        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems.filter(item => item.VerifiedStatus === VerificationStatusTypes.Unverified));
+        this.verificationDestinationDetails = of(verificationDetailViewData.DetailItems
+          .filter((item => item.VerifiedStatus === VerificationStatusTypes.Unverified)).map((unverifiedItem) => new VerificationDestinationDetail(unverifiedItem)));
         this.completedDestinationDetails = of(verificationDetailViewData.DetailItems.filter((item) => {
         return item.VerifiedStatus === VerificationStatusTypes.Rejected || item.VerifiedStatus === VerificationStatusTypes.Verified
-        }));
+        }).map((completedItem) => new VerificationDestinationDetail(completedItem)));
       }), shareReplay(1);
   }
 
@@ -218,10 +225,10 @@ export class VerificationDetailsPageComponent implements OnInit {
     const dashboardParams = {
       OrderId: this.navigationParameters.OrderId,
       DeviceId: this.navigationParameters.DeviceId,
-      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      PriorityCode: this.navigationParameters.PriorityCode,
       RoutedByScan: this.navigationParameters.RoutedByScan,
       PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
-    } as IDashboardDataParameters
+    } as IVerificationDataParameters
 
     this.verificationDashboardData = this.verificationService
     .getVerificationDashboardData(dashboardParams).pipe(
@@ -282,8 +289,9 @@ export class VerificationDetailsPageComponent implements OnInit {
       CompleteOutputDevices: verificationDestinationDetails.filter(x => x.HasOutputDeviceVerification).length
      } as IVerificationDashboardData
 
+    this.childVerificationDetailsCardComponent.approveAllSaving = false;
     verificationDestinationDetails.map(detail => detail.Saving = false);
-    this.childVerificationDetailsCardComponent.removeVerifiedDetails(verificationDestinationDetails);
+    this.childVerificationDetailsCardComponent.completeAndRemoveVerifiedDetails(verificationDestinationDetails);
     if(verificationDestinationDetails.includes(this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail)) {
       this.childVerificationDetailsCardComponent.selectedVerificationDestinationDetail = null;
     }
@@ -296,6 +304,7 @@ export class VerificationDetailsPageComponent implements OnInit {
   }
 
   private handleSaveVerificationFailure(verificationDestinationDetails: VerificationDestinationDetail[], error): void {
+    this.childVerificationDetailsCardComponent.approveAllSaving = false;
     verificationDestinationDetails.map(detail => detail.Saving = false);
     /* istanbul ignore next */
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,

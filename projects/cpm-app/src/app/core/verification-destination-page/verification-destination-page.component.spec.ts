@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
@@ -21,6 +22,7 @@ import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { VerificationDashboardComponent } from '../verification-dashboard/verification-dashboard.component';
+import { VerificationDestinationHourQueueComponent } from '../verification-destination-hour-queue/verification-destination-hour-queue.component';
 import { VerificationDestinationQueueComponent } from '../verification-destination-queue/verification-destination-queue.component';
 
 import { VerificationDestinationPageComponent } from './verification-destination-page.component';
@@ -38,7 +40,7 @@ describe('VerificationDestinationPageComponent', () => {
     DeviceId: 1,
     DeviceDescription: 'devdesc1',
     DestinationId: 'dest1',
-    PriorityCodeDescription: 'prioritycodedesc1',
+    PriorityCode: 'prioritycode',
     Date: new Date(1, 1, 1, 1, 1, 1, 1),
     Route:  VerificationRouting.DetailsPage,
     RoutedByScan: false,
@@ -63,8 +65,8 @@ describe('VerificationDestinationPageComponent', () => {
   };
 
   verificationService = {
-    getVerificationDestinations: () => of(verificationDestinationViewData),
-    getVerificationDashboardData: () => of()
+    getVerificationDestinations: jasmine.createSpy('getVerificationDestinations').and.returnValue(of(verificationDestinationViewData)),
+    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of())
   };
 
   logService = {
@@ -73,9 +75,9 @@ describe('VerificationDestinationPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent, VerificationDashboardComponent,
-      MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer, MockTranslatePipe, MockSearchBox,
-      MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent, MockCpDataCardComponent],
+      declarations: [ VerificationDestinationPageComponent, VerificationDestinationQueueComponent, VerificationDestinationHourQueueComponent,
+         VerificationDashboardComponent, MockCpGeneralHeaderComponent, MockColHeaderSortable, MockAppHeaderContainer,
+         MockTranslatePipe, MockSearchBox, MockSearchPipe, MockCpGeneralHeaderComponent, MockCpDataLabelComponent, MockCpDataCardComponent],
       imports: [GridModule],
       providers: [
         { provide: TranslateService, useValue: translateService },
@@ -100,6 +102,30 @@ describe('VerificationDestinationPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Rendering hour or destination queue', () => {
+    it('should render destination queue on non grouping order', () => {
+      component.navigationParameters = {
+        PriorityVerificationGrouping: false
+      } as IVerificationNavigationParameters
+
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationHourQueueComponent))).toBeFalsy();
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationQueueComponent))).toBeTruthy();
+    });
+
+    it('should render hour queue on grouping order', () => {
+      component.navigationParameters = {
+        PriorityVerificationGrouping: true
+      } as IVerificationNavigationParameters
+
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationHourQueueComponent))).toBeTruthy();
+      expect(fixture.debugElement.query(By.directive(VerificationDestinationQueueComponent))).toBeFalsy();
+    });
   });
 
   describe('Eventing', () => {
