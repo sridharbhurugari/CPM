@@ -27,6 +27,7 @@ import { IVerificationDestinationDetailViewData } from '../../api-core/data-cont
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
+import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 
 describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
@@ -77,6 +78,7 @@ describe('VerificationDetailsPageComponent', () => {
     getVerificationDestinations: () => of({} as IVerificationDestinationViewData),
     getVerificationDashboardData: () => of({} as IVerificationDashboardData),
     getVerificationDestinationDetails: () => of(verificationDestinationDetailsViewData),
+    getPickPriority: () => of({} as IPickPriority),
     saveVerification: jasmine.createSpy('saveVerification').and.returnValue(of(true)),
   };
 

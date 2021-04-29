@@ -23,6 +23,7 @@ import { MockButtonToggle } from '../testing/mock-button-toggle-box.spec';
 
 import { VerificationOrderPageComponent } from './verification-order-page.component';
 import { map } from 'rxjs/operators';
+import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 
 describe('VerificationOrderPageComponent', () => {
   let component: VerificationOrderPageComponent;
@@ -34,11 +35,12 @@ describe('VerificationOrderPageComponent', () => {
 
   translateService = {
     get: jasmine.createSpy('get').and.returnValue(of(translateService)),
-    getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
+    getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US')),
   };
 
   verificationService = {
     getVerificationOrders: () => of([]),
+    getPickPriority: () => of({} as IPickPriority)
   };
 
   logService = {

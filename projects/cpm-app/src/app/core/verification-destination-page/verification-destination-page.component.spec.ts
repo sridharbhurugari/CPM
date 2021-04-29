@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
 import { LogService } from '../../api-core/services/log-service';
@@ -66,7 +67,8 @@ describe('VerificationDestinationPageComponent', () => {
 
   verificationService = {
     getVerificationDestinations: jasmine.createSpy('getVerificationDestinations').and.returnValue(of(verificationDestinationViewData)),
-    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of())
+    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of()),
+    getPickPriority: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of({} as IPickPriority))
   };
 
   logService = {
