@@ -1,5 +1,5 @@
 :host {
-  height: calc(100% - 162px);
+  height: calc(100vh - 258px);
   width: 100%;
   margin-bottom: 5px;
 }
@@ -41,7 +41,7 @@
 
 .loading {
   display: flex;
-  height: 750px;
+  height: calc(100vh - 258px);
   width: 100%;
   align-items: center;
   justify-content: center;
