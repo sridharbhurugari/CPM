@@ -10,4 +10,5 @@ export class Xr2StorageCapacityDisplay implements IXr2StorageCapacityDisplay {
   PocketTypeDefinition: string;
   PercentageUsed: number;
   PocketsRemaining: number;
+  PocketInventoryCount: number;
 }
