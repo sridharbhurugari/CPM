@@ -33,7 +33,9 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
     const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
-    this.gridData$ = utilizationDeailsService.pocketsWithErrors(deviceId).pipe(shareReplay(1));
+    this.gridData$ = utilizationDeailsService.pocketsWithErrors(deviceId).pipe(shareReplay(1)).pipe(map(d => {
+      return _.orderBy(d, x => x[this.currentSortPropertyName]);
+    }));
     }
 
   ngOnInit() {
