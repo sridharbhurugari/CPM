@@ -22,10 +22,9 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
   gridData$: Observable<IErroredMedicationInfoDetail[]>;
   searchTextFilter: string;
   searchFields = ['ItemId', 'ItemDescription'];
-  currentSortPropertyName: string = 'ItemId, PocketTypeDescription, ErrorDescription';
+  currentSortPropertyName: string = 'ItemDescription, PocketTypeDescription, ErrorDescription';
 
   ngUnsubscribe = new Subject();
-  ;
 
   constructor( utilizationDeailsService: UtilizationDeailsService,
     devicesService: DevicesService,
