@@ -31,6 +31,7 @@ import { DestockTypeInfoComponent } from './destock-typeinfo/destock-typeinfo.co
 import { DestockHeaderComponent } from './destock-header/destock-header.component';
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
+import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 
@@ -59,6 +60,7 @@ import { UtilizationDetailsPageComponent } from './utilization-details-page/util
     DestockHeaderComponent,
     UtilizationPageComponent,
     UtilizationHeaderComponent,
+    DetailsPocketsWithErrorsComponent,
     UtilizationDetailsPageComponent,
   ],
   imports: [

@@ -73,7 +73,6 @@ export class UtilizationPageComponent implements OnInit {
 
 
   constructor(private utilizationService: UtilizationService,
-    private simpleDialogService: SimpleDialogService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
@@ -300,7 +299,9 @@ setUtilizationService()
   showNotAssignedDetails()
   {}
   showPocketsWithErrorsDetails()
-  {}
+  {
+    this.router.navigate(['xr2/utilization/detailsPocketsWithErrors/', this.selectedDeviceInformation.DeviceId]);
+  }
 }
 export namespace UtilizationPageComponent
 {

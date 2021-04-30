@@ -7,6 +7,7 @@ import { Xr2EventsPageComponent } from "./xr2-events-page/xr2-events-page.compon
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
 import { DestockPageComponent } from './destock-page/destock-page.component';
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
+import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
   { path: 'destock', component: DestockPageComponent },
   { path: 'utilization', component: UtilizationPageComponent },
+  { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent },
   { path: 'utilization/details', component: UtilizationDetailsPageComponent },
 ];
 
