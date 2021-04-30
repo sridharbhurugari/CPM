@@ -22,7 +22,7 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
    gridData$: Observable<IExpiringMedicationInfoDetail[]>;
    searchTextFilter: string;
    searchFields = ['ItemId', 'ItemDescription'];
-   currentSortPropertyName: string = 'ItemId, PocketTypeDescription';
+   currentSortPropertyName: string = 'ItemDescription';
 
    ngUnsubscribe = new Subject();
    ;
@@ -34,7 +34,9 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
     const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
-    this.gridData$ = utilizationDeailsService.expiringThisMonth(deviceId).pipe(shareReplay(1));
+    this.gridData$ = utilizationDeailsService.expiringThisMonth(deviceId).pipe(shareReplay(1)).pipe(map(d => {
+      return _.orderBy(d, x => x[this.currentSortPropertyName]);
+    }));
     }
 
     ngOnInit() {

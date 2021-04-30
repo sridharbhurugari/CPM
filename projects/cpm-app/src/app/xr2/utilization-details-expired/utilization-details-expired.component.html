@@ -8,10 +8,10 @@
 <oc-grid  #ocgrid ocgridfilter="false">
   <ng-container class="ocgridheader">
     <div app-col-header-sortable class="col" ocGridColResize data-width="550" data-colwrap="true"
-      [columnPropertyName]="'ItemId'" headerResourceKey="DESCRIPTION_ID"
+      [columnPropertyName]="'ItemDescription'" headerResourceKey="DESCRIPTION_ID"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="col" data-width="125" data-colwrap="true"
+    <div app-col-header-sortable class="col" data-width="175" data-colwrap="true"
     [columnPropertyName]="'Inventory'" headerResourceKey="TOTAL_QOH"
     [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
   </div>
@@ -19,7 +19,7 @@
       [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="last" ocGridColResize data-width="350" data-colwrap="true"
+    <div app-col-header-sortable class="last" ocGridColResize data-width="300" data-colwrap="true"
     [columnPropertyName]="'ExpiredCount'" headerResourceKey="EXPIRED_QTY"
     [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
   </div>
