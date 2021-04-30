@@ -182,7 +182,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     if(verificationDestinationViewData.DeviceDescription) stringsToDisplay.push(verificationDestinationViewData.DeviceDescription);
     if(verificationDestinationViewData.OrderId) {
       this.navigationParameters.PriorityVerificationGrouping ?
-      stringsToDisplay.push(this._hourDisplayString) :stringsToDisplay.push(verificationDestinationViewData.OrderId);
+      stringsToDisplay.push(this._hourDisplayString) : stringsToDisplay.push(verificationDestinationViewData.OrderId);
     }
     if(verificationDestinationViewData.FillDate) stringsToDisplay.push(this.transformDateTime(verificationDestinationViewData.FillDate));
 

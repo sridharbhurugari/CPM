@@ -10,14 +10,14 @@
   <app-verification-dashboard
   [verificationDashboardData]="verificationDashboardData | async"
   ></app-verification-dashboard>
-  <app-verification-destination-hour-queue *ngIf="this.navigationParameters.PriorityVerificationGrouping"
+  <app-verification-destination-hour-queue *ngIf="this.navigationParameters && navigationParameters.PriorityVerificationGrouping"
   [unfilteredVerificationDestinationItems]="verificationDestinationItems | async"
   [searchTextFilter]="searchTextFilter"
   [savedPageConfiguration]="savedPageConfiguration"
   (gridRowClickEvent)="onGridRowClickEvent($event)"
   (sortEvent)="onSortEvent($event)"
   ></app-verification-destination-hour-queue>
-  <app-verification-destination-queue *ngIf="!this.navigationParameters.PriorityVerificationGrouping"
+  <app-verification-destination-queue *ngIf="this.navigationParameters && !this.navigationParameters.PriorityVerificationGrouping"
   [unfilteredVerificationDestinationItems]="verificationDestinationItems | async"
   [searchTextFilter]="searchTextFilter"
   [savedPageConfiguration]="savedPageConfiguration"

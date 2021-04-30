@@ -109,7 +109,9 @@ describe('VerificationOrderPageComponent', () => {
 
       expect(component.colHeaderSort).toBe(event);
     });
+  });
 
+  describe('Scanning', () => {
     it('should handle XR2 Picking Barcode Scan', () => {
       var barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);

@@ -254,7 +254,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     verificationDestinationDetails.map(detail => {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this._componentName + ' Saving Verifications, trackById: ' + detail.Id);
-    })
+    });
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
       detail.Saving = true;
