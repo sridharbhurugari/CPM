@@ -210,6 +210,7 @@
   "SELECT_SCAN_MED": "Select or scan an item to verify.",
   "SKIP": "Skip",
   "REROUTE": "Reroute",
+  "CANNOT_CALCULATE_OVERSTOCK_MESSAGE": "Overstock cannot be calculated when item is in more than 1 multidose pack size.",
   "STATUS": "Status",
   "TOTAL": "Total",
   "TOTAL_REQUESTED": "Total Requested",
