@@ -34,7 +34,7 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
     this.gridData$ = utilizationDeailsService.pocketsWithErrors(deviceId).pipe(shareReplay(1)).pipe(map(d => {
-      return _.orderBy(d, x => x[this.currentSortPropertyName]);
+      return _.orderBy(d, x => x.ItemDescription.toLocaleLowerCase());
     }));
     }
 
@@ -56,7 +56,13 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.gridData$ = this.gridData$.pipe(map(d => {
+      if (this.currentSortPropertyName == 'ItemDescription'){
+      return _.orderBy(d, x => x.ItemDescription.toLocaleLowerCase(), event.SortDirection);
+      }
+      else
+      {
       return _.orderBy(d, x => x[this.currentSortPropertyName], event.SortDirection);
+      }
     }));
   }
 }
