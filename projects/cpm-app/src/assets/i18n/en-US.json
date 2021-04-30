@@ -351,6 +351,7 @@
   "POCKETS_WITH_ERRORS":"Pockets with Errors",
   "POCKET_TYPE_DESCRIPTION":"Tray Type",
   "COUNT":"Count",
-  "ERROR_DESCRIPTION":"Error Description"
+  "ERROR_DESCRIPTION":"Error Description",
+  "XR2_ITEM_CODE":"XR2 Item Code"
 
 }

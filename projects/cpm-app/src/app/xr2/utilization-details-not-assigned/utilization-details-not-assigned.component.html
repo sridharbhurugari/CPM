@@ -8,7 +8,7 @@
 <oc-grid  #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
       <div app-col-header-sortable class="col" ocGridColResize data-width="530" data-colwrap="true"
-        [columnPropertyName]="'ItemCode'" headerResourceKey="ITEM_ID"
+        [columnPropertyName]="'ItemCode'" headerResourceKey="XR2_ITEM_CODE"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
       <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
@@ -26,7 +26,7 @@
     </ng-container>
     <ng-container class="ocgridbody">
       <div class="row"  *ngFor="let row of (gridData$ | async) | searchPipe:searchTextFilter:searchFields">
-        <div class="col" [attr.data-title]="'ITEM_ID' | translate">
+        <div class="col" [attr.data-title]="'XR2_ITEM_CODE' | translate">
           {{row.ItemCode}}
         </div>
         <div class="col" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
