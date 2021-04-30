@@ -44,14 +44,6 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
     this.ngUnsubscribe.next();
   }
 
-  // private resizeGrid() {
-  //   setTimeout(() => {
-  //     if (this.ocGrid) {
-  //       this.ocGrid.checkTableBodyOverflown();
-  //     }
-  //   }, 250);
-  // }
-
   onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
   }
