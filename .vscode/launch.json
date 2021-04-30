@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Underfilled",
+            "url": "https://localhost:40407/web/cpm-app/index.html?apiKey=sdkfjnb983t47h39gn7fh92fg39ng9h87ghf298h&clientId=7bde4a88-84ef-47d8-8472-05d102cb8f88&machineName=OC10-C8N16H2&useSecured=true&port=40407&ocapServerIP=localhost&endpointPrefix=api&machineToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InlMSlp5cWpYdUVkQnY5dnNRU3JWek9mQmlyMCIsImtpZCI6InlMSlp5cWpYdUVkQnY5dnNRU3JWek9mQmlyMCJ9.eyJpc3MiOiJodHRwczovLzEwLjE5LjI0NC41Njo0MDQwNyIsImF1ZCI6Imh0dHBzOi8vMTAuMTkuMjQ0LjU2OjQwNDA3L3Jlc291cmNlcyIsImV4cCI6MTYwNjY1ODExMCwibmJmIjoxNjAyNzcwMTEwLCJjbGllbnRfaWQiOiJPQ0FQTWFjaGluZUNsaWVudCIsInNjb3BlIjoiYXBpMiIsInN1YiI6Ik9DMTAtQzhOMTZIMiIsImF1dGhfdGltZSI6MTYwMjc3MDExMCwiaWRwIjoiaWRzcnYiLCJuYW1lIjoiT0MxMC1DOE4xNkgyIiwianRpIjoiMTJjMTkwODZjOGU0Y2ZkZWE3ODAxMjAyZjU4MWQyYzEiLCJhbXIiOlsibWFjaGluZWNyZWRlbnRpYWxzIl19.hZ_H_fW5ZGuU9Y3MsFW1ZVhs-E4lq7E07RMJqCRdE782PbgfA092AQ2u3v2R7h2r20F6g2aBamk_P4RQfI1QRCPKufz_S3ZG9PsPRrGMZ_Kc800KPboSt9iP0IOo5Qt4GtgUpGZIfTZCS9kiPQgBN4fnx9V9Mqomn8hVkJ0pCdJShqMptYouh8jxIDoiI9w_AShkn0zcS1vsM71-RGGOq5dwBSvzpNgbNWH9rISa7vaDZArGJd3lVV8EnDgnvRbNZTDPle79i8cHGxA884jy-xdaI9fJxKGyEzRHCNIoCkMGhQ8Fa706KD52IgE-u5V6Cu7rjjB2D05qVNAYDj7JyA&endpointPrefix=&endpoint=&userLocale=en-US#/core/picklists/underfilled",
+            "webRoot": "${workspaceFolder}/projects/cpm-app"
+        },
+        {
+          "type": "chrome",
+          "request": "launch",
+          "name": "Internal Transfer Guided pick",
+          "url": "https://localhost:40407/web/cpm-app/index.html?apiKey=sdkfjnb983t47h39gn7fh92fg39ng9h87ghf298h&clientId=e5e4f510-df57-4e8d-9ee3-d0c4f97ed613&machineName=OC10-C8N16H2&useSecured=true&port=40407&ocapServerIP=localhost&endpointPrefix=api&machineToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImZVTGlIdXhDNGtsQzg1clpIY1FPUUJzVlkxcyIsImtpZCI6ImZVTGlIdXhDNGtsQzg1clpIY1FPUUJzVlkxcyJ9.eyJpc3MiOiJodHRwczovLzEwLjE5LjI0My4xNzM6NDA0MDciLCJhdWQiOiJodHRwczovLzEwLjE5LjI0My4xNzM6NDA0MDcvcmVzb3VyY2VzIiwiZXhwIjoxNjIyMzE3NDIyLCJuYmYiOjE2MTg0Mjk0MjIsImNsaWVudF9pZCI6Ik9DQVBNYWNoaW5lQ2xpZW50Iiwic2NvcGUiOiJhcGkyIiwic3ViIjoiT0MxMC1DOE4xNkgyIiwiYXV0aF90aW1lIjoxNjE4NDI5NDIyLCJpZHAiOiJpZHNydiIsIm5hbWUiOiJPQzEwLUM4TjE2SDIiLCJqdGkiOiJmODZiZWUyNzNmOTVhMmZhODVkODRkZGRiOGYwNGM0NiIsImFtciI6WyJtYWNoaW5lY3JlZGVudGlhbHMiXX0.LYhKrxosp6AXrPwQ1-UE394-qV-u5ZUwmgQw96ox_VitrIYFicU6bpzXF9t9qAaXYW9MpH8TaG04E_T1kpOUjquTOlLNbfbcxG2eoo_y6bqO_hWEdRuuQGFgHZn7K7MPlrIQ3JgYSWaMn_L2Jj7jotPFVCQ0y79ewXuf-gHlKqj-t7HpARLE6iK4IugnpFJX3Yvl3g0wMRs-ElWD1DeyAXmSBVsL1x6wwO6W0fJWPc5vz21UYJ7W6ngK30vilgUo6M32Rk4FF13MKm5uTndlXH8qkQiuqRew9O111tgAlNbAhN6_Zs9d617V8_HIWljrO_AYxMykPLx8RGgR2hwZ6Q&endpointPrefix=&endpoint=&userLocale=en-US#/core/internalTransfer/guidedpicking?orderId=pha23-0000000028&allDevices=true",
+          "webRoot": "${workspaceFolder}/projects/cpm-app"
+      },
+
+        {
+          "type": "chrome",
+          "request": "launch",
+          "name": "XR2 QuickPick",
+          "url": "https://localhost:40407/web/cpm-app/index.html?apiKey=sdkfjnb983t47h39gn7fh92fg39ng9h87ghf298h&clientId=7bde4a88-84ef-47d8-8472-05d102cb8f88&machineName=OC10-C8N16H2&useSecured=true&port=40407&ocapServerIP=localhost&endpointPrefix=api&machineToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InlMSlp5cWpYdUVkQnY5dnNRU3JWek9mQmlyMCIsImtpZCI6InlMSlp5cWpYdUVkQnY5dnNRU3JWek9mQmlyMCJ9.eyJpc3MiOiJodHRwczovLzEwLjE5LjI0NC41Njo0MDQwNyIsImF1ZCI6Imh0dHBzOi8vMTAuMTkuMjQ0LjU2OjQwNDA3L3Jlc291cmNlcyIsImV4cCI6MTYwNjY1ODExMCwibmJmIjoxNjAyNzcwMTEwLCJjbGllbnRfaWQiOiJPQ0FQTWFjaGluZUNsaWVudCIsInNjb3BlIjoiYXBpMiIsInN1YiI6Ik9DMTAtQzhOMTZIMiIsImF1dGhfdGltZSI6MTYwMjc3MDExMCwiaWRwIjoiaWRzcnYiLCJuYW1lIjoiT0MxMC1DOE4xNkgyIiwianRpIjoiMTJjMTkwODZjOGU0Y2ZkZWE3ODAxMjAyZjU4MWQyYzEiLCJhbXIiOlsibWFjaGluZWNyZWRlbnRpYWxzIl19.hZ_H_fW5ZGuU9Y3MsFW1ZVhs-E4lq7E07RMJqCRdE782PbgfA092AQ2u3v2R7h2r20F6g2aBamk_P4RQfI1QRCPKufz_S3ZG9PsPRrGMZ_Kc800KPboSt9iP0IOo5Qt4GtgUpGZIfTZCS9kiPQgBN4fnx9V9Mqomn8hVkJ0pCdJShqMptYouh8jxIDoiI9w_AShkn0zcS1vsM71-RGGOq5dwBSvzpNgbNWH9rISa7vaDZArGJd3lVV8EnDgnvRbNZTDPle79i8cHGxA884jy-xdaI9fJxKGyEzRHCNIoCkMGhQ8Fa706KD52IgE-u5V6Cu7rjjB2D05qVNAYDj7JyA&endpointPrefix=&endpoint=&userLocale=en-US#/xr2/quickpick",
+          "webRoot": "${workspaceFolder}/projects/cpm-app"
+      },
+      {
+        "type": "chrome",
+        "request": "launch",
+        "name": "XR2 Utilization",
+        "url": "https://localhost:40407/web/cpm-app/index.html?apiKey=sdkfjnb983t47h39gn7fh92fg39ng9h87ghf298h&clientId=e5e4f510-df57-4e8d-9ee3-d0c4f97ed613&machineName=OC10-C8N16H2&useSecured=true&port=40407&ocapServerIP=localhost&endpointPrefix=api&machineToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImZVTGlIdXhDNGtsQzg1clpIY1FPUUJzVlkxcyIsImtpZCI6ImZVTGlIdXhDNGtsQzg1clpIY1FPUUJzVlkxcyJ9.eyJpc3MiOiJodHRwczovLzEwLjE5LjI0My4xNzM6NDA0MDciLCJhdWQiOiJodHRwczovLzEwLjE5LjI0My4xNzM6NDA0MDcvcmVzb3VyY2VzIiwiZXhwIjoxNjIyMzE3NDIyLCJuYmYiOjE2MTg0Mjk0MjIsImNsaWVudF9pZCI6Ik9DQVBNYWNoaW5lQ2xpZW50Iiwic2NvcGUiOiJhcGkyIiwic3ViIjoiT0MxMC1DOE4xNkgyIiwiYXV0aF90aW1lIjoxNjE4NDI5NDIyLCJpZHAiOiJpZHNydiIsIm5hbWUiOiJPQzEwLUM4TjE2SDIiLCJqdGkiOiJmODZiZWUyNzNmOTVhMmZhODVkODRkZGRiOGYwNGM0NiIsImFtciI6WyJtYWNoaW5lY3JlZGVudGlhbHMiXX0.LYhKrxosp6AXrPwQ1-UE394-qV-u5ZUwmgQw96ox_VitrIYFicU6bpzXF9t9qAaXYW9MpH8TaG04E_T1kpOUjquTOlLNbfbcxG2eoo_y6bqO_hWEdRuuQGFgHZn7K7MPlrIQ3JgYSWaMn_L2Jj7jotPFVCQ0y79ewXuf-gHlKqj-t7HpARLE6iK4IugnpFJX3Yvl3g0wMRs-ElWD1DeyAXmSBVsL1x6wwO6W0fJWPc5vz21UYJ7W6ngK30vilgUo6M32Rk4FF13MKm5uTndlXH8qkQiuqRew9O111tgAlNbAhN6_Zs9d617V8_HIWljrO_AYxMykPLx8RGgR2hwZ6Q&endpointPrefix=&endpoint=&userLocale=en-US#/xr2/utilization",
+        "webRoot": "${workspaceFolder}/projects/cpm-app"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "xr2 Queue",
+      "url": "https://localhost:40407/web/cpm-app/index.html?apiKey=sdkfjnb983t47h39gn7fh92fg39ng9h87ghf298h&clientId=7bde4a88-84ef-47d8-8472-05d102cb8f88&machineName=OC10-C8N16H2&useSecured=true&port=40407&ocapServerIP=localhost&endpointPrefix=api&machineToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InlMSlp5cWpYdUVkQnY5dnNRU3JWek9mQmlyMCIsImtpZCI6InlMSlp5cWpYdUVkQnY5dnNRU3JWek9mQmlyMCJ9.eyJpc3MiOiJodHRwczovLzEwLjE5LjI0NC41Njo0MDQwNyIsImF1ZCI6Imh0dHBzOi8vMTAuMTkuMjQ0LjU2OjQwNDA3L3Jlc291cmNlcyIsImV4cCI6MTYwNjY1ODExMCwibmJmIjoxNjAyNzcwMTEwLCJjbGllbnRfaWQiOiJPQ0FQTWFjaGluZUNsaWVudCIsInNjb3BlIjoiYXBpMiIsInN1YiI6Ik9DMTAtQzhOMTZIMiIsImF1dGhfdGltZSI6MTYwMjc3MDExMCwiaWRwIjoiaWRzcnYiLCJuYW1lIjoiT0MxMC1DOE4xNkgyIiwianRpIjoiMTJjMTkwODZjOGU0Y2ZkZWE3ODAxMjAyZjU4MWQyYzEiLCJhbXIiOlsibWFjaGluZWNyZWRlbnRpYWxzIl19.hZ_H_fW5ZGuU9Y3MsFW1ZVhs-E4lq7E07RMJqCRdE782PbgfA092AQ2u3v2R7h2r20F6g2aBamk_P4RQfI1QRCPKufz_S3ZG9PsPRrGMZ_Kc800KPboSt9iP0IOo5Qt4GtgUpGZIfTZCS9kiPQgBN4fnx9V9Mqomn8hVkJ0pCdJShqMptYouh8jxIDoiI9w_AShkn0zcS1vsM71-RGGOq5dwBSvzpNgbNWH9rISa7vaDZArGJd3lVV8EnDgnvRbNZTDPle79i8cHGxA884jy-xdaI9fJxKGyEzRHCNIoCkMGhQ8Fa706KD52IgE-u5V6Cu7rjjB2D05qVNAYDj7JyA&endpointPrefix=&endpoint=&userLocale=en-US#/xr2/xr2Queue",
+      "webRoot": "${workspaceFolder}/projects/cpm-app"
+  },
+        {
+          "type": "chrome",
+          "request": "launch",
+          "name": "Debug karma tests",
+          "url": "http://localhost:9876/debug.html",
+          "webRoot": "${workspaceFolder}/projects/cpm-app",
+          "runtimeArgs": [
+            "--headless"
+          ],
+          "sourceMaps": true,
+          "sourceMapPathOverrides": {
+            "webpack:/*": "${webRoot}/*",
+            "/./*": "${webRoot}/*",
+            "/src/*": "${webRoot}/*",
+            "/*": "*",
+            "/./~/*": "${webRoot}/node_modules/*"
+          },
+          "port": 9222
+        }
+    ]
+}
