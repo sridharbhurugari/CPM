@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
@@ -73,7 +72,6 @@ export class VerificationDestinationHourQueueComponent implements OnInit {
 
   translatables = [];
   translations$: Observable<any>;
-
 
   constructor() { }
 

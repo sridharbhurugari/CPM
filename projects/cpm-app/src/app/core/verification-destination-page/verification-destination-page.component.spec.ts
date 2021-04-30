@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GridModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 import { IVerificationDestinationItem } from '../../api-core/data-contracts/i-verification-destination-item';
 import { IVerificationDestinationViewData } from '../../api-core/data-contracts/i-verification-destination-view-data';
 import { LogService } from '../../api-core/services/log-service';
@@ -34,28 +35,16 @@ describe('VerificationDestinationPageComponent', () => {
   let verificationService: Partial<VerificationService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
   let logService: Partial<LogService>;
-
-  const navigationParams = {
-    OrderId: 'OrderID1',
-    DeviceId: 1,
-    DeviceDescription: 'devdesc1',
-    DestinationId: 'dest1',
-    PriorityCode: 'prioritycode',
-    Date: new Date(1, 1, 1, 1, 1, 1, 1),
-    Route:  VerificationRouting.DetailsPage,
-    RoutedByScan: false,
-    PriorityVerificationGrouping: false
-  } as IVerificationNavigationParameters;
-
   const detailItem = {} as IVerificationDestinationItem;
 
   let detailItems = [ Object.assign({}, detailItem)];
+  let mockDate =  new Date();
 
   const verificationDestinationViewData = {
     PriorityDescription: 'PriorDesc1',
     DeviceDescription: 'DevDesc1',
     OrderId: 'OrderId1',
-    FillDate: new Date(),
+    FillDate: mockDate,
     DetailItems: detailItems,
   } as IVerificationDestinationViewData;
 
@@ -66,7 +55,8 @@ describe('VerificationDestinationPageComponent', () => {
 
   verificationService = {
     getVerificationDestinations: jasmine.createSpy('getVerificationDestinations').and.returnValue(of(verificationDestinationViewData)),
-    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of())
+    getVerificationDashboardData: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of()),
+    getPickPriority: jasmine.createSpy('getVerificationDashboardData').and.returnValue(of({} as IPickPriority))
   };
 
   logService = {
@@ -92,7 +82,6 @@ describe('VerificationDestinationPageComponent', () => {
     fixture = TestBed.createComponent(VerificationDestinationPageComponent);
     component = fixture.componentInstance;
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
-    component.navigationParameters = navigationParams;
     component.savedPageConfiguration =  {} as IVerificationPageConfiguration;
     spyOn(component.pageNavigationEvent, 'emit');
     spyOn(component.displayWarningDialogEvent, 'emit');
@@ -125,6 +114,50 @@ describe('VerificationDestinationPageComponent', () => {
 
       expect(fixture.debugElement.query(By.directive(VerificationDestinationHourQueueComponent))).toBeTruthy();
       expect(fixture.debugElement.query(By.directive(VerificationDestinationQueueComponent))).toBeFalsy();
+    });
+  });
+
+  describe('Creating header strings', () => {
+    it('should show order header on order load', () => {
+      component.navigationParameters = {
+        PriorityCode: 'code',
+        OrderId: 'order',
+        DeviceId: 1,
+        RoutedByScan: false,
+        PriorityVerificationGrouping: false
+      } as IVerificationNavigationParameters;
+      const expectedDate = verificationDestinationViewData.FillDate.toLocaleString('en-us');
+
+      component.ngOnInit();
+
+      component.headerTitle.subscribe((string) => {
+        expect(string).toBe(verificationDestinationViewData.PriorityDescription);
+      });
+
+      component.headerSubTitle.subscribe((string) => {
+        expect(string).toBe(`${verificationDestinationViewData.DeviceDescription} - ${verificationDestinationViewData.OrderId} - ${expectedDate}`);
+      });
+    });
+
+    it('should show priority header on priority load', () => {
+      component.navigationParameters = {
+        PriorityCode: 'code',
+        OrderId: 'order',
+        DeviceId: 1,
+        RoutedByScan: false,
+        PriorityVerificationGrouping: true
+      } as IVerificationNavigationParameters;
+      const expectedDate = verificationDestinationViewData.FillDate.toLocaleString('en-us');
+
+      component.ngOnInit();
+
+      component.headerTitle.subscribe((string) => {
+        expect(string).toBe(verificationDestinationViewData.PriorityDescription);
+      });
+
+      component.headerSubTitle.subscribe((string) => {
+        expect(string).toBe(`${verificationDestinationViewData.DeviceDescription} - 24HR - ${expectedDate}`);
+      });
     });
   });
 
@@ -166,7 +199,9 @@ describe('VerificationDestinationPageComponent', () => {
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(1);
       expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(1);
     });
+  });
 
+  describe('Scanning', () => {
     it('should handle non XR2 Picking Barcode Scan', () => {
       var barcodeData = {BarCodeFormat: 'UP', BarCodeScanned: '123456789012', IsXr2PickingBarcode: false} as IBarcodeData;
       barcodeScannedInputSubject.next(barcodeData);
@@ -174,5 +209,5 @@ describe('VerificationDestinationPageComponent', () => {
       expect(component.pageNavigationEvent.emit).toHaveBeenCalledTimes(0);
       expect(component.pageConfigurationUpdateEvent.emit).toHaveBeenCalledTimes(0);
     });
-  })
+  });
 });
