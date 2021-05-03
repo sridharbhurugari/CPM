@@ -13,7 +13,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { IDashboardDataParameters } from '../../api-core/data-contracts/i-dashboard-data-parameters';
+import { IVerificationDataParameters } from '../../api-core/data-contracts/i-verification-data-parameters';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -31,7 +31,6 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   @Output() pageConfigurationUpdateEvent: EventEmitter<IVerificationPageConfiguration> = new EventEmitter();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
-
   @Input() navigationParameters: IVerificationNavigationParameters;
   @Input() savedPageConfiguration: IVerificationPageConfiguration;
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
@@ -41,6 +40,7 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
   private continueRoute = VerificationRouting.DetailsPage;
   private _loggingCategory: string = LoggingCategory.Verification;
   private _componentName: string = "VerificationDestinationPageComponent";
+  private readonly _hourDisplayString = '24HR';
 
   ngUnsubscribe = new Subject();
   verificationDestinationItems: Observable<IVerificationDestinationItem[]>;
@@ -86,21 +86,24 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
-      const navigationParams = {
-        OrderId: data.OrderId,
-        DeviceId: data.DeviceId,
-        DeviceDescription: '',
-        DestinationId: data.DestinationId,
-        PriorityCodeDescription: '', // TODO - scanning
-        Date: new Date(),
-        Route:  VerificationRouting.DetailsPage,
-        RoutedByScan: true,
-        PriorityVerificationGrouping: null // TODO - scanning
-      } as IVerificationNavigationParameters
+      this.verificationService.getPickPriority(data.OrderId)
+      .subscribe((pickPriority) => {
+        const navigationParams = {
+          OrderId: data.OrderId,
+          DeviceId: data.DeviceId,
+          DeviceDescription: '',
+          DestinationId: data.DestinationId,
+          Date: new Date(),
+          Route:  VerificationRouting.DetailsPage,
+          RoutedByScan: true,
+          PriorityCode: pickPriority ? pickPriority.PriorityCode: null,
+          PriorityVerificationGrouping: pickPriority ? pickPriority.PriorityVerificationGrouping: null,
+        } as IVerificationNavigationParameters
 
-      const savedPageConfiguration = this.createSavedPageConfiguration();
-      this.pageNavigationEvent.emit(navigationParams);
-      this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+        const savedPageConfiguration = this.createSavedPageConfiguration();
+        this.pageNavigationEvent.emit(navigationParams);
+        this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+      });
     } else {
         this.displayWarningDialogEvent.emit({
           titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
@@ -126,11 +129,13 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
 
   onGridRowClickEvent(verificationDestinationItem: VerificationDestinationItem): void {
     const navigationParams = {
-      DeviceId: this.navigationParameters.DeviceId,
-      OrderId: this.navigationParameters.OrderId,
+      PriorityCode: verificationDestinationItem.PriorityCode,
+      DeviceId: verificationDestinationItem.DeviceId,
+      OrderId: verificationDestinationItem.OrderId,
       DestinationId: verificationDestinationItem.DestinationId,
       Route: this.continueRoute,
-      RoutedByScan: false
+      RoutedByScan: false,
+      PriorityVerificationGrouping: verificationDestinationItem.PriorityVerificationGrouping
     } as IVerificationNavigationParameters;
 
     const savedPageConfiguration = this.createSavedPageConfiguration();
@@ -144,7 +149,15 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
       return;
     }
 
-    this.verificationService.getVerificationDestinations(this.navigationParameters.DeviceId.toString(), this.navigationParameters.OrderId).subscribe(
+    const destinationParams = {
+      PriorityCode: this.navigationParameters.PriorityCode,
+      OrderId: this.navigationParameters.OrderId,
+      DeviceId: this.navigationParameters.DeviceId,
+      RoutedByScan: this.navigationParameters.RoutedByScan,
+      PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
+    } as IVerificationDataParameters
+
+    this.verificationService.getVerificationDestinations(destinationParams).subscribe(
       (verificationDestinationViewData) => {
         this.generateHeaderTitle(verificationDestinationViewData)
         this.generateHeaderSubTitle(verificationDestinationViewData);
@@ -163,26 +176,23 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     }
   }
 
-  private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationViewData) {
+  private generateHeaderSubTitle(verificationDestinationViewData: IVerificationDestinationViewData) {
     var stringResult = ''
-    if(verificationDetailViewData.DeviceDescription) {
-      stringResult += verificationDetailViewData.DeviceDescription;
+    const stringsToDisplay = [];
+    if(verificationDestinationViewData.DeviceDescription) stringsToDisplay.push(verificationDestinationViewData.DeviceDescription);
+    if(verificationDestinationViewData.OrderId) {
+      this.navigationParameters.PriorityVerificationGrouping ?
+      stringsToDisplay.push(this._hourDisplayString) : stringsToDisplay.push(verificationDestinationViewData.OrderId);
     }
+    if(verificationDestinationViewData.FillDate) stringsToDisplay.push(this.transformDateTime(verificationDestinationViewData.FillDate));
 
-    if(verificationDetailViewData.OrderId) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
+    for(let i = 0; i < stringsToDisplay.length; i++) {
+      stringResult += stringsToDisplay[i];
+      if(i !== stringsToDisplay.length - 1) {
+        stringResult += ' - '
       }
-
-      stringResult += verificationDetailViewData.OrderId;
     }
 
-    if(verificationDetailViewData.FillDate) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
-      }
-      stringResult += this.transformDateTime(verificationDetailViewData.FillDate);;
-    }
     this.headerSubTitle = of(stringResult);
   }
 
@@ -194,10 +204,10 @@ export class VerificationDestinationPageComponent implements OnInit, AfterConten
     const dashboardParams = {
       OrderId: this.navigationParameters.OrderId,
       DeviceId: this.navigationParameters.DeviceId,
-      PriorityCodeDescription: this.navigationParameters.PriorityCodeDescription,
+      PriorityCode: this.navigationParameters.PriorityCode,
       RoutedByScan: this.navigationParameters.RoutedByScan,
       PriorityVerificationGrouping: this.navigationParameters.PriorityVerificationGrouping
-    } as IDashboardDataParameters
+    } as IVerificationDataParameters
 
     this.verificationDashboardData = this.verificationService
     .getVerificationDashboardData(dashboardParams).pipe(

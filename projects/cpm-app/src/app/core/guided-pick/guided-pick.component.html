@@ -19,7 +19,7 @@
                             <div app-tab-contents [tabKey]="'IN_STOCK'"
                                 style="text-align: center; font-size: 40px; font-weight: bold;">
                                 <div>{{ guidedPickData?.pickLocation?.QuantityOnHand }} / {{ guidedPickData?.pharmacyQoh }}</div>
-                                <button 
+                                <button
                                     [disabled]="requestStatus != 'none'"
                                     class="ocbtn secondary"
                                     (click)="adjustClicked.next(getAdjustQohData())">
@@ -101,11 +101,11 @@
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action 
+                <oc-button-action
                     [disabled]="requestStatus != 'none'"
                     [buttonText]="'PAUSE' | translate" (click)="pauseClicked.next()">
                 </oc-button-action>
-                <oc-button-action 
+                <oc-button-action
                     [disabled]="requestStatus != 'none'"
                     mode="critical"
                     [style.visibility]="isHighPriorityAvailable ? 'visible' : 'hidden'"
@@ -116,7 +116,7 @@
             <div class="ocrightalign">
                 <oc-button-action
                     [disabled]="requestStatus != 'none'"
-                    [buttonText]="'HOLD' | translate" 
+                    [buttonText]="'HOLD' | translate"
                     (click)="holdClicked.next(guidedPickData?.isLastLine)">
                 </oc-button-action>
                 <oc-button-action

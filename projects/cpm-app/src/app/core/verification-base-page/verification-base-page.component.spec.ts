@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogService } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, PopupDialogService } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
@@ -48,6 +48,7 @@ describe('VerificationBasePageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ VerificationBasePageComponent ],
+      imports: [ButtonActionModule],
       providers: [
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }},
         { provide: BarcodeScanService, useValue: { BarcodeScannedSubject: new Subject() }},

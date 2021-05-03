@@ -1,11 +1,11 @@
 import { PopupDialogComponent, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { BarcodeScanService } from 'oal-core';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { VerificationService } from '../../api-core/services/verification.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { VerificationRouting } from '../../shared/enums/verification-routing';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -29,6 +29,7 @@ export class VerificationBasePageComponent implements OnInit {
   private initialRoute = VerificationRouting.OrderPage;
 
   barcodeScannedSubject: Subject<IBarcodeData> = new Subject<IBarcodeData>();
+  approveAllClickSubject: Subject<void> = new Subject<void>();
   navigationParameters: IVerificationNavigationParameters;
   verificationRouting: typeof VerificationRouting = VerificationRouting;
   rejectReasons: Observable<string[]>;
@@ -79,6 +80,17 @@ export class VerificationBasePageComponent implements OnInit {
   onDisplayWarningDialogEvent(contents: IDialogContents) {
     this.clearDisplayedDialog();
     this.displayWarningDialog(contents.titleResourceKey, contents.msgResourceKey, contents.msgParams);
+  }
+
+  onDisplayYesNoDialogEvent(contents: IDialogContents) {
+    this.clearDisplayedDialog();
+    this.displayYesNoDialog(contents.titleResourceKey, contents.msgResourceKey, contents.msgParams).subscribe(result => {
+      if(!result) {
+        return;
+      }
+
+      this.approveAllClickSubject.next();
+    });
   }
 
   /* istanbul ignore next */
@@ -135,6 +147,19 @@ export class VerificationBasePageComponent implements OnInit {
       this.displayedDialog = dialog;
     });
   }
+
+    /* istanbul ignore next */
+    private displayYesNoDialog(titleResourceKey: string, msgResourceKey: string, msgParams? : Object): Observable<boolean> {
+      let buttonClick$ = new Observable<boolean>();
+      this.simpleDialogService.getInfoYesNoPopup(titleResourceKey, msgResourceKey, msgParams).subscribe((dialog) => {
+        this.displayedDialog = dialog;
+        const primaryClick$ = dialog.didClickPrimaryButton.pipe(map(x => false));
+        const secondaryClick$ = dialog.didClickSecondaryButton.pipe(map(x => true));
+        buttonClick$ = merge(primaryClick$, secondaryClick$);
+      });
+
+      return buttonClick$;
+    }
 
   private loadRejectReasons(): void {
     this.rejectReasons = this.verificationService.getVerificationRejectReasons();

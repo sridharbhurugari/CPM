@@ -38,6 +38,7 @@ import { VerificationDestinationPageComponent } from './verification-destination
 import { VerificationOrderQueueComponent } from './verification-order-queue/verification-order-queue.component';
 import { VerificationOrderHeaderComponent } from './verification-order-header/verification-order-header.component';
 import { VerificationDestinationQueueComponent } from './verification-destination-queue/verification-destination-queue.component';
+import { VerificationDestinationHourQueueComponent } from './verification-destination-hour-queue/verification-destination-hour-queue.component';
 import { VerificationDetailsPageComponent } from './verification-details-page/verification-details-page.component';
 import { VerificationDashboardComponent } from './verification-dashboard/verification-dashboard.component';
 import { LoadingComponent } from './loading/loading.component';
@@ -80,6 +81,7 @@ import { InternalTransferDeviceOndemandItemLocationListComponent } from './inter
     VerificationOrderQueueComponent,
     VerificationOrderHeaderComponent,
     VerificationDestinationQueueComponent,
+    VerificationDestinationHourQueueComponent,
     VerificationDetailsPageComponent,
     VerificationDashboardComponent,
     LoadingComponent,

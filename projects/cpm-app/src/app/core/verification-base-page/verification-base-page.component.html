@@ -17,8 +17,10 @@
   <app-verification-details-page *ngSwitchCase="verificationRouting.DetailsPage"
     [navigationParameters]="navigationParameters"
     [barcodeScannedEventSubject]="barcodeScannedSubject"
+    [approveAllClickSubject]="approveAllClickSubject"
     [rejectReasons] = "rejectReasons | async"
     (pageNavigationEvent)="onPageNavigationEvent($event)"
-    (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)">
+    (displayWarningDialogEvent)="onDisplayWarningDialogEvent($event)"
+    (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)">
   </app-verification-details-page>
 </div>
