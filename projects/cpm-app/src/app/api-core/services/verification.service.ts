@@ -9,6 +9,7 @@ import { IVerificationDashboardData } from '../data-contracts/i-verification-das
 import { IVerificationDestinationDetailViewData } from "../data-contracts/i-verification-destination-detail-view-data";
 import { IVerificationDestinationViewData } from '../data-contracts/i-verification-destination-view-data';
 import { IVerificationOrderItem } from '../data-contracts/i-verification-order-item';
+import { IPickPriority } from '../data-contracts/i-pick-priority';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,13 @@ export class VerificationService {
   getVerificationRejectReasons(): Observable<string[]> {
     var url = this.ocapUrlBuilderService.buildUrl('/api/targetedpickverification/rejectreasons');
     return this.httpClient.get<string[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
+  getPickPriority(orderId: string): Observable<IPickPriority> {
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/targetedpickverification/pickpriority/${orderId}`);
+    return this.httpClient.get<IPickPriority>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

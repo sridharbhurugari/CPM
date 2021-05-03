@@ -33,6 +33,7 @@ import { UtilizationPageComponent } from './utilization-page/utilization-page.co
 import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
+import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
 import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
 
@@ -62,6 +63,7 @@ import { DetailsExpiredComponent } from './utilization-details-expired/utilizati
     UtilizationPageComponent,
     UtilizationHeaderComponent,
     DetailsPocketsWithErrorsComponent,
+    UtilizationDetailsPageComponent,
     DetailsExpiringThisMonthComponent,
     DetailsExpiredComponent,
   ],

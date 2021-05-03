@@ -110,12 +110,15 @@ export class VerificationDetailsPageComponent implements OnInit {
 
       // Load new data
       if(this.isDifferentBox(data)) {
-        // TODO: Add Priority
-        this.navigationParameters.OrderId = data.OrderId;
-        this.navigationParameters.DestinationId = data.DestinationId;
-        this.navigationParameters.DeviceId = data.DeviceId;
-        this.navigationParameters.RoutedByScan = true;
-        this.LoadData();
+        this.verificationService.getPickPriority(data.OrderId).subscribe((pickPriority) => {
+          this.navigationParameters.OrderId = data.OrderId;
+          this.navigationParameters.DeviceId = data.DeviceId;
+          this.navigationParameters.DestinationId = data.DestinationId;
+          this.navigationParameters.RoutedByScan = true;
+          this.navigationParameters.PriorityCode = pickPriority ? pickPriority.PriorityCode: null,
+          this.navigationParameters.PriorityVerificationGrouping = pickPriority ? pickPriority.PriorityVerificationGrouping: null,
+          this.LoadData();
+        });
       }
     } else {
       this.itemBarcodeScannedSubject.next(data);
@@ -188,24 +191,18 @@ export class VerificationDetailsPageComponent implements OnInit {
 
   private generateHeaderSubTitle(verificationDetailViewData: IVerificationDestinationDetailViewData) {
     var stringResult = ''
-    if(verificationDetailViewData.DeviceDescription) {
-      stringResult += verificationDetailViewData.DeviceDescription;
-    }
+    const stringsToDisplay = [];
+    if(verificationDetailViewData.DeviceDescription) stringsToDisplay.push(verificationDetailViewData.DeviceDescription);
+    if(verificationDetailViewData.OrderId) stringsToDisplay.push(verificationDetailViewData.OrderId);
+    if(verificationDetailViewData.FillDate) stringsToDisplay.push(this.transformDateTime(verificationDetailViewData.FillDate));
 
-    if(verificationDetailViewData.OrderId) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
+    for(let i = 0; i < stringsToDisplay.length; i++) {
+      stringResult += stringsToDisplay[i];
+      if(i !== stringsToDisplay.length - 1) {
+        stringResult += ' - '
       }
-
-      stringResult += verificationDetailViewData.OrderId;
     }
 
-    if(verificationDetailViewData.FillDate) {
-      if(stringResult !== '') {
-        stringResult += ' - ';
-      }
-      stringResult += this.transformDateTime(verificationDetailViewData.FillDate);
-    }
     this.headerSubTitle = of(stringResult);
   }
 
@@ -257,7 +254,7 @@ export class VerificationDetailsPageComponent implements OnInit {
     verificationDestinationDetails.map(detail => {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this._componentName + ' Saving Verifications, trackById: ' + detail.Id);
-    })
+    });
     this.verificationService.saveVerification(
       verificationDestinationDetails.map((detail) => {
       detail.Saving = true;
