@@ -72,8 +72,7 @@ export class UtilizationPageComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
 
-  constructor(private utilizationService: UtilizationService,
-    private router: Router,
+  constructor(private utilizationService: UtilizationService,    
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
