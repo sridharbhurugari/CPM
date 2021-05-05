@@ -8,6 +8,7 @@ import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component
 import { DestockPageComponent } from './destock-page/destock-page.component';
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
+import { DetailsNotAssignedComponent } from './utilization-details-not-assigned/utilization-details-not-assigned.component';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'destock', component: DestockPageComponent },
   { path: 'utilization', component: UtilizationPageComponent },
   { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent },
+  { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent },
   { path: 'utilization/details', component: UtilizationDetailsPageComponent },
 ];
 
