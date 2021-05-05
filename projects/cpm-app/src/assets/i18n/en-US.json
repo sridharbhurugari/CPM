@@ -107,7 +107,7 @@
   "IN_STOCK": "In Stock",
   "ITEM_ID": "Item ID",
   "ITEM_ALREADY_VERIFIED_MESSAGE": "Item has previously been approved or rejected. <br/><br/> {{itemFormattedGenericName}} <br/> {{itemTradeName}}",
-  "ITEM_INVALID_FOR_DESTINATION_MESSAGE": "The item scanned is invalid for this destination.",
+  "ITEM_INVALID_FOR_DESTINATION_MESSAGE": "The item scanned is invalid for this destination. <br/><br/> {{itemFormattedGenericName}} <br/> {{itemTradeName}}",
   "INVALID_SCAN_TITLE": "Invalid Scan",
   "ITEM_SCAN_TITLE": "Item Scan",
   "ITEM_QUANTITY": "Item Quantity",

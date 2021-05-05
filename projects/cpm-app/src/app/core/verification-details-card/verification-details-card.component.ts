@@ -1,17 +1,17 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { flatMap, Many } from 'lodash';
+import {  Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { take, takeUntil } from 'rxjs/operators';
+import { catchError, take, takeUntil, tap } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
@@ -21,6 +21,8 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
+import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
+import { ItemDetailsService } from '../../api-core/services/item-details.service';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -81,7 +83,9 @@ export class VerificationDetailsCardComponent implements OnInit {
     private translateService: TranslateService,
     private popupWindowService: PopupWindowService,
     private toastService: ToastService,
-    private logService: LogService
+    private logService: LogService,
+    // private itemLocationDetailsService: ItemLocaitonDetailsService,
+    private itemDetailsService: ItemDetailsService
     ) { }
 
   ngOnInit() {
@@ -264,32 +268,23 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   handleItemNotFound(data: IBarcodeData): void {
-    let dialogTitleKey = '';
-    let dialogMsgKey = '';
-    let dialogMsgParams = null;
 
     // Check if item has already been completed
     const completedItem = this.getCompletedVerification(data)
 
     if(!completedItem) {
-      dialogTitleKey = 'INVALID_SCAN_TITLE';
-      dialogMsgKey = 'ITEM_INVALID_FOR_DESTINATION_MESSAGE';
+      this.handleInvalidItemScan(data)
     } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified
       || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
-      dialogTitleKey = 'ITEM_SCAN_TITLE';
-      dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
-      dialogMsgParams = { itemFormattedGenericName: completedItem.ItemFormattedGenericName,
-                          itemTradeName: completedItem.ItemTradeName
-                        };
-    } else {
-      return;
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'ITEM_SCAN_TITLE',
+        msgResourceKey: 'ITEM_ALREADY_VERIFIED_MESSAGE',
+        msgParams: {
+          itemFormattedGenericName: completedItem.ItemFormattedGenericName,
+          itemTradeName: completedItem.ItemTradeName
+        }
+      });
     }
-
-    this.displayWarningDialogEvent.emit({
-      titleResourceKey: dialogTitleKey,
-      msgResourceKey: dialogMsgKey,
-      msgParams: dialogMsgParams
-    });
   }
 
   /* istanbul ignore next */
@@ -363,6 +358,30 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.destinationLine2 = null;
     this.destinationType = null;
     this.selectedVerificationDestinationDetail = null;
+  }
+
+  private handleInvalidItemScan(data : IBarcodeData): void {
+    const dialogContents: IDialogContents = {
+      titleResourceKey: 'ITEM_SCAN_TITLE',
+      msgResourceKey: 'ITEM_INVALID_FOR_DESTINATION_MESSAGE',
+      msgParams: { itemFormattedGenericName: '', itemTradeName: ''}
+    }
+
+    this.itemDetailsService.get(data.ItemId)
+    .pipe(
+      tap((details) => {
+        if(details) {
+          dialogContents.msgParams['itemFormattedGenericName'] = details[0].ItemFormattedGenericName;
+          dialogContents.msgParams['itemTradeName'] = details[0].ItemTradeName;
+        }
+
+        this.displayWarningDialogEvent.emit(dialogContents);
+      }),
+      catchError(e => {
+        this.displayWarningDialogEvent.emit(dialogContents);
+        return of(null);
+      })
+    ).subscribe();
   }
 
   private setSubscriptions() {

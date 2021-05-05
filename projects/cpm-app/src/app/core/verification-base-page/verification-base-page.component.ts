@@ -148,18 +148,18 @@ export class VerificationBasePageComponent implements OnInit {
     });
   }
 
-    /* istanbul ignore next */
-    private displayYesNoDialog(titleResourceKey: string, msgResourceKey: string, msgParams? : Object): Observable<boolean> {
-      let buttonClick$ = new Observable<boolean>();
-      this.simpleDialogService.getInfoYesNoPopup(titleResourceKey, msgResourceKey, msgParams).subscribe((dialog) => {
-        this.displayedDialog = dialog;
-        const primaryClick$ = dialog.didClickPrimaryButton.pipe(map(x => false));
-        const secondaryClick$ = dialog.didClickSecondaryButton.pipe(map(x => true));
-        buttonClick$ = merge(primaryClick$, secondaryClick$);
-      });
+  /* istanbul ignore next */
+  private displayYesNoDialog(titleResourceKey: string, msgResourceKey: string, msgParams? : Object): Observable<boolean> {
+    let buttonClick$ = new Observable<boolean>();
+    this.simpleDialogService.getInfoYesNoPopup(titleResourceKey, msgResourceKey, msgParams).subscribe((dialog) => {
+      this.displayedDialog = dialog;
+      const primaryClick$ = dialog.didClickPrimaryButton.pipe(map(x => false));
+      const secondaryClick$ = dialog.didClickSecondaryButton.pipe(map(x => true));
+      buttonClick$ = merge(primaryClick$, secondaryClick$);
+    });
 
-      return buttonClick$;
-    }
+    return buttonClick$;
+  }
 
   private loadRejectReasons(): void {
     this.rejectReasons = this.verificationService.getVerificationRejectReasons();
