@@ -11,7 +11,7 @@ import { Observable, of, Subject, Subscription } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { catchError, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
@@ -367,12 +367,14 @@ export class VerificationDetailsCardComponent implements OnInit {
       msgParams: { itemFormattedGenericName: '', itemTradeName: ''}
     }
 
-    this.itemDetailsService.get(data.ItemId)
+    this.itemDetailsService.getAlias(data.ItemId)
     .pipe(
+      timeout(2000),
       tap((details) => {
         if(details) {
-          // dialogContents.msgParams['itemFormattedGenericName'] = details.ItemFormattedGenericName;
-          // dialogContents.msgParams['itemTradeName'] = details.ItemTradeName;
+          const formattedName = details.ItemGenericName ? `${details.ItemGenericName} ${details.RxSuffix}`: '';
+          dialogContents.msgParams['itemFormattedGenericName'] = formattedName;
+          dialogContents.msgParams['itemTradeName'] = details.ItemTradeName;
         }
 
         this.displayWarningDialogEvent.emit(dialogContents);
