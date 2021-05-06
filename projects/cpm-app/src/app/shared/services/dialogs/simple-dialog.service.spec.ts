@@ -12,6 +12,13 @@ import { IConfigurationValue } from '../../interfaces/i-configuration-value';
 
 describe('SimpleDialogService', () => {
   const translatedValue: string = 'someMsg';
+  const configuredTimeoutSeconds = 5;
+  const noTimeout = 0;
+  const configuration =   {
+    Category: 'TIMEOUTS',
+    SubCategory: 'POP_UP_MESSAGE_TIMEOUT',
+    Value: '5'
+  } as IConfigurationValue;
   let popupDialogService: Partial<PopupDialogService>;
   let systemConfigurationService: Partial<SystemConfigurationService>
   let service: SimpleDialogService;
@@ -20,7 +27,9 @@ describe('SimpleDialogService', () => {
     popupDialogService = {
       showOnce: jasmine.createSpy('showOnce')
     };
-    systemConfigurationService = { GetConfigurationValues: () => of({} as IConfigurationValue) };
+    systemConfigurationService = {
+      GetConfigurationValues: jasmine.createSpy("GetConfigurationValues").and.returnValue(of(configuration))
+    };
     TestBed.configureTestingModule({
       providers: [
         { provide: HttpClient, useValue: { get: () => {}} },
@@ -40,7 +49,7 @@ describe('SimpleDialogService', () => {
 
   describe('displayErrorOk', () => {
     it('should call popupDialogservice with translated values', () =>{
-      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue };
+      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue, timeoutLength: configuredTimeoutSeconds };
       service.displayErrorOk('key1', 'key2');
       expect(popupDialogService.showOnce).toHaveBeenCalledWith(jasmine.objectContaining(expectedProps))
     });
@@ -48,7 +57,7 @@ describe('SimpleDialogService', () => {
 
   describe('displayWarningOk', () => {
     it('should call popupDialogservice with translated values', () =>{
-      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue };
+      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue, timeoutLength: configuredTimeoutSeconds};
       service.displayWarningOk('key1', 'key2');
       expect(popupDialogService.showOnce).toHaveBeenCalledWith(jasmine.objectContaining(expectedProps))
     });
@@ -56,7 +65,7 @@ describe('SimpleDialogService', () => {
 
   describe('displayInfoOk', () => {
     it('should call popupDialogservice with translated values', () =>{
-      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue };
+      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue, timeoutLength: configuredTimeoutSeconds };
       service.displayInfoOk('key1', 'key2');
       expect(popupDialogService.showOnce).toHaveBeenCalledWith(jasmine.objectContaining(expectedProps))
     });
@@ -64,7 +73,7 @@ describe('SimpleDialogService', () => {
 
   describe('displayInfoYesNo', () => {
     it('should call popupDialogservice with translated values', () =>{
-      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue };
+      let expectedProps: Partial<PopupDialogProperties> = { titleElementText: translatedValue, messageElementText: translatedValue, timeoutLength: noTimeout };
       service.displayInfoYesNo('key1', 'key2');
       expect(popupDialogService.showOnce).toHaveBeenCalledWith(jasmine.objectContaining(expectedProps))
     });

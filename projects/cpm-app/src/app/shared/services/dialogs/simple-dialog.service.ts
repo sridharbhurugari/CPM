@@ -26,7 +26,8 @@ export class SimpleDialogService {
     this.cancelButtonText$ = translateService.get('CANCEL').pipe(shareReplay(1));
     this.yesButtonText$ = translateService.get('YES').pipe(shareReplay(1));
     this.noButtonText$ = translateService.get('NO').pipe(shareReplay(1));
-    this.popupTimeoutSeconds$ = this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT').pipe(shareReplay(1)) as Observable<IConfigurationValue>;
+    this.popupTimeoutSeconds$ = this.systemConfigurationService.GetConfigurationValues('TIMEOUTS', 'POP_UP_MESSAGE_TIMEOUT')
+    .pipe(shareReplay(1)) as Observable<IConfigurationValue>;
   }
 
   displayWarningOk(titleResourceKey: string, messageResourceKey: string, messageParams?: Object) {
@@ -62,7 +63,7 @@ export class SimpleDialogService {
     const message$ = this.translateService.get(messageResourceKey, messageParams);
     const uniqueId = Guid.create().toString();
     forkJoin(title$, message$, this.okButtonText$, this.popupTimeoutSeconds$).subscribe(r => {
-      this.display(uniqueId, r[0], r[1], r[2], type), Number(r[3].Value);
+      this.display(uniqueId, r[0], r[1], r[2], type, Number(r[3].Value));
     });
   }
 
