@@ -1,4 +1,4 @@
-export interface IItemAlias {
+export interface IItemAliasDetails {
   ItemId: string;
   ItemTradeName: string;
   ItemGenericName: string;

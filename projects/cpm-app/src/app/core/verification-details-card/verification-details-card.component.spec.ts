@@ -11,14 +11,16 @@ import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-click
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ToastService } from '@omnicell/webcorecomponents';
-
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
-
 import { Guid } from 'guid-typescript';
-
 import { LogService } from '../../api-core/services/log-service';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
+import { ItemDetailsService } from '../../api-core/services/item-details.service';
+import { IItemAliasDetails } from '../../api-core/data-contracts/i-item-alias-details';
+import { HttpClient } from '@angular/common/http';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
@@ -30,6 +32,7 @@ describe('VerificationDetailsCardComponent', () => {
   let barcodeScannedInputSubject: Subject<IBarcodeData>;
   let approveAllClickSubject: Subject<void>;
   let logService: Partial<LogService>;
+  let itemDetailsService: Partial<ItemDetailsService>;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
@@ -48,6 +51,10 @@ describe('VerificationDetailsCardComponent', () => {
     logMessageAsync: jasmine.createSpy('logMessageAsync')
   }
 
+  itemDetailsService = {
+    getAlias: jasmine.createSpy('getAlias').and.returnValue(of({} as IItemAliasDetails))
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDetailsCardComponent,
@@ -58,6 +65,10 @@ describe('VerificationDetailsCardComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: ToastService, useValue: toastService },
         { provide: LogService, useValue: logService },
+        { provide: ItemDetailsService, useValue: itemDetailsService},
+        { provide: HttpClient, useValue: { get: () => {}} },
+        { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+        { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
       ]
     })
     .compileComponents();

@@ -84,7 +84,6 @@ export class VerificationDetailsCardComponent implements OnInit {
     private popupWindowService: PopupWindowService,
     private toastService: ToastService,
     private logService: LogService,
-    // private itemLocationDetailsService: ItemLocaitonDetailsService,
     private itemDetailsService: ItemDetailsService
     ) { }
 
