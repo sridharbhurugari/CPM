@@ -34,6 +34,8 @@ import { UtilizationHeaderComponent } from './utilization-header/utilization-hea
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
+import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
+import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +64,8 @@ import { UtilizationDetailsPageComponent } from './utilization-details-page/util
     UtilizationHeaderComponent,
     DetailsPocketsWithErrorsComponent,
     UtilizationDetailsPageComponent,
+    DetailsExpiringThisMonthComponent,
+    DetailsExpiredComponent,
   ],
   imports: [
     CommonModule,
