@@ -11,7 +11,7 @@ import { IUnassignedMedicationInfoDetail } from '../../api-xr2/data-contracts/i-
 @Injectable({
   providedIn: 'root'
 })
-export class UtilizationDeailsService {
+export class UtilizationDetailsService {
 
   constructor(private httpClient: HttpClient,
     private ocapUrlBuilderService: OcapUrlBuilderService,

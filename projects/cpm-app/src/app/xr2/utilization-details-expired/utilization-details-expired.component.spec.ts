@@ -7,7 +7,7 @@ import { ProgressAnimationComponent, FooterModule, ButtonActionModule } from '@o
 import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DetailsExpiredComponent } from './utilization-details-expired.component';
-import { UtilizationDeailsService } from '../services/utilization-details.service';
+import { UtilizationDetailsService } from '../services/utilization-details.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
@@ -19,7 +19,7 @@ describe('DetailsExpiredComponent', () => {
   let component: DetailsExpiredComponent ;
   let fixture: ComponentFixture<DetailsExpiredComponent>;
   let translateService: Partial<TranslateService>;
-  let utilizationDeailsService: Partial<UtilizationDeailsService>;
+  let utilizationDeailsService: Partial<UtilizationDetailsService>;
   let devicesService: Partial<DevicesService>;
   let router: Partial<Router>;
 
@@ -55,7 +55,7 @@ describe('DetailsExpiredComponent', () => {
         FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: UtilizationDeailsService, useValue: utilizationDeailsService },
+        { provide: UtilizationDetailsService, useValue: utilizationDeailsService },
         { provide: DevicesService, useValue: devicesService},
         { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: activatedRoute },

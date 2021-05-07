@@ -4,7 +4,7 @@ import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from '
 import { nameof } from '../../shared/functions/nameof';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { IExpiringMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-expiring-medication-info-detail';
-import { UtilizationDeailsService } from '../services/utilization-details.service';
+import { UtilizationDetailsService } from '../services/utilization-details.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -27,7 +27,7 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
    ngUnsubscribe = new Subject();
    ;
 
-   constructor( utilizationDeailsService: UtilizationDeailsService,
+   constructor( utilizationDeailsService: UtilizationDetailsService,
     devicesService: DevicesService,
     private router: Router,
     activatedRoute: ActivatedRoute) {
