@@ -19,7 +19,7 @@ describe('DetailsExpiredComponent', () => {
   let component: DetailsExpiredComponent ;
   let fixture: ComponentFixture<DetailsExpiredComponent>;
   let translateService: Partial<TranslateService>;
-  let utilizationDeailsService: Partial<UtilizationDetailsService>;
+  let utilizationDetailsService: Partial<UtilizationDetailsService>;
   let devicesService: Partial<DevicesService>;
   let router: Partial<Router>;
 
@@ -42,7 +42,7 @@ describe('DetailsExpiredComponent', () => {
     let activatedRoute = { snapshot: { paramMap : { get: () => deviceId } } };
 
     let expiredMedicationInfoDetail: IExpiredMedicationInfoDetail[] = [];
-    utilizationDeailsService = {
+    utilizationDetailsService = {
       expired: jasmine.createSpy('expired').and.returnValue(of(expiredMedicationInfoDetail)),
     };
 
@@ -55,7 +55,7 @@ describe('DetailsExpiredComponent', () => {
         FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: UtilizationDetailsService, useValue: utilizationDeailsService },
+        { provide: UtilizationDetailsService, useValue: utilizationDetailsService },
         { provide: DevicesService, useValue: devicesService},
         { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: activatedRoute },

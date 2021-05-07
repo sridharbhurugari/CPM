@@ -27,14 +27,14 @@ export class DetailsExpiredComponent implements OnInit {
    ngUnsubscribe = new Subject();
    ;
 
-   constructor( utilizationDeailsService: UtilizationDetailsService,
+   constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,
     private router: Router,
     activatedRoute: ActivatedRoute) {
     const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
-    this.gridData$ = utilizationDeailsService.expired(deviceId).pipe(shareReplay(1)).pipe(map(d => {
+    this.gridData$ = utilizationDetailsService.expired(deviceId).pipe(shareReplay(1)).pipe(map(d => {
       return _.orderBy(d, x => x[this.currentSortPropertyName]);
     }));
     }
