@@ -10,6 +10,8 @@ import { UtilizationPageComponent } from './utilization-page/utilization-page.co
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
 import { DetailsNotAssignedComponent } from './utilization-details-not-assigned/utilization-details-not-assigned.component';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
+import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
+import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
 
 const routes: Routes = [
   { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
@@ -22,6 +24,9 @@ const routes: Routes = [
   { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent },
   { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent },
   { path: 'utilization/details', component: UtilizationDetailsPageComponent },
+  { path: 'utilization/detailsExpiringThisMonth/:deviceId', component: DetailsExpiringThisMonthComponent },
+  { path: 'utilization/detailsExpired/:deviceId', component: DetailsExpiredComponent },
+
 ];
 
 @NgModule({

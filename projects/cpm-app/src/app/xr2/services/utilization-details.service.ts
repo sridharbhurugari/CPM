@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IErroredMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-errored-medication-info-detail';
+import { IExpiringMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-expiring-medication-info-detail';
+import { IExpiredMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-expired-medication-info-detail';
 import { Observable } from 'rxjs';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
@@ -20,8 +22,24 @@ export class UtilizationDeailsService {
     var url = this.ocapUrlBuilderService.buildUrl(`/api/PocketUtilization/ErroredMedDetails?deviceId=${encodedDeviceId}`);
     return this.httpClient.get<IErroredMedicationInfoDetail[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
+    });   
+  }
+
+  public expiringThisMonth(deviceId: number): Observable<IExpiringMedicationInfoDetail[]>{
+    var encodedDeviceId = encodeURIComponent(deviceId);
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/PocketUtilization/ExpiringMedDetails?deviceId=${encodedDeviceId}`);
+    return this.httpClient.get<IExpiringMedicationInfoDetail[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
     });
   }
+
+  public expired(deviceId: number): Observable<IExpiredMedicationInfoDetail[]>{
+    var encodedDeviceId = encodeURIComponent(deviceId);
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/PocketUtilization/ExpiredMedDetails?deviceId=${encodedDeviceId}`);
+    return this.httpClient.get<IExpiredMedicationInfoDetail[]>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }			
 
   public notAssigned(deviceId: number): Observable<IUnassignedMedicationInfoDetail[]>{
       var encodedDeviceId = encodeURIComponent(deviceId);
