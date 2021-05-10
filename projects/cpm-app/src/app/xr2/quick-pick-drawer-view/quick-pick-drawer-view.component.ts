@@ -176,8 +176,12 @@ export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
   printDrawerLabel() {
     const printRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.printLabel(this.selectedDeviceInformation.DeviceId.toString(), printRequest).subscribe(
-      () => { },
-      () => {
+      (success) => {
+        if(!success) {
+          this.failedEvent.emit(QuickPickError.PrintFailure);
+        }
+       },
+      (error) => {
         this.failedEvent.emit(QuickPickError.PrintFailure);
       });
   }
