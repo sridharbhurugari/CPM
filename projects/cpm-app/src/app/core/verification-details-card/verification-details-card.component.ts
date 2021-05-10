@@ -370,9 +370,8 @@ export class VerificationDetailsCardComponent implements OnInit {
     .pipe(
       timeout(2000),
       tap((details) => {
-        if(details) {
-          const formattedName = details.ItemGenericName ? `${details.ItemGenericName} ${details.RxSuffix}`: '';
-          dialogContents.msgParams['itemFormattedGenericName'] = formattedName;
+        if(details) {;
+          dialogContents.msgParams['itemFormattedGenericName'] = details.ItemFormattedGenericName;
           dialogContents.msgParams['itemTradeName'] = details.ItemTradeName;
         }
 
