@@ -7,19 +7,19 @@
 
 <oc-grid  #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-      <div app-col-header-sortable class="col" ocGridColResize data-width="530" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="550" data-colwrap="true"
         [columnPropertyName]="'ItemCode'" headerResourceKey="XR2_ITEM_CODE"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
-        [columnPropertyName]="'TotalItemCodeQuantity'" headerResourceKey="TOTAL"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="175" data-colwrap="true"
+        [columnPropertyName]="'TotalItemCodeQuantity'" headerResourceKey="TOTAL_QOH"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="col" ocGridColResize data-width="400" data-colwrap="true"
+      <div app-col-header-sortable class="col" ocGridColResize data-width="175" data-colwrap="true"
         [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
         [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
       </div>
-      <div app-col-header-sortable class="last" ocGridColResize data-width="250" data-colwrap="true"
+      <div app-col-header-sortable class="last" ocGridColResize data-width="300" data-colwrap="true"
       [columnPropertyName]="'Inventory'" headerResourceKey="XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
