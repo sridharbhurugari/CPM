@@ -29,6 +29,9 @@ import { IVerificationDestinationViewData } from '../../api-core/data-contracts/
 import { IVerificationDashboardData } from '../../api-core/data-contracts/i-verification-dashboard-data';
 import { IPickPriority } from '../../api-core/data-contracts/i-pick-priority';
 import { VerifiableItem } from '../../shared/model/verifiable-item';
+import { HttpClient } from '@angular/common/http';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 
 describe('VerificationDetailsPageComponent', () => {
   let component: VerificationDetailsPageComponent;
@@ -101,6 +104,9 @@ describe('VerificationDetailsPageComponent', () => {
         { provide: LogService, useValue: logService },
         { provide: PopupWindowService, useValue: popupWindowService},
         { provide: ToastService, useValue: toastService },
+        { provide: HttpClient, useValue: { get: () => {}} },
+        { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+        { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
       ]
     })
     .compileComponents();
