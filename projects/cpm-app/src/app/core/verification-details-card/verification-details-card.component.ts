@@ -371,8 +371,8 @@ export class VerificationDetailsCardComponent implements OnInit {
       timeout(2000),
       tap((details) => {
         if(details) {
-          dialogContents.msgParams['itemFormattedGenericName'] = details.ItemFormattedGenericName;
-          dialogContents.msgParams['itemTradeName'] = details.ItemTradeName;
+          dialogContents.msgParams['itemFormattedGenericName'] = details.FormattedGenericName;
+          dialogContents.msgParams['itemTradeName'] = details.TradeName;
         }
 
         this.displayWarningDialogEvent.emit(dialogContents);

@@ -1,5 +1,5 @@
 export interface IItemAliasDetails {
   ItemId: string;
-  ItemTradeName: string;
-  ItemFormattedGenericName: string;
+  TradeName: string;
+  FormattedGenericName: string;
 }
