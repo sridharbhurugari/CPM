@@ -24,8 +24,7 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
    searchFields = ['ItemId', 'ItemDescription'];
    currentSortPropertyName: string = 'ItemDescription';
 
-   ngUnsubscribe = new Subject();
-   ;
+   ngUnsubscribe = new Subject();   
 
    constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,

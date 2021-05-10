@@ -24,8 +24,7 @@ export class DetailsNotAssignedComponent implements OnInit {
   searchFields = ['ItemCode'];
   currentSortPropertyName: string = 'ItemCode, PocketTypeDescription';
 
-  ngUnsubscribe = new Subject();
-  ;
+  ngUnsubscribe = new Subject();  
 
   constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,
