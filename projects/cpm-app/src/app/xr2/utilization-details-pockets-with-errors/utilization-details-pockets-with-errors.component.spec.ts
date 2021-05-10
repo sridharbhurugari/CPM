@@ -7,7 +7,7 @@ import { ProgressAnimationComponent, FooterModule, ButtonActionModule } from '@o
 import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors.component';
-import { UtilizationDeailsService } from '../services/utilization-details.service';
+import { UtilizationDetailsService } from '../services/utilization-details.service';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
@@ -19,7 +19,7 @@ describe('DetailsPocketsWithErrorsComponent', () => {
   let component: DetailsPocketsWithErrorsComponent ;
   let fixture: ComponentFixture<DetailsPocketsWithErrorsComponent>;
   let translateService: Partial<TranslateService>;
-  let utilizationDeailsService: Partial<UtilizationDeailsService>;
+  let utilizationDetailsService: Partial<UtilizationDetailsService>;
   let devicesService: Partial<DevicesService>;
   let router: Partial<Router>;
 
@@ -42,7 +42,7 @@ describe('DetailsPocketsWithErrorsComponent', () => {
     let activatedRoute = { snapshot: { paramMap : { get: () => deviceId } } };
 
     let erroredMedicationInfoDetail: IErroredMedicationInfoDetail[] = [];
-    utilizationDeailsService = {
+    utilizationDetailsService = {
       pocketsWithErrors: jasmine.createSpy('pocketsWithErrors').and.returnValue(of(erroredMedicationInfoDetail)),
     };
 
@@ -55,7 +55,7 @@ describe('DetailsPocketsWithErrorsComponent', () => {
         FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: UtilizationDeailsService, useValue: utilizationDeailsService },
+        { provide: UtilizationDetailsService, useValue: utilizationDetailsService },
         { provide: DevicesService, useValue: devicesService},
         { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: activatedRoute },

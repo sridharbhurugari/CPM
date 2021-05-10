@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from 'rxjs/operators';
 import { nameof } from '../../shared/functions/nameof';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { IErroredMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-errored-medication-info-detail';
+import { IUnassignedMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-unassigned-medication-info-detail';
 import { UtilizationDetailsService } from '../services/utilization-details.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DevicesService } from '../../api-core/services/devices.service';
@@ -11,20 +11,20 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import * as _ from 'lodash';
 
 @Component({
-  selector: 'app-utilization-details-pockets-with-errors',
-  templateUrl: './utilization-details-pockets-with-errors.component.html',
-  styleUrls: ['./utilization-details-pockets-with-errors.component.scss']
+  selector: 'app-utilization-details-not-assigned',
+  templateUrl: './utilization-details-not-assigned.component.html',
+  styleUrls: ['./utilization-details-not-assigned.component.scss']
 })
-export class DetailsPocketsWithErrorsComponent implements OnInit {
+export class DetailsNotAssignedComponent implements OnInit {
   device$: Observable<SelectableDeviceInfo>;
 
   // Grid, Search and Sort:
-  gridData$: Observable<IErroredMedicationInfoDetail[]>;
+  gridData$: Observable<IUnassignedMedicationInfoDetail[]>;
   searchTextFilter: string;
-  searchFields = ['ItemId', 'ItemDescription'];
-  currentSortPropertyName: string = 'ItemDescription, PocketTypeDescription, ErrorDescription';
+  searchFields = ['ItemCode'];
+  currentSortPropertyName: string = 'ItemCode, PocketTypeDescription';
 
-  ngUnsubscribe = new Subject();
+  ngUnsubscribe = new Subject();  
 
   constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,
@@ -33,8 +33,8 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
     const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
-    this.gridData$ = utilizationDetailsService.pocketsWithErrors(deviceId).pipe(shareReplay(1)).pipe(map(d => {
-      return _.orderBy(d, x => x.ItemDescription.toLocaleLowerCase());
+    this.gridData$ = utilizationDetailsService.notAssigned(deviceId).pipe(shareReplay(1)).pipe(map(d => {
+      return _.orderBy(d, x => x[this.currentSortPropertyName]);
     }));
     }
 
@@ -56,13 +56,7 @@ export class DetailsPocketsWithErrorsComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.gridData$ = this.gridData$.pipe(map(d => {
-      if (this.currentSortPropertyName == 'ItemDescription'){
-      return _.orderBy(d, x => x.ItemDescription.toLocaleLowerCase(), event.SortDirection);
-      }
-      else
-      {
       return _.orderBy(d, x => x[this.currentSortPropertyName], event.SortDirection);
-      }
     }));
   }
 }

@@ -6,18 +6,19 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProgressAnimationComponent, FooterModule, ButtonActionModule } from '@omnicell/webcorecomponents';
 import { MockDestockHeaderComponent } from '../../shared/testing/mock-destock-header-component.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month.component';
+import { DetailsNotAssignedComponent } from './utilization-details-not-assigned.component';
 import { UtilizationDetailsService } from '../services/utilization-details.service';
+import { IDevice } from '../../api-core/data-contracts/i-device';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
-import { IExpiringMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-expiring-medication-info-detail';
+import { IUnassignedMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-unassigned-medication-info-detail';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
-describe('DetailsExpiringThisMonthComponent', () => {
-  let component: DetailsExpiringThisMonthComponent ;
-  let fixture: ComponentFixture<DetailsExpiringThisMonthComponent>;
+describe('NotAssignedPageComponent', () => {
+  let component: DetailsNotAssignedComponent ;
+  let fixture: ComponentFixture<DetailsNotAssignedComponent>;
   let translateService: Partial<TranslateService>;
   let utilizationDetailsService: Partial<UtilizationDetailsService>;
   let devicesService: Partial<DevicesService>;
@@ -33,7 +34,7 @@ describe('DetailsExpiringThisMonthComponent', () => {
     IsActive: true };
     const devices: SelectableDeviceInfo[] = [ firstDevice ];
 
-  translateService = {
+    translateService = {
       get: jasmine.createSpy('get').and.returnValue(of()),
       getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US'))
     };
@@ -41,16 +42,16 @@ describe('DetailsExpiringThisMonthComponent', () => {
     router = {navigate: jasmine.createSpy('navigate') };
     let activatedRoute = { snapshot: { paramMap : { get: () => deviceId } } };
 
-    let expiringMedicationInfoDetail: IExpiringMedicationInfoDetail[] = [];
+    let unassignedMedicationInfoDetail: IUnassignedMedicationInfoDetail[] = [];
     utilizationDetailsService = {
-      expiringThisMonth: jasmine.createSpy('expiringThisMonth').and.returnValue(of(expiringMedicationInfoDetail)),
+      notAssigned: jasmine.createSpy('notAssigned').and.returnValue(of(unassignedMedicationInfoDetail)),
     };
 
-  devicesService = {
+    devicesService = {
       getAllXr2Devices: () => of(devices)
     };
     TestBed.configureTestingModule({
-      declarations: [ DetailsExpiringThisMonthComponent, MockSearchPipe, MockDestockHeaderComponent, MockTranslatePipe ],
+      declarations: [ DetailsNotAssignedComponent, MockSearchPipe, MockDestockHeaderComponent, MockTranslatePipe ],
       imports: [ ButtonActionModule,
         FooterModule ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -62,10 +63,10 @@ describe('DetailsExpiringThisMonthComponent', () => {
        ]
     })
     .compileComponents();
-    }));
+  }));
 
-    beforeEach(() => {
-    fixture = TestBed.createComponent(DetailsExpiringThisMonthComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DetailsNotAssignedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -104,3 +105,4 @@ describe('DetailsExpiringThisMonthComponent', () => {
     });
   });
 });
+

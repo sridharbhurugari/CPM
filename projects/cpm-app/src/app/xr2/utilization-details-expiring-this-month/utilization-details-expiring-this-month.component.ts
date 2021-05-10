@@ -4,7 +4,7 @@ import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from '
 import { nameof } from '../../shared/functions/nameof';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { IExpiringMedicationInfoDetail } from '../../api-xr2/data-contracts/i-utilization-expiring-medication-info-detail';
-import { UtilizationDeailsService } from '../services/utilization-details.service';
+import { UtilizationDetailsService } from '../services/utilization-details.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -24,17 +24,16 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
    searchFields = ['ItemId', 'ItemDescription'];
    currentSortPropertyName: string = 'ItemDescription';
 
-   ngUnsubscribe = new Subject();
-   ;
+   ngUnsubscribe = new Subject();   
 
-   constructor( utilizationDeailsService: UtilizationDeailsService,
+   constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,
     private router: Router,
     activatedRoute: ActivatedRoute) {
     const deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
-    this.gridData$ = utilizationDeailsService.expiringThisMonth(deviceId).pipe(shareReplay(1)).pipe(map(d => {
+    this.gridData$ = utilizationDetailsService.expiringThisMonth(deviceId).pipe(shareReplay(1)).pipe(map(d => {
       return _.orderBy(d, x => x[this.currentSortPropertyName]);
     }));
     }

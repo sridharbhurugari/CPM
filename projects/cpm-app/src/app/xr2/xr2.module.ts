@@ -32,6 +32,7 @@ import { DestockHeaderComponent } from './destock-header/destock-header.componen
 import { UtilizationPageComponent } from './utilization-page/utilization-page.component';
 import { UtilizationHeaderComponent } from './utilization-header/utilization-header.component';
 import { DetailsPocketsWithErrorsComponent } from './utilization-details-pockets-with-errors/utilization-details-pockets-with-errors.component';
+import { DetailsNotAssignedComponent } from './utilization-details-not-assigned/utilization-details-not-assigned.component';
 import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
@@ -63,6 +64,7 @@ import { DetailsExpiredComponent } from './utilization-details-expired/utilizati
     UtilizationPageComponent,
     UtilizationHeaderComponent,
     DetailsPocketsWithErrorsComponent,
+    DetailsNotAssignedComponent,
     UtilizationDetailsPageComponent,
     DetailsExpiringThisMonthComponent,
     DetailsExpiredComponent,
