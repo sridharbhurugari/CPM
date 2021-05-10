@@ -167,8 +167,9 @@ export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
 
     const scanRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.scanMessage.barcode);
     this.quickPickDrawerService.unlockDrawer(this.selectedDeviceInformation.DeviceId.toString(), scanRequest).subscribe(
-      () => {},
+      () => { },
       () => {
+        this.failedEvent.emit(QuickPickError.ScanNotFound);
       });
   }
 
@@ -188,8 +189,9 @@ export class QuickPickDrawerViewComponent implements OnInit, OnDestroy {
   unlockDrawer() {
     const unlockRequest = new QuickPickDrawerRequest(this.detailedDrawer.Id, this.detailedDrawer.Xr2ServiceBarcode);
     this.quickPickDrawerService.unlockDrawer(this.selectedDeviceInformation.DeviceId.toString(), unlockRequest).subscribe(
-      () => {},
+      () => { },
       () => {
+        this.failedEvent.emit(QuickPickError.UnlockFailure);
       });
   }
 
