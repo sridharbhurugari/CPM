@@ -13,49 +13,63 @@
 </div>
 
 <body>
-    <!-- waiting: -->
-    <oc-progress-animation #myLoader [data]="{size: 3}" *ngIf="loadingData"></oc-progress-animation>
-    <div class="iconcontainer" [class.fillWidth]="true" *ngIf="loadingData">
-      <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
-    </div>
-    <!-- display data -->
-    <oc-grid *ngIf="!loadingData" #ocgrid ocgridfilter="false" (valuesReordered)="orderChanged($event)"
-      [orderableValues]="xr2StorageCapacityDetailsDisplays" appGridSortCol
-      [initialSortPropertyName]="itemDescriptionName" ocgridheadersearch="false" ocgridallowhover="false">
-      <ng-container class="ocgridheader">
-        <div class="first" data-colwrap="true"></div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="600" data-colwrap="true"
-          [columnPropertyName]="itemDescriptionName" headerResourceKey="XR2_UTILIZATION_ITEM_HEADER">
-        </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
-        [columnPropertyName]="isMultiDoseName" headerResourceKey="XR2_UTILIZATION_PACKSIZE_HEADER">
+  <!-- waiting: -->
+  <oc-progress-animation #myLoader [data]="{size: 3}" *ngIf="loadingData"></oc-progress-animation>
+  <div class="iconcontainer" [class.fillWidth]="true" *ngIf="loadingData">
+    <oc-svgicon icon="spin" theme="primary" height="100" width="100"></oc-svgicon>
+  </div>
+  <!-- display data -->
+  <oc-grid *ngIf="!loadingData" #ocgrid ocgridfilter="false" (valuesReordered)="orderChanged($event)"
+    [orderableValues]="xr2StorageCapacityDetailsDisplays" appGridSortCol [initialSortPropertyName]="itemDescriptionName"
+    ocgridheadersearch="false" ocgridallowhover="false">
+    <ng-container class="ocgridheader">
+      <div class="first" data-colwrap="true"></div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="600" data-colwrap="true"
+        [columnPropertyName]="itemDescriptionName" headerResourceKey="XR2_UTILIZATION_ITEM_HEADER">
       </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
-          [columnPropertyName]="trayTypeQohName" headerResourceKey="XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER">
+      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        [columnPropertyName]="packsizeName" headerResourceKey="XR2_UTILIZATION_PACKSIZE_HEADER">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        [columnPropertyName]="trayTypeQohName" headerResourceKey="XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
+        [columnPropertyName]="totalXr2QohName" headerResourceKey="XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
+        [columnPropertyName]="overstockName" headerResourceKey="XR2_UTILIZATION_OVERSTOCK_HEADER">
+      </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row"
+        *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDetailsDisplays | searchPipe:searchTextFilter:searchFields">
+        <div class="first" style="align-items: center;"></div>
+        <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_ITEM_HEADER' | translate">
+          <span>{{xr2StorageCapacityDisplay.ItemDescription}}</span>
+          <span>{{xr2StorageCapacityDisplay.ItemId}}</span>
         </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="340" data-colwrap="true"
-          [columnPropertyName]="totalXr2QohName" headerResourceKey="XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER">
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PACKSIZE_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.Packsize}}
         </div>
-      </ng-container>
-      <ng-container class="ocgridbody">
-        <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDetailsDisplays | searchPipe:searchTextFilter:searchFields">
-          <div class="first" style="align-items: center;"></div>
-          <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_ITEM_HEADER' | translate">
-            <span>{{xr2StorageCapacityDisplay.ItemDescription}}</span>
-            <span>{{xr2StorageCapacityDisplay.ItemId}}</span>
-          </div>
-          <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PACKSIZE_HEADER' | translate">
-            {{xr2StorageCapacityDisplay.IsMultiDose == true ? 'Multidose' : 1}}
-          </div>
-          <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
-            {{xr2StorageCapacityDisplay.TrayTypeQoh}}
-          </div>
-          <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
-            {{xr2StorageCapacityDisplay.TotalXr2Qoh}}
-          </div>
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.TrayTypeQoh}}
         </div>
-      </ng-container>
-    </oc-grid>
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.TotalXr2Qoh}}
+        </div>
+        <div class="col width-type iconColumn" *ngIf="xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate" style="justify-content: normal !important;">
+          <span class=priority-icons *ngIf="xr2StorageCapacityDisplay.IsErrored">
+            <app-validation-icon [style.visibility]="xr2StorageCapacityDisplay.IsErrored ? 'visible' : 'hidden'"
+              iconString="alert" toastTileResourceKey="" toastMsgResourceKey="CANNOT_CALCULATE_OVERSTOCK_MESSAGE"
+              toastType="warn">
+            </app-validation-icon>
+          </span>
+        </div>
+        <div class="col width-type iconColumn" *ngIf="!xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
+          {{xr2StorageCapacityDisplay.Overstock}}
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
 
 </body>
-
