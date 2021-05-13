@@ -1,5 +1,6 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
+import { orderBy } from 'lodash';
 import { LogVerbosity } from 'oal-core';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -15,9 +16,7 @@ import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
 import { VerificationOrderItem } from '../../shared/model/verification-order-item';
-import { PriorityCodePickRoutesComponent } from '../priority-code-pick-routes/priority-code-pick-routes.component';
 import { VerificationOrderHeaderComponent } from '../verification-order-header/verification-order-header.component';
-
 
 @Component({
   selector: 'app-verification-order-page',
@@ -77,23 +76,24 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
       this._componentName + ' Barcode Scanned: ' + data.BarCodeScanned);
 
     if(data.IsXr2PickingBarcode) {
-      console.log('Details Page Xr2 Barcode!')
+      this.verificationService.getPickPriority(data.OrderId)
+      .subscribe((pickPriority) => {
+        const navigationParams = {
+          OrderId: data.OrderId,
+          DeviceId: data.DeviceId,
+          DeviceDescription: '',
+          DestinationId: data.DestinationId,
+          Date: new Date(),
+          Route:  VerificationRouting.DetailsPage,
+          RoutedByScan: true,
+          PriorityCode: pickPriority ? pickPriority.PriorityCode: null,
+          PriorityVerificationGrouping: pickPriority ? pickPriority.PriorityVerificationGrouping: null,
+        } as IVerificationNavigationParameters
 
-      const navigationParams = {
-        PriorityCodeDescription: '', // TODO - Scanning
-        OrderId: data.OrderId,
-        DeviceId: data.DeviceId,
-        DeviceDescription: '',
-        DestinationId: data.DestinationId,
-        Date: new Date(),
-        Route:  VerificationRouting.DetailsPage,
-        RoutedByScan: true,
-        PriorityVerificationGrouping: null // TODO - Scanning
-      } as IVerificationNavigationParameters
-
-      const savedPageConfiguration = this.createSavedPageConfiguration();
-      this.pageNavigationEvent.emit(navigationParams);
-      this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+        const savedPageConfiguration = this.createSavedPageConfiguration();
+        this.pageNavigationEvent.emit(navigationParams);
+        this.pageConfigurationUpdateEvent.emit(savedPageConfiguration);
+      });
     } else {
       this.displayWarningDialogEvent.emit({
         titleResourceKey: 'BARCODESCAN_DIALOGWARNING_TITLE',
@@ -105,7 +105,7 @@ export class VerificationOrderPageComponent implements OnInit, AfterContentCheck
 
   onGridRowClickEvent(verificationOrderItem: VerificationOrderItem): void {
     const navigationParams = {
-      PriorityCodeDescription: verificationOrderItem.PriorityCodeDescription,
+      PriorityCode: verificationOrderItem.PriorityCode,
       OrderId: verificationOrderItem.OrderId,
       DeviceId: verificationOrderItem.DeviceId,
       DestinationId: null,

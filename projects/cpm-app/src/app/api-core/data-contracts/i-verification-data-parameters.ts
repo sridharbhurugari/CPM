@@ -1,5 +1,5 @@
-export interface IDashboardDataParameters {
-  PriorityCodeDescription: string;
+export interface IVerificationDataParameters {
+  PriorityCode: string;
   OrderId: string;
   DeviceId: number;
   RoutedByScan: boolean;

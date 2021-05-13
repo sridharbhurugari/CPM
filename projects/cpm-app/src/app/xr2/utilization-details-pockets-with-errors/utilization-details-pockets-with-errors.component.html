@@ -1,0 +1,46 @@
+  <app-xr2-queue-details-header
+    [priorityDescriptionHeader]="(device$ | async).Description"
+    [pageName] = "'POCKETS_WITH_ERRORS'"
+    (backEvent)="onBackClick()"
+    (searchTextFilterEvent)='onSearchTextFilterEvent($event)'>
+  </app-xr2-queue-details-header>
+
+<oc-grid  #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <div app-col-header-sortable class="col" ocGridColResize data-width="550" data-colwrap="true"
+        [columnPropertyName]="'ItemDescription'" headerResourceKey="DESCRIPTION_ID"
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="125" data-colwrap="true"
+      [columnPropertyName]="'ErrorsCount'" headerResourceKey="COUNT"
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+    </div>
+      <div app-col-header-sortable class="col" ocGridColResize data-width="175" data-colwrap="true"
+        [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
+        [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+      </div>
+      <div app-col-header-sortable class="last" data-width="350" data-colwrap="true"
+      [columnPropertyName]="'ErrorDescription'" headerResourceKey="ERROR_DESCRIPTION"
+      [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+    </div>
+    </ng-container>
+    <ng-container class="ocgridbody">
+      <div class="row"  *ngFor="let row of (gridData$ | async) | searchPipe:searchTextFilter:searchFields">
+        <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
+          {{row.ItemDescription}}<br>{{row.ItemId}}
+        </div>
+        <div class="col" [attr.data-title]="'COUNT' | translate">
+          {{row.ErrorsCount}}
+        </div>
+        <div class="col" [attr.data-title]="'POCKET_TYPE_DESCRIPTION' | translate">
+          {{row.PocketTypeDescription}}
+        </div>
+        <div class="last" [attr.data-title]="'ERROR_DESCRIPTION' | translate" >
+          {{row.ErrorDescription}}
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+
+
+

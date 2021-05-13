@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, PopupWindowService, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
@@ -11,13 +11,16 @@ import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-click
 import { MockValidationIconComponent } from '../../shared/testing/mock-validation-icon.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { ToastService } from '@omnicell/webcorecomponents';
-
 import { VerificationDetailsCardComponent } from './verification-details-card.component';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
-
 import { Guid } from 'guid-typescript';
-
 import { LogService } from '../../api-core/services/log-service';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
+import { ItemDetailsService } from '../../api-core/services/item-details.service';
+import { IItemAliasDetails } from '../../api-core/data-contracts/i-item-alias-details';
+import { HttpClient } from '@angular/common/http';
+import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
+import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 
 describe('VerificationDetailsCardComponent', () => {
   let component: VerificationDetailsCardComponent;
@@ -27,7 +30,9 @@ describe('VerificationDetailsCardComponent', () => {
   let popupWindowService: Partial<PopupWindowService>;
   let toastService: Partial<ToastService>;
   let barcodeScannedInputSubject: Subject<IBarcodeData>;
+  let approveAllClickSubject: Subject<void>;
   let logService: Partial<LogService>;
+  let itemDetailsService: Partial<ItemDetailsService>;
 
   popupWindowService = { show: jasmine.createSpy('show').and.returnValue(true) };
 
@@ -46,16 +51,24 @@ describe('VerificationDetailsCardComponent', () => {
     logMessageAsync: jasmine.createSpy('logMessageAsync')
   }
 
+  itemDetailsService = {
+    getAlias: jasmine.createSpy('getAlias').and.returnValue(of({} as IItemAliasDetails))
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VerificationDetailsCardComponent,
          MockColHeaderSortable, MockTranslatePipe,  MockCpClickableIconComponent, MockValidationIconComponent ],
-      imports: [SvgIconModule],
+      imports: [SvgIconModule, ButtonActionModule],
       providers: [
         { provide: TranslateService, useValue: translateService},
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: ToastService, useValue: toastService },
         { provide: LogService, useValue: logService },
+        { provide: ItemDetailsService, useValue: itemDetailsService},
+        { provide: HttpClient, useValue: { get: () => {}} },
+        { provide: OcapUrlBuilderService, useValue: { buildUrl: () => {}} },
+        { provide: OcapHttpHeadersService, useValue: { getHeaders: () => {}} },
       ]
     })
     .compileComponents();
@@ -65,7 +78,9 @@ describe('VerificationDetailsCardComponent', () => {
     fixture = TestBed.createComponent(VerificationDetailsCardComponent);
     component = fixture.componentInstance;
     barcodeScannedInputSubject = new Subject<IBarcodeData>();
+    approveAllClickSubject = new Subject<void>();
     component.barcodeScannedEventSubject = barcodeScannedInputSubject;
+    component.approveAllClickSubject = approveAllClickSubject;
     fixture.detectChanges();
   });
 
@@ -150,6 +165,7 @@ describe('VerificationDetailsCardComponent', () => {
 
       expect(verificationItem.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
       expect(saveSpy).toHaveBeenCalledTimes(1);
+      expect(logService.logMessageAsync).toHaveBeenCalled();
     });
 
     it('should set selected upon item click', () => {
@@ -163,6 +179,88 @@ describe('VerificationDetailsCardComponent', () => {
       component.onRequiredIconClick();
 
       expect(toastService.error).toHaveBeenCalledTimes(1);
+    });
+
+    it('should disable verify all button when no items are present', () => {
+      component.verificationDestinationDetails = [];
+
+      const result = component.containsVerifiableItem(component.verificationDestinationDetails);
+
+      expect(result).toBe(false);
+    });
+
+    it('should disable verify all button when all scans required', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      item1.IsMedBarcodeVerified = false;
+      item1.IsSafetyStockItem = true;
+      item2.IsMedBarcodeVerified = false;
+      item2.IsSafetyStockItem = true;
+      item3.IsMedBarcodeVerified = false;
+      item3.IsSafetyStockItem = true;
+      item4.IsMedBarcodeVerified = false;
+      item4.IsSafetyStockItem = true;
+      component.verificationDestinationDetails = [item1, item2, item3, item4];
+
+      const result = component.containsVerifiableItem(component.verificationDestinationDetails);
+
+      expect(result).toBe(false);
+    });
+
+    it('should enable verify all button when when a required scan is met', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      item1.IsMedBarcodeVerified = false;
+      item1.IsSafetyStockItem = true;
+      item2.IsMedBarcodeVerified = false;
+      item2.IsSafetyStockItem = true;
+      item3.IsMedBarcodeVerified = false;
+      item3.IsSafetyStockItem = true;
+      item4.IsMedBarcodeVerified = true;
+      item4.IsSafetyStockItem = true;
+      component.verificationDestinationDetails = [item1, item2, item3, item4];
+
+      const result = component.containsVerifiableItem(component.verificationDestinationDetails);
+
+      expect(result).toBe(true);
+    });
+
+    it('should verify all and send items through save event', () => {
+      const saveSpy = spyOn(component.saveVerificationEvent, 'emit');
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      const unverifiedItem = new VerificationDestinationDetail(null);
+      item1.IsMedBarcodeVerified = false;
+      item1.IsSafetyStockItem = false;
+      item1.VerifiedStatus = VerificationStatusTypes.Unverified;
+      item2.IsMedBarcodeVerified = true;
+      item2.IsSafetyStockItem = true;
+      item2.VerifiedStatus = VerificationStatusTypes.Unverified;
+      item3.IsMedBarcodeVerified = false;
+      item3.IsSafetyStockItem = false;
+      item3.VerifiedStatus = VerificationStatusTypes.Unverified;
+      item4.IsMedBarcodeVerified = true;
+      item4.IsSafetyStockItem = true;
+      item4.VerifiedStatus = VerificationStatusTypes.Unverified;
+      unverifiedItem.IsMedBarcodeVerified = false;
+      unverifiedItem.IsSafetyStockItem = true;
+      unverifiedItem.VerifiedStatus = VerificationStatusTypes.Unverified;
+      const verifiedItems = [item1, item2, item3, item4];
+      component.verificationDestinationDetails = [item1, item2, item3, item4, unverifiedItem];
+
+      component.onApproveAllPopupConfirmClick();
+
+      verifiedItems.forEach((item) => {
+        expect(item.VerifiedStatus).toBe(VerificationStatusTypes.Verified);
+      });
+      expect(unverifiedItem.VerifiedStatus).toBe(VerificationStatusTypes.Unverified);
+      expect(saveSpy).toHaveBeenCalledWith(verifiedItems);
     });
   })
 
@@ -218,6 +316,30 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.selectedVerificationDestinationDetail.TransactionScannedBarcodeProductId).toEqual(expectedProductId);
       expect(component.selectedVerificationDestinationDetail.TransactionScannedRawBarcode).toEqual(expectedBarcodeScanned);
     });
+
+    it('should show dialog on completed item scan', () => {
+      const dialogSpy = spyOn(component.displayWarningDialogEvent, 'emit');
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const scan = {} as IBarcodeData;
+      item1.ItemId = '1';
+      item2.ItemId = '2';
+      scan.ItemId = '2';
+      item2.ItemFormattedGenericName = 'generic';
+      item2.ItemTradeName = 'trade';
+      item2.VerifiedStatus = VerificationStatusTypes.Verified;
+      const expectedDialogEvent = {
+        titleResourceKey: 'ITEM_SCAN_TITLE',
+        msgResourceKey: 'ITEM_ALREADY_VERIFIED_MESSAGE',
+        msgParams: { itemFormattedGenericName: 'generic', itemTradeName: 'trade' }
+      } as IDialogContents;
+      component.verificationDestinationDetails = [item1];
+      component.completedDestinationDetails = [item2];
+
+      component.onBarcodeScannedEvent(scan);
+
+      expect(dialogSpy).toHaveBeenCalledWith(expectedDialogEvent);
+    });
   });
 
   describe('Child Actions', () => {
@@ -227,6 +349,7 @@ describe('VerificationDetailsCardComponent', () => {
       newItem.DestinationLine1 = 'DL0';
       newItem.DestinationLine2 = 'DL1',
       newItem.ItemId = '1'
+      component.completedDestinationDetails = [];
 
       const newList = [
         Object.assign({}, newItem)
@@ -235,7 +358,7 @@ describe('VerificationDetailsCardComponent', () => {
       component.verificationDestinationDetails = newList;
       component.selectedVerificationDestinationDetail = newItem;
 
-      component.removeVerifiedDetails(newList);
+      component.completeAndRemoveVerifiedDetails(newList);
       expect(component.verificationDestinationDetails.length).toEqual(0);
     });
   });
@@ -385,4 +508,22 @@ describe('VerificationDetailsCardComponent', () => {
       expect(component.scanToAdvanceVerificationDestinationDetail).toBe(item);
     });
   });
+
+  describe('API Calls', () => {
+    it('should remove items from details list on successful save', () => {
+      const item1 = new VerificationDestinationDetail(null);
+      const item2 = new VerificationDestinationDetail(null);
+      const item3 = new VerificationDestinationDetail(null);
+      const item4 = new VerificationDestinationDetail(null);
+      const verifiedItems = [item1, item2, item3];
+      component.verificationDestinationDetails = [item1, item2, item3, item4];
+      component.completedDestinationDetails = [];
+
+      component.completeAndRemoveVerifiedDetails(verifiedItems);
+
+      expect(component.verificationDestinationDetails.length).toBe(1);
+      expect(component.verificationDestinationDetails[0]).toBe(item4);
+      expect(component.completedDestinationDetails).toEqual(verifiedItems);
+    });
+  })
 });

@@ -1,17 +1,17 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { flatMap, Many } from 'lodash';
+import {  Many } from 'lodash';
 import { IVerificationDestinationDetail } from '../../api-core/data-contracts/i-verification-destination-detail';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { VerificationDestinationDetail } from '../../shared/model/verification-destination-detail';
 import { TranslateService } from '@ngx-translate/core';
 import { Guid } from 'guid-typescript';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 import { VerificationStatusTypes } from '../../shared/constants/verification-status-types';
 import { PopupWindowProperties, PopupWindowService, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { IDropdownPopupData } from '../../shared/model/i-dropdown-popup-data';
-import { take, takeUntil } from 'rxjs/operators';
+import { catchError, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
 import { ToastService } from '@omnicell/webcorecomponents';
 import { DestinationTypes } from '../../shared/constants/destination-types';
@@ -21,6 +21,8 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { LogVerbosity } from 'oal-core';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
+import { ItemLocaitonDetailsService } from '../../api-core/services/item-locaiton-details.service';
+import { ItemDetailsService } from '../../api-core/services/item-details.service';
 
 @Component({
   selector: 'app-verification-details-card',
@@ -30,12 +32,15 @@ import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 export class VerificationDetailsCardComponent implements OnInit {
   @Output() saveVerificationEvent: EventEmitter<VerificationDestinationDetail[]> = new EventEmitter<VerificationDestinationDetail[]>();
   @Output() displayWarningDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
+  @Output() displayYesNoDialogEvent: EventEmitter<IDialogContents> = new EventEmitter();
 
   @Input() deviceDescription : string;
   @Input() rejectReasons: string[];
   @Input() barcodeScannedEventSubject: Observable<IBarcodeData>;
+  @Input() approveAllClickSubject: Observable<void>;
   @Input() IsBoxBarcodeVerified: boolean;
   @Input() completedDestinationDetails: VerificationDestinationDetail[];
+  @Input() approveAllSaving: boolean;
 
   @Input()
   set verificationDestinationDetails(value : VerificationDestinationDetail[]){
@@ -47,6 +52,7 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   private barcodeScannedEventSubscription: Subscription;
+  private approveAllClickSubscription: Subscription;
   private _verificationDestinationDetails : VerificationDestinationDetail[];
   private _loggingCategory: string = LoggingCategory.Verification;
   private _componentName: string = "VerificationDetailsCardComponent";
@@ -77,14 +83,12 @@ export class VerificationDetailsCardComponent implements OnInit {
     private translateService: TranslateService,
     private popupWindowService: PopupWindowService,
     private toastService: ToastService,
-    private logService: LogService
+    private logService: LogService,
+    private itemDetailsService: ItemDetailsService
     ) { }
 
   ngOnInit() {
-    if(this.barcodeScannedEventSubscription) {
-      this.barcodeScannedEventSubscription.unsubscribe();
-    }
-    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.setSubscriptions();
     this.setTranslations();
   }
 
@@ -139,10 +143,18 @@ export class VerificationDetailsCardComponent implements OnInit {
     return orderDate;
   }
 
+  onApproveAllClick() {
+    this.displayYesNoDialogEvent.emit({
+      titleResourceKey: 'APPROVE_ALL',
+      msgResourceKey: 'APPROVE_ALL_DIALOG_MESSAGE',
+      msgParams: null
+    });
+  }
+
   onApproveClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this._componentName + ' Button Approve Clicked');
-    this.approveItem(selectedVerificationDestinationDetail);
+    this.approveItems([selectedVerificationDestinationDetail]);
   }
 
   onRejectClick(selectedVerificationDestinationDetail: VerificationDestinationDetail): void {
@@ -153,21 +165,38 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.showAlert();
   }
 
-  approveItem(selectedVerificationDestinationDetail: VerificationDestinationDetail) {
-    /* istanbul ignore next */
-    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + ' Approving ItemId: ' + selectedVerificationDestinationDetail.ItemId + ' trackById: ' + selectedVerificationDestinationDetail.Id);
-
-    selectedVerificationDestinationDetail.VerifiedStatus = VerificationStatusTypes.Verified;
-    this.saveVerificationEvent.emit([selectedVerificationDestinationDetail]);
-    this.completedDestinationDetails.push(selectedVerificationDestinationDetail);
+  onApproveAllPopupConfirmClick() {
+    this.approveAllSaving = true;
+    const itemsToApprove = this.getVerifiableDetailItems();
+    this.approveItems(itemsToApprove);
   }
 
-  removeVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
+  approveItems(verificationDestinationDetails: VerificationDestinationDetail[]) {
+    /* istanbul ignore next */
+    verificationDestinationDetails.forEach((item) => {
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+        this._componentName + ' Approving ItemId: ' + item.ItemId + ' trackById: ' + item.Id);
+
+      item.VerifiedStatus = VerificationStatusTypes.Verified;
+    })
+    this.saveVerificationEvent.emit(verificationDestinationDetails);
+  }
+
+  completeAndRemoveVerifiedDetails(verificationDestinationDetailsToRemove: VerificationDestinationDetail[]): void {
     const removalSet = new Set(verificationDestinationDetailsToRemove);
     this.verificationDestinationDetails = this.verificationDestinationDetails.filter((verificationDestinationDetail) => {
       return !removalSet.has(verificationDestinationDetail);
     });
+    this.completedDestinationDetails.push(...verificationDestinationDetailsToRemove);
+  }
+
+  containsVerifiableItem(items: VerificationDestinationDetail[]) {
+    if(!items) {
+      return false;
+    }
+
+    return items.some((item) =>
+    (!item.IsSafetyStockItem) || (item.IsSafetyStockItem && item.IsMedBarcodeVerified));
   }
 
   containsSafetyStockMedication(items: VerificationDestinationDetail[]) {
@@ -176,6 +205,11 @@ export class VerificationDetailsCardComponent implements OnInit {
     }
 
     return items.some(x => x.IsSafetyStockItem);
+  }
+
+  getVerifiableDetailItems(): VerificationDestinationDetail[] {
+    return this.verificationDestinationDetails.filter((detail) =>
+    (!detail.IsSafetyStockItem) || (detail.IsSafetyStockItem && detail.IsMedBarcodeVerified));
   }
 
   calculateDynamicIconWidth(verificationDestinationDetail: VerificationDestinationDetail) {
@@ -213,7 +247,7 @@ export class VerificationDetailsCardComponent implements OnInit {
     if(this.scanToAdvanceVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail === this.selectedVerificationDestinationDetail
       && this.scanToAdvanceVerificationDestinationDetail !== item) {
-        this.approveItem(this.scanToAdvanceVerificationDestinationDetail);
+        this.approveItems([this.scanToAdvanceVerificationDestinationDetail]);
       }
 
       this.selectedVerificationDestinationDetail = item;
@@ -233,32 +267,23 @@ export class VerificationDetailsCardComponent implements OnInit {
   }
 
   handleItemNotFound(data: IBarcodeData): void {
-    let dialogTitleKey = '';
-    let dialogMsgKey = '';
-    let dialogMsgParams = null;
 
     // Check if item has already been completed
     const completedItem = this.getCompletedVerification(data)
 
     if(!completedItem) {
-      dialogTitleKey = 'INVALID_SCAN_TITLE';
-      dialogMsgKey = 'ITEM_INVALID_FOR_DESTINATION_MESSAGE';
+      this.handleInvalidItemScan(data)
     } else if(completedItem.VerifiedStatus === VerificationStatusTypes.Verified
       || completedItem.VerifiedStatus === VerificationStatusTypes.Rejected) {
-      dialogTitleKey = 'ITEM_SCAN_TITLE';
-      dialogMsgKey = 'ITEM_ALREADY_VERIFIED_MESSAGE';
-      dialogMsgParams = { itemFormattedGenericName: completedItem.ItemFormattedGenericName,
-                          itemTradeName: completedItem.ItemTradeName
-                        };
-    } else {
-      return;
+      this.displayWarningDialogEvent.emit({
+        titleResourceKey: 'ITEM_SCAN_TITLE',
+        msgResourceKey: 'ITEM_ALREADY_VERIFIED_MESSAGE',
+        msgParams: {
+          itemFormattedGenericName: completedItem.ItemFormattedGenericName,
+          itemTradeName: completedItem.ItemTradeName
+        }
+      });
     }
-
-    this.displayWarningDialogEvent.emit({
-      titleResourceKey: dialogTitleKey,
-      msgResourceKey: dialogMsgKey,
-      msgParams: dialogMsgParams
-    });
   }
 
   /* istanbul ignore next */
@@ -332,6 +357,42 @@ export class VerificationDetailsCardComponent implements OnInit {
     this.destinationLine2 = null;
     this.destinationType = null;
     this.selectedVerificationDestinationDetail = null;
+  }
+
+  private handleInvalidItemScan(data : IBarcodeData): void {
+    const dialogContents: IDialogContents = {
+      titleResourceKey: 'ITEM_SCAN_TITLE',
+      msgResourceKey: 'ITEM_INVALID_FOR_DESTINATION_MESSAGE',
+      msgParams: { itemFormattedGenericName: '', itemTradeName: ''}
+    }
+
+    this.itemDetailsService.getAlias(data.ItemId)
+    .pipe(
+      timeout(2000),
+      tap((details) => {
+        if(details) {
+          dialogContents.msgParams['itemFormattedGenericName'] = details.FormattedGenericName;
+          dialogContents.msgParams['itemTradeName'] = details.TradeName;
+        }
+
+        this.displayWarningDialogEvent.emit(dialogContents);
+      }),
+      catchError(e => {
+        this.displayWarningDialogEvent.emit(dialogContents);
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+  private setSubscriptions() {
+    if(this.barcodeScannedEventSubscription) {
+      this.barcodeScannedEventSubscription.unsubscribe();
+    }
+    if(this.approveAllClickSubscription) {
+      this.approveAllClickSubscription.unsubscribe();
+    }
+    this.barcodeScannedEventSubscription = this.barcodeScannedEventSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: IBarcodeData) => this.onBarcodeScannedEvent(data));
+    this.approveAllClickSubscription = this.approveAllClickSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.onApproveAllPopupConfirmClick());
   }
 
   private setTranslations(): void {

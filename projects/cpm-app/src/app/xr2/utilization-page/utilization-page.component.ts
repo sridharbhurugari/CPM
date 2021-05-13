@@ -72,8 +72,7 @@ export class UtilizationPageComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
 
-  constructor(private utilizationService: UtilizationService,
-    private simpleDialogService: SimpleDialogService,
+  constructor(private utilizationService: UtilizationService,    
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
@@ -293,7 +292,22 @@ setUtilizationService()
         this.refreshData();
       });
   }
-
+  showExpiredDetails()
+  {
+     this.router.navigate(['xr2/utilization/detailsExpired/', this.selectedDeviceInformation.DeviceId]);
+  }
+  showExpiringThisMonthDetails()
+  {
+     this.router.navigate(['xr2/utilization/detailsExpiringThisMonth/', this.selectedDeviceInformation.DeviceId]);	
+  }
+  showNotAssignedDetails()
+  {
+    this.router.navigate(['xr2/utilization/detailsNotAssigned/', this.selectedDeviceInformation.DeviceId]);
+  }
+  showPocketsWithErrorsDetails()
+  {
+    this.router.navigate(['xr2/utilization/detailsPocketsWithErrors/', this.selectedDeviceInformation.DeviceId]);
+  }
 }
 export namespace UtilizationPageComponent
 {

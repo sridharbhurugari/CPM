@@ -4,7 +4,6 @@ import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { Observable } from 'rxjs';
-import { DestinationTypes } from '../../shared/constants/destination-types';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
@@ -67,7 +66,6 @@ export class VerificationDestinationQueueComponent implements OnInit {
 
   currentSortPropertyName: string;
   searchFields = [nameof<VerificationDestinationItem>('DestinationStringValue')]
-  destinationTypes: typeof DestinationTypes = DestinationTypes;
   columnSortDirection: string;
   searchPipe: SearchPipe = new SearchPipe();
 

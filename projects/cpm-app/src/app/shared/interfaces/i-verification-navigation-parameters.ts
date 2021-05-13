@@ -1,7 +1,7 @@
 import { VerificationRouting } from "../enums/verification-routing";
 
 export interface IVerificationNavigationParameters {
-  PriorityCodeDescription: string;
+  PriorityCode: string;
   DeviceId: number;
   OrderId: string;
   DestinationId: string;
