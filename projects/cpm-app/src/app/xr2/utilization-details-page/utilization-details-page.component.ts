@@ -6,7 +6,7 @@ import { nameof } from '../../shared/functions/nameof';
 import { Xr2StorageCapacityDetailsDisplayService } from '../../api-xr2/services/xr2-storage-capacity-details-display.service';
 import { shareReplay, finalize, catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, GridComponent } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-utilization-details-page',
@@ -44,6 +44,8 @@ export class UtilizationDetailsPageComponent implements OnInit {
     "Overstock"
   );
 
+  @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
+
   /* istanbul ignore next */
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -63,6 +65,7 @@ export class UtilizationDetailsPageComponent implements OnInit {
     this.xr2StorageCapacityDetailsDisplayService.get(deviceId, pocketTypeId).subscribe(x => {
       this.loadingData = false;
       this.xr2StorageCapacityDetailsDisplays = x;
+      this.resizeGrid();
     });
   }
 
@@ -81,6 +84,15 @@ export class UtilizationDetailsPageComponent implements OnInit {
   /* istanbul ignore next */
   orderChanged(orderedItems: Xr2StorageCapacityDetailsDisplay[]) {
     this.xr2StorageCapacityDetailsDisplays = orderedItems;
+  }
+
+  /* istanbul ignore next */
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
   }
 
 }
