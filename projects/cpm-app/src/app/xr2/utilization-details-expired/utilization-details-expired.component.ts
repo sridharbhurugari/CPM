@@ -34,7 +34,7 @@ export class DetailsExpiredComponent implements OnInit {
 
     this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === deviceId)));
     this.gridData$ = utilizationDetailsService.expired(deviceId).pipe(shareReplay(1)).pipe(map(d => {
-      return _.orderBy(d, x => x[this.currentSortPropertyName]);
+      return _.orderBy(d, x => x.ItemDescription.toLocaleLowerCase());
     }));
     }
 
