@@ -6,7 +6,7 @@ import { nameof } from '../../shared/functions/nameof';
 import { Xr2StorageCapacityDetailsDisplayService } from '../../api-xr2/services/xr2-storage-capacity-details-display.service';
 import { shareReplay, finalize, catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, GridComponent } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-utilization-details-page',
@@ -37,15 +37,22 @@ export class UtilizationDetailsPageComponent implements OnInit {
   readonly totalXr2QohName = nameof<Xr2StorageCapacityDetailsDisplay>(
     "TotalXr2Qoh"
   );
-  readonly isMultiDoseName = nameof<Xr2StorageCapacityDetailsDisplay>(
-    "IsMultiDose"
+  readonly packsizeName = nameof<Xr2StorageCapacityDetailsDisplay>(
+    "Packsize"
+  );
+  readonly overstockName = nameof<Xr2StorageCapacityDetailsDisplay>(
+    "Overstock"
   );
 
+  @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
+
+  /* istanbul ignore next */
   constructor(private route: ActivatedRoute,
     private router: Router,
     private translateService: TranslateService,
     private xr2StorageCapacityDetailsDisplayService: Xr2StorageCapacityDetailsDisplayService) { }
 
+    /* istanbul ignore next */
   ngOnInit() {
     this.translateService.get('XR2_UTILIZATION_DETAILS_HEADER').subscribe((res: string) => {
       this.header = res;
@@ -58,21 +65,34 @@ export class UtilizationDetailsPageComponent implements OnInit {
     this.xr2StorageCapacityDetailsDisplayService.get(deviceId, pocketTypeId).subscribe(x => {
       this.loadingData = false;
       this.xr2StorageCapacityDetailsDisplays = x;
+      this.resizeGrid();
     });
   }
 
+  /* istanbul ignore next */
   ngAfterViewInit() {
     this.searchElement.searchOutput$.subscribe((data) => {
       this.searchTextFilter = data;
     });
   }
 
+  /* istanbul ignore next */
   public onNavigateBack() {
     this.router.navigate(['xr2/utilization']);
   }
 
+  /* istanbul ignore next */
   orderChanged(orderedItems: Xr2StorageCapacityDetailsDisplay[]) {
     this.xr2StorageCapacityDetailsDisplays = orderedItems;
+  }
+
+  /* istanbul ignore next */
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
   }
 
 }
