@@ -8,7 +8,7 @@ import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from 
    * Always returns false for `BaseRouteReuseStrategy`.
    * */
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return false;
+    return route.routeConfig.data && route.routeConfig.data.reuseComponent;
   }
 
   /**
@@ -22,12 +22,16 @@ import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from 
 
   /** Returns `false`, meaning the route (and its subtree) is never reattached */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    return false;
+    const ret: boolean =  !!this.cache[this.getUrl(route)];
+    return ret;
   }
 
   /** Returns `null` because this strategy does not store routes for later re-use. */
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle|null {
-    return null;
+    if (!route.routeConfig || route.routeConfig.loadChildren) {
+      return null;
+    }
+    return this.cache[this.getUrl(route)];
   }
 
   /**
@@ -39,8 +43,14 @@ import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from 
   }
   */
   public shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    const ret: boolean = (future.routeConfig === curr.routeConfig) || future.data.reuseComponent;
-    return ret;
+    if (
+      future.routeConfig &&
+      future.routeConfig.data &&
+      future.routeConfig.data.reuseComponent !== undefined
+    ) {
+      return future.routeConfig.data.reuseComponent;
+    }
+    return future.routeConfig === curr.routeConfig;
   }
 
   getUrl(route: ActivatedRouteSnapshot): string {

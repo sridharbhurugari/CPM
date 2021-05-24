@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
-  { path: 'destock', component: DestockPageComponent, data: { reuseComponent: true  }},
+  { path: 'destock', component: DestockPageComponent },
   { path: 'utilization', component: UtilizationPageComponent, data: { reuseComponent: true  }},
   { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent },
   { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent },
