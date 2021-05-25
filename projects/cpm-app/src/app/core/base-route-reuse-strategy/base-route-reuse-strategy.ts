@@ -1,6 +1,8 @@
+import { Injectable } from "@angular/core";
 import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from "@angular/router";
 import * as _ from 'lodash';
- export class BaseRouteReuseStrategy implements RouteReuseStrategy {
+@Injectable({providedIn: 'root'})
+export class BaseRouteReuseStrategy implements RouteReuseStrategy {
   private cache: { [key: string]: DetachedRouteHandle } = {};
 
   /**
@@ -42,21 +44,11 @@ import * as _ from 'lodash';
   }
   */
   public shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    if (
-      future.routeConfig && future.data &&
-      future.data.reuseComponent !== undefined
-    ) {
-      if(future.data.reuseComponent === true && future.data.isBase === true && !this.isSubPath(this.getUrl(future), this.getUrl(curr))){
-        this.removeCacheItem(future);
-      }
-
-      return future.routeConfig.data.reuseComponent;
-    }
-    return false;
+    const ret: boolean =  curr.data.reuseComponent === true || false;
+    return ret;
   }
 
-  removeCacheItem(route: ActivatedRouteSnapshot): void {
-    const basePath = this.getUrl(route);
+  removeCacheItem(basePath:string, cascadeDelete: boolean): void {
     delete this.cache[basePath];
     const keys = _.filter(_.keys(this.cache),(k) => {return this.isSubPath(basePath, k)});
     _.forEach(keys,(k) => { delete this.cache[k];})

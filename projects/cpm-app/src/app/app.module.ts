@@ -82,6 +82,7 @@ registerLocaleData(localeFr, 'fr-CA', localeFrExtra);
     PopupWindowService,
     ToastService,
     {provide: RouteReuseStrategy, useClass: BaseRouteReuseStrategy},
+    BaseRouteReuseStrategy,
   ],
   bootstrap: [AppComponent]
 })

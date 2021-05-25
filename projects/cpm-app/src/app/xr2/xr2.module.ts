@@ -5,7 +5,7 @@ import {
   PopupDialogModule, SvgIconModule, DaterangeModule, CheckboxModule
 } from '@omnicell/webcorecomponents';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { QuickPickPageComponent } from './quick-pick-page/quick-pick-page.component';
 import {Xr2ExceptionsPageComponent} from './Xr2-Exceptions-page/xr2-exceptions-page.component';
@@ -37,6 +37,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
 import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
+import { BaseRouteReuseStrategy } from '../core/base-route-reuse-strategy/base-route-reuse-strategy';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,6 @@ import { DetailsExpiredComponent } from './utilization-details-expired/utilizati
     DaterangeModule,
     Xr2RoutingModule,
     ProgressAnimationModule
-  ],
+  ]
 })
 export class Xr2Module { }

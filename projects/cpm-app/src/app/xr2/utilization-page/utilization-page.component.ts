@@ -18,6 +18,7 @@ import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medica
 import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { NavigationExtras, Router } from '@angular/router';
+import { BaseRouteReuseStrategy } from '../../core/base-route-reuse-strategy/base-route-reuse-strategy';
 
 @Component({
   selector: 'app-utilization-page',
@@ -72,7 +73,7 @@ export class UtilizationPageComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
 
-  constructor(private utilizationService: UtilizationService,    
+  constructor(private utilizationService: UtilizationService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
@@ -148,6 +149,7 @@ setUtilizationService()
   }
 
   private refreshData(){
+    (<BaseRouteReuseStrategy> this.router.routeReuseStrategy).removeCacheItem("utilization", true);
     this.screenState = UtilizationPageComponent.ListState.MakingDataRequest;
     this.expiredLoaded = false;
     this.expiringThisMonthLoaded = false;
@@ -284,7 +286,7 @@ setUtilizationService()
 
   /* istanbul ignore next */
   private setupDataRefresh() {
-    let hash = this.windowService.getHash();
+     let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
@@ -298,7 +300,7 @@ setUtilizationService()
   }
   showExpiringThisMonthDetails()
   {
-     this.router.navigate(['xr2/utilization/detailsExpiringThisMonth/', this.selectedDeviceInformation.DeviceId]);	
+     this.router.navigate(['xr2/utilization/detailsExpiringThisMonth/', this.selectedDeviceInformation.DeviceId]);
   }
   showNotAssignedDetails()
   {
