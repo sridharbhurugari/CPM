@@ -1,32 +1,33 @@
 import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from "@angular/router";
-
+import * as _ from 'lodash';
  export class BaseRouteReuseStrategy implements RouteReuseStrategy {
   private cache: { [key: string]: DetachedRouteHandle } = {};
 
   /**
    * Whether the given route should detach for later reuse.
-   * Always returns false for `BaseRouteReuseStrategy`.
+
    * */
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return route.routeConfig.data && route.routeConfig.data.reuseComponent;
+    const ret: boolean =  route.data.reuseComponent === true || false;
+    return ret;
   }
 
   /**
    * A no-op; the route is never stored since this strategy never detaches routes for later re-use.
    */
   store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
-    if (detachedTree) {
+    if (route.data.reuseComponent && detachedTree) {
       this.cache[this.getUrl(route)] = detachedTree;
     }
   }
 
-  /** Returns `false`, meaning the route (and its subtree) is never reattached */
+  /** Returns `false` unless we have a stored value */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    const ret: boolean =  !!this.cache[this.getUrl(route)];
+    const ret: boolean =  !!route.routeConfig && !!this.cache[this.getUrl(route)];
     return ret;
   }
 
-  /** Returns `null` because this strategy does not store routes for later re-use. */
+  /** Returns the DetachedRouteHandle or null */
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle|null {
     if (!route.routeConfig || route.routeConfig.loadChildren) {
       return null;
@@ -36,21 +37,37 @@ import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from 
 
   /**
    * Determines if a route should be reused.
-   * This strategy returns `true` when the future route config and current route config are
-   * identical.
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     return future.routeConfig === curr.routeConfig;
   }
   */
   public shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     if (
-      future.routeConfig &&
-      future.routeConfig.data &&
-      future.routeConfig.data.reuseComponent !== undefined
+      future.routeConfig && future.data &&
+      future.data.reuseComponent !== undefined
     ) {
+      if(future.data.reuseComponent === true && future.data.isBase === true && !this.isSubPath(this.getUrl(future), this.getUrl(curr))){
+        this.removeCacheItem(future);
+      }
+
       return future.routeConfig.data.reuseComponent;
     }
-    return future.routeConfig === curr.routeConfig;
+    return false;
+  }
+
+  removeCacheItem(route: ActivatedRouteSnapshot): void {
+    const basePath = this.getUrl(route);
+    delete this.cache[basePath];
+    const keys = _.filter(_.keys(this.cache),(k) => {return this.isSubPath(basePath, k)});
+    _.forEach(keys,(k) => { delete this.cache[k];})
+  }
+
+  isSubPath(basePath: string, testPath: string): boolean {
+    if(!basePath || !testPath){
+      return false;
+    }
+    let isFromDetailPath: boolean = testPath.startsWith(basePath);
+    return isFromDetailPath;
   }
 
   getUrl(route: ActivatedRouteSnapshot): string {

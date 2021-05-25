@@ -42,7 +42,7 @@ export class UtilizationHeaderComponent extends Xr2QueueGroupingHeaderComponent 
   }
 
   onDestockClick(): void  {
-    this.router.navigate(['xr2/destock']);
+    this.router.navigate(['xr2/utilization/destock']);
   }
 
 }
