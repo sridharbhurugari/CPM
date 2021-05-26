@@ -100,6 +100,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
       expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
       expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
       expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+      expect(component.isDeviceSelected()).toBeTruthy();
     }));
 
     it('Should default device if there is only one device', fakeAsync(() => {
@@ -122,6 +123,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
       expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
       expect(component.selectedDeviceInformation.DeviceId.toString()).toEqual(expectedDeviceID);
       expect(component.defaultDeviceDisplayItem.value).toEqual(expectedDeviceID);
+      expect(component.isDeviceSelected()).toBeFalsy();
     }));
 
     it('Should clear search on device change and load new device', () => {
