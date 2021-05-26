@@ -20,6 +20,8 @@ import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { DestockPageComponent } from './destock-page.component';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DevicesService } from '../../api-core/services/devices.service';
 
 describe('DestockPageComponent', () => {
   let component: DestockPageComponent ;
@@ -29,6 +31,8 @@ describe('DestockPageComponent', () => {
   let destockService: Partial<DestockService>;
   let deviceDestockTypeInfo: Partial<DestockTypeInfo[]>;
   let destockEventConnectionService: Partial<DestockEventConnectionService>;
+  let devicesService: Partial<DevicesService>;
+  let router: Partial<Router>;
 
   beforeEach(async(() => {
     translateService = {
@@ -49,6 +53,21 @@ describe('DestockPageComponent', () => {
       ngUnsubscribe: new Subject()
     };
 
+    const deviceId = 4;
+    const firstDevice: SelectableDeviceInfo = { Description: 'firstDevice',
+    DeviceId: deviceId,
+    DefaultOwnerName: "string",
+    DeviceTypeId: "string",
+    CurrentLeaseHolder: null,
+    IsActive: true };
+    const devices: SelectableDeviceInfo[] = [ firstDevice ];
+    router = {navigate: jasmine.createSpy('navigate') };
+    let activatedRoute = { snapshot: { paramMap : { get: () => deviceId } } };
+    devicesService = {
+      getAllXr2Devices: () => of(devices)
+    };
+
+
     TestBed.configureTestingModule({
       declarations: [ DestockPageComponent, MockDestockHeaderComponent, ProgressAnimationComponent, MockTranslatePipe ],
       imports: [ ButtonActionModule,
@@ -59,7 +78,10 @@ describe('DestockPageComponent', () => {
         { provide: DestockService, useValue: destockService},
         { provide: DestockEventConnectionService, useValue: destockEventConnectionService},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
-        { provide: WindowService, useValue: { getHash: () => '' } }
+        { provide: WindowService, useValue: { getHash: () => '' } },
+        { provide: DevicesService, useValue: devicesService},
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: Router, useValue: router }
        ]
     })
     .compileComponents();
