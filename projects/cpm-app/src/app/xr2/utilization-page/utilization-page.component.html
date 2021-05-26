@@ -1,7 +1,7 @@
 <app-utilization-header [savedPageConfiguration]="savedPageConfiguration"
-  (selectionChangedEvent)="onDeviceSelectionChanged($event)">
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)"
+  (destockClicked)="showDestock()">
 </app-utilization-header>
-
 
 <div class="dashboard" *ngIf="screenState != 'NoData'">
   <app-cp-data-card [showLoading]="!expiredLoaded"

@@ -20,12 +20,12 @@ const routes: Routes = [
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
   { path: 'utilization', component: UtilizationPageComponent, data: { reuseComponent: true, isBase: true }},
-  { path: 'utilization/destock', component: DestockPageComponent, data: { reuseComponent: true }},
+  { path: 'utilization/destock/:deviceId', component: DestockPageComponent, data: { reuseComponent: true }},
   { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent, data: { reuseComponent: false } },
   { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent, data: { reuseComponent: false } },
   { path: 'utilization/details', component: UtilizationDetailsPageComponent, data: { reuseComponent: false }  },
   { path: 'utilization/detailsExpiringThisMonth/:deviceId', component: DetailsExpiringThisMonthComponent, data: { reuseComponent: false } },
-  { path: 'utilization/detailsExpired/:deviceId', component: DetailsExpiredComponent, data: { reuseComponent: true }},
+  { path: 'utilization/detailsExpired/:deviceId', component: DetailsExpiredComponent, data: { reuseComponent: false }},
 
 ];
 

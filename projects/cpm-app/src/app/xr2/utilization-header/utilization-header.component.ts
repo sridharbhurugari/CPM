@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { DevicesService } from "../../api-core/services/devices.service";
@@ -12,6 +12,7 @@ import { Xr2QueueGroupingHeaderComponent } from "../xr2-queue-grouping-header/xr
   templateUrl: './utilization-header.component.html',
   styleUrls: ['./utilization-header.component.scss']
 })
+
 export class UtilizationHeaderComponent extends Xr2QueueGroupingHeaderComponent implements OnInit {
   constructor(private windowServicex: WindowService,
               private ocapHttpConfigurationServicex: OcapHttpConfigurationService,
@@ -20,10 +21,12 @@ export class UtilizationHeaderComponent extends Xr2QueueGroupingHeaderComponent 
               private translateServicex: TranslateService) {
     super(windowServicex, ocapHttpConfigurationServicex, devicesServicex, translateServicex);
   }
+  @Output() destockClicked: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnInit() {
     super.ngOnInit();
    }
+
    getAllDevicesInfo() {
     let translatedLabel = '---';
     this.translateServicex.get('DEVICE_SELECTION_TEXT').subscribe((res: string) => {
@@ -42,7 +45,7 @@ export class UtilizationHeaderComponent extends Xr2QueueGroupingHeaderComponent 
   }
 
   onDestockClick(): void  {
-    this.router.navigate(['xr2/utilization/destock']);
+    this.destockClicked.emit();
   }
 
 }

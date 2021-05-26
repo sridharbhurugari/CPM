@@ -310,6 +310,10 @@ setUtilizationService()
   {
     this.router.navigate(['xr2/utilization/detailsPocketsWithErrors/', this.selectedDeviceInformation.DeviceId]);
   }
+  showDestock()
+  {
+    this.router.navigate(['xr2/utilization/destock', this.selectedDeviceInformation.DeviceId]);
+  }
 }
 export namespace UtilizationPageComponent
 {

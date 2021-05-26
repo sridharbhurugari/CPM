@@ -12,6 +12,8 @@ import { DestockDataEvent } from '../model/destock-data-event';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DevicesService } from '../../api-core/services/devices.service';
 
 @Component({
   selector: 'app-destock-page',
@@ -19,8 +21,8 @@ import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-
   styleUrls: ['./destock-page.component.scss']
 })
 export class DestockPageComponent implements OnInit {
-  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
-  selectedDeviceInformation: SelectableDeviceInfo;
+  device$: Observable<SelectableDeviceInfo>;
+  deviceId: number = 0;
   requestDeviceDestockTypeInfo$: Observable<number> ;
   deviceDestockTypeInfo: DestockTypeInfo[];
   searchTextFilter: string;
@@ -38,27 +40,29 @@ export class DestockPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private destockEventConnectionService: DestockEventConnectionService,
     private windowService: WindowService,
-    private wpfInteropService: WpfInteropService) {
-      this.setupDataRefresh();
+    private wpfInteropService: WpfInteropService,
+    devicesService: DevicesService,
+    private router: Router,
+    activatedRoute: ActivatedRoute) {
+    this.deviceId = Number.parseInt(activatedRoute.snapshot.paramMap.get('deviceId'));
+    this.device$ = devicesService.getAllXr2Devices().pipe(shareReplay(1), map((devices: SelectableDeviceInfo[]) => devices.find(d => d.DeviceId === this.deviceId)));
     }
 
   ngOnInit() {
 
-    if(! this.selectedDeviceInformation)
-    {
-      this.selectedDeviceInformation = new SelectableDeviceInfo(null);
-      this.selectedDeviceInformation.DeviceId = 0;
-    }
-    this.setDestockService();
+     this.setDestockService();
+      this.setupDataRefresh();
+      this.refreshData();
+
    }
   /* istanbul ignore next */
   ngAfterViewInit(): void {
     this.destockEventConnectionService.DestockIncomingDataSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(event => this.onDataReceived(event));
-    this.destockEventConnectionService.DestockIncomingDataErrorSubject
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(event => this.onDataError(event));
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(event => this.onDataReceived(event));
+  this.destockEventConnectionService.DestockIncomingDataErrorSubject
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe(event => this.onDataError(event));
   }
 
   ngOnDestroy(): void {
@@ -69,11 +73,9 @@ export class DestockPageComponent implements OnInit {
 setDestockService()
 {
       // Destock Service
-      this.requestDeviceDestockTypeInfo$ = this.destockService.get(this.selectedDeviceInformation.DeviceId).pipe(shareReplay(1),
+      this.requestDeviceDestockTypeInfo$ = this.destockService.get(this.deviceId).pipe(shareReplay(1),
       finalize(() => {
-        // if(this.screenState === DestockPageComponent.ListState.Error)
-        // {return;}
-        if(this.selectedDeviceInformation.DeviceId === 0)
+        if(this.deviceId === 0)
         {
           this.screenState = DestockPageComponent.ListState.NoData;
         }
@@ -93,16 +95,12 @@ setDestockService()
 
 }
 
+onBackClick() {
+  this.router.navigate(['xr2/utilization']);
+}
 
   onSearchTextFilterEvent(filterText: string) {
     this.searchTextFilter = filterText;
-  }
-  onDeviceSelectionChanged($event) {
-    if(this.selectedDeviceInformation !== $event)
-    {
-      this.selectedDeviceInformation = $event;
-      this.refreshData();
-    }
   }
 
   onRefreshClick() {
@@ -113,19 +111,16 @@ setDestockService()
     this.screenState = DestockPageComponent.ListState.MakingDataRequest;
     this.setDestockService();
     this.requestDeviceDestockTypeInfo$.subscribe();
-    console.log('onDeviceSelectionChanged DeviceId: ');
-    console.log(this.selectedDeviceInformation.DeviceId);
   }
 
   private onDataReceived(event: DestockDataEvent) {
     try {
-      if (event && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
+      if (event && event.DeviceId !== this.deviceId) {
         return;
       }
       this.deviceDestockTypeInfo = event.DestockTypeInfoData;
       this.screenState = DestockPageComponent.ListState.Display;
       this.eventDateTime = event.EventDateTime;
-// todo
     } catch (e) {
       this.screenState = DestockPageComponent.ListState.Error;
       this.lastErrorMessage = e.message;
@@ -136,7 +131,7 @@ setDestockService()
 
   private onDataError(event) {
     try {
-      if (event.DeviceId !== undefined && event.DeviceId !== this.selectedDeviceInformation.DeviceId) {
+      if (event.DeviceId !== undefined && event.DeviceId !== this.deviceId) {
         return;
       }
       this.screenState = DestockPageComponent.ListState.Error;
@@ -151,14 +146,14 @@ setDestockService()
   onPrint(event: DestockTypeInfo)
   {
     // DeviceId
-    console.log(this.selectedDeviceInformation.DeviceId);
+    console.log(this.deviceId);
     // barcode
     console.log(event.Barcode);
     // label text
     console.log(event.Xr2DestockType_Display);
     // qty of labels to print:
     console.log(event.BinCount);
-    this.destockService.print(this.selectedDeviceInformation.DeviceId, event.Barcode, event.Xr2DestockType_Display, event.BinCount).subscribe(
+    this.destockService.print(this.deviceId, event.Barcode, event.Xr2DestockType_Display, event.BinCount).subscribe(
       s => {
         this.simpleDialogService.displayInfoOk('PRINT_SUCCEEDED_DIALOG_TITLE', 'PRINT_SUCCEEDED_DIALOG_MESSAGE');
       },
@@ -171,6 +166,7 @@ setDestockService()
   /* istanbul ignore next */
   private setupDataRefresh() {
     let hash = this.windowService.getHash();
+    hash = '#/xr2/utilization/destock'
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
