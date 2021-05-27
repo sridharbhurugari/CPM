@@ -355,8 +355,8 @@
   "COUNT":"Count",
   "ERROR_DESCRIPTION":"Error Description",
   "ERROR_COUNT":"Error Count",
-  "TOTAL_QOH":"Total QOH",
   "EXPIRED_QTY":"Expired QTY",
   "EXPIRING_QTY":"Expiring QTY",
-  "XR2_ITEM_CODE":"XR2 Item Code"
+  "XR2_ITEM_CODE":"XR2 Item Code",
+  "ON_DEMAND":"On-Demand"
 }

@@ -1,17 +1,15 @@
-<oc-action-layout>
-    <ng-container class="ocactionheader">
-        <div class="cpmactiontitle">{{'DEVICE_NEEDS' | translate}}</div>
-    </ng-container>
+<ng-container>
     <ng-container class="ocactiondetails">
         <app-internal-transfer-items-list
           [itemNeeds]="itemNeeds$ | async"
           [deviceDescription]="deviceDescription$ | async"
-          (selectionChanged)="onSelect($event)"></app-internal-transfer-items-list>
+          (selectionChanged)="onSelect($event)"
+          (goBack)="goBack()"></app-internal-transfer-items-list>
     </ng-container>
     <ng-container class="ocactionfooter">
         <oc-footer>
             <div class="ocleftalign">
-                <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'BACK' | translate" (click)="goBack()"></oc-button-action>
+                <oc-button-action [disabled]="requestStatus != 'none'" [buttonText]="'CANCEL' | translate" (click)="goBack()"></oc-button-action>
             </div>
             <div class="ocrightalign" *ngIf="(reportBaseData$ | async) as reportBaseData">
                 <oc-button-action
@@ -30,4 +28,4 @@
             </div>
         </oc-footer>
     </ng-container>
-</oc-action-layout>
+</ng-container>
