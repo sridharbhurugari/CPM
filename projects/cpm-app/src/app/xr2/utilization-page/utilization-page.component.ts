@@ -77,9 +77,7 @@ export class UtilizationPageComponent implements OnInit {
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
-    private router: Router) {
-      this.setupDataRefresh();
-    }
+    private router: Router) {}
 
   ngOnInit() {
 
@@ -89,6 +87,7 @@ export class UtilizationPageComponent implements OnInit {
       this.selectedDeviceInformation.DeviceId = 0;
     }
     this.setUtilizationService();
+    this.refreshData();
    }
   /* istanbul ignore next */
   ngAfterViewInit(): void {
@@ -200,8 +199,11 @@ setUtilizationService()
     }
   }
 
-  private onXr2StorageCapacityDisplayEventReceived(xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[]) {
-    this.xr2StorageCapacityDisplays = xr2StorageCapacityDisplays as Xr2StorageCapacityDisplay[] ;
+  private onXr2StorageCapacityDisplayEventReceived(event: Xr2StorageCapacityDisplay[]) {
+     if (event && event[0].DeviceId !== this.selectedDeviceInformation.DeviceId) {
+        return;
+      }
+    this.xr2StorageCapacityDisplays = event as Xr2StorageCapacityDisplay[] ;
     this.resizeGrid();
     this.screenState = UtilizationPageComponent.ListState.Display;
   }
@@ -284,16 +286,6 @@ setUtilizationService()
     }
   }
 
-  /* istanbul ignore next */
-  private setupDataRefresh() {
-     let hash = this.windowService.getHash();
-    this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {
-        this.eventDateTime = null;
-        this.refreshData();
-      });
-  }
   showExpiredDetails()
   {
      this.router.navigate(['xr2/utilization/detailsExpired/', this.selectedDeviceInformation.DeviceId]);

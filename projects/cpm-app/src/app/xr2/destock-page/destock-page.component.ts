@@ -51,7 +51,6 @@ export class DestockPageComponent implements OnInit {
   ngOnInit() {
 
      this.setDestockService();
-      this.setupDataRefresh();
       this.refreshData();
 
    }
@@ -162,19 +161,6 @@ onBackClick() {
       }
     );
   }
-
-  /* istanbul ignore next */
-  private setupDataRefresh() {
-    let hash = this.windowService.getHash();
-    hash = '#/xr2/utilization/destock'
-    this.wpfInteropService.wpfViewModelActivated
-      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {
-        this.eventDateTime = null;
-        this.refreshData();
-      });
-  }
-
 }
 export namespace DestockPageComponent
 {
