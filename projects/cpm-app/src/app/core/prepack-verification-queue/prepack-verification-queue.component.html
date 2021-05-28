@@ -4,11 +4,7 @@
   </div>
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-        <!--<div app-col-header-sortable class="first" data-colwrap="true"
-                                 [columnPropertyName]='sequencePropertyName'
-                                 headerResourceKey=''                                 
-                                 (columnSelected)="columnSelected($event)">
-        </div>-->
+        <div class="first" data-colwrap="true"></div>
         <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
                                  [columnPropertyName]='descriptionPropertyName'
                                  headerResourceKey='DESCRIPTION_ID' 
@@ -16,21 +12,21 @@
                                  [customColumnSortOrder]="columnSortDirection"                              
                                  (columnSelected)="columnSelected($event)">
         </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="300" data-colwrap="true"
+        <div app-col-header-sortable class="col" ocGridColResize data-width="250" data-colwrap="true"
                                  [columnPropertyName]='packagerPropertyName'
                                  headerResourceKey='PACKAGER' 
                                  [currentSortPropertyName]="currentSortPropertyName"    
                                  [customColumnSortOrder]="columnSortDirection"                            
                                  (columnSelected)="columnSelected($event)">
         </div>
-        <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+        <div app-col-header-sortable class="col" ocGridColResize data-width="160" data-colwrap="true"
                                  [columnPropertyName]='qtyPackagedPropertyName'
                                  headerResourceKey='PACKAGED_QUANTITY'  
                                  [currentSortPropertyName]="currentSortPropertyName"    
                                  [customColumnSortOrder]="columnSortDirection"                          
                                  (columnSelected)="columnSelected($event)">
         </div>        
-        <div app-col-header-sortable class="last" ocGridColResize data-width="250" data-colwrap="true"
+        <div app-col-header-sortable class="last" ocGridColResize data-width="300" data-colwrap="true"
                                  [columnPropertyName]='datePropertyName'
                                  headerResourceKey='DATE'   
                                  [currentSortPropertyName]="currentSortPropertyName"  
@@ -41,15 +37,22 @@
     <ng-container class="ocgridbody" *ngIf="this.unfilteredPrepackVerificationQueueItems">
       <!--<div class="row" *ngFor="let queueItem of prepackVerificationQueueItems | searchPipe:searchTextFilter:searchFields" (click)="navigate(picklist.OrderId)">-->
       <div class="row" *ngFor="let queueItem of this.filteredPrepackVerificationQueueItems">  
-        <!--<div class="first" style="align-items: center;">
-          <div class="firstcolumncolorblock" [style.background-color]="picklist.PriorityColorCode"></div>
-        </div>-->
-        <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">{{queueItem.ItemDescription}}</div>
+        <div class="first" style="align-items: center;"></div>
+        <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
+          <div>{{queueItem.ItemDescription}}</div>
+          <div>{{queueItem.ItemId}}</div>
+        </div>
         <div class="col" [attr.data-title]="'PACKAGER' | translate">{{queueItem.DeviceDescription}}</div>
-        <div class="col" [attr.data-title]="'PACKAGED_QUANTITY' | translate">{{queueItem.PackagedQty}}</div>        
-        <div class="col" [attr.data-title]="'DATE' | translate">
-            <div>{{queueItem.PackDate | date: 'shortDate'}}
-            {{queueItem.PackDate | date: 'shortTime'}}</div>
+        <div class="col" style="align-items: center;" [attr.data-title]="'PACKAGED_QUANTITY' | translate">{{queueItem.PackagedQty}}</div>        
+        <div style="flex-direction: row;" class="col" [attr.data-title]="'DATE' | translate">
+            <div style="flex-grow: 1;" >{{queueItem.PackDate | date: 'shortDate'}}
+            {{queueItem.PackDate | date: 'shortTime'}}
+            </div>
+            <div>
+            <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'delete'"
+                        (clickEvent)="onDeleteClick()">
+            </app-cp-clickable-icon>
+            </div>
         </div>       
       </div>
     </ng-container>

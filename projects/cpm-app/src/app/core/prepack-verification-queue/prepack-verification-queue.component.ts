@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, EventEmitte
 import { SortDirection } from '../../shared/constants/sort-direction';
 import { SearchBoxComponent, PopupDialogService } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { filter, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import * as _ from 'lodash';
@@ -31,12 +32,12 @@ export class PrepackVerificationQueueComponent implements OnInit {
   searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
   currentSortPropertyName: string;
-  columnSortDirection: SortDirection;  
+  columnSortDirection: SortDirection;    
 
   prepackVerificationItems$: Observable<IPrepackVerificationQueueItem[]>;
   unfilteredPrepackVerificationQueueItems: PrepackVerificationQueueItem[];
   filteredPrepackVerificationQueueItems: PrepackVerificationQueueItem[];
-
+  
   descriptionPropertyName = nameof<PrepackVerificationQueueItem>('ItemDescription');
   packagerPropertyName = nameof<PrepackVerificationQueueItem>('DeviceDescription');  
   qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('PackagedQty');
@@ -45,7 +46,10 @@ export class PrepackVerificationQueueComponent implements OnInit {
   constructor(
     private prepackVerificationService: PrepackVerificationService,
     private windowService: WindowService,    
-    public translateService: TranslateService) {}
+    private wpfInteropService: WpfInteropService,
+    public translateService: TranslateService) {
+      //this.setupDataRefresh();
+    }
 
   ngOnInit() {
     this.loadPrepackVerificationQueueItems();
@@ -53,6 +57,10 @@ export class PrepackVerificationQueueComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.configureSearchHandler();
+  }
+
+  ngUnsubscribe(): void  {
+
   }
 
   private loadPrepackVerificationQueueItems(): void {  
@@ -83,6 +91,10 @@ export class PrepackVerificationQueueComponent implements OnInit {
     return _.orderBy(verificationQueueItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
+  onDeleteClick(){
+      this.searchTextFilter = 'hi'
+    }
+
   private configureSearchHandler() {
     this.searchElement.searchOutput$
       .pipe(
@@ -94,6 +106,21 @@ export class PrepackVerificationQueueComponent implements OnInit {
         this.filteredPrepackVerificationQueueItems = this.filterBySearchText(data, this.unfilteredPrepackVerificationQueueItems);
       });
   }
+
+ /* istanbul ignore next */
+ fromWPFNgOnInit() {
+  this.ngOnInit();
+}
+
+/* istanbul ignore next */
+//private setupDataRefresh() {
+//  let hash = this.windowService.getHash();
+// this.wpfInteropService.wpfViewModelActivated
+//    .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+//    .subscribe(() => {               
+//      this.ngOnInit();        
+//    });
+//}
 
   /* istanbul ignore next */
   private filterBySearchText(text: string, unfilteredArray: PrepackVerificationQueueItem[]) {
