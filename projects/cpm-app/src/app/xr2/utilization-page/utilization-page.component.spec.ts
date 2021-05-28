@@ -1,4 +1,4 @@
-import { EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core';
+import { EventEmitter, Injector, NO_ERRORS_SCHEMA, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of, Subject } from 'rxjs';
 import { UtilizationService } from '../../api-xr2/services/utilization.service';
@@ -25,7 +25,11 @@ describe('UtilizationPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let utilizationService: Partial<UtilizationService>;
   let utilizationEventConnectionService: Partial<UtilizationEventConnectionService>;
-  let baseRouteReuseStrategy: BaseRouteReuseStrategy = new BaseRouteReuseStrategy();
+  let i: Injector = {
+    get(service: any) {
+        return null;
+    }};
+  let baseRouteReuseStrategy: BaseRouteReuseStrategy = new BaseRouteReuseStrategy(i);
 
   beforeEach(async(() => {
     translateService = {
