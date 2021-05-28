@@ -28,8 +28,6 @@ export class BaseRouteReuseStrategy implements RouteReuseStrategy {
   /* Returns `false` unless we have a stored value */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
     const ret: boolean =  !!route.routeConfig && !!this.cache[this.getUrl(route)];
-    const x = this._router.routerState;
-    const r = this._router.routerState.root;
     return ret;
   }
 
