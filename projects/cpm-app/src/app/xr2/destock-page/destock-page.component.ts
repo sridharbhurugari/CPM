@@ -20,6 +20,7 @@ import { DevicesService } from '../../api-core/services/devices.service';
   templateUrl: './destock-page.component.html',
   styleUrls: ['./destock-page.component.scss']
 })
+
 export class DestockPageComponent implements OnInit {
   device$: Observable<SelectableDeviceInfo>;
   deviceId: number = 0;
