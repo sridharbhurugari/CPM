@@ -110,16 +110,8 @@ export class UtilizationPageComponent implements OnInit {
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
         this.eventDateTime = null;
-
+        this.header.setToDefault();
         this.refreshData();
-        this.header.resetToDefault();
-      });
-
-      this.wpfInteropService.wpfViewModelClosing
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {
-        this.header.resetToDefault();
-        this.eventDateTime = null;
       });
   }
 
@@ -133,8 +125,6 @@ setUtilizationService()
       // Utilization Service
       this.requestDeviceUtilizationPocketSummaryInfo$ = this.utilizationService.get(this.selectedDeviceInformation.DeviceId).pipe(shareReplay(1),
       finalize(() => {
-        // if(this.screenState === UtilizationPageComponent.ListState.Error)
-        // {return;}
         if(this.selectedDeviceInformation.DeviceId === 0)
         {
           this.screenState = UtilizationPageComponent.ListState.NoData;
