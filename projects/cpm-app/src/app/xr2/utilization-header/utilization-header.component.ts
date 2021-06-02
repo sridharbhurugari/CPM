@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { SingleselectRowItem } from "@omnicell/webcorecomponents";
+import { SingleselectComponent, SingleselectRowItem } from "@omnicell/webcorecomponents";
 import { Observable } from "rxjs";
 import { shareReplay } from "rxjs/operators";
 import { DevicesService } from "../../api-core/services/devices.service";
@@ -19,7 +19,6 @@ export class UtilizationHeaderComponent  implements OnInit {
               private ocapHttpConfigurationService: OcapHttpConfigurationService,
               private devicesService: DevicesService,
               private translateService: TranslateService
-//private changeDetectionRef: ChangeDetectorRef
 ) {}
 
   @Output() destockClicked: EventEmitter<void> = new EventEmitter<void>();
@@ -36,13 +35,14 @@ export class UtilizationHeaderComponent  implements OnInit {
 
   set selectedDeviceInformation(value: SelectableDeviceInfo) {
     this._selectedDeviceInformation = value;
+    this.deviceDropdown.selectedItem = this.selectedDropdownItem;
     this.selectionChangedEvent.emit(value);
   }
 
   get selectedDeviceInformation(): SelectableDeviceInfo {
     return this._selectedDeviceInformation;
   }
-
+  @ViewChild('deviceDropdown', { static: false }) deviceDropdown: SingleselectComponent;
   ngOnInit() {
     this.deviceInformationList$ = this.devicesService.getAllXr2Devices().pipe(shareReplay(0));
     this.deviceInformationList$.subscribe(
@@ -50,13 +50,12 @@ export class UtilizationHeaderComponent  implements OnInit {
       this.deviceInformationList = data;
       this.getAllActiveXr2Devices();
     });
-
   }
 
    setToDefault(): void
    {
     this.selectedDropdownItem = this.defaultDeviceDisplayItem;
-    this.onDeviceSelectionChanged(this.defaultDeviceDisplayItem);
+    this.loadSelectedDeviceInformation(this.selectedDropdownItem.value);
    }
 
    // Build the list of dropdown rows (outputDeviceDisplayList), Identify the default (defaultDeviceDisplayItem),
@@ -125,6 +124,7 @@ export class UtilizationHeaderComponent  implements OnInit {
     }
 
     onDeviceSelectionChanged($event) {
+      this.selectedDropdownItem = $event
       this.loadSelectedDeviceInformation($event.value);
     }
 

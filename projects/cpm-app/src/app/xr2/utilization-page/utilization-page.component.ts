@@ -103,6 +103,8 @@ export class UtilizationPageComponent implements OnInit {
     .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onXr2StorageCapacityDisplayEventReceived(event));
   }
+
+  // On WPF Page Return in CPM, the page is already in the browser, so we reset the data
   /* istanbul ignore next */
   private setupDataRefresh() {
     let hash = this.windowService.getHash();
@@ -111,6 +113,8 @@ export class UtilizationPageComponent implements OnInit {
       .subscribe(() => {
         this.eventDateTime = null;
         this.header.setToDefault();
+        this.selectedDeviceInformation = this.header.selectedDeviceInformation;
+
         this.refreshData();
       });
   }
@@ -143,10 +147,8 @@ setUtilizationService()
     }),
       );
 }
-  onSearchTextFilterEvent(filterText: string) {
-    this.searchTextFilter = filterText;
-  }
-  onDeviceSelectionChanged($event) {
+
+  onDeviceSelectionChangedEvent($event) {
     if(this.selectedDeviceInformation !== $event)
     {
       this.selectedDeviceInformation = $event;
