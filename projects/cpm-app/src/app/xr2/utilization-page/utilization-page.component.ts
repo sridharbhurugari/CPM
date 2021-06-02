@@ -19,6 +19,7 @@ import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { NavigationExtras, Router } from '@angular/router';
 import { BaseRouteReuseStrategy } from '../../core/base-route-reuse-strategy/base-route-reuse-strategy';
+import { UtilizationHeaderComponent } from '../utilization-header/utilization-header.component';
 
 @Component({
   selector: 'app-utilization-page',
@@ -27,7 +28,6 @@ import { BaseRouteReuseStrategy } from '../../core/base-route-reuse-strategy/bas
 })
 export class UtilizationPageComponent implements OnInit {
 
-  @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
   selectedDeviceInformation: SelectableDeviceInfo;
   requestDeviceUtilizationPocketSummaryInfo$: Observable<number> ;
   deviceUtilizationPocketSummaryInfo: any[];
@@ -70,14 +70,16 @@ export class UtilizationPageComponent implements OnInit {
     "PocketsRemaining"
   );
 
+  @ViewChild('header', { static: false }) header: UtilizationHeaderComponent;
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
-
 
   constructor(private utilizationService: UtilizationService,
     private utilizationEventConnectionService: UtilizationEventConnectionService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
-    private router: Router) {}
+    private router: Router) {
+      this.setupDataRefresh();
+    }
 
   ngOnInit() {
 
@@ -100,6 +102,25 @@ export class UtilizationPageComponent implements OnInit {
     this.utilizationEventConnectionService.Xr2StorageCapacityDisplayEventSubject
     .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(event => this.onXr2StorageCapacityDisplayEventReceived(event));
+  }
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.eventDateTime = null;
+
+        this.refreshData();
+        this.header.resetToDefault();
+      });
+
+      this.wpfInteropService.wpfViewModelClosing
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.header.resetToDefault();
+        this.eventDateTime = null;
+      });
   }
 
   ngOnDestroy(): void {
