@@ -18,20 +18,21 @@ export class UtilizationHeaderComponent  implements OnInit {
   constructor(private windowService: WindowService,
               private ocapHttpConfigurationService: OcapHttpConfigurationService,
               private devicesService: DevicesService,
-              private router: Router,
-              private translateService: TranslateService,
-private changeDetectionRef: ChangeDetectorRef              ) {
-    ;
-  }
+              private translateService: TranslateService
+//private changeDetectionRef: ChangeDetectorRef
+) {}
+
   @Output() destockClicked: EventEmitter<void> = new EventEmitter<void>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
 
-  private _selectedDeviceInformation: SelectableDeviceInfo;
-
+  // Device details
   deviceInformationList$: Observable<SelectableDeviceInfo[]>;
   deviceInformationList: SelectableDeviceInfo[];
+  private _selectedDeviceInformation: SelectableDeviceInfo;
+  // Dropdown list
   outputDeviceDisplayList: SingleselectRowItem[] = [];
   defaultDeviceDisplayItem: SingleselectRowItem;
+  selectedDropdownItem: SingleselectRowItem;
 
   set selectedDeviceInformation(value: SelectableDeviceInfo) {
     this._selectedDeviceInformation = value;
@@ -52,12 +53,14 @@ private changeDetectionRef: ChangeDetectorRef              ) {
 
   }
 
-   resetToDefault(): void
+   setToDefault(): void
    {
+    this.selectedDropdownItem = this.defaultDeviceDisplayItem;
     this.onDeviceSelectionChanged(this.defaultDeviceDisplayItem);
-    this.changeDetectionRef.markForCheck();
-this.changeDetectionRef.detectChanges();
    }
+
+   // Build the list of dropdown rows (outputDeviceDisplayList), Identify the default (defaultDeviceDisplayItem),
+   //  and set the selected item (selectedDropdownItem + SelectedDeviceInformation)
 
    getAllActiveXr2Devices() {
     //this.deviceInformationList = await this.devicesService.getAllXr2Devices().toPromise();
@@ -73,8 +76,8 @@ this.changeDetectionRef.detectChanges();
         this.deviceInformationList[0].DeviceId.toString()
       );
       newList.push(defaultFound);
-    } else {
-      // this.getAllDevicesInfo();
+    }
+    else {
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
           selectableDeviceInfo.Description,
@@ -83,7 +86,7 @@ this.changeDetectionRef.detectChanges();
         );
 
         newList.push(selectRow);
-
+          // if currently the lease holder, select the first xr2
         if (!defaultFound && selectableDeviceInfo.CurrentLeaseHolder !== undefined &&
           selectableDeviceInfo.CurrentLeaseHolder.toString() === currentClientId
         ) {
@@ -93,14 +96,14 @@ this.changeDetectionRef.detectChanges();
     }
 
     this.outputDeviceDisplayList = newList;
-
+    // i
     if (defaultFound) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
-      this.loadSelectedDeviceInformation(defaultFound.value);
-    } else {
+     } else {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
-      this.loadSelectedDeviceInformation('0');
     }
+    // set the dropdown to the default:
+    this.setToDefault();
   }
 
   private loadSelectedDeviceInformation(deviceId: string) {
@@ -131,22 +134,22 @@ this.changeDetectionRef.detectChanges();
       );
     }
 
-   getAllDevicesInfo() {
-    let translatedLabel = '---';
-    this.translateService.get('DEVICE_SELECTION_TEXT').subscribe((res: string) => {
-    translatedLabel = res;
-    });
-     let allDevicesInfo: SelectableDeviceInfo;
-    allDevicesInfo = {
-      DeviceId: 0,
-      Description: translatedLabel,
-      DefaultOwnerName: '',
-      DeviceTypeId: '',
-      CurrentLeaseHolder: undefined,
-      IsActive: true
-    };
-    this.deviceInformationList.push(allDevicesInfo);
-  }
+  //  getAllDevicesInfo() {
+  //   let translatedLabel = '---';
+  //   this.translateService.get('DEVICE_SELECTION_TEXT').subscribe((res: string) => {
+  //   translatedLabel = res;
+  //   });
+  //    let allDevicesInfo: SelectableDeviceInfo;
+  //   allDevicesInfo = {
+  //     DeviceId: 0,
+  //     Description: translatedLabel,
+  //     DefaultOwnerName: '',
+  //     DeviceTypeId: '',
+  //     CurrentLeaseHolder: undefined,
+  //     IsActive: true
+  //   };
+  //   this.deviceInformationList.push(allDevicesInfo);
+  // }
 
   onDestockClick(): void  {
     this.destockClicked.emit();
