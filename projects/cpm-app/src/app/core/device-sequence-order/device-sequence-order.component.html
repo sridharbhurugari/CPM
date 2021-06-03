@@ -6,9 +6,14 @@
 
     <ng-container class="ocgridbody" >
       <div class="row" *ngFor="let device of Devices">
-        <div class="first" style="align-items: center;">
+        <div class="first" style="align-items: center;"></div>
+        <div style="flex-grow: 1;">
+          <div class="col" [attr.data-title]="colHeader">{{device.DeviceDescription}}
+          </div>
+          <div *ngIf="device.OutputDevices != null" style="font-size: small;font-style: italic; height: 20px;">
+            {{getCurrentOutputDeviceDescription(device)}}
         </div>
-        <div class="col" [attr.data-title]="colHeader">{{device.DeviceDescription}}</div>
+      </div>
       </div>
     </ng-container>
 </oc-grid>
