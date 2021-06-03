@@ -273,6 +273,7 @@ setUtilizationService()
     this.router.navigate(['xr2/utilization/details'], navigationExtras );
   }
 
+/* istanbul ignore next */
   private resizeGrid() {
     setTimeout(() => {
       if (this.ocGrid) {

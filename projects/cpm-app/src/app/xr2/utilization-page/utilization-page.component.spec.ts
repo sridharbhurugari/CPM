@@ -25,6 +25,7 @@ describe('UtilizationPageComponent', () => {
   let translateService: Partial<TranslateService>;
   let utilizationService: Partial<UtilizationService>;
   let utilizationEventConnectionService: Partial<UtilizationEventConnectionService>;
+  let router: Partial<Router>;
   let i: Injector = {
     get(service: any) {
         return null;
@@ -66,6 +67,7 @@ describe('UtilizationPageComponent', () => {
     fixture = TestBed.createComponent(UtilizationPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
   });
 
   it('should create', () => {
@@ -332,12 +334,36 @@ describe('UtilizationPageComponent', () => {
       component.onDataError(event);
       expect(component.screenState).toBe(UtilizationPageComponent.ListState.WaitingForData);
     });
+
     it('Missing related event info', () => {
       component.onDataError(null);
       expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
     });
 
   });
+
+  describe('Basic Navigation', () => {
+    it('Show ExpiredDetails', () => {
+      component.showExpiredDetails();
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization/detailsExpired/')]));
+    })
+    it('Show ExpiringThisMonthDetails', () => {
+      component.showExpiringThisMonthDetails();
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization/detailsExpiringThisMonth/')]));
+    })
+    it('Show NotAssignedDetails', () => {
+      component.showNotAssignedDetails();
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization/detailsNotAssigned/')]));
+    })
+    it('Show PocketsWithErrorsDetails', () => {
+      component.showPocketsWithErrorsDetails();
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization/detailsPocketsWithErrors/')]));
+    })
+    it('Show Destock', () => {
+      component.showDestock();
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('xr2/utilization/destock')]));
+    })
+  })
 
 });
 

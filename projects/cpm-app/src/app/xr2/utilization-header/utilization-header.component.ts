@@ -1,6 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { SingleselectComponent, SingleselectRowItem } from "@omnicell/webcorecomponents";
 import { Observable } from "rxjs";
 import { shareReplay } from "rxjs/operators";
@@ -17,8 +15,7 @@ import { WindowService } from "../../shared/services/window-service";
 export class UtilizationHeaderComponent  implements OnInit {
   constructor(private windowService: WindowService,
               private ocapHttpConfigurationService: OcapHttpConfigurationService,
-              private devicesService: DevicesService,
-              private translateService: TranslateService
+              private devicesService: DevicesService
 ) {}
 
   @Output() destockClicked: EventEmitter<void> = new EventEmitter<void>();
@@ -95,12 +92,14 @@ export class UtilizationHeaderComponent  implements OnInit {
     }
 
     this.outputDeviceDisplayList = newList;
-    // i
     if (defaultFound) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
      } else {
-      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
-    }
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0')
+      if(!this.defaultDeviceDisplayItem) {
+        this.defaultDeviceDisplayItem = this.outputDeviceDisplayList[0];
+      }
+     }
     // set the dropdown to the default:
     this.setToDefault();
   }
@@ -133,23 +132,6 @@ export class UtilizationHeaderComponent  implements OnInit {
         (x) => x.value === deviceId
       );
     }
-
-  //  getAllDevicesInfo() {
-  //   let translatedLabel = '---';
-  //   this.translateService.get('DEVICE_SELECTION_TEXT').subscribe((res: string) => {
-  //   translatedLabel = res;
-  //   });
-  //    let allDevicesInfo: SelectableDeviceInfo;
-  //   allDevicesInfo = {
-  //     DeviceId: 0,
-  //     Description: translatedLabel,
-  //     DefaultOwnerName: '',
-  //     DeviceTypeId: '',
-  //     CurrentLeaseHolder: undefined,
-  //     IsActive: true
-  //   };
-  //   this.deviceInformationList.push(allDevicesInfo);
-  // }
 
   onDestockClick(): void  {
     this.destockClicked.emit();
