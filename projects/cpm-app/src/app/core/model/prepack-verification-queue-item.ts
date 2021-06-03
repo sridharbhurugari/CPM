@@ -6,10 +6,11 @@ export class PrepackVerificationQueueItem implements IPrepackVerificationQueueIt
         Object.assign(this, prepackVerificationQueueItem);
       }
 
+    PrepackVerificationQueueId: number;
     ItemId: string;
     ItemDescription: string;
     DeviceId: number;
     DeviceDescription: string;
-    PackagedQty: number;
-    PackDate: Date;
+    QuantityToPackage: number;
+    PackagedDate: Date;
 }

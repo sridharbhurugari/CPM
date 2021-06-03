@@ -21,5 +21,11 @@ export class PrepackVerificationService {
     return this.httpClient.get<IPrepackVerificationQueueItem[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
-  }    
+  } 
+
+  deletePrepackQueueVerification(queueId: number) {    
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/PrepackVerification/${queueId}`);
+    var headers = this.ocapHttpHeadersService.getHeaders();
+    return this.httpClient.delete(url, { headers: headers });
+  }
 }

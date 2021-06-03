@@ -1,8 +1,9 @@
 export interface IPrepackVerificationQueueItem {
+    PrepackVerificationQueueId: number;
     ItemId: string;
     ItemDescription: string;
     DeviceId: number;
     DeviceDescription: string;
-    PackagedQty: number;
-    PackDate: Date;
+    QuantityToPackage: number;
+    PackagedDate: Date;
 }

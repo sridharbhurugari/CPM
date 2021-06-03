@@ -38,10 +38,11 @@ export class PrepackVerificationQueueComponent implements OnInit {
   unfilteredPrepackVerificationQueueItems: PrepackVerificationQueueItem[];
   filteredPrepackVerificationQueueItems: PrepackVerificationQueueItem[];
   
+  idPropertyName = nameof<PrepackVerificationQueueItem>('PrepackVerificationQueueId');
   descriptionPropertyName = nameof<PrepackVerificationQueueItem>('ItemDescription');
   packagerPropertyName = nameof<PrepackVerificationQueueItem>('DeviceDescription');  
-  qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('PackagedQty');
-  datePropertyName = nameof<PrepackVerificationQueueItem>('PackDate');
+  qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('QuantityToPackage');
+  datePropertyName = nameof<PrepackVerificationQueueItem>('PackagedDate');
 
   constructor(
     private prepackVerificationService: PrepackVerificationService,
@@ -91,8 +92,8 @@ export class PrepackVerificationQueueComponent implements OnInit {
     return _.orderBy(verificationQueueItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
-  onDeleteClick(){
-      this.searchTextFilter = 'hi'
+  onDeleteClick(verification: PrepackVerificationQueueItem){
+      this.prepackVerificationService.deletePrepackQueueVerification(verification.PrepackVerificationQueueId).subscribe(result => this.loadPrepackVerificationQueueItems());
     }
 
   private configureSearchHandler() {

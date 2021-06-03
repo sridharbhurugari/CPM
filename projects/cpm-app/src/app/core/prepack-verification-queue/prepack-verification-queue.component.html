@@ -4,7 +4,7 @@
   </div>
   <oc-grid #ocgrid ocgridfilter="false">
     <ng-container class="ocgridheader">
-        <div class="first" data-colwrap="true"></div>
+        <div class="first" data-colwrap="true"></div>                                 
         <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
                                  [columnPropertyName]='descriptionPropertyName'
                                  headerResourceKey='DESCRIPTION_ID' 
@@ -26,7 +26,7 @@
                                  [customColumnSortOrder]="columnSortDirection"                          
                                  (columnSelected)="columnSelected($event)">
         </div>        
-        <div app-col-header-sortable class="last" ocGridColResize data-width="300" data-colwrap="true"
+        <div app-col-header-sortable class="last" ocGridColResize data-width="300" data-colwrap="false"
                                  [columnPropertyName]='datePropertyName'
                                  headerResourceKey='DATE'   
                                  [currentSortPropertyName]="currentSortPropertyName"  
@@ -43,16 +43,17 @@
           <div>{{queueItem.ItemId}}</div>
         </div>
         <div class="col" [attr.data-title]="'PACKAGER' | translate">{{queueItem.DeviceDescription}}</div>
-        <div class="col" style="align-items: center;" [attr.data-title]="'PACKAGED_QUANTITY' | translate">{{queueItem.PackagedQty}}</div>        
-        <div style="flex-direction: row;" class="col" [attr.data-title]="'DATE' | translate">
-            <div style="flex-grow: 1;" >{{queueItem.PackDate | date: 'shortDate'}}
-            {{queueItem.PackDate | date: 'shortTime'}}
-            </div>
+        <div class="col" style="align-items: center;" [attr.data-title]="'PACKAGED_QUANTITY' | translate">{{queueItem.QuantityToPackage}}</div>        
+        <div style="flex-direction: row; justify-content: space-between; align-items: center;" class="col" [attr.data-title]="'DATE' | translate">
             <div>
-            <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'delete'"
-                        (clickEvent)="onDeleteClick()">
-            </app-cp-clickable-icon>
-            </div>
+              {{queueItem.PackagedDate | date: 'shortDate'}}
+              {{queueItem.PackagedDate | date: 'shortTime'}}
+            </div>                        
+            <div>
+              <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'"
+                (clickEvent)="onDeleteClick(queueItem)">
+              </app-cp-clickable-icon>
+            </div>            
         </div>       
       </div>
     </ng-container>
