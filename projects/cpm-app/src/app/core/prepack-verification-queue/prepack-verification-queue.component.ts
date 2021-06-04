@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { SearchBoxComponent, PopupDialogService } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { filter, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
@@ -44,12 +44,14 @@ export class PrepackVerificationQueueComponent implements OnInit {
   qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('QuantityToPackage');
   datePropertyName = nameof<PrepackVerificationQueueItem>('PackagedDate');
 
+  ngUnsubscribe = new Subject();
+
   constructor(
     private prepackVerificationService: PrepackVerificationService,
     private windowService: WindowService,    
     private wpfInteropService: WpfInteropService,
     public translateService: TranslateService) {
-      //this.setupDataRefresh();
+      this.setupDataRefresh();
     }
 
   ngOnInit() {
@@ -60,8 +62,9 @@ export class PrepackVerificationQueueComponent implements OnInit {
     this.configureSearchHandler();
   }
 
-  ngUnsubscribe(): void  {
-
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   private loadPrepackVerificationQueueItems(): void {  
@@ -106,27 +109,21 @@ export class PrepackVerificationQueueComponent implements OnInit {
       .subscribe(data => {
         this.filteredPrepackVerificationQueueItems = this.filterBySearchText(data, this.unfilteredPrepackVerificationQueueItems);
       });
-  }
-
- /* istanbul ignore next */
- fromWPFNgOnInit() {
-  this.ngOnInit();
-}
+  } 
 
 /* istanbul ignore next */
-//private setupDataRefresh() {
-//  let hash = this.windowService.getHash();
-// this.wpfInteropService.wpfViewModelActivated
-//    .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
-//    .subscribe(() => {               
-//      this.ngOnInit();        
-//    });
-//}
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {               
+        this.loadPrepackVerificationQueueItems();        
+    });
+  }
 
   /* istanbul ignore next */
   private filterBySearchText(text: string, unfilteredArray: PrepackVerificationQueueItem[]) {
     if(!unfilteredArray) return [];
-
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   } 
 }
