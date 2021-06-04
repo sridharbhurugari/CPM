@@ -1,5 +1,14 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
-import { SingleselectComponent, SingleselectRowItem } from "@omnicell/webcorecomponents";
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import {
+  SingleselectComponent,
+  SingleselectRowItem,
+} from "@omnicell/webcorecomponents";
 import { forkJoin, Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 import { DevicesService } from "../../api-core/services/devices.service";
@@ -7,19 +16,20 @@ import { WorkstationTrackerService } from "../../api-core/services/workstation-t
 import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
 import { WindowService } from "../../shared/services/window-service";
 @Component({
-  selector: 'app-utilization-header',
-  templateUrl: './utilization-header.component.html',
-  styleUrls: ['./utilization-header.component.scss']
+  selector: "app-utilization-header",
+  templateUrl: "./utilization-header.component.html",
+  styleUrls: ["./utilization-header.component.scss"],
 })
-
-export class UtilizationHeaderComponent  implements OnInit {
-  constructor(private windowService: WindowService,
-              private devicesService: DevicesService,
-              private workstationTrackerService: WorkstationTrackerService
-) {}
+export class UtilizationHeaderComponent implements OnInit {
+  constructor(
+    private windowService: WindowService,
+    private devicesService: DevicesService,
+    private workstationTrackerService: WorkstationTrackerService
+  ) {}
 
   @Output() destockClicked: EventEmitter<void> = new EventEmitter<void>();
-  @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
+  @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> =
+    new EventEmitter<SelectableDeviceInfo>();
 
   // Device details
   deviceInformationList$: Observable<SelectableDeviceInfo[]>;
@@ -40,35 +50,32 @@ export class UtilizationHeaderComponent  implements OnInit {
   get selectedDeviceInformation(): SelectableDeviceInfo {
     return this._selectedDeviceInformation;
   }
-  @ViewChild('deviceDropdown', { static: false }) deviceDropdown: SingleselectComponent;
+  @ViewChild("deviceDropdown", { static: false })
+  deviceDropdown: SingleselectComponent;
   ngOnInit() {
-
-    const di$ = this.devicesService.getAllXr2Devices().pipe(map((data) => this.deviceInformationList = data),shareReplay(0));
-    const ws$ = this.workstationTrackerService.GetWorkstationName().pipe(map(s => {
-      this.workstationName = s.WorkstationShortName;
-      }));
-      forkJoin(di$, ws$).subscribe(r => {
-        this.getAllActiveXr2Devices();
-      });
-    // this.deviceInformationList$.subscribe(
-    //   (data) => {console.log('subscribe tableBody complete', data);
-    //   this.deviceInformationList = data;
-    //   this.getAllActiveXr2Devices();
-
+    const di$ = this.devicesService.getAllXr2Devices().pipe(
+      map((data) => (this.deviceInformationList = data)),
+      shareReplay(0)
+    );
+    const ws$ = this.workstationTrackerService.GetWorkstationName().pipe(
+      map((s) => {
+        this.workstationName = s.WorkstationShortName;
+      })
+    );
+    forkJoin(di$, ws$).subscribe((r) => {
+      this.getAllActiveXr2Devices();
+    });
   }
 
-   setToDefault(): void
-   {
+  setToDefault(): void {
     this.selectedDropdownItem = this.defaultDeviceDisplayItem;
     this.loadSelectedDeviceInformation();
-   }
+  }
 
-   // Build the list of dropdown rows (outputDeviceDisplayList), Identify the default (defaultDeviceDisplayItem),
-   //  and set the selected item (selectedDropdownItem + SelectedDeviceInformation)
-
-   getAllActiveXr2Devices() {
-    //this.deviceInformationList = await this.devicesService.getAllXr2Devices().toPromise();
-    console.log('subscribe tableBody complete', this.deviceInformationList);
+  // Build the list of dropdown rows (outputDeviceDisplayList), Identify the default (defaultDeviceDisplayItem),
+  //  and set the selected item (selectedDropdownItem + SelectedDeviceInformation)
+  getAllActiveXr2Devices() {
+    console.log("subscribe tableBody complete", this.deviceInformationList);
     const newList: SingleselectRowItem[] = [];
     let defaultFound: SingleselectRowItem;
 
@@ -78,8 +85,7 @@ export class UtilizationHeaderComponent  implements OnInit {
         this.deviceInformationList[0].DeviceId.toString()
       );
       newList.push(defaultFound);
-    }
-    else {
+    } else {
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
           selectableDeviceInfo.Description,
@@ -88,9 +94,13 @@ export class UtilizationHeaderComponent  implements OnInit {
         );
 
         newList.push(selectRow);
-          // if currently the lease holder, select the first xr2
-        if (!defaultFound && this.workstationName && selectableDeviceInfo.DefaultOwnerName && this.workstationName === selectableDeviceInfo.DefaultOwnerName)
-        {
+
+        if (
+          !defaultFound &&
+          this.workstationName &&
+          selectableDeviceInfo.DefaultOwnerName &&
+          this.workstationName === selectableDeviceInfo.DefaultOwnerName
+        ) {
           defaultFound = selectRow;
         }
       });
@@ -98,18 +108,19 @@ export class UtilizationHeaderComponent  implements OnInit {
 
     this.outputDeviceDisplayList = newList;
     if (defaultFound) {
-      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
-     } else {
-      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0')
-     }
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(
+        defaultFound.value
+      );
+    } else {
+      this.defaultDeviceDisplayItem = this.getSingleSelectRowItem("0");
+    }
     // set the dropdown to the default:
     this.setToDefault();
   }
 
   private loadSelectedDeviceInformation() {
-
-    let deviceId: string = '0';
-    if(this.selectedDropdownItem){
+    let deviceId: string = "0";
+    if (this.selectedDropdownItem) {
       deviceId = this.selectedDropdownItem.value;
     }
 
@@ -121,33 +132,30 @@ export class UtilizationHeaderComponent  implements OnInit {
 
     if (indexToLoad !== -1) {
       this.selectedDeviceInformation = this.deviceInformationList[indexToLoad];
-    }
-    else{
-      this.selectedDeviceInformation = new SelectableDeviceInfo({DeviceId: 0});
+    } else {
+      this.selectedDeviceInformation = new SelectableDeviceInfo({
+        DeviceId: 0,
+      });
     }
   }
 
   isDeviceSelected(): boolean {
-    let ret: boolean = this.selectedDeviceInformation && this.selectedDeviceInformation.DeviceId > 0;
+    let ret: boolean =
+      this.selectedDeviceInformation &&
+      this.selectedDeviceInformation.DeviceId > 0;
     return ret;
-    }
-
-    onDeviceSelectionChanged($event) {
-      this.selectedDropdownItem = $event
-      this.loadSelectedDeviceInformation();
-    }
-
-    private getSingleSelectRowItem(deviceId: string) {
-      return this.outputDeviceDisplayList.find(
-        (x) => x.value === deviceId
-      );
-    }
-
-  onDestockClick(): void  {
-    this.destockClicked.emit();
   }
 
+  onDeviceSelectionChanged($event) {
+    this.selectedDropdownItem = $event;
+    this.loadSelectedDeviceInformation();
+  }
+
+  private getSingleSelectRowItem(deviceId: string) {
+    return this.outputDeviceDisplayList.find((x) => x.value === deviceId);
+  }
+
+  onDestockClick(): void {
+    this.destockClicked.emit();
+  }
 }
-
-
-
