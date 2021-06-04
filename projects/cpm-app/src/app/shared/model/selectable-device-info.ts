@@ -3,7 +3,7 @@ import { Guid } from 'guid-typescript';
 
 export class SelectableDeviceInfo implements ISelectableDeviceInfo {
 
-  constructor(deviceInfo: SelectableDeviceInfo) {
+  constructor(deviceInfo?: Partial<SelectableDeviceInfo>) {
     Object.assign(this, deviceInfo);
   }
 
