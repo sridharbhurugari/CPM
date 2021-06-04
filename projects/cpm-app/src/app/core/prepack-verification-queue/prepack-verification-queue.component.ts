@@ -15,20 +15,20 @@ import { PrepackVerificationQueueItem } from '../model/prepack-verification-queu
 import { PrepackVerificationService } from '../../api-core/services/prepack-verification.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
-@Component({
+@Component({ 
   selector: 'app-prepack-verification-queue',
   templateUrl: './prepack-verification-queue.component.html',
   styleUrls: ['./prepack-verification-queue.component.scss']
 })
 export class PrepackVerificationQueueComponent implements OnInit {   
   
-  @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
+  // @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
 
   @ViewChild('searchBox', {
     static: true
   })
   searchElement: SearchBoxComponent;
-  searchTextFilter: string;  
+  //searchTextFilter: string;  
   searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
   currentSortPropertyName: string;
@@ -87,8 +87,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.columnSortDirection = event.SortDirection;
-    this.filteredPrepackVerificationQueueItems = this.sort(this.filteredPrepackVerificationQueueItems, event.SortDirection);
-    this.sortEvent.emit(event);
+    this.filteredPrepackVerificationQueueItems = this.sort(this.filteredPrepackVerificationQueueItems, event.SortDirection);    
   }
 
   sort(verificationQueueItems: PrepackVerificationQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PrepackVerificationQueueItem[] {
