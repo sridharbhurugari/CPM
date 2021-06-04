@@ -113,11 +113,6 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     }
   }
 
-  isDeviceSelected(): boolean {
-    let ret: boolean = this.selectedDeviceInformation && this.selectedDeviceInformation.DeviceId > 0;
-    return ret;
-    }
-
   onDeviceSelectionChanged($event) {
     this.searchElement.clearSearch(null);
     this.loadSelectedDeviceInformation($event.value);
