@@ -1,23 +1,15 @@
 <div class="cpmheaderrow header-container">
-  <oc-singleselect
-    [tableData] = "outputDeviceDisplayList"
-    [selectedItem] = "defaultDeviceDisplayItem"
-    componentWidth="300"
-    dropdownRowsVisible="6"
-    popupDirection="AUTO"
+  <oc-singleselect #deviceDropdown [tableData]="outputDeviceDisplayList" [selectedItem]="selectedDropdownItem"
+    componentWidth="300" dropdownRowsVisible="6" popupDirection="AUTO"
     [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
-    [selectText]="'DEVICE_SELECTION_TEXT' | translate"
-    [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
+    [selectText]="'DEVICE_SELECTION_TEXT' | translate" [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
     (selectionChanged)="onDeviceSelectionChanged($event)">
-    </oc-singleselect>
-    <span class="details-text">
-      {{'Pocket Utilization' | translate}}
-    </span>
-    <oc-button-action
-    [buttonText]="'Destock' | translate"
-    mode="secondary"
-    style = "margin-left:20px;"
-    (click)="onDestockClick()">
-</oc-button-action>
-<oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate" style = "display: none;"></oc-search-box>
+  </oc-singleselect>
+  <span class="details-text">
+    {{'Pocket Utilization' | translate}}
+  </span>
+  <oc-button-action id="DestockButton" [buttonText]="'Destock' | translate" mode="secondary"
+    [style.visibility]="isDeviceSelected() ? 'visible' : 'hidden'" style="margin-left:20px;" (click)="onDestockClick()">
+  </oc-button-action>
+
 </div>

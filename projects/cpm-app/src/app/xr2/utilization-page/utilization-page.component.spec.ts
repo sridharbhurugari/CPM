@@ -1,75 +1,107 @@
-import { EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable, of, Subject } from 'rxjs';
-import { UtilizationService } from '../../api-xr2/services/utilization.service';
-import { UtilizationEventConnectionService } from '../services/utilization-event-connection.service';
-import { UtilizationDataEvent } from '../model/utilization-data-event';
-import { TranslateService } from '@ngx-translate/core';
-import { ProgressAnimationComponent, FooterModule, ButtonActionModule } from '@omnicell/webcorecomponents';
-import { MockUtilizationHeaderComponent } from '../../shared/testing/mock-utilization-header-component.spec';
-import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { UtilizationPageComponent } from './utilization-page.component';
-import { WindowService } from '../../shared/services/window-service';
-import { WpfInteropService } from '../../shared/services/wpf-interop.service';
-import { UnassignedMedicationInfo } from '../model/utilization-unassigned-medication-info';
-import { ExpiringMedicationInfo } from '../model/utilization-expiring-medication-info';
-import { ErroredMedicationInfo } from '../model/utilization-errored-medication-info';
-import { EventEventId } from '../../shared/constants/event-event-id';
-import { Xr2StorageCapacityDisplay } from '../model/xr2-storage-capacity-display';
-import { Router } from '@angular/router';
+import {
+  Injector,
+  NO_ERRORS_SCHEMA,
+} from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { Observable, of, Subject } from "rxjs";
+import { UtilizationService } from "../../api-xr2/services/utilization.service";
+import { UtilizationEventConnectionService } from "../services/utilization-event-connection.service";
+import { UtilizationDataEvent } from "../model/utilization-data-event";
+import { TranslateService } from "@ngx-translate/core";
+import {
+  ProgressAnimationComponent,
+  FooterModule,
+  ButtonActionModule,
+} from "@omnicell/webcorecomponents";
+import { MockUtilizationHeaderComponent } from "../../shared/testing/mock-utilization-header-component.spec";
+import { MockTranslatePipe } from "../../core/testing/mock-translate-pipe.spec";
+import { UtilizationPageComponent } from "./utilization-page.component";
+import { WindowService } from "../../shared/services/window-service";
+import { WpfInteropService } from "../../shared/services/wpf-interop.service";
+import { UnassignedMedicationInfo } from "../model/utilization-unassigned-medication-info";
+import { ExpiringMedicationInfo } from "../model/utilization-expiring-medication-info";
+import { ErroredMedicationInfo } from "../model/utilization-errored-medication-info";
+import { EventEventId } from "../../shared/constants/event-event-id";
+import { Xr2StorageCapacityDisplay } from "../model/xr2-storage-capacity-display";
+import { Router } from "@angular/router";
+import { BaseRouteReuseStrategy } from "../../core/base-route-reuse-strategy/base-route-reuse-strategy";
 
-describe('UtilizationPageComponent', () => {
-  let component: UtilizationPageComponent ;
+describe("UtilizationPageComponent", () => {
+  let component: UtilizationPageComponent;
   let fixture: ComponentFixture<UtilizationPageComponent>;
   let translateService: Partial<TranslateService>;
   let utilizationService: Partial<UtilizationService>;
   let utilizationEventConnectionService: Partial<UtilizationEventConnectionService>;
+  let router: Partial<Router>;
+  let i: Injector = {
+    get(service: any) {
+      return null;
+    },
+  };
+  let baseRouteReuseStrategy: BaseRouteReuseStrategy =
+    new BaseRouteReuseStrategy(i);
 
   beforeEach(async(() => {
     translateService = {
-      get: jasmine.createSpy('get').and.returnValue(of(translateService))
+      get: jasmine.createSpy("get").and.returnValue(of(translateService)),
     };
 
     utilizationService = {
-      get: jasmine.createSpy('get').and.returnValue(of(UtilizationService)),
+      get: jasmine.createSpy("get").and.returnValue(of(UtilizationService)),
     };
 
     utilizationEventConnectionService = {
       UtilizationIncomingDataSubject: new Subject<UtilizationDataEvent>(),
       UtilizationIncomingDataErrorSubject: new Subject<any>(),
-      Xr2StorageCapacityDisplayEventSubject: new Subject<Xr2StorageCapacityDisplay[]>(),
-      ngUnsubscribe: new Subject()
+      Xr2StorageCapacityDisplayEventSubject: new Subject<
+        Xr2StorageCapacityDisplay[]
+      >(),
+      ngUnsubscribe: new Subject(),
     };
 
     TestBed.configureTestingModule({
-      declarations: [ UtilizationPageComponent, MockUtilizationHeaderComponent, ProgressAnimationComponent, MockTranslatePipe ],
-      imports: [ ButtonActionModule,
-        FooterModule ],
+      declarations: [
+        UtilizationPageComponent,
+        MockUtilizationHeaderComponent,
+        ProgressAnimationComponent,
+        MockTranslatePipe,
+      ],
+      imports: [ButtonActionModule, FooterModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: UtilizationService, useValue: utilizationService},
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
-        { provide: UtilizationEventConnectionService, useValue: utilizationEventConnectionService},
-        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
-        { provide: WindowService, useValue: { getHash: () => '' } },
-        { provide: Router, useValue: {} }
-       ]
-    })
-    .compileComponents();
+        { provide: UtilizationService, useValue: utilizationService },
+        {
+          provide: Router,
+          useValue: {
+            navigate: jasmine.createSpy("navigate"),
+            routeReuseStrategy: baseRouteReuseStrategy,
+          },
+        },
+        {
+          provide: UtilizationEventConnectionService,
+          useValue: utilizationEventConnectionService,
+        },
+        {
+          provide: WpfInteropService,
+          useValue: { wpfViewModelActivated: new Subject() },
+        },
+        { provide: WindowService, useValue: { getHash: () => "" } },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UtilizationPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
-  describe('onDataReceived NotAssigned', () => {
-
+  describe("onDataReceived NotAssigned", () => {
     beforeEach(() => {
       component.notAssignedItems = 0;
       component.notAssignedDoses = 0;
@@ -77,14 +109,15 @@ describe('UtilizationPageComponent', () => {
       component.selectedDeviceInformation.DeviceId = 4;
     });
 
-    it('Check when empty', () => {
-      let data: UnassignedMedicationInfo[]
+    it("Check when empty", () => {
+      let data: UnassignedMedicationInfo[];
       component.notAssignedData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.UnassignedMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.notAssignedItems).toBe(0);
@@ -92,29 +125,30 @@ describe('UtilizationPageComponent', () => {
       expect(component.notAssignedLoaded).toBe(true);
     });
 
-    it('Check Count and Sums', () => {
+    it("Check Count and Sums", () => {
       let a1: UnassignedMedicationInfo = {
-        ItemCode: 'a',
+        ItemCode: "a",
         PocketTypeId: 1,
-        Inventory: 11
-       };
-       let b1: UnassignedMedicationInfo = {
-        ItemCode: 'b',
+        Inventory: 11,
+      };
+      let b1: UnassignedMedicationInfo = {
+        ItemCode: "b",
         PocketTypeId: 1,
-        Inventory: 21
-       };
-       let b2: UnassignedMedicationInfo = {
-        ItemCode: 'b',
+        Inventory: 21,
+      };
+      let b2: UnassignedMedicationInfo = {
+        ItemCode: "b",
         PocketTypeId: 2,
-        Inventory: 22
-       };
-      let data: UnassignedMedicationInfo[] = [ a1, b1, b2 ]
+        Inventory: 22,
+      };
+      let data: UnassignedMedicationInfo[] = [a1, b1, b2];
       component.notAssignedData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.UnassignedMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.notAssignedItems).toBe(2);
@@ -122,29 +156,30 @@ describe('UtilizationPageComponent', () => {
       expect(component.notAssignedLoaded).toBe(true);
     });
 
-    it('Check Different DeviceId gets rejected', () => {
+    it("Check Different DeviceId gets rejected", () => {
       let a1: UnassignedMedicationInfo = {
-        ItemCode: 'a',
+        ItemCode: "a",
         PocketTypeId: 1,
-        Inventory: 11
-       };
-       let b1: UnassignedMedicationInfo = {
-        ItemCode: 'b',
+        Inventory: 11,
+      };
+      let b1: UnassignedMedicationInfo = {
+        ItemCode: "b",
         PocketTypeId: 1,
-        Inventory: 21
-       };
-       let b2: UnassignedMedicationInfo = {
-        ItemCode: 'b',
+        Inventory: 21,
+      };
+      let b2: UnassignedMedicationInfo = {
+        ItemCode: "b",
         PocketTypeId: 2,
-        Inventory: 22
-       };
-      let data: UnassignedMedicationInfo[] = [ a1, b1, b2 ]
+        Inventory: 22,
+      };
+      let data: UnassignedMedicationInfo[] = [a1, b1, b2];
       component.notAssignedData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.UnassignedMedsReceived,
         DeviceId: 999,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.notAssignedItems).toBe(0);
@@ -152,27 +187,29 @@ describe('UtilizationPageComponent', () => {
       expect(component.notAssignedLoaded).toBe(false);
     });
 
-    it('Check for Error', () => {
+    it("Check for Error", () => {
       component.onDataReceived(null);
-      expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
+      expect(component.screenState).toBe(
+        UtilizationPageComponent.ListState.Error
+      );
     });
   });
 
-  describe('Set PocketsWithErrors', () => {
-
+  describe("Set PocketsWithErrors", () => {
     beforeEach(() => {
       component.pocketsWithErrorsLoaded = false;
       component.selectedDeviceInformation.DeviceId = 4;
     });
 
-    it('Check when empty', () => {
+    it("Check when empty", () => {
       let data: ErroredMedicationInfo[];
       component.pocketsWithErrorsData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.ErroredMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.pocketsWithErrorsItems).toBe(0);
@@ -180,29 +217,30 @@ describe('UtilizationPageComponent', () => {
       expect(component.pocketsWithErrorsLoaded).toBe(true);
     });
 
-    it('Check Count and Sums', () => {
+    it("Check Count and Sums", () => {
       let a1: ErroredMedicationInfo = {
-        ItemCode: 'a',
+        ItemCode: "a",
         PocketTypeId: 1,
-        ErrorsCount: 11
-       };
-       let b1: ErroredMedicationInfo = {
-        ItemCode: 'b',
+        ErrorsCount: 11,
+      };
+      let b1: ErroredMedicationInfo = {
+        ItemCode: "b",
         PocketTypeId: 1,
-        ErrorsCount: 21
-       };
-       let b2: ErroredMedicationInfo = {
-        ItemCode: 'b',
+        ErrorsCount: 21,
+      };
+      let b2: ErroredMedicationInfo = {
+        ItemCode: "b",
         PocketTypeId: 2,
-        ErrorsCount: 22
-       };
-      let data: ErroredMedicationInfo[] = [ a1, b1, b2 ]
+        ErrorsCount: 22,
+      };
+      let data: ErroredMedicationInfo[] = [a1, b1, b2];
       component.pocketsWithErrorsData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.ErroredMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.pocketsWithErrorsItems).toBe(2);
@@ -211,21 +249,21 @@ describe('UtilizationPageComponent', () => {
     });
   });
 
-  describe('Set Expired()', () => {
-
+  describe("Set Expired()", () => {
     beforeEach(() => {
       component.expiredLoaded = false;
       component.selectedDeviceInformation.DeviceId = 4;
     });
 
-    it('Check when empty', () => {
+    it("Check when empty", () => {
       let data: ExpiringMedicationInfo[];
       component.expiringData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.ExpiringMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.expiredItems).toBe(0);
@@ -237,42 +275,43 @@ describe('UtilizationPageComponent', () => {
       expect(component.expiringThisMonthLoaded).toBe(true);
     });
 
-    it('Check Count and Sums', () => {
+    it("Check Count and Sums", () => {
       let a1: ExpiringMedicationInfo = {
         ExpiredCount: 11,
         ExpiringCount: 0,
-        ItemCode: 'a',
+        ItemCode: "a",
         PocketTypeId: 1,
-        Inventory: 111
-       };
-       let b1: ExpiringMedicationInfo = {
+        Inventory: 111,
+      };
+      let b1: ExpiringMedicationInfo = {
         ExpiredCount: 21,
         ExpiringCount: 2,
-        ItemCode: 'b',
+        ItemCode: "b",
         PocketTypeId: 1,
-        Inventory: 221
-       };
-       let b2: ExpiringMedicationInfo = {
+        Inventory: 221,
+      };
+      let b2: ExpiringMedicationInfo = {
         ExpiredCount: 22,
         ExpiringCount: 3,
-        ItemCode: 'b',
+        ItemCode: "b",
         PocketTypeId: 2,
-        Inventory: 222
-       };
-       let c1: ExpiringMedicationInfo = {
+        Inventory: 222,
+      };
+      let c1: ExpiringMedicationInfo = {
         ExpiredCount: 0,
         ExpiringCount: 4,
-        ItemCode: 'c',
+        ItemCode: "c",
         PocketTypeId: 1,
-        Inventory: 331
-       };
-      let data: ExpiringMedicationInfo[] = [ a1, b1, b2, c1 ]
+        Inventory: 331,
+      };
+      let data: ExpiringMedicationInfo[] = [a1, b1, b2, c1];
       component.expiringData = data;
       let event: UtilizationDataEvent = {
         EventId: EventEventId.ExpiringMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: data};
+        UtilizationData: data,
+      };
       component.onDataReceived(event);
 
       expect(component.expiredItems).toBe(2);
@@ -285,8 +324,7 @@ describe('UtilizationPageComponent', () => {
     });
   });
 
-  it('onRefreshClick', () => {
-
+  it("onRefreshClick", () => {
     component.screenState = UtilizationPageComponent.ListState.Error;
     component.expiredLoaded = true;
     component.expiringThisMonthLoaded = true;
@@ -295,45 +333,94 @@ describe('UtilizationPageComponent', () => {
     component.onRefreshClick();
 
     expect(utilizationService.get).toHaveBeenCalled();
-    expect(component.screenState).not.toBe(UtilizationPageComponent.ListState.Error);
+    expect(component.screenState).not.toBe(
+      UtilizationPageComponent.ListState.Error
+    );
     expect(component.expiredLoaded).not.toBe(true);
     expect(component.expiringThisMonthLoaded).not.toBe(true);
     expect(component.notAssignedLoaded).not.toBe(true);
     expect(component.pocketsWithErrorsLoaded).not.toBe(true);
-
   });
 
-  describe('onDataError', () => {
-
+  describe("onDataError", () => {
     beforeEach(() => {
       component.screenState = UtilizationPageComponent.ListState.WaitingForData;
       component.selectedDeviceInformation.DeviceId = 4;
     });
-    it('Same Device', () => {
+    it("Same Device", () => {
       let event: UtilizationDataEvent = {
         EventId: EventEventId.ExpiringMedsReceived,
         DeviceId: 4,
         EventDateTime: new Date(),
-        UtilizationData: null };
+        UtilizationData: null,
+      };
       component.onDataError(event);
-      expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
+      expect(component.screenState).toBe(
+        UtilizationPageComponent.ListState.Error
+      );
     });
 
-    it('Wrong device', () => {
+    it("Wrong device", () => {
       let event: UtilizationDataEvent = {
         EventId: EventEventId.ExpiringMedsReceived,
         DeviceId: 999,
         EventDateTime: new Date(),
-        UtilizationData: null };
+        UtilizationData: null,
+      };
       component.onDataError(event);
-      expect(component.screenState).toBe(UtilizationPageComponent.ListState.WaitingForData);
-    });
-    it('Missing related event info', () => {
-      component.onDataError(null);
-      expect(component.screenState).toBe(UtilizationPageComponent.ListState.Error);
+      expect(component.screenState).toBe(
+        UtilizationPageComponent.ListState.WaitingForData
+      );
     });
 
+    it("Missing related event info", () => {
+      component.onDataError(null);
+      expect(component.screenState).toBe(
+        UtilizationPageComponent.ListState.Error
+      );
+    });
   });
 
+  describe("Basic Navigation", () => {
+    it("Show ExpiredDetails", () => {
+      component.showExpiredDetails();
+      expect(router.navigate).toHaveBeenCalledWith(
+        jasmine.arrayContaining([
+          jasmine.stringMatching("xr2/utilization/detailsExpired/"),
+        ])
+      );
+    });
+    it("Show ExpiringThisMonthDetails", () => {
+      component.showExpiringThisMonthDetails();
+      expect(router.navigate).toHaveBeenCalledWith(
+        jasmine.arrayContaining([
+          jasmine.stringMatching("xr2/utilization/detailsExpiringThisMonth/"),
+        ])
+      );
+    });
+    it("Show NotAssignedDetails", () => {
+      component.showNotAssignedDetails();
+      expect(router.navigate).toHaveBeenCalledWith(
+        jasmine.arrayContaining([
+          jasmine.stringMatching("xr2/utilization/detailsNotAssigned/"),
+        ])
+      );
+    });
+    it("Show PocketsWithErrorsDetails", () => {
+      component.showPocketsWithErrorsDetails();
+      expect(router.navigate).toHaveBeenCalledWith(
+        jasmine.arrayContaining([
+          jasmine.stringMatching("xr2/utilization/detailsPocketsWithErrors/"),
+        ])
+      );
+    });
+    it("Show Destock", () => {
+      component.showDestock();
+      expect(router.navigate).toHaveBeenCalledWith(
+        jasmine.arrayContaining([
+          jasmine.stringMatching("xr2/utilization/destock"),
+        ])
+      );
+    });
+  });
 });
-

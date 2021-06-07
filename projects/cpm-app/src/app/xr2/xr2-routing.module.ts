@@ -19,13 +19,13 @@ const routes: Routes = [
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
-  { path: 'destock', component: DestockPageComponent },
-  { path: 'utilization', component: UtilizationPageComponent },
-  { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent },
-  { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent },
-  { path: 'utilization/details', component: UtilizationDetailsPageComponent },
-  { path: 'utilization/detailsExpiringThisMonth/:deviceId', component: DetailsExpiringThisMonthComponent },
-  { path: 'utilization/detailsExpired/:deviceId', component: DetailsExpiredComponent },
+  { path: 'utilization', component: UtilizationPageComponent, data: { reuseComponent: true, isBase: true }},
+  { path: 'utilization/destock/:deviceId', component: DestockPageComponent, data: { reuseComponent: true }},
+  { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent, data: { reuseComponent: false } },
+  { path: 'utilization/detailsNotAssigned/:deviceId', component: DetailsNotAssignedComponent, data: { reuseComponent: false } },
+  { path: 'utilization/details', component: UtilizationDetailsPageComponent, data: { reuseComponent: false }  },
+  { path: 'utilization/detailsExpiringThisMonth/:deviceId', component: DetailsExpiringThisMonthComponent, data: { reuseComponent: false } },
+  { path: 'utilization/detailsExpired/:deviceId', component: DetailsExpiredComponent, data: { reuseComponent: false }},
 
 ];
 
