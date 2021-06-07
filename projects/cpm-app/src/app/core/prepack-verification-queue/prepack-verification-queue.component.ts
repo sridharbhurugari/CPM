@@ -15,32 +15,29 @@ import { PrepackVerificationQueueItem } from '../model/prepack-verification-queu
 import { PrepackVerificationService } from '../../api-core/services/prepack-verification.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 
-@Component({ 
+@Component({
   selector: 'app-prepack-verification-queue',
   templateUrl: './prepack-verification-queue.component.html',
   styleUrls: ['./prepack-verification-queue.component.scss']
 })
-export class PrepackVerificationQueueComponent implements OnInit {   
-  
-  // @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
+export class PrepackVerificationQueueComponent implements OnInit {
 
   @ViewChild('searchBox', {
     static: true
-  })
-  searchElement: SearchBoxComponent;
-  //searchTextFilter: string;  
+  }) searchElement: SearchBoxComponent;
+  loadingData: boolean;
   searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
   currentSortPropertyName: string;
-  columnSortDirection: SortDirection;    
+  columnSortDirection: SortDirection;
 
   prepackVerificationItems$: Observable<IPrepackVerificationQueueItem[]>;
   unfilteredPrepackVerificationQueueItems: PrepackVerificationQueueItem[];
   filteredPrepackVerificationQueueItems: PrepackVerificationQueueItem[];
-  
+
   idPropertyName = nameof<PrepackVerificationQueueItem>('PrepackVerificationQueueId');
   descriptionPropertyName = nameof<PrepackVerificationQueueItem>('ItemDescription');
-  packagerPropertyName = nameof<PrepackVerificationQueueItem>('DeviceDescription');  
+  packagerPropertyName = nameof<PrepackVerificationQueueItem>('DeviceDescription');
   qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('QuantityToPackage');
   datePropertyName = nameof<PrepackVerificationQueueItem>('PackagedDate');
 
@@ -48,7 +45,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
 
   constructor(
     private prepackVerificationService: PrepackVerificationService,
-    private windowService: WindowService,    
+    private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
     public translateService: TranslateService) {
       this.setupDataRefresh();
@@ -67,10 +64,11 @@ export class PrepackVerificationQueueComponent implements OnInit {
     this.ngUnsubscribe.complete();
   }
 
-  private loadPrepackVerificationQueueItems(): void {  
-
+  private loadPrepackVerificationQueueItems(): void {
+    this.loadingData = true;
     this.prepackVerificationItems$ = this.prepackVerificationService.getPrepackQueueData().pipe(
     map((prepackVerificationItems) => {
+      this.loadingData = false;
       return prepackVerificationItems.map((verificationItem) => {
         console.log(verificationItem);
         return new PrepackVerificationQueueItem(verificationItem);
@@ -78,21 +76,15 @@ export class PrepackVerificationQueueComponent implements OnInit {
     }), shareReplay(1)
     );
 
-    this.prepackVerificationItems$.subscribe((pvi) => { 
+    this.prepackVerificationItems$.subscribe((pvi) => {
       this.unfilteredPrepackVerificationQueueItems = pvi;
       this.filteredPrepackVerificationQueueItems = pvi;
      });
-  }  
-
-  columnSelected(event: IColHeaderSortChanged): void {
-    this.currentSortPropertyName = event.ColumnPropertyName;
-    this.columnSortDirection = event.SortDirection;
-    this.filteredPrepackVerificationQueueItems = this.sort(this.filteredPrepackVerificationQueueItems, event.SortDirection);    
   }
 
-  sort(verificationQueueItems: PrepackVerificationQueueItem[], sortDirection: Many<boolean | 'asc' | 'desc'>): PrepackVerificationQueueItem[] {
-    return _.orderBy(verificationQueueItems, x => x[this.currentSortPropertyName], sortDirection);
-  }
+  orderChanged(orderedItems: PrepackVerificationQueueItem[]) {
+    this.filteredPrepackVerificationQueueItems = orderedItems;
+   }
 
   onDeleteClick(verification: PrepackVerificationQueueItem){
       this.prepackVerificationService.deletePrepackQueueVerification(verification.PrepackVerificationQueueId).subscribe(result => this.loadPrepackVerificationQueueItems());
@@ -108,15 +100,15 @@ export class PrepackVerificationQueueComponent implements OnInit {
       .subscribe(data => {
         this.filteredPrepackVerificationQueueItems = this.filterBySearchText(data, this.unfilteredPrepackVerificationQueueItems);
       });
-  } 
+  }
 
 /* istanbul ignore next */
   private setupDataRefresh() {
     let hash = this.windowService.getHash();
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
-      .subscribe(() => {               
-        this.loadPrepackVerificationQueueItems();        
+      .subscribe(() => {
+        this.loadPrepackVerificationQueueItems();
     });
   }
 
@@ -124,5 +116,5 @@ export class PrepackVerificationQueueComponent implements OnInit {
   private filterBySearchText(text: string, unfilteredArray: PrepackVerificationQueueItem[]) {
     if(!unfilteredArray) return [];
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
-  } 
+  }
 }
