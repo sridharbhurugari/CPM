@@ -3,17 +3,7 @@
   height: 100%;
 }
 
-.searchBar {
-  margin-top: 6px;
-  margin-left: 9px;
-  margin-right: 9px;
-}
-::ng-deep .col-2 {
-  flex-grow: 1 !important;
-}
-::ng-deep .col-3 {
-  flex-grow: 3 !important;
-}
+
 
 .BrandName {
   font-size: 38px;
@@ -75,34 +65,21 @@
   left: 16px;
 }
 
-.location {
-  font-size: 28px;
-  font-weight: bold;
-  font-family: $font-family-sans-serif;
-  color: $text-color;
-  bottom: 16px;
-  left: 16px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-}
-.locationdescription {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  ::ng-deep {
-    div{
-      white-space: pre!important;
-    }
-  }
-}
+
 .devicelocationaccess {
   margin-top: 18px;
   margin-left: auto;
   margin-right: 15px;
 }
-
+.itemIdHeader {
+  font-size: 14px;
+  font-family: $font-family-sans-serif;
+  font-weight: normal;
+  color: $text-color;
+  left: 16px;
+  top: 6px;
+  bottom: 10px;
+}
 .DeviceLocation {
   font-size: 22px;
   height: 50px;
@@ -112,9 +89,22 @@
   margin-left: 20px;
   width: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  align-self: flex-start;
+  justify-content: left;
 }
+
+.location {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  color: $text-color;
+  bottom: 16px;
+  left: 16px;
+  align-self: stretch;
+  width: 100%;
+}
+
 .panelContainer1 {
   display: flex;
   flex-direction: row;
@@ -192,16 +182,6 @@
   justify-content: center;
   font-family: $font-family-sans-serif;
   font-weight: 500;
-}
-
-.itemIdHeader {
-  font-size: 14px;
-  font-family: $font-family-sans-serif;
-  font-weight: normal;
-  color: $text-color;
-  left: 16px;
-  top: 6px;
-  bottom: 10px;
 }
 
 .dateTime {

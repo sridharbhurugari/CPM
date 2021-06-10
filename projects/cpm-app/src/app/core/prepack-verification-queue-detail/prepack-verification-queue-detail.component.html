@@ -43,22 +43,28 @@
                 <div class="itemIdHeader">
                     <span>{{'ITEM_ID' | translate}}</span>
                 </div>
-                <!-- <div class="ItemId" >
-                    <div *ngIf="itemIdLength &lt; 11 || itemIdLength == 11">
+                <div class="ItemId" >
+                    <div *ngIf="(data$ | async).ItemId.length &lt; 11 || (data$ | async).ItemId.length == 11">
                     <span>{{ (data$ | async).ItemId }}
 
                     </span>
                    </div>
                 </div>
                 <div class="ItemIdSmall" >
-                    <div *ngIf="itemIdLength>11">
+                    <div *ngIf="(data$ | async).ItemId.length>11">
                     <span>{{ (data$ | async).ItemId }}
 
                     </span>
                    </div>
-                </div> -->
+                </div>
             </div>
             <div class="DeviceLocation">
+              <div class="itemIdHeader" >
+                {{'LOCATION' | translate }}
+            </div>
+            <div class="location">
+                      {{ (data$ | async).DestinationLocationDescription }}
+          </div>
                 <!-- <div>
                     <div class="itemIdHeader" >
                         <span *ngIf="!isSingleSelectEnable">{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
