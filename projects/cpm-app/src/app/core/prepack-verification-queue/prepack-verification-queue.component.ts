@@ -27,7 +27,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
   }) searchElement: SearchBoxComponent;
   loadingData: boolean;
   searchPipe: SearchPipe = new SearchPipe();
-  searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
+  searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('ItemId'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
   currentSortPropertyName: string;
   columnSortDirection: SortDirection;
 
@@ -37,6 +37,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
 
   idPropertyName = nameof<PrepackVerificationQueueItem>('PrepackVerificationQueueId');
   descriptionPropertyName = nameof<PrepackVerificationQueueItem>('ItemDescription');
+  itemIdPropertyName = nameof<PrepackVerificationQueueItem>('ItemId');
   packagerPropertyName = nameof<PrepackVerificationQueueItem>('DeviceDescription');
   qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('QuantityToPackage');
   datePropertyName = nameof<PrepackVerificationQueueItem>('PackagedDate');
