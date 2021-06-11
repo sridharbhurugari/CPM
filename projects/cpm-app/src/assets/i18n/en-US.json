@@ -360,5 +360,12 @@
   "EXPIRED_QTY":"Expired QTY",
   "EXPIRING_QTY":"Expiring QTY",
   "XR2_ITEM_CODE":"XR2 Item Code",
-  "PREPACK_VERIFICATION":"Prepack Verification"
+  "PREPACK_VERIFICATION":"Manual Packager Verification",
+  "MANUFACTURER":"Manufacturer",
+  "LOT_NUMBER":"Lot Number",
+  "PREPACK_LOT_NUMBER":"Prepack Lot Number",
+  "PREPACK_MANUFACTURER_EXPIRATION":"Manufacturer Expiration",
+  "PREPACK_PACKAGE_EXPIRATION":"Package Expiration",
+  "PREPACK_PACKAGED_QUANTITY":"Prepack Quantity",
+  "PREPACK_DRUG_ID":"Drug ID (NDC)"
 }
