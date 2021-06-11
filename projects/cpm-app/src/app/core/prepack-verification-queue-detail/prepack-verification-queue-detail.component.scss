@@ -3,13 +3,16 @@
   height: 100%;
 }
 
-.ocactionheader
-{padding: 0 !important;}
+::ng-deep .ocactionheader {
+  padding: 0;
+  background-color: #FFFFFF;
+}
 
 .header-container {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: 5px;
 }
 
 .back-button {
@@ -154,14 +157,15 @@
 
 .leftPanel {
   flex: 1;
+  background-color: #c8c8c8 ;
   border-top: solid #c8c8c8 1px;
   border-left: solid #c8c8c8 24px;
-  border-right: solid #c8c8c8 28px;
+  border-right: solid #c8c8c8 1px;
   height: 100%;
   width: 360px;
+  max-width: 360px;
   left: 24px;
   box-sizing: border-box;
-  background-color: #c8c8c8;
 }
 
 .leftPanelRow {

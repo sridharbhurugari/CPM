@@ -16,11 +16,10 @@ import { IColHeaderSortChanged } from "../../shared/events/i-col-header-sort-cha
 import { PrepackVerificationQueueComponent } from "./prepack-verification-queue.component";
 import { IPrepackVerificationQueueItem } from "../../api-core/data-contracts/i-prepack-verification-queue-item";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { PrepackVerificationQueueItem } from "../model/prepack-verification-queue-item";
 
 describe("PrepackVerificationQueueComponent", () => {
-  let routerMock: Partial<Router> = {
-    navigate: (c, n) => of<boolean>().toPromise(),
-  };
+  let router;
   let event: IColHeaderSortChanged = {
     ColumnPropertyName: "OrderId",
     SortDirection: "asc",
@@ -40,7 +39,9 @@ describe("PrepackVerificationQueueComponent", () => {
     PackagedDate: new Date(),
   } as IPrepackVerificationQueueItem;
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
+    router = { navigate: () => { } };
+    spyOn(router, 'navigate');
     translateService = {
       get: jasmine.createSpy("get").and.returnValue(of(translateService)),
     };
@@ -53,7 +54,7 @@ describe("PrepackVerificationQueueComponent", () => {
         .and.returnValue(of(1)),
     };
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [
         PrepackVerificationQueueComponent,
         MockTranslatePipe,
@@ -70,16 +71,17 @@ describe("PrepackVerificationQueueComponent", () => {
           provide: PrepackVerificationService,
           useValue: prepackVerificationService,
         },
+        { provide: Router, useValue: router },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         {
           provide: WpfInteropService,
           useValue: { wpfViewModelActivated: new Subject() },
         },
         { provide: WindowService, useValue: { getHash: () => "" } },
-        { provide: Router, routerMock },
+
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PrepackVerificationQueueComponent);
@@ -97,12 +99,10 @@ describe("PrepackVerificationQueueComponent", () => {
     expect(component["loadPrepackVerificationQueueItems"]).toHaveBeenCalled();
     expect(spy).toHaveBeenCalled();
   });
-  // describe('Open Detail Action', () => {
-  //   it('should emit back event on back click', () => {
-  //     component.onBackClick();
 
-  //     expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerification')]));
-  //   });
-  // });
-  // core/prepackVerification
+    it('should navigate', () => {
+      const rowClicked: PrepackVerificationQueueItem = ( {PrepackVerificationQueueId: 1} as Partial<PrepackVerificationQueueItem>) as PrepackVerificationQueueItem ;
+      component.NavigateToPrepackVerificationDetailsPage(rowClicked);
+      expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
+  });
 });
