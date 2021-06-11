@@ -1,12 +1,8 @@
 <oc-action-layout>
-  <ng-container class="ocactionheader">
-    <div class="cpmactiontitle">{{ 'PREPACK_VERIFICATION' | translate }}</div>
-    <div class="dateTime">
-      {{time| date:'M/d/yyyy h:mm a'}}
-    </div>
-  </ng-container>
-  <ng-container class="headerContainer">
-    <div class= "backButton">
+<div class="ocactionheader" style="padding-top: 0px;"></div>
+  <ng-container class="ocactiondetails">
+    <div class="cpmheaderrow header-container">
+    <div class= "back-button">
       <app-cp-clickable-icon
           [width]="35"
           [height]="35"
@@ -15,10 +11,14 @@
           (clickEvent)="onBackClick()">
       </app-cp-clickable-icon>
     </div>
-      <div class="titleContent">
-        {{ 'PREPACK_VERIFICATION' | translate }}
+      <div class="title-content">
+        <span class="ellipsis">
+          {{ 'PREPACK_VERIFICATION' | translate }}
+        </span>
       </div>
-  </ng-container>
+    </div>
+    </ng-container>
+
   <ng-container class="ocactiondetails">
     <div class="displayItemDescriptions">
       <div #contain>
