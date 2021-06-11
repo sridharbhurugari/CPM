@@ -1,157 +1,122 @@
 <oc-action-layout>
-    <ng-container class="ocactionheader">
-        <div class="cpmactiontitle">{{ 'PREPACK_VERIFICATION' | translate }}</div>
-        <div class="dateTime">
-            <!-- {{time| date:'M/d/yyyy h:mm a'}} -->
-        </div>
-    </ng-container>
-
-    <ng-container class="ocactiondetails">
-        <div class="displayGuidedCycleCount">
-         <div #contain>
-            <!-- <div class="BrandName" >
-                <diV *ngIf="!ItemDescriptionOverlap">
-                <div>{{ (data$ | async).GenericNameFormatted }}</div>
-                </diV>
-            </div>
-            <div class="BrandNameSmall" >
-                <diV *ngIf="ItemDescriptionOverlap">
-                <div>{{ (data$ | async).GenericNameFormatted }}</div>
-            </div>
-            </div> -->
-            <div class="BrandNameSmall" >
-
-              <div>{{ (data$ | async).GenericNameFormatted }}</div>
-          </div>
-        </div>
-        <div #Generic>
-            <!-- <div class="GenericName" >
-                <div  *ngIf="!ItemBrandNameOverlap">
-                <div>{{ (data$ | async).BrandNameFormatted }}</div>
-                </div>
-            </div>
-            <div class="GenericNameSmall" >
-                <div  *ngIf="ItemBrandNameOverlap">
-                <div>{{ (data$ | async).BrandNameFormatted }}</div>
-               </div>
-            </div> -->
-        </div>
+  <ng-container class="ocactionheader">
+    <div class="cpmactiontitle">{{ 'PREPACK_VERIFICATION' | translate }}</div>
+    <div class="dateTime">
+      {{time| date:'M/d/yyyy h:mm a'}}
     </div>
-        <div class="panelContainer1">
-            <div class="itemIdBox">
+  </ng-container>
+  <ng-container class="headerContainer">
+    <div class= "backButton">
+      <app-cp-clickable-icon
+          [width]="35"
+          [height]="35"
+          [theme]="'dark'"
+          [icon]="'back'"
+          (clickEvent)="onBackClick()">
+      </app-cp-clickable-icon>
+    </div>
+      <div class="titleContent">
+        {{ 'PREPACK_VERIFICATION' | translate }}
+      </div>
+  </ng-container>
+  <ng-container class="ocactiondetails">
+    <div class="displayItemDescriptions">
+      <div #contain>
+        <div class="GenericName">
+          {{ (data$ | async)?.GenericNameFormatted }}
+        </div>
+        <div class="BrandName">
+          {{ (data$ | async)?.BrandNameFormatted }}
+        </div>
+      </div>
+    </div>
+    <div class="panelContainerItemAndLocation">
+      <div class="itemIdBox">
 
-                <div class="itemIdHeader">
-                    <span>{{'ITEM_ID' | translate}}</span>
-                </div>
-                <div class="ItemId" >
-                    <div *ngIf="(data$ | async).ItemId.length &lt; 11 || (data$ | async).ItemId.length == 11">
-                    <span>{{ (data$ | async).ItemId }}
+        <div class="itemIdHeader">
+          <span>{{'ITEM_ID' | translate}}</span>
+        </div>
+        <div class="ItemId">
+          <div *ngIf="(data$ | async)?.ItemId.length &lt; 11 || (data$ | async)?.ItemId.length == 11">
+            <span>{{ (data$ | async)?.ItemId }}
 
-                    </span>
-                   </div>
-                </div>
-                <div class="ItemIdSmall" >
-                    <div *ngIf="(data$ | async).ItemId.length>11">
-                    <span>{{ (data$ | async).ItemId }}
-
-                    </span>
-                   </div>
-                </div>
-            </div>
-            <div class="DeviceLocation">
-              <div class="itemIdHeader" >
-                {{'LOCATION' | translate }}
-            </div>
-            <div class="location">
-                      {{ (data$ | async).DestinationLocationDescription }}
+            </span>
           </div>
-                <!-- <div>
-                    <div class="itemIdHeader" >
-                        <span *ngIf="!isSingleSelectEnable">{{'GUIDED_CYCLE_COUNT_LOCATION' | translate }}</span>
-                    </div>
-                    <div class="location">
-                        <div class="locationdescription" >
-
-                            <div *ngIf="!isSingleSelectEnable">
-                               <span> {{ (data$ | async).LocationDescription }}  </span>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            </div>
-
         </div>
-    </ng-container>
+        <div class="ItemIdSmall">
+          <div *ngIf="(data$ | async)?.ItemId.length>11">
+            <span>{{ (data$ | async)?.ItemId }}
 
-    <ng-container class="ocactiondetails">
-        <div class="panelContainer">
-
-            <div class="leftCycleCountPanel">
-                <div class="leftPanelRow"> {{"IN_STOCK" | translate}}
-                    <div>
-                        <div class="textContent" >{{(data$ | async).ManufacturerLotNumber}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="whiteline"></div>
-                <div class="leftPanelRow"> {{"PAR_LEVEL" | translate}}
-                    <div>
-                        <div class="textContent" >{{(data$ | async).PrepackLotNumber}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="whiteline"></div>
-                <div class="leftPanelRow">
-                    <div *ngIf="!(data$ | async)">
-                        {{"REORDER_LEVEL" | translate}}
-                    </div>
-
-                </div>
-                <div class="whiteline"></div>
-
-                <!-- <div class="leftPanelRow" *ngIf="!CheckItemExpGranularity()">
-                    <div>
-                        {{"EXPIRATION_DATE" | translate}}
-                    </div>
-                </div>
-
-                <div class="expirationwhiteline" *ngIf="!CheckItemExpGranularity()"></div>
-                <div class=expwhiteline *ngIf="CheckItemExpGranularity()"></div> -->
-            </div>
-            <div class="rightCycleCountPanel">
-                <div class="demo">
-                    <div *ngIf="!(data$ | async)">
-                        <oc-numeric [title]="'ITEM_QUANTITY' | translate">
-                        </oc-numeric>
-                    </div>
-                    <div>
-                        <!-- <div>
-                            <oc-numeric [title]="'ITEM_QUANTITY' | translate"
-                                [(ngModel)]="(data$ | async).QuantityOnHand" [minValue]="0" [maxValue]="999999"
-                                [units]="(data$ | async).Units" [autoCorrect]="true"
-                                (valueChange)="onQuantityChange($event)" [tabIndexes]="numericindexes"
-                                id="numericElement">
-                            </oc-numeric>
-                        </div>
-                        <div>
-                            <oc-numeric [title]="'ITEM_QUANTITY' | translate">
-                            </oc-numeric>
-                        </div>
-                        -->
-                    </div>
-                </div>
-            </div>
+            </span>
+          </div>
         </div>
-    </ng-container>
-
-    <ng-container class="ocactionfooter">
-      <oc-footer>
-        <div class="ocleftalign">
-          <oc-button-action [buttonText]="'BACK' | translate"
-            (click)="onBackClick()"></oc-button-action>
+      </div>
+      <div class="DeviceLocation">
+        <div class="itemIdHeader">
+          {{'LOCATION' | translate }}
         </div>
-      </oc-footer>
-    </ng-container>
+        <div class="location">
+          {{ (data$ | async)?.DestinationLocationDescription }}
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+  <ng-container class="ocactiondetails">
+    <div class="panelContainerDetails">
+
+      <div class="leftPanel">
+        <div class="leftPanelRow">
+          {{"LOT_NUMBER" | translate}}
+          <div class="textDetail">{{(data$ | async)?.ManufacturerLotNumber}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_LOT_NUMBER" | translate}}
+          <div class="textDetail">{{(data$ | async)?.PrepackLotNumber}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_MANUFACTURER_EXPIRATION" | translate}}
+          <div class="dateDetail">{{(data$ | async)?.ManufacturerExpirationDate |
+            date:'MM/dd/yyyy':undefined:userLocale}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_PACKAGE_EXPIRATION" | translate}}
+          <div class="dateDetail">{{(data$ | async)?.PrepackExpirationDate | date:'MM/dd/yyyy':undefined:userLocale}}
+          </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"MANUFACTURER" | translate}}
+          <div class="textDetail">{{(data$ | async)?.ManufacturerName}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_DRUG_ID" | translate}}
+          <div class="textDetail">{{(data$ | async)?.DrugIdentifier}} </div>
+        </div>
+
+      </div>
+      <div class="rightPanel">
+        <div class="demo">
+          <div class="packageQuantityDetail">{{"PREPACK_PACKAGED_QUANTITY" | translate}}: {{(data$ | async)?.QuantityToPackage}}
+            {{(data$ | async)?.UnitOfIssue}}</div>
+          <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="validatedQuantity" [minValue]="1"
+            [maxValue]="(data$ | async)?.QuantityToPackage" [units]="(data$ | async)?.UnitOfIssue" [autoCorrect]="true"
+            id="upDownElement">
+          </oc-numeric>
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+    </oc-footer>
+  </ng-container>
 </oc-action-layout>

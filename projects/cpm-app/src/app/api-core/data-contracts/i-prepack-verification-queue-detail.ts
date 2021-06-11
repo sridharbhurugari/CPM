@@ -13,4 +13,5 @@ export interface IPrepackVerificationQueueDetail {
   DestinationLocationDescription: string;
   GenericNameFormatted: string;
   BrandNameFormatted: string;
+  UnitOfIssue: string
 }

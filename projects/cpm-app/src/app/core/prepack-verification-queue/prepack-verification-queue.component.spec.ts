@@ -97,4 +97,12 @@ describe("PrepackVerificationQueueComponent", () => {
     expect(component["loadPrepackVerificationQueueItems"]).toHaveBeenCalled();
     expect(spy).toHaveBeenCalled();
   });
+  // describe('Open Detail Action', () => {
+  //   it('should emit back event on back click', () => {
+  //     component.onBackClick();
+
+  //     expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerification')]));
+  //   });
+  // });
+  // core/prepackVerification
 });
