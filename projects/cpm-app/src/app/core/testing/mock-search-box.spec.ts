@@ -8,5 +8,6 @@ import { Observable, of } from 'rxjs';
 export class MockSearchBox {
   searchOutput$: Observable<string> = of();
   @Input()placeHolderText: string;
+  clearSearch() {};
   sendSearchData(text: string) {}
 }
