@@ -53,6 +53,9 @@ export class InternalTransferDeviceOndemandItemsListComponent implements AfterVi
   @Output()
   selectedItem: EventEmitter<IItemReplenishmentOnDemand> = new EventEmitter();
 
+  @Output()
+  goBack: EventEmitter<void> = new EventEmitter();
+  
   constructor(
     private windowService: WindowService) {
    }

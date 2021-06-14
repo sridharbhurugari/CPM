@@ -1,5 +1,14 @@
-<div class="cpmheaderrow">
-  <app-header-container [title]="'DEVICE' | translate">{{deviceDescription}}</app-header-container>
+<div class="cpmheaderrow header-container">
+    <div class="back-button">
+        <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'" (clickEvent)="goBack.emit()">
+        </app-cp-clickable-icon>
+    </div>
+    <div class="title-content">
+        <span class="ellipsis">
+            {{'ON_DEMAND' | translate}}
+        </span>
+    </div>
+<app-header-container [title]="'DEVICE' | translate">{{deviceDescription}}</app-header-container>
   <oc-search-box #ocsearchbox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
 </div>
 <oc-grid #ocgrid ocgridfilter="false"
