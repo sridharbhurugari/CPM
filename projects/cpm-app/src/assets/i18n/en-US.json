@@ -142,6 +142,8 @@
   "ORDER_ID": "ID",
   "OUTPUT_DEVICE": "Output Device",
   "OUTPUT_DEVICE_MSG": "Order has unverified picks for output device verification",
+  "PACKAGED_QUANTITY": "Packaged Qty",
+  "PACKAGER": "Packager",
   "PAR_LEVEL": "Par Level",
   "PATIENT": "Patient",
   "PATIENTS": "Patients",

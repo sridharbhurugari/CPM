@@ -17,6 +17,8 @@ import { IConfirmPopupData } from '../../shared/model/i-confirm-popup-data';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
+import { DevicesService } from '../../api-core/services/devices.service';
+import { IDevice } from '../../api-core/data-contracts/i-device';
 
 @Component({
   selector: 'app-priority-code-route-assignments-page',
@@ -28,6 +30,7 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
   priorityCode$: Observable<IPriorityCodePickRoute>;
   routeList: Observable<Map<IPickRouteDevice, string>>;
   deviceList$: Observable<IDeviceSequenceOrder[]>;
+  allDevices$: IDevice[];
 
   ngUnsubscribe = new Subject();
 
@@ -46,7 +49,8 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
   set pickRoute(value: IPickRouteDevice) {
       this._pickRoute = value;
       this.deviceList$ = this.pickrouteDevices$.pipe(map(results => {
-        return this.setDevices(this.pickRoute, results);
+        const devices =  this.setDevices(this.pickRoute, results);
+        return this.setOutputDevices(devices);
       }));
   }
 
@@ -64,21 +68,26 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
     private dialogService: PopupDialogService,
     private popupWindowService: PopupWindowService,
     private coreEventConnectionService: CoreEventConnectionService,
+    private devicesService: DevicesService,
     private ocsStatusService: OcsStatusService
   ) { }
 
   ngOnInit() {
     const pcprId = this.route.snapshot.queryParamMap.get('priorityCodePickRouteId');
     this._priorityCodePickRouteId = +pcprId;
+    const allDevices$ = this.devicesService.get().pipe(shareReplay(1));
     this.priorityCode$ = this.priorityCodePickRoutesService.getPriority(this._priorityCodePickRouteId).pipe(single(), shareReplay(1));
     this.pickrouteDevices$ = this.getPickrouteDevices();
     this.routeList = this.pickrouteDevices$.pipe(map(x => this.prdsToRadio(x)));
-    this.deviceList$ = forkJoin(this.priorityCode$, this.pickrouteDevices$).pipe(map(results => {
+    this.deviceList$ = forkJoin(this.priorityCode$, this.pickrouteDevices$, allDevices$).pipe(map(results => {
+       this.allDevices$ = results[2];
       this._originalRoute = this.getOriginalPickRouteForPriorityType(results[0].PickRouteId, results[1]);
       this.pickRoute = this._originalRoute;
       this.priorityCode = results[0].PriorityCode;
       this.routerLinkPickRouteId = this.pickRoute.PickRouteId;
-      return this.setDevices(this.pickRoute, results[1]);
+      const pickRouteDevices =  this.setDevices(this.pickRoute, results[1]);
+      const devices = this.setOutputDevices(pickRouteDevices);
+      return devices.filter(x => x != null).sort((a, b) => a.SequenceOrder - b.SequenceOrder);
     }));
 
     this.priorityCodeRouteAssignmentsService.getUserPermissions().subscribe(res => {
@@ -113,6 +122,17 @@ export class PriorityCodeRouteAssignmentsPageComponent implements OnInit, OnDest
       }
     }
     return pickRouteDevice;
+  }
+
+  setOutputDevices(pickRouteDevices: IDeviceSequenceOrder[]): IDeviceSequenceOrder[] {
+    for(const d of pickRouteDevices){
+      for(const lD of this.allDevices$){
+        if(d.DeviceId == lD.Id){
+          d.OutputDevices = lD.OutputDevices;
+        }
+      }
+    }
+    return pickRouteDevices;
   }
 
   setDevices(pickRouteDeviceToSet: IPickRouteDevice, allPickRouteDevices: IPickRouteDevice[]): IDeviceSequenceOrder[] {

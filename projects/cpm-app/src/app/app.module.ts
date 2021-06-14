@@ -28,13 +28,14 @@ import { ProgressAnimationModule,
          DaterangeModule
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
-import { RouterModule } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 
 import localeEn from '@angular/common/locales/en';
 import localeEnExtra from '@angular/common/locales/extra/en';
 import localeFr from '@angular/common/locales/fr';
 import localeFrExtra from '@angular/common/locales/extra/fr';
 import { registerLocaleData } from '@angular/common';
+import { BaseRouteReuseStrategy } from './core/base-route-reuse-strategy/base-route-reuse-strategy';
 
 registerLocaleData(localeEn, 'en-US', localeEnExtra);
 registerLocaleData(localeFr, 'fr-CA', localeFrExtra);
@@ -80,6 +81,8 @@ registerLocaleData(localeFr, 'fr-CA', localeFrExtra);
     PopupDialogService,
     PopupWindowService,
     ToastService,
+    {provide: RouteReuseStrategy, useClass: BaseRouteReuseStrategy},
+    BaseRouteReuseStrategy,
   ],
   bootstrap: [AppComponent]
 })

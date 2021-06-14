@@ -15,9 +15,12 @@ import { ActivatedRoute } from '@angular/router';
 import { PriorityCodePickRoutesService } from '../../api-core/services/priority-code-pick-routes.service';
 import { ConfirmPopupComponent } from '../../shared/components/confirm-popup/confirm-popup.component';
 import { TranslateService } from '@ngx-translate/core';
+import { DevicesService } from '../../api-core/services/devices.service';
 import { IPickRouteDevice } from '../../api-core/data-contracts/i-pickroute-device';
+import { IDevice } from '../../api-core/data-contracts/i-device';
 import { IDeviceSequenceOrder } from '../../api-core/data-contracts/i-device-sequenceorder';
 import { OcsStatusService } from '../../api-core/services/ocs-status.service';
+import { DeviceOutput } from '../../api-xr2/data-contracts/device-output';
 import { CoreEventConnectionService } from '../../api-core/services/core-event-connection.service';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 @Component({
@@ -46,7 +49,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
     PickRouteGuid: '11111-11-1111-1111',
     PickRouteDevices: mockPickRouteDevices,
   };
-
+  const devices: IDevice[] = [];
   let ocsStatusService: Partial<OcsStatusService>;
 
   beforeEach(async(() => {
@@ -82,6 +85,7 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
         { provide: PopupWindowService, useValue: popupWindowService },
         { provide: PopupDialogService, useValue: popupDialogService },
         { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: DevicesService, useValue: { get: () => of(devices) } },
         { provide: CoreEventConnectionService, useValue: eventConnectionService },
         { provide: OcsStatusService, useValue: ocsStatusService },
       ],
@@ -277,6 +281,94 @@ describe('PriorityCodeRouteAssignmentsPageComponent', () => {
       ];
       component.setDevices(pickRouteDevice, pickRouteDevices);
       expect(pickRouteDevices).not.toBeNull;
+    });
+  });
+
+  describe('SetOutPutDevices', ()=>{
+    it('should return the devices with out outputdevicecs', () => {
+      const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1', DeviceType: '2000', OutputDevices: null};
+      const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2', DeviceType: '2000', OutputDevices: null};
+    
+      const assignedDefaultOutputDevice: DeviceOutput = {
+        DeviceOutputType: '0',
+        IsAutoFill: false
+      };
+  
+      const deviceSequence1: IDeviceSequenceOrder = {
+        SequenceOrder: 1,
+        DeviceId: routeDevice1.Id,
+        DeviceDescription: routeDevice1.Description,
+        DeviceType: routeDevice1.DeviceType,
+        DeviceOutput: assignedDefaultOutputDevice,
+        OutputDevices: routeDevice1.OutputDevices};
+      const deviceSequence2: IDeviceSequenceOrder = {
+        SequenceOrder: 2,
+        DeviceId: routeDevice2.Id,
+        DeviceDescription: routeDevice2.Description,
+        DeviceType: routeDevice2.DeviceType,
+        DeviceOutput: assignedDefaultOutputDevice,      
+        OutputDevices: routeDevice2.OutputDevices};  
+
+        const pickRouteId = 5;
+        const devices: IDevice[] = [];
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId: pickRouteId,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      pickRouteDevice.PickRouteDevices.push(deviceSequence1);
+      pickRouteDevice.PickRouteDevices.push(deviceSequence2);
+      component.allDevices$ = devices;
+      component.setOutputDevices(pickRouteDevice.PickRouteDevices);
+      expect(pickRouteDevice.PickRouteDevices).not.toBeNull;
+    });
+  });
+
+  describe('SetOutPutDevices', ()=>{
+    it('should return the devices with outputdevicecs', () => {
+      const routeDevice1: IDevice = {Id: 5, Description: 'routeDevice1', DeviceType: '2000', OutputDevices: null};
+      const routeDevice2: IDevice = {Id: 8, Description: 'routeDevice2', DeviceType: '2000', OutputDevices: null};
+      const otherDevice1: IDevice = {Id: 11, Description: 'otherDevice1', DeviceType: '2000', OutputDevices: null};
+      const otherDevice2: IDevice = {Id: 14, Description: 'otherDevice2', DeviceType: '2000', OutputDevices: null};   
+      
+      const assignedDefaultOutputDevice: DeviceOutput = {
+        DeviceOutputType: '0',
+        IsAutoFill: false
+      };
+  
+      const deviceSequence1: IDeviceSequenceOrder = {
+        SequenceOrder: 1,
+        DeviceId: routeDevice1.Id,
+        DeviceDescription: routeDevice1.Description,
+        DeviceType: routeDevice1.DeviceType,
+        DeviceOutput: assignedDefaultOutputDevice,
+        OutputDevices: routeDevice1.OutputDevices};
+      const deviceSequence2: IDeviceSequenceOrder = {
+        SequenceOrder: 2,
+        DeviceId: routeDevice2.Id,
+        DeviceDescription: routeDevice2.Description,
+        DeviceType: routeDevice2.DeviceType,
+        DeviceOutput: assignedDefaultOutputDevice,      
+        OutputDevices: routeDevice2.OutputDevices};  
+
+        const pickRouteId = 5;
+        const devices: IDevice[] = [];
+        devices.push(routeDevice1);
+        devices.push(routeDevice2);
+        devices.push(otherDevice1);
+        devices.push(otherDevice2);
+      let pickRouteDevice: IPickRouteDevice = {
+        PickRouteId: pickRouteId,
+        PickRouteDevices: [],
+        PickRouteGuid: '',
+        RouteDescription: ''
+      };
+      pickRouteDevice.PickRouteDevices.push(deviceSequence1);
+      pickRouteDevice.PickRouteDevices.push(deviceSequence2);
+      component.allDevices$ = devices;
+      component.setOutputDevices(pickRouteDevice.PickRouteDevices);
+      expect(pickRouteDevice.PickRouteDevices).not.toBeNull;
     });
   });
 
