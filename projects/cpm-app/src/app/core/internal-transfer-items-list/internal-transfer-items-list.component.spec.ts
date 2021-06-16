@@ -8,6 +8,7 @@ import { CheckboxModule, GridModule } from '@omnicell/webcorecomponents';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockGridSortCol } from '../../shared/testing/mock-grid-sort-col.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('InternalTransferItemsListComponent', () => {
   let component: InternalTransferItemsListComponent;
@@ -15,6 +16,9 @@ describe('InternalTransferItemsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ],
       declarations: [ 
         InternalTransferItemsListComponent,
         MockAppHeaderContainer,

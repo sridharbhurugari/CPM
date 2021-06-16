@@ -368,4 +368,5 @@
   "PREPACK_PACKAGE_EXPIRATION":"Package Expiration",
   "PREPACK_PACKAGED_QUANTITY":"Prepack Quantity",
   "PREPACK_DRUG_ID":"Drug ID (NDC)"
+  "ON_DEMAND":"On-Demand"
 }

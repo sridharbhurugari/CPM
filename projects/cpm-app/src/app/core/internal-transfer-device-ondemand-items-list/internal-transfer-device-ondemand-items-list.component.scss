@@ -16,3 +16,41 @@ font-size: 12px;
 div.packs{
 font-size: 12px;
 }
+
+.title-content {
+  display: flex;
+  flex-direction: row;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding-right: 40px;
+  font-size: 30px;
+  color: gray;
+  font-weight: lighter;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .details-text {
+    width: 120px;
+  }
+}
+
+.back-button {
+  width: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 18px;
+  margin-right: 36px;
+  padding-top: 0px;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 0px;
+}

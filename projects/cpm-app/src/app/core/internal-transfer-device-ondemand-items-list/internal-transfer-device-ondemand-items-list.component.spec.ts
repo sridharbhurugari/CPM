@@ -10,6 +10,7 @@ import { MockSearchBox } from '../testing/mock-search-box.spec';
 import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../testing/mock-translate-pipe.spec';
 import { InternalTransferDeviceOndemandItemsListComponent } from './internal-transfer-device-ondemand-items-list.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('InternalTransferDeviceOndemandItemsListComponent', () => {
   let component: InternalTransferDeviceOndemandItemsListComponent;
@@ -55,6 +56,9 @@ describe('InternalTransferDeviceOndemandItemsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ],
       declarations: [ InternalTransferDeviceOndemandItemsListComponent,
         MockTranslatePipe,
         MockSearchBox,
@@ -78,6 +82,7 @@ describe('InternalTransferDeviceOndemandItemsListComponent', () => {
     component = fixture.componentInstance;
     component.assignedItems = assignedItemsData;
     component.deviceDescription = "device Description";
+    component.goBack
     fixture.detectChanges();
   });
 

@@ -1,16 +1,17 @@
-<oc-action-layout>
+<ng-container>
   <ng-container class="ocactiondetails">
     <app-internal-transfer-device-ondemand-items-list
       [assignedItems]="assignedItems$ | async"
       [deviceDescription]="deviceDescription$ | async"
-      (selectedItem)="onSelect($event)">
+      (selectedItem)="onSelect($event)"
+      (goBack)="goBack()">
     </app-internal-transfer-device-ondemand-items-list>
   </ng-container>
   <ng-container class="ocactionfooter">
       <oc-footer>
           <div class="ocleftalign">
-              <oc-button-action [disabled]="false" [buttonText]="'BACK' | translate" (click)="goBack()"></oc-button-action>
+              <oc-button-action [disabled]="false" [buttonText]="'CANCEL' | translate" (click)="goBack()"></oc-button-action>
           </div>
       </oc-footer>
   </ng-container>
-</oc-action-layout>
+</ng-container>

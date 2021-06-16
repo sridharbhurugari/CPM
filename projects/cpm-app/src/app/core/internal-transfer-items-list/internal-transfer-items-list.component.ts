@@ -64,6 +64,9 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
   @Output()
   selectionChanged: EventEmitter<IItemReplenishmentNeed[]> = new EventEmitter();
 
+  @Output()
+  goBack: EventEmitter<void> = new EventEmitter();
+
   constructor(
     private windowService: WindowService
   ) { }
@@ -82,5 +85,4 @@ export class InternalTransferItemsListComponent implements AfterViewInit {
     this.selectionChanged.next(this.selectedItemNeeds);
     this.areAllValuesSelected = selectionEvent.areAllValuesSelected;
   }
-
 }
