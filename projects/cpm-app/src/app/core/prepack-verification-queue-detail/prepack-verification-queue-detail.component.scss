@@ -42,7 +42,6 @@
 
 }
 
-
 .dateTime {
   font-size: 14px;
   font-family: $font-family-sans-serif;
@@ -55,7 +54,7 @@
 }
 
 .displayItemDescriptions {
-  border-top: solid $slate-grey 4px;
+  border-top: solid #c8c8c8 1px;
   border-bottom: solid #c8c8c8 1px;
   min-height: 100px;
   overflow: visible;
@@ -170,7 +169,6 @@
 
 .leftPanelRow {
   width: 300px;
-  height: 80px;
   color: $text-color;
   font-size: 18px;
   font-family: $font-family-sans-serif;
