@@ -28,15 +28,4 @@ export class ItemManagementService {
     return result;
   }
 
-  public getXR2ReportData(): Observable<IXR2InventoryLists[]> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/ItemManagement/XR2InventoryReport`);
-    const serviceHeaders = this.ocapHttpHeadersService.getHeaders();
-    const result = this.httpClient.get<IXR2InventoryLists[]>(url, {
-      headers: serviceHeaders
-    });
-
-    return result;
-
-  }
-
 }
