@@ -6,7 +6,6 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { filter, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { Observable, of, Subject, Subscribable, Subscription } from 'rxjs';
 import * as _ from 'lodash';
-import { Many } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { nameof } from '../../shared/functions/nameof';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
@@ -17,6 +16,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { BarcodeScanService } from 'oal-core';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-prepack-verification-queue',
@@ -25,9 +25,7 @@ import { BarcodeDataService } from '../../api-core/services/barcode-data.service
 })
 export class PrepackVerificationQueueComponent implements OnInit {
 
-  @ViewChild('searchBox', {
-    static: true
-  }) searchElement: SearchBoxComponent;
+  @ViewChild('searchBox', { static: true }) searchElement: SearchBoxComponent;
   loadingData: boolean;
   searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('ItemId'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
@@ -58,7 +56,8 @@ export class PrepackVerificationQueueComponent implements OnInit {
     private wpfInteropService: WpfInteropService,
     public translateService: TranslateService,
     private barcodeScanService: BarcodeScanService,
-    private barcodeDataService: BarcodeDataService) {
+    private barcodeDataService: BarcodeDataService,
+    private router: Router,) {
     this.setupDataRefresh();
   }
 
@@ -130,7 +129,6 @@ export class PrepackVerificationQueueComponent implements OnInit {
     if (!unfilteredArray) return [];
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
-
 
   /* ------------------------------- BEGIN SCANNING CODE ----------------------------------*/
 
@@ -215,5 +213,9 @@ export class PrepackVerificationQueueComponent implements OnInit {
     return variable !== undefined && variable !== null;
   }
   /* ------------------------------- END SCANNING CODE ----------------------------------*/
+
+  public NavigateToPrepackVerificationDetailsPage(rowClicked: PrepackVerificationQueueItem) {
+    this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
+  }
 
 }

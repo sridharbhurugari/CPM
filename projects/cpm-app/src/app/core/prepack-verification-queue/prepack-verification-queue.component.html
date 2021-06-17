@@ -29,7 +29,8 @@
   </ng-container>
 
   <ng-container class="ocgridbody" *ngIf="this.unfilteredPrepackVerificationQueueItems">
-    <div class="row" *ngFor="let queueItem of this.filteredPrepackVerificationQueueItems">
+    <div class="row" *ngFor="let queueItem of this.filteredPrepackVerificationQueueItems"
+      (click)=NavigateToPrepackVerificationDetailsPage(queueItem)>
       <div class="first" style="align-items: center;"></div>
       <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
         <div>{{queueItem.ItemDescription}}</div>
