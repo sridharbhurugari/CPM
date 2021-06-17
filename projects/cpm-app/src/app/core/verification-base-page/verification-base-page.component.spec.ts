@@ -2,7 +2,6 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonActionModule, PopupDialogService } from '@omnicell/webcorecomponents';
-import { BarcodeScanService } from 'oal-core';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
@@ -12,6 +11,7 @@ import { IConfigurationValue } from '../../shared/interfaces/i-configuration-val
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { IVerificationNavigationParameters } from '../../shared/interfaces/i-verification-navigation-parameters';
 import { IVerificationPageConfiguration } from '../../shared/interfaces/i-verification-page-configuration';
+import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
@@ -24,7 +24,7 @@ describe('VerificationBasePageComponent', () => {
   let fixture: ComponentFixture<VerificationBasePageComponent>;
   let systemConfigurationService: Partial<SystemConfigurationService>;
   let mockPopupDialogService: PopupDialogService;
-  let barcodeScanService: Partial<BarcodeScanService>;
+  let barcodeScanService: Partial<CpBarcodeScanService>;
   let barcodeDataService: Partial<BarcodeDataService>;
   let configurationValue: IConfigurationValue = { Value: '15', Category: '', SubCategory: '' };
   let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: '12345|67', IsXr2PickingBarcode: true} as IBarcodeData;
@@ -51,10 +51,9 @@ describe('VerificationBasePageComponent', () => {
       imports: [ButtonActionModule],
       providers: [
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }},
-        { provide: BarcodeScanService, useValue: { BarcodeScannedSubject: new Subject() }},
         { provide: BarcodeDataService, useValue: barcodeDataService},
         { provide: SystemConfigurationService, useValue: systemConfigurationService },
-        { provide: BarcodeScanService, useValue: barcodeScanService },
+        { provide: CpBarcodeScanService, useValue: barcodeScanService },
         { provide: PopupDialogService, useClass: PopupDialogServiceStub },
         {
           provide: TranslateService,
