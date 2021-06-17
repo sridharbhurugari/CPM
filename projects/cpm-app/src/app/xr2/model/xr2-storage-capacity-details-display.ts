@@ -11,5 +11,6 @@ export class Xr2StorageCapacityDetailsDisplay {
   TotalXr2Qoh: number;
   Overstock: string;
   Packsize: string;
+  UnitsOfIssue: string;
   IsErrored: boolean;
 }

@@ -52,10 +52,10 @@
           {{xr2StorageCapacityDisplay.Packsize}}
         </div>
         <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.TrayTypeQoh}}
+          {{xr2StorageCapacityDisplay.TrayTypeQoh}} {{xr2StorageCapacityDisplay.UnitOfIssue}}
         </div>
         <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.TotalXr2Qoh}}
+          {{xr2StorageCapacityDisplay.TotalXr2Qoh}} {{xr2StorageCapacityDisplay.UnitOfIssue}}
         </div>
         <div class="col width-type iconColumn" *ngIf="xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate" style="justify-content: normal !important;">
           <span class=priority-icons *ngIf="xr2StorageCapacityDisplay.IsErrored">
@@ -66,7 +66,7 @@
           </span>
         </div>
         <div class="col width-type iconColumn" *ngIf="!xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.Overstock}}
+          {{xr2StorageCapacityDisplay.Overstock}} {{xr2StorageCapacityDisplay.UnitOfIssue}}
         </div>
       </div>
     </ng-container>
