@@ -130,6 +130,10 @@ export class PrepackVerificationQueueComponent implements OnInit {
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 
+  public NavigateToPrepackVerificationDetailsPage(rowClicked: PrepackVerificationQueueItem) {
+    this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
+  }
+
   /* ------------------------------- BEGIN SCANNING CODE ----------------------------------*/
 
   /* istanbul ignore next */
@@ -200,7 +204,21 @@ export class PrepackVerificationQueueComponent implements OnInit {
   /* istanbul ignore next */
   processScannedBarcodeData(barodeData: IBarcodeData): void {
     this.barcodeScanService.reset();
-    alert(JSON.stringify(barodeData));
+
+    var itemsThatMatchScan = _.filter(this.unfilteredPrepackVerificationQueueItems, x => {
+        return x.ItemId == barodeData.ItemId;
+    });
+
+    if (itemsThatMatchScan.length == 0) {
+      //// display no items found message
+      return;
+    }
+
+    if (itemsThatMatchScan.length == 1) {
+      this.NavigateToPrepackVerificationDetailsPage(itemsThatMatchScan[0]);
+    }
+
+    //// navigate to page to show multiple items that were found
   }
 
   /* istanbul ignore next */
@@ -213,9 +231,5 @@ export class PrepackVerificationQueueComponent implements OnInit {
     return variable !== undefined && variable !== null;
   }
   /* ------------------------------- END SCANNING CODE ----------------------------------*/
-
-  public NavigateToPrepackVerificationDetailsPage(rowClicked: PrepackVerificationQueueItem) {
-    this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
-  }
 
 }
