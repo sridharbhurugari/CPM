@@ -6,4 +6,5 @@ export interface IPrepackVerificationQueueItem {
     DeviceDescription: string;
     QuantityToPackage: number;
     PackagedDate: Date;
+    DrugIdentifier: string;
 }

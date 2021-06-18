@@ -206,7 +206,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     this.barcodeScanService.reset();
 
     var itemsThatMatchScan = _.filter(this.unfilteredPrepackVerificationQueueItems, x => {
-        return x.ItemId == barodeData.ItemId;
+        return x.ItemId == barodeData.ItemId || x.DrugIdentifier == barodeData.Ndc;
     });
 
     if (itemsThatMatchScan.length == 0) {
@@ -221,15 +221,6 @@ export class PrepackVerificationQueueComponent implements OnInit {
     //// navigate to page to show multiple items that were found
   }
 
-  /* istanbul ignore next */
-  isInvalid(variable: any): boolean {
-    return !this.isValid(variable);
-  }
-
-  /* istanbul ignore next */
-  isValid(variable: any): boolean {
-    return variable !== undefined && variable !== null;
-  }
   /* ------------------------------- END SCANNING CODE ----------------------------------*/
 
 }
