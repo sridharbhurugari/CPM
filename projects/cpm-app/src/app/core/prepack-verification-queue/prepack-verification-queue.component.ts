@@ -16,7 +16,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 import { BarcodeScanService } from 'oal-core';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-prepack-verification-queue',
@@ -134,6 +134,17 @@ export class PrepackVerificationQueueComponent implements OnInit {
     this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
   }
 
+  /* istanbul ignore next */
+  private NavigateToPrepackSelectionPage(prepackVerificationQueueItem: PrepackVerificationQueueItem[]) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        PrepackVerificationQueueItems: prepackVerificationQueueItem
+      },
+      fragment: "anchor",
+    };
+    this.router.navigate(["core/prepackVerificationSelection"], navigationExtras);
+  }
+
   /* ------------------------------- BEGIN SCANNING CODE ----------------------------------*/
 
   /* istanbul ignore next */
@@ -218,7 +229,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
       this.NavigateToPrepackVerificationDetailsPage(itemsThatMatchScan[0]);
     }
 
-    //// navigate to page to show multiple items that were found
+    this.NavigateToPrepackSelectionPage(itemsThatMatchScan);
   }
 
   /* ------------------------------- END SCANNING CODE ----------------------------------*/

@@ -49,6 +49,7 @@ import { InternalTransferDeviceOndemandItemLocationsPageComponent } from './inte
 import { InternalTransferDeviceOndemandItemLocationListComponent } from './internal-transfer-device-ondemand-item-location-list/internal-transfer-device-ondemand-item-location-list.component';
 import { PrepackVerificationQueueComponent } from './prepack-verification-queue/prepack-verification-queue.component';
 import { PrepackVerificationQueueDetailComponent } from './prepack-verification-queue-detail/prepack-verification-queue-detail.component';
+import { PrepackVerificationSelectionComponent } from './prepack-verification-selection/prepack-verification-selection.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +95,7 @@ import { PrepackVerificationQueueDetailComponent } from './prepack-verification-
     InternalTransferDeviceOndemandItemLocationListComponent,
     PrepackVerificationQueueComponent,
     PrepackVerificationQueueDetailComponent,
+    PrepackVerificationSelectionComponent,
   ],
   imports: [
     ButtonActionModule,
