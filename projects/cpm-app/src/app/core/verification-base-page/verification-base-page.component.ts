@@ -1,6 +1,5 @@
 import { PopupDialogComponent, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
-import { BarcodeScanService } from 'oal-core';
-import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
+import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { VerificationService } from '../../api-core/services/verification.service';
@@ -14,6 +13,7 @@ import { VerificationOrderPageComponent } from '../verification-order-page/verif
 import { WindowService } from '../../shared/services/window-service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
+import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
 
 @Component({
   selector: "app-verification-base-page",
@@ -44,7 +44,7 @@ export class VerificationBasePageComponent implements OnInit {
   constructor(
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
-    private barcodeScanService: BarcodeScanService,
+    private barcodeScanService: CpBarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private verificationService: VerificationService,
     private simpleDialogService: SimpleDialogService
