@@ -1,0 +1,72 @@
+:host{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}
+
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+  height: 100%;
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    word-wrap: normal;
+  }
+}
+
+.iconColumn {
+  justify-content: flex-start !important;
+}
+
+
+.fillWidth {
+  width:100%;
+  justify-items: center;
+}
+
+.iconcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width:100%;
+  overflow-y:hidden;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-container-left {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+.back-button {
+  width: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 18px;
+  margin-right: 36px;
+}
+.details-text {
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 30px;
+  color: gray;
+  font-weight: lighter;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-left: 20px;
+  width: 500px;
+}

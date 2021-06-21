@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { PrepackVerificationQueueItem } from '../model/prepack-verification-queue-item';
+import { nameof } from '../../shared/functions/nameof';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-prepack-verification-selection',
@@ -7,9 +10,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrepackVerificationSelectionComponent implements OnInit {
 
-  constructor() { }
+  prepackVerificationQueueItems: PrepackVerificationQueueItem[];
+
+  idPropertyName = nameof<PrepackVerificationQueueItem>('PrepackVerificationQueueId');
+  descriptionPropertyName = nameof<PrepackVerificationQueueItem>('ItemDescription');
+  itemIdPropertyName = nameof<PrepackVerificationQueueItem>('ItemId');
+  packagerPropertyName = nameof<PrepackVerificationQueueItem>('DeviceDescription');
+  qtyPackagedPropertyName = nameof<PrepackVerificationQueueItem>('QuantityToPackage');
+  datePropertyName = nameof<PrepackVerificationQueueItem>('PackagedDate');
+
+  constructor(private router: Router,
+    private route: ActivatedRoute) {
+      this.prepackVerificationQueueItems = router.getCurrentNavigation().extras.state.PrepackVerificationQueueItems as PrepackVerificationQueueItem[];;
+    }
+
 
   ngOnInit() {
+  }
+
+  public NavigateToPrepackVerificationDetailsPage(rowClicked: PrepackVerificationQueueItem) {
+    this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
+  }
+
+  orderChanged(orderedItems: PrepackVerificationQueueItem[]) {
+    this.prepackVerificationQueueItems = orderedItems;
   }
 
 }

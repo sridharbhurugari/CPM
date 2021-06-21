@@ -137,7 +137,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
   /* istanbul ignore next */
   private NavigateToPrepackSelectionPage(prepackVerificationQueueItem: PrepackVerificationQueueItem[]) {
     const navigationExtras: NavigationExtras = {
-      queryParams: {
+      state: {
         PrepackVerificationQueueItems: prepackVerificationQueueItem
       },
       fragment: "anchor",
