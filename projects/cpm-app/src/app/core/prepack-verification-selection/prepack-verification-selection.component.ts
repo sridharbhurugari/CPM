@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrepackVerificationQueueItem } from '../model/prepack-verification-queue-item';
 import { nameof } from '../../shared/functions/nameof';
 import { Router, ActivatedRoute } from '@angular/router';
+import { PrepackVerificationSelectionCacheService } from '../utilities/prepack-verification-selection-cache.service';
 
 @Component({
   selector: 'app-prepack-verification-selection',
@@ -21,9 +22,8 @@ export class PrepackVerificationSelectionComponent implements OnInit {
   datePropertyName = nameof<PrepackVerificationQueueItem>('PackagedDate');
 
   constructor(private router: Router,
-    private route: ActivatedRoute) {
-      this.prepackVerificationQueueItems = router.getCurrentNavigation().extras.state.PrepackVerificationQueueItems as PrepackVerificationQueueItem[];
-      this.itemDescription = router.getCurrentNavigation().extras.state.ItemDescription as string;
+    private prepackVerificationSelectionCacheService: PrepackVerificationSelectionCacheService) {
+      this.prepackVerificationQueueItems = prepackVerificationSelectionCacheService.Get();
     }
 
 

@@ -17,6 +17,7 @@ import { BarcodeScanService } from 'oal-core';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { Router, NavigationExtras } from '@angular/router';
+import { PrepackVerificationSelectionCacheService } from '../utilities/prepack-verification-selection-cache.service';
 
 @Component({
   selector: 'app-prepack-verification-queue',
@@ -57,6 +58,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     public translateService: TranslateService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
+    private prepackVerificationSelectionCacheService: PrepackVerificationSelectionCacheService,
     private router: Router,) {
     this.setupDataRefresh();
   }
@@ -64,6 +66,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
   ngOnInit() {
     this.loadPrepackVerificationQueueItems();
     this.hookupEventHandlers();
+    this.prepackVerificationSelectionCacheService.Clear();
   }
 
   ngAfterViewInit(): void {
@@ -135,15 +138,9 @@ export class PrepackVerificationQueueComponent implements OnInit {
   }
 
   /* istanbul ignore next */
-  private NavigateToPrepackSelectionPage(prepackVerificationQueueItem: PrepackVerificationQueueItem[]) {
-    const navigationExtras: NavigationExtras = {
-      state: {
-        ItemDescription: prepackVerificationQueueItem[0].ItemDescription,
-        PrepackVerificationQueueItems: prepackVerificationQueueItem
-      },
-      fragment: "anchor",
-    };
-    this.router.navigate(["core/prepackVerificationSelection"], navigationExtras);
+  private NavigateToPrepackSelectionPage(prepackVerificationQueueItems: PrepackVerificationQueueItem[]) {
+    this.prepackVerificationSelectionCacheService.Set(prepackVerificationQueueItems);
+    this.router.navigate(["core/prepackVerificationSelection"]);
   }
 
   /* ------------------------------- BEGIN SCANNING CODE ----------------------------------*/
