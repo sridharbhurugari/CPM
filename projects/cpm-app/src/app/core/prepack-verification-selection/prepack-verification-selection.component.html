@@ -3,8 +3,9 @@
     <div class="cpmactiontitle">Choose Manual Pack - {{itemDescription}}</div>
   </ng-container>
 
-  <ng-container class="ocactiondetails">
 
+  <ng-container class="ocactiondetails">
+    <body>
 
       <oc-grid #ocgrid ocgridfilter="false" (valuesReordered)="orderChanged($event)"
         [orderableValues]="prepackVerificationQueueItems" appGridSortCol
@@ -47,9 +48,8 @@
           </div>
         </ng-container>
       </oc-grid>
-
+    </body>
   </ng-container>
-
   <ng-container class="ocactionfooter">
     <oc-footer>
       <div class="ocleftalign">
@@ -59,3 +59,4 @@
     </oc-footer>
   </ng-container>
 </oc-action-layout>
+

@@ -41,7 +41,7 @@ const routes: Routes = [
   { path: 'loading', component: LoadingComponent },
   { path: 'internalTransfer/deviceReplenishmentOnDemand/ItemSource/deviceId/:deviceId/itemId/:itemId/packSize/:packSize', component: InternalTransferDeviceOndemandItemLocationsPageComponent },
   { path: 'prepackVerification', component: PrepackVerificationQueueComponent },
-  { path: 'prepackVerificationSelection', component: PrepackVerificationSelectionComponent },
+  { path: 'prepackVerificationSelection', component: PrepackVerificationSelectionComponent, data: { reuseComponent: true } },
   { path: 'prepackVerificationDetail/:prepackVerificationQueueId', component: PrepackVerificationQueueDetailComponent },
 ];
 
