@@ -6,14 +6,13 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { filter, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { Observable, of, Subject } from 'rxjs';
 import * as _ from 'lodash';
-import { Many } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { nameof } from '../../shared/functions/nameof';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { IPrepackVerificationQueueItem } from '../../api-core/data-contracts/i-prepack-verification-queue-item';
 import { PrepackVerificationQueueItem } from '../model/prepack-verification-queue-item';
 import { PrepackVerificationService } from '../../api-core/services/prepack-verification.service';
-import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-prepack-verification-queue',
@@ -22,9 +21,7 @@ import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-cha
 })
 export class PrepackVerificationQueueComponent implements OnInit {
 
-  @ViewChild('searchBox', {
-    static: true
-  }) searchElement: SearchBoxComponent;
+  @ViewChild('searchBox', { static: true }) searchElement: SearchBoxComponent;
   loadingData: boolean;
   searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<PrepackVerificationQueueItem>('ItemDescription'), nameof<PrepackVerificationQueueItem>('ItemId'), nameof<PrepackVerificationQueueItem>('DeviceDescription')];
@@ -48,6 +45,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     private prepackVerificationService: PrepackVerificationService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
+    private router: Router,
     public translateService: TranslateService) {
       this.setupDataRefresh();
     }
@@ -117,5 +115,8 @@ export class PrepackVerificationQueueComponent implements OnInit {
   private filterBySearchText(text: string, unfilteredArray: PrepackVerificationQueueItem[]) {
     if(!unfilteredArray) return [];
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
+  }
+  public NavigateToPrepackVerificationDetailsPage(rowClicked: PrepackVerificationQueueItem) {
+    this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
   }
 }

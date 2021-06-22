@@ -1,0 +1,233 @@
+@import "../../../../../../node_modules/@omnicell/webcorecomponents/lib/styles/variables.scss";
+:host {
+  height: 100%;
+}
+
+::ng-deep .ocactionheader {
+  padding: 0;
+  background-color: #FFFFFF;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.back-button {
+  width: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 18px;
+  margin-right: 36px;
+}
+
+.title-content {
+  display: flex;
+  flex-direction: row;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding-right: 40px;
+  font-size: 30px;
+  color: gray;
+  font-weight: lighter;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+}
+
+.dateTime {
+  font-size: 14px;
+  font-family: $font-family-sans-serif;
+  color: #ffffff;
+  font-weight: normal;
+  position: relative;
+  vertical-align: center;
+  margin-top: 20px;
+  margin-right: 310px;
+}
+
+.displayItemDescriptions {
+  border-top: solid #c8c8c8 1px;
+  border-bottom: solid #c8c8c8 1px;
+  min-height: 100px;
+  overflow: visible;
+}
+.GenericName {
+  font-size: 38px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  position: relative;
+  color: $text-color;
+  margin-top: 10px;
+  margin-left: 16px;
+}
+
+.BrandName {
+  font-size: 38px;
+  font-family: $font-family-sans-serif;
+  position: relative;
+  font-weight: normal;
+  color: $text-color;
+  margin-top: 6px;
+  margin-bottom: 8px !important;
+  margin-left: 16px;
+}
+
+.panelContainerItemAndLocation {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.itemIdBox {
+  height: 75px;
+  min-width: 335px;
+  border-left: solid white 24px;
+  border-right: solid #c8c8c8 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.itemIdHeader {
+  font-size: 14px;
+  font-family: $font-family-sans-serif;
+  font-weight: normal;
+  color: $text-color;
+  left: 16px;
+  top: 6px;
+  bottom: 10px;
+}
+
+.ItemId {
+  font-size: 38px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  color: $text-color;
+  bottom: 16px;
+  left: 16px;
+}
+
+.ItemIdSmall{
+  font-size: 20px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  color:$text-color;
+  bottom: 16px;
+  left: 16px;
+}
+
+.DeviceLocation {
+  font-size: 22px;
+  height: 50px;
+  box-sizing: border-box;
+  margin-top: 2px;
+  margin-bottom: 8px;
+  margin-left: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  justify-content: left;
+}
+
+.location {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: $font-family-sans-serif;
+  color: $text-color;
+  bottom: 16px;
+  left: 16px;
+  align-self: stretch;
+  width: 100%;
+}
+
+.panelContainerDetails {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+
+.leftPanel {
+  flex: 1;
+  background-color: #c8c8c8 ;
+  border-top: solid #c8c8c8 1px;
+  border-left: solid #c8c8c8 24px;
+  border-right: solid #c8c8c8 1px;
+  height: 100%;
+  width: 360px;
+  max-width: 360px;
+  left: 24px;
+  box-sizing: border-box;
+}
+
+.leftPanelRow {
+  width: 300px;
+  color: $text-color;
+  font-size: 18px;
+  font-family: $font-family-sans-serif;
+  justify-content: center;
+  align-items: center;
+  font-weight: $bold;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.rightPanel {
+  border-top: solid #c8c8c8 1px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items:inherit;
+  justify-content: center;
+  font-family: $font-family-sans-serif;
+  font-weight: 500;
+}
+
+.textDetail {
+  font-weight: normal;
+  font-size: 20px;
+  font-family: $font-family-sans-serif;
+  height: 50%;
+  width: 100%;
+  margin-top: 5px;
+  margin-left: 10px;
+  color: $text-color;
+  align-items: center;
+  justify-content: left;
+}
+
+.dateDetail {
+  font-weight: normal;
+  font-size: 36px;
+  font-family: $font-family-sans-serif;
+  height: 50%;
+  width: 100%;
+  margin-top: 0px;
+  margin-left: 5px;
+  color: $text-color;
+  align-items: center;
+  justify-content: left;
+}
+
+.packageQuantityDetail {
+  font-weight: bold;
+  font-size: 24px;
+  font-family: $font-family-sans-serif;
+  height: 30%;
+  width: 100%;
+  margin-top: 20px;
+  color: $text-color;
+  text-align: center;
+  align-items: center;
+  justify-self: center;
+}
