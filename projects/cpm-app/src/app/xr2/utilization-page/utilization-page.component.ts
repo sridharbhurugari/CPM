@@ -121,7 +121,6 @@ export class UtilizationPageComponent implements OnInit {
   ) {
     this.setupDataRefresh();
     this.reportTitle$ = translateService.get("XR2_INV_REPORT_TITLE");
-    this.reportBaseData$ = pdfPrintService.getReportBaseData().pipe(shareReplay(1));
   }
 
   ngOnInit() {
@@ -134,9 +133,6 @@ export class UtilizationPageComponent implements OnInit {
   }
   /* istanbul ignore next */
   ngAfterViewInit(): void {
-    this.reportBaseData$.subscribe((baseData) => {
-      this.reportBasedata = baseData;
-    });
     this.devicesService.getAllXr2Devices().subscribe((data) => {
       this.deviceInformationList = data;
       this.getActiveXr2DevicesCount();
@@ -153,6 +149,13 @@ export class UtilizationPageComponent implements OnInit {
       this.onXr2StorageCapacityDisplayEventReceived(event)
     );
 
+  }
+
+  ngAfterViewChecked(): void {
+    this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
+    this.reportBaseData$.subscribe((baseData) => {
+      this.reportBasedata = baseData;
+    });
   }
 
   // On WPF Page Return in CPM, the page is already in the browser, so we reset the data
