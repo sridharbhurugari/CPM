@@ -138,6 +138,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
   private NavigateToPrepackSelectionPage(prepackVerificationQueueItem: PrepackVerificationQueueItem[]) {
     const navigationExtras: NavigationExtras = {
       state: {
+        ItemDescription: prepackVerificationQueueItem[0].ItemDescription,
         PrepackVerificationQueueItems: prepackVerificationQueueItem
       },
       fragment: "anchor",
@@ -227,6 +228,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
 
     if (itemsThatMatchScan.length == 1) {
       this.NavigateToPrepackVerificationDetailsPage(itemsThatMatchScan[0]);
+      return;
     }
 
     this.NavigateToPrepackSelectionPage(itemsThatMatchScan);

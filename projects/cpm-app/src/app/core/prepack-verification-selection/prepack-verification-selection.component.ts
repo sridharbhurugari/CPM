@@ -11,6 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class PrepackVerificationSelectionComponent implements OnInit {
 
   prepackVerificationQueueItems: PrepackVerificationQueueItem[];
+  itemDescription: string;
 
   idPropertyName = nameof<PrepackVerificationQueueItem>('PrepackVerificationQueueId');
   descriptionPropertyName = nameof<PrepackVerificationQueueItem>('ItemDescription');
@@ -21,7 +22,8 @@ export class PrepackVerificationSelectionComponent implements OnInit {
 
   constructor(private router: Router,
     private route: ActivatedRoute) {
-      this.prepackVerificationQueueItems = router.getCurrentNavigation().extras.state.PrepackVerificationQueueItems as PrepackVerificationQueueItem[];;
+      this.prepackVerificationQueueItems = router.getCurrentNavigation().extras.state.PrepackVerificationQueueItems as PrepackVerificationQueueItem[];
+      this.itemDescription = router.getCurrentNavigation().extras.state.ItemDescription as string;
     }
 
 
@@ -34,6 +36,10 @@ export class PrepackVerificationSelectionComponent implements OnInit {
 
   orderChanged(orderedItems: PrepackVerificationQueueItem[]) {
     this.prepackVerificationQueueItems = orderedItems;
+  }
+
+  navigateBack() {
+    this.router.navigate(["core/prepackVerification"]);
   }
 
 }
