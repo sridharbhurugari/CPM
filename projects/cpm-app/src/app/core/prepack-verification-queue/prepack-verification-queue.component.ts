@@ -214,6 +214,11 @@ export class PrepackVerificationQueueComponent implements OnInit {
   processScannedBarcodeData(barodeData: IBarcodeData): void {
     this.barcodeScanService.reset();
 
+    if (barodeData.IsUnrecognizedBarcode) {
+      //// display barcode not recognized
+      return;
+    }
+
     var itemsThatMatchScan = _.filter(this.unfilteredPrepackVerificationQueueItems, x => {
         return x.ItemId == barodeData.ItemId || x.DrugIdentifier == barodeData.Ndc;
     });
@@ -228,7 +233,29 @@ export class PrepackVerificationQueueComponent implements OnInit {
       return;
     }
 
+    var matchByLotNumberAndExpDate = this.tryToFindMatchByLotNumberAndExpDate(barodeData, itemsThatMatchScan);
+    if (matchByLotNumberAndExpDate != null) {
+      this.NavigateToPrepackVerificationDetailsPage(matchByLotNumberAndExpDate);
+      return;
+    }
+
     this.NavigateToPrepackSelectionPage(itemsThatMatchScan);
+  }
+
+  tryToFindMatchByLotNumberAndExpDate(barodeData: IBarcodeData, prepackVerificationQueueItems: PrepackVerificationQueueItem[]) : PrepackVerificationQueueItem {
+    if (barodeData.LotNumber == null || barodeData.ExpirationDate == null) {
+      return null;
+    }
+
+    var matchesByLotAndExpDate = _.filter(prepackVerificationQueueItems, x => {
+      return x.PrepackLotNumber == barodeData.LotNumber && x.PrepackExpirationDate == barodeData.ExpirationDate;
+    });
+
+    if (matchesByLotAndExpDate.length == 1) {
+      return matchesByLotAndExpDate[0];
+    }
+
+    return null;
   }
 
   /* ------------------------------- END SCANNING CODE ----------------------------------*/
