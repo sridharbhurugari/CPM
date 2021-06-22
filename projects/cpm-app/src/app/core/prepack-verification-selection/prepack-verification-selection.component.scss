@@ -1,14 +1,22 @@
 :host{
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }
 
-:host ::ng-deep oc-search-box{
-  width: 358px !important;
-  margin-right: 10px;
+::ng-deep .ocactionheader {
+  padding: 0;
+  background-color: #FFFFFF;
 }
+
+
+.back-button {
+  width: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 18px;
+  margin-right: 36px;
+}
+
+
 
 :host ::ng-deep oc-grid{
   font-size: 22px;
@@ -25,48 +33,35 @@
   justify-content: flex-start !important;
 }
 
+.title-content {
+  display: flex;
+  flex-direction: row;
+  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding-right: 40px;
+  font-size: 30px;
+  color: gray;
+  font-weight: lighter;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+}
+
 
 .fillWidth {
   width:100%;
   justify-items: center;
 }
 
-.iconcontainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width:100%;
-  overflow-y:hidden;
-}
 
 .header-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-}
-.header-container-left {
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-}
-
-.back-button {
-  width: 20px;
-  justify-content: center;
-  align-items: center;
-  margin-left: 18px;
-  margin-right: 36px;
-}
-.details-text {
-  font-family: "Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 30px;
-  color: gray;
-  font-weight: lighter;
-  overflow: hidden;
-  white-space: nowrap;
-  margin-left: 20px;
-  width: 500px;
+  margin-top: 5px;
 }

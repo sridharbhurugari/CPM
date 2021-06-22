@@ -38,7 +38,7 @@ export class PrepackVerificationSelectionComponent implements OnInit {
     this.prepackVerificationQueueItems = orderedItems;
   }
 
-  navigateBack() {
+  onBackClick() {
     this.router.navigate(["core/prepackVerification"]);
   }
 
