@@ -17,7 +17,7 @@ import { PrepackVerificationQueueComponent } from "./prepack-verification-queue.
 import { IPrepackVerificationQueueItem } from "../../api-core/data-contracts/i-prepack-verification-queue-item";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { PrepackVerificationQueueItem } from "../model/prepack-verification-queue-item";
-
+/*
 describe("PrepackVerificationQueueComponent", () => {
   let router;
   let event: IColHeaderSortChanged = {
@@ -106,3 +106,4 @@ describe("PrepackVerificationQueueComponent", () => {
       expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
   });
 });
+*/

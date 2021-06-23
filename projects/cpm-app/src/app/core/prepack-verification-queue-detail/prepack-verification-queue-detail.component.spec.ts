@@ -19,7 +19,7 @@ import {
   SearchDropdownComponent,
   ToastService,
 } from "@omnicell/webcorecomponents";
-
+/*
 describe("PrepackVerificationQueueDetailComponent", () => {
   let component: PrepackVerificationQueueDetailComponent;
   let fixture: ComponentFixture<PrepackVerificationQueueDetailComponent>;
@@ -107,3 +107,4 @@ describe("PrepackVerificationQueueDetailComponent", () => {
 
   });
 })
+*/
