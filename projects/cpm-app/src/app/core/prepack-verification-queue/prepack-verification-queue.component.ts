@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, HostListener } from '@angular/core';
 import { SortDirection } from '../../shared/constants/sort-direction';
-import { SearchBoxComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, PopupDialogComponent } from '@omnicell/webcorecomponents';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
-import { filter, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, takeUntil, take } from 'rxjs/operators';
 import { Observable, of, Subject, Subscribable, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,6 +18,8 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { PrepackVerificationSelectionCacheService } from '../utilities/prepack-verification-selection-cache.service';
+import { BarcodeOverrideService } from '../../shared/services/barcode-override.service';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 
 @Component({
   selector: 'app-prepack-verification-queue',
@@ -50,6 +52,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
   rawBarcodeMessage: string = '';
   pagelevelInput: string;
   private barcodeScannedSubscription: Subscription;
+  private _warningPopup: PopupDialogComponent;
 
   constructor(
     private prepackVerificationService: PrepackVerificationService,
@@ -58,6 +61,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     public translateService: TranslateService,
     private barcodeScanService: BarcodeScanService,
     private barcodeDataService: BarcodeDataService,
+    private simpleDialogService: SimpleDialogService,
     private prepackVerificationSelectionCacheService: PrepackVerificationSelectionCacheService,
     private router: Router,) {
     this.setupDataRefresh();
@@ -214,8 +218,8 @@ export class PrepackVerificationQueueComponent implements OnInit {
   processScannedBarcodeData(barodeData: IBarcodeData): void {
     this.barcodeScanService.reset();
 
-    if (barodeData.IsUnrecognizedBarcode) {
-      //// display barcode not recognized
+    if (barodeData.BarCodeFormat == "UN" && barodeData.ItemId == null) {
+      this.displayUnrecognizedBarcodeMessage();
       return;
     }
 
@@ -224,7 +228,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     });
 
     if (itemsThatMatchScan.length == 0) {
-      //// display no items found message
+      this.displayVerificationNotRequiredMessage();
       return;
     }
 
@@ -242,7 +246,19 @@ export class PrepackVerificationQueueComponent implements OnInit {
     this.NavigateToPrepackSelectionPage(itemsThatMatchScan);
   }
 
-  tryToFindMatchByLotNumberAndExpDate(barodeData: IBarcodeData, prepackVerificationQueueItems: PrepackVerificationQueueItem[]) : PrepackVerificationQueueItem {
+  private displayUnrecognizedBarcodeMessage() : void {
+    this.simpleDialogService.getWarningOkPopup('BARCODESCAN_DIALOGWARNING_TITLE', 'BARCODESCAN_DIALOGWARNING_MESSAGE')
+    .pipe(take(1))
+    .subscribe(x => this._warningPopup = x);
+  }
+
+  private displayVerificationNotRequiredMessage() : void {
+    this.simpleDialogService.getWarningOkPopup('MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_TITLE', 'MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_MESSAGE')
+    .pipe(take(1))
+    .subscribe(x => this._warningPopup = x);
+  }
+
+  private tryToFindMatchByLotNumberAndExpDate(barodeData: IBarcodeData, prepackVerificationQueueItems: PrepackVerificationQueueItem[]) : PrepackVerificationQueueItem {
     if (barodeData.LotNumber == null || barodeData.ExpirationDate == null) {
       return null;
     }
