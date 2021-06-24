@@ -150,31 +150,6 @@ export class PrepackVerificationQueueComponent implements OnInit {
   /* ------------------------------- BEGIN SCANNING CODE ----------------------------------*/
 
   /* istanbul ignore next */
-  @HostListener("document:keypress", ['$event']) onKeypressHandler(event: KeyboardEvent) {
-    console.log(event);
-    if (!this.nonBarcodeInputFocus) {
-      let isInputComplete = this.barcodeScanService.handleKeyInput(event);
-      //If not from barcode scanner ignore the character
-      if (!this.barcodeScanService.isScannerInput()) {
-        this.barcodeScanService.reset();
-      }
-      if (isInputComplete) {
-        //populating the page level input into text box.
-        this.pagelevelInput = this.barcodeScanService.BarcodeInputCharacters;
-        this.rawBarcodeMessage = this.barcodeScanService.BarcodeInputCharacters;
-        this.barcodeScanService.reset();
-        alert(this.rawBarcodeMessage);
-        ////this.showthedetailspageordialog();
-      }
-    }
-  }
-
-  /* istanbul ignore next */
-  reset() {
-    this.rawBarcodeMessage = '';
-  }
-
-  /* istanbul ignore next */
   private hookupEventHandlers(): void {
 
     this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
@@ -217,6 +192,8 @@ export class PrepackVerificationQueueComponent implements OnInit {
   /* istanbul ignore next */
   processScannedBarcodeData(barodeData: IBarcodeData): void {
     this.barcodeScanService.reset();
+
+    this.closeDialog();
 
     if (barodeData.BarCodeFormat == "UN" && barodeData.ItemId == null) {
       this.displayUnrecognizedBarcodeMessage();
@@ -272,6 +249,16 @@ export class PrepackVerificationQueueComponent implements OnInit {
     }
 
     return null;
+  }
+
+  private closeDialog() {
+    if (this._warningPopup != null) {
+      try {
+        this._warningPopup.onCloseClicked();
+      } catch (err) {
+        // Eat it - this happens if it was closed - this should be fixed in the Dialog so it doesnt crash
+      }
+    }
   }
 
   /* ------------------------------- END SCANNING CODE ----------------------------------*/
