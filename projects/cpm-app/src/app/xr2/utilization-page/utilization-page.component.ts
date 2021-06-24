@@ -34,7 +34,6 @@ import { TableBodyService } from "../../shared/services/printing/table-body.serv
 import { ContentTable } from "pdfmake/interfaces";
 import { Xr2InventoryPdfGridReportService } from "../../shared/services/printing/xr2-inventory-pdf-grid-report-service";
 import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog.service";
-import { ItemManagementService } from "../../api-core/services/item-management.service";
 import { TranslateService } from "@ngx-translate/core";
 import { PdfPrintService } from "../../api-core/services/pdf-print-service";
 import { DevicesService } from "../../api-core/services/devices.service";
@@ -92,6 +91,7 @@ export class UtilizationPageComponent implements OnInit {
    activeXR2DevicesCount: number = 0;
    qtyFilledHeaderKey = "QTY_FILLED_REQUESTED";
    dateHeaderKey = "DATE";
+   invReportItems: XR2InventoryLists[];
    arrReportList: XR2InventoryLists[] = [];
 
   xr2StorageCapacityDisplays: Xr2StorageCapacityDisplay[];
@@ -131,6 +131,7 @@ export class UtilizationPageComponent implements OnInit {
       this.selectedDeviceInformation.DeviceId = 0;
     }
     this.setUtilizationService();
+    this.setPrintInventoryButton();
     this.refreshData();
   }
   /* istanbul ignore next */
@@ -226,9 +227,24 @@ export class UtilizationPageComponent implements OnInit {
     this.pocketsWithErrorsLoaded = false;
 
     this.setUtilizationService();
+    this.setPrintInventoryButton();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
-    console.log("onDeviceSelectionChanged DeviceId: ");
-    console.log(this.selectedDeviceInformation.DeviceId);
+    
+  }
+
+  setPrintInventoryButton(): void {
+     let reportPickListLines$ = this.utilizationService.getXR2ReportData(this.selectedDeviceInformation.DeviceId).pipe(map((x) => {
+      return x.map((p) => new XR2InventoryLists(p));}),shareReplay(1));
+
+      reportPickListLines$.subscribe((p) => {
+         this.invReportItems = p as XR2InventoryLists[];
+         if(this.invReportItems && this.invReportItems.length !== 0){
+          this.requestStatus = "none";
+        }
+        else{
+          this.requestStatus = "complete";
+        }   
+      });
   }
 
   onDataReceived(event: UtilizationDataEvent) {
@@ -488,7 +504,7 @@ export class UtilizationPageComponent implements OnInit {
     items: XR2InventoryLists[],
     colDefinitions: ITableColumnDefintion<XR2InventoryLists>[],
     element: number
-  ) {
+  ) { 
     if(items.length > 0 )
     {
     let sortedXR2Inv = of(
