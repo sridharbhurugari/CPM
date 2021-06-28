@@ -33,7 +33,7 @@ describe('PrepackVerificationSelectionComponent', () => {
   prepackVerificationSelectionCacheService = {
     Get: jasmine
       .createSpy("Get")
-      .and.returnValue(of(prepackVerificationQueueItems))
+      .and.returnValue(prepackVerificationQueueItems)
   };
 
   beforeEach(async(() => {
@@ -60,5 +60,10 @@ describe('PrepackVerificationSelectionComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("should set the PrepackVerificationQueueItems", () => {
+    expect(prepackVerificationQueueItems.length).toBeTruthy();
+  });
+
 });
 
