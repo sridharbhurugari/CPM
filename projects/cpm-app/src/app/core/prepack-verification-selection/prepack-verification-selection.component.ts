@@ -26,18 +26,21 @@ export class PrepackVerificationSelectionComponent implements OnInit {
       this.prepackVerificationQueueItems = prepackVerificationSelectionCacheService.Get();
     }
 
-
+/* istanbul ignore next */
   ngOnInit() {
   }
 
+  /* istanbul ignore next */
   public NavigateToPrepackVerificationDetailsPage(rowClicked: PrepackVerificationQueueItem) {
     this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
   }
 
+  /* istanbul ignore next */
   orderChanged(orderedItems: PrepackVerificationQueueItem[]) {
     this.prepackVerificationQueueItems = orderedItems;
   }
 
+  /* istanbul ignore next */
   onBackClick() {
     this.router.navigate(["core/prepackVerification"]);
   }
