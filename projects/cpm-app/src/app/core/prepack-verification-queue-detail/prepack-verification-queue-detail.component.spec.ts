@@ -19,8 +19,10 @@ import {
   SearchDropdownComponent,
   ToastService,
 } from "@omnicell/webcorecomponents";
-/*
+import { Location } from '@angular/common';
+
 describe("PrepackVerificationQueueDetailComponent", () => {
+  let locationMock: Partial<Location>;
   let component: PrepackVerificationQueueDetailComponent;
   let fixture: ComponentFixture<PrepackVerificationQueueDetailComponent>;
   let prepackVerificationService: Partial<PrepackVerificationService>;
@@ -65,6 +67,11 @@ describe("PrepackVerificationQueueDetailComponent", () => {
       .and.returnValue(of(queueDetail)),
     };
 
+    locationMock = {
+      back: jasmine
+      .createSpy("back")
+    };
+
     await TestBed.configureTestingModule({
       declarations: [PrepackVerificationQueueDetailComponent, MockTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -76,6 +83,7 @@ describe("PrepackVerificationQueueDetailComponent", () => {
         },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '1' } } } },
         { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
+        { provide: Location, useValue: locationMock },
         {
           provide: TranslateService,
           useValue: { get: (x: string) => of(`{x}_TRANSLATED`) },
@@ -101,10 +109,10 @@ describe("PrepackVerificationQueueDetailComponent", () => {
       it('should emit back event on back click', () => {
         component.onBackClick();
 
-        expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerification')]));
+        expect(locationMock.back).toHaveBeenCalled();
       });
     });
 
   });
 })
-*/
+
