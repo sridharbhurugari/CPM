@@ -36,6 +36,7 @@ describe("PrepackVerificationQueueComponent", () => {
   let translateService: Partial<TranslateService>;
   let prepackVerificationService: Partial<PrepackVerificationService>;
   let simpleDialogService: Partial<SimpleDialogService>;
+  let matchingDate = new Date();
 
   let barcodeScanService: Partial<BarcodeScanService>;
 
@@ -104,7 +105,7 @@ describe("PrepackVerificationQueueComponent", () => {
         { provide: BarcodeDataService, useValue: { getData: () => of([]) } },
         { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: SimpleDialogService, useValue: simpleDialogService },
-        { provide: PrepackVerificationSelectionCacheService, useValue: { Clear: () => of([]) } },
+        { provide: PrepackVerificationSelectionCacheService, useValue: { Clear: () => of([]), Set: () => {} } },
 
       ],
     }).compileComponents();
@@ -186,6 +187,72 @@ describe("PrepackVerificationQueueComponent", () => {
       PrepackExpirationDate: new Date()
     });
     component.unfilteredPrepackVerificationQueueItems.push(item);
+    component.processScannedBarcodeData(barcodeData);
+    expect(barcodeScanService.reset).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
+  });
+
+  it('processScannedBarcodeData() when 2 items match navigates to the selection page', () => {
+    let item = new PrepackVerificationQueueItem({
+      PrepackVerificationQueueId: 1,
+      ItemId: "ItemA",
+      ItemDescription: "test",
+      DeviceId: 1,
+      DeviceDescription: "test",
+      QuantityToPackage: 1,
+      PackagedDate: new Date(),
+      DrugIdentifier: "ndc",
+      PrepackLotNumber: "test",
+      PrepackExpirationDate: new Date()
+    });
+    let item2 = new PrepackVerificationQueueItem({
+      PrepackVerificationQueueId: 2,
+      ItemId: "ItemA",
+      ItemDescription: "test",
+      DeviceId: 1,
+      DeviceDescription: "test",
+      QuantityToPackage: 1,
+      PackagedDate: new Date(),
+      DrugIdentifier: "ndc",
+      PrepackLotNumber: "test",
+      PrepackExpirationDate: new Date()
+    });
+    component.unfilteredPrepackVerificationQueueItems.push(item);
+    component.unfilteredPrepackVerificationQueueItems.push(item2);
+    component.processScannedBarcodeData(barcodeData);
+    expect(barcodeScanService.reset).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationSelection')]));
+  });
+
+  it('processScannedBarcodeData() when 2 items but one matches lot and exp date navigates to the details page', () => {
+    barcodeData.LotNumber = "matchinglot";
+    barcodeData.ExpirationDate = matchingDate;
+    let item = new PrepackVerificationQueueItem({
+      PrepackVerificationQueueId: 1,
+      ItemId: "ItemA",
+      ItemDescription: "test",
+      DeviceId: 1,
+      DeviceDescription: "test",
+      QuantityToPackage: 1,
+      PackagedDate: new Date(),
+      DrugIdentifier: "ndc",
+      PrepackLotNumber: "matchinglot",
+      PrepackExpirationDate: matchingDate
+    });
+    let item2 = new PrepackVerificationQueueItem({
+      PrepackVerificationQueueId: 2,
+      ItemId: "ItemA",
+      ItemDescription: "test",
+      DeviceId: 1,
+      DeviceDescription: "test",
+      QuantityToPackage: 1,
+      PackagedDate: new Date(),
+      DrugIdentifier: "ndc",
+      PrepackLotNumber: "test",
+      PrepackExpirationDate: new Date()
+    });
+    component.unfilteredPrepackVerificationQueueItems.push(item);
+    component.unfilteredPrepackVerificationQueueItems.push(item2);
     component.processScannedBarcodeData(barcodeData);
     expect(barcodeScanService.reset).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
