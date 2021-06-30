@@ -151,6 +151,13 @@ export class PrepackVerificationQueueComponent implements OnInit {
 
   /* istanbul ignore next */
   private hookupEventHandlers(): void {
+    if (this.isInvalidSubscription(this.barcodeScanService)) {
+      return;
+    }
+
+    if (this.barcodeScanService.BarcodeScannedSubject == null || this.barcodeScanService.BarcodeScannedSubject == undefined) {
+      return;
+    }
 
     this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
       takeUntil(this.ngUnsubscribe)

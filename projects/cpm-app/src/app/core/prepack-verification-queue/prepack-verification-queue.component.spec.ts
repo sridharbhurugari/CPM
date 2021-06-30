@@ -17,7 +17,11 @@ import { PrepackVerificationQueueComponent } from "./prepack-verification-queue.
 import { IPrepackVerificationQueueItem } from "../../api-core/data-contracts/i-prepack-verification-queue-item";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { PrepackVerificationQueueItem } from "../model/prepack-verification-queue-item";
-/*
+import { BarcodeDataService } from "../../api-core/services/barcode-data.service";
+import { BarcodeScanService } from "oal-core";
+import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog.service";
+import { PrepackVerificationSelectionCacheService } from "../utilities/prepack-verification-selection-cache.service";
+
 describe("PrepackVerificationQueueComponent", () => {
   let router;
   let event: IColHeaderSortChanged = {
@@ -28,6 +32,15 @@ describe("PrepackVerificationQueueComponent", () => {
   let fixture: ComponentFixture<PrepackVerificationQueueComponent>;
   let translateService: Partial<TranslateService>;
   let prepackVerificationService: Partial<PrepackVerificationService>;
+
+  let barcodeScanService: Partial<BarcodeScanService>;
+
+  barcodeScanService = {
+    reset: jasmine.createSpy('reset').and.returnValue(of({})),
+    handleKeyInput: jasmine.createSpy('handleKeyInput').and.returnValue(of({})),
+    isScannerInput: jasmine.createSpy('isScannerInput').and.returnValue(of({})),
+    BarcodeScannedSubject: new Subject<string>(),
+  };
 
   const verificationQueueItem1: IPrepackVerificationQueueItem = {
     PrepackVerificationQueueId: 1,
@@ -78,6 +91,10 @@ describe("PrepackVerificationQueueComponent", () => {
           useValue: { wpfViewModelActivated: new Subject() },
         },
         { provide: WindowService, useValue: { getHash: () => "" } },
+        { provide: BarcodeDataService, useValue: { getData: () => of([]) } },
+        { provide: BarcodeScanService, useValue: { barcodeScanService } },
+        { provide: SimpleDialogService, useValue: { getWarningOkPopup: () => of([]) } },
+        { provide: PrepackVerificationSelectionCacheService, useValue: { Clear: () => of([]) } },
 
       ],
     }).compileComponents();
@@ -106,4 +123,4 @@ describe("PrepackVerificationQueueComponent", () => {
       expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
   });
 });
-*/
+
