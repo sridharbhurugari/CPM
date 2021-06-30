@@ -141,7 +141,6 @@ export class PrepackVerificationQueueComponent implements OnInit {
     this.router.navigate(["core/prepackVerificationDetail/", rowClicked.PrepackVerificationQueueId]);
   }
 
-  /* istanbul ignore next */
   private NavigateToPrepackSelectionPage(prepackVerificationQueueItems: PrepackVerificationQueueItem[]) {
     this.prepackVerificationSelectionCacheService.Set(prepackVerificationQueueItems);
     this.router.navigate(["core/prepackVerificationSelection"]);
@@ -152,10 +151,6 @@ export class PrepackVerificationQueueComponent implements OnInit {
   /* istanbul ignore next */
   private hookupEventHandlers(): void {
     if (this.isInvalidSubscription(this.barcodeScanService)) {
-      return;
-    }
-
-    if (this.barcodeScanService.BarcodeScannedSubject == null || this.barcodeScanService.BarcodeScannedSubject == undefined) {
       return;
     }
 
@@ -196,7 +191,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     return !this.isValidSubscription(variable);
   }
 
-  /* istanbul ignore next */
+
   processScannedBarcodeData(barodeData: IBarcodeData): void {
     this.barcodeScanService.reset();
 

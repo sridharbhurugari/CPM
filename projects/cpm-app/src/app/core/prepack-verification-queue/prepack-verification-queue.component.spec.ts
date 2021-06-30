@@ -21,8 +21,11 @@ import { BarcodeDataService } from "../../api-core/services/barcode-data.service
 import { BarcodeScanService } from "oal-core";
 import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog.service";
 import { PrepackVerificationSelectionCacheService } from "../utilities/prepack-verification-selection-cache.service";
+import { IBarcodeData } from "../../api-core/data-contracts/i-barcode-data";
 
 describe("PrepackVerificationQueueComponent", () => {
+
+  let barcodeData: IBarcodeData;
   let router;
   let event: IColHeaderSortChanged = {
     ColumnPropertyName: "OrderId",
@@ -32,6 +35,7 @@ describe("PrepackVerificationQueueComponent", () => {
   let fixture: ComponentFixture<PrepackVerificationQueueComponent>;
   let translateService: Partial<TranslateService>;
   let prepackVerificationService: Partial<PrepackVerificationService>;
+  let simpleDialogService: Partial<SimpleDialogService>;
 
   let barcodeScanService: Partial<BarcodeScanService>;
 
@@ -67,6 +71,12 @@ describe("PrepackVerificationQueueComponent", () => {
         .and.returnValue(of(1)),
     };
 
+    simpleDialogService = {
+      getWarningOkPopup: jasmine
+      .createSpy("getWarningOkPopup")
+      .and.returnValue(of([])),
+    };
+
     await TestBed.configureTestingModule({
       declarations: [
         PrepackVerificationQueueComponent,
@@ -92,8 +102,8 @@ describe("PrepackVerificationQueueComponent", () => {
         },
         { provide: WindowService, useValue: { getHash: () => "" } },
         { provide: BarcodeDataService, useValue: { getData: () => of([]) } },
-        { provide: BarcodeScanService, useValue: { barcodeScanService } },
-        { provide: SimpleDialogService, useValue: { getWarningOkPopup: () => of([]) } },
+        { provide: BarcodeScanService, useValue: barcodeScanService },
+        { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PrepackVerificationSelectionCacheService, useValue: { Clear: () => of([]) } },
 
       ],
@@ -104,6 +114,31 @@ describe("PrepackVerificationQueueComponent", () => {
     fixture = TestBed.createComponent(PrepackVerificationQueueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    barcodeData = {
+      BarCodeScanned: "string",
+      BarCodeFormat: "UC",
+      ProductId: "string",
+      Ndc: "ndc",
+      ExpirationDate: new Date(),
+      SerialNumber: "",
+      LotNumber: "",
+      Quantity: 1,
+      ItemId: "ItemA",
+      BinId: "",
+      TransactionId: "",
+      DispenseId: 1,
+      OrderId: "",
+      DestinationId: "",
+      SourceOmniId: "",
+      IsBarcodeOverride: false,
+      IsDispenseBarcode: false,
+      IsProductBarcode: false,
+      IsBinBarcode: false,
+      IsTrayBarcode: false,
+      IsUnrecognizedBarcode: false,
+      IsXr2PickingBarcode: false,
+      DeviceId: 1,
+    };
   });
 
   it("should create", () => {
@@ -117,10 +152,45 @@ describe("PrepackVerificationQueueComponent", () => {
     expect(spy).toHaveBeenCalled();
   });
 
-    it('should navigate', () => {
+  it('should navigate', () => {
       const rowClicked: PrepackVerificationQueueItem = ( {PrepackVerificationQueueId: 1} as Partial<PrepackVerificationQueueItem>) as PrepackVerificationQueueItem ;
       component.NavigateToPrepackVerificationDetailsPage(rowClicked);
       expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
   });
+
+  it('processScannedBarcodeData() when barcode format is UN and ItemId is null displays unknown barcode dialog', () => {
+    barcodeData.BarCodeFormat = "UN";
+    barcodeData.ItemId = null;
+    component.processScannedBarcodeData(barcodeData);
+    expect(barcodeScanService.reset).toHaveBeenCalled();
+    expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledWith("BARCODESCAN_DIALOGWARNING_TITLE", "BARCODESCAN_DIALOGWARNING_MESSAGE");
+  });
+
+  it('processScannedBarcodeData() when 0 items match displays no verification required for item dialog', () => {
+    component.processScannedBarcodeData(barcodeData);
+    expect(barcodeScanService.reset).toHaveBeenCalled();
+    expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledWith("MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_TITLE", "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_MESSAGE");
+  });
+
+  it('processScannedBarcodeData() when 1 item matches navigates to the details page', () => {
+    let item = new PrepackVerificationQueueItem({
+      PrepackVerificationQueueId: 1,
+      ItemId: "ItemA",
+      ItemDescription: "test",
+      DeviceId: 1,
+      DeviceDescription: "test",
+      QuantityToPackage: 1,
+      PackagedDate: new Date(),
+      DrugIdentifier: "ndc",
+      PrepackLotNumber: "test",
+      PrepackExpirationDate: new Date()
+    });
+    component.unfilteredPrepackVerificationQueueItems.push(item);
+    component.processScannedBarcodeData(barcodeData);
+    expect(barcodeScanService.reset).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.stringMatching('core/prepackVerificationDetail/')]));
+  });
+
 });
+
 
