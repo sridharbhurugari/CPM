@@ -24,14 +24,6 @@ export class SystemConfigurationService {
       );
   }
 
-  GetConfigurationValueForWorkstation(categoryId: string, subCategoryId: string, clientId: string): Observable<IConfigurationValue> {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/configuration/GetWorkstationConfiguration');
-    const params = {category: categoryId, subCategory: subCategoryId, clientId: clientId};
-    return this.httpClient.get<IConfigurationValue>(url, {
-      headers: this.ocapHttpHeadersService.getHeaders(), params }
-      );
-  }
-
   getPickingSafetyStockConfig(): Observable<IConfigurationValue> {
     return this.GetConfigurationValues('ITEM', 'PICKING_SAFETYSTOCK_ISSUE');
   }
