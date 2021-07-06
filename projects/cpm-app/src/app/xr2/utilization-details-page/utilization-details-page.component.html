@@ -51,13 +51,15 @@
         <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PACKSIZE_HEADER' | translate">
           {{xr2StorageCapacityDisplay.Packsize}}
         </div>
-        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.TrayTypeQoh}}
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TRAY_TYPE_QOH_HEADER' | translate" style="text-align: center;">
+          <span>{{xr2StorageCapacityDisplay.TrayTypeQoh}}</span>
+          <span class="umFont">{{xr2StorageCapacityDisplay.UnitOfIssue}}</span>
         </div>
-        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.TotalXr2Qoh}}
+        <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate" style="text-align: center;">
+          <span>{{xr2StorageCapacityDisplay.TotalXr2Qoh}}</span>
+          <span class="umFont">{{xr2StorageCapacityDisplay.UnitOfIssue}}</span>
         </div>
-        <div class="col width-type iconColumn" *ngIf="xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate" style="justify-content: normal !important;">
+        <div class="col width-type iconColumn" *ngIf="xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate" style="justify-content: center;display: grid;">
           <span class=priority-icons *ngIf="xr2StorageCapacityDisplay.IsErrored">
             <app-validation-icon [style.visibility]="xr2StorageCapacityDisplay.IsErrored ? 'visible' : 'hidden'"
               iconString="alert" toastTileResourceKey="" toastMsgResourceKey="CANNOT_CALCULATE_OVERSTOCK_MESSAGE"
@@ -65,8 +67,9 @@
             </app-validation-icon>
           </span>
         </div>
-        <div class="col width-type iconColumn" *ngIf="!xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.Overstock}}
+        <div class="col width-type iconColumn" *ngIf="!xr2StorageCapacityDisplay.IsErrored" [attr.data-title]="'XR2_UTILIZATION_TOTAL_XR2_QOH_HEADER' | translate" style="text-align: center;">
+          <span>{{xr2StorageCapacityDisplay.Overstock}}</span>
+          <span class="umFont">{{xr2StorageCapacityDisplay.UnitOfIssue}}</span>
         </div>
       </div>
     </ng-container>

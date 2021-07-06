@@ -24,7 +24,7 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
    searchFields = ['ItemId', 'ItemDescription'];
    currentSortPropertyName: string = 'ItemDescription';
 
-   ngUnsubscribe = new Subject();   
+   ngUnsubscribe = new Subject();
 
    constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,
@@ -56,7 +56,13 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
   columnSelected(event: IColHeaderSortChanged){
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.gridData$ = this.gridData$.pipe(map(d => {
+      if (this.currentSortPropertyName == 'ItemDescription'){
+      return _.orderBy(d, x => x.ItemDescription.toLocaleLowerCase(), event.SortDirection);
+      }
+      else
+      {
       return _.orderBy(d, x => x[this.currentSortPropertyName], event.SortDirection);
+      }
     }));
   }
 }

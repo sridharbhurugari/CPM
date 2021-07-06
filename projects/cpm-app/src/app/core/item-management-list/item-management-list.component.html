@@ -1,7 +1,5 @@
 <ng-container class="ocactiondetails">
     <div class="cpmheaderrow">
-      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="requestStatus != 'none'" *ngIf="hasActiveXR2Devices()"
-      [buttonIcon]="requestStatus === 'printing' ? 'spin' : 'print'" (click)="printXR2Inventory()" ></oc-button-action>
         <app-header-container></app-header-container>
         <oc-search-box class="searchbox" #searchBox [placeHolderText]="'SEARCH_TEXT' | translate"></oc-search-box>
     </div>

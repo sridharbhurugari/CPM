@@ -47,7 +47,7 @@
         </div>
         <div>
           <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'close'"
-            (clickEvent)="onDeleteClick(queueItem)">
+          (click)=onDeleteClick(queueItem);$event.stopPropagation();>
           </app-cp-clickable-icon>
         </div>
       </div>
