@@ -9,7 +9,10 @@ describe('PrepackVerificationQueueItem', () => {
       DeviceId: 99,
       DeviceDescription: 'test device',
       QuantityToPackage: 3,
-      PackagedDate: new Date()
+      PackagedDate: new Date(),
+      DrugIdentifier: "test drug id",
+      PrepackLotNumber: "test lot",
+      PrepackExpirationDate: new Date()
     })).toBeTruthy();
   });
 });
