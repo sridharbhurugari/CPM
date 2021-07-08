@@ -367,6 +367,7 @@
   "PREPACK_MANUFACTURER_EXPIRATION":"Manufacturer Expiration",
   "PREPACK_PACKAGE_EXPIRATION":"Package Expiration",
   "PREPACK_PACKAGED_QUANTITY":"Prepack Quantity",
+  "PREPACK_PACKAGED_USER":"Packaged By",
   "PREPACK_DRUG_ID":"Drug ID (NDC)",
   "ON_DEMAND":"On-Demand",
   "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_TITLE": "Verification is not required",
