@@ -6,6 +6,7 @@ import { map, shareReplay } from "rxjs/operators";
 import { IPrepackVerificationQueueDetail } from "../../api-core/data-contracts/i-prepack-verification-queue-detail";
 import { PrepackVerificationService } from "../../api-core/services/prepack-verification.service";
 import { OcapHttpConfigurationService } from "../../shared/services/ocap-http-configuration.service";
+import { Location } from "@angular/common";
 @Component({
   selector: "app-prepack-verification-queue-detail",
   templateUrl: "./prepack-verification-queue-detail.component.html",
@@ -22,7 +23,8 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
     private prepackVerificationService: PrepackVerificationService,
     ocapConfigService: OcapHttpConfigurationService,
     private router: Router,
-    activatedRoute: ActivatedRoute
+    activatedRoute: ActivatedRoute,
+    private location: Location
   ) {
     this.timeIntervalId = setInterval(() => {
       this.time = new Date();
@@ -45,6 +47,6 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
   ngOnInit() {}
 
   onBackClick() {
-    this.router.navigate(["core/prepackVerification"]);
+    this.location.back();
   }
 }

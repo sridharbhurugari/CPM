@@ -25,6 +25,20 @@ import { EventEventId } from "../../shared/constants/event-event-id";
 import { Xr2StorageCapacityDisplay } from "../model/xr2-storage-capacity-display";
 import { Router } from "@angular/router";
 import { BaseRouteReuseStrategy } from "../../core/base-route-reuse-strategy/base-route-reuse-strategy";
+import { GridModule, PopupDialogService} from '@omnicell/webcorecomponents';
+import { HttpClientModule } from '@angular/common/http';
+import { TableBodyService } from '../../shared/services/printing/table-body.service';
+import { Xr2InventoryPdfGridReportService } from '../../shared/services/printing/xr2-inventory-pdf-grid-report-service';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { PdfPrintService } from '../../api-core/services/pdf-print-service';
+import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { DevicesService } from '../../api-core/services/devices.service';
+import { ITableColumnDefintion } from '../../shared/services/printing/i-table-column-definition';
+import { ReportConstants } from '../../shared/constants/report-constants';
+import * as _ from 'lodash';
+import { NULL_EXPR } from '@angular/compiler/src/output/output_ast';
+import { Guid } from 'guid-typescript';
+import { XR2InventoryLists } from "../../core/model/xr2-inventory-list";
 
 describe("UtilizationPageComponent", () => {
   let component: UtilizationPageComponent;
@@ -33,6 +47,26 @@ describe("UtilizationPageComponent", () => {
   let utilizationService: Partial<UtilizationService>;
   let utilizationEventConnectionService: Partial<UtilizationEventConnectionService>;
   let router: Partial<Router>;
+  let simpleDialogService: Partial<SimpleDialogService>;
+  let printWithBaseData: jasmine.Spy;
+  let tableBody: jasmine.Spy;
+  let devicesService: Partial<DevicesService>;
+  const arrTestData : XR2InventoryLists[] = [{
+    ItemId: "768796",FormattedGenericName: "Digoxin 0.5mg/2ml 2ml inj",TradeName: "Lanoxin",QuantityOnHand: 0,FormattedQuantityOnHand: "",DeviceLocationID: 70086,DeviceID:8,DeviceDescription: "XR2 Developer1",
+    PackSize: 2,PackSizeMin: 5,PackSizeMax: 10,UnitsOfIssue: "EACH",TotalPacks: 20,FormattedPackSize: "",FormattedPackSizeMin: "",FormattedPackSizeMax: "",
+    FormattedExpirationDate: "",OmniSiteID: "",ExpirationDate: "12/20/2020"},
+    {
+      ItemId: "8939",FormattedGenericName: "acebutolol 200mg CAPSULE",TradeName: "SECTRAL",QuantityOnHand: 0,FormattedQuantityOnHand: "",DeviceLocationID: 70086,DeviceID:8,DeviceDescription: "XR2 Developer1",
+      PackSize: 2,PackSizeMin: 5,PackSizeMax: 10,UnitsOfIssue: "EACH",TotalPacks: 20,FormattedPackSize: "",FormattedPackSizeMin: "",FormattedPackSizeMax: "",
+      FormattedExpirationDate: "",OmniSiteID: "",ExpirationDate: "12/20/2020"},
+      {
+        ItemId: "768796",FormattedGenericName: "Digoxin 0.5mg/2ml 2ml inj",TradeName: "Lanoxin",QuantityOnHand: 0,FormattedQuantityOnHand: "",DeviceLocationID: 70096,DeviceID:9,DeviceDescription: "XR2 Developer2",
+        PackSize: 2,PackSizeMin: 5,PackSizeMax: 10,UnitsOfIssue: "EACH",TotalPacks: 20,FormattedPackSize: "",FormattedPackSizeMin: "",FormattedPackSizeMax: "",
+        FormattedExpirationDate: "",OmniSiteID: "",ExpirationDate: "12/20/2020"},
+        {
+          ItemId: "8939",FormattedGenericName: "acebutolol 200mg CAPSULE",TradeName: "SECTRAL",QuantityOnHand: 0,FormattedQuantityOnHand: "",DeviceLocationID: 70096,DeviceID:9,DeviceDescription: "XR2 Developer2",
+          PackSize: 2,PackSizeMin: 5,PackSizeMax: 10,UnitsOfIssue: "EACH",TotalPacks: 20,FormattedPackSize: "",FormattedPackSizeMin: "",FormattedPackSizeMax: "",
+          FormattedExpirationDate: "",OmniSiteID: "",ExpirationDate: "12/20/2020"}];
   let i: Injector = {
     get(service: any) {
       return null;
@@ -42,13 +76,24 @@ describe("UtilizationPageComponent", () => {
     new BaseRouteReuseStrategy(i);
 
   beforeEach(async(() => {
-    translateService = {
-      get: jasmine.createSpy("get").and.returnValue(of(translateService)),
-    };
+    printWithBaseData = jasmine.createSpy('printWithBaseData');
+    tableBody = jasmine.createSpy('buildTableBody');;
+    devicesService = { getAllXr2Devices: () => of([]) };
 
-    utilizationService = {
+    const pdfGridReportService: Partial<Xr2InventoryPdfGridReportService> = {
+       printWithBaseData
+     };
+
+     utilizationService = {
       get: jasmine.createSpy("get").and.returnValue(of(UtilizationService)),
-    };
+      getXR2ReportData: jasmine.createSpy("getXR2ReportData").and.returnValue(of([])) };
+
+     simpleDialogService = {
+       displayErrorOk: jasmine.createSpy('displayErrorOk'),
+       displayInfoOk: jasmine.createSpy('displayInfoOk'),
+     };
+
+     const popupDismissedSubject = new Subject<boolean>();
 
     utilizationEventConnectionService = {
       UtilizationIncomingDataSubject: new Subject<UtilizationDataEvent>(),
@@ -66,26 +111,21 @@ describe("UtilizationPageComponent", () => {
         ProgressAnimationComponent,
         MockTranslatePipe,
       ],
-      imports: [ButtonActionModule, FooterModule],
+      imports: [ButtonActionModule, FooterModule, HttpClientModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        { provide: UtilizationService, useValue: utilizationService },
-        {
-          provide: Router,
-          useValue: {
-            navigate: jasmine.createSpy("navigate"),
-            routeReuseStrategy: baseRouteReuseStrategy,
-          },
-        },
-        {
-          provide: UtilizationEventConnectionService,
-          useValue: utilizationEventConnectionService,
-        },
-        {
-          provide: WpfInteropService,
-          useValue: { wpfViewModelActivated: new Subject() },
-        },
+        { provide: Router, useValue: { navigate: jasmine.createSpy("navigate"), routeReuseStrategy: baseRouteReuseStrategy} },
+        { provide: UtilizationEventConnectionService, useValue: utilizationEventConnectionService },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
         { provide: WindowService, useValue: { getHash: () => "" } },
+        { provide: UtilizationService, useValue: utilizationService},
+        { provide: TableBodyService, useValue: { buildTableBody: () => of({}) } },
+        { provide: Xr2InventoryPdfGridReportService, useValue: pdfGridReportService },
+        { provide: SimpleDialogService, useValue: simpleDialogService },
+        { provide: TranslateService, useValue: { get: () => of('') } },
+        { provide: PdfPrintService, useValue: { getReportBaseData: () => of({}) } },
+        { provide: PopupDialogService, useValue: simpleDialogService },
+        { provide: DevicesService, useValue: devicesService},
       ],
     }).compileComponents();
   }));
@@ -95,6 +135,8 @@ describe("UtilizationPageComponent", () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     router = TestBed.get(Router);
+    component.deviceInformationList=[{DeviceId:8,Description:"SAMPLE",DefaultOwnerName:"SAMPLE",DeviceTypeId:'2100',IsActive:true,CurrentLeaseHolder:Guid.create()},
+    {DeviceId:9,Description:"SAMPLE11",DefaultOwnerName:"SAMPLE11",DeviceTypeId:'2100',IsActive:true,CurrentLeaseHolder:Guid.create()}];
   });
 
   it("should create", () => {
@@ -422,5 +464,69 @@ describe("UtilizationPageComponent", () => {
         ])
       );
     });
+  });
+  describe('print xr2 inventory', () => {
+    it('print xr2 inventory', () => {
+      // Selected > 0
+      component.printXR2Inventory();
+   })
+  });
+  describe('check valid date', () => {
+    it('check the valid date', () => {
+      let datestring = "12/20/2020";
+      // Selected > 0
+      expect(component.checkValidDate(datestring)).toBeTruthy();
+   })
+  });
+  describe('check valid date', () => {
+    it('check the valid date', () => {
+      let datestring = "40/40/2020";
+      expect(component.checkValidDate(datestring)).toBeFalsy();
+   })
+  });
+  describe('filter and format report data list', () => {
+    it('filter and format report data list', () => {
+    component.reportPickListLines$ = of(arrTestData);
+    component.arrReportList = arrTestData;
+    component.filterAndFormatReportList();
+   })
+  });
+  describe('device wise print', () => {
+    it('device wise print', () => {
+    component.arrReportList = arrTestData;
+    component.reportPickListLines$ = of(arrTestData);
+    component.printDeviceReport(8);
+   })
+  });
+  describe('print actual report', () => {
+    it('print actual report', () => {
+    component.arrReportList = arrTestData;
+    component.reportPickListLines$ = of(arrTestData);
+    var colDefinitions: ITableColumnDefintion<XR2InventoryLists>[] = [
+      {
+        cellPropertyNames: ["FormattedGenericName", "TradeName", "ItemId"],headerResourceKey: "ITEM", width: "60%",
+      },
+      {
+        cellPropertyNames: ["FormattedPackSize"],headerResourceKey: "PACKSIZE",width: "4%",
+      },
+      {
+        cellPropertyNames: ["FormattedQuantityOnHand"],headerResourceKey: "QOH",width: "10%",
+      },
+      {
+        cellPropertyNames: ["FormattedPackSizeMin"],headerResourceKey: "PACKSIZE_MIN",width: "8%",
+      },
+      {
+        cellPropertyNames: ["FormattedPackSizeMax"],headerResourceKey: "PACKSIZE_MAX",width: "8%",
+      },
+      {
+        cellPropertyNames: ["FormattedExpirationDate"],headerResourceKey: "EARLIEST_EXP_DATE",width: "10%",
+      },
+    ];
+    let sortedXR2Inv = of(
+      _.orderBy(component.arrReportList, (x) => x.FormattedGenericName.toLowerCase(), "asc")
+    );
+    let tableBody$ = tableBody.call(colDefinitions,sortedXR2Inv,ReportConstants.Xr2InventoryReport);
+     component.printTheReport(tableBody$,8);
+   })
   });
 });

@@ -108,6 +108,7 @@
             [maxValue]="(data$ | async)?.QuantityToPackage" [units]="(data$ | async)?.UnitOfIssue" [autoCorrect]="true"
             id="upDownElement">
           </oc-numeric>
+          <div *ngIf="(data$ | async)?.PackagedByUsername" class="packageByDetail">{{"PREPACK_PACKAGED_USER" | translate}}: {{(data$ | async)?.PackagedByUsername}}</div>
           <div>
           </div>
         </div>

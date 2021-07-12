@@ -9,7 +9,9 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --prod=true"
+    "deploy": "ng build --prod=true",
+    "build-dev-watch": "ng build --outputPath=..\\CPM-CentralPharmacy\\Omnicell.CentralPharmacy.Service\\bin\\Debug\\web\\cpm-app --watch",
+    "build-dev": "ng build --outputPath=..\\CPM-CentralPharmacy\\Omnicell.CentralPharmacy.Service\\bin\\Debug\\web\\cpm-app"
   },
   "private": true,
   "dependencies": {

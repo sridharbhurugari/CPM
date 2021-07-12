@@ -1,0 +1,65 @@
+<oc-action-layout>
+  <div class="ocactionheader" style="background-color: #FFFFFF;"></div>
+  <ng-container class="ocactiondetails">
+    <div class="cpmheaderrow header-container">
+      <div class="back-button">
+        <app-cp-clickable-icon [width]="35" [height]="35" [theme]="'dark'" [icon]="'back'" (clickEvent)="onBackClick()">
+        </app-cp-clickable-icon>
+      </div>
+      <div class="title-content">
+        <span class="ellipsis">
+          Choose manual packaging job to continue
+        </span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container class="ocactiondetails">
+
+
+    <oc-grid #ocgrid ocgridfilter="false" (valuesReordered)="orderChanged($event)"
+      [orderableValues]="prepackVerificationQueueItems" appGridSortCol
+      [initialSortPropertyName]="descriptionPropertyName" ocgridheadersearch="false" ocgridallowhover="false">
+
+      <ng-container class="ocgridheader">
+        <div class="first" data-colwrap="true"></div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
+          [columnPropertyName]='descriptionPropertyName' headerResourceKey='DESCRIPTION_ID'>
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+          [columnPropertyName]='packagerPropertyName' headerResourceKey='PACKAGER'>
+        </div>
+        <div app-col-header-sortable class="col" ocGridColResize data-width="200" data-colwrap="true"
+          [columnPropertyName]='qtyPackagedPropertyName' headerResourceKey='PACKAGED_QUANTITY'>
+        </div>
+        <div app-col-header-sortable class="last" ocGridColResize data-width="275" data-colwrap="false"
+          [columnPropertyName]='datePropertyName' headerResourceKey='DATE'>
+        </div>
+      </ng-container>
+
+      <ng-container class="ocgridbody">
+        <div class="row" *ngFor="let queueItem of this.prepackVerificationQueueItems"
+          (click)=NavigateToPrepackVerificationDetailsPage(queueItem)>
+          <div class="first" style="align-items: center;"></div>
+          <div class="col" [attr.data-title]="'DESCRIPTION_ID' | translate">
+            <div>{{queueItem.ItemDescription}}</div>
+            <div>{{queueItem.ItemId}}</div>
+            <div>Lot: {{queueItem.PrepackLotNumber}}</div>
+          </div>
+          <div class="col" [attr.data-title]="'PACKAGER' | translate">{{queueItem.DeviceDescription}}</div>
+          <div class="col" style="align-items: center;" [attr.data-title]="'PACKAGED_QUANTITY' | translate">
+            {{queueItem.QuantityToPackage}}</div>
+          <div style="flex-direction: row; justify-content: space-between; align-items: center;" class="col"
+            [attr.data-title]="'DATE' | translate">
+            <div>
+              {{queueItem.PackagedDate | date: 'shortDate'}}
+              {{queueItem.PackagedDate | date: 'shortTime'}}
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </oc-grid>
+
+  </ng-container>
+
+</oc-action-layout>
