@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IDevice } from '../../api-core/data-contracts/i-device';
 import { IItemLocationDetail } from '../../api-core/data-contracts/i-item-location-detail';
@@ -13,6 +13,7 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { Location } from '@angular/common';
 import { IInterDeviceTransferPickPackSizeRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-packsize-request';
 import { IInterDeviceTransferPickRequest } from '../../api-core/data-contracts/i-inter-device-transfer-pick-request';
+import { DeviceTypeId } from '../../shared/constants/device-type-id';
 
 @Component({
   selector: 'app-internal-transfer-device-ondemand-item-locations-page',
@@ -132,12 +133,14 @@ export class InternalTransferDeviceOndemandItemLocationsPageComponent implements
 
   private loadAssignedItemsSourceLocations() {
     const itemLocations$ = this.itemLocaitonDetailsService.getInternalTransfer(this.selectedItem).pipe(shareReplay(1));
-    this.itemLocationDetails$ = itemLocations$.pipe(map(locations => {
+    this.itemLocationDetails$ = forkJoin(itemLocations$, this.device$).pipe(map(results => {
+      var locations = results[0];
+      var destinationDevice = results[1];
       return locations.filter(location =>
         location.ItemId === this.selectedItem &&
         location.DeviceId != this.deviceId &&
-        location.DeviceType != "2100" &&
-        location.DeviceType != "2040")
+        location.DeviceType != DeviceTypeId.Xr2DeviceTypeId &&
+        (destinationDevice.DeviceType != DeviceTypeId.Xr2DeviceTypeId || location.DeviceType != DeviceTypeId.PackagerDeviceTypeId))
       }));
   }
 
