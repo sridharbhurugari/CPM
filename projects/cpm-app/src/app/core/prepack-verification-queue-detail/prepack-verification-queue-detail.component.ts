@@ -14,6 +14,7 @@ import { Location } from "@angular/common";
 })
 export class PrepackVerificationQueueDetailComponent implements OnInit {
   data$: Observable<IPrepackVerificationQueueDetail>;
+  prepackVerificationQueueDetail: IPrepackVerificationQueueDetail;
   userLocale: string;
   validatedQuantity: number = 1;
   time: Date = new Date();
@@ -38,6 +39,7 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
       .pipe(
         map((data) => {
           this.validatedQuantity = data.QuantityToPackage;
+          this.prepackVerificationQueueDetail = data;
           return data;
         }),
         shareReplay(1)
@@ -48,5 +50,14 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
 
   onBackClick() {
     this.location.back();
+  }
+
+  approve() {
+    this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
+      success => {
+        this.router.navigate(["core/prepackVerification"]);
+      }, error => {
+        alert('failure'); //// display failure message box here
+      });
   }
 }

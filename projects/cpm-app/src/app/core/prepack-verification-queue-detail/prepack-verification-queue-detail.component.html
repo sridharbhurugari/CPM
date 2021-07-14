@@ -116,8 +116,16 @@
     </div>
   </ng-container>
 
+
+
   <ng-container class="ocactionfooter">
     <oc-footer>
+      <div class="ocrightalign">
+        <oc-button-action
+            [buttonText]="'APPROVE' | translate"
+            (click)="approve()">
+        </oc-button-action>
+    </div>
     </oc-footer>
   </ng-container>
 </oc-action-layout>
