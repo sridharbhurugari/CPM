@@ -29,4 +29,5 @@ export interface IPicklistQueueItemNonstandardJson {
     OrderDate: Date;
     PatientCount: number;
     PickPriorityIdentity: number;
+    RouteName: string;
   }

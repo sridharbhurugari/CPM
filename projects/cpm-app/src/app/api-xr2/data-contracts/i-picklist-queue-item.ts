@@ -28,4 +28,5 @@ export interface IPicklistQueueItem {
   OrderDate: Date;
   PatientCount: number;
   PickPriorityIdentity: number;
+  RouteName: string;
 }
