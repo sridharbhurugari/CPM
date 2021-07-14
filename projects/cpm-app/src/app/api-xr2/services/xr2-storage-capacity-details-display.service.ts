@@ -33,8 +33,11 @@ export class Xr2StorageCapacityDetailsDisplayService {
       .pipe(
         map((r) => {
           r.forEach((e) => {
-            if (e.Overstock === null) {
-              e.Overstock = 0;
+            e.OverstockSort = +e.Overstock || 0;
+            e.PacksizeSort = +e.Packsize || 1;
+            // sort multidose as 0
+            if (e.PacksizeSort === 1 && e.Packsize.length > 1 ) {
+              e.PacksizeSort = 0;
             }
           });
           return r;
