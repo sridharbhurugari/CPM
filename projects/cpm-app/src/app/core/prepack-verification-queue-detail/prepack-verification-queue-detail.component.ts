@@ -53,6 +53,7 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
   }
 
   approve() {
+    this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;
     this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
       success => {
         this.router.navigate(["core/prepackVerification"]);
