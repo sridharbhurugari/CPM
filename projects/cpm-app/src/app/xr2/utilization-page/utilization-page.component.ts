@@ -62,6 +62,7 @@ export class UtilizationPageComponent implements OnInit {
 
   expiringThisMonthLoaded: boolean = false;
   expiringThisMonthItems: number = 0;
+  expiringThisMonthOnlyDoses: number = 0;
   expiringThisMonthDoses: number = 0;
 
   notAssignedData: UnassignedMedicationInfo[];
@@ -313,8 +314,10 @@ export class UtilizationPageComponent implements OnInit {
     const exp = _.filter(this.expiringData, (e) => {
       return e.ExpiringCount > 0;
     });
-    this.expiringThisMonthItems = _(exp).countBy("ItemCode").size();
-    this.expiringThisMonthDoses = _.sumBy(this.expiringData, "ExpiringCount");
+    // this.expiringThisMonthItems = _(exp).countBy("ItemCode").size();
+    this.expiringThisMonthItems = _(this.expiringData).countBy("ItemCode").size();
+    this.expiringThisMonthOnlyDoses = _.sumBy(this.expiringData, "ExpiringCount");
+    this.expiringThisMonthDoses = this.expiringThisMonthOnlyDoses + this.expiredDoses;
     this.expiringThisMonthLoaded = true;
   }
 
