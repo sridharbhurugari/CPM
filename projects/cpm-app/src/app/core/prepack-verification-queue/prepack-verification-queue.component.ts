@@ -13,13 +13,13 @@ import { IPrepackVerificationQueueItem } from '../../api-core/data-contracts/i-p
 import { PrepackVerificationQueueItem } from '../model/prepack-verification-queue-item';
 import { PrepackVerificationService } from '../../api-core/services/prepack-verification.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { BarcodeScanService } from 'oal-core';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { PrepackVerificationSelectionCacheService } from '../utilities/prepack-verification-selection-cache.service';
 import { BarcodeOverrideService } from '../../shared/services/barcode-override.service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
 
 @Component({
   selector: 'app-prepack-verification-queue',
@@ -59,7 +59,7 @@ export class PrepackVerificationQueueComponent implements OnInit {
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
     public translateService: TranslateService,
-    private barcodeScanService: BarcodeScanService,
+    private barcodeScanService: CpBarcodeScanService,
     private barcodeDataService: BarcodeDataService,
     private simpleDialogService: SimpleDialogService,
     private prepackVerificationSelectionCacheService: PrepackVerificationSelectionCacheService,

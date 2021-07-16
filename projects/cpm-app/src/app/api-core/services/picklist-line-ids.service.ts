@@ -25,4 +25,14 @@ export class PicklistLineIdsService {
     let url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLineIds/unfilled?orderId=${orderId}&workstationId=${workstationId}`);
     return this.httpClient.get<Guid[]>(url, { headers: this.ocapHttpHeadersService.getHeaders() });
   }
+  
+  getGuidedPickingLineIds(orderId: string): Observable<Guid[]> {
+    let url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLineIds/unfilled/guidedPicking?orderId=${orderId}`);
+    return this.httpClient.get<Guid[]>(url, { headers: this.ocapHttpHeadersService.getHeaders() });
+  }
+  
+  getGuidedPickingLineIdsForWorkstation(orderId: string, workstationId: string): Observable<Guid[]> {
+    let url = this.ocapUrlBuilderService.buildUrl(`/api/picklistLineIds/unfilled/guidedPicking?orderId=${orderId}&workstationId=${workstationId}`);
+    return this.httpClient.get<Guid[]>(url, { headers: this.ocapHttpHeadersService.getHeaders() });
+  }
 }

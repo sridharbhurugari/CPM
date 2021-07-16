@@ -18,7 +18,7 @@ import { IPrepackVerificationQueueItem } from "../../api-core/data-contracts/i-p
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { PrepackVerificationQueueItem } from "../model/prepack-verification-queue-item";
 import { BarcodeDataService } from "../../api-core/services/barcode-data.service";
-import { BarcodeScanService } from "oal-core";
+import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
 import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog.service";
 import { PrepackVerificationSelectionCacheService } from "../utilities/prepack-verification-selection-cache.service";
 import { IBarcodeData } from "../../api-core/data-contracts/i-barcode-data";
@@ -38,7 +38,7 @@ describe("PrepackVerificationQueueComponent", () => {
   let simpleDialogService: Partial<SimpleDialogService>;
   let matchingDate = new Date();
 
-  let barcodeScanService: Partial<BarcodeScanService>;
+  let barcodeScanService: Partial<CpBarcodeScanService>;
 
   barcodeScanService = {
     reset: jasmine.createSpy('reset').and.returnValue(of({})),
@@ -103,7 +103,7 @@ describe("PrepackVerificationQueueComponent", () => {
         },
         { provide: WindowService, useValue: { getHash: () => "" } },
         { provide: BarcodeDataService, useValue: { getData: () => of([]) } },
-        { provide: BarcodeScanService, useValue: barcodeScanService },
+        { provide: CpBarcodeScanService, useValue: barcodeScanService },
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: PrepackVerificationSelectionCacheService, useValue: { Clear: () => of([]), Set: () => {} } },
 

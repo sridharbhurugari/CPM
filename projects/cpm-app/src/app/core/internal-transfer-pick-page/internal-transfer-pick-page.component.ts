@@ -70,8 +70,8 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     activatedRoute: ActivatedRoute,
     picklistLineIdsService: PicklistLineIdsService,
     ocapConfigService: OcapHttpConfigurationService,
-    systemConfiguraitonsService: SystemConfigurationService,
-    wpfInteropService: WpfInteropService,
+    private systemConfiguraitonsService: SystemConfigurationService,
+    private wpfInteropService: WpfInteropService,
     private picklistLinesService: PicklistLinesService,
     private deviceReplenishmentNeedsService: DeviceReplenishmentNeedsService,
     private wpfActionControllerService: WpfActionControllerService,
@@ -85,14 +85,24 @@ export class InternalTransferPickPageComponent implements OnDestroy {
     this.orderId = activatedRoute.snapshot.queryParamMap.get('orderId');
     const allDevices = parseBool(activatedRoute.snapshot.queryParamMap.get('allDevices'));
     if (allDevices) {
-      this.picklistLineIds$ = picklistLineIdsService.getLineIds(this.orderId).pipe(shareReplay(1));
+      this.picklistLineIds$ = picklistLineIdsService.getGuidedPickingLineIds(this.orderId).pipe(shareReplay(1));
     } else {
-      this.picklistLineIds$ = picklistLineIdsService.getLineIdsForWorkstation(this.orderId, ocapConfigService.get().clientId).pipe(shareReplay(1));
+      this.picklistLineIds$ = picklistLineIdsService.getGuidedPickingLineIdsForWorkstation(this.orderId, ocapConfigService.get().clientId).pipe(shareReplay(1));
     }
 
-    this.totalLines$ = this.picklistLineIds$.pipe(map(x => x.length));
-    this.safetyStockScanConfig$ = systemConfiguraitonsService.getPickingSafetyStockConfig();
-    this.safetyStockQuickAdvanceConfig$ = systemConfiguraitonsService.getSafetyStockQuickAdvanceConfig();
+    this.totalLines$ = this.picklistLineIds$.pipe(map(x => x.length), shareReplay(1));
+    this.totalLines$.subscribe(totalLines => {
+      if(totalLines == 0){
+        this.navigateContinue();
+      }else{
+        this.startGuidedPicking();
+      }
+    })
+  }
+  
+  startGuidedPicking() {
+    this.safetyStockScanConfig$ = this.systemConfiguraitonsService.getPickingSafetyStockConfig();
+    this.safetyStockQuickAdvanceConfig$ = this.systemConfiguraitonsService.getSafetyStockQuickAdvanceConfig();
 
     this.updateCurrentLineDetails();
 
@@ -100,7 +110,7 @@ export class InternalTransferPickPageComponent implements OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(msg => {this.onHighPriorityReceived();});
     this.isHighPriorityAvailable = false;
-    wpfInteropService.wpfViewModelActivated
+    this.wpfInteropService.wpfViewModelActivated
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => this.continueLoadCurrentLineDetails());
   }

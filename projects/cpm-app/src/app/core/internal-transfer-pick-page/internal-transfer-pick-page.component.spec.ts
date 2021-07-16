@@ -92,7 +92,7 @@ describe('InternalTransferPickPageComponent', () => {
     };
 
     let picklistLineIdsService = { 
-      getLineIdsForWorkstation: (orderId: string) => { 
+      getGuidedPickingLineIdsForWorkstation : (orderId: string) => { 
         if (orderId == needsBasedOrderId) {
           return of(picklistLineIds);
         }else{
