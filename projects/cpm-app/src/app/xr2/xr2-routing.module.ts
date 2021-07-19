@@ -12,7 +12,7 @@ import { DetailsNotAssignedComponent } from './utilization-details-not-assigned/
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
 import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
-import { Xr2StockingPageComponent } from './xr2-stocking-page/xr2-stocking-page.component';
+import { Xr2InvoicesPageComponent } from './xr2-invoices-page/xr2-invoices-page.component';
 
 const routes: Routes = [
   { path: 'stocking/exceptions', component: Xr2ExceptionsPageComponent },
@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'stocking/exceptiondetails', component: Xr2ExceptionDetailsPageComponent },
   { path: 'settings/xr2eventslist', component: Xr2EventsPageComponent },
   { path: 'xr2Queue', component: Xr2QueuePageComponent },
-  { path: 'xr2Stocking', component: Xr2StockingPageComponent },
+  { path: 'xr2Invoices', component: Xr2InvoicesPageComponent },
   { path: 'utilization', component: UtilizationPageComponent, data: { reuseComponent: true, isBase: true }},
   { path: 'utilization/destock/:deviceId', component: DestockPageComponent, data: { reuseComponent: true }},
   { path: 'utilization/detailsPocketsWithErrors/:deviceId', component: DetailsPocketsWithErrorsComponent, data: { reuseComponent: false } },
