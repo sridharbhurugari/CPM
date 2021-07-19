@@ -1,1 +1,8 @@
-<p>xr2-invoices-page works!</p>
+<ng-container>
+  <app-cp-general-header
+  [showSearchBox]="true"
+  (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
+  (backEvent)="onBackEvent()"
+  ></app-cp-general-header>
+  <app-xr2-invoices-queue></app-xr2-invoices-queue>
+</ng-container>

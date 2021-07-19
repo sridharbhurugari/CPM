@@ -38,6 +38,7 @@ import { UtilizationDetailsPageComponent } from './utilization-details-page/util
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
 import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page/xr2-invoices-page.component';
+import { Xr2InvoicesQueueComponent } from './xr2-invoices-queue/xr2-invoices-queue.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { Xr2InvoicesPageComponent } from './xr2-invoices-page/xr2-invoices-page.
     DetailsExpiringThisMonthComponent,
     DetailsExpiredComponent,
     Xr2InvoicesPageComponent,
+    Xr2InvoicesQueueComponent,
   ],
   imports: [
     CommonModule,

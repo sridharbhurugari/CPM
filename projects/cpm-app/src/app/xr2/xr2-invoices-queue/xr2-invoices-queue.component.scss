@@ -1,0 +1,26 @@
+:host{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+:host ::ng-deep oc-grid{
+  font-size: 22px;
+  user-select: none;
+}
+
+:host ::ng-deep oc-search-box{
+  width: 358px !important;
+  margin-right: 10px;
+}
+
+.centered-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.width-first {
+  width: 100px;
+}

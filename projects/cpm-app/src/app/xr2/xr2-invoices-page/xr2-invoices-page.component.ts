@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-xr2-stocking-page',
@@ -7,9 +8,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class Xr2InvoicesPageComponent implements OnInit {
 
+  ngUnsubscribe = new Subject();
+  searchTextFilter: string;
+
   constructor() { }
 
   ngOnInit() {
   }
+
+  onBackEvent(): void {
+  }
+
+  onSearchTextFilterEvent(filterText: string): void {
+    this.searchTextFilter = filterText;
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
 
 }

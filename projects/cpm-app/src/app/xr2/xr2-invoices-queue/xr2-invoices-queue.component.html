@@ -1,0 +1,48 @@
+<ng-container class="ocactiondetails">
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <!-- 1280 px total-->
+      <ng-container class="ocgridheader">
+        <div class="width-first">
+        </div>
+        <div class="col width-invoice" ocGridColResize data-width="290" >{{'INVOICE' | translate}}</div>
+        <div app-col-header-sortable class="col width-po-number"
+          ocGridColResize
+          headerResourceKey="PONUMBER"
+          [attr.data-width]="265"
+          [columnPropertyName]="poNumberPropertyName"
+          [currentSortPropertyName]="currentSortPropertyName"
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col width-order-date"
+          ocGridColResize
+          headerResourceKey="ORDER_DATE"
+          [attr.data-width]="180"
+          [columnPropertyName]="orderDatePropertyName"
+          [currentSortPropertyName]="currentSortPropertyName"
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col width-source"
+          ocGridColResize
+          headerResourceKey="SOURCE"
+          [attr.data-width]="265"
+          [columnPropertyName]="sourcePropertyName"
+          [currentSortPropertyName]="currentSortPropertyName"
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div class="col width-device" ocGridColResize data-width="180">{{'DEVICE' | translate}}</div>
+      </ng-container>
+    </ng-container>
+    <ng-container class="ocgridbody" *ngIf="this.unfilteredInvoiceItems">
+      <div class="row"
+      *ngFor="let invoiceItem of this.filteredInvoiceItems
+      trackBy: trackByItemId">
+        <div class="first" style="align-items: center;"></div>
+        <div class="col width-po-number" [attr.data-title]="'PONUMBER' | translate"></div>
+        <div class="col width-order-date" [attr.data-title]="'ORDERDATE' | translate"></div>
+        <div class="col width-source" [attr.data-title]="'SOURCE' | translate"></div>
+        <div class="col width-device" [attr.data-title]="'DEVICE' | translate"></div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>
