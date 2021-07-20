@@ -7,6 +7,9 @@ import { IPrepackVerificationQueueDetail } from "../../api-core/data-contracts/i
 import { PrepackVerificationService } from "../../api-core/services/prepack-verification.service";
 import { OcapHttpConfigurationService } from "../../shared/services/ocap-http-configuration.service";
 import { Location } from "@angular/common";
+import { PopupDialogService, PopupDialogProperties, PopupDialogType } from "@omnicell/webcorecomponents";
+import { TranslateService } from "@ngx-translate/core";
+import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog.service";
 @Component({
   selector: "app-prepack-verification-queue-detail",
   templateUrl: "./prepack-verification-queue-detail.component.html",
@@ -25,7 +28,8 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
     ocapConfigService: OcapHttpConfigurationService,
     private router: Router,
     activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private simpleDialogService: SimpleDialogService,
   ) {
     this.timeIntervalId = setInterval(() => {
       this.time = new Date();
@@ -58,7 +62,11 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
       success => {
         this.router.navigate(["core/prepackVerification"]);
       }, error => {
-        alert('failure'); //// display failure message box here
+        this.displayFailedToApproveError();
       });
+  }
+
+  displayFailedToApproveError() {
+    this.simpleDialogService.displayErrorOk("PRINTFAILED_HEADER_TEXT", "FAILEDTOSAVE_BODY_TEXT");
   }
 }

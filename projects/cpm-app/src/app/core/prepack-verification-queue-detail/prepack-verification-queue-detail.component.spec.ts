@@ -20,12 +20,14 @@ import {
   ToastService,
 } from "@omnicell/webcorecomponents";
 import { Location } from '@angular/common';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 
 describe("PrepackVerificationQueueDetailComponent", () => {
   let locationMock: Partial<Location>;
   let component: PrepackVerificationQueueDetailComponent;
   let fixture: ComponentFixture<PrepackVerificationQueueDetailComponent>;
   let prepackVerificationService: Partial<PrepackVerificationService>;
+  let simpleDialogService: Partial<SimpleDialogService>;
   let router
 
   let ocapConfig: IOcapHttpConfiguration = {
@@ -72,6 +74,10 @@ describe("PrepackVerificationQueueDetailComponent", () => {
       .createSpy("back")
     };
 
+    simpleDialogService = {
+      displayErrorOk: jasmine.createSpy('displayErrorOk')
+    };
+
     await TestBed.configureTestingModule({
       declarations: [PrepackVerificationQueueDetailComponent, MockTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -84,6 +90,7 @@ describe("PrepackVerificationQueueDetailComponent", () => {
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap : { get: () => '1' } } } },
         { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
         { provide: Location, useValue: locationMock },
+        { provide: SimpleDialogService, useValue: simpleDialogService },
         {
           provide: TranslateService,
           useValue: { get: (x: string) => of(`{x}_TRANSLATED`) },
