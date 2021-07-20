@@ -14,34 +14,35 @@
           [currentSortPropertyName]="currentSortPropertyName"
           (columnSelected)="columnSelected($event)">
         </div>
-        <div app-col-header-sortable class="col width-order-date"
-          ocGridColResize
-          headerResourceKey="ORDER_DATE"
-          [attr.data-width]="180"
-          [columnPropertyName]="orderDatePropertyName"
-          [currentSortPropertyName]="currentSortPropertyName"
-          (columnSelected)="columnSelected($event)">
-        </div>
         <div app-col-header-sortable class="col width-source"
-          ocGridColResize
-          headerResourceKey="SOURCE"
-          [attr.data-width]="265"
-          [columnPropertyName]="sourcePropertyName"
-          [currentSortPropertyName]="currentSortPropertyName"
-          (columnSelected)="columnSelected($event)">
-        </div>
-        <div class="col width-device" ocGridColResize data-width="180">{{'DEVICE' | translate}}</div>
+        ocGridColResize
+        headerResourceKey="SOURCE"
+        [attr.data-width]="265"
+        [columnPropertyName]="sourcePropertyName"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
+      <div class="col width-device" ocGridColResize data-width="180">{{'DEVICE' | translate}}</div>
+      <div app-col-header-sortable class="col width-order-date"
+        ocGridColResize
+        headerResourceKey="ORDER_DATE"
+        [attr.data-width]="180"
+        [columnPropertyName]="orderDatePropertyName"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+      </div>
       </ng-container>
     </ng-container>
     <ng-container class="ocgridbody" *ngIf="this.unfilteredInvoiceItems">
       <div class="row"
-      *ngFor="let invoiceItem of this.filteredInvoiceItems
+      *ngFor="let invoiceItem of this.unfilteredInvoiceItems
       trackBy: trackByItemId">
         <div class="first" style="align-items: center;"></div>
-        <div class="col width-po-number" [attr.data-title]="'PONUMBER' | translate"></div>
-        <div class="col width-order-date" [attr.data-title]="'ORDERDATE' | translate"></div>
-        <div class="col width-source" [attr.data-title]="'SOURCE' | translate"></div>
-        <div class="col width-device" [attr.data-title]="'DEVICE' | translate"></div>
+        <div class="col width-invoice" [attr.data-title]="'INVOICE' | translate">{{invoiceItem.InvoiceNumber}}</div>
+        <div class="col width-po-number" [attr.data-title]="'PONUMBER' | translate">{{invoiceItem.PoNumber}}</div>
+        <div class="col width-source" [attr.data-title]="'SOURCE' | translate">{{invoiceItem.SourceId}}</div>
+        <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{invoiceItem.DeviceId}}</div>
+        <div class="col width-order-date" [attr.data-title]="'ORDERDATE' | translate">{{invoiceItem.OrderDate}}</div>
       </div>
     </ng-container>
   </oc-grid>

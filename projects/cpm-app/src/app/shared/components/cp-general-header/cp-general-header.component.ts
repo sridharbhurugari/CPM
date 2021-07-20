@@ -21,7 +21,7 @@ export class CpGeneralHeaderComponent {
   @Input() searchFilterText: string;
   @Input() showSearchBox: boolean = true;
 
-  @ViewChild('searchBox', {
+@ViewChild('searchBox', {
     static: false
   })
   searchElement: SearchBoxComponent;

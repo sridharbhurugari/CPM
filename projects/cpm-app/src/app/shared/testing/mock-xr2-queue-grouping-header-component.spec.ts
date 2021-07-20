@@ -8,7 +8,7 @@ import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-
 })
 
 
-export class MockXr2QueueGroupingHeaderComponent {
+export class MockXr2DeviceSelectionHeaderComponent {
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;

@@ -17,7 +17,7 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { MockXr2QueueGroupingHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component.spec';
+import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component.spec';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { IPicklistQueueGroupedNonstandardJson } from '../../api-xr2/events/i-picklist-queue-grouped-nonstandard-json';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
@@ -25,7 +25,6 @@ import { OutputDevice } from '../../api-xr2/data-contracts/output-device';
 import { IPicklistQueueGrouped } from '../../api-xr2/data-contracts/i-picklist-queue-grouped';
 import { Xr2GroupingQueueComponent } from '../xr2-grouping-queue/xr2-grouping-queue.component';
 import { LogService } from '../../api-core/services/log-service';
-import { Mock } from 'protractor/built/driverProviders';
 import { IXr2QueueNavigationParameters } from '../../shared/interfaces/i-xr2-queue-navigation-parameters';
 import { Guid } from 'guid-typescript';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
@@ -76,7 +75,7 @@ describe('Xr2QueueGroupingPageComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ Xr2QueueGroupingPageComponent, Xr2GroupingQueueComponent,
-        MockXr2QueueGroupingHeaderComponent, MockTranslatePipe, MockSearchPipe,
+        MockXr2DeviceSelectionHeaderComponent, MockTranslatePipe, MockSearchPipe,
         MockAppHeaderContainer, MockColHeaderSortable, MockCpClickableIconComponent, MockCpDataLabelComponent ],
       imports: [ GridModule, ButtonActionModule, SingleselectDropdownModule, PopupDialogModule, FooterModule, LayoutModule ],
       providers: [

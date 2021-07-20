@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 
 @Component({
   selector: 'app-xr2-invoices-queue',
@@ -15,38 +16,49 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
 
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
+  searchPipe: any;
 
   @Input()
-  set unfilteredInvoiceItems(value: any[]) {
+  set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
     this._unfilteredInvoiceItems = value;
     this._filteredInvoiceItems = value
     this.resizeGrid();
   }
-  get unfilteredInvoiceItems(): any[] {
+  get unfilteredInvoiceItems(): Xr2Stocklist[] {
     return this._unfilteredInvoiceItems;
   }
 
-  set filteredInvoiceItems(value: any[]) {
+  @Input()
+  set searchTextFilter(value: string) {
+    console.log(value);
+    this._searchTextFilter = value;
+    this.applyQueueFilters();
+  }
+  get searchTextFilter(): string {
+    return this._searchTextFilter;
+  }
+
+  set filteredInvoiceItems(value: Xr2Stocklist[]) {
     this._filteredInvoiceItems = value;
     this.resizeGrid();
   }
-  get filteredInvoiceItems(): any[] {
+  get filteredInvoiceItems(): Xr2Stocklist[] {
     return this._filteredInvoiceItems;
   }
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-
+  searchFields = [];
   currentSortPropertyName: string;
   columnSortDirection: string;
-  readonly invoiceIdPropertyName = nameof<any>('Id');
-  readonly poNumberPropertyName = nameof<any>('PoNumber');
-  readonly orderDatePropertyName = nameof<any>('OrderDate');
-  readonly sourcePropertyName = nameof<any>('Source');
+  readonly invoiceIdPropertyName = nameof<Xr2Stocklist>('InvoiceNumber');
+  readonly poNumberPropertyName = nameof<Xr2Stocklist>('PoNumber');
+  readonly orderDatePropertyName = nameof<Xr2Stocklist>('OrderDate');
+  readonly sourcePropertyName = nameof<Xr2Stocklist>('SourceId');
 
 
-  private  _unfilteredInvoiceItems: any[];
-  private _filteredInvoiceItems: any[];
+  private  _unfilteredInvoiceItems: Xr2Stocklist[];
+  private _filteredInvoiceItems: Xr2Stocklist[];
   private  _searchTextFilter: string;
 
   constructor() { }
@@ -75,14 +87,21 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return invoiceItem.Id;
   }
 
+  private applyQueueFilters() {
+    this.filteredInvoiceItems = this.filterBySearchText(this.searchTextFilter, this.unfilteredInvoiceItems);
+  }
 
-    /* istanbul ignore next */
-    private resizeGrid() {
-      setTimeout(() => {
-        if (this.ocGrid) {
-          this.ocGrid.checkTableBodyOverflown();
-        }
-      }, 250);
-    }
+  private filterBySearchText(text: string, unfilteredArray: Xr2Stocklist[]) {
+    if(!unfilteredArray) return;
+    return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
+  }
 
+  /* istanbul ignore next */
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
+  }
 }

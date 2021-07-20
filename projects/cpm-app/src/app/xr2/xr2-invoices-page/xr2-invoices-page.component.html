@@ -1,8 +1,16 @@
 <ng-container>
-  <app-cp-general-header
-  [showSearchBox]="true"
-  (searchTextFilterEvent)="onSearchTextFilterEvent($event)"
-  (backEvent)="onBackEvent()"
-  ></app-cp-general-header>
-  <app-xr2-invoices-queue></app-xr2-invoices-queue>
+  <app-xr2-device-selection-header
+  (searchTextFilterEvent)='onSearchTextFilterEvent($event)'>
+  </app-xr2-device-selection-header>
+  <app-xr2-invoices-queue
+  [unfilteredInvoiceItems]="invoiceItems$ | async"
+  [searchTextFilter]="searchTextFilter"
+  ></app-xr2-invoices-queue>
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <oc-button-action [buttonText]="'BACK' | translate" (click)="onBackEvent()"></oc-button-action>
+      </div>
+    </oc-footer>
+  </ng-container>
 </ng-container>

@@ -1,8 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { SearchBoxComponent, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { WindowService } from '../../shared/services/window-service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { DevicesService } from '../../api-core/services/devices.service';
@@ -10,12 +9,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
-  selector: 'app-xr2-queue-grouping-header',
-  templateUrl: './xr2-queue-grouping-header.component.html',
-  styleUrls: ['./xr2-queue-grouping-header.component.scss']
+  selector: 'app-xr2-device-selection-header',
+  templateUrl: './xr2-device-selection-header.component.html',
+  styleUrls: ['./xr2-device-selection-header.component.scss']
 })
 
-export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
+export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
@@ -43,8 +42,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
    }) searchElement: SearchBoxComponent;
 
 
-  constructor(private windowService: WindowService,
-              private ocapHttpConfigurationService: OcapHttpConfigurationService,
+  constructor(private ocapHttpConfigurationService: OcapHttpConfigurationService,
               private devicesService: DevicesService,
               private translateService: TranslateService) { }
 

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, pipe, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { InvoicesService } from '../../api-core/services/invoices.service';
+import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 
 @Component({
@@ -11,12 +14,15 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
+  invoiceItems$: Observable<any>;
 
   constructor(
-    private wpfActionController: WpfActionControllerService
+    private wpfActionController: WpfActionControllerService,
+    private invoiceService: InvoicesService
   ) { }
 
   ngOnInit() {
+      this.loadInvoiceItems();
   }
 
   onBackEvent(): void {
@@ -24,6 +30,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   }
 
   onSearchTextFilterEvent(filterText: string): void {
+    console.log(this.searchTextFilter);
     this.searchTextFilter = filterText;
   }
 
@@ -32,5 +39,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.ngUnsubscribe.complete();
   }
 
-
+  private loadInvoiceItems() {
+    this.invoiceItems$ = this.invoiceService.getInvoiceItems()
+    .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))))
+  }
 }
