@@ -41,6 +41,7 @@ export class PicklistQueueItem implements IPicklistQueueItem, IReroutablePicklis
   OrderDate: Date;
   PatientCount: number;
   PickPriorityIdentity: number;
+  RouteName: string;
 
   get Releaseable() {
     return this.Status === 1 && !this.Saving;
@@ -80,7 +81,8 @@ export class PicklistQueueItem implements IPicklistQueueItem, IReroutablePicklis
       SequenceOrder: picklistQueueItem.SequenceOrder,
       OrderDate: picklistQueueItem.OrderDate,
       PatientCount: picklistQueueItem.PatientCount,
-      PickPriorityIdentity: picklistQueueItem.PickPriorityIdentity
+      PickPriorityIdentity: picklistQueueItem.PickPriorityIdentity,
+      RouteName: picklistQueueItem.RouteName
     });
   }
 }
