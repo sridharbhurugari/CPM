@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
+import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
@@ -30,7 +32,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @Input()
   set searchTextFilter(value: string) {
-    console.log(value);
     this._searchTextFilter = value;
     this.applyQueueFilters();
   }
@@ -61,7 +62,8 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   private _filteredInvoiceItems: Xr2Stocklist[];
   private  _searchTextFilter: string;
 
-  constructor() { }
+  constructor(private translateService: TranslateService
+  ) { }
 
   ngOnInit() {
   }
@@ -78,13 +80,19 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return _.orderBy(invoiceItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
+  convertDate(date: Date): string {
+    const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
+   }
+
+
   /* istanbul ignore next */
-  trackByItemId(index: number, invoiceItem: any): Guid {
+  trackByItemId(index: number, invoiceItem: IXr2Stocklist): string {
     if (!invoiceItem) {
       return null;
     }
 
-    return invoiceItem.Id;
+    return invoiceItem.PoNumber;
   }
 
   private applyQueueFilters() {

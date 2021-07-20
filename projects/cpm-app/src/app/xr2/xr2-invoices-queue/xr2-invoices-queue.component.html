@@ -42,7 +42,7 @@
         <div class="col width-po-number" [attr.data-title]="'PONUMBER' | translate">{{invoiceItem.PoNumber}}</div>
         <div class="col width-source" [attr.data-title]="'SOURCE' | translate">{{invoiceItem.SourceId}}</div>
         <div class="col width-device" [attr.data-title]="'DEVICE' | translate">{{invoiceItem.DeviceId}}</div>
-        <div class="col width-order-date" [attr.data-title]="'ORDERDATE' | translate">{{invoiceItem.OrderDate}}</div>
+        <div class="col width-order-date" [attr.data-title]="'ORDERDATE' | translate">{{this.convertDate(invoiceItem.OrderDate)}}</div>
       </div>
     </ng-container>
   </oc-grid>
