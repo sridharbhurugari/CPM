@@ -50,6 +50,9 @@
         </div>
         <div class="col width-destination" [attr.data-title]="'DESTINATION' | translate">
           <span>{{picklistQueueItem.Destination}}</span>
+          <div class="destination-route">
+            <span [ngStyle]="{'font-size': '14px'}">{{picklistQueueItem.RouteName}}</span>
+          </div>
           <div class="destination-details">
             <span [ngStyle]="{'font-size': '14px'}">{{picklistQueueItem.OrderId}}</span>
             <span [ngStyle]="{'font-size': '14px'}">{{getOrderDate(picklistQueueItem)}}</span>
