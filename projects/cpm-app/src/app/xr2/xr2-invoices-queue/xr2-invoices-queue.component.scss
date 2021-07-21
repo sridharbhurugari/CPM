@@ -15,12 +15,33 @@
   margin-right: 10px;
 }
 
-.centered-item {
-  display: flex;
+.centered-content {
+  display: flex ;
   justify-content: center;
   align-items: center;
+  width: 100%;
+}
+
+.split-column {
+  display: flex;;
+}
+
+.date-content {
+  display: flex;
+  width: 60%;
+}
+
+.delete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
 }
 
 .width-first {
-  width: 100px;
+  width: 82px;
+}
+
+.width-order-date {
+  width: 180px
 }
