@@ -5,6 +5,7 @@
   <app-xr2-invoices-queue
   [unfilteredInvoiceItems]="invoiceItems$ | async"
   [searchTextFilter]="searchTextFilter"
+  (deleteEvent)="onDeleteEvent($event)"
   ></app-xr2-invoices-queue>
   <ng-container class="ocactionfooter">
     <oc-footer>

@@ -22,10 +22,10 @@
           [currentSortPropertyName]="currentSortPropertyName"
           (columnSelected)="columnSelected($event)">
         </div>
-        <div class="col width-device" ocGridColResize data-width="180">{{'DEVICE' | translate}}</div>
+        <div class="col width-device" ocGridColResize data-width="200">{{'DEVICE' | translate}}</div>
         <div app-col-header-sortable class="col"
           headerResourceKey="ORDER_DATE"
-          data-width="250"
+          data-width="230"
           data-colwrap="true"
           [columnPropertyName]="orderDatePropertyName"
           [currentSortPropertyName]="currentSortPropertyName"
@@ -35,10 +35,11 @@
     </ng-container>
     <ng-container class="ocgridbody" *ngIf="this.unfilteredInvoiceItems">
       <div class="row"
-      *ngFor="let invoiceItem of this.unfilteredInvoiceItems
+      *ngFor="let invoiceItem of this.filteredInvoiceItems
       trackBy: trackByItemId">
         <div class="first" style="align-items: center;">
-          <oc-svgicon icon="pending" theme="dark" height="38" width="38"></oc-svgicon></div>
+          <oc-svgicon *ngIf="invoiceItem.InProgress" icon="pending" theme="dark" height="38" width="38"></oc-svgicon>
+        </div>
         <div class="col width-invoice" [attr.data-title]="'INVOICE' | translate">
           {{invoiceItem.InvoiceNumber}}
         </div>
@@ -57,7 +58,7 @@
               {{this.convertDate(invoiceItem.OrderDate)}}
             </span>
             <span class="delete-icon">
-              <oc-svgicon icon="close" height="36" width="36"></oc-svgicon>
+              <oc-svgicon icon="close" height="36" width="36" (click)="onDeleteClick(invoiceItem)"></oc-svgicon>
             </span>
           </span>
         </div>

@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { GridComponent } from '@omnicell/webcorecomponents';
-import { Guid } from 'guid-typescript';
 import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
+import { SearchPipe } from '../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-xr2-invoices-queue',
@@ -18,7 +18,8 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
 
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
-  searchPipe: any;
+  @Output() deleteEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+  searchPipe: SearchPipe = new SearchPipe();
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
@@ -49,7 +50,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  searchFields = [];
+  searchFields = [nameof<Xr2Stocklist>("InvoiceNumber"), nameof<Xr2Stocklist>("PoNumber"), nameof<Xr2Stocklist>("SourceId")];
   currentSortPropertyName: string;
   columnSortDirection: string;
   readonly invoiceIdPropertyName = nameof<Xr2Stocklist>('InvoiceNumber');
@@ -83,8 +84,11 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   convertDate(date: Date): string {
     const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
-   }
+  }
 
+  onDeleteClick(invoice: IXr2Stocklist): void {
+    this.deleteEvent.emit(invoice);
+  }
 
   /* istanbul ignore next */
   trackByItemId(index: number, invoiceItem: IXr2Stocklist): string {
@@ -100,7 +104,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   }
 
   private filterBySearchText(text: string, unfilteredArray: Xr2Stocklist[]) {
-    if(!unfilteredArray) return;
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
   }
 

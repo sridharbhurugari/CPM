@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, pipe, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { InvoicesService } from '../../api-core/services/invoices.service';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
@@ -32,6 +33,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
   onSearchTextFilterEvent(filterText: string): void {
     console.log(this.searchTextFilter);
     this.searchTextFilter = filterText;
+  }
+
+  onDeleteEvent(invoice: IXr2Stocklist) {
+    this.invoiceService.deleteInvoice(invoice);
   }
 
   ngOnDestroy(): void {
