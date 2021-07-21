@@ -102,7 +102,7 @@ export class Xr2DetailsQueueComponent implements OnInit, OnDestroy {
   translations$: Observable<any>;
   ngUnsubscribe = new Subject();
   searchFields = [nameof<PicklistQueueItem>('Destination'), nameof<PicklistQueueItem>('OrderId'),
-    , nameof<PicklistQueueItem>('DeviceDescription')];
+    , nameof<PicklistQueueItem>('DeviceDescription'), nameof<PicklistQueueItem>('RouteName')];
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
   @ViewChild('checkBox', {static: false}) checkBox: ElementRef;
