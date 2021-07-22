@@ -36,7 +36,7 @@
     <ng-container class="ocgridbody" *ngIf="this.unfilteredInvoiceItems">
       <div class="row"
       *ngFor="let invoiceItem of this.filteredInvoiceItems
-      trackBy: trackByItemId">
+      trackBy: trackByItemId"(click)="onRowClick(invoiceItem)">
         <div class="first" style="align-items: center;">
           <oc-svgicon *ngIf="invoiceItem.InProgress" icon="pending" theme="dark" height="38" width="38"></oc-svgicon>
         </div>

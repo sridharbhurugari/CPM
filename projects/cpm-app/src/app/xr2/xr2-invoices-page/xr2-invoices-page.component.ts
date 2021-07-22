@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, pipe, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { InvoicesService } from '../../api-core/services/invoices.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
@@ -39,13 +39,21 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.searchTextFilter = filterText;
   }
 
-  onDeviceSelectionChanged($event) {
+  onDeviceSelectionChanged($event): void {
     this.selectedDeviceInformation = $event;
     this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
   }
 
-  onDeleteEvent(invoice: IXr2Stocklist) {
-    this.invoiceService.deleteInvoice(invoice);
+  onDeleteEvent(invoice: IXr2Stocklist): void {
+    this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
+      if(success) {
+        this.childInvoiceQueueComponent.deleteInvoice(invoice);
+      }
+    });
+  }
+
+  onRowClickEvent(invoice: IXr2Stocklist): void {
+    // WPF route to next page with invoice data
   }
 
   ngOnDestroy(): void {
@@ -55,6 +63,6 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private loadInvoiceItems() {
     this.invoiceItems$ = this.invoiceService.getInvoiceItems()
-    .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))))
+    .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))), shareReplay())
   }
 }

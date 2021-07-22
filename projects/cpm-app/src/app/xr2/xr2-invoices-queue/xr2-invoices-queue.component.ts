@@ -20,13 +20,14 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
   @Output() deleteEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+  @Output() rowClickEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+
   searchPipe: SearchPipe = new SearchPipe();
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
     this._unfilteredInvoiceItems = value;
-    this._filteredInvoiceItems = value
-    this.resizeGrid();
+    this.applyQueueFilters();
   }
   get unfilteredInvoiceItems(): Xr2Stocklist[] {
     return this._unfilteredInvoiceItems;
@@ -96,6 +97,10 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return orderDate;
   }
 
+  onRowClick(invoiceItem: IXr2Stocklist): void {
+    this.rowClickEvent.emit(invoiceItem);
+  }
+
   onDeleteClick(invoice: IXr2Stocklist): void {
     this.deleteEvent.emit(invoice);
   }
@@ -109,20 +114,24 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return invoiceItem.PoNumber;
   }
 
-  changeDeviceSelection(selectedDevice: SelectableDeviceInfo) {
+  changeDeviceSelection(selectedDevice: SelectableDeviceInfo): void {
     this.selectedDeviceInformation = selectedDevice;
-    this.applyQueueFilters();
+    this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
   }
 
-  private applyQueueFilters() {
+  deleteInvoice(invoice: IXr2Stocklist): void {
+    this.unfilteredInvoiceItems.filter((item) => item.PoNumber !== invoice.PoNumber);
+  }
+
+  private applyQueueFilters(): void {
     if(!this.unfilteredInvoiceItems) return;
 
-    let filteredChain = [...this.unfilteredInvoiceItems];
+    let filterChain = [...this.unfilteredInvoiceItems];
 
-    filteredChain = this.filterByDevice(this.selectedDeviceInformation.DeviceId, filteredChain);
-    filteredChain = this.filterBySearchText(this.searchTextFilter, filteredChain);
+    filterChain = this.filterByDevice(this.selectedDeviceInformation.DeviceId, filterChain);
+    filterChain = this.filterBySearchText(this.searchTextFilter, filterChain);
 
-    this.filteredInvoiceItems = filteredChain;
+    this.filteredInvoiceItems = filterChain;
   }
 
   private filterBySearchText(text: string, unfilteredArray: Xr2Stocklist[]) {
