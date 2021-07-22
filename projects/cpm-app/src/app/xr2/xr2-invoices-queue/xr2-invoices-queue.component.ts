@@ -6,6 +6,7 @@ import { Many } from 'lodash';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
 
@@ -32,6 +33,14 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   }
 
   @Input()
+  set selectedDeviceInformation(value: SelectableDeviceInfo) {
+    this._selectedDeviceInformation = value;
+  }
+  get selectedDeviceInformation(): SelectableDeviceInfo {
+    return this._selectedDeviceInformation;
+  }
+
+  @Input()
   set searchTextFilter(value: string) {
     this._searchTextFilter = value;
     this.applyQueueFilters();
@@ -53,15 +62,16 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   searchFields = [nameof<Xr2Stocklist>("InvoiceNumber"), nameof<Xr2Stocklist>("PoNumber"), nameof<Xr2Stocklist>("SourceId")];
   currentSortPropertyName: string;
   columnSortDirection: string;
+
   readonly invoiceIdPropertyName = nameof<Xr2Stocklist>('InvoiceNumber');
   readonly poNumberPropertyName = nameof<Xr2Stocklist>('PoNumber');
   readonly orderDatePropertyName = nameof<Xr2Stocklist>('OrderDate');
   readonly sourcePropertyName = nameof<Xr2Stocklist>('SourceId');
 
-
   private  _unfilteredInvoiceItems: Xr2Stocklist[];
   private _filteredInvoiceItems: Xr2Stocklist[];
   private  _searchTextFilter: string;
+  private _selectedDeviceInformation: SelectableDeviceInfo;
 
   constructor(private translateService: TranslateService
   ) { }
@@ -99,12 +109,30 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return invoiceItem.PoNumber;
   }
 
+  changeDeviceSelection(selectedDevice: SelectableDeviceInfo) {
+    this.selectedDeviceInformation = selectedDevice;
+    this.applyQueueFilters();
+  }
+
   private applyQueueFilters() {
-    this.filteredInvoiceItems = this.filterBySearchText(this.searchTextFilter, this.unfilteredInvoiceItems);
+    if(!this.unfilteredInvoiceItems) return;
+
+    let filteredChain = [...this.unfilteredInvoiceItems];
+
+    filteredChain = this.filterByDevice(this.selectedDeviceInformation.DeviceId, filteredChain);
+    filteredChain = this.filterBySearchText(this.searchTextFilter, filteredChain);
+
+    this.filteredInvoiceItems = filteredChain;
   }
 
   private filterBySearchText(text: string, unfilteredArray: Xr2Stocklist[]) {
+    if(!text || !unfilteredArray) return unfilteredArray;
     return this.searchPipe.transform(unfilteredArray, text, this.searchFields);
+  }
+
+  private filterByDevice(deviceId: number, unfilteredArray: Xr2Stocklist[]) {
+    if(!deviceId || !unfilteredArray) return unfilteredArray;
+    return unfilteredArray.filter((invoiceItem) => invoiceItem.DeviceId === deviceId);
   }
 
   /* istanbul ignore next */

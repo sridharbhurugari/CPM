@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, pipe, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { InvoicesService } from '../../api-core/services/invoices.service';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 
 @Component({
   selector: 'app-xr2-stocking-page',
@@ -13,9 +15,12 @@ import { WpfActionControllerService } from '../../shared/services/wpf-action-con
 })
 export class Xr2InvoicesPageComponent implements OnInit {
 
+  @ViewChild(Xr2InvoicesQueueComponent, null) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
+
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
   invoiceItems$: Observable<any>;
+  selectedDeviceInformation: SelectableDeviceInfo;
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -31,8 +36,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
   }
 
   onSearchTextFilterEvent(filterText: string): void {
-    console.log(this.searchTextFilter);
     this.searchTextFilter = filterText;
+  }
+
+  onDeviceSelectionChanged($event) {
+    this.selectedDeviceInformation = $event;
+    this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
   }
 
   onDeleteEvent(invoice: IXr2Stocklist) {

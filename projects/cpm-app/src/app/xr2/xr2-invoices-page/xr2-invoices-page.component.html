@@ -1,6 +1,7 @@
 <ng-container>
   <app-xr2-device-selection-header
-  (searchTextFilterEvent)='onSearchTextFilterEvent($event)'>
+  (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)">>
   </app-xr2-device-selection-header>
   <app-xr2-invoices-queue
   [unfilteredInvoiceItems]="invoiceItems$ | async"
