@@ -14,15 +14,19 @@
     <div app-col-header-sortable class="col" data-width="175" data-colwrap="true"
     [columnPropertyName]="'Inventory'" headerResourceKey="TOTAL_QOH"
     [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-  </div>
+    </div>
     <div app-col-header-sortable class="col" ocGridColResize data-width="175" data-colwrap="true"
       [columnPropertyName]="'PocketTypeDescription'" headerResourceKey="POCKET_TYPE_DESCRIPTION"
       [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
     </div>
-    <div app-col-header-sortable class="last" ocGridColResize data-width="300" data-colwrap="true"
+    <div app-col-header-sortable class="last" ocGridColResize data-width="200" data-colwrap="true"
     [columnPropertyName]="'ExpiringCount'" headerResourceKey="EXPIRING_QTY"
     [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
-  </div>
+    </div>
+    <div app-col-header-sortable class="last" ocGridColResize data-width="200" data-colwrap="true"
+    [columnPropertyName]="'ExpiredCount'" headerResourceKey="EXPIRED_QTY"
+    [currentSortPropertyName]="currentSortPropertyName" (columnSelected)="columnSelected($event)">
+    </div>
 
  </ng-container>
     <ng-container class="ocgridbody">
@@ -36,10 +40,12 @@
         <div class="col" [attr.data-title]="'POCKET_TYPE_DESCRIPTION' | translate">
           {{row.PocketTypeDescription}}
         </div>
-        <div class="last" [attr.data-title]="'EXPIRING_QTY' | translate">
+        <div class="col" [attr.data-title]="'EXPIRING_QTY' | translate">
           {{row.ExpiringCount}}
         </div>
-
+        <div class="last" [attr.data-title]="'EXPIRED_QTY' | translate">
+          {{row.ExpiredCount}}
+        </div>
       </div>
     </ng-container>
   </oc-grid>
