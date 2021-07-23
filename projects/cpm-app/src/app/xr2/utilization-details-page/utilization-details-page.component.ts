@@ -38,10 +38,10 @@ export class UtilizationDetailsPageComponent implements OnInit {
     "TotalXr2Qoh"
   );
   readonly packsizeName = nameof<Xr2StorageCapacityDetailsDisplay>(
-    "Packsize"
+    "PacksizeSort"
   );
   readonly overstockName = nameof<Xr2StorageCapacityDetailsDisplay>(
-    "Overstock"
+    "OverstockSort"
   );
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
