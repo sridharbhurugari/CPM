@@ -360,8 +360,8 @@ describe("UtilizationPageComponent", () => {
       expect(component.expiredDoses).toBe(11 + 21 + 22 + 0);
       expect(component.expiredLoaded).toBe(true);
 
-      expect(component.expiringThisMonthItems).toBe(2);
-      expect(component.expiringThisMonthDoses).toBe(0 + 2 + 3 + 4);
+      expect(component.expiringThisMonthItems).toBe(3);
+      expect(component.expiringThisMonthDoses).toBe(0 + 2 + 3 + 4 + 11 + 21 + 22);
       expect(component.expiringThisMonthLoaded).toBe(true);
     });
   });

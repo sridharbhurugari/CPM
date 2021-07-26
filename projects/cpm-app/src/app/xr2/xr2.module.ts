@@ -37,6 +37,7 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
 import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
+import { Xr2InvoicesPageComponent } from './xr2-invoices-page/xr2-invoices-page.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { DetailsExpiredComponent } from './utilization-details-expired/utilizati
     UtilizationDetailsPageComponent,
     DetailsExpiringThisMonthComponent,
     DetailsExpiredComponent,
+    Xr2InvoicesPageComponent,
   ],
   imports: [
     CommonModule,

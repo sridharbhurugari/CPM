@@ -464,6 +464,9 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
   }
 
   private processScannedBarcode(scannedBarcode: string): void {
+    if(this.selectedDeviceInformation === undefined || this.selectedDeviceInformation.DeviceId === 0){
+      return;
+    }
     this.barcodeScanService.reset();
     this.rawBarcodeMessage = scannedBarcode;
     this.handleInputLevelScan(scannedBarcode);
@@ -483,7 +486,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     if (this.isInvalidSubscription(this.barcodeScanService)) {
       return;
     }
-
+    
     this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.subscribe((scannedBarcode: string) =>
       this.processScannedBarcode(scannedBarcode)
     );
