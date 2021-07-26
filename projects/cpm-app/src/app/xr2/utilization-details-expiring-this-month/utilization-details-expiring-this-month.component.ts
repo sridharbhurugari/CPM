@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { finalize, catchError, map, shareReplay, tap, takeUntil, filter } from 'rxjs/operators';
 import { nameof } from '../../shared/functions/nameof';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import * as _ from 'lodash';
+import { GridComponent } from '@omnicell/webcorecomponents';
 
 @Component({
   selector: 'app-utilization-expiring-this-month',
@@ -17,7 +18,7 @@ import * as _ from 'lodash';
 })
 export class DetailsExpiringThisMonthComponent implements OnInit {
   device$: Observable<SelectableDeviceInfo>;
-
+  @ViewChild("ocgrid", { static: false }) ocGrid: GridComponent;
    // Grid, Search and Sort:
    gridData$: Observable<IExpiringMedicationInfoDetail[]>;
    searchTextFilter: string;
@@ -39,6 +40,7 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
     }
 
     ngOnInit() {
+      this.resizeGrid();
     }
 
    ngOnDestroy(): void {
@@ -64,5 +66,13 @@ export class DetailsExpiringThisMonthComponent implements OnInit {
       return _.orderBy(d, x => x[this.currentSortPropertyName], event.SortDirection);
       }
     }));
+  }
+
+  private resizeGrid() {
+    setTimeout(() => {
+      if (this.ocGrid) {
+        this.ocGrid.checkTableBodyOverflown();
+      }
+    }, 250);
   }
 }
