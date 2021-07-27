@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
-import { IXr2Stocklist } from '../data-contracts/i-xr2-stocklist';
 
 @Injectable({
   providedIn: 'root'
