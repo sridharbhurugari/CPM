@@ -19,7 +19,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
 
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
-  @Output() deleteEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
   @Output() detailsClickEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
   @Output() displayYesNoDialogEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
 
@@ -80,7 +79,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   ngOnInit() {
   }
 
-
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.columnSortDirection = event.SortDirection;
@@ -105,7 +103,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     this.displayYesNoDialogEvent.emit(invoiceItem);
   }
 
-
   /* istanbul ignore next */
   trackByItemId(index: number, invoiceItem: IXr2Stocklist): string {
     if (!invoiceItem) {
@@ -117,7 +114,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   changeDeviceSelection(selectedDevice: SelectableDeviceInfo): void {
     this.selectedDeviceInformation = selectedDevice;
-    this.unfilteredInvoiceItems = this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
+    this.filteredInvoiceItems = this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
   }
 
   deleteInvoice(invoice: IXr2Stocklist): void {

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { LogVerbosity } from 'oal-core';
-import { forkJoin, merge, Observable, pipe, Subject } from 'rxjs';
+import { forkJoin, merge, Observable, Subject } from 'rxjs';
 import { flatMap, map, shareReplay } from 'rxjs/operators';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { InvoicesService } from '../../api-core/services/invoices.service';
@@ -64,7 +64,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
   }
 
-  onDisplayYesNoDialogEvent($event): void {
+  onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
 
     this.displayDeleteDialog().subscribe(result => {
       if (!result) {
@@ -74,15 +74,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
         this._componentName + ' Delete clicked - deleting current invoice item');
 
-      // this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
-      //   if(success) {
-      //     this.childInvoiceQueueComponent.deleteInvoice(invoice);
-      //   }
-      // });
+      this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
+        if(success) {
+          this.childInvoiceQueueComponent.deleteInvoice(invoice);
+        }
+      });
     });
-  }
-
-  onDetailsClickEvent(invoice: IXr2Stocklist): void {
   }
 
   ngOnDestroy(): void {
