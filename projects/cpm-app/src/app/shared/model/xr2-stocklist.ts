@@ -6,7 +6,11 @@ export class Xr2Stocklist implements IXr2Stocklist {
     Object.assign(this, invoiceItem);
   }
 
-  Description: string
+  ItemFormattedGenericName: string
+  ItemTradeName: string
+  ItemId: string
+  QuantityReceived: number
+  QuantityStocked: number
   InProgress: boolean
   InvoiceNumber: string
   PoNumber: string

@@ -277,7 +277,7 @@
   "INVALID_SCAN_QUICKPICK_UNAVAILABLE_HEADER_TEXT": "Scanning Unavailable",
   "INVALID_SCAN_QUICKPICK_INACTIVE_BODY_TEXT": "Scanning is not available. The current selected device is configured as inactive.",
   "SEARCH_CYCLECOUNT": "Scan Bar Code or Enter Text",
-  "QTYRECIEVED": "QTY Recieved",
+  "QTYRECEIVED": "QTY Received",
   "QTYSTOCKED": "QTY Stocked",
   "QUICK_PICK_CLEAR_CONTENTS_MESSAGE": "Unlock and Clear Contents",
   "QUICK_PICK_UNKNOWN_CONTENTS": "Unknown Contents",

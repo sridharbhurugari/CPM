@@ -29,18 +29,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
-    this._unfilteredInvoiceItems = [
-      {
-        Description: "test",
-        InProgress: true,
-        InvoiceNumber: '1',
-        PoNumber: '1',
-        OrderDate: new Date(),
-        SourceId: '1',
-        DeviceId: 2,
-        DeviceDescription: '1'
-      }
-    ];
+    this._unfilteredInvoiceItems = value;
     this.applyQueueFilters();
   }
   get unfilteredInvoiceItems(): Xr2Stocklist[] {
@@ -74,15 +63,14 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
-  searchFields = [nameof<Xr2Stocklist>("InvoiceNumber"), nameof<Xr2Stocklist>("PoNumber"), nameof<Xr2Stocklist>("SourceId")];
+  searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemId")];
   currentSortPropertyName: string;
   columnSortDirection: string;
 
   readonly inProgressPropertyName = nameof<Xr2Stocklist>('InProgress');
-  readonly descriptionPropertyName = nameof<Xr2Stocklist>('Description');
-  readonly invoiceIdPropertyName = nameof<Xr2Stocklist>('InvoiceNumber');
-  readonly poNumberPropertyName = nameof<Xr2Stocklist>('PoNumber');
-  readonly sourcePropertyName = nameof<Xr2Stocklist>('SourceId');
+  readonly itemNamePropertyName = nameof<Xr2Stocklist>('ItemFormattedGenericName');
+  readonly qtyReceivedPropertyName = nameof<Xr2Stocklist>('QuantityReceived');
+  readonly qtyStockedPropertyName = nameof<Xr2Stocklist>('QuantityStocked');
 
   private  _unfilteredInvoiceItems: Xr2Stocklist[];
   private _filteredInvoiceItems: Xr2Stocklist[];

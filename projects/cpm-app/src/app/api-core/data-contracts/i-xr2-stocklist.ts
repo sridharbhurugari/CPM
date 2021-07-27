@@ -1,5 +1,9 @@
 export interface IXr2Stocklist {
-  Description: string
+  ItemFormattedGenericName: string
+  ItemTradeName: string
+  ItemId: string
+  QuantityReceived: number
+  QuantityStocked: number
   InProgress: boolean
   InvoiceNumber: string
   PoNumber: string
