@@ -6,6 +6,7 @@ import { Many } from 'lodash';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
+import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
@@ -20,13 +21,26 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
   @Output() deleteEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
-  @Output() rowClickEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+  @Output() detailsClickEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+  @Output() displayYesNoDialogEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+
 
   searchPipe: SearchPipe = new SearchPipe();
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
-    this._unfilteredInvoiceItems = value;
+    this._unfilteredInvoiceItems = [
+      {
+        Description: "test",
+        InProgress: true,
+        InvoiceNumber: '1',
+        PoNumber: '1',
+        OrderDate: new Date(),
+        SourceId: '1',
+        DeviceId: 2,
+        DeviceDescription: '1'
+      }
+    ];
     this.applyQueueFilters();
   }
   get unfilteredInvoiceItems(): Xr2Stocklist[] {
@@ -64,9 +78,10 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   currentSortPropertyName: string;
   columnSortDirection: string;
 
+  readonly inProgressPropertyName = nameof<Xr2Stocklist>('InProgress');
+  readonly descriptionPropertyName = nameof<Xr2Stocklist>('Description');
   readonly invoiceIdPropertyName = nameof<Xr2Stocklist>('InvoiceNumber');
   readonly poNumberPropertyName = nameof<Xr2Stocklist>('PoNumber');
-  readonly orderDatePropertyName = nameof<Xr2Stocklist>('OrderDate');
   readonly sourcePropertyName = nameof<Xr2Stocklist>('SourceId');
 
   private  _unfilteredInvoiceItems: Xr2Stocklist[];
@@ -97,13 +112,14 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return orderDate;
   }
 
-  onRowClick(invoiceItem: IXr2Stocklist): void {
-    this.rowClickEvent.emit(invoiceItem);
+  onDetailsClick(invoiceItem: IXr2Stocklist): void {
+    this.detailsClickEvent.emit(invoiceItem);
   }
 
-  onDeleteClick(invoice: IXr2Stocklist): void {
-    this.deleteEvent.emit(invoice);
+  onDeleteClick(invoiceItem: IXr2Stocklist): void {
+    this.displayYesNoDialogEvent.emit(invoiceItem);
   }
+
 
   /* istanbul ignore next */
   trackByItemId(index: number, invoiceItem: IXr2Stocklist): string {
@@ -116,15 +132,15 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   changeDeviceSelection(selectedDevice: SelectableDeviceInfo): void {
     this.selectedDeviceInformation = selectedDevice;
-    this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
+    this.unfilteredInvoiceItems = this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
   }
 
   deleteInvoice(invoice: IXr2Stocklist): void {
-    this.unfilteredInvoiceItems.filter((item) => item.PoNumber !== invoice.PoNumber);
+    this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => item.PoNumber !== invoice.PoNumber);
   }
 
   private applyQueueFilters(): void {
-    if(!this.unfilteredInvoiceItems) return;
+    if(!this.unfilteredInvoiceItems || !this.selectedDeviceInformation) return;
 
     let filterChain = [...this.unfilteredInvoiceItems];
 

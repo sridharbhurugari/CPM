@@ -1,8 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, pipe, Subject } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { LogVerbosity } from 'oal-core';
+import { forkJoin, merge, Observable, pipe, Subject } from 'rxjs';
+import { flatMap, map, shareReplay } from 'rxjs/operators';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { InvoicesService } from '../../api-core/services/invoices.service';
+import { LogService } from '../../api-core/services/log-service';
+import { LoggingCategory } from '../../shared/constants/logging-category';
+import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
@@ -21,14 +27,28 @@ export class Xr2InvoicesPageComponent implements OnInit {
   searchTextFilter: string;
   invoiceItems$: Observable<any>;
   selectedDeviceInformation: SelectableDeviceInfo;
+  translations$: Observable<any>;
+  translatables = [
+    'YES',
+    'NO',
+    "INVOICE_DELETE_HEADER",
+    "INVOICE_DELETE_BODY"
+  ];
+
+  private _componentName: string = "xr2InvoicesPageComponent"
+  private _loggingCategory: string = LoggingCategory.Xr2Stocking;
 
   constructor(
     private wpfActionController: WpfActionControllerService,
-    private invoiceService: InvoicesService
+    private invoiceService: InvoicesService,
+    private logService: LogService,
+    private dialogService: PopupDialogService,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit() {
-      this.loadInvoiceItems();
+    this.setTranslations();
+    this.loadInvoiceItems();
   }
 
   onBackEvent(): void {
@@ -44,16 +64,25 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
   }
 
-  onDeleteEvent(invoice: IXr2Stocklist): void {
-    this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
-      if(success) {
-        this.childInvoiceQueueComponent.deleteInvoice(invoice);
+  onDisplayYesNoDialogEvent($event): void {
+
+    this.displayDeleteDialog().subscribe(result => {
+      if (!result) {
+        return;
       }
+
+      this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+        this._componentName + ' Delete clicked - deleting current invoice item');
+
+      // this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
+      //   if(success) {
+      //     this.childInvoiceQueueComponent.deleteInvoice(invoice);
+      //   }
+      // });
     });
   }
 
-  onRowClickEvent(invoice: IXr2Stocklist): void {
-    // WPF route to next page with invoice data
+  onDetailsClickEvent(invoice: IXr2Stocklist): void {
   }
 
   ngOnDestroy(): void {
@@ -64,5 +93,31 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private loadInvoiceItems() {
     this.invoiceItems$ = this.invoiceService.getInvoiceItems()
     .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))), shareReplay())
+  }
+
+  private setTranslations(): void {
+    this.translations$ = this.translateService.get(this.translatables);
+  }
+
+  /* istanbul ignore next */
+  private displayDeleteDialog(): Observable<boolean> {
+    return forkJoin(this.translations$).pipe(flatMap(r => {
+      const translations = r[0];
+      const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
+      properties.titleElementText = translations.INVOICE_DELETE_HEADER;
+      properties.messageElementText = translations.INVOICE_DELETE_BODY;
+      properties.showPrimaryButton = true;
+      properties.primaryButtonText = translations.YES;
+      properties.showSecondaryButton = true;
+      properties.secondaryButtonText = translations.NO;
+      properties.primaryOnRight = false;
+      properties.showCloseIcon = false;
+      properties.dialogDisplayType = PopupDialogType.Info;
+      properties.timeoutLength = 0;
+      const component = this.dialogService.showOnce(properties);
+      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
+      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      return merge(primaryClick$, secondaryClick$);
+    }));
   }
 }

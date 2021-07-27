@@ -6,13 +6,15 @@
   <app-xr2-invoices-queue
   [unfilteredInvoiceItems]="invoiceItems$ | async"
   [searchTextFilter]="searchTextFilter"
-  (deleteEvent)="onDeleteEvent($event)"
-  (rowClickEvent)="onRowClickEvent($event)"
+  (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)"
   ></app-xr2-invoices-queue>
   <ng-container class="ocactionfooter">
     <oc-footer>
       <div class="ocleftalign">
         <oc-button-action [buttonText]="'BACK' | translate" (click)="onBackEvent()"></oc-button-action>
+      </div>
+      <div class="ocrightalign">
+        <oc-button-action [buttonIcon]="'print'" [buttonText]="'PRINT_XR2_INVENTORY_REPORT' | translate"></oc-button-action>
       </div>
     </oc-footer>
   </ng-container>

@@ -23,7 +23,9 @@
 }
 
 .split-column {
-  display: flex;;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .date-content {
@@ -36,6 +38,18 @@
   align-items: center;
   justify-content: center;
   width: 30%;
+}
+
+.center-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.destination-details {
+  padding-top: 5px;
+  display: flex;
 }
 
 .width-first {

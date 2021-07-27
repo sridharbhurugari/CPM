@@ -1,4 +1,5 @@
 export interface IXr2Stocklist {
+  Description: string
   InProgress: boolean
   InvoiceNumber: string
   PoNumber: string
