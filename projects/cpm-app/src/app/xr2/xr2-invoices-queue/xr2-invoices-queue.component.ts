@@ -6,7 +6,6 @@ import { Many } from 'lodash';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
 import { nameof } from '../../shared/functions/nameof';
-import { IDialogContents } from '../../shared/interfaces/i-dialog-contents';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
