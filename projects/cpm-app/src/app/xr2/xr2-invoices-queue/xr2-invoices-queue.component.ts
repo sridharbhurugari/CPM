@@ -24,9 +24,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   @Output() detailsClickEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
   @Output() displayYesNoDialogEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
 
-
-  searchPipe: SearchPipe = new SearchPipe();
-
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
     this._unfilteredInvoiceItems = value;
@@ -63,6 +60,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
+  searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemId")];
   currentSortPropertyName: string;
   columnSortDirection: string;
