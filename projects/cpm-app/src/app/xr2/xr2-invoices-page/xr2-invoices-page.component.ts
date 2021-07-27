@@ -11,6 +11,7 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
+import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 
@@ -43,7 +44,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private invoiceService: InvoicesService,
     private logService: LogService,
     private dialogService: PopupDialogService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private simpleDialogService: SimpleDialogService
   ) { }
 
   ngOnInit() {
@@ -72,12 +74,15 @@ export class Xr2InvoicesPageComponent implements OnInit {
       }
 
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-        this._componentName + ' Delete clicked - deleting current invoice item');
+        this._componentName + ' delete clicked - deleting current invoice item');
 
       this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
-        if(success) {
-          this.childInvoiceQueueComponent.deleteInvoice(invoice);
+        if(!success) {
+          this.handleDeleteInvoiceError();
         }
+        this.handleDeleteInvoiceSuccess(invoice);
+      }, (err) => {
+        this.handleDeleteInvoiceError(err);
       });
     });
   }
@@ -90,6 +95,18 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private loadInvoiceItems() {
     this.invoiceItems$ = this.invoiceService.getInvoiceItems()
     .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))), shareReplay())
+  }
+
+  private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {
+    this.childInvoiceQueueComponent.deleteInvoice(invoice);
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this._componentName + ' delete successful on poNumber: ' + invoice.PoNumber);
+  }
+
+  private handleDeleteInvoiceError(err?) {
+    this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
+      this._componentName + ' delete failed: ' + err);
+    this.simpleDialogService.displayErrorOk('FAILEDTOSAVE_HEADER_TEXT','FAILEDTOSAVE_BODY_TEXT');
   }
 
   private setTranslations(): void {
