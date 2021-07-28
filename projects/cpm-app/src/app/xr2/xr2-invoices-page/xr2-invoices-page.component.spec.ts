@@ -8,6 +8,8 @@ import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
+import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
+import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
@@ -72,5 +74,45 @@ describe('Xr2InvoicesPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Events', () => {
+    it('should call wpf controller on back click event', () => {
+      component.onBackEvent();
+
+      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set search text filter on search filter event', () => {
+      const mockFilter = "filter";
+
+      component.onSearchTextFilterEvent(mockFilter);
+
+      expect(component.searchTextFilter).toBe(mockFilter);
+    });
+
+    it('should set selected device info on selection change event', () => {
+      const mockDeviceInfo = { DeviceId: 1 } as SelectableDeviceInfo;
+
+      component.onDeviceSelectionChanged(mockDeviceInfo);
+
+      expect(component.selectedDeviceInformation).toEqual(mockDeviceInfo);
+    });
+
+    it('should not call invoice service delete on failed yes/no dialog event', () => {
+      const mockInvoiceItem = new Xr2Stocklist(null);
+
+      component.onDisplayYesNoDialogEvent(mockInvoiceItem);
+
+      expect(invoicesService.deleteInvoice).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call invoice service delete on successful yes/no dialog event', () => {
+      const mockInvoiceItem = new Xr2Stocklist(null);
+
+      component.onDisplayYesNoDialogEvent(mockInvoiceItem);
+
+      expect(invoicesService.deleteInvoice).toHaveBeenCalledTimes(1);
+    });
   });
 });
