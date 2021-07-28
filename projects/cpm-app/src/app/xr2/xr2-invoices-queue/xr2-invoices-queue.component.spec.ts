@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { GridModule, ButtonActionModule, PopupDialogModule } from '@omnicell/webcorecomponents';
+import { GridModule, ButtonActionModule, PopupDialogModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
@@ -18,7 +18,6 @@ describe('Xr2InvoicesQueueComponent', () => {
   let fixture: ComponentFixture<Xr2InvoicesQueueComponent>;
   let translateService: Partial<TranslateService>;
 
-
   beforeEach(async(() => {
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -28,7 +27,7 @@ describe('Xr2InvoicesQueueComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ Xr2InvoicesQueueComponent, MockTranslatePipe, MockSearchPipe, MockSearchBox,
         MockColHeaderSortable, MockAppHeaderContainer, MockCpClickableIconComponent, MockCpDataLabelComponent ],
-      imports: [GridModule, ButtonActionModule, PopupDialogModule, HttpClientModule],
+      imports: [GridModule, ButtonActionModule, PopupDialogModule, HttpClientModule, SvgIconModule],
       providers: [
         { provide: TranslateService, useValue: translateService },
       ]
