@@ -19,7 +19,7 @@ import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page.component';
 
-describe('Xr2InvoicesPageComponent', () => {
+fdescribe('Xr2InvoicesPageComponent', () => {
   let component: Xr2InvoicesPageComponent;
   let fixture: ComponentFixture<Xr2InvoicesPageComponent>
   let wpfActionControllerService: Partial<WpfActionControllerService>;
@@ -105,14 +105,6 @@ describe('Xr2InvoicesPageComponent', () => {
       component.onDisplayYesNoDialogEvent(mockInvoiceItem);
 
       expect(invoicesService.deleteInvoice).toHaveBeenCalledTimes(0);
-    });
-
-    it('should call invoice service delete on successful yes/no dialog event', () => {
-      const mockInvoiceItem = new Xr2Stocklist(null);
-
-      component.onDisplayYesNoDialogEvent(mockInvoiceItem);
-
-      expect(invoicesService.deleteInvoice).toHaveBeenCalledTimes(1);
     });
   });
 });

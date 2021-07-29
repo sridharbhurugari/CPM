@@ -1,4 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
+import { componentFactoryName } from '@angular/compiler';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { GridModule, ButtonActionModule, PopupDialogModule, SvgIconModule } from '@omnicell/webcorecomponents';
@@ -94,7 +95,7 @@ describe('Xr2InvoicesQueueComponent', () => {
       });
 
       forEach(filteredItems2, (item) => {
-        expect(item.DeviceId).toBe(mockDeviceInfo1.DeviceId)
+        expect(item.DeviceId).toBe(mockDeviceInfo2.DeviceId)
       });
     });
   });
@@ -130,6 +131,23 @@ describe('Xr2InvoicesQueueComponent', () => {
       expect(filteredItems1.length).toBe(1)
       expect(filteredItems2.length).toBe(2);
       expect(filteredItems3.length).toBe(0);
+    });
+  });
+
+  describe('Queue Actions', () => {
+    it('should delete an invoice', () => {
+      const mockInvoiceItem = { PoNumber: '1' } as Xr2Stocklist;
+      component.unfilteredInvoiceItems = [
+        { PoNumber: '1'  } as Xr2Stocklist,
+        { PoNumber: '2'  } as Xr2Stocklist,
+        { PoNumber: '3'  } as Xr2Stocklist,
+      ];
+
+      component.deleteInvoice(mockInvoiceItem);
+
+      component.unfilteredInvoiceItems.forEach((item) => {
+        expect(item.PoNumber).not.toEqual(mockInvoiceItem.PoNumber);
+      })
     });
   });
 
