@@ -1,14 +1,15 @@
 <div class="cpmheaderrow header-container">
-    <oc-singleselect 
-      [tableData] = "outputDeviceDisplayList"
-      [selectedItem] = "defaultDeviceDisplayItem"
-      componentWidth="300"
-      dropdownRowsVisible="6"
-      popupDirection="AUTO"
-      [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
-      [selectText]="'DEVICE_SELECTION_TEXT' | translate"
-      [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
-      (selectionChanged)="onDeviceSelectionChanged($event)">
-      </oc-singleselect>
+  <oc-singleselect
+    [tableData] = "outputDeviceDisplayList"
+    [selectedItem] = "defaultDeviceDisplayItem"
+    componentWidth="300"
+    dropdownRowsVisible="6"
+    popupDirection="AUTO"
+    [searchPlaceholderText]="'DEVICE_SELECTION_SEARCH_DEVICES' | translate"
+    [selectText]="'DEVICE_SELECTION_TEXT' | translate"
+    [noItemsText]="'DEVICE_SELECTION_NO_DEVICES_TEXT' | translate"
+    (selectionChanged)="onDeviceSelectionChanged($event)">
+  </oc-singleselect>
+  <span class="hint-text">{{hintText}}</span>
   <oc-search-box #searchBox [placeHolderText]="'ENTER_TEXT' | translate"></oc-search-box>
  </div>

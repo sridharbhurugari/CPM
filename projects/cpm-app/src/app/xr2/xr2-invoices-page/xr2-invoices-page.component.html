@@ -1,13 +1,18 @@
 <ng-container>
   <app-xr2-device-selection-header
+  [hintText]="'SCAN_A_TRAY' | translate"
+  [showAllDevicesDropdownItem]="false"
   (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
-  (selectionChangedEvent)="onDeviceSelectionChanged($event)">>
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)">
   </app-xr2-device-selection-header>
-  <app-xr2-invoices-queue
+  <app-xr2-invoices-queue *ngIf="this.selectedDeviceInformation"
   [unfilteredInvoiceItems]="invoiceItems$ | async"
   [searchTextFilter]="searchTextFilter"
   (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)"
   ></app-xr2-invoices-queue>
+  <div class="icon-container" *ngIf="!this.selectedDeviceInformation">
+    <oc-svgicon icon="logo" theme="dark" height="300" width="300"></oc-svgicon>
+  </div>
   <ng-container class="ocactionfooter">
     <oc-footer>
       <div class="ocleftalign">
