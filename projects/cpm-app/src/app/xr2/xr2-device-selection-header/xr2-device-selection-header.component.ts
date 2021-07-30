@@ -95,7 +95,7 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
     if (defaultFound) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
       this.loadSelectedDeviceInformation(defaultFound.value);
-    } else {
+    } else if(this.showAllDevicesDropdownItem) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
       this.loadSelectedDeviceInformation('0');
     }
