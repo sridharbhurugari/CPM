@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { SingleselectDropdownModule } from '@omnicell/webcorecomponents';
-import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header.component';
+import { Xr2DeviceSelectionHeaderComponent } from './xr2-device-selection-header.component';
 import { Input, Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
@@ -26,9 +26,9 @@ class MockSearchBox {
   sendSearchData(data: string) { return of() }
 }
 
-describe('Xr2QueueGroupingHeaderComponent', () => {
-  let component: Xr2QueueGroupingHeaderComponent;
-  let fixture: ComponentFixture<Xr2QueueGroupingHeaderComponent>;
+describe('Xr2DeviceSelectionHeaderComponent', () => {
+  let component: Xr2DeviceSelectionHeaderComponent;
+  let fixture: ComponentFixture<Xr2DeviceSelectionHeaderComponent>;
   let ocapConfig: IOcapHttpConfiguration;
   let selectableDeviceInfoList: SelectableDeviceInfo[];
   let selectedDeviceInformation: SelectableDeviceInfo;
@@ -68,7 +68,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2QueueGroupingHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
+      declarations: [ Xr2DeviceSelectionHeaderComponent, MockSearchBox, MockSearchPipe, MockTranslatePipe],
       imports: [ SingleselectDropdownModule],
       providers: [
         { provide: DevicesService, useValue: devicesService},
@@ -81,7 +81,7 @@ describe('Xr2QueueGroupingHeaderComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Xr2QueueGroupingHeaderComponent);
+    fixture = TestBed.createComponent(Xr2DeviceSelectionHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

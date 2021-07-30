@@ -1,0 +1,96 @@
+<ng-container class="ocactiondetails">
+  <oc-grid #ocgrid ocgridfilter="false">
+    <ng-container class="ocgridheader">
+      <!-- 1280 px total-->
+      <ng-container class="ocgridheader">
+        <div app-col-header-sortable class="col"
+        data-width="82"
+        data-colwrap="true"
+        [columnPropertyName]="inProgressPropertyName"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col"
+        ocGridColResize
+        headerResourceKey="DESCRIPTION"
+        data-width="508"
+        data-colwrap="true"
+        [columnPropertyName]="itemNamePropertyName"
+        [currentSortPropertyName]="currentSortPropertyName"
+        (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col"
+          ocGridColResize
+          headerResourceKey="QTYRECEIVED"
+          data-width="230"
+          data-colwrap="true"
+          [columnPropertyName]="qtyReceivedPropertyName"
+          [currentSortPropertyName]="currentSortPropertyName"
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div app-col-header-sortable class="col"
+          ocGridColResize
+          headerResourceKey="QTYSTOCKED"
+          data-width="230"
+          data-colwrap="true"
+          [columnPropertyName]="qtyStockedPropertyName"
+          [currentSortPropertyName]="currentSortPropertyName"
+          (columnSelected)="columnSelected($event)">
+        </div>
+        <div class="col width-actions" ocGridColResize data-colwrap="true" data-width="230">{{'ACTIONS' | translate}}</div>
+      </ng-container>
+    </ng-container>
+    <ng-container class="ocgridbody" *ngIf="this.unfilteredInvoiceItems">
+      <div class="row"
+      *ngFor="let invoiceItem of this.filteredInvoiceItems
+      trackBy: trackByItemId">
+        <div class="first" style="align-items: center;">
+          <oc-svgicon *ngIf="invoiceItem.InProgress" icon="pending" theme="dark" height="38" width="38"></oc-svgicon>
+        </div>
+        <div class="col width-invoice" [attr.data-title]="'DESCRIPTION' | translate">
+          <span>{{invoiceItem.ItemFormattedGenericName}}</span>
+          <span>{{invoiceItem.ItemTradeName}}</span>
+          <div class="destination-details">
+            <span [ngStyle]="{'font-size': '14px'}">{{invoiceItem.ItemId}}</span>
+          </div>
+        </div>
+        <div class="col width-po-number" [attr.data-title]="'QTYRECIEVED' | translate">
+          <span class="centered-content">
+            <app-cp-data-label
+            [data]="invoiceItem.QuantityReceived"
+            [label]="'EA' | translate">
+          </app-cp-data-label>
+          </span>
+        </div>
+        <div class="col width-source" [attr.data-title]="'QTYSTOCKED' | translate">
+          <span class="centered-content">
+            <app-cp-data-label
+            [data]="invoiceItem.QuantityStocked"
+            [label]="'EA' | translate">
+          </app-cp-data-label>
+          </span>
+        </div>
+        <div class="col width-actions" [attr.data-title]="'ACTIONS' | translate">
+          <span class="split-column">
+            <app-cp-clickable-icon
+            [width]="35"
+            [height]="35"
+            [theme]="'dark'"
+            [icon]="'details'"
+            [label]="'DETAILS' | translate"
+            (clickEvent)="onDetailsClick(invoiceItem)">
+            </app-cp-clickable-icon>
+            <app-cp-clickable-icon
+            [width]="35"
+            [height]="35"
+            [theme]="'dark'"
+            [icon]="'close'"
+            [label]="'CLOSE' | translate"
+            (clickEvent)="onDeleteClick(invoiceItem)">
+            </app-cp-clickable-icon>
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </oc-grid>
+</ng-container>

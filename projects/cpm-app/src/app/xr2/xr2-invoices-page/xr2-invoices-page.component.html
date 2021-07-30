@@ -1,1 +1,21 @@
-<p>xr2-invoices-page works!</p>
+<ng-container>
+  <app-xr2-device-selection-header
+  (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)">>
+  </app-xr2-device-selection-header>
+  <app-xr2-invoices-queue
+  [unfilteredInvoiceItems]="invoiceItems$ | async"
+  [searchTextFilter]="searchTextFilter"
+  (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)"
+  ></app-xr2-invoices-queue>
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <oc-button-action [buttonText]="'BACK' | translate" (click)="onBackEvent()"></oc-button-action>
+      </div>
+      <div class="ocrightalign">
+        <oc-button-action [buttonIcon]="'print'" [buttonText]="'PRINT_XR2_INVENTORY_REPORT' | translate"></oc-button-action>
+      </div>
+    </oc-footer>
+  </ng-container>
+</ng-container>
