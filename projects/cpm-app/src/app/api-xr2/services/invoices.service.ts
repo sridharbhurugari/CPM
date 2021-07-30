@@ -26,7 +26,8 @@ export class InvoicesService {
   deleteInvoice(invoice: IXr2Stocklist): Observable<boolean> {
     const url = this.ocapUrlBuilderService.buildUrl('/api/xr2stocklist/delete');
     const request = {
-      PoNumber: invoice.PoNumber
+      ItemId: invoice.ItemId,
+      DeviceId: invoice.DeviceId
     }
     return this.httpClient.post<boolean>(url, request, {
       headers: this.ocapHttpHeadersService.getHeaders()

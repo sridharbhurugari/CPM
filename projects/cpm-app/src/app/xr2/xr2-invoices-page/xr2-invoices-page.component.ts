@@ -18,7 +18,9 @@ import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info'
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 
 @Component({
@@ -28,7 +30,7 @@ import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-qu
 })
 export class Xr2InvoicesPageComponent implements OnInit {
 
-  @ViewChild(Xr2InvoicesQueueComponent, null) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
+  @ViewChild(Xr2InvoicesQueueComponent, {static: false}) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
 
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
@@ -56,8 +58,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private simpleDialogService: SimpleDialogService,
     private barcodeScanService: CpBarcodeScanService,
     private barcodeDataService: BarcodeDataService,
-    private xr2RestockTrayService : Xr2RestockTrayService,
-  ) { }
+    private xr2RestockTrayService: Xr2RestockTrayService,
+    private windowService: WindowService,
+    private wpfInteropService: WpfInteropService,
+  ) { this.setupDataRefresh(); }
 
   ngOnInit() {
     this.hookupEventHandlers();
@@ -75,7 +79,13 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDeviceSelectionChanged($event): void {
     this.selectedDeviceInformation = $event;
-    this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+    if(!this.childInvoiceQueueComponent) {
+      setTimeout(() => {
+        this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+      }, 0);
+    } else {
+      this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+    }
   }
 
   onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
@@ -277,5 +287,15 @@ export class Xr2InvoicesPageComponent implements OnInit {
     if (this.isValidSubscription(subscription)) {
       subscription.unsubscribe();
     }
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+      let hash = this.windowService.getHash();
+      this.wpfInteropService.wpfViewModelActivated
+          .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
+          .subscribe(() => {
+              this.ngOnInit();
+          });
   }
 }
