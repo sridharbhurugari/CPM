@@ -38,4 +38,11 @@ export class PrepackVerificationService {
     });
     return ret;
   }
+
+  approve(prepackVerificationQueueDetail: IPrepackVerificationQueueDetail) {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/VerifyPrepackQueueItem/Approve');
+    var headers = this.ocapHttpHeadersService.getHeaders();
+    const ret = this.httpClient.post(url, prepackVerificationQueueDetail, { headers: headers });
+    return ret;
+  }
 }

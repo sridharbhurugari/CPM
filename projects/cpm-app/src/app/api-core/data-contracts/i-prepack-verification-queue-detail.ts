@@ -1,4 +1,5 @@
 export interface IPrepackVerificationQueueDetail {
+  PrepackVerificationQueueId: number;
   ItemId: string;
   DeviceId: number;
   ManufacturerName: string;
