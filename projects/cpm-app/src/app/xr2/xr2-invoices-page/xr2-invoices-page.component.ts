@@ -22,7 +22,7 @@ import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-qu
 })
 export class Xr2InvoicesPageComponent implements OnInit {
 
-  @ViewChild(Xr2InvoicesQueueComponent, null) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
+  @ViewChild(Xr2InvoicesQueueComponent, {static: false}) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
 
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
@@ -63,7 +63,13 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDeviceSelectionChanged($event): void {
     this.selectedDeviceInformation = $event;
-    this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+    if(!this.childInvoiceQueueComponent) {
+      setTimeout(() => {
+        this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+      }, 0);
+    } else {
+      this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+    }
   }
 
   onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
