@@ -107,7 +107,9 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   }
 
   deleteInvoice(invoice: IXr2Stocklist): void {
-    this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => item.PoNumber !== invoice.PoNumber);
+    this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => {
+     return (item.ItemId !== invoice.ItemId && item.DeviceId !== invoice.DeviceId);
+    });
   }
 
   /* istanbul ignore next */
