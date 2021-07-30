@@ -90,17 +90,21 @@ export class Xr2InvoicesQueueComponent implements OnInit {
     return _.orderBy(invoiceItems, x => x[this.currentSortPropertyName], sortDirection);
   }
 
-  convertDate(date: Date): string {
-    const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
-    return orderDate;
-  }
-
   onDetailsClick(invoiceItem: IXr2Stocklist): void {
     this.detailsClickEvent.emit(invoiceItem);
   }
 
   onDeleteClick(invoiceItem: IXr2Stocklist): void {
     this.displayYesNoDialogEvent.emit(invoiceItem);
+  }
+
+  changeDeviceSelection(selectedDevice: SelectableDeviceInfo): void {
+    this.selectedDeviceInformation = selectedDevice;
+    this.filteredInvoiceItems = this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
+  }
+
+  deleteInvoice(invoice: IXr2Stocklist): void {
+    this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => item.PoNumber !== invoice.PoNumber);
   }
 
   /* istanbul ignore next */
@@ -111,14 +115,10 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
     return invoiceItem.PoNumber;
   }
-
-  changeDeviceSelection(selectedDevice: SelectableDeviceInfo): void {
-    this.selectedDeviceInformation = selectedDevice;
-    this.filteredInvoiceItems = this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
-  }
-
-  deleteInvoice(invoice: IXr2Stocklist): void {
-    this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => item.PoNumber !== invoice.PoNumber);
+  /* istanbul ignore next */
+  convertDate(date: Date): string {
+    const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
+    return orderDate;
   }
 
   private applyQueueFilters(): void {

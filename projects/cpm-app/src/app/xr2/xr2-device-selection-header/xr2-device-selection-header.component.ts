@@ -20,6 +20,8 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
 
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
+  @Input() hintText: string;
+  @Input() showAllDevicesDropdownItem: boolean = true;
 
   private _selectedDeviceInformation: SelectableDeviceInfo;
 
@@ -36,7 +38,6 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
     return this._selectedDeviceInformation;
   }
 
-
   @ViewChild('searchBox', {
      static: true
    }) searchElement: SearchBoxComponent;
@@ -47,7 +48,7 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
               private translateService: TranslateService) { }
 
   ngOnInit() {
-      this.getAllActiveXr2Devices();
+    this.getAllActiveXr2Devices();
   }
 
   async getAllActiveXr2Devices() {
@@ -64,7 +65,9 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
       );
       newList.push(defaultFound);
     } else {
-      this.getAllDevicesInfo();
+      if(this.showAllDevicesDropdownItem) {
+        this.getAllDevicesInfo();
+      }
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
           selectableDeviceInfo.Description,
@@ -120,6 +123,23 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
     this.configureSearchHandler();
   }
 
+  getAllDevicesInfo() {
+    let translatedLabel = '';
+    this.translateService.get('XR2_ALL_DEVICES').subscribe((res: string) => {
+    translatedLabel = res;
+    });
+    let allDevicesInfo: SelectableDeviceInfo;
+    allDevicesInfo = {
+      DeviceId: 0,
+      Description: translatedLabel,
+      DefaultOwnerName: '',
+      DeviceTypeId: '',
+      CurrentLeaseHolder: undefined,
+      IsActive: true
+    };
+    this.deviceInformationList.push(allDevicesInfo);
+  }
+
   private configureSearchHandler() {
     this.searchElement.searchOutput$
       .pipe(
@@ -149,22 +169,5 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
     return this.outputDeviceDisplayList.find(
       (x) => x.value === deviceId
     );
-  }
-
- getAllDevicesInfo() {
-    let translatedLabel = '';
-    this.translateService.get('XR2_ALL_DEVICES').subscribe((res: string) => {
-    translatedLabel = res;
-    });
-    let allDevicesInfo: SelectableDeviceInfo;
-    allDevicesInfo = {
-      DeviceId: 0,
-      Description: translatedLabel,
-      DefaultOwnerName: '',
-      DeviceTypeId: '',
-      CurrentLeaseHolder: undefined,
-      IsActive: true
-    };
-    this.deviceInformationList.push(allDevicesInfo);
   }
 }

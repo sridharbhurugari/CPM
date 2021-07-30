@@ -17,7 +17,7 @@ import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-labe
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { DevicesService } from '../../api-core/services/devices.service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
-import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock-xr2-queue-grouping-header-component.spec';
+import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock-xr2-device-selection-header-component.spec';
 import { PicklistQueueGrouped } from '../model/picklist-queue-grouped';
 import { IPicklistQueueGroupedNonstandardJson } from '../../api-xr2/events/i-picklist-queue-grouped-nonstandard-json';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';

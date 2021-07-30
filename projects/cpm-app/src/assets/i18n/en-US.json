@@ -269,6 +269,7 @@
   "INVALID_NOEXCEPTIONS_SCAN_DESC": "Tray Scanned has no exceptions.",
   "INVOICE_DELETE_HEADER": "Delete Invoice",
   "INVOICE_DELETE_BODY": "Are you sure you want to delete the invoice?",
+  "SCAN_A_TRAY": "Scan a Tray Barcode to begin",
   "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
   "SCAN_BIN_BARCODE": "The correct bin bar code must be scanned.",
   "SCAN_PICKING_LABEL_FIRST_MESSAGE": "The associated picking label must be scanned before verifying an item.",
