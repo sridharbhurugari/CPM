@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject } from 'rxjs';
-import { flatMap, map, shareReplay } from 'rxjs/operators';
+import { filter, flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { LogService } from '../../api-core/services/log-service';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
@@ -12,7 +12,9 @@ import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 
 @Component({
@@ -45,8 +47,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private logService: LogService,
     private dialogService: PopupDialogService,
     private translateService: TranslateService,
-    private simpleDialogService: SimpleDialogService
-  ) { }
+    private simpleDialogService: SimpleDialogService,
+    private windowService: WindowService,
+    private wpfInteropService: WpfInteropService
+  ) {
+    this.setupDataRefresh();
+  }
 
   ngOnInit() {
     this.setTranslations();
@@ -139,5 +145,15 @@ export class Xr2InvoicesPageComponent implements OnInit {
       const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
       return merge(primaryClick$, secondaryClick$);
     }));
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.ngOnInit();
+      });
   }
 }
