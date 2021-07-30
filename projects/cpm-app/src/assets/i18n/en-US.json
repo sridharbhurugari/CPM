@@ -263,6 +263,7 @@
   "XR2_QUEUE_RELEASE_PRIORITY_DIALOG_MESSAGE": "This will release ALL orders for the priority.<br /><br />Do you want to release?",
   "DEVICE_SELECTION_TEXT": "Select device",
   "DEVICE_SELECTION_SCANNING_MESSAGE": "Select a device to enable scanning.",
+  "DEVICE_SELECTION_TRAY_SCANNING_MESSAGE": "Restock Tray is not editable as it was built under a different device than what is currently selected.",
   "DEVICE_SELECTION_NO_DEVICES_TEXT": "No devices",
   "DEVICE_SELECTION_SEARCH_DEVICES": "Find device",
   "INVALID_SCAN_BARCODE_HEADER": "Bar Code Not Recognized",

@@ -130,31 +130,60 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private getRestockTrayInfo(trayId: string){
       this.xr2RestockTrayService.getRestockTrayById(trayId).subscribe(restockTray =>{
         if(!restockTray){
-          this.createNewRestockTray(trayId);
-        }
-        if(restockTray.IsReturn)
-        {
-          this.clearDisplayedDialog();
-          this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE").subscribe(x=>{
-            this.displayedDialog = x;
-          })
-          return;
+          this.createRestockTray(trayId);
         }
         
-
+        this.editRestockTray(restockTray);       
       });
     }
 
-    private createNewRestockTray(trayId: string){
+    private editRestockTray(restockTray: IRestockTray){
+      if(this.validScannedTray(restockTray)){
+        restockTray.InvoiceOriginScreen = true;
+        this.navigateEditTray(restockTray);
+      }
+    }
+
+    private validScannedTray(restockTray: IRestockTray): boolean{
+      if(restockTray.IsReturn)
+      {
+        this.clearDisplayedDialog();
+        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE").subscribe(x=>{
+          this.displayedDialog = x;
+        });
+        return false;;
+      }
+
+      if(restockTray.DeviceId != this.selectedDeviceInformation.DeviceId){
+        this.clearDisplayedDialog();
+        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "DEVICE_SELECTION_TRAY_SCANNING_MESSAGE").subscribe(x=>{
+          this.displayedDialog = x;
+        });
+        return false;
+      }
+
+      return true;
+    }
+
+    private createRestockTray(trayId: string){
       let RestockTray =  {
         DeviceId: this.selectedDeviceInformation.DeviceId,
         IsReturn: false,
         RestockTrayStatus: 0,
         TrayId: trayId,
         IsInvoiceTray: true,
+        InvoiceOriginScreen: true,
       } as IRestockTray;
   
-      this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2AddTrayPath, { RestockTray });
+      this.navigateCreateTray(RestockTray);
+    }
+
+    private navigateCreateTray(RestockTray: IRestockTray){
+      this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2AddTrayPath, RestockTray);
+    }
+
+    private navigateEditTray(RestockTray: IRestockTray){
+      this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2EditTrayPath, RestockTray);
     }
 
     /* istanbul ignore next */
