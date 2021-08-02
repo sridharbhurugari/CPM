@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { Console } from 'console';
 import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -140,17 +141,39 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private getRestockTrayInfo(trayId: string){
       this.xr2RestockTrayService.getRestockTrayById(trayId).subscribe(restockTray =>{
         if(!restockTray){
+          console.log('Adding New Tray, ', restockTray);
           this.createRestockTray(trayId);
+          return;
         }
-        
+        console.log('Editing Existing Tray, ', restockTray);
         this.editRestockTray(restockTray);       
       });
     }
 
     private editRestockTray(restockTray: IRestockTray){
       if(this.validScannedTray(restockTray)){
-        restockTray.InvoiceOriginScreen = true;
-        this.navigateEditTray(restockTray);
+
+        let newRestockTray = {
+          RestockTrayId: restockTray.RestockTrayId,
+          DeviceId: restockTray.DeviceId,
+          DeviceDescription: restockTray.DeviceDescription,
+          TrayId: restockTray.TrayId,
+          TrayTypeId: restockTray.TrayTypeId,
+          IsReturn: restockTray.IsReturn,
+          TrayExpDate: restockTray.TrayExpDate,
+          TrayDescription: restockTray.TrayDescription,
+          RestockTrayStatus: restockTray.RestockTrayStatus,
+          CreatedDateTime: restockTray.CreatedDateTime,
+          LastUpdatedDateTime: restockTray.LastUpdatedDateTime,
+          CompletedDateTime: restockTray.CompletedDateTime,
+          CorrelationId: restockTray.CorrelationId,
+          MultiDoseEnabled: restockTray.MultiDoseEnabled,
+          UserId: restockTray.UserId,
+          IsStockInternal: restockTray.IsStockInternal,
+          IsInvoiceTray: true,
+          InvoiceOriginScreen: true,
+        } as IRestockTray;
+        this.navigateEditTray(newRestockTray);
       }
     }
 
@@ -189,10 +212,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
     }
 
     private navigateCreateTray(RestockTray: IRestockTray){
+      console.log('Navigate Using New restockTray: ', RestockTray);
       this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2AddTrayPath, RestockTray);
     }
 
     private navigateEditTray(RestockTray: IRestockTray){
+      console.log('Navigate Using restockTray: ', RestockTray);
       this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2EditTrayPath, RestockTray);
     }
 
