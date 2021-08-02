@@ -9,6 +9,7 @@ import { LogService } from '../../api-core/services/log-service';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { groupAndSum } from '../../shared/functions/groupAndSum';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
@@ -40,6 +41,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
+  private _groupingKeyNames = ["ItemId", "DeviceId"];
+  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -106,7 +109,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private loadInvoiceItems() {
     this.invoiceItems$ = this.invoiceService.getInvoiceItems()
-    .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))), shareReplay())
+    .pipe(map(x => {
+      const items = x.map(invoiceItem => new Xr2Stocklist(invoiceItem))
+      return groupAndSum(items, this._groupingKeyNames, this._sumKeyNames);
+    }), shareReplay())
   }
 
   private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {

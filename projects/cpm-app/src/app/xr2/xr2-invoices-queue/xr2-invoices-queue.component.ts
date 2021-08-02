@@ -25,7 +25,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
-    this._unfilteredInvoiceItems = groupAndSum(value, this._groupingKeyNames, this._sumKeyNames);
+    this._unfilteredInvoiceItems = value;
     this.applyQueueFilters();
   }
   get unfilteredInvoiceItems(): Xr2Stocklist[] {
@@ -75,8 +75,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   private _filteredInvoiceItems: Xr2Stocklist[];
   private  _searchTextFilter: string;
   private _selectedDeviceInformation: SelectableDeviceInfo;
-  private _groupingKeyNames = ["ItemId", "DeviceId"];
-  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
 
   constructor(private translateService: TranslateService
   ) { }
@@ -110,7 +108,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   deleteInvoice(invoice: IXr2Stocklist): void {
     this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => {
-     return (item.ItemId !== invoice.ItemId && item.DeviceId !== invoice.DeviceId);
+     return (item.ItemId !== invoice.ItemId || item.DeviceId !== invoice.DeviceId);
     });
   }
 
