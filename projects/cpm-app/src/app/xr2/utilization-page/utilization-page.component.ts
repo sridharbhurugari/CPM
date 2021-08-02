@@ -37,6 +37,7 @@ import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog
 import { TranslateService } from "@ngx-translate/core";
 import { PdfPrintService } from "../../api-core/services/pdf-print-service";
 import { DevicesService } from "../../api-core/services/devices.service";
+import { Console } from "console";
 
 @Component({
   selector: "app-utilization-page",
@@ -54,6 +55,7 @@ export class UtilizationPageComponent implements OnInit {
   ngUnsubscribe = new Subject();
   lastErrorMessage: string;
   eventDateTime: Date;
+  isIconOver: boolean = false;
 
   expiringData: ExpiringMedicationInfo[];
   expiredLoaded: boolean = false;
@@ -297,6 +299,7 @@ export class UtilizationPageComponent implements OnInit {
       return;
     }
     this.xr2StorageCapacityDisplays = event as Xr2StorageCapacityDisplay[];
+    console.log(this.xr2StorageCapacityDisplays[1].IsOverStock);
     this.resizeGrid();
     this.screenState = UtilizationPageComponent.ListState.Display;
   }
@@ -347,6 +350,11 @@ export class UtilizationPageComponent implements OnInit {
       return;
     }
 
+    if(this.isIconOver){
+      this.isIconOver = false;
+      return;
+    }
+
     const navigationExtras: NavigationExtras = {
       queryParams: {
         DeviceId: rowClicked.DeviceId,
@@ -357,6 +365,10 @@ export class UtilizationPageComponent implements OnInit {
       fragment: "anchor",
     };
     this.router.navigate(["xr2/utilization/details"], navigationExtras);
+  }
+
+  public toastIconClicked(){
+   this.isIconOver = true;
   }
 
   /*Xr2 Inventory Report*/

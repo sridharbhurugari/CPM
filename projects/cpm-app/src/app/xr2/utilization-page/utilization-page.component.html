@@ -61,9 +61,23 @@
     <ng-container class="ocgridbody">
       <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDisplays"
         (click)=NavigateToPocketDetailsPage(xr2StorageCapacityDisplay)>
-        <div class="first" style="align-items: center;"></div>
-        <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_TYPE_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
+        <div style="flex-direction: row; justify-content: space-between; align-items: center;" class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_TYPE_HEADER' | translate">
+          <div>
+            {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
+          </div>
+          <div *ngIf="xr2StorageCapacityDisplay.IsOverStock">
+            <a (click)="toastIconClicked()">
+              <div style="padding-right: 80px; padding-bottom: 40px;">       
+                <ng-container part="icon" *ngIf="false">
+                  <app-validation-icon *ngIf="false"
+                    iconString="warning" toastTileResourceKey="" toastMsgResourceKey="TRAY_TYPE_OVERSTOCK_MESSAGE"
+                    toastType="warn" [iconWidth]="30"
+                    [iconHeight]="30" iconTheme="warning">
+                  </app-validation-icon>
+                </ng-container> 
+              </div>
+            </a>
+          </div>
         </div>
         <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PERCENTAGE_USED_HEADER' | translate">
           {{xr2StorageCapacityDisplay.PercentageUsed}}%
