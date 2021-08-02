@@ -1,15 +1,19 @@
 import { HttpClientModule } from '@angular/common/http';
+import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { ButtonActionModule, FooterModule, GridModule, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, GridModule, PopupDialogComponent, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { of, Subject } from 'rxjs';
+import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
+import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
+import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
 import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
@@ -21,7 +25,7 @@ import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page.component';
 
-fdescribe('Xr2InvoicesPageComponent', () => {
+describe('Xr2InvoicesPageComponent', () => {
   let component: Xr2InvoicesPageComponent;
   let fixture: ComponentFixture<Xr2InvoicesPageComponent>
   let wpfActionControllerService: Partial<WpfActionControllerService>;
@@ -30,7 +34,11 @@ fdescribe('Xr2InvoicesPageComponent', () => {
   let dialogService: Partial<PopupDialogService>;
   let translateService: Partial<TranslateService>;
   let simpleDialogService: Partial<SimpleDialogService>;
-
+  let barcodeScanService: Partial<CpBarcodeScanService>;
+  let barcodeDataService: Partial<BarcodeDataService>;
+  let xr2RestockTrayService: Partial<Xr2RestockTrayService>;
+  let popupDialogComponent: Partial<PopupDialogComponent>;
+  
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: jasmine.createSpy('ExecuteBackAction') };
 
@@ -41,7 +49,14 @@ fdescribe('Xr2InvoicesPageComponent', () => {
 
     logService = { logMessageAsync: jasmine.createSpy('logMessageAsync') };
 
-    dialogService = { showOnce: jasmine.createSpy('showOnce') };
+    // dialogService = { showOnce: jasmine.createSpy('showOnce') };
+
+    popupDialogComponent = { 
+      didClickCloseButton: new EventEmitter(), 
+      didClickPrimaryButton: new EventEmitter(),
+      onCloseClicked: jasmine.createSpy('onCloseClicked'),
+    };
+    dialogService = { showOnce: jasmine.createSpy('showOnce').and.returnValue(popupDialogComponent) };
 
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -63,6 +78,9 @@ fdescribe('Xr2InvoicesPageComponent', () => {
         { provide: PopupDialogService, useValue: dialogService },
         { provide: TranslateService, useValue: translateService },
         { provide: SimpleDialogService, useValue: simpleDialogService },
+        { provide: CpBarcodeScanService, useValue: barcodeScanService },
+        { provide: BarcodeDataService, useValue: barcodeDataService },
+        { provide: Xr2RestockTrayService, useValue: xr2RestockTrayService },
         { provide: WindowService, useValue: { getHash: () => '' }},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }}
       ]
