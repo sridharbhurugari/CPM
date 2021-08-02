@@ -136,17 +136,18 @@ describe('Xr2InvoicesQueueComponent', () => {
 
   describe('Queue Actions', () => {
     it('should delete an invoice', () => {
-      const mockInvoiceItem = { PoNumber: '1' } as Xr2Stocklist;
+      const mockInvoiceItem = { DeviceId: 1, ItemId: '1' } as Xr2Stocklist;
       component.unfilteredInvoiceItems = [
-        { PoNumber: '1'  } as Xr2Stocklist,
-        { PoNumber: '2'  } as Xr2Stocklist,
-        { PoNumber: '3'  } as Xr2Stocklist,
+        { DeviceId: 1, ItemId: '1' } as Xr2Stocklist,
+        { DeviceId: 2, ItemId: '2' } as Xr2Stocklist,
+        { DeviceId: 3, ItemId: '3' } as Xr2Stocklist,
       ];
 
       component.deleteInvoice(mockInvoiceItem);
 
       component.unfilteredInvoiceItems.forEach((item) => {
-        expect(item.PoNumber).not.toEqual(mockInvoiceItem.PoNumber);
+        expect(item.ItemId).not.toEqual(mockInvoiceItem.ItemId);
+        expect(item.DeviceId).not.toEqual(mockInvoiceItem.DeviceId);
       })
     });
   });

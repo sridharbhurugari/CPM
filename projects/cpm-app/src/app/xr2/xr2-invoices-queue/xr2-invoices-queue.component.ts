@@ -25,7 +25,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
-    this._unfilteredInvoiceItems = groupAndSum(value, this._groupingKeyNames, this._sumKeyNames);
+    this._unfilteredInvoiceItems = value;
     this.applyQueueFilters();
   }
   get unfilteredInvoiceItems(): Xr2Stocklist[] {
@@ -60,7 +60,9 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
   searchPipe: SearchPipe = new SearchPipe();
-  searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId")];
+  searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemTradeName"),
+  nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId"), nameof<Xr2Stocklist>("QuantityReceived"),
+  nameof<Xr2Stocklist>("QuantityStocked")];
   currentSortPropertyName: string;
   columnSortDirection: string;
 
@@ -73,8 +75,6 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   private _filteredInvoiceItems: Xr2Stocklist[];
   private  _searchTextFilter: string;
   private _selectedDeviceInformation: SelectableDeviceInfo;
-  private _groupingKeyNames = ["ItemId", "DeviceId"];
-  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
 
   constructor(private translateService: TranslateService
   ) { }
@@ -108,7 +108,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   deleteInvoice(invoice: IXr2Stocklist): void {
     this.unfilteredInvoiceItems = this.unfilteredInvoiceItems.filter((item) => {
-     return (item.ItemId !== invoice.ItemId && item.DeviceId !== invoice.DeviceId);
+     return (item.ItemId !== invoice.ItemId || item.DeviceId !== invoice.DeviceId);
     });
   }
 

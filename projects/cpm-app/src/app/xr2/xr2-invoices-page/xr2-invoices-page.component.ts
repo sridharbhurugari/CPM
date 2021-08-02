@@ -15,6 +15,7 @@ import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.s
 import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { groupAndSum } from '../../shared/functions/groupAndSum';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
@@ -47,6 +48,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
+  private _groupingKeyNames = ["ItemId", "DeviceId"];
+  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
   private barcodeScannedSubscription: Subscription;
   displayedDialog: PopupDialogComponent;
 
@@ -240,7 +243,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private loadInvoiceItems() {
     this.invoiceItems$ = this.invoiceService.getInvoiceItems()
-    .pipe(map(x => x.map(invoiceItem => new Xr2Stocklist(invoiceItem))), shareReplay())
+    .pipe(map(x => {
+      const items = x.map(invoiceItem => new Xr2Stocklist(invoiceItem))
+      return groupAndSum(items, this._groupingKeyNames, this._sumKeyNames);
+    }), shareReplay())
   }
 
   private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {

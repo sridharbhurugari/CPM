@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonActionModule, FooterModule, GridModule, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { LogService } from '../../api-core/services/log-service';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
@@ -11,7 +11,9 @@ import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
+import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sortable.spec';
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
@@ -60,7 +62,9 @@ fdescribe('Xr2InvoicesPageComponent', () => {
         { provide: LogService, useValue: logService },
         { provide: PopupDialogService, useValue: dialogService },
         { provide: TranslateService, useValue: translateService },
-        { provide: SimpleDialogService, useValue: simpleDialogService }
+        { provide: SimpleDialogService, useValue: simpleDialogService },
+        { provide: WindowService, useValue: { getHash: () => '' }},
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }}
       ]
     })
     .compileComponents();
