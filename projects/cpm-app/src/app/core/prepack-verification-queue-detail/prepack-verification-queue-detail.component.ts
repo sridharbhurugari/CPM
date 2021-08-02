@@ -66,6 +66,15 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
       });
   }
 
+  delete() {
+    this.prepackVerificationService.delete(this.prepackVerificationQueueDetail).subscribe(
+      success => {
+        this.router.navigate(["core/prepackVerification"]);
+      }, error => {
+        this.displayFailedToApproveError();
+      });
+  }
+
   displayFailedToApproveError() {
     this.simpleDialogService.displayErrorOk("PRINTFAILED_HEADER_TEXT", "FAILEDTOSAVE_BODY_TEXT");
   }

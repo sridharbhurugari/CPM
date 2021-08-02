@@ -45,4 +45,11 @@ export class PrepackVerificationService {
     const ret = this.httpClient.post(url, prepackVerificationQueueDetail, { headers: headers });
     return ret;
   }
+
+  delete(prepackVerificationQueueDetail: IPrepackVerificationQueueDetail) {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/VerifyPrepackQueueItem/Delete');
+    var headers = this.ocapHttpHeadersService.getHeaders();
+    const ret = this.httpClient.post(url, prepackVerificationQueueDetail, {headers: headers });
+    return ret;
+  }
 }
