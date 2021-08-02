@@ -81,11 +81,11 @@ describe('Xr2InvoicesPageComponent', () => {
   });
 
   describe('Events', () => {
-    it('should call wpf controller on back click event', () => {
-      component.onBackEvent();
+    // it('should call wpf controller on back click event', () => {
+    //   component.onBackEvent();
 
-      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
-    });
+    //   expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
+    // });
 
     it('should set search text filter on search filter event', () => {
       const mockFilter = "filter";
