@@ -21,7 +21,7 @@ import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page.component';
 
-describe('Xr2InvoicesPageComponent', () => {
+fdescribe('Xr2InvoicesPageComponent', () => {
   let component: Xr2InvoicesPageComponent;
   let fixture: ComponentFixture<Xr2InvoicesPageComponent>
   let wpfActionControllerService: Partial<WpfActionControllerService>;
@@ -76,16 +76,16 @@ describe('Xr2InvoicesPageComponent', () => {
     fixture.detectChanges();
   });
 
-  fit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   describe('Events', () => {
-    // it('should call wpf controller on back click event', () => {
-    //   component.onBackEvent();
+    it('should call wpf controller on back click event', () => {
+      component.onBackEvent();
 
-    //   expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
-    // });
+      expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
+    });
 
     it('should set search text filter on search filter event', () => {
       const mockFilter = "filter";
