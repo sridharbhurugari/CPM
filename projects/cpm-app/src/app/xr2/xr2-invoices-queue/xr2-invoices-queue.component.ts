@@ -60,7 +60,9 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   @ViewChild('ocgrid', { static: false }) ocGrid: GridComponent;
 
   searchPipe: SearchPipe = new SearchPipe();
-  searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId")];
+  searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemTradeName"),
+  nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId"), nameof<Xr2Stocklist>("QuantityReceived"),
+  nameof<Xr2Stocklist>("QuantityStocked")];
   currentSortPropertyName: string;
   columnSortDirection: string;
 
