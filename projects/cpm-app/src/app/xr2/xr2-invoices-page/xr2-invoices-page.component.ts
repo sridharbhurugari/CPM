@@ -120,7 +120,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   }
 
   processScannedBarcodeData(result: IBarcodeData): void {
-    //Clear Popup For Invalid Tray Barcode 
+    this.barcodeScanService.reset();
     this.clearDisplayedDialog();
     console.log("Barcode Scanned Data: ", result);
 
@@ -141,44 +141,57 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.getRestockTrayInfo(result.BarCodeScanned)
   }
 
-    private getRestockTrayInfo(trayId: string){
-      this.xr2RestockTrayService.getRestockTrayById(trayId).subscribe(restockTray =>{
-        if(!restockTray){
-          console.log('Adding New Tray, ', restockTray);
-          this.createRestockTray(trayId);
-          return;
-        }
-        console.log('Editing Existing Tray, ', restockTray);
-        this.editRestockTray(restockTray);       
-      });
-    }
-
-    private editRestockTray(restockTray: IRestockTray){
-      if(this.validScannedTray(restockTray)){
-
-        let newRestockTray = {
-          RestockTrayId: restockTray.RestockTrayId,
-          DeviceId: restockTray.DeviceId,
-          DeviceDescription: restockTray.DeviceDescription,
-          TrayId: restockTray.TrayId,
-          TrayTypeId: restockTray.TrayTypeId,
-          IsReturn: restockTray.IsReturn,
-          TrayExpDate: restockTray.TrayExpDate,
-          TrayDescription: restockTray.TrayDescription,
-          RestockTrayStatus: restockTray.RestockTrayStatus,
-          CreatedDateTime: restockTray.CreatedDateTime,
-          LastUpdatedDateTime: restockTray.LastUpdatedDateTime,
-          CompletedDateTime: restockTray.CompletedDateTime,
-          CorrelationId: restockTray.CorrelationId,
-          MultiDoseEnabled: restockTray.MultiDoseEnabled,
-          UserId: restockTray.UserId,
-          IsStockInternal: restockTray.IsStockInternal,
-          IsInvoiceTray: true,
-          InvoiceOriginScreen: true,
-        } as IRestockTray;
-        this.navigateEditTray(newRestockTray);
+  getRestockTrayInfo(trayId: string){
+    this.xr2RestockTrayService.getRestockTrayById(trayId).subscribe(restockTray =>{
+      if(!restockTray){
+        console.log('Adding New Tray, ', restockTray);
+        this.createRestockTray(trayId);
+        return;
       }
+      console.log('Editing Existing Tray, ', restockTray);
+      this.editRestockTray(restockTray);       
+    });
+  }
+
+  editRestockTray(restockTray: IRestockTray){
+    if(this.validScannedTray(restockTray)){
+
+      let newRestockTray = {
+        RestockTrayId: restockTray.RestockTrayId,
+        DeviceId: restockTray.DeviceId,
+        DeviceDescription: restockTray.DeviceDescription,
+        TrayId: restockTray.TrayId,
+        TrayTypeId: restockTray.TrayTypeId,
+        IsReturn: restockTray.IsReturn,
+        TrayExpDate: restockTray.TrayExpDate,
+        TrayDescription: restockTray.TrayDescription,
+        RestockTrayStatus: restockTray.RestockTrayStatus,
+        CreatedDateTime: restockTray.CreatedDateTime,
+        LastUpdatedDateTime: restockTray.LastUpdatedDateTime,
+        CompletedDateTime: restockTray.CompletedDateTime,
+        CorrelationId: restockTray.CorrelationId,
+        MultiDoseEnabled: restockTray.MultiDoseEnabled,
+        UserId: restockTray.UserId,
+        IsStockInternal: restockTray.IsStockInternal,
+        IsInvoiceTray: true,
+        InvoiceOriginScreen: true,
+      } as IRestockTray;
+      this.navigateEditTray(newRestockTray);
     }
+  }
+
+  createRestockTray(trayId: string){
+    let RestockTray =  {
+      DeviceId: this.selectedDeviceInformation.DeviceId,
+      IsReturn: false,
+      RestockTrayStatus: 0,
+      TrayId: trayId,
+      IsInvoiceTray: true,
+      InvoiceOriginScreen: true,
+    } as IRestockTray;
+
+    this.navigateCreateTray(RestockTray);
+  }
 
     private validScannedTray(restockTray: IRestockTray): boolean{
       if(restockTray.IsReturn)
@@ -199,19 +212,6 @@ export class Xr2InvoicesPageComponent implements OnInit {
       }
 
       return true;
-    }
-
-    private createRestockTray(trayId: string){
-      let RestockTray =  {
-        DeviceId: this.selectedDeviceInformation.DeviceId,
-        IsReturn: false,
-        RestockTrayStatus: 0,
-        TrayId: trayId,
-        IsInvoiceTray: true,
-        InvoiceOriginScreen: true,
-      } as IRestockTray;
-  
-      this.navigateCreateTray(RestockTray);
     }
 
     private navigateCreateTray(RestockTray: IRestockTray){

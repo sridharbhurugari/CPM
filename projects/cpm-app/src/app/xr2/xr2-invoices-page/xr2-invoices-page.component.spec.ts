@@ -1,13 +1,18 @@
+import { AnimationDriver } from '@angular/animations/browser';
 import { HttpClientModule } from '@angular/common/http';
 import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonActionModule, FooterModule, GridModule, PopupDialogComponent, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
+import { Guid } from 'guid-typescript';
 import { of, Subject } from 'rxjs';
+import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
+import { IRestockTray } from '../../api-xr2/data-contracts/i-restock-tray';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
+import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
@@ -38,9 +43,44 @@ describe('Xr2InvoicesPageComponent', () => {
   let barcodeDataService: Partial<BarcodeDataService>;
   let xr2RestockTrayService: Partial<Xr2RestockTrayService>;
   let popupDialogComponent: Partial<PopupDialogComponent>;
-  
+  let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: 'C00001', IsTrayBarcode: true} as IBarcodeData;
+  let restockTray = null;
+
+  let newRestockTray = {
+    RestockTrayId: 1,
+    DeviceId: 1,
+    DeviceDescription: '',
+    TrayId: 'C00001',
+    TrayTypeId: 0,
+    IsReturn: false,
+    TrayExpDate: new Date(),
+    TrayDescription: '',
+    RestockTrayStatus: 0,
+    CreatedDateTime: new Date(),
+    LastUpdatedDateTime: new Date(),
+    CompletedDateTime: new Date(),
+    CorrelationId: Guid.createEmpty(),
+    MultiDoseEnabled: false,
+    UserId: '10',
+    IsStockInternal: false,
+    IsInvoiceTray: false,
+    InvoiceOriginScreen: false,
+  } as IRestockTray;
+
+  barcodeScanService = {
+    reset: jasmine.createSpy('reset'),
+    BarcodeScannedSubject: new Subject(),
+  };
+
+  barcodeDataService ={
+    getData: jasmine.createSpy('getData').and.returnValue(() => of (barcodeData))
+  }
+
   beforeEach(async(() => {
-    wpfActionControllerService = { ExecuteBackAction: jasmine.createSpy('ExecuteBackAction') };
+    wpfActionControllerService = { 
+      ExecuteBackAction: jasmine.createSpy('ExecuteBackAction'), 
+      ExecuteActionNameWithData: jasmine.createSpy('ExecuteActionNameWithData')
+    };
 
     invoicesService = {
       getInvoiceItems: jasmine.createSpy('getInvoiceItems').and.returnValue(of([])),
@@ -48,8 +88,6 @@ describe('Xr2InvoicesPageComponent', () => {
     };
 
     logService = { logMessageAsync: jasmine.createSpy('logMessageAsync') };
-
-    // dialogService = { showOnce: jasmine.createSpy('showOnce') };
 
     popupDialogComponent = { 
       didClickCloseButton: new EventEmitter(), 
@@ -65,8 +103,10 @@ describe('Xr2InvoicesPageComponent', () => {
 
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
+      getWarningOkPopup: jasmine.createSpy('getWarningOkPopup').and.returnValue(of(popupDialogComponent))
     };
 
+  
     TestBed.configureTestingModule({
       declarations: [ Xr2InvoicesPageComponent, Xr2InvoicesQueueComponent,  MockCpClickableIconComponent, MockSearchBox,
         MockTranslatePipe, MockColHeaderSortable, MockSearchPipe, MockCpDataLabelComponent, MockXr2DeviceSelectionHeaderComponent],
@@ -80,18 +120,23 @@ describe('Xr2InvoicesPageComponent', () => {
         { provide: SimpleDialogService, useValue: simpleDialogService },
         { provide: CpBarcodeScanService, useValue: barcodeScanService },
         { provide: BarcodeDataService, useValue: barcodeDataService },
-        { provide: Xr2RestockTrayService, useValue: xr2RestockTrayService },
+        { provide: Xr2RestockTrayService, useValue: {} },
         { provide: WindowService, useValue: { getHash: () => '' }},
         { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() }}
       ]
     })
     .compileComponents();
+    xr2RestockTrayService = TestBed.get(Xr2RestockTrayService);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2InvoicesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(()=>{
+    fixture.destroy();
   });
 
   it('should create', () => {
@@ -127,6 +172,116 @@ describe('Xr2InvoicesPageComponent', () => {
       component.onDisplayYesNoDialogEvent(mockInvoiceItem);
 
       expect(invoicesService.deleteInvoice).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call to get barcode data when barcode is scanned', () => {
+      let barcode = 'C00001';
+      barcodeScanService.BarcodeScannedSubject.next(barcode);
+      expect(barcodeDataService.getData).toHaveBeenCalledWith(barcode);
+    });
+
+  });
+
+  describe('Scanning No Return Data', () => {
+    beforeEach(() => { 
+      xr2RestockTrayService.getRestockTrayById = jasmine.createSpy('getRestockTrayById').and.returnValue(of(null));
+    });
+
+    it('should display dialog when selected device information is not set', () => {
+      const mockDeviceInfo = { DeviceId: 1 } as SelectableDeviceInfo;
+      component.onDeviceSelectionChanged(null);
+
+      let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: 'C00001', IsTrayBarcode: true} as IBarcodeData;
+      component.processScannedBarcodeData(barcodeData);
+
+      expect(barcodeScanService.reset).toHaveBeenCalled();
+      expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledWith('DEVICE_SELECTION_TEXT', 'DEVICE_SELECTION_SCANNING_MESSAGE');
+    });
+
+    it('should display dialog when scanning a non Tray barcode', () => {
+      const mockDeviceInfo = { DeviceId: 1 } as SelectableDeviceInfo;
+      component.onDeviceSelectionChanged(mockDeviceInfo); 
+
+      let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: 'asdfasdf', IsTrayBarcode: false} as IBarcodeData;
+      component.processScannedBarcodeData(barcodeData);
+
+      expect(barcodeScanService.reset).toHaveBeenCalled();
+      expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledWith('BARCODESCAN_DIALOGWARNING_TITLE', 'BARCODESCAN_DIALOGWARNING_MESSAGE');
+    });
+
+    it('should navigate to restock tray add screen upon processing barcode', () => {
+      let barcodeScanned = 'C00001'
+
+      const mockDeviceInfo = { DeviceId: 1 } as SelectableDeviceInfo;
+      component.onDeviceSelectionChanged(mockDeviceInfo); 
+
+      let mockRestockTray = {DeviceId: mockDeviceInfo.DeviceId, IsReturn: false, RestockTrayStatus: 0, TrayId: barcodeScanned, IsInvoiceTray: true, InvoiceOriginScreen: true } as IRestockTray;
+
+      let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: barcodeScanned, IsTrayBarcode: true} as IBarcodeData;
+      component.processScannedBarcodeData(barcodeData);
+
+      expect(xr2RestockTrayService.getRestockTrayById).toHaveBeenCalledTimes(1);
+      expect(wpfActionControllerService.ExecuteActionNameWithData).toHaveBeenCalledWith(WpfActionPaths.XR2AddTrayPath, mockRestockTray);
+    });
+  });
+
+  describe('Scanning with Return Tray Data', () => {
+    beforeEach(() => {
+      const rt = { TrayId: 'C00001', IsReturn: true} as IRestockTray;  
+      xr2RestockTrayService.getRestockTrayById = jasmine.createSpy('getRestockTrayById').and.returnValue(of(rt));
+    });
+
+    it('should fail if returned tray data is a return tray', () => {
+  
+      let barcodeScanned = 'C00001'
+
+      const mockDeviceInfo = { DeviceId: 1 } as SelectableDeviceInfo;
+      component.onDeviceSelectionChanged(mockDeviceInfo); 
+
+      let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: barcodeScanned, IsTrayBarcode: true} as IBarcodeData;
+      component.processScannedBarcodeData(barcodeData);
+
+      expect(xr2RestockTrayService.getRestockTrayById).toHaveBeenCalledTimes(1);
+      expect(wpfActionControllerService.ExecuteActionNameWithData).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('Scanning with Noral Restock Tray Data', () => {
+    beforeEach(() => {
+      
+      xr2RestockTrayService.getRestockTrayById = jasmine.createSpy('getRestockTrayById').and.returnValue(of(newRestockTray));
+    });
+
+    it('should navigate to Edit Tray Screen when barcode is processed', () => {
+  
+      let barcodeScanned = 'C00001'
+
+      const mockDeviceInfo = { DeviceId: 1 } as SelectableDeviceInfo;
+      component.onDeviceSelectionChanged(mockDeviceInfo); 
+
+      let mockRestockTray = newRestockTray;
+      mockRestockTray.IsInvoiceTray = true;
+      mockRestockTray.InvoiceOriginScreen = true;
+
+      let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: barcodeScanned, IsTrayBarcode: true} as IBarcodeData;
+      component.processScannedBarcodeData(barcodeData);
+
+      expect(xr2RestockTrayService.getRestockTrayById).toHaveBeenCalledTimes(1);
+      expect(wpfActionControllerService.ExecuteActionNameWithData).toHaveBeenCalledWith(WpfActionPaths.XR2EditTrayPath, newRestockTray); 
+    });
+
+    it('should not navigae if selected device does not match', () => {
+  
+      let barcodeScanned = 'C00001'
+
+      const mockDeviceInfo = { DeviceId: 2 } as SelectableDeviceInfo;
+      component.onDeviceSelectionChanged(mockDeviceInfo); 
+
+      let barcodeData = {BarCodeFormat: 'XP', BarCodeScanned: barcodeScanned, IsTrayBarcode: true} as IBarcodeData;
+      component.processScannedBarcodeData(barcodeData);
+
+      expect(xr2RestockTrayService.getRestockTrayById).toHaveBeenCalledTimes(1);
+      expect(wpfActionControllerService.ExecuteActionNameWithData).toHaveBeenCalledTimes(0); 
     });
   });
 });
