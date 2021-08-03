@@ -6,6 +6,7 @@
   "AUTOFILL": "Autofill",
   "AUTOPACKAGER": "Auto Packager",
   "APPROVE": "Approve",
+  "VERIFY": "Verify",
   "APPROVE_ALL": "Approve All",
   "APPROVE_ALL_DIALOG_MESSAGE": "This will approve ALL picks for the destination that do not require scanning.<br /><br />Do you want to approve ALL?",
   "BACK": "Back",
