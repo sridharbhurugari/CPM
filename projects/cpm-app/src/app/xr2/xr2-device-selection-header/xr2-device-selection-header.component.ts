@@ -51,6 +51,16 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
     this.getAllActiveXr2Devices();
   }
 
+  ngAfterViewInit() {
+    this.configureSearchHandler();
+  }
+
+  fromWPFInit() {
+    this.searchElement.clearSearch(null);
+    this.ngOnInit();
+    this.ngAfterViewInit();
+  }
+
   async getAllActiveXr2Devices() {
     this.deviceInformationList = await this.devicesService.getAllXr2Devices().toPromise();
     const newList: SingleselectRowItem[] = [];
@@ -117,10 +127,6 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
   onDeviceSelectionChanged($event) {
     this.searchElement.clearSearch(null);
     this.loadSelectedDeviceInformation($event.value);
-  }
-
-  ngAfterViewInit() {
-    this.configureSearchHandler();
   }
 
   getAllDevicesInfo() {

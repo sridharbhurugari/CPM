@@ -81,6 +81,11 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   ngOnInit() {
   }
 
+  fromWPFInit() {
+    this.currentSortPropertyName = null;
+    this.ngOnInit();
+  }
+
   columnSelected(event: IColHeaderSortChanged): void {
     this.currentSortPropertyName = event.ColumnPropertyName;
     this.columnSortDirection = event.SortDirection;

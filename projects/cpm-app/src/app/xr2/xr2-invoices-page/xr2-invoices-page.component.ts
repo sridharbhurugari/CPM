@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
 import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject } from 'rxjs';
 import { filter, flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { Xr2DeviceSelectionHeaderComponent } from '../xr2-device-selection-header/xr2-device-selection-header.component';
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 
 @Component({
@@ -24,6 +25,8 @@ import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-qu
   styleUrls: ['./xr2-invoices-page.component.scss']
 })
 export class Xr2InvoicesPageComponent implements OnInit {
+
+  @ViewChild(Xr2DeviceSelectionHeaderComponent, {static: true}) childHeaderComponent: Xr2DeviceSelectionHeaderComponent;
 
   @ViewChild(Xr2InvoicesQueueComponent, {static: false})
   set childInvoiceQueueComponent(value: Xr2InvoicesQueueComponent) {
@@ -42,11 +45,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
   selectedDeviceInformation: SelectableDeviceInfo;
   translations$: Observable<any>;
   translatables = [
-    'YES',
-    'NO',
+    'INVOICE_DELETE_BUTTON_TEXT',
+    'CANCEL',
     "INVOICE_DELETE_HEADER",
     "INVOICE_DELETE_BODY"
   ];
+  displayedDialog: PopupDialogComponent;
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
@@ -72,6 +76,11 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.loadInvoiceItems();
   }
 
+  fromWPFInit() {
+    this.clearDisplayedDialog();
+    this.ngOnInit();
+  }
+
   onBackEvent(): void {
     this.wpfActionController.ExecuteBackAction();
   }
@@ -88,7 +97,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   }
 
   onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
-
+    this.clearDisplayedDialog();
     this.displayDeleteDialog().subscribe(result => {
       if (!result) {
         return;
@@ -124,7 +133,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {
     this.childInvoiceQueueComponent.deleteInvoice(invoice);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + ' delete successful on poNumber: ' + invoice.ItemId);
+      this._componentName + ' delete successful on item ID: ' + invoice.ItemId);
   }
 
   private handleDeleteInvoiceError(err?) {
@@ -146,19 +155,30 @@ export class Xr2InvoicesPageComponent implements OnInit {
       properties.titleElementText = translations.INVOICE_DELETE_HEADER;
       properties.messageElementText = translations.INVOICE_DELETE_BODY;
       properties.showPrimaryButton = true;
-      properties.primaryButtonText = translations.YES;
+      properties.primaryButtonText = translations.CANCEL;
       properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.NO;
+      properties.secondaryButtonText = translations.INVOICE_DELETE_BUTTON_TEXT;
       properties.primaryOnRight = false;
       properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Info;
+      properties.dialogDisplayType = PopupDialogType.Warning;
       properties.timeoutLength = 0;
-      const component = this.dialogService.showOnce(properties);
-      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      this.displayedDialog = this.dialogService.showOnce(properties);
+      const primaryClick$ = this.displayedDialog.didClickPrimaryButton.pipe(map(x => false));
+      const secondaryClick$ = this.displayedDialog.didClickSecondaryButton.pipe(map(x => true));
       return merge(primaryClick$, secondaryClick$);
     }));
   }
+
+    /* istanbul ignore next */
+    private clearDisplayedDialog() {
+      try {
+        if (this.displayedDialog) {
+          this.displayedDialog.onCloseClicked();
+        }
+      } catch (err) {
+        // Eat it - this happens if it was closed - this should be fixed in the Dialog so it doesnt crash
+      }
+    }
 
   /* istanbul ignore next */
   private setupDataRefresh() {
@@ -166,7 +186,14 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.wpfInteropService.wpfViewModelActivated
       .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
-        this.ngOnInit();
+        this.fromWPFInit();
+        if(this.childHeaderComponent) {
+          this.childHeaderComponent.fromWPFInit();
+        }
+
+        if(this.childInvoiceQueueComponent) {
+          this.childInvoiceQueueComponent.fromWPFInit();
+        }
       });
   }
 }
