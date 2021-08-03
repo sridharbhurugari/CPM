@@ -25,7 +25,16 @@ import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-qu
 })
 export class Xr2InvoicesPageComponent implements OnInit {
 
-  @ViewChild(Xr2InvoicesQueueComponent, {static: false}) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
+  @ViewChild(Xr2InvoicesQueueComponent, {static: false})
+  set childInvoiceQueueComponent(value: Xr2InvoicesQueueComponent) {
+    if(!value) return;
+    this._childInvoiceQueueComponent = value;
+    this._childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+  }
+
+  get childInvoiceQueueComponent(): Xr2InvoicesQueueComponent {
+    return this._childInvoiceQueueComponent;
+  }
 
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
@@ -43,6 +52,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
   private _groupingKeyNames = ["ItemId", "DeviceId"];
   private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
+  private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
 
   constructor(
     private wpfActionController: WpfActionControllerService,
@@ -72,12 +82,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDeviceSelectionChanged($event): void {
     this.selectedDeviceInformation = $event;
-    if(!this.childInvoiceQueueComponent) {
-      setTimeout(() => {
-        this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
-      }, 0);
-    } else {
-      this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+    if(this.childInvoiceQueueComponent) {
+      this.childInvoiceQueueComponent.changeDeviceSelection($event);
     }
   }
 
@@ -118,7 +124,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {
     this.childInvoiceQueueComponent.deleteInvoice(invoice);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + ' delete successful on poNumber: ' + invoice.PoNumber);
+      this._componentName + ' delete successful on poNumber: ' + invoice.ItemId);
   }
 
   private handleDeleteInvoiceError(err?) {
@@ -135,6 +141,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private displayDeleteDialog(): Observable<boolean> {
     return forkJoin(this.translations$).pipe(flatMap(r => {
       const translations = r[0];
+      if(!translations) return;
       const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
       properties.titleElementText = translations.INVOICE_DELETE_HEADER;
       properties.messageElementText = translations.INVOICE_DELETE_BODY;

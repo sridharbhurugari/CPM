@@ -4,6 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonActionModule, FooterModule, GridModule, PopupDialogComponent, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
+import { LogVerbosity } from 'oal-core';
 import { of, Subject } from 'rxjs';
 import { LogService } from '../../api-core/services/log-service';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
@@ -22,7 +23,6 @@ import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-click
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock-xr2-device-selection-header-component.spec';
 import { MockXr2InvoicesQueueComponent } from '../../shared/testing/mock-xr2-invoice-queue.spec';
-import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page.component';
 
 describe('Xr2InvoicesPageComponent', () => {
@@ -47,18 +47,19 @@ describe('Xr2InvoicesPageComponent', () => {
     popupDialogComponent = {
       didClickCloseButton: new EventEmitter(),
       didClickPrimaryButton: new EventEmitter(),
+      didClickSecondaryButton: new EventEmitter(),
       onCloseClicked: jasmine.createSpy('onCloseClicked'),
     };
 
     logService = {
       logMessageAsync: jasmine.createSpy('logMessageAsync'),
-      getConfiguration: jasmine.createSpy('getConfiguration').and.returnValue(of(LoggerConfiguration))
+      getConfiguration: jasmine.createSpy('getConfiguration').and.returnValue(of({} as LoggerConfiguration))
     };
 
     dialogService = { showOnce: jasmine.createSpy('showOnce').and.returnValue(popupDialogComponent) };
 
     translateService = {
-      get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+      get: jasmine.createSpy('get').and.returnValue(of([])),
       getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US')),
     };
 
@@ -89,7 +90,6 @@ describe('Xr2InvoicesPageComponent', () => {
     component = fixture.componentInstance;
     component.selectedDeviceInformation =  new SelectableDeviceInfo({DeviceId: 1, Description: '',
     DefaultOwnerName: '', DeviceTypeId: '', CurrentLeaseHolder:  Guid.create(), IsActive: true});
-    component.childInvoiceQueueComponent = new Xr2InvoicesQueueComponent(null);
     fixture.detectChanges();
   });
 
