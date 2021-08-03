@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import { Many } from 'lodash';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { IColHeaderSortChanged } from '../../shared/events/i-col-header-sort-changed';
-import { groupAndSum } from '../../shared/functions/groupAndSum';
 import { nameof } from '../../shared/functions/nameof';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';

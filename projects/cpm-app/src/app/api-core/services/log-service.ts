@@ -32,18 +32,19 @@ export class LogService {
     this.systemLoggerConfiguration = await this.getConfiguration().toPromise();
   }
 
+
+  getConfiguration(): Observable<LoggerConfiguration> {
+    const url = this.ocapUrlBuilderService.buildUrl('/api/AngularLogging/getloggerconfiguration');
+    return this.httpClient.get<LoggerConfiguration>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+  }
+
   private logMessage(verbosity: LogVerbosity, severity: CpmLogLevel, category: string, message: string) {
     console.log(message);
     const url = this.ocapUrlBuilderService.buildUrl('/api/AngularLogging/logsingleevent');
     return this.httpClient.post(url, { TimeStamp: new Date(),
        Message: message, Verbosity: verbosity, LogLevel: severity, CategoryName: category, ApplicationPrefix: '' } , {
-      headers: this.ocapHttpHeadersService.getHeaders()
-    });
-  }
-
-  private getConfiguration(): Observable<LoggerConfiguration> {
-    const url = this.ocapUrlBuilderService.buildUrl('/api/AngularLogging/getloggerconfiguration');
-    return this.httpClient.get<LoggerConfiguration>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
   }

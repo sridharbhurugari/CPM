@@ -1,13 +1,16 @@
 import { HttpClientModule } from '@angular/common/http';
+import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { ButtonActionModule, FooterModule, GridModule, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
+import { ButtonActionModule, FooterModule, GridModule, PopupDialogComponent, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
+import { Guid } from 'guid-typescript';
 import { of, Subject } from 'rxjs';
 import { LogService } from '../../api-core/services/log-service';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
+import { LoggerConfiguration } from '../../shared/model/logger-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
@@ -18,10 +21,11 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock-xr2-device-selection-header-component.spec';
+import { MockXr2InvoicesQueueComponent } from '../../shared/testing/mock-xr2-invoice-queue.spec';
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page.component';
 
-fdescribe('Xr2InvoicesPageComponent', () => {
+describe('Xr2InvoicesPageComponent', () => {
   let component: Xr2InvoicesPageComponent;
   let fixture: ComponentFixture<Xr2InvoicesPageComponent>
   let wpfActionControllerService: Partial<WpfActionControllerService>;
@@ -30,6 +34,7 @@ fdescribe('Xr2InvoicesPageComponent', () => {
   let dialogService: Partial<PopupDialogService>;
   let translateService: Partial<TranslateService>;
   let simpleDialogService: Partial<SimpleDialogService>;
+  let popupDialogComponent: Partial<PopupDialogComponent>;
 
   beforeEach(async(() => {
     wpfActionControllerService = { ExecuteBackAction: jasmine.createSpy('ExecuteBackAction') };
@@ -39,9 +44,18 @@ fdescribe('Xr2InvoicesPageComponent', () => {
       deleteInvoice: jasmine.createSpy('deleteInvoice').and.returnValue(of(true)),
     };
 
-    logService = { logMessageAsync: jasmine.createSpy('logMessageAsync') };
+    popupDialogComponent = {
+      didClickCloseButton: new EventEmitter(),
+      didClickPrimaryButton: new EventEmitter(),
+      onCloseClicked: jasmine.createSpy('onCloseClicked'),
+    };
 
-    dialogService = { showOnce: jasmine.createSpy('showOnce') };
+    logService = {
+      logMessageAsync: jasmine.createSpy('logMessageAsync'),
+      getConfiguration: jasmine.createSpy('getConfiguration').and.returnValue(of(LoggerConfiguration))
+    };
+
+    dialogService = { showOnce: jasmine.createSpy('showOnce').and.returnValue(popupDialogComponent) };
 
     translateService = {
       get: jasmine.createSpy('get').and.returnValue(of(translateService)),
@@ -53,7 +67,7 @@ fdescribe('Xr2InvoicesPageComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ Xr2InvoicesPageComponent, Xr2InvoicesQueueComponent,  MockCpClickableIconComponent, MockSearchBox,
+      declarations: [ Xr2InvoicesPageComponent, MockXr2InvoicesQueueComponent,  MockCpClickableIconComponent, MockSearchBox,
         MockTranslatePipe, MockColHeaderSortable, MockSearchPipe, MockCpDataLabelComponent, MockXr2DeviceSelectionHeaderComponent],
       imports: [GridModule, ButtonActionModule, PopupDialogModule, HttpClientModule, FooterModule, SingleselectDropdownModule, SvgIconModule],
       providers: [
@@ -73,6 +87,9 @@ fdescribe('Xr2InvoicesPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2InvoicesPageComponent);
     component = fixture.componentInstance;
+    component.selectedDeviceInformation =  new SelectableDeviceInfo({DeviceId: 1, Description: '',
+    DefaultOwnerName: '', DeviceTypeId: '', CurrentLeaseHolder:  Guid.create(), IsActive: true});
+    component.childInvoiceQueueComponent = new Xr2InvoicesQueueComponent(null);
     fixture.detectChanges();
   });
 
