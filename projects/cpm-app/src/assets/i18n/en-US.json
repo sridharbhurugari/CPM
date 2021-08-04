@@ -269,7 +269,7 @@
   "INVALID_NOEXCEPTIONS_SCAN_DESC": "Tray Scanned has no exceptions.",
   "INVOICE_DELETE_HEADER": "Confirmation",
   "INVOICE_DELETE_BODY": "Do you want to delete this item from all open invoices?  This action cannot be undone.",
-  "INVOICE_DELETE_BUTTON_TEXT": "Delete Invoice",
+  "INVOICE_DELETE_BUTTON_TEXT": "Delete Item",
   "SCAN_A_TRAY": "Scan a Tray Barcode to begin",
   "SCAN_PRODUCT_BARCODE": "The correct product bar code must be scanned.",
   "SCAN_BIN_BARCODE": "The correct bin bar code must be scanned.",
