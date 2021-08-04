@@ -23,6 +23,7 @@ import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog
 import { WindowService } from '../../shared/services/window-service';
 import { WpfActionControllerService } from '../../shared/services/wpf-action-controller/wpf-action-controller.service';
 import { WpfInteropService } from '../../shared/services/wpf-interop.service';
+import { Xr2DeviceSelectionHeaderComponent } from '../xr2-device-selection-header/xr2-device-selection-header.component';
 import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
 
 @Component({
@@ -32,7 +33,18 @@ import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-qu
 })
 export class Xr2InvoicesPageComponent implements OnInit {
 
-  @ViewChild(Xr2InvoicesQueueComponent, {static: false}) childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
+  @ViewChild(Xr2DeviceSelectionHeaderComponent, {static: true}) childHeaderComponent: Xr2DeviceSelectionHeaderComponent;
+
+  @ViewChild(Xr2InvoicesQueueComponent, {static: false})
+  set childInvoiceQueueComponent(value: Xr2InvoicesQueueComponent) {
+    if(!value) return;
+    this._childInvoiceQueueComponent = value;
+    this._childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+  }
+
+  get childInvoiceQueueComponent(): Xr2InvoicesQueueComponent {
+    return this._childInvoiceQueueComponent;
+  }
 
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
@@ -40,16 +52,18 @@ export class Xr2InvoicesPageComponent implements OnInit {
   selectedDeviceInformation: SelectableDeviceInfo;
   translations$: Observable<any>;
   translatables = [
-    'YES',
-    'NO',
+    'INVOICE_DELETE_BUTTON_TEXT',
+    'CANCEL',
     "INVOICE_DELETE_HEADER",
     "INVOICE_DELETE_BODY"
   ];
+  displayedDialog: PopupDialogComponent;
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
   private _groupingKeyNames = ["ItemId", "DeviceId"];
   private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
+  private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
   private barcodeScannedSubscription: Subscription;
   displayedDialog: PopupDialogComponent;
 
@@ -73,6 +87,11 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.loadInvoiceItems();
   }
 
+  fromWPFInit() {
+    this.clearDisplayedDialog();
+    this.ngOnInit();
+  }
+
   onBackEvent(): void {
     this.wpfActionController.ExecuteBackAction();
   }
@@ -83,17 +102,13 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDeviceSelectionChanged($event): void {
     this.selectedDeviceInformation = $event;
-    if(!this.childInvoiceQueueComponent) {
-      setTimeout(() => {
-        this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
-      }, 0);
-    } else {
-      this.childInvoiceQueueComponent.changeDeviceSelection(this.selectedDeviceInformation);
+    if(this.childInvoiceQueueComponent) {
+      this.childInvoiceQueueComponent.changeDeviceSelection($event);
     }
   }
 
   onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
-
+    this.clearDisplayedDialog();
     this.displayDeleteDialog().subscribe(result => {
       if (!result) {
         return;
@@ -252,7 +267,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {
     this.childInvoiceQueueComponent.deleteInvoice(invoice);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
-      this._componentName + ' delete successful on poNumber: ' + invoice.PoNumber);
+      this._componentName + ' delete successful on item ID: ' + invoice.ItemId);
   }
 
   private handleDeleteInvoiceError(err?) {
@@ -269,20 +284,21 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private displayDeleteDialog(): Observable<boolean> {
     return forkJoin(this.translations$).pipe(flatMap(r => {
       const translations = r[0];
+      if(!translations) return;
       const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
       properties.titleElementText = translations.INVOICE_DELETE_HEADER;
       properties.messageElementText = translations.INVOICE_DELETE_BODY;
       properties.showPrimaryButton = true;
-      properties.primaryButtonText = translations.YES;
+      properties.primaryButtonText = translations.CANCEL;
       properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.NO;
+      properties.secondaryButtonText = translations.INVOICE_DELETE_BUTTON_TEXT;
       properties.primaryOnRight = false;
       properties.showCloseIcon = false;
-      properties.dialogDisplayType = PopupDialogType.Info;
+      properties.dialogDisplayType = PopupDialogType.Warning;
       properties.timeoutLength = 0;
-      const component = this.dialogService.showOnce(properties);
-      const primaryClick$ = component.didClickPrimaryButton.pipe(map(x => true));
-      const secondaryClick$ = component.didClickSecondaryButton.pipe(map(x => false));
+      this.displayedDialog = this.dialogService.showOnce(properties);
+      const primaryClick$ = this.displayedDialog.didClickPrimaryButton.pipe(map(x => false));
+      const secondaryClick$ = this.displayedDialog.didClickSecondaryButton.pipe(map(x => true));
       return merge(primaryClick$, secondaryClick$);
     }));
   }
@@ -322,11 +338,18 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   /* istanbul ignore next */
   private setupDataRefresh() {
-      let hash = this.windowService.getHash();
-      this.wpfInteropService.wpfViewModelActivated
-          .pipe(filter(x => x == hash), takeUntil(this.ngUnsubscribe))
-          .subscribe(() => {
-              this.ngOnInit();
-          });
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.fromWPFInit();
+        if(this.childHeaderComponent) {
+          this.childHeaderComponent.fromWPFInit();
+        }
+
+        if(this.childInvoiceQueueComponent) {
+          this.childInvoiceQueueComponent.fromWPFInit();
+        }
+      });
   }
 }

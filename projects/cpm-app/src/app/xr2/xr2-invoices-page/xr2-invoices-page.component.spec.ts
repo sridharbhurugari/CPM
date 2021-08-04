@@ -5,6 +5,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonActionModule, FooterModule, GridModule, PopupDialogComponent, PopupDialogModule, PopupDialogService, SingleselectDropdownModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { Guid } from 'guid-typescript';
+import { LogVerbosity } from 'oal-core';
 import { of, Subject } from 'rxjs';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
@@ -16,6 +17,7 @@ import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
+import { LoggerConfiguration } from '../../shared/model/logger-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
@@ -27,7 +29,7 @@ import { MockColHeaderSortable } from '../../shared/testing/mock-col-header-sort
 import { MockCpClickableIconComponent } from '../../shared/testing/mock-cp-clickable-icon.spec';
 import { MockCpDataLabelComponent } from '../../shared/testing/mock-cp-data-label.spec';
 import { MockXr2DeviceSelectionHeaderComponent } from '../../shared/testing/mock-xr2-device-selection-header-component.spec';
-import { Xr2InvoicesQueueComponent } from '../xr2-invoices-queue/xr2-invoices-queue.component';
+import { MockXr2InvoicesQueueComponent } from '../../shared/testing/mock-xr2-invoice-queue.spec';
 import { Xr2InvoicesPageComponent } from './xr2-invoices-page.component';
 
 describe('Xr2InvoicesPageComponent', () => {
@@ -87,17 +89,22 @@ describe('Xr2InvoicesPageComponent', () => {
       deleteInvoice: jasmine.createSpy('deleteInvoice').and.returnValue(of(true)),
     };
 
-    logService = { logMessageAsync: jasmine.createSpy('logMessageAsync') };
-
-    popupDialogComponent = { 
-      didClickCloseButton: new EventEmitter(), 
+    popupDialogComponent = {
+      didClickCloseButton: new EventEmitter(),
       didClickPrimaryButton: new EventEmitter(),
+      didClickSecondaryButton: new EventEmitter(),
       onCloseClicked: jasmine.createSpy('onCloseClicked'),
     };
+
+    logService = {
+      logMessageAsync: jasmine.createSpy('logMessageAsync'),
+      getConfiguration: jasmine.createSpy('getConfiguration').and.returnValue(of({} as LoggerConfiguration))
+    };
+
     dialogService = { showOnce: jasmine.createSpy('showOnce').and.returnValue(popupDialogComponent) };
 
     translateService = {
-      get: jasmine.createSpy('get').and.returnValue(of(translateService)),
+      get: jasmine.createSpy('get').and.returnValue(of([])),
       getDefaultLang: jasmine.createSpy('getDefaultLang').and.returnValue(of('en-US')),
     };
 
@@ -106,9 +113,8 @@ describe('Xr2InvoicesPageComponent', () => {
       getWarningOkPopup: jasmine.createSpy('getWarningOkPopup').and.returnValue(of(popupDialogComponent))
     };
 
-  
     TestBed.configureTestingModule({
-      declarations: [ Xr2InvoicesPageComponent, Xr2InvoicesQueueComponent,  MockCpClickableIconComponent, MockSearchBox,
+      declarations: [ Xr2InvoicesPageComponent, MockXr2InvoicesQueueComponent,  MockCpClickableIconComponent, MockSearchBox,
         MockTranslatePipe, MockColHeaderSortable, MockSearchPipe, MockCpDataLabelComponent, MockXr2DeviceSelectionHeaderComponent],
       imports: [GridModule, ButtonActionModule, PopupDialogModule, HttpClientModule, FooterModule, SingleselectDropdownModule, SvgIconModule],
       providers: [
@@ -132,11 +138,9 @@ describe('Xr2InvoicesPageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Xr2InvoicesPageComponent);
     component = fixture.componentInstance;
+    component.selectedDeviceInformation =  new SelectableDeviceInfo({DeviceId: 1, Description: '',
+    DefaultOwnerName: '', DeviceTypeId: '', CurrentLeaseHolder:  Guid.create(), IsActive: true});
     fixture.detectChanges();
-  });
-
-  afterEach(()=>{
-    fixture.destroy();
   });
 
   it('should create', () => {
