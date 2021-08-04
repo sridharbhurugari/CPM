@@ -67,7 +67,7 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
   }
 
   delete() {
-    this.prepackVerificationService.delete(this.prepackVerificationQueueDetail).subscribe(
+    this.prepackVerificationService.deletePrepackQueueVerification(this.prepackVerificationQueueDetail.PrepackVerificationQueueId).subscribe(
       success => {
         this.router.navigate(["core/prepackVerification"]);
       }, error => {
