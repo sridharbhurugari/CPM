@@ -186,7 +186,7 @@ describe('Xr2InvoicesPageComponent', () => {
 
   });
 
-  describe('Scanning No Return Data', () => {
+  describe('Scanning has no return data', () => {
     beforeEach(() => { 
       xr2RestockTrayService.getRestockTrayById = jasmine.createSpy('getRestockTrayById').and.returnValue(of(null));
     });

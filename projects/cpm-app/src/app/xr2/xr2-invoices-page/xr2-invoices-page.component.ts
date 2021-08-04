@@ -65,7 +65,6 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
   private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
   private barcodeScannedSubscription: Subscription;
-  displayedDialog: PopupDialogComponent;
 
   constructor(
     private wpfActionController: WpfActionControllerService,
