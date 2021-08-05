@@ -373,5 +373,5 @@
   "ON_DEMAND":"On-Demand",
   "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_TITLE": "Verification is not required",
   "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_MESSAGE": "Verification is not required for this item",
-  "TRAY_TYPE_OVERSTOCK_MESSAGE": "Tray Type Contains Overstocked items"
+  "TRAY_TYPE_OVERSTOCK_MESSAGE": "Tray Type contains overstocked items"
 }
