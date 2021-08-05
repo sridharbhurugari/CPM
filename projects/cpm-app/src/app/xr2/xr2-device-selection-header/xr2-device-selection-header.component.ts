@@ -55,6 +55,7 @@ export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit 
     this.configureSearchHandler();
   }
 
+  /* istanbul ignore next */
   fromWPFInit() {
     this.searchElement.clearSearch(null);
     this.ngOnInit();

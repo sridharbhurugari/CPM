@@ -149,6 +149,5 @@ describe('Xr2DeviceSelectionHeaderComponent', () => {
       expect(component.selectedDeviceInformation.DeviceId).toBe(1);
     });
   });
-
   })
 

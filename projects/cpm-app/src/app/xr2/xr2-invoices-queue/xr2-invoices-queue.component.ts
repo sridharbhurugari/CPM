@@ -81,6 +81,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   ngOnInit() {
   }
 
+  /* istanbul ignore next */
   fromWPFInit() {
     this.currentSortPropertyName = null;
     this.ngOnInit();

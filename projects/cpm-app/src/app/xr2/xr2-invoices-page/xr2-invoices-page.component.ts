@@ -76,6 +76,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.loadInvoiceItems();
   }
 
+  /* istanbul ignore next */
   fromWPFInit() {
     this.clearDisplayedDialog();
     this.ngOnInit();
@@ -130,12 +131,14 @@ export class Xr2InvoicesPageComponent implements OnInit {
     }), shareReplay())
   }
 
+  /* istanbul ignore next */
   private handleDeleteInvoiceSuccess(invoice: IXr2Stocklist) {
     this.childInvoiceQueueComponent.deleteInvoice(invoice);
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this._componentName + ' delete successful on item ID: ' + invoice.ItemId);
   }
 
+  /* istanbul ignore next */
   private handleDeleteInvoiceError(err?) {
     this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
       this._componentName + ' delete failed: ' + err);
