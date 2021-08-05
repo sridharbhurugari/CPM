@@ -10,11 +10,13 @@ import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
 import { IRestockTray } from '../../api-xr2/data-contracts/i-restock-tray';
+import { ITrayType } from '../../api-xr2/data-contracts/i-tray-type';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
 import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
+import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { groupAndSum } from '../../shared/functions/groupAndSum';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
@@ -48,6 +50,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   ngUnsubscribe = new Subject();
   searchTextFilter: string;
+  trayTypes$: NonstandardJsonArray<ITrayType>;
   invoiceItems$: Observable<any>;
   selectedDeviceInformation: SelectableDeviceInfo;
   translations$: Observable<any>;
@@ -84,6 +87,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     this.hookupEventHandlers();
     this.setTranslations();
     this.loadInvoiceItems();
+    this.loadTrayTypes();
   }
 
   fromWPFInit() {
@@ -152,6 +156,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
       return;
     }
 
+    if(!this.ValidateTrayTypeDevice(result)){
+      return;
+    }
+
     this.getRestockTrayInfo(result.BarCodeScanned)
   }
 
@@ -206,6 +214,17 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
     this.navigateCreateTray(RestockTray);
   }
+    private ValidateTrayTypeDevice(scan: IBarcodeData): boolean{
+      let trayPrefix = scan.BarCodeScanned.substr(0,2);
+      if(!this.trayTypes$.$values.find(x=>x.TrayPrefix == trayPrefix && x.DeviceId == this.selectedDeviceInformation.DeviceId))
+      {
+        this.simpleDialogService.getWarningOkPopup('INVALID_TRAY_SCAN', 'INVALID_TRAY_SCAN_DESC').subscribe((dialog) => {
+          this.displayedDialog = dialog;
+        });
+        return false;
+      }
+      return true;
+    }
 
     private validScannedTray(restockTray: IRestockTray): boolean{
       if(restockTray.IsReturn)
@@ -254,6 +273,13 @@ export class Xr2InvoicesPageComponent implements OnInit {
           )
       );
     }
+
+  private loadTrayTypes(){
+    this.xr2RestockTrayService.getTrayTypes().subscribe(x => {
+      console.log('tray types', x);
+      this.trayTypes$ = x;
+    })
+  }
 
   private loadInvoiceItems() {
     this.invoiceItems$ = this.invoiceService.getInvoiceItems()
