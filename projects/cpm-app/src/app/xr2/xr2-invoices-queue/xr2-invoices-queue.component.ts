@@ -62,8 +62,8 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemTradeName"),
   nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId"), nameof<Xr2Stocklist>("QuantityReceived"),
   nameof<Xr2Stocklist>("QuantityStocked")];
-  currentSortPropertyName: string;
-  columnSortDirection: string;
+  currentSortPropertyName: string = null;
+  columnSortDirection: string = null;
 
   readonly inProgressPropertyName = nameof<Xr2Stocklist>('InProgress');
   readonly itemNamePropertyName = nameof<Xr2Stocklist>('ItemFormattedGenericName');
@@ -83,7 +83,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   /* istanbul ignore next */
   fromWPFInit() {
-    this.currentSortPropertyName = null;
+    this.resetColumnSort()
     this.ngOnInit();
   }
 
@@ -109,6 +109,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   changeDeviceSelection(selectedDevice: SelectableDeviceInfo): void {
     this.selectedDeviceInformation = selectedDevice;
     this.filteredInvoiceItems = this.filterByDevice(selectedDevice.DeviceId, this.unfilteredInvoiceItems);
+    this.resetColumnSort();
   }
 
   deleteInvoice(invoice: IXr2Stocklist): void {
@@ -125,10 +126,17 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
     return invoiceItem.PoNumber;
   }
+
   /* istanbul ignore next */
   convertDate(date: Date): string {
     const orderDate = new Date(date).toLocaleString(this.translateService.getDefaultLang());
     return orderDate;
+  }
+
+  /* istanbul ignore next */
+  private resetColumnSort() {
+    this.currentSortPropertyName = null;
+    this.columnSortDirection = null;
   }
 
   private applyQueueFilters(): void {

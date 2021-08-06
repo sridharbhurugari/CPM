@@ -58,7 +58,7 @@
           <span class="centered-content">
             <app-cp-data-label
             [data]="invoiceItem.QuantityReceived"
-            [label]="'EA' | translate">
+            [label]="invoiceItem.UnitsOfIssue">
           </app-cp-data-label>
           </span>
         </div>
@@ -66,7 +66,7 @@
           <span class="centered-content">
             <app-cp-data-label
             [data]="invoiceItem.QuantityStocked"
-            [label]="'EA' | translate">
+            [label]="invoiceItem.UnitsOfIssue">
           </app-cp-data-label>
           </span>
         </div>
