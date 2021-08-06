@@ -259,19 +259,25 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
     /* istanbul ignore next */
     private hookupEventHandlers(): void {
-      if (this.isInvalidSubscription(this.barcodeScanService)) {
-        return;
-      }
+       if (this.isInvalidSubscription(this.barcodeScanService)) {
+         return;
+       }
+
+      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){
+        console.log('Subscribing to scanning service');
   
-      this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
-        takeUntil(this.ngUnsubscribe)
-      ).subscribe((scannedBarcode: string) =>
-        this.barcodeDataService
-          .getData(scannedBarcode)
-          .subscribe((result: IBarcodeData) =>
-            this.processScannedBarcodeData(result)
-          )
-      );
+        this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
+          takeUntil(this.ngUnsubscribe)
+        ).subscribe((scannedBarcode: string) =>
+        {
+          this.barcodeScanService.reset();
+          this.barcodeDataService
+            .getData(scannedBarcode)
+            .subscribe((result: IBarcodeData) =>
+              this.processScannedBarcodeData(result)
+            )
+        });
+      }
     }
 
   private loadTrayTypes(){
