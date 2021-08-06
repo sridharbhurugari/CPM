@@ -1,0 +1,53 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+:host ::ng-deep oc-grid {
+  font-size: 22px;
+  user-select: none;
+}
+
+:host ::ng-deep oc-search-box {
+  width: 358px !important;
+  margin-right: 10px;
+}
+
+.centered-content {
+  display: flex ;
+  justify-content: center;
+  align-items: center;
+}
+
+.split-column {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.destination-details {
+  padding-top: 5px;
+  display: flex;
+}
+
+.width-first {
+  width: 82px;
+}
+
+.width-description {
+  width: 508px;
+}
+
+.width-qty-received {
+  width: 230px;
+}
+
+.width-qty-stocked {
+  width: 230px;
+}
+
+.width-actions {
+  width: 230px
+}

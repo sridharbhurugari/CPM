@@ -4,21 +4,19 @@ import { TranslateService } from "@ngx-translate/core";
 import { DevicesService } from "../../api-core/services/devices.service";
 import { SelectableDeviceInfo } from "../../shared/model/selectable-device-info";
 import { OcapHttpConfigurationService } from "../../shared/services/ocap-http-configuration.service";
-import { WindowService } from "../../shared/services/window-service";
-import { Xr2QueueGroupingHeaderComponent } from "../xr2-queue-grouping-header/xr2-queue-grouping-header.component";
+import { Xr2DeviceSelectionHeaderComponent } from "../xr2-device-selection-header/xr2-device-selection-header.component";
 
 @Component({
   selector: 'app-destock-header',
   templateUrl: './destock-header.component.html',
   styleUrls: ['./destock-header.component.scss']
 })
-export class DestockHeaderComponent extends Xr2QueueGroupingHeaderComponent implements OnInit {
-  constructor(private windowServicex: WindowService,
-              private ocapHttpConfigurationServicex: OcapHttpConfigurationService,
+export class DestockHeaderComponent extends Xr2DeviceSelectionHeaderComponent implements OnInit {
+  constructor(private ocapHttpConfigurationServicex: OcapHttpConfigurationService,
               private devicesServicex: DevicesService,
               private router: Router,
               private translateServicex: TranslateService) {
-    super(windowServicex, ocapHttpConfigurationServicex, devicesServicex, translateServicex);
+    super(ocapHttpConfigurationServicex, devicesServicex, translateServicex);
   }
   @Output() backEvent: EventEmitter<void> = new EventEmitter<void>();
 
