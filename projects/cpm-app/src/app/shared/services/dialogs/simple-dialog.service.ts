@@ -58,6 +58,10 @@ export class SimpleDialogService {
     this.displayYesNoDialog(titleResourceKey, messageResourceKey, PopupDialogType.Info, messageParams);
   }
 
+  displayWarningYesNo(titleResourceKey: string, messageResourceKey: string, messageParams?: Object) {
+    this.displayYesNoDialog(titleResourceKey, messageResourceKey, PopupDialogType.Warning, messageParams);
+  }
+
   private displayOk(titleResourceKey: string, messageResourceKey: string, type: PopupDialogType, messageParams?: Object) {
     const title$ = this.translateService.get(titleResourceKey);
     const message$ = this.translateService.get(messageResourceKey, messageParams);

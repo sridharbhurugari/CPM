@@ -120,6 +120,12 @@
 
   <ng-container class="ocactionfooter">
     <oc-footer>
+      <div class="ocleftalign">
+         <oc-button-action
+            [buttonText]="'REMOVE' | translate"
+            (click)="delete()">
+         </oc-button-action>
+      </div>
       <div class="ocrightalign">
         <oc-button-action
             [buttonText]="'VERIFY' | translate"
