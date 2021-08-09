@@ -29,6 +29,7 @@ import { ConsoleLoggerProfile } from 'oal-core/lib/services/logger/services/cons
 })
 export class ItemManagementListComponent implements AfterViewInit {
   private _items: ItemManagement[];
+  displayLoader: boolean = true;
 
   readonly itemIdPropertyName = nameof<ItemManagement>("ItemId");
   readonly itemDescriptionPropertyName = nameof<ItemManagement>(
@@ -50,7 +51,12 @@ export class ItemManagementListComponent implements AfterViewInit {
   @Input()
   set items(value: ItemManagement[]) {
     this._items = value;
+    this.displayLoader = true;
     this.windowService.dispatchResizeEvent();
+    if(value !== null && value.length >= 0)
+    {
+        this.displayLoader = false;
+    }
   }
 
   get items(): ItemManagement[] {
@@ -64,7 +70,7 @@ export class ItemManagementListComponent implements AfterViewInit {
     private windowService: WindowService,
     public translateService: TranslateService
   ) {
-
+    this.displayLoader = true;
   }
 
   orderChanged(orderedItems: ItemManagement[]) {
@@ -75,11 +81,17 @@ export class ItemManagementListComponent implements AfterViewInit {
     this.itemIdSelected.next(itemId);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   ngAfterViewInit() {
     this.searchElement.searchOutput$.subscribe((data) => {
       this.searchTextFilter = data;
     });
   }
+}
+export enum OcAnimationSize {
+  small,
+  normal,
+  large,
 }

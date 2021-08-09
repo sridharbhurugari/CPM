@@ -18,4 +18,5 @@ export class Xr2Stocklist implements IXr2Stocklist {
   SourceId: string
   DeviceId: number
   DeviceDescription: string
+  UnitsOfIssue: string
 }

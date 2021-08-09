@@ -8,7 +8,7 @@ import { MockSearchPipe } from '../testing/mock-search-pipe.spec';
 import { MockAppHeaderContainer } from '../testing/mock-app-header.spec';
 import { WindowService } from '../../shared/services/window-service';
 import { MockSearchBox } from '../testing/mock-search-box.spec';
-import { GridModule, PopupDialogService,ButtonActionModule } from '@omnicell/webcorecomponents';
+import { GridModule, PopupDialogService,ButtonActionModule,ProgressAnimationComponent,SvgIconModule } from '@omnicell/webcorecomponents';
 import { HttpClientModule } from '@angular/common/http';
 import { ItemManagementService } from '../../api-core/services/item-management.service';
 import { of, Subject } from 'rxjs';
@@ -53,12 +53,14 @@ describe('ItemManagementListComponent', () => {
         MockSearchPipe,
         MockTranslatePipe,
         MockColHeaderSortable,
-        MockGridSortCol
+        MockGridSortCol,
+        ProgressAnimationComponent,
       ],
       imports: [
         GridModule,
         ButtonActionModule,
-        HttpClientModule
+        HttpClientModule,
+        SvgIconModule
       ],
       providers: [
         { provide: WindowService, useValue: { }} ,

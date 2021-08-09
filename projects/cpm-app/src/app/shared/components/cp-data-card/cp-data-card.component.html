@@ -1,4 +1,4 @@
-<div class="card" [ngStyle]="{width: width, height: height, margin: margin}">
+<div class="card" (click)="OnCardClicked()" [ngStyle]="{width: width, height: height, margin: margin}">
 
   <div class="card-content">
     <div class="card-header" [ngStyle]="{'grid-template-columns': 'auto ' + iconSize}">

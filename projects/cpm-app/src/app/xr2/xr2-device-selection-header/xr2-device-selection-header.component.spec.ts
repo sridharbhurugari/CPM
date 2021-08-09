@@ -26,7 +26,7 @@ class MockSearchBox {
   sendSearchData(data: string) { return of() }
 }
 
-describe('Xr2DeviceSelectionHeaderComponent', () => {
+fdescribe('Xr2DeviceSelectionHeaderComponent', () => {
   let component: Xr2DeviceSelectionHeaderComponent;
   let fixture: ComponentFixture<Xr2DeviceSelectionHeaderComponent>;
   let ocapConfig: IOcapHttpConfiguration;
@@ -148,7 +148,17 @@ describe('Xr2DeviceSelectionHeaderComponent', () => {
       expect(searchClearMock).toHaveBeenCalledTimes(1);
       expect(component.selectedDeviceInformation.DeviceId).toBe(1);
     });
-  });
 
+    it('Should have no default when device is not leased to same client', fakeAsync(() => {
+      ocapConfig.clientId = '';
+      component.showAllDevicesDropdownItem  = false;
+      component.selectedDeviceInformation = selectedDeviceInformation;
+      const getActiveXr2DevicesSpy = spyOn(component, 'getAllActiveXr2Devices').and.callThrough();
+      component.ngOnInit();
+      tick();
+      expect(getActiveXr2DevicesSpy).toHaveBeenCalledTimes(1);
+      expect(component.defaultDeviceDisplayItem).toEqual(undefined);
+    }));
+  });
   })
 
