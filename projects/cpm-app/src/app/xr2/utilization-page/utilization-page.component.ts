@@ -134,7 +134,6 @@ export class UtilizationPageComponent implements OnInit {
       this.selectedDeviceInformation.DeviceId = 0;
     }
     this.setUtilizationService();
-    this.setPrintInventoryButton();
     this.refreshData();
   }
   /* istanbul ignore next */
