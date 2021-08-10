@@ -3,7 +3,7 @@ import { Guid } from "guid-typescript";
 export interface IRestockTray {
     RestockTrayId: number;
     DeviceId: number;
-    DeviceDescription;
+    DeviceDescription : string;
     TrayId: string;
     TrayTypeId: number;
     IsReturn: boolean;
@@ -18,5 +18,5 @@ export interface IRestockTray {
     UserId: string;
     IsStockInternal: boolean;
     IsInvoiceTray: boolean;
-    InvoiceOriginScreen;
+    InvoiceOriginScreen: boolean;
 }

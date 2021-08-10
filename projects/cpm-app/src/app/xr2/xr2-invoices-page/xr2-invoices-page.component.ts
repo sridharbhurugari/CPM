@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
-import { Console } from 'console';
 import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -135,13 +134,11 @@ export class Xr2InvoicesPageComponent implements OnInit {
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-    this.unhookEventHandlers();
   }
 
   processScannedBarcodeData(result: IBarcodeData): void {
     this.barcodeScanService.reset();
     this.clearDisplayedDialog();
-    console.log("Barcode Scanned Data: ", result);
 
     if(!this.selectedDeviceInformation){
       this.simpleDialogService.getWarningOkPopup('DEVICE_SELECTION_TEXT', 'DEVICE_SELECTION_SCANNING_MESSAGE').subscribe((dialog) => {
@@ -167,11 +164,9 @@ export class Xr2InvoicesPageComponent implements OnInit {
   getRestockTrayInfo(trayId: string){
     this.xr2RestockTrayService.getRestockTrayById(trayId).subscribe(restockTray =>{
       if(!restockTray){
-        console.log('Adding New Tray, ', restockTray);
         this.createRestockTray(trayId);
         return;
       }
-      console.log('Editing Existing Tray, ', restockTray);
       this.editRestockTray(restockTray);       
     });
   }
@@ -249,12 +244,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
     }
 
     private navigateCreateTray(RestockTray: IRestockTray){
-      console.log('Navigate Using New restockTray: ', RestockTray);
       this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2AddTrayPath, RestockTray);
     }
 
     private navigateEditTray(RestockTray: IRestockTray){
-      console.log('Navigate Using restockTray: ', RestockTray);
       this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2EditTrayPath, RestockTray);
     }
 
@@ -264,9 +257,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
          return;
        }
 
-      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){
-        console.log('Subscribing to scanning service');
-  
+      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){  
         this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
           takeUntil(this.ngUnsubscribe)
         ).subscribe((scannedBarcode: string) =>
@@ -283,7 +274,6 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private loadTrayTypes(){
     this.xr2RestockTrayService.getTrayTypes().subscribe(x => {
-      console.log('tray types', x);
       this.trayTypes$ = x;
     })
   }
@@ -352,21 +342,6 @@ export class Xr2InvoicesPageComponent implements OnInit {
       }
     } catch (err) {
       // Eat it - this happens if it was closed - this should be fixed in the Dialog so it doesnt crash
-    }
-  }
-
-  /* istanbul ignore next */
-  private unhookEventHandlers(): void {
-    if (this.isInvalidSubscription(this.barcodeScanService)) {
-      return;
-    }
-
-    this.unsubscribeIfValidSubscription(this.barcodeScannedSubscription);
-  }
-
-  private unsubscribeIfValidSubscription(subscription: Subscription): void {
-    if (this.isValidSubscription(subscription)) {
-      subscription.unsubscribe();
     }
   }
 

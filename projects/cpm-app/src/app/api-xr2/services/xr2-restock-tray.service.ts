@@ -20,7 +20,7 @@ export class Xr2RestockTrayService {
     ) { }
 
   getRestockTrayById(trayId: string): Observable<IRestockTray> {
-    const url = this.ocapUrlBuilderService.buildUrl(`/api/restocktray/trayId/` + trayId);
+    const url = this.ocapUrlBuilderService.buildUrl(`/api/restocktray/trayId/${trayId}`);
     return this.httpClient.get<IRestockTray>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
