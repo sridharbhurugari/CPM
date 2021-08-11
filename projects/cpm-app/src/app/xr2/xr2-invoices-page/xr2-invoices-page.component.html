@@ -1,0 +1,26 @@
+<ng-container>
+  <app-xr2-device-selection-header
+  [hintText]="'SCAN_A_TRAY' | translate"
+  [showAllDevicesDropdownItem]="false"
+  (searchTextFilterEvent)='onSearchTextFilterEvent($event)'
+  (selectionChangedEvent)="onDeviceSelectionChanged($event)">
+  </app-xr2-device-selection-header>
+  <app-xr2-invoices-queue *ngIf="this.selectedDeviceInformation"
+  [unfilteredInvoiceItems]="invoiceItems$ | async"
+  [searchTextFilter]="searchTextFilter"
+  (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)"
+  ></app-xr2-invoices-queue>
+  <div class="icon-container" *ngIf="!this.selectedDeviceInformation">
+    <oc-svgicon icon="logowithtext" theme="primary" height="300" width="300"></oc-svgicon>
+  </div>
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+        <oc-button-action [buttonText]="'BACK' | translate" (click)="onBackEvent()"></oc-button-action>
+      </div>
+      <div class="ocrightalign">
+        <oc-button-action [buttonIcon]="'print'" [buttonText]="'PRINT_XR2_INVENTORY_REPORT' | translate"></oc-button-action>
+      </div>
+    </oc-footer>
+  </ng-container>
+</ng-container>

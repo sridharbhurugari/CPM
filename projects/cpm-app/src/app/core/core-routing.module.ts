@@ -19,6 +19,8 @@ import { LoadingComponent } from './loading/loading.component';
 import { InternalTransferDeviceOndemandItemsPageComponent } from './internal-transfer-device-ondemand-items-page/internal-transfer-device-ondemand-items-page.component';
 import { InternalTransferDeviceOndemandItemLocationsPageComponent } from './internal-transfer-device-ondemand-item-locations-page/internal-transfer-device-ondemand-item-locations-page.component';
 import { PrepackVerificationQueueComponent } from './prepack-verification-queue/prepack-verification-queue.component';
+import { PrepackVerificationQueueDetailComponent } from './prepack-verification-queue-detail/prepack-verification-queue-detail.component';
+import { PrepackVerificationSelectionComponent } from './prepack-verification-selection/prepack-verification-selection.component';
 
 const routes: Routes = [
   { path: 'internalTransfer/deviceReplenishmentNeeds', component: InternalTransferDeviceSummariesPageComponent },
@@ -39,6 +41,8 @@ const routes: Routes = [
   { path: 'loading', component: LoadingComponent },
   { path: 'internalTransfer/deviceReplenishmentOnDemand/ItemSource/deviceId/:deviceId/itemId/:itemId/packSize/:packSize', component: InternalTransferDeviceOndemandItemLocationsPageComponent },
   { path: 'prepackVerification', component: PrepackVerificationQueueComponent },
+  { path: 'prepackVerificationSelection', component: PrepackVerificationSelectionComponent },
+  { path: 'prepackVerificationDetail/:prepackVerificationQueueId', component: PrepackVerificationQueueDetailComponent },
 ];
 
 @NgModule({

@@ -1,0 +1,137 @@
+<oc-action-layout>
+  <div class="ocactionheader" style="background-color: #FFFFFF;"></div>
+  <ng-container class="ocactiondetails">
+    <div class="cpmheaderrow header-container">
+    <div class= "back-button">
+      <app-cp-clickable-icon
+          [width]="35"
+          [height]="35"
+          [theme]="'dark'"
+          [icon]="'back'"
+          (clickEvent)="onBackClick()">
+      </app-cp-clickable-icon>
+    </div>
+      <div class="title-content">
+        <span class="ellipsis">
+          {{ 'PREPACK_VERIFICATION' | translate }}
+        </span>
+      </div>
+    </div>
+    </ng-container>
+
+  <ng-container class="ocactiondetails">
+    <div class="displayItemDescriptions">
+      <div #contain>
+        <div class="GenericName">
+          {{ (data$ | async)?.GenericNameFormatted }}
+        </div>
+        <div class="BrandName">
+          {{ (data$ | async)?.BrandNameFormatted }}
+        </div>
+      </div>
+    </div>
+    <div class="panelContainerItemAndLocation">
+      <div class="itemIdBox">
+
+        <div class="itemIdHeader">
+          <span>{{'ITEM_ID' | translate}}</span>
+        </div>
+        <div class="ItemId">
+          <div *ngIf="(data$ | async)?.ItemId.length &lt; 11 || (data$ | async)?.ItemId.length == 11">
+            <span>{{ (data$ | async)?.ItemId }}
+
+            </span>
+          </div>
+        </div>
+        <div class="ItemIdSmall">
+          <div *ngIf="(data$ | async)?.ItemId.length>11">
+            <span>{{ (data$ | async)?.ItemId }}
+
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="DeviceLocation">
+        <div class="itemIdHeader">
+          {{'LOCATION' | translate }}
+        </div>
+        <div class="location">
+          {{ (data$ | async)?.DestinationLocationDescription }}
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+  <ng-container class="ocactiondetails">
+    <div class="panelContainerDetails">
+
+      <div class="leftPanel">
+        <div class="leftPanelRow">
+          {{"LOT_NUMBER" | translate}}
+          <div class="textDetail">{{(data$ | async)?.ManufacturerLotNumber}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_LOT_NUMBER" | translate}}
+          <div class="textDetail">{{(data$ | async)?.PrepackLotNumber}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_MANUFACTURER_EXPIRATION" | translate}}
+          <div class="dateDetail">{{(data$ | async)?.ManufacturerExpirationDate |
+            date:'MM/dd/yyyy':undefined:userLocale}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_PACKAGE_EXPIRATION" | translate}}
+          <div class="dateDetail">{{(data$ | async)?.PrepackExpirationDate | date:'MM/dd/yyyy':undefined:userLocale}}
+          </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"MANUFACTURER" | translate}}
+          <div class="textDetail">{{(data$ | async)?.ManufacturerName}} </div>
+        </div>
+
+        <div class="leftPanelRow">
+          {{"PREPACK_DRUG_ID" | translate}}
+          <div class="textDetail">{{(data$ | async)?.DrugIdentifier}} </div>
+        </div>
+
+      </div>
+      <div class="rightPanel">
+        <div class="demo">
+          <div class="packageQuantityDetail">{{"PREPACK_PACKAGED_QUANTITY" | translate}}: {{(data$ | async)?.QuantityToPackage}}
+            {{(data$ | async)?.UnitOfIssue}}</div>
+          <oc-numeric [title]="'ITEM_QUANTITY' | translate" [(ngModel)]="validatedQuantity" [minValue]="1"
+            [maxValue]="(data$ | async)?.QuantityToPackage" [units]="(data$ | async)?.UnitOfIssue" [autoCorrect]="true"
+            id="upDownElement">
+          </oc-numeric>
+          <div *ngIf="(data$ | async)?.PackagedByUsername" class="packageByDetail">{{"PREPACK_PACKAGED_USER" | translate}}: {{(data$ | async)?.PackagedByUsername}}</div>
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+
+  <ng-container class="ocactionfooter">
+    <oc-footer>
+      <div class="ocleftalign">
+         <oc-button-action
+            [buttonText]="'REMOVE' | translate"
+            (click)="delete()">
+         </oc-button-action>
+      </div>
+      <div class="ocrightalign">
+        <oc-button-action
+            [buttonText]="'VERIFY' | translate"
+            (click)="approve()">
+        </oc-button-action>
+    </div>
+    </oc-footer>
+  </ng-container>
+</oc-action-layout>

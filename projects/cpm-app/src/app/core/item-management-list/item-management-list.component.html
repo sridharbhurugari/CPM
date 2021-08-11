@@ -1,14 +1,18 @@
 <ng-container class="ocactiondetails">
     <div class="cpmheaderrow">
-      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="requestStatus != 'none'" *ngIf="hasActiveXR2Devices()"
-      [buttonIcon]="requestStatus === 'printing' ? 'spin' : 'print'" (click)="printXR2Inventory()" ></oc-button-action>
         <app-header-container></app-header-container>
         <oc-search-box class="searchbox" #searchBox [placeHolderText]="'SEARCH_TEXT' | translate"></oc-search-box>
     </div>
     <ng-container>
+        <div class="iconcontainer" [class.fillWidth]="true" *ngIf="displayLoader">
+          <oc-progress-animation #myLoader  [data]="{size: 3}"></oc-progress-animation>
+          <oc-svgicon icon="spin" theme="primary" height="100" width="100" style="padding-left:500px;padding-top:200px;">
+          </oc-svgicon>
+        </div>
+
         <oc-grid #ocgrid ocgridfilter="false" appGridSortCol [initialSortPropertyName]="itemDescriptionPropertyName"
-            [orderableValues]="items" (valuesReordered)="orderChanged($event)" >
-            <ng-container class="ocgridheader">
+            [orderableValues]="items" (valuesReordered)="orderChanged($event)" *ngIf="!displayLoader">
+            <ng-container class="ocgridheader" >
                 <div class="first" data-colwrap="true"></div>
                 <div app-col-header-sortable class="col" ocGridColResize data-width="500" data-colwrap="true"
                     [columnPropertyName]="itemDescriptionPropertyName" headerResourceKey="DESCRIPTION_ID">
@@ -26,7 +30,7 @@
             <ng-container class="ocgridbody">
                 <div class="row"
                     *ngFor="let itemManagement of items | searchPipe:searchTextFilter:searchFields"
-                    (click)="itemSelected(itemManagement.ItemId)">
+                    (click)="itemSelected(itemManagement.ItemId)" >
                     <div class="first" style="align-items: center;"></div>
                     <div class="col width-type" [attr.data-title]="'DESCRIPTION_ID' | translate">
                         <span>{{itemManagement.ItemDescription}}</span>

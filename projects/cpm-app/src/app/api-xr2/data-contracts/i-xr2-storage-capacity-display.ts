@@ -5,4 +5,5 @@ export interface IXr2StorageCapacityDisplay {
   PercentageUsed: number;
   PocketsRemaining: number;
   PocketInventoryCount: number;
+  IsOverStock: boolean;
 }

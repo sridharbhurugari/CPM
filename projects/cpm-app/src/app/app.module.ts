@@ -25,7 +25,8 @@ import { ProgressAnimationModule,
          PopupWindowService,
          ToastService,
          ToastModule,
-         DaterangeModule
+         DaterangeModule,
+         SvgIconModule
        } from '@omnicell/webcorecomponents';
 import { SharedModule } from './shared/shared.module';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
@@ -69,7 +70,8 @@ registerLocaleData(localeFr, 'fr-CA', localeFrExtra);
     RouterModule,
     PopupWindowModule,
     ToastModule,
-    DaterangeModule
+    DaterangeModule,
+    SvgIconModule,
   ],
   providers: [
     ProgressbarService,

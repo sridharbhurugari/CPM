@@ -7,7 +7,7 @@
     [iconString]="expiredDoses > 0 ? 'details' : null"
     [dataLabel1]="expiredItems == 1 ? ('ITEM' | translate) : ('ITEMS' | translate)" [data1]="expiredItems.toString()"
     [dataLabel2]="expiredDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)" [data2]="expiredDoses.toString()"
-    [height]="'120px'" [width]="'250px'" [margin]="'0px'" (iconClicked)="showExpiredDetails()">
+    [height]="'120px'" [width]="'250px'" [margin]="'0px'" (cardClicked)="showExpiredDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!expiringThisMonthLoaded" style="margin: 0;"
     [title]="'EXPIRING_THIS_MONTH' | translate" [iconString]="expiringThisMonthDoses > 0 ? 'details' : null"
@@ -15,7 +15,7 @@
     [data1]="expiringThisMonthItems.toString()"
     [dataLabel2]="expiringThisMonthDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
     [data2]="expiringThisMonthDoses.toString()" [height]="'120px'" [width]="'250px'" [margin]="'0px'"
-    (iconClicked)="showExpiringThisMonthDetails()">
+    (cardClicked)="showExpiringThisMonthDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!notAssignedLoaded" style="margin: 0;" [title]="'NOT_ASSIGNED' | translate"
     [iconString]="notAssignedDoses > 0 ? 'details' : null"
@@ -23,7 +23,7 @@
     [data1]="notAssignedItems.toString()"
     [dataLabel2]="notAssignedDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
     [data2]="notAssignedDoses.toString()" [height]="'120px'" [width]="'250px'" [margin]="'0px'"
-    (iconClicked)="showNotAssignedDetails()">
+    (cardClicked)="showNotAssignedDetails()">
   </app-cp-data-card>
   <app-cp-data-card [showLoading]="!pocketsWithErrorsLoaded" style="margin: 0;"
     [title]="'POCKETS_WITH_ERRORS' | translate" [iconString]="pocketsWithErrorsDoses > 0 ? 'details' : null"
@@ -31,7 +31,7 @@
     [data1]="pocketsWithErrorsItems.toString()"
     [dataLabel2]="pocketsWithErrorsDoses == 1 ? ('DOSE' | translate) : ('DOSES' | translate)"
     [data2]="pocketsWithErrorsDoses.toString()" [height]="'120px'" [width]="'250px'" [margin]="'0px'"
-    (iconClicked)="showPocketsWithErrorsDetails()">
+    (cardClicked)="showPocketsWithErrorsDetails()">
   </app-cp-data-card>
 </div>
 
@@ -62,8 +62,21 @@
       <div class="row" *ngFor="let xr2StorageCapacityDisplay of xr2StorageCapacityDisplays"
         (click)=NavigateToPocketDetailsPage(xr2StorageCapacityDisplay)>
         <div class="first" style="align-items: center;"></div>
-        <div class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_TYPE_HEADER' | translate">
-          {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
+        <div style="flex-direction: row; justify-content: space-between; align-items: center;" class="first col width-type" [attr.data-title]="'XR2_UTILIZATION_TYPE_HEADER' | translate">
+          <div>
+            {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
+          </div>
+            <a (click)="toastIconClicked()">
+              <div style="padding-right: 80px; padding-bottom: 40px;" *ngIf="xr2StorageCapacityDisplay.IsOverStock">       
+                <ng-container part="icon">
+                  <app-validation-icon
+                    iconString="warning" toastTileResourceKey="" toastMsgResourceKey="TRAY_TYPE_OVERSTOCK_MESSAGE"
+                    toastType="warn" [iconWidth]="30"
+                    [iconHeight]="30" iconTheme="warning">
+                  </app-validation-icon>
+                </ng-container> 
+              </div>
+            </a>
         </div>
         <div class="col width-type" [attr.data-title]="'XR2_UTILIZATION_PERCENTAGE_USED_HEADER' | translate">
           {{xr2StorageCapacityDisplay.PercentageUsed}}%
@@ -98,5 +111,10 @@
     <div class="refresh-label" *ngIf="eventDateTime != null">{{'LAST_UPDATED' | translate}}:</div>
     &nbsp;
     <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div>
+    &nbsp;
+    <div class="ocrightalign">
+      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="requestStatus != 'none'" *ngIf="hasActiveXR2Devices()"
+      [buttonIcon]="requestStatus === 'printing' ? 'spin' : 'print'" (click)="printXR2Inventory()" ></oc-button-action>
+    </div>
   </oc-footer>
 </ng-container>

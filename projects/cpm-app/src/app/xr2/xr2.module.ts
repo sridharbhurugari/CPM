@@ -22,7 +22,7 @@ import { Xr2QueueGroupingPageComponent } from './xr2-queue-grouping-page/xr2-que
 import { Xr2QueueDetailsPageComponent } from './xr2-queue-details-page/xr2-queue-details-page.component';
 import { Xr2GroupingQueueComponent } from './xr2-grouping-queue/xr2-grouping-queue.component';
 import { Xr2DetailsQueueComponent } from './xr2-details-queue/xr2-details-queue.component';
-import { Xr2QueueGroupingHeaderComponent } from './xr2-queue-grouping-header/xr2-queue-grouping-header.component';
+import { Xr2DeviceSelectionHeaderComponent } from './xr2-device-selection-header/xr2-device-selection-header.component';
 import { Xr2QueueDetailsHeaderComponent } from './xr2-queue-details-header/xr2-queue-details-header.component';
 import { Xr2QueueButtonPanelComponent } from './xr2-queue-button-panel/xr2-queue-button-panel.component';
 import { Xr2QueuePageComponent } from './xr2-queue-page/xr2-queue-page.component';
@@ -37,6 +37,8 @@ import { ProgressAnimationModule } from '@omnicell/webcorecomponents';
 import { UtilizationDetailsPageComponent } from './utilization-details-page/utilization-details-page.component';
 import { DetailsExpiringThisMonthComponent } from './utilization-details-expiring-this-month/utilization-details-expiring-this-month.component';
 import { DetailsExpiredComponent } from './utilization-details-expired/utilization-details-expired.component';
+import { Xr2InvoicesPageComponent } from './xr2-invoices-page/xr2-invoices-page.component';
+import { Xr2InvoicesQueueComponent } from './xr2-invoices-queue/xr2-invoices-queue.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,7 @@ import { DetailsExpiredComponent } from './utilization-details-expired/utilizati
     Xr2QueueDetailsPageComponent,
     Xr2GroupingQueueComponent,
     Xr2DetailsQueueComponent,
-    Xr2QueueGroupingHeaderComponent,
+    Xr2DeviceSelectionHeaderComponent,
     Xr2QueueDetailsHeaderComponent,
     Xr2QueueButtonPanelComponent,
     Xr2QueuePageComponent,
@@ -68,6 +70,8 @@ import { DetailsExpiredComponent } from './utilization-details-expired/utilizati
     UtilizationDetailsPageComponent,
     DetailsExpiringThisMonthComponent,
     DetailsExpiredComponent,
+    Xr2InvoicesPageComponent,
+    Xr2InvoicesQueueComponent,
   ],
   imports: [
     CommonModule,

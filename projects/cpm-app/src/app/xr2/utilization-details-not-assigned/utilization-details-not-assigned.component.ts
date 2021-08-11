@@ -22,9 +22,9 @@ export class DetailsNotAssignedComponent implements OnInit {
   gridData$: Observable<IUnassignedMedicationInfoDetail[]>;
   searchTextFilter: string;
   searchFields = ['ItemCode'];
-  currentSortPropertyName: string = 'ItemCode, PocketTypeDescription';
+  currentSortPropertyName: string = 'ItemCode';
 
-  ngUnsubscribe = new Subject();  
+  ngUnsubscribe = new Subject();
 
   constructor( utilizationDetailsService: UtilizationDetailsService,
     devicesService: DevicesService,

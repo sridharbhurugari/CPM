@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { OcapHttpHeadersService } from '../../shared/services/ocap-http-headers.service';
 import { OcapUrlBuilderService } from '../../shared/services/ocap-url-builder.service';
 import { IPrepackVerificationQueueItem } from '../data-contracts/i-prepack-verification-queue-item';
+import { IPrepackVerificationQueueDetail } from '../data-contracts/i-prepack-verification-queue-detail';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,27 @@ export class PrepackVerificationService {
     return this.httpClient.get<IPrepackVerificationQueueItem[]>(url, {
       headers: this.ocapHttpHeadersService.getHeaders()
     });
-  } 
+  }
 
-  deletePrepackQueueVerification(queueId: number) {    
+  deletePrepackQueueVerification(queueId: number) {
     var url = this.ocapUrlBuilderService.buildUrl(`/api/PrepackVerification/${queueId}`);
     var headers = this.ocapHttpHeadersService.getHeaders();
     return this.httpClient.delete(url, { headers: headers });
+  }
+
+  getDetail(prepackVerificationQueueId: number): Observable<IPrepackVerificationQueueDetail> {
+    var encodedPrepackVerificationQueueId = encodeURIComponent(prepackVerificationQueueId);
+    var url = this.ocapUrlBuilderService.buildUrl(`/api/VerifyPrepackQueueItem/${ encodedPrepackVerificationQueueId }`);
+    const ret =this.httpClient.get<IPrepackVerificationQueueDetail>(url, {
+      headers: this.ocapHttpHeadersService.getHeaders()
+    });
+    return ret;
+  }
+
+  approve(prepackVerificationQueueDetail: IPrepackVerificationQueueDetail) {
+    var url = this.ocapUrlBuilderService.buildUrl('/api/VerifyPrepackQueueItem/Approve');
+    var headers = this.ocapHttpHeadersService.getHeaders();
+    const ret = this.httpClient.post(url, prepackVerificationQueueDetail, { headers: headers });
+    return ret;
   }
 }

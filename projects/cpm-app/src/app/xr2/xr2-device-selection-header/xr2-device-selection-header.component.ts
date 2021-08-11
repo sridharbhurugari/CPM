@@ -1,8 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { SearchBoxComponent, SingleselectRowItem, SingleselectComponent } from '@omnicell/webcorecomponents';
+import { SearchBoxComponent, SingleselectRowItem } from '@omnicell/webcorecomponents';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { WindowService } from '../../shared/services/window-service';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { DevicesService } from '../../api-core/services/devices.service';
@@ -10,17 +9,19 @@ import { TranslateService } from '@ngx-translate/core';
 import { IXr2QueuePageConfiguration } from '../../shared/interfaces/i-xr2-queue-page-configuration';
 
 @Component({
-  selector: 'app-xr2-queue-grouping-header',
-  templateUrl: './xr2-queue-grouping-header.component.html',
-  styleUrls: ['./xr2-queue-grouping-header.component.scss']
+  selector: 'app-xr2-device-selection-header',
+  templateUrl: './xr2-device-selection-header.component.html',
+  styleUrls: ['./xr2-device-selection-header.component.scss']
 })
 
-export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
+export class Xr2DeviceSelectionHeaderComponent implements OnInit, AfterViewInit {
 
   @Output() searchTextFilterEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectionChangedEvent: EventEmitter<SelectableDeviceInfo> = new EventEmitter<SelectableDeviceInfo>();
 
   @Input() savedPageConfiguration: IXr2QueuePageConfiguration;
+  @Input() hintText: string;
+  @Input() showAllDevicesDropdownItem: boolean = true;
 
   private _selectedDeviceInformation: SelectableDeviceInfo;
 
@@ -37,19 +38,28 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     return this._selectedDeviceInformation;
   }
 
-
   @ViewChild('searchBox', {
      static: true
    }) searchElement: SearchBoxComponent;
 
 
-  constructor(private windowService: WindowService,
-              private ocapHttpConfigurationService: OcapHttpConfigurationService,
+  constructor(private ocapHttpConfigurationService: OcapHttpConfigurationService,
               private devicesService: DevicesService,
               private translateService: TranslateService) { }
 
   ngOnInit() {
-      this.getAllActiveXr2Devices();
+    this.getAllActiveXr2Devices();
+  }
+
+  ngAfterViewInit() {
+    this.configureSearchHandler();
+  }
+
+  /* istanbul ignore next */
+  fromWPFInit() {
+    this.searchElement.clearSearch(null);
+    this.ngOnInit();
+    this.ngAfterViewInit();
   }
 
   async getAllActiveXr2Devices() {
@@ -66,7 +76,9 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
       );
       newList.push(defaultFound);
     } else {
-      this.getAllDevicesInfo();
+      if(this.showAllDevicesDropdownItem) {
+        this.getAllDevicesInfo();
+      }
       this.deviceInformationList.forEach((selectableDeviceInfo) => {
         const selectRow = new SingleselectRowItem(
           selectableDeviceInfo.Description,
@@ -94,7 +106,7 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     if (defaultFound) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem(defaultFound.value);
       this.loadSelectedDeviceInformation(defaultFound.value);
-    } else {
+    } else if(this.showAllDevicesDropdownItem) {
       this.defaultDeviceDisplayItem = this.getSingleSelectRowItem('0');
       this.loadSelectedDeviceInformation('0');
     }
@@ -118,8 +130,21 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     this.loadSelectedDeviceInformation($event.value);
   }
 
-  ngAfterViewInit() {
-    this.configureSearchHandler();
+  getAllDevicesInfo() {
+    let translatedLabel = '';
+    this.translateService.get('XR2_ALL_DEVICES').subscribe((res: string) => {
+    translatedLabel = res;
+    });
+    let allDevicesInfo: SelectableDeviceInfo;
+    allDevicesInfo = {
+      DeviceId: 0,
+      Description: translatedLabel,
+      DefaultOwnerName: '',
+      DeviceTypeId: '',
+      CurrentLeaseHolder: undefined,
+      IsActive: true
+    };
+    this.deviceInformationList.push(allDevicesInfo);
   }
 
   private configureSearchHandler() {
@@ -151,22 +176,5 @@ export class Xr2QueueGroupingHeaderComponent implements OnInit, AfterViewInit {
     return this.outputDeviceDisplayList.find(
       (x) => x.value === deviceId
     );
-  }
-
- getAllDevicesInfo() {
-    let translatedLabel = '';
-    this.translateService.get('XR2_ALL_DEVICES').subscribe((res: string) => {
-    translatedLabel = res;
-    });
-    let allDevicesInfo: SelectableDeviceInfo;
-    allDevicesInfo = {
-      DeviceId: 0,
-      Description: translatedLabel,
-      DefaultOwnerName: '',
-      DeviceTypeId: '',
-      CurrentLeaseHolder: undefined,
-      IsActive: true
-    };
-    this.deviceInformationList.push(allDevicesInfo);
   }
 }
