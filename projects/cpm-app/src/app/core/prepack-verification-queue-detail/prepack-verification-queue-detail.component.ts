@@ -7,7 +7,7 @@ import { IPrepackVerificationQueueDetail } from "../../api-core/data-contracts/i
 import { PrepackVerificationService } from "../../api-core/services/prepack-verification.service";
 import { OcapHttpConfigurationService } from "../../shared/services/ocap-http-configuration.service";
 import { Location } from "@angular/common";
-import { PopupDialogService, PopupDialogProperties, PopupDialogType } from "@omnicell/webcorecomponents";
+import { PopupDialogComponent, PopupDialogService, PopupDialogProperties, PopupDialogType } from "@omnicell/webcorecomponents";
 import { TranslateService } from "@ngx-translate/core";
 import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog.service";
 @Component({
@@ -17,53 +17,75 @@ import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog
 })
 export class PrepackVerificationQueueDetailComponent implements OnInit {
   data$: Observable<IPrepackVerificationQueueDetail>;
+  verificationExists: boolean = false;  
   prepackVerificationQueueDetail: IPrepackVerificationQueueDetail;
   userLocale: string;
   validatedQuantity: number = 1;
   time: Date = new Date();
   timeIntervalId: any;
+  displayedDialog: PopupDialogComponent;  
 
-  constructor(
+  constructor(    
     private prepackVerificationService: PrepackVerificationService,
     ocapConfigService: OcapHttpConfigurationService,
     private router: Router,
     activatedRoute: ActivatedRoute,
     private location: Location,
-    private simpleDialogService: SimpleDialogService,
+    private simpleDialogService: SimpleDialogService,    
   ) {
+
     this.timeIntervalId = setInterval(() => {
       this.time = new Date();
     }, 1);
+
     this.userLocale = ocapConfigService.get().userLocale;
+
     const prepackVerificationQueueId: number = Number.parseInt(
       activatedRoute.snapshot.paramMap.get("prepackVerificationQueueId")
     );
+
     this.data$ = prepackVerificationService
       .getDetail(prepackVerificationQueueId)
       .pipe(
         map((data) => {
-          this.validatedQuantity = data.QuantityToPackage;
-          this.prepackVerificationQueueDetail = data;
-          return data;
+          if (data != null) {
+            this.verificationExists = true;
+            this.validatedQuantity = data.QuantityToPackage;
+            this.prepackVerificationQueueDetail = data;            
+            return data;
+          }                   
         }),
         shareReplay(1)
-      );
+      );            
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.data$.subscribe(x => {
+      if (!this.verificationExists){
+        this.informAndReturn();
+      }
+    })
+  }
 
   onBackClick() {
     this.location.back();
   }
 
-  approve() {
-    this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;
-    this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
-      success => {
-        this.router.navigate(["core/prepackVerification"]);
-      }, error => {
-        this.displayFailedToApproveError();
-      });
+  approve() {  
+    this.prepackVerificationService.getDetail(this.prepackVerificationQueueDetail.PrepackVerificationQueueId).subscribe(x => {
+      if (x == null) {
+        this.informAndReturn();
+      }
+      else {
+        this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;    
+        this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
+            success => {
+              this.router.navigate(["core/prepackVerification"]);
+            }, error => {
+              this.displayFailedToApproveError();
+          });
+      }       
+    });        
   }
 
   delete() {
@@ -78,4 +100,11 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
   displayFailedToApproveError() {
     this.simpleDialogService.displayErrorOk("PRINTFAILED_HEADER_TEXT", "FAILEDTOSAVE_BODY_TEXT");
   }
+
+  informAndReturn() {    
+    this.simpleDialogService.getWarningOkPopup("MANUAL_PREPACK_VERIFICATION_COMPLETED_TITLE","MANUAL_PREPACK_VERIFICATION_COMPLETED_MESSAGE").subscribe((dialog) => {
+      this.displayedDialog = dialog;
+      dialog.didClickPrimaryButton.subscribe(() => this.router.navigate(["core/prepackVerification"]))
+    });           
+  }    
 }
