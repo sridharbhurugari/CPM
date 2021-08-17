@@ -235,6 +235,7 @@ export class UtilizationPageComponent implements OnInit {
   }
 
   setPrintInventoryButton(): void {
+    this.requestStatus = "complete";
      let reportPickListLines$ = this.utilizationService.getXR2ReportData(this.selectedDeviceInformation.DeviceId).pipe(map((x) => {
       return x.map((p) => new XR2InventoryLists(p));}),shareReplay(1));
 
