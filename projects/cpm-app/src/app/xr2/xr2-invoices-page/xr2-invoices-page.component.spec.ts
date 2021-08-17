@@ -158,6 +158,10 @@ describe('Xr2InvoicesPageComponent', () => {
   });
 
   describe('Events', () => {
+    beforeEach(() => { 
+      xr2RestockTrayService.getRestockTrayById = jasmine.createSpy('getRestockTrayById').and.returnValue(of(null));
+    });
+    
     it('should call wpf controller on back click event', () => {
       component.onBackEvent();
       expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
