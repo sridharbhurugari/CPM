@@ -11,12 +11,15 @@ import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
 import { IRestockTray } from '../../api-xr2/data-contracts/i-restock-tray';
+import { ITrayType } from '../../api-xr2/data-contracts/i-tray-type';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
 import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
+import { TrayTypes } from '../../shared/constants/tray-types';
+import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { LoggerConfiguration } from '../../shared/model/logger-configuration';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
@@ -68,6 +71,11 @@ describe('Xr2InvoicesPageComponent', () => {
     IsInvoiceTray: false,
     InvoiceOriginScreen: false,
   } as IRestockTray;
+
+  let trayTypeDevice1 = {TrayPrefix: 'C0', DeviceId: 1} as ITrayType
+  let trayTypeDevice2 = {TrayPrefix: 'C0', DeviceId: 2} as ITrayType
+  let trayTypesArray : ITrayType[] = [trayTypeDevice1, trayTypeDevice2];
+  let trayTypes = { $values: trayTypesArray} as NonstandardJsonArray<ITrayType>;
 
   barcodeScanService = {
     reset: jasmine.createSpy('reset'),
@@ -133,6 +141,7 @@ describe('Xr2InvoicesPageComponent', () => {
     })
     .compileComponents();
     xr2RestockTrayService = TestBed.get(Xr2RestockTrayService);
+    xr2RestockTrayService.getTrayTypes = jasmine.createSpy('getTrayTypes').and.returnValue(of(trayTypes));
   }));
 
   beforeEach(() => {
@@ -150,7 +159,6 @@ describe('Xr2InvoicesPageComponent', () => {
   describe('Events', () => {
     it('should call wpf controller on back click event', () => {
       component.onBackEvent();
-
       expect(wpfActionControllerService.ExecuteBackAction).toHaveBeenCalledTimes(1);
     });
 
@@ -250,9 +258,8 @@ describe('Xr2InvoicesPageComponent', () => {
     });
   });
 
-  describe('Scanning with Noral Restock Tray Data', () => {
+  describe('Scanning with Normal Restock Tray Data', () => {
     beforeEach(() => {
-      
       xr2RestockTrayService.getRestockTrayById = jasmine.createSpy('getRestockTrayById').and.returnValue(of(newRestockTray));
     });
 
@@ -274,7 +281,7 @@ describe('Xr2InvoicesPageComponent', () => {
       expect(wpfActionControllerService.ExecuteActionNameWithData).toHaveBeenCalledWith(WpfActionPaths.XR2EditTrayPath, newRestockTray); 
     });
 
-    it('should not navigae if selected device does not match', () => {
+    it('should not navigate if selected device does not match', () => {
   
       let barcodeScanned = 'C00001'
 
