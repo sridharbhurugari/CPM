@@ -231,7 +231,7 @@ export class UtilizationPageComponent implements OnInit {
     this.setUtilizationService();
     this.setPrintInventoryButton();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
-    
+
   }
 
   setPrintInventoryButton(): void {
@@ -516,7 +516,7 @@ export class UtilizationPageComponent implements OnInit {
     items: XR2InventoryLists[],
     colDefinitions: ITableColumnDefintion<XR2InventoryLists>[],
     element: number
-  ) { 
+  ) {
     if(items.length > 0 )
     {
     let sortedXR2Inv = of(
@@ -604,6 +604,16 @@ export class UtilizationPageComponent implements OnInit {
       .subscribe();
   }
 
+  disableReportButton(): boolean {
+    if (
+  this.requestStatus !== 'complete'
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   displayPrintFailedDialog() {
     this.simpleDialogService.displayErrorOk(
       "PRINT_FAILED_DIALOG_TITLE",
@@ -671,6 +681,7 @@ export class UtilizationPageComponent implements OnInit {
     ]);
   }
 }
+
 export namespace UtilizationPageComponent {
   export enum ListState {
     MakingDataRequest = "MakingDataRequest", // Request data from XR2. Data will arive as an event

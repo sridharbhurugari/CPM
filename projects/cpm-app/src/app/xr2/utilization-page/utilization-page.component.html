@@ -67,14 +67,14 @@
             {{xr2StorageCapacityDisplay.PocketTypeDefinition}}
           </div>
             <a (click)="toastIconClicked()">
-              <div style="padding-right: 80px; padding-bottom: 40px;" *ngIf="xr2StorageCapacityDisplay.IsOverStock">       
+              <div style="padding-right: 80px; padding-bottom: 40px;" *ngIf="xr2StorageCapacityDisplay.IsOverStock">
                 <ng-container part="icon">
                   <app-validation-icon
                     iconString="warning" toastTileResourceKey="" toastMsgResourceKey="TRAY_TYPE_OVERSTOCK_MESSAGE"
                     toastType="warn" [iconWidth]="30"
                     [iconHeight]="30" iconTheme="warning">
                   </app-validation-icon>
-                </ng-container> 
+                </ng-container>
               </div>
             </a>
         </div>
@@ -113,7 +113,7 @@
     <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div>
     &nbsp;
     <div class="ocrightalign">
-      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="requestStatus != 'complete'" *ngIf="hasActiveXR2Devices()"
+      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="disableReportButton" *ngIf="hasActiveXR2Devices()"
       [buttonIcon]="requestStatus === 'printing' ? 'spin' : 'print'" (click)="printXR2Inventory()" ></oc-button-action>
     </div>
   </oc-footer>
