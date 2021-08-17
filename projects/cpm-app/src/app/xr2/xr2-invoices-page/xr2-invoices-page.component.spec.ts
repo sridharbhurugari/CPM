@@ -77,16 +77,17 @@ describe('Xr2InvoicesPageComponent', () => {
   let trayTypesArray : ITrayType[] = [trayTypeDevice1, trayTypeDevice2];
   let trayTypes = { $values: trayTypesArray} as NonstandardJsonArray<ITrayType>;
 
-  barcodeScanService = {
-    reset: jasmine.createSpy('reset'),
-    BarcodeScannedSubject: new Subject(),
-  };
-
-  barcodeDataService ={
-    getData: jasmine.createSpy('getData').and.returnValue(() => of (barcodeData))
-  }
-
   beforeEach(async(() => {
+
+    barcodeScanService = {
+      reset: jasmine.createSpy('reset'),
+      BarcodeScannedSubject: new Subject(),
+    };
+  
+    barcodeDataService ={
+      getData: jasmine.createSpy('getData').and.returnValue(of(barcodeData))
+    }
+
     wpfActionControllerService = { 
       ExecuteBackAction: jasmine.createSpy('ExecuteBackAction'), 
       ExecuteActionNameWithData: jasmine.createSpy('ExecuteActionNameWithData')
