@@ -26,7 +26,7 @@ class MockSearchBox {
   sendSearchData(data: string) { return of() }
 }
 
-fdescribe('Xr2DeviceSelectionHeaderComponent', () => {
+describe('Xr2DeviceSelectionHeaderComponent', () => {
   let component: Xr2DeviceSelectionHeaderComponent;
   let fixture: ComponentFixture<Xr2DeviceSelectionHeaderComponent>;
   let ocapConfig: IOcapHttpConfiguration;

@@ -6,6 +6,7 @@
   "AUTOFILL": "Remplissage automatique",
   "AUTOPACKAGER": "Emballeur automatique",
   "APPROVE": "Approuver",
+  "VERIFY": "Verify",
   "APPROVE_ALL": "Approuver tout",
   "APPROVE_ALL_DIALOG_MESSAGE": "Cette action approuvera TOUTES les sélections pour la destination ne nécessitant pas de numérisation.<br /><br />Voulez-vous TOUT approuver?",
   "BACK": "Retour",
@@ -360,5 +361,16 @@
   "EXPIRED_QTY":"QTÉ expirée",
   "EXPIRING_QTY":"QTÉ arrivant à expiration",
   "XR2_ITEM_CODE":"Code produit XR2 ",
-  "ON_DEMAND":"On-Demand"
+  "PREPACK_VERIFICATION":"Vérification manuelle de l'emballeur",
+  "MANUFACTURER":"Fabricant",
+  "LOT_NUMBER":"Numéro de lot",
+  "PREPACK_LOT_NUMBER":"Numéro de lot du préemballage",
+  "PREPACK_MANUFACTURER_EXPIRATION":"Expiration du fabricant",
+  "PREPACK_PACKAGE_EXPIRATION":"Expiration de l'emballage",
+  "PREPACK_PACKAGED_QUANTITY":"Quantité de préemballage",
+  "PREPACK_PACKAGED_USER":"Emballé par",
+  "PREPACK_DRUG_ID":"ID du médicament (NDC)",
+  "ON_DEMAND":"Sur demande",
+  "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_TITLE": "Vérification non requise",
+  "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_MESSAGE": "Vérification non requise pour ce produit"
 }
