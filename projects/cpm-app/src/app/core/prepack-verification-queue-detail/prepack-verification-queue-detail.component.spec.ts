@@ -68,6 +68,7 @@ describe("PrepackVerificationQueueDetailComponent", () => {
       .and.returnValue(of(queueDetail)),
       approve: jasmine
       .createSpy("approve")    
+      .and.returnValue(of(true))
     };    
 
     locationMock = {

@@ -72,20 +72,18 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
   }
 
   approve() {  
-    this.prepackVerificationService.getDetail(this.prepackVerificationQueueDetail.PrepackVerificationQueueId).subscribe(x => {
-      if (x == null) {
-        this.informAndReturn();
-      }
-      else {
-        this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;    
-        this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
-            success => {
-              this.router.navigate(["core/prepackVerification"]);
-            }, error => {
-              this.displayFailedToApproveError();
-          });
-      }       
-    });        
+    this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;    
+    this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
+      success => {
+        if (success == false){
+          this.informAndReturn();
+        } 
+        else {
+          this.router.navigate(["core/prepackVerification"]);
+        }        
+      }, error => {
+        this.displayFailedToApproveError();
+    });       
   }
 
   delete() {

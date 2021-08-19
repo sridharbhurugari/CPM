@@ -39,10 +39,9 @@ export class PrepackVerificationService {
     return ret;
   }
 
-  approve(prepackVerificationQueueDetail: IPrepackVerificationQueueDetail) {
+  approve(prepackVerificationQueueDetail: IPrepackVerificationQueueDetail): Observable<boolean> {
     var url = this.ocapUrlBuilderService.buildUrl('/api/VerifyPrepackQueueItem/Approve');
     var headers = this.ocapHttpHeadersService.getHeaders();
-    const ret = this.httpClient.post(url, prepackVerificationQueueDetail, { headers: headers });
-    return ret;
+    return this.httpClient.post<boolean>(url, prepackVerificationQueueDetail, { headers: headers });      
   }
 }
