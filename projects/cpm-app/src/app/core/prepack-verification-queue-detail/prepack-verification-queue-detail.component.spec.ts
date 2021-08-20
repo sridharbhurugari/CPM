@@ -56,8 +56,7 @@ describe("PrepackVerificationQueueDetailComponent", () => {
     GenericNameFormatted: "GenericNameFormatted",
     BrandNameFormatted: "BrandNameFormatted",
     UnitOfIssue: "Each"
-  } as IPrepackVerificationQueueDetail ;
-
+  } as IPrepackVerificationQueueDetail ;  
 
   beforeEach(async () => {
     router = { navigate: () => { } };
@@ -67,7 +66,10 @@ describe("PrepackVerificationQueueDetailComponent", () => {
       getDetail: jasmine
       .createSpy("getDetail")
       .and.returnValue(of(queueDetail)),
-    };
+      approve: jasmine
+      .createSpy("approve")    
+      .and.returnValue(of(true))
+    };    
 
     locationMock = {
       back: jasmine
@@ -75,7 +77,8 @@ describe("PrepackVerificationQueueDetailComponent", () => {
     };
 
     simpleDialogService = {
-      displayErrorOk: jasmine.createSpy('displayErrorOk')
+      displayErrorOk: jasmine.createSpy('displayErrorOk'),
+      getWarningOkPopup: jasmine.createSpy('getWarningOkPopup')
     };
 
     await TestBed.configureTestingModule({
@@ -103,11 +106,10 @@ describe("PrepackVerificationQueueDetailComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PrepackVerificationQueueDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-
+    fixture.detectChanges();    
   });
 
-  describe('should create', () => {
+    describe('should create', () => {
     it('should ...', () => {
       expect(component).toBeTruthy();
     });
@@ -118,6 +120,20 @@ describe("PrepackVerificationQueueDetailComponent", () => {
 
         expect(locationMock.back).toHaveBeenCalled();
       });
+    });
+
+    describe('Data on init', () => {
+      it('should not display warning popup', () => {
+        component.ngOnInit();
+        expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledTimes(0);
+      })
+    });   
+
+    describe('Verify Click', () => {
+      it('should not display warning popup', () => {
+        component.approve();
+        expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledTimes(0);
+      })
     });
 
   });
