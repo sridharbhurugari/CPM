@@ -35,6 +35,7 @@ import { CpDataCardComponent } from './components/cp-data-card/cp-data-card.comp
 import { QuantityEditorPopupComponent } from './components/quantity-editor-popup/quantity-editor-popup.component';
 import { SourceLocationDropdownPopupComponent } from './components/source-location-dropdown-popup/source-location-dropdown-popup.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { GridPopupComponent } from './components/grid-popup/grid-popup.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     CpDataCardComponent,
     QuantityEditorPopupComponent,
     SourceLocationDropdownPopupComponent,
+    GridPopupComponent,
   ],
   imports: [
     ButtonActionModule,
@@ -110,13 +112,15 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     CpGeneralHeaderComponent,
     CpDataCardComponent,
     QuantityEditorPopupComponent,
-    SourceLocationDropdownPopupComponent
+    SourceLocationDropdownPopupComponent,
+    GridPopupComponent
   ],
   entryComponents: [
     TextResultPopupComponent,
     ConfirmPopupComponent,
     SpinnerPopupComponent,
     DropdownPopupComponent,
+    GridPopupComponent,
     QuantityEditorPopupComponent,
     SourceLocationDropdownPopupComponent
   ],

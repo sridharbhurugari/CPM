@@ -1,0 +1,39 @@
+<oc-popupwindow-layout [windowFooter]="true">
+  <ng-container class="ocwindowheader">
+    <div>{{data.popuptitle | translate}}</div>
+  </ng-container>
+  <ng-container class="ocwindowcontent">
+    <div class="body">
+      <div class="details-1">
+        <div class="grid-header">Item</div>
+        <div class="r1-c1">
+          Millnaciphran 25mg SPLiTab
+          SAVELLA
+        </div>
+        <div class="grid-header">Item Id</div>
+        <div class="r1-c2">
+          10004222
+        </div>
+      </div>
+      <div class="details-2">
+        <div class="grid-header">In Progress Trays</div>
+        <div class="r1-c1">
+          C0001, C0002, C0003
+        </div>
+      </div>
+      <div class="details-grid">
+        <div class="grid-header">Date</div>
+        <div class="row-1">10/10/22</div>
+        <div class="grid-header">Id</div>
+        <div class="grid-header">Qty Recieved</div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container class="ocwindowfooter">
+  <oc-footer>
+    <div class="ocrightalign">
+      <oc-button-action [buttonText]="'OK' | translate" (click) ="continue()"></oc-button-action>
+    </div>
+  </oc-footer>
+</ng-container>
+</oc-popupwindow-layout>

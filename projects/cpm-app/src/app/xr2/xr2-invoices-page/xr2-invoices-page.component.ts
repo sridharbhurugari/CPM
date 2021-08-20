@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType, PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
-import { filter, flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { filter, flatMap, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
@@ -13,10 +13,13 @@ import { ITrayType } from '../../api-xr2/data-contracts/i-tray-type';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
 import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
+import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
+import { GridPopupComponent } from '../../shared/components/grid-popup/grid-popup.component';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { groupAndSum } from '../../shared/functions/groupAndSum';
+import { IGridPopupData } from '../../shared/model/i-grid-popup-data';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
@@ -80,6 +83,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private xr2RestockTrayService: Xr2RestockTrayService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
+    private popupWindowService: PopupWindowService
   ) { this.setupDataRefresh(); }
 
   ngOnInit() {
@@ -110,7 +114,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     }
   }
 
-  onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
+  onDisplayYesNoDialogEvent(stocklist: IXr2Stocklist): void {
     this.clearDisplayedDialog();
     this.displayDeleteDialog().subscribe(result => {
       if (!result) {
@@ -120,15 +124,27 @@ export class Xr2InvoicesPageComponent implements OnInit {
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
         this._componentName + ' delete clicked - deleting current invoice item');
 
-      this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
+      this.invoiceService.deleteInvoice(stocklist).subscribe((success) => {
         if(!success) {
           this.handleDeleteInvoiceError();
         }
-        this.handleDeleteInvoiceSuccess(invoice);
+        this.handleDeleteInvoiceSuccess(stocklist);
       }, (err) => {
         this.handleDeleteInvoiceError(err);
       });
     });
+  }
+
+  onDetailsClickEvent(stocklist: IXr2Stocklist) {
+    const properties = new PopupWindowProperties();
+    const data: IGridPopupData = {
+      popuptitle: "INVOICE_ITEM_DETAILS"
+    };
+
+    properties.data = data;
+
+    let component = this.popupWindowService.show(GridPopupComponent, properties) as unknown as GridPopupComponent;
+    component.dismiss.pipe(take(1)).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -167,7 +183,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
         this.createRestockTray(trayId);
         return;
       }
-      this.editRestockTray(restockTray);       
+      this.editRestockTray(restockTray);
     });
   }
 
@@ -257,7 +273,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
          return;
        }
 
-      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){  
+      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){
         this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
           takeUntil(this.ngUnsubscribe)
         ).subscribe((scannedBarcode: string) =>
