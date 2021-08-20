@@ -134,7 +134,6 @@ export class UtilizationPageComponent implements OnInit {
       this.selectedDeviceInformation.DeviceId = 0;
     }
     this.setUtilizationService();
-    this.setPrintInventoryButton();
     this.refreshData();
   }
   /* istanbul ignore next */
@@ -232,21 +231,19 @@ export class UtilizationPageComponent implements OnInit {
     this.setUtilizationService();
     this.setPrintInventoryButton();
     this.requestDeviceUtilizationPocketSummaryInfo$.subscribe();
-    
+
   }
 
   setPrintInventoryButton(): void {
+    this.requestStatus = "none";
      let reportPickListLines$ = this.utilizationService.getXR2ReportData(this.selectedDeviceInformation.DeviceId).pipe(map((x) => {
       return x.map((p) => new XR2InventoryLists(p));}),shareReplay(1));
 
       reportPickListLines$.subscribe((p) => {
          this.invReportItems = p as XR2InventoryLists[];
          if(this.invReportItems && this.invReportItems.length !== 0){
-          this.requestStatus = "none";
-        }
-        else{
           this.requestStatus = "complete";
-        }   
+        }
       });
   }
 
@@ -519,7 +516,7 @@ export class UtilizationPageComponent implements OnInit {
     items: XR2InventoryLists[],
     colDefinitions: ITableColumnDefintion<XR2InventoryLists>[],
     element: number
-  ) { 
+  ) {
     if(items.length > 0 )
     {
     let sortedXR2Inv = of(
@@ -607,6 +604,16 @@ export class UtilizationPageComponent implements OnInit {
       .subscribe();
   }
 
+  disableReportButton(): boolean {
+    if (
+  this.requestStatus !== 'complete'
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   displayPrintFailedDialog() {
     this.simpleDialogService.displayErrorOk(
       "PRINT_FAILED_DIALOG_TITLE",
@@ -674,6 +681,7 @@ export class UtilizationPageComponent implements OnInit {
     ]);
   }
 }
+
 export namespace UtilizationPageComponent {
   export enum ListState {
     MakingDataRequest = "MakingDataRequest", // Request data from XR2. Data will arive as an event
