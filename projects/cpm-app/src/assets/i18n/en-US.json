@@ -114,7 +114,7 @@
   "ITEM_INVALID_FOR_DESTINATION_MESSAGE": "The item scanned is invalid for this destination. <br/><br/> {{itemFormattedGenericName}} <br/> {{itemTradeName}}",
   "INVALID_SCAN_TITLE": "Invalid Scan",
   "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE": "Invoice items cannot be added to pending return trays.",
-  "INOVICE_DATE": "Inoice Date",
+  "INOVICE_DATE": "Invoice Date",
   "INOVICE_ID": "Invoice ID",
   "ITEM_SCAN_TITLE": "Item Scan",
   "ITEM_QUANTITY": "Item Quantity",
