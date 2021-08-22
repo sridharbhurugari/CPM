@@ -59,11 +59,11 @@ export class GridPopupComponent<T> implements OnInit, AfterViewChecked, IPopupWi
     return index % 2 === 0 ? this._whiteHex: this._lightGreyHex;
   }
 
-  private isGridRendered() {
+  private isGridRendered(): boolean {
     return (this.gridBody && this.gridHeader && this.gridBody.nativeElement.clientHeight !== 0);
   }
 
-  private resizeGrid() {
+  private resizeGrid(): void {
     if(!this.gridBody || !this.gridHeader || this.gridBody.nativeElement.clientHeight === 0) return;
 
     const isGridBodyScrollBar = this.gridBody.nativeElement.scrollHeight > this.gridBody.nativeElement.clientHeight;
