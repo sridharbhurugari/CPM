@@ -92,6 +92,7 @@
     .grid-body {
       display: grid;
       overflow-y: auto;
+      overflow-x: hidden;
       grid-auto-rows: 30px;
       height: calc(100% - 30px);
 

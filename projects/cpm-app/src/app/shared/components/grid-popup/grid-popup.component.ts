@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { IPopupWindowContainer } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
 import { IGridPopupData } from '../../model/i-grid-popup-data';
@@ -8,18 +8,30 @@ import { IGridPopupData } from '../../model/i-grid-popup-data';
   templateUrl: './grid-popup.component.html',
   styleUrls: ['./grid-popup.component.scss']
 })
-export class GridPopupComponent<T> implements OnInit, IPopupWindowContainer {
+export class GridPopupComponent<T> implements OnInit, AfterViewChecked, IPopupWindowContainer {
 
   @Output() dismiss: Subject<boolean> = new Subject<boolean>();
 
+  @ViewChild('gridHeader', {read: ElementRef, static:false}) gridHeader: ElementRef
+  @ViewChild('gridBody', {read: ElementRef, static:false}) gridBody: ElementRef
+
   data: IGridPopupData<T>; // T is the type that will be used for the grid
 
-  private _whiteHex = "#FFFFFF";
-  private _lightGreyHex = "#E9E9E9";
+  private readonly _whiteHex = "#FFFFFF";
+  private readonly _lightGreyHex = "#E9E9E9";
+  private readonly _scrollBarWidth = "58px";
+  private _gridSizeChecked = false;
 
-  constructor() { }
+  constructor(private renderer: Renderer2) { }
 
   ngOnInit() {
+  }
+
+  ngAfterViewChecked() {
+    if(!this._gridSizeChecked && this.isGridRendered()) {
+      this.resizeGrid();
+      this._gridSizeChecked = true;
+    }
   }
 
   cancel(): void {
@@ -45,5 +57,18 @@ export class GridPopupComponent<T> implements OnInit, IPopupWindowContainer {
 
   getRowColor(index): string {
     return index % 2 === 0 ? this._whiteHex: this._lightGreyHex;
+  }
+
+  private isGridRendered() {
+    return (this.gridBody && this.gridHeader && this.gridBody.nativeElement.clientHeight !== 0);
+  }
+
+  private resizeGrid() {
+    if(!this.gridBody || !this.gridHeader || this.gridBody.nativeElement.clientHeight === 0) return;
+
+    const isGridBodyScrollBar = this.gridBody.nativeElement.scrollHeight > this.gridBody.nativeElement.clientHeight;
+    if( isGridBodyScrollBar) {
+      this.renderer.setStyle(this.gridHeader.nativeElement, 'padding-right', this._scrollBarWidth);
+    }
   }
 }

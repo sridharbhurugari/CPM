@@ -22,14 +22,14 @@
       </div>
       <div class="details-grid">
         <!-- Create dynamic headers for grid -->
-        <div class="grid-header"
+        <div #gridHeader class="grid-header"
         [ngStyle]="{'grid-template-columns': this.getGridColumnWidths()}">
             <div class="column-header" [ngStyle]="{'grid-column': i + 1, 'grid-row': 1}"  *ngFor="let column of data.columnDefinition; let i = index">
               {{column.headerResourceKey | translate}}
             </div>
         </div>
         <!-- Create dynamic rows for grid -->
-        <div class="grid-body" [ngStyle]="{'grid-template-columns': this.getGridColumnWidths()}">
+        <div #gridBody class="grid-body" [ngStyle]="{'grid-template-columns': this.getGridColumnWidths()}">
           <ng-container *ngFor= "let row of data.gridData; let i = index">
             <ng-container *ngFor="let column of data.columnDefinition; let j = index">
               <div class = "row" [ngStyle]="{'grid-column': j + 1, 'grid-row': i + 1, 'background': getRowColor(i)}">{{row[column.cellPropertyName]}}</div>

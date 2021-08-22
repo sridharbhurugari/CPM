@@ -68,8 +68,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
   displayedDialog: PopupDialogComponent;
   columnDef: IGridColumnDefinition<IXr2Invoice>[] = [
     {headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
-    {headerResourceKey: "DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "15%"},
-    {headerResourceKey: "ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "20%"},
+    {headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "15%"},
+    {headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "20%"},
     {headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "60%"},
   ]
 
@@ -160,7 +160,15 @@ export class Xr2InvoicesPageComponent implements OnInit {
         {Id: '2', Date: '10/10/21', QtyReceived: 100},
         {Id: '3', Date: '10/10/21', QtyReceived: 50},
         {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '5', Date: '10/10/21', QtyReceived: 1},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
       ],
       showPrimaryButton: true,
       showSecondaryButton: false,
