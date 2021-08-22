@@ -5,6 +5,7 @@ import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, flatMap, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { IXr2Invoice } from '../../api-core/data-contracts/i-xr2-invoice';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
@@ -19,6 +20,8 @@ import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { groupAndSum } from '../../shared/functions/groupAndSum';
+import { nameof } from '../../shared/functions/nameof';
+import { IGridColumnDefinition } from '../../shared/interfaces/i-grid-column-definition';
 import { IGridPopupData } from '../../shared/model/i-grid-popup-data';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
@@ -63,6 +66,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
     "INVOICE_DELETE_BODY"
   ];
   displayedDialog: PopupDialogComponent;
+  columnDef: IGridColumnDefinition<IXr2Invoice>[] = [
+    {headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
+    {headerResourceKey: "DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "15%"},
+    {headerResourceKey: "ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "20%"},
+    {headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "60%"},
+  ]
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
@@ -137,13 +146,30 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDetailsClickEvent(stocklist: IXr2Stocklist) {
     const properties = new PopupWindowProperties();
-    const data: IGridPopupData = {
-      popuptitle: "INVOICE_ITEM_DETAILS"
+    const data: IGridPopupData<IXr2Invoice> = {
+      popupTitle: "INVOICE_ITEM_DETAILS",
+      descriptionTitleResourceKey: "ITEM",
+      description: [stocklist.ItemFormattedGenericName, stocklist.ItemTradeName].join(" - "),
+      idTitleResourceKey: "ITEM_ID",
+      id: stocklist.ItemId,
+      listTitleResourceKey: "IN_PROGRESS_TRAYS",
+      detailsList: ['C0001', 'C0002', 'C0003', 'C0004'],
+      columnDefinition: this.columnDef,
+      gridData: [
+        {Id: '1', Date: '10/10/21', QtyReceived: 400},
+        {Id: '2', Date: '10/10/21', QtyReceived: 100},
+        {Id: '3', Date: '10/10/21', QtyReceived: 50},
+        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: '5', Date: '10/10/21', QtyReceived: 1},
+      ],
+      showPrimaryButton: true,
+      showSecondaryButton: false,
+      primaryButtonTextResourceKey: "OK",
     };
 
     properties.data = data;
 
-    let component = this.popupWindowService.show(GridPopupComponent, properties) as unknown as GridPopupComponent;
+    let component = this.popupWindowService.show(GridPopupComponent, properties) as unknown as GridPopupComponent<IXr2Invoice>;
     component.dismiss.pipe(take(1)).subscribe();
   }
 

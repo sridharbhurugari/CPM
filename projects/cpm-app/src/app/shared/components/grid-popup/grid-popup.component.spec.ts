@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GridPopupComponent } from './grid-popup.component';
 
 describe('GridPopupComponent', () => {
-  let component: GridPopupComponent;
-  let fixture: ComponentFixture<GridPopupComponent>;
+  let component: GridPopupComponent<any>;
+  let fixture: ComponentFixture<GridPopupComponent<any>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

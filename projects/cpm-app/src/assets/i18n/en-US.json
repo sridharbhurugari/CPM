@@ -107,6 +107,7 @@
   "HOLD": "Hold",
   "ID": "Id",
   "IN_PROGRESS": "In Progress",
+  "IN_PROGRESS_TRAYS": "In Progress Trays",
   "IN_STOCK": "In Stock",
   "ITEM_ID": "Item ID",
   "ITEM_ALREADY_VERIFIED_MESSAGE": "Item has previously been approved or rejected. <br/><br/> {{itemFormattedGenericName}} <br/> {{itemTradeName}}",

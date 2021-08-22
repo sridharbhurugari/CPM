@@ -1,38 +1,51 @@
 <oc-popupwindow-layout [windowFooter]="true">
   <ng-container class="ocwindowheader">
-    <div>{{data.popuptitle | translate}}</div>
+    <div>{{data.popupTitle | translate}}</div>
   </ng-container>
   <ng-container class="ocwindowcontent">
     <div class="body">
-      <div class="details-1">
-        <div class="grid-header">Item</div>
+      <div class="description">
+        <div class="column-header">{{data.descriptionTitleResourceKey | translate}}</div>
         <div class="r1-c1">
-          Millnaciphran 25mg SPLiTab
-          SAVELLA
+          {{data.description}}
         </div>
-        <div class="grid-header">Item Id</div>
+        <div class="column-header">{{data.idTitleResourceKey | translate}}</div>
         <div class="r1-c2">
-          10004222
+          {{data.id}}
         </div>
       </div>
-      <div class="details-2">
-        <div class="grid-header">In Progress Trays</div>
+      <div class="details-list">
+        <div class="column-header">{{data.listTitleResourceKey | translate}}</div>
         <div class="r1-c1">
-          C0001, C0002, C0003
+          {{data.detailsList.join(", ")}}
         </div>
       </div>
       <div class="details-grid">
-        <div class="grid-header">Date</div>
-        <div class="row-1">10/10/22</div>
-        <div class="grid-header">Id</div>
-        <div class="grid-header">Qty Recieved</div>
+        <!-- Create dynamic headers for grid -->
+        <div class="grid-header"
+        [ngStyle]="{'grid-template-columns': this.getGridColumnWidths()}">
+            <div class="column-header" [ngStyle]="{'grid-column': i + 1, 'grid-row': 1}"  *ngFor="let column of data.columnDefinition; let i = index">
+              {{column.headerResourceKey | translate}}
+            </div>
+        </div>
+        <!-- Create dynamic rows for grid -->
+        <div class="grid-body" [ngStyle]="{'grid-template-columns': this.getGridColumnWidths()}">
+          <ng-container *ngFor= "let row of data.gridData; let i = index">
+            <ng-container *ngFor="let column of data.columnDefinition; let j = index">
+              <div class = "row" [ngStyle]="{'grid-column': j + 1, 'grid-row': i + 1, 'background': getRowColor(i)}">{{row[column.cellPropertyName]}}</div>
+            </ng-container>
+          </ng-container>
+        </div>
       </div>
     </div>
   </ng-container>
   <ng-container class="ocwindowfooter">
   <oc-footer>
-    <div class="ocrightalign">
-      <oc-button-action [buttonText]="'OK' | translate" (click) ="continue()"></oc-button-action>
+    <div class="ocleftalign" *ngIf="data.showSecondaryButton">
+      <oc-button-action [buttonText]="data.secondaryButtonTextResourceKey | translate" (click) ="secondaryButtonClick()"></oc-button-action>
+    </div>
+    <div class="ocrightalign" *ngIf="data.showPrimaryButton">
+      <oc-button-action [buttonText]="data.primaryButtonTextResourceKey | translate" (click) ="primaryButtonClick()"></oc-button-action>
     </div>
   </oc-footer>
 </ng-container>

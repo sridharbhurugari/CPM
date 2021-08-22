@@ -8,22 +8,42 @@ import { IGridPopupData } from '../../model/i-grid-popup-data';
   templateUrl: './grid-popup.component.html',
   styleUrls: ['./grid-popup.component.scss']
 })
-export class GridPopupComponent implements OnInit, IPopupWindowContainer {
+export class GridPopupComponent<T> implements OnInit, IPopupWindowContainer {
 
   @Output() dismiss: Subject<boolean> = new Subject<boolean>();
 
-  data: IGridPopupData;
+  data: IGridPopupData<T>; // T is the type that will be used for the grid
+
+  private _whiteHex = "#FFFFFF";
+  private _lightGreyHex = "#E9E9E9";
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  cancel() {
+  cancel(): void {
     this.dismiss.next(false);
   }
 
-  continue() {
+  primaryButtonClick(): void {
+    this.dismiss.next(true);
+  }
+
+  secondaryButtonClick(): void {
     this.dismiss.next(false);
+  }
+
+  getGridColumnWidths(): string {
+    let styleString = [];
+    this.data.columnDefinition.forEach((column) => {
+      styleString.push(column.width);
+    });
+
+    return styleString.join(' ');
+  }
+
+  getRowColor(index): string {
+    return index % 2 === 0 ? this._whiteHex: this._lightGreyHex;
   }
 }
