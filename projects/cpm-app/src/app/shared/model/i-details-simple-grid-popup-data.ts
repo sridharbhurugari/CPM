@@ -8,6 +8,7 @@ export interface IDetailsSimpleGridPopupData<T> {
   id: string;
   detailsList: string[];
   gridData: T[];
+  gridRowHeight: string;
   descriptionTitleResourceKey: string;
   idTitleResourceKey: string;
   listTitleResourceKey: string;

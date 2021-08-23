@@ -23,6 +23,7 @@ describe('DetailsSimpleGridPopup', () => {
       { width: "3%" } as IGridColumnDefinition<any>
     ],
     gridData: [ {Id: '1' }, {Id: '2' }, {Id: '3' } ],
+    gridRowHeight: "30px",
     showPrimaryButton: true,
     showSecondaryButton: false,
   };

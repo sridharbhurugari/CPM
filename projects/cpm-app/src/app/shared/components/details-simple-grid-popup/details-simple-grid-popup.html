@@ -29,10 +29,12 @@
             </div>
         </div>
         <!-- Create dynamic rows for grid -->
-        <div #gridBody class="grid-body" [ngStyle]="{'grid-template-columns': this.getGridColumnWidths()}">
+        <div #gridBody class="grid-body"
+        [ngStyle]="{'grid-template-columns': this.getGridColumnWidths(),  'grid-auto-rows': this.data.gridRowHeight}">
           <ng-container *ngFor= "let row of data.gridData; let i = index">
             <ng-container *ngFor="let column of data.columnDefinition; let j = index">
-              <div class = "row" [ngStyle]="{'grid-column': j + 1, 'grid-row': i + 1, 'background': getRowColor(i)}">{{row[column.cellPropertyName]}}</div>
+              <div class = "row"
+              [ngStyle]="{'grid-column': j + 1, 'grid-row': i + 1, 'background': getRowColor(i)}">{{row[column.cellPropertyName]}}</div>
             </ng-container>
           </ng-container>
         </div>

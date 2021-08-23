@@ -68,9 +68,9 @@ export class Xr2InvoicesPageComponent implements OnInit {
   displayedWindow: DetailsSimpleGridPopupComponent<IXr2Invoice>;
   columnDef: IGridColumnDefinition<IXr2Invoice>[] = [
     { headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
-    { headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "15%" },
-    { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "20%" },
-    { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "60%" },
+    { headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "20%" },
+    { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "35%" },
+    { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "40%" },
   ]
 
   private _componentName: string = "xr2InvoicesPageComponent"
@@ -156,20 +156,13 @@ export class Xr2InvoicesPageComponent implements OnInit {
       detailsList: ['C0001', 'C0002', 'C0003', 'C0004'], // MOCK DATA
       columnDefinition: this.columnDef,
       gridData: [ // MOCK DATA
-        {Id: '1', Date: '10/10/21', QtyReceived: 400},
-        {Id: '2', Date: '10/10/21', QtyReceived: 100},
-        {Id: '3', Date: '10/10/21', QtyReceived: 50},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
-        {Id: '4', Date: '10/10/21', QtyReceived: 10},
+        {Id: 'PHA-00000002000001', Date: '10/10/21', QtyReceived: 400},
+        {Id: 'PHA-00000002000002', Date: '10/10/21', QtyReceived: 100},
+        {Id: 'PHA-00000002000003', Date: '10/10/21', QtyReceived: 50},
+        {Id: 'PHA-00000002000004', Date: '10/10/21', QtyReceived: 1000},
+        {Id: 'PHA-00000002000005', Date: '10/10/21', QtyReceived: 20}
       ],
+      gridRowHeight: "30px",
       showPrimaryButton: true,
       showSecondaryButton: false,
       primaryButtonTextResourceKey: "OK",
