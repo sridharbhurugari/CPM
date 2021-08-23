@@ -1,21 +1,21 @@
 import { AfterViewChecked, Component, ElementRef, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { IPopupWindowContainer } from '@omnicell/webcorecomponents';
 import { Subject } from 'rxjs';
-import { IGridPopupData } from '../../model/i-grid-popup-data';
+import { IDetailsSimpleGridPopupData } from '../../model/i-details-simple-grid-popup-data';
 
 @Component({
   selector: 'app-grid-popup',
-  templateUrl: './grid-popup.component.html',
-  styleUrls: ['./grid-popup.component.scss']
+  templateUrl: './details-simple-grid-popup.html',
+  styleUrls: ['./details-simple-grid-popup.scss']
 })
-export class GridPopupComponent<T> implements OnInit, AfterViewChecked, IPopupWindowContainer {
+export class DetailsSimpleGridPopupComponent<T> implements OnInit, AfterViewChecked, IPopupWindowContainer {
 
   @Output() dismiss: Subject<boolean> = new Subject<boolean>();
 
   @ViewChild('gridHeader', {read: ElementRef, static:false}) gridHeader: ElementRef
   @ViewChild('gridBody', {read: ElementRef, static:false}) gridBody: ElementRef
 
-  data: IGridPopupData<T>; // T is the type that will be used for the grid
+  data: IDetailsSimpleGridPopupData<T>; // T is the type that will be used for the grid
 
   private readonly _whiteHex = "#FFFFFF";
   private readonly _lightGreyHex = "#E9E9E9";

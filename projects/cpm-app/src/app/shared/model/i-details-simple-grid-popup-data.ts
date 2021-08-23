@@ -1,7 +1,7 @@
 import { IGridColumnDefinition } from "../interfaces/i-grid-column-definition";
 
 
-export interface IGridPopupData<T> {
+export interface IDetailsSimpleGridPopupData<T> {
   popupTitle: string
   columnDefinition: IGridColumnDefinition<T>[];
   description: string;

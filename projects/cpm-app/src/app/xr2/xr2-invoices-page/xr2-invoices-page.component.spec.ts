@@ -19,7 +19,7 @@ import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
 import { MockTranslatePipe } from '../../core/testing/mock-translate-pipe.spec';
-import { GridPopupComponent } from '../../shared/components/grid-popup/grid-popup.component';
+import { DetailsSimpleGridPopupComponent } from '../../shared/components/details-simple-grid-popup/details-simple-grid-popup';
 import { TrayTypes } from '../../shared/constants/tray-types';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { LoggerConfiguration } from '../../shared/model/logger-configuration';
@@ -127,7 +127,7 @@ describe('Xr2InvoicesPageComponent', () => {
 
     popupWindowService = {
       show: jasmine.createSpy('show').
-      and.returnValue({ dismiss: new Subject<boolean>() } as GridPopupComponent<any>)
+      and.returnValue({ dismiss: new Subject<boolean>() } as DetailsSimpleGridPopupComponent<any>)
     };
 
     TestBed.configureTestingModule({

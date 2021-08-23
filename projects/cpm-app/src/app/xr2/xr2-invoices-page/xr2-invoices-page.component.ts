@@ -14,15 +14,14 @@ import { ITrayType } from '../../api-xr2/data-contracts/i-tray-type';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
 import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
-import { DropdownPopupComponent } from '../../shared/components/dropdown-popup/dropdown-popup.component';
-import { GridPopupComponent } from '../../shared/components/grid-popup/grid-popup.component';
+import { DetailsSimpleGridPopupComponent } from '../../shared/components/details-simple-grid-popup/details-simple-grid-popup';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { groupAndSum } from '../../shared/functions/groupAndSum';
 import { nameof } from '../../shared/functions/nameof';
 import { IGridColumnDefinition } from '../../shared/interfaces/i-grid-column-definition';
-import { IGridPopupData } from '../../shared/model/i-grid-popup-data';
+import { IDetailsSimpleGridPopupData } from '../../shared/model/i-details-simple-grid-popup-data';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
@@ -66,11 +65,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
     "INVOICE_DELETE_BODY"
   ];
   displayedDialog: PopupDialogComponent;
+  displayedWindow: DetailsSimpleGridPopupComponent<IXr2Invoice>;
   columnDef: IGridColumnDefinition<IXr2Invoice>[] = [
-    {headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
-    {headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "15%"},
-    {headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "20%"},
-    {headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "60%"},
+    { headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
+    { headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "15%" },
+    { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "20%" },
+    { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "60%" },
   ]
 
   private _componentName: string = "xr2InvoicesPageComponent"
@@ -146,7 +146,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDetailsClickEvent(stocklist: IXr2Stocklist) {
     const properties = new PopupWindowProperties();
-    const data: IGridPopupData<IXr2Invoice> = {
+    const data: IDetailsSimpleGridPopupData<IXr2Invoice> = {
       popupTitle: "INVOICE_ITEM_DETAILS",
       descriptionTitleResourceKey: "ITEM",
       description: [stocklist.ItemFormattedGenericName, stocklist.ItemTradeName].join(" - "),
@@ -177,8 +177,8 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
     properties.data = data;
 
-    let component = this.popupWindowService.show(GridPopupComponent, properties) as unknown as GridPopupComponent<IXr2Invoice>;
-    component.dismiss.pipe(take(1)).subscribe();
+    this.displayedWindow = this.popupWindowService.show(DetailsSimpleGridPopupComponent, properties) as unknown as DetailsSimpleGridPopupComponent<IXr2Invoice>;
+    this.displayedWindow.dismiss.pipe(takeUntil(this.ngUnsubscribe), take(1)).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -276,7 +276,9 @@ export class Xr2InvoicesPageComponent implements OnInit {
       if(restockTray.IsReturn)
       {
         this.clearDisplayedDialog();
-        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE").subscribe(x=>{
+        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE")
+        .pipe(takeUntil(this.ngUnsubscribe), take(1))
+        .subscribe(x=>{
           this.displayedDialog = x;
         });
         return false;;
@@ -284,7 +286,9 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
       if(restockTray.DeviceId != this.selectedDeviceInformation.DeviceId){
         this.clearDisplayedDialog();
-        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "DEVICE_SELECTION_TRAY_SCANNING_MESSAGE").subscribe(x=>{
+        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "DEVICE_SELECTION_TRAY_SCANNING_MESSAGE")
+        .pipe(takeUntil(this.ngUnsubscribe), take(1))
+        .subscribe(x=>{
           this.displayedDialog = x;
         });
         return false;
@@ -387,6 +391,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private clearDisplayedDialog() {
     try {
+      if(this.displayedWindow) {
+        this.displayedWindow.cancel();
+      }
+
       if (this.displayedDialog) {
         this.displayedDialog.onCloseClicked();
       }

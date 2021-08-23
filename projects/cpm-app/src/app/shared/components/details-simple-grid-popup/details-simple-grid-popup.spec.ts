@@ -2,14 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PopupWindowModule, ButtonActionModule, FooterModule } from '@omnicell/webcorecomponents';
 import { MockTranslatePipe } from '../../../core/testing/mock-translate-pipe.spec';
 import { IGridColumnDefinition } from '../../interfaces/i-grid-column-definition';
-import { IGridPopupData } from '../../model/i-grid-popup-data';
+import { IDetailsSimpleGridPopupData } from '../../model/i-details-simple-grid-popup-data';
+import { DetailsSimpleGridPopupComponent } from './details-simple-grid-popup';
 
-import { GridPopupComponent } from './grid-popup.component';
 
-describe('GridPopupComponent', () => {
-  let component: GridPopupComponent<any>;
-  let fixture: ComponentFixture<GridPopupComponent<any>>;
-  let data: IGridPopupData<any> = {
+describe('DetailsSimpleGridPopup', () => {
+  let component: DetailsSimpleGridPopupComponent<any>;
+  let fixture: ComponentFixture<DetailsSimpleGridPopupComponent<any>>;
+  let data: IDetailsSimpleGridPopupData<any> = {
     popupTitle: "POPUP",
     descriptionTitleResourceKey: "DESCRIPTIONRESOURCE",
     description: "DESCRIPTION",
@@ -29,14 +29,14 @@ describe('GridPopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GridPopupComponent, MockTranslatePipe ],
+      declarations: [ DetailsSimpleGridPopupComponent, MockTranslatePipe ],
       imports:  [ PopupWindowModule, ButtonActionModule, FooterModule ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GridPopupComponent);
+    fixture = TestBed.createComponent(DetailsSimpleGridPopupComponent);
     component = fixture.componentInstance;
     component.data = data;
     fixture.detectChanges();
