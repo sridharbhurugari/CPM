@@ -11,4 +11,5 @@ export interface IXr2Stocklist {
   SourceId: string
   DeviceId: number
   DeviceDescription: string
+  RestockTrayIds: Array<string>
 }

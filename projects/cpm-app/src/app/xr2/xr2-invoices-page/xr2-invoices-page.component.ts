@@ -76,7 +76,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
   private _groupingKeyNames = ["ItemId", "DeviceId"];
-  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
+  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked", "RestockTrayIds"];
   private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
   private barcodeScannedSubscription: Subscription;
 
@@ -153,7 +153,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
       idTitleResourceKey: "ITEM_ID",
       id: stocklist.ItemId,
       listTitleResourceKey: "IN_PROGRESS_TRAYS",
-      detailsList: ['C0001', 'C0002', 'C0003', 'C0004'], // MOCK DATA
+      detailsList: stocklist.RestockTrayIds,
       columnDefinition: this.columnDef,
       gridData: [ // MOCK DATA
         {Id: 'PHA-00000002000001', Date: '10/10/21', QtyReceived: 400},

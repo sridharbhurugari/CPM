@@ -17,7 +17,7 @@
       <div class="details-list">
         <div class="column-header">{{data.listTitleResourceKey | translate}}</div>
         <div class="r1-c1">
-          {{data.detailsList.join(", ")}}
+          {{getDistinctListString() || "NONE" | translate}}
         </div>
       </div>
       <div class="details-grid">

@@ -55,6 +55,16 @@ export class DetailsSimpleGridPopupComponent<T> implements OnInit, AfterViewChec
     return styleString.join(' ');
   }
 
+  getDistinctListString(): string {
+    if(!this.data.detailsList || this.data.detailsList.length === 0) {
+      return '';
+    }
+
+    const uniqueValues = [...new Set(this.data.detailsList)];
+
+    return uniqueValues.join(', ');
+  }
+
   getRowColor(index): string {
     return index % 2 === 0 ? this._whiteHex: this._lightGreyHex;
   }
