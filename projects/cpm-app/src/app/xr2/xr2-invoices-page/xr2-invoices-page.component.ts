@@ -5,7 +5,7 @@ import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
 import { filter, flatMap, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
-import { IXr2Invoice } from '../../api-core/data-contracts/i-xr2-invoice';
+import { IInvoiceDetailItem } from '../../api-core/data-contracts/i-invoice-detail-item';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
@@ -65,18 +65,18 @@ export class Xr2InvoicesPageComponent implements OnInit {
     "INVOICE_DELETE_BODY"
   ];
   displayedDialog: PopupDialogComponent;
-  displayedWindow: DetailsSimpleGridPopupComponent<IXr2Invoice>;
-  columnDef: IGridColumnDefinition<IXr2Invoice>[] = [
+  displayedWindow: DetailsSimpleGridPopupComponent<IInvoiceDetailItem>;
+  columnDef: IGridColumnDefinition<IInvoiceDetailItem>[] = [
     { headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
-    { headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IXr2Invoice>("Date"), width: "20%" },
-    { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IXr2Invoice>("Id"), width: "35%" },
-    { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IXr2Invoice>("QtyReceived"), width: "40%" },
+    { headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IInvoiceDetailItem>("LocalReceiveDate"), width: "30%" },
+    { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IInvoiceDetailItem>("InvoiceNumber"), width: "25%" },
+    { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IInvoiceDetailItem>("InvoiceQtyReceived"), width: "40%" },
   ]
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
   private _groupingKeyNames = ["ItemId", "DeviceId"];
-  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked", "RestockTrayIds"];
+  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked", "RestockTrayIds", "InvoiceItemDetails"];
   private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
   private barcodeScannedSubscription: Subscription;
 
@@ -146,7 +146,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   onDetailsClickEvent(stocklist: IXr2Stocklist) {
     const properties = new PopupWindowProperties();
-    const data: IDetailsSimpleGridPopupData<IXr2Invoice> = {
+    const data: IDetailsSimpleGridPopupData<IInvoiceDetailItem> = {
       popupTitle: "INVOICE_ITEM_DETAILS",
       descriptionTitleResourceKey: "ITEM",
       description: [stocklist.ItemFormattedGenericName, stocklist.ItemTradeName].join(" - "),
@@ -155,13 +155,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
       listTitleResourceKey: "IN_PROGRESS_TRAYS",
       detailsList: stocklist.RestockTrayIds,
       columnDefinition: this.columnDef,
-      gridData: [ // MOCK DATA
-        {Id: 'PHA-00000002000001', Date: '10/10/21', QtyReceived: 400},
-        {Id: 'PHA-00000002000002', Date: '10/10/21', QtyReceived: 100},
-        {Id: 'PHA-00000002000003', Date: '10/10/21', QtyReceived: 50},
-        {Id: 'PHA-00000002000004', Date: '10/10/21', QtyReceived: 1000},
-        {Id: 'PHA-00000002000005', Date: '10/10/21', QtyReceived: 20}
-      ],
+      gridData: this.getDistinctInvoiceDetails(stocklist.InvoiceItemDetails),
       gridRowHeight: "30px",
       showPrimaryButton: true,
       showSecondaryButton: false,
@@ -170,7 +164,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
     properties.data = data;
 
-    this.displayedWindow = this.popupWindowService.show(DetailsSimpleGridPopupComponent, properties) as unknown as DetailsSimpleGridPopupComponent<IXr2Invoice>;
+    this.displayedWindow = this.popupWindowService.show(DetailsSimpleGridPopupComponent, properties) as unknown as DetailsSimpleGridPopupComponent<IInvoiceDetailItem>;
     this.displayedWindow.dismiss.pipe(takeUntil(this.ngUnsubscribe), take(1)).subscribe();
   }
 
@@ -296,6 +290,16 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
     private navigateEditTray(RestockTray: IRestockTray){
       this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2EditTrayPath, RestockTray);
+    }
+
+    private getDistinctInvoiceDetails(items: IInvoiceDetailItem[]): IInvoiceDetailItem[] {
+      const map = new Map<string, IInvoiceDetailItem>();
+
+      items.forEach(item => {
+        map.set(item.InvoiceNumber, item)
+      });
+
+      return Array.from(map.values());
     }
 
     /* istanbul ignore next */
