@@ -113,7 +113,7 @@
     <div class="last-refresh">{{ eventDateTime | date:'M/d/yyyy h:mm:ss a' }}</div>
     &nbsp;
     <div class="ocrightalign">
-      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="disableReportButton" *ngIf="hasActiveXR2Devices()"
+      <oc-button-action [buttonText]="'PRINT_XR2_INVENTORY_REPORT'| translate" [disabled]="disableReportButton()" *ngIf="hasActiveXR2Devices()"
       [buttonIcon]="requestStatus === 'printing' ? 'spin' : 'print'" (click)="printXR2Inventory()" ></oc-button-action>
     </div>
   </oc-footer>
