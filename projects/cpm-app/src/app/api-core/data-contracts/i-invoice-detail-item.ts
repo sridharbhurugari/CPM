@@ -1,6 +1,6 @@
 export interface IInvoiceDetailItem {
-  ReceiveDate: Date;
+  ReceivedDate: Date;
   LocalReceiveDate: string;
   InvoiceNumber: string;
-  InvoiceQtyReceived: number;
+  QuantityReceived: number;
 }
