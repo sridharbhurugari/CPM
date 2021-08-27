@@ -295,9 +295,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private getDistinctInvoiceDetails(items: IInvoiceDetailItem[]): IInvoiceDetailItem[] {
       const map = new Map<string, IInvoiceDetailItem>();
 
-      items.forEach(item => {
-        map.set(item.InvoiceNumber, item)
-      });
+      if(items)
+      {
+        items.forEach(item => {
+          map.set(item.InvoiceNumber, item)
+        });
+      }
 
       return Array.from(map.values());
     }
