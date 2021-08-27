@@ -555,7 +555,7 @@ export class UtilizationPageComponent implements OnInit {
               this.printFailed = true;
               this.reportPrinting++;
               if (this.printFailedDialogShownCount === 1) {
-                this.requestStatus = "none";
+                this.requestStatus = "complete";
                 this.displayPrintFailedDialog();
               }
               this.printFailedDialogShownCount++;
@@ -565,7 +565,7 @@ export class UtilizationPageComponent implements OnInit {
               if (
                 !this.printFailed
               ) {
-                this.requestStatus = "none";
+                this.requestStatus = "complete";
                 this.reportPrinting = 0;
                 this.simpleDialogService.displayInfoOk(
                   "PRINT_SUCCEEDED_DIALOG_TITLE",
