@@ -5,9 +5,12 @@ export class Xr2Stocklist implements IXr2Stocklist {
 
   constructor(invoiceItem: IXr2Stocklist) {
     Object.assign(this, invoiceItem);
-    this.InvoiceItemDetails.forEach(item => {
-      item.LocalReceiveDate = formatDate(item.ReceivedDate, 'medium', 'en-us');
-    })
+    if(this.InvoiceItemDetails)
+    {
+      this.InvoiceItemDetails.forEach(item => {
+        item.LocalReceiveDate = formatDate(item.ReceivedDate, 'medium', 'en-us');
+      });
+    }
   }
 
   ItemFormattedGenericName: string
