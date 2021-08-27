@@ -80,6 +80,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
   buttonVisible = false;
   workstationTrackerData: WorkstationTrackerData;
   workstation: string;
+  currentUrl: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -192,9 +193,12 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
     }
   }
   navigateBack() {
-    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
-      this.router.navigate(['core/picklists/underfilled']);
-    });
+    this.currentUrl = this.router.url;
+    if(this.currentUrl && this.currentUrl.includes("underfilled/picklistLines")){
+      this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
+        this.router.navigate(['core/picklists/underfilled']);
+      });
+    }
   }
 
   unTrack() {

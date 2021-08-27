@@ -188,7 +188,7 @@ describe('UnderfilledPicklistLinesPageComponent', () => {
   describe('navigateBack', () => {
     it('should call router.navigate', () => {
       component.navigateBack();
-      expect(routerMock.navigate).toHaveBeenCalled();
+      expect(routerMock.navigate).toHaveBeenCalledTimes(0);
     });
   });
 
