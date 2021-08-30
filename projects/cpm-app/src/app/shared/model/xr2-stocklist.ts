@@ -8,7 +8,7 @@ export class Xr2Stocklist implements IXr2Stocklist {
     if(this.InvoiceItemDetails)
     {
       this.InvoiceItemDetails.forEach(item => {
-        item.LocalReceiveDate = formatDate(item.ReceivedDate, 'medium', 'en-us');
+        item.LocalReceiveDate = formatDate(item.ReceivedDate, 'MM/dd/yyyy h:mm:ss a', 'en-us');
       });
     }
   }
