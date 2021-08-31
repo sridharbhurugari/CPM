@@ -68,7 +68,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   displayedWindow: DetailsSimpleGridPopupComponent<IInvoiceDetailItem>;
   columnDef: IGridColumnDefinition<IInvoiceDetailItem>[] = [
     { headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
-    { headerResourceKey: "INOVICE_DATE", cellPropertyName: nameof<IInvoiceDetailItem>("LocalReceiveDate"), width: "30%" },
+    { headerResourceKey: "INOVICE_RECEIVED_DATE", cellPropertyName: nameof<IInvoiceDetailItem>("LocalReceiveDate"), width: "30%" },
     { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IInvoiceDetailItem>("InvoiceNumber"), width: "25%" },
     { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IInvoiceDetailItem>("QuantityReceived"), width: "40%" },
   ]
