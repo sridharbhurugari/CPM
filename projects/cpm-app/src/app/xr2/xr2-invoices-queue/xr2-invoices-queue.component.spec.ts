@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GridModule, ButtonActionModule, PopupDialogModule, SvgIconModule } from '@omnicell/webcorecomponents';
 import { forEach } from 'lodash';
 import { of } from 'rxjs';
+import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { MockAppHeaderContainer } from '../../core/testing/mock-app-header.spec';
 import { MockSearchBox } from '../../core/testing/mock-search-box.spec';
 import { MockSearchPipe } from '../../core/testing/mock-search-pipe.spec';
@@ -60,12 +61,21 @@ describe('Xr2InvoicesQueueComponent', () => {
       expect(detailsSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should send dialog event on delete click', () => {
+    it('should send yes/no dialog event on delete click when not in progress', () => {
       const deleteSpy = spyOn(component.displayYesNoDialogEvent, 'emit');
 
       component.onDeleteClick(new Xr2Stocklist(null));
 
       expect(deleteSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should send ok dialog event on delete click when in progress', () => {
+      const cannotdeleteSpy = spyOn(component.displayOkDialogEvent, 'emit');
+
+      var stocklist = { InProgress: true } as IXr2Stocklist
+      component.onDeleteClick(new Xr2Stocklist(stocklist));
+
+      expect(cannotdeleteSpy).toHaveBeenCalledTimes(1);
     });
   });
 
