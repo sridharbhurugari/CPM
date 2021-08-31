@@ -18,6 +18,7 @@ export class Xr2Stocklist implements IXr2Stocklist {
   ItemId: string
   QuantityReceived: number
   QuantityStocked: number
+  QuantityToStock: number
   InProgress: boolean
   InvoiceNumber: string
   PoNumber: string

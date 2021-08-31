@@ -38,6 +38,10 @@ export class SimpleDialogService {
     return this.getOkPopup(titleResourceKey, messageResourceKey, PopupDialogType.Warning, messageParams);
   }
 
+  getErrorOkPopup(titleResourceKey: string, messageResourceKey: string, messageParams?: Object): Observable<PopupDialogComponent> {
+    return this.getOkPopup(titleResourceKey, messageResourceKey, PopupDialogType.Error, messageParams);
+  }
+
   getWarningCancelPopup(titleResourceKey: string, messageResourceKey: string, messageParams?: Object): Observable<PopupDialogComponent> {
     return this.getCancelPopup(titleResourceKey, messageResourceKey, PopupDialogType.Warning, messageParams);
   }

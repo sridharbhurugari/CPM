@@ -13,7 +13,7 @@
         <div app-col-header-sortable class="col"
         ocGridColResize
         headerResourceKey="DESCRIPTION"
-        data-width="508"
+        data-width="738"
         data-colwrap="true"
         [columnPropertyName]="itemNamePropertyName"
         [currentSortPropertyName]="currentSortPropertyName"
@@ -21,19 +21,10 @@
         </div>
         <div app-col-header-sortable class="col"
           ocGridColResize
-          headerResourceKey="QTYRECEIVED"
+          headerResourceKey="QTYTOSTOCK"
           data-width="230"
           data-colwrap="true"
-          [columnPropertyName]="qtyReceivedPropertyName"
-          [currentSortPropertyName]="currentSortPropertyName"
-          (columnSelected)="columnSelected($event)">
-        </div>
-        <div app-col-header-sortable class="col"
-          ocGridColResize
-          headerResourceKey="QTYSTOCKED"
-          data-width="230"
-          data-colwrap="true"
-          [columnPropertyName]="qtyStockedPropertyName"
+          [columnPropertyName]="qtyToStockPropertyName"
           [currentSortPropertyName]="currentSortPropertyName"
           (columnSelected)="columnSelected($event)">
         </div>
@@ -54,18 +45,10 @@
             <span [ngStyle]="{'font-size': '14px'}">{{invoiceItem.ItemId}}</span>
           </div>
         </div>
-        <div class="col width-po-number" [attr.data-title]="'QTYRECIEVED' | translate">
+        <div class="col width-source" [attr.data-title]="'QTYTOSTOCK' | translate">
           <span class="centered-content">
             <app-cp-data-label
-            [data]="invoiceItem.QuantityReceived"
-            [label]="invoiceItem.UnitsOfIssue">
-          </app-cp-data-label>
-          </span>
-        </div>
-        <div class="col width-source" [attr.data-title]="'QTYSTOCKED' | translate">
-          <span class="centered-content">
-            <app-cp-data-label
-            [data]="invoiceItem.QuantityStocked"
+            [data]="invoiceItem.QuantityToStock"
             [label]="invoiceItem.UnitsOfIssue">
           </app-cp-data-label>
           </span>
@@ -85,7 +68,7 @@
             [height]="35"
             [theme]="'dark'"
             [icon]="'close'"
-            [label]="'DELETE' | translate"
+            [label]="'CLOSE' | translate"
             (clickEvent)="onDeleteClick(invoiceItem)">
             </app-cp-clickable-icon>
           </span>

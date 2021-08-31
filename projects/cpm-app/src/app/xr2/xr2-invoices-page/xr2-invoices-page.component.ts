@@ -59,10 +59,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
   selectedDeviceInformation: SelectableDeviceInfo;
   translations$: Observable<any>;
   translatables = [
-    'INVOICE_DELETE_BUTTON_TEXT',
+    'INVOICE_CLOSE_BUTTON_TEXT',
     'CANCEL',
-    "INVOICE_DELETE_HEADER",
-    "INVOICE_DELETE_BODY"
+    "INVOICE_CLOSE_HEADER",
+    "INVOICE_CLOSE_BODY"
   ];
   displayedDialog: PopupDialogComponent;
   displayedWindow: DetailsSimpleGridPopupComponent<IInvoiceDetailItem>;
@@ -76,7 +76,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
   private _groupingKeyNames = ["ItemId", "DeviceId"];
-  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked", "RestockTrayIds", "InvoiceItemDetails"];
+  private _sumKeyNames = [ "QuantityToStock", "RestockTrayIds", "InvoiceItemDetails"];
   private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
   private barcodeScannedSubscription: Subscription;
 
@@ -141,6 +141,13 @@ export class Xr2InvoicesPageComponent implements OnInit {
       }, (err) => {
         this.handleDeleteInvoiceError(err);
       });
+    });
+  }
+
+  onDisplayOkDialogEvent($stocklist: IXr2Stocklist): void {
+    this.clearDisplayedDialog();
+    this.simpleDialogService.getErrorOkPopup("INVOICE_ITEM_IN_PROGRESS_HEADER","INVOICE_CLOSE_TRY_INPROGRESS_MESSAGE").subscribe((dialog) => {
+      this.displayedDialog = dialog;
     });
   }
 
@@ -364,12 +371,12 @@ export class Xr2InvoicesPageComponent implements OnInit {
       const translations = r[0];
       if(!translations) return;
       const properties = new PopupDialogProperties('Standard-Popup-Dialog-Font');
-      properties.titleElementText = translations.INVOICE_DELETE_HEADER;
-      properties.messageElementText = translations.INVOICE_DELETE_BODY;
+      properties.titleElementText = translations.INVOICE_CLOSE_HEADER;
+      properties.messageElementText = translations.INVOICE_CLOSE_BODY;
       properties.showPrimaryButton = true;
       properties.primaryButtonText = translations.CANCEL;
       properties.showSecondaryButton = true;
-      properties.secondaryButtonText = translations.INVOICE_DELETE_BUTTON_TEXT;
+      properties.secondaryButtonText = translations.INVOICE_CLOSE_BUTTON_TEXT;
       properties.primaryOnRight = false;
       properties.showCloseIcon = false;
       properties.dialogDisplayType = PopupDialogType.Warning;

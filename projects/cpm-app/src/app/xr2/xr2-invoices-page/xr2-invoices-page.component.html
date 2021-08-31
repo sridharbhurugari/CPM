@@ -9,6 +9,7 @@
   [unfilteredInvoiceItems]="invoiceItems$ | async"
   [searchTextFilter]="searchTextFilter"
   (displayYesNoDialogEvent)="onDisplayYesNoDialogEvent($event)"
+  (displayOkDialogEvent)="onDisplayOkDialogEvent($event)"
   (detailsClickEvent)="onDetailsClickEvent($event)"
   ></app-xr2-invoices-queue>
   <div class="icon-container" *ngIf="!this.selectedDeviceInformation">
