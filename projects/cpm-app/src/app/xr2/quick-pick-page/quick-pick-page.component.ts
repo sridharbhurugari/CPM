@@ -404,8 +404,7 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     this.quickPickQueueService.get(this.selectedDeviceInformation.DeviceId.toString()).subscribe(items => {
-      //this.quickPickQueueItems = of(items.filter(item => item.IncompleteBoxCount > 0));
-      this.quickPickQueueItems = of(items);
+      this.quickPickQueueItems = of(items.filter(item => item.IncompleteBoxCount > 0 || item.PendingXR2));      
       this.quickPickQueueItemsComplete = items;
     });
   }
