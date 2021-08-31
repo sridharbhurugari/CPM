@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { QuickPickDrawerData } from './../model/quick-pick-drawer-data';
 import { Observable, of, Subscription, forkJoin, merge, Subject } from 'rxjs';
 import { QuickPickQueueItem } from '../model/quick-pick-queue-item';
-import { switchMap, map, flatMap, takeUntil, } from 'rxjs/operators';
+import { switchMap, map, flatMap, takeUntil, filter } from 'rxjs/operators';
 import { Xr2QuickPickQueueService } from '../../api-xr2/services/xr2-quick-pick-queue.service';
 import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-drawer.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { BarcodeScanMessage } from '../model/barcode-scan-message';
 import { QuickPickError } from '../model/quick-pick-error';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { resolve } from 'url';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 
 @Component({
   selector: 'app-quick-pick-page',
@@ -98,9 +99,11 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
     private translateService: TranslateService,
     private barcodeScanService: BarcodeScanService,
     private dialogService: PopupDialogService,
-    private systemConfigurationService: SystemConfigurationService
+    private systemConfigurationService: SystemConfigurationService,
+    private wpfInteropService: WpfInteropService
   ) {
     this.quickPickQueueItems = of([]);
+    this.setupDataRefresh();
   }
 
   ngOnInit() {
@@ -514,5 +517,15 @@ export class QuickPickPageComponent implements OnInit, OnDestroy, AfterViewInit,
 
   private isInvalidSubscription(variable: any): boolean {
     return !this.isValidSubscription(variable);
+  }
+
+  /* istanbul ignore next */
+  private setupDataRefresh() {
+    let hash = this.windowService.getHash();
+    this.wpfInteropService.wpfViewModelActivated
+      .pipe(filter(x => x == hash),takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {                   
+        this.loadPicklistsQueueItems();        
+      });
   }
 }
