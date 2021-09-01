@@ -384,7 +384,7 @@
   "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_TITLE": "Vérification non requise",
   "MANUAL_PREPACK_VERIFICATION_VERIFICATION_NOT_REQUIRED_MESSAGE": "Vérification non requise pour ce produit",
   "REMOVE": "Prélever / retirer",
-  "TRAY_TYPE_OVERSTOCK_MESSAGE": "Le type de plateau contient des produits surstockés"
+  "TRAY_TYPE_OVERSTOCK_MESSAGE": "Le type de plateau contient des produits surstockés",
   "MANUAL_PREPACK_VERIFICATION_COMPLETED_TITLE": "Verification complete",
   "MANUAL_PREPACK_VERIFICATION_COMPLETED_MESSAGE": "Verification for this prepack is already complete or has been removed"
 }
