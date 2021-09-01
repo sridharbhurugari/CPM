@@ -15,6 +15,7 @@ import { Xr2QuickPickDrawerService } from '../../api-xr2/services/quick-pick-dra
 import { QuickPickEventConnectionService } from '../services/quick-pick-event-connection.service';
 import { TranslateService } from '@ngx-translate/core';
 import { WindowService } from '../../shared/services/window-service';
+import { WpfInteropService } from '../../shared/services/wpf-interop.service';
 import { OcapHttpConfigurationService } from '../../shared/services/ocap-http-configuration.service';
 import { BarcodeScanService } from 'oal-core';
 import { SystemConfigurationService } from '../../shared/services/system-configuration.service';
@@ -164,11 +165,12 @@ describe('QuickPickPageComponent', () => {
         { provide: BarcodeScanService, useValue: barcodeScanService },
         { provide: TranslateService, useValue: { get: () => of([]) } },
         { provide: PopupDialogService, useValue: popupDialogService },
-        { provide: WindowService, useValue: [] },
+        { provide: WindowService, useValue: { getHash: () => '' } },
         { provide: OcapHttpConfigurationService, useValue: { get: () => ocapConfig } },
         { provide: Location, useValue: { go: () => { } } },
         { provide: Router, useValue: { data: () => { } } },
         { provide: SystemConfigurationService, useValue: systemConfigurationService },
+        { provide: WpfInteropService, useValue: { wpfViewModelActivated: new Subject() } },
       ]
     })
       .compileComponents();
