@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType } from '@omnicell/webcorecomponents';
+import { PopupDialogComponent, PopupDialogProperties, PopupDialogService, PopupDialogType, PopupWindowProperties, PopupWindowService } from '@omnicell/webcorecomponents';
 import { LogVerbosity } from 'oal-core';
 import { forkJoin, merge, Observable, Subject, Subscription } from 'rxjs';
-import { filter, flatMap, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { filter, flatMap, map, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { IBarcodeData } from '../../api-core/data-contracts/i-barcode-data';
+import { IInvoiceDetailItem } from '../../api-core/data-contracts/i-invoice-detail-item';
 import { IXr2Stocklist } from '../../api-core/data-contracts/i-xr2-stocklist';
 import { BarcodeDataService } from '../../api-core/services/barcode-data.service';
 import { LogService } from '../../api-core/services/log-service';
@@ -13,10 +14,14 @@ import { ITrayType } from '../../api-xr2/data-contracts/i-tray-type';
 import { InvoicesService } from '../../api-xr2/services/invoices.service';
 import { Xr2RestockTrayService } from '../../api-xr2/services/xr2-restock-tray.service';
 import { WpfActionPaths } from '../../core/constants/wpf-action-paths';
+import { DetailsSimpleGridPopupComponent } from '../../shared/components/details-simple-grid-popup/details-simple-grid-popup';
 import { LoggingCategory } from '../../shared/constants/logging-category';
 import { CpmLogLevel } from '../../shared/enums/cpm-log-level';
 import { NonstandardJsonArray } from '../../shared/events/i-nonstandard-json-array';
 import { groupAndSum } from '../../shared/functions/groupAndSum';
+import { nameof } from '../../shared/functions/nameof';
+import { IGridColumnDefinition } from '../../shared/interfaces/i-grid-column-definition';
+import { IDetailsSimpleGridPopupData } from '../../shared/model/i-details-simple-grid-popup-data';
 import { SelectableDeviceInfo } from '../../shared/model/selectable-device-info';
 import { Xr2Stocklist } from '../../shared/model/xr2-stocklist';
 import { CpBarcodeScanService } from '../../shared/services/cp-barcode-scan.service';
@@ -60,11 +65,18 @@ export class Xr2InvoicesPageComponent implements OnInit {
     "INVOICE_DELETE_BODY"
   ];
   displayedDialog: PopupDialogComponent;
+  displayedWindow: DetailsSimpleGridPopupComponent<IInvoiceDetailItem>;
+  columnDef: IGridColumnDefinition<IInvoiceDetailItem>[] = [
+    { headerResourceKey: "", cellPropertyName: null, width: "5%"}, // for spacing
+    { headerResourceKey: "INOVICE_RECEIVED_DATE", cellPropertyName: nameof<IInvoiceDetailItem>("LocalReceiveDate"), width: "30%" },
+    { headerResourceKey: "INOVICE_ID", cellPropertyName: nameof<IInvoiceDetailItem>("InvoiceNumber"), width: "25%" },
+    { headerResourceKey: "QTYRECEIVED", cellPropertyName: nameof<IInvoiceDetailItem>("QuantityReceived"), width: "40%" },
+  ]
 
   private _componentName: string = "xr2InvoicesPageComponent"
   private _loggingCategory: string = LoggingCategory.Xr2Stocking;
   private _groupingKeyNames = ["ItemId", "DeviceId"];
-  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked"];
+  private _sumKeyNames = [ "QuantityReceived", "QuantityStocked", "RestockTrayIds", "InvoiceItemDetails"];
   private _childInvoiceQueueComponent: Xr2InvoicesQueueComponent;
   private barcodeScannedSubscription: Subscription;
 
@@ -80,6 +92,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     private xr2RestockTrayService: Xr2RestockTrayService,
     private windowService: WindowService,
     private wpfInteropService: WpfInteropService,
+    private popupWindowService: PopupWindowService
   ) { this.setupDataRefresh(); }
 
   ngOnInit() {
@@ -110,7 +123,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
     }
   }
 
-  onDisplayYesNoDialogEvent(invoice: IXr2Stocklist): void {
+  onDisplayYesNoDialogEvent(stocklist: IXr2Stocklist): void {
     this.clearDisplayedDialog();
     this.displayDeleteDialog().subscribe(result => {
       if (!result) {
@@ -120,15 +133,39 @@ export class Xr2InvoicesPageComponent implements OnInit {
       this.logService.logMessageAsync(LogVerbosity.Normal, CpmLogLevel.Information, this._loggingCategory,
         this._componentName + ' delete clicked - deleting current invoice item');
 
-      this.invoiceService.deleteInvoice(invoice).subscribe((success) => {
+      this.invoiceService.deleteInvoice(stocklist).subscribe((success) => {
         if(!success) {
           this.handleDeleteInvoiceError();
         }
-        this.handleDeleteInvoiceSuccess(invoice);
+        this.handleDeleteInvoiceSuccess(stocklist);
       }, (err) => {
         this.handleDeleteInvoiceError(err);
       });
     });
+  }
+
+  onDetailsClickEvent(stocklist: IXr2Stocklist) {
+    const properties = new PopupWindowProperties();
+    const data: IDetailsSimpleGridPopupData<IInvoiceDetailItem> = {
+      popupTitle: "INVOICE_ITEM_DETAILS",
+      descriptionTitleResourceKey: "ITEM",
+      description: [stocklist.ItemFormattedGenericName, stocklist.ItemTradeName].join(" - "),
+      idTitleResourceKey: "ITEM_ID",
+      id: stocklist.ItemId,
+      listTitleResourceKey: "IN_PROGRESS_TRAYS",
+      detailsList: stocklist.RestockTrayIds,
+      columnDefinition: this.columnDef,
+      gridData: this.getDistinctInvoiceDetails(stocklist.InvoiceItemDetails),
+      gridRowHeight: "30px",
+      showPrimaryButton: true,
+      showSecondaryButton: false,
+      primaryButtonTextResourceKey: "OK",
+    };
+
+    properties.data = data;
+
+    this.displayedWindow = this.popupWindowService.show(DetailsSimpleGridPopupComponent, properties) as unknown as DetailsSimpleGridPopupComponent<IInvoiceDetailItem>;
+    this.displayedWindow.dismiss.pipe(takeUntil(this.ngUnsubscribe), take(1)).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -167,7 +204,7 @@ export class Xr2InvoicesPageComponent implements OnInit {
         this.createRestockTray(trayId);
         return;
       }
-      this.editRestockTray(restockTray);       
+      this.editRestockTray(restockTray);
     });
   }
 
@@ -226,7 +263,9 @@ export class Xr2InvoicesPageComponent implements OnInit {
       if(restockTray.IsReturn)
       {
         this.clearDisplayedDialog();
-        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE").subscribe(x=>{
+        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "INVOICE_ITEM_SCAN_RETURN_TRAY_MESSAGE")
+        .pipe(takeUntil(this.ngUnsubscribe), take(1))
+        .subscribe(x=>{
           this.displayedDialog = x;
         });
         return false;;
@@ -234,7 +273,9 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
       if(restockTray.DeviceId != this.selectedDeviceInformation.DeviceId){
         this.clearDisplayedDialog();
-        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "DEVICE_SELECTION_TRAY_SCANNING_MESSAGE").subscribe(x=>{
+        this.simpleDialogService.getWarningOkPopup("INVALID_SCAN_TITLE", "DEVICE_SELECTION_TRAY_SCANNING_MESSAGE")
+        .pipe(takeUntil(this.ngUnsubscribe), take(1))
+        .subscribe(x=>{
           this.displayedDialog = x;
         });
         return false;
@@ -251,13 +292,26 @@ export class Xr2InvoicesPageComponent implements OnInit {
       this.wpfActionController.ExecuteActionNameWithData(WpfActionPaths.XR2EditTrayPath, RestockTray);
     }
 
+    private getDistinctInvoiceDetails(items: IInvoiceDetailItem[]): IInvoiceDetailItem[] {
+      const map = new Map<string, IInvoiceDetailItem>();
+
+      if(items)
+      {
+        items.forEach(item => {
+          map.set(item.InvoiceNumber, item)
+        });
+      }
+
+      return Array.from(map.values());
+    }
+
     /* istanbul ignore next */
     private hookupEventHandlers(): void {
        if (this.isInvalidSubscription(this.barcodeScanService)) {
          return;
        }
 
-      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){  
+      if(this.barcodeScanService.BarcodeScannedSubject.observers.length == 0){
         this.barcodeScannedSubscription = this.barcodeScanService.BarcodeScannedSubject.pipe(
           takeUntil(this.ngUnsubscribe)
         ).subscribe((scannedBarcode: string) =>
@@ -337,6 +391,10 @@ export class Xr2InvoicesPageComponent implements OnInit {
 
   private clearDisplayedDialog() {
     try {
+      if(this.displayedWindow) {
+        this.displayedWindow.cancel();
+      }
+
       if (this.displayedDialog) {
         this.displayedDialog.onCloseClicked();
       }
