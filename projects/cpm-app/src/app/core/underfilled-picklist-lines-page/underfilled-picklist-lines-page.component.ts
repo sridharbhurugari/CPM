@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UnderfilledPicklistLinesService } from '../../api-core/services/underfilled-picklist-lines.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable, of, merge, Subject } from 'rxjs';
+import { forkJoin, Observable, of, merge, Subject, Subscription } from 'rxjs';
 import { UnderfilledPicklistLine } from '../model/underfilled-picklist-line';
 import { map, shareReplay, switchMap, scan, takeUntil, catchError } from 'rxjs/operators';
 import { UnderfilledPicklistsService } from '../../api-core/services/underfilled-picklists.service';
@@ -40,6 +40,7 @@ import { WpfInteropService } from '../../shared/services/wpf-interop.service';
   styleUrls: ['./underfilled-picklist-lines-page.component.scss']
 })
 export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy {
+  private _unfilledPickList : Subscription;
   ngUnsubscribe = new Subject();
   itemHeaderKey = 'DESCRIPTION_ID';
   qohHeaderKey = 'PHARMACY_QOH';
@@ -80,7 +81,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
   buttonVisible = false;
   workstationTrackerData: WorkstationTrackerData;
   workstation: string;
-
+  
   constructor(
     private route: ActivatedRoute,
     private underfilledPicklistsService: UnderfilledPicklistsService,
@@ -143,6 +144,8 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
   }
 
   ngOnDestroy() {
+    console.log("OnDestroy-Unfilled-pickList-lines-page-component");
+    this._unfilledPickList && this._unfilledPickList.unsubscribe();
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
@@ -154,7 +157,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
       .subscribe(event => this.onPllUpsert(event));
     this.pickingEventConnectionService.removedUnfilledPicklistLineSubject
       .pipe(takeUntil(this.ngUnsubscribe), catchError(err => of(err.status)))
-      .subscribe(event => this.onPllDelete(event));
+      .subscribe(event => this.onPllDelete(event));  
   }
 
   private onPllUpsert(event: IUnfilledPicklistlineAddedOrUpdatedEvent) {
@@ -192,9 +195,9 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
     }
   }
   navigateBack() {
-    this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
-      this.router.navigate(['core/picklists/underfilled']);
-    });
+      this.workstationTrackerService.UnTrack(this.workstationTrackerData).subscribe().add(() => {
+        this.router.navigate(['core/picklists/underfilled']);
+      });
   }
 
   unTrack() {
@@ -296,7 +299,7 @@ export class UnderfilledPicklistLinesPageComponent implements OnInit, OnDestroy 
   close() {
     this.requestStatus = 'complete';
     const selected: string[] = this.getSelected();
-    this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
+    this._unfilledPickList =  this.underfilledPicklistLinesService.close(selected).subscribe(succeeded => {
       this.requestStatus = 'none';
       this.clearCheckedItems();
       this.exitIfListIsEmpty();
