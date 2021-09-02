@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -31,6 +31,8 @@ describe("PrepackVerificationQueueDetailComponent", () => {
   let simpleDialogService: Partial<SimpleDialogService>;
   let popupDialogComponent;
   let router
+  let timeoutEventEmmiter: EventEmitter<string> = new EventEmitter();
+  let okButtonEventEmmiter: EventEmitter<string> = new EventEmitter();
 
   let ocapConfig: IOcapHttpConfiguration = {
     apiKey: '39252',
@@ -79,9 +81,12 @@ describe("PrepackVerificationQueueDetailComponent", () => {
     };
 
     popupDialogComponent = {
-      didClickPrimaryButton: jasmine.createSpy('didClickPrimaryButton').and.returnValue(of(true)),
-      didTimeoutDialog: jasmine.createSpy('didTimeoutDialog').and.returnValue(of(true))
+      didClickPrimaryButton: okButtonEventEmmiter,
+      didTimeoutDialog: timeoutEventEmmiter
     };
+
+    spyOn(timeoutEventEmmiter, "subscribe");
+    spyOn(okButtonEventEmmiter, "subscribe");
 
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
@@ -146,8 +151,8 @@ describe("PrepackVerificationQueueDetailComponent", () => {
     describe('Inform and return', () => {
       it('should subscribe to button click and timeout', () => {
         component.informAndReturn();
-        expect(component.displayedDialog.didClickPrimaryButton.subscribe).toHaveBeenCalledTimes(1);
-        expect(component.displayedDialog.didTimeoutDialog.subscribe).toHaveBeenCalledTimes(1);
+        expect(timeoutEventEmmiter.subscribe).toHaveBeenCalled();
+        expect(okButtonEventEmmiter.subscribe).toHaveBeenCalled();
       })
     });
 
