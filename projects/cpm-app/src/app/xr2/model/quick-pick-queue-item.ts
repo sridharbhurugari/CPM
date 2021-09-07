@@ -17,4 +17,5 @@ export class QuickPickQueueItem implements IQuickPickQueueItem {
   PicklistId: Guid;
   DeviceId: number;
   OrdersInDrawers: boolean;
+  PendingXR2: boolean;
 }

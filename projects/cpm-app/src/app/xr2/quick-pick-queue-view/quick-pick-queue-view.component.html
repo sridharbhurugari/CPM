@@ -24,7 +24,10 @@
           </div>
           <div class="col width-type" [attr.data-title]="'QUICK_PICK_QUEUE_BINS_HEADER' | translate">
             <div class="col-content-container">
-              {{quickPickQueueItem.IncompleteBoxCount}} / {{quickPickQueueItem.TotalBoxCount}}
+              <div [ngSwitch]="quickPickQueueItem.IncompleteBoxCount">
+                <ng-template ngSwitchCase=0>0 / 0</ng-template>
+                <ng-template ngSwitchDefault>{{quickPickQueueItem.IncompleteBoxCount}} / {{quickPickQueueItem.TotalBoxCount}}</ng-template>
+              </div>              
               <app-cp-clickable-icon [width]="30" [height]="30" [theme]="'dark'" [icon]="'reroute'"
                 [label]="'Reroute'" (clickEvent)="onRerouteClick(quickPickQueueItem)">
               </app-cp-clickable-icon>
