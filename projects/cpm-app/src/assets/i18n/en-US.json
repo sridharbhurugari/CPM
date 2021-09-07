@@ -391,5 +391,7 @@
   "REMOVE": "Remove",
   "TRAY_TYPE_OVERSTOCK_MESSAGE": "Tray Type contains overstocked items",
   "MANUAL_PREPACK_VERIFICATION_COMPLETED_TITLE": "Verification complete",
-  "MANUAL_PREPACK_VERIFICATION_COMPLETED_MESSAGE": "Verification for this prepack is already complete or has been removed"
+  "MANUAL_PREPACK_VERIFICATION_COMPLETED_MESSAGE": "Verification for this prepack is already complete or has been removed",
+  "XR2_PACK_REPORT_LABEL": "Pack",
+  "XR2_PACKS_REPORT_LABEL": "Packs"
 }

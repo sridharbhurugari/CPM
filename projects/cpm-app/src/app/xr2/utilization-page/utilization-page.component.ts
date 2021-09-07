@@ -81,6 +81,8 @@ export class UtilizationPageComponent implements OnInit {
    reportTitle$: Observable<string>;
    requestStatus: "none" | "printing" | "complete" = "none";
    reportsStaus: string;
+   lblPack: string;
+   lblPacks: string; 
    reportPrinting: number = 0;
    printFailed = false;
    isFirstTime = true;
@@ -123,6 +125,8 @@ export class UtilizationPageComponent implements OnInit {
     private devicesService: DevicesService,
     private router: Router
   ) {
+    translateService.get("XR2_PACK_REPORT_LABEL").subscribe(result => { this.lblPack = result; });
+    translateService.get("XR2_PACKS_REPORT_LABEL").subscribe(result => { this.lblPacks = result; });
     this.setupDataRefresh();
     this.reportTitle$ = translateService.get("XR2_INV_REPORT_TITLE");
     this.reportBaseData$ = this.pdfPrintService.getReportBaseData().pipe(shareReplay(1));
@@ -435,8 +439,20 @@ export class UtilizationPageComponent implements OnInit {
           value.TotalPacks = element.TotalPacks;
           value.FormattedPackSize += element.PackSize + threeNewlines;
           value.FormattedQuantityOnHand += value.QuantityOnHand + space + element.UnitsOfIssue + singleNewLine + "Packs:" + element.TotalPacks + twoNewlines;
-          value.FormattedPackSizeMin +=  element.PackSizeMin + space+ element.UnitsOfIssue + threeNewlines;
-          value.FormattedPackSizeMax +=  element.PackSizeMax + space + element.UnitsOfIssue + threeNewlines;
+          if(element.PackSizeMin == 1){
+            value.FormattedPackSizeMin +=  element.PackSizeMin + space + self.lblPack + threeNewlines;
+          }
+          else{
+            value.FormattedPackSizeMin +=  element.PackSizeMin + space + self.lblPacks  + threeNewlines;
+          }
+          
+          if(element.PackSizeMax == 1){
+            value.FormattedPackSizeMax +=  element.PackSizeMax + space + self.lblPack  + threeNewlines;;
+          }
+          else{
+            value.FormattedPackSizeMax +=  element.PackSizeMax + space + self.lblPacks  + threeNewlines;;
+          }
+          
             if(self.checkValidDate(element.ExpirationDate))
             {
               value.FormattedExpirationDate += datePipe.transform(new Date(element.ExpirationDate), "MM/dd/yyyy" ) + threeNewlines;
