@@ -21,6 +21,7 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   @Output() sortEvent: EventEmitter<IColHeaderSortChanged> = new EventEmitter();
   @Output() detailsClickEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
   @Output() displayYesNoDialogEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
+  @Output() displayOkDialogEvent: EventEmitter<IXr2Stocklist> = new EventEmitter();
 
   @Input()
   set unfilteredInvoiceItems(value: Xr2Stocklist[]) {
@@ -60,15 +61,13 @@ export class Xr2InvoicesQueueComponent implements OnInit {
 
   searchPipe: SearchPipe = new SearchPipe();
   searchFields = [nameof<Xr2Stocklist>("ItemFormattedGenericName"), nameof<Xr2Stocklist>("ItemTradeName"),
-  nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId"), nameof<Xr2Stocklist>("QuantityReceived"),
-  nameof<Xr2Stocklist>("QuantityStocked")];
+  nameof<Xr2Stocklist>("ItemTradeName"), nameof<Xr2Stocklist>("ItemId"), nameof<Xr2Stocklist>("QuantityToStock")];
   currentSortPropertyName: string = null;
   columnSortDirection: string = null;
 
   readonly inProgressPropertyName = nameof<Xr2Stocklist>('InProgress');
   readonly itemNamePropertyName = nameof<Xr2Stocklist>('ItemFormattedGenericName');
-  readonly qtyReceivedPropertyName = nameof<Xr2Stocklist>('QuantityReceived');
-  readonly qtyStockedPropertyName = nameof<Xr2Stocklist>('QuantityStocked');
+  readonly qtyToStockPropertyName = nameof<Xr2Stocklist>('QuantityToStock');
 
   private  _unfilteredInvoiceItems: Xr2Stocklist[];
   private _filteredInvoiceItems: Xr2Stocklist[];
@@ -103,6 +102,10 @@ export class Xr2InvoicesQueueComponent implements OnInit {
   }
 
   onDeleteClick(invoiceItem: IXr2Stocklist): void {
+    if(invoiceItem.InProgress){
+      this.displayOkDialogEvent.emit(invoiceItem);
+      return;
+    }
     this.displayYesNoDialogEvent.emit(invoiceItem);
   }
 
