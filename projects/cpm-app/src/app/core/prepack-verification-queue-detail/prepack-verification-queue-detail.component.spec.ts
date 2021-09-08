@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -18,6 +18,7 @@ import {
   DateFormat,
   SearchDropdownComponent,
   ToastService,
+  PopupDialogComponent,
 } from "@omnicell/webcorecomponents";
 import { Location } from '@angular/common';
 import { SimpleDialogService } from '../../shared/services/dialogs/simple-dialog.service';
@@ -28,7 +29,10 @@ describe("PrepackVerificationQueueDetailComponent", () => {
   let fixture: ComponentFixture<PrepackVerificationQueueDetailComponent>;
   let prepackVerificationService: Partial<PrepackVerificationService>;
   let simpleDialogService: Partial<SimpleDialogService>;
+  let popupDialogComponent;
   let router
+  let timeoutEventEmmiter: EventEmitter<string> = new EventEmitter();
+  let okButtonEventEmmiter: EventEmitter<string> = new EventEmitter();
 
   let ocapConfig: IOcapHttpConfiguration = {
     apiKey: '39252',
@@ -56,7 +60,7 @@ describe("PrepackVerificationQueueDetailComponent", () => {
     GenericNameFormatted: "GenericNameFormatted",
     BrandNameFormatted: "BrandNameFormatted",
     UnitOfIssue: "Each"
-  } as IPrepackVerificationQueueDetail ;  
+  } as IPrepackVerificationQueueDetail ;
 
   beforeEach(async () => {
     router = { navigate: () => { } };
@@ -67,18 +71,26 @@ describe("PrepackVerificationQueueDetailComponent", () => {
       .createSpy("getDetail")
       .and.returnValue(of(queueDetail)),
       approve: jasmine
-      .createSpy("approve")    
+      .createSpy("approve")
       .and.returnValue(of(true))
-    };    
+    };
 
     locationMock = {
       back: jasmine
       .createSpy("back")
     };
 
+    popupDialogComponent = {
+      didClickPrimaryButton: okButtonEventEmmiter,
+      didTimeoutDialog: timeoutEventEmmiter
+    };
+
+    spyOn(timeoutEventEmmiter, "subscribe");
+    spyOn(okButtonEventEmmiter, "subscribe");
+
     simpleDialogService = {
       displayErrorOk: jasmine.createSpy('displayErrorOk'),
-      getWarningOkPopup: jasmine.createSpy('getWarningOkPopup')
+      getWarningOkPopup: jasmine.createSpy('getWarningOkPopup').and.returnValue(of(popupDialogComponent))
     };
 
     await TestBed.configureTestingModule({
@@ -106,7 +118,7 @@ describe("PrepackVerificationQueueDetailComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PrepackVerificationQueueDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();    
+    fixture.detectChanges();
   });
 
     describe('should create', () => {
@@ -127,12 +139,20 @@ describe("PrepackVerificationQueueDetailComponent", () => {
         component.ngOnInit();
         expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledTimes(0);
       })
-    });   
+    });
 
     describe('Verify Click', () => {
       it('should not display warning popup', () => {
         component.approve();
         expect(simpleDialogService.getWarningOkPopup).toHaveBeenCalledTimes(0);
+      })
+    });
+
+    describe('Inform and return', () => {
+      it('should subscribe to button click and timeout', () => {
+        component.informAndReturn();
+        expect(timeoutEventEmmiter.subscribe).toHaveBeenCalled();
+        expect(okButtonEventEmmiter.subscribe).toHaveBeenCalled();
       })
     });
 

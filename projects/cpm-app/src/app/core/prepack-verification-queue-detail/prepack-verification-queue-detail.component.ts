@@ -17,21 +17,21 @@ import { SimpleDialogService } from "../../shared/services/dialogs/simple-dialog
 })
 export class PrepackVerificationQueueDetailComponent implements OnInit {
   data$: Observable<IPrepackVerificationQueueDetail>;
-  verificationExists: boolean = false;  
+  verificationExists: boolean = false;
   prepackVerificationQueueDetail: IPrepackVerificationQueueDetail;
   userLocale: string;
   validatedQuantity: number = 1;
   time: Date = new Date();
   timeIntervalId: any;
-  displayedDialog: PopupDialogComponent;  
+  displayedDialog: PopupDialogComponent;
 
-  constructor(    
+  constructor(
     private prepackVerificationService: PrepackVerificationService,
     ocapConfigService: OcapHttpConfigurationService,
     private router: Router,
     activatedRoute: ActivatedRoute,
     private location: Location,
-    private simpleDialogService: SimpleDialogService,    
+    private simpleDialogService: SimpleDialogService,
   ) {
 
     this.timeIntervalId = setInterval(() => {
@@ -51,12 +51,12 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
           if (data != null) {
             this.verificationExists = true;
             this.validatedQuantity = data.QuantityToPackage;
-            this.prepackVerificationQueueDetail = data;            
+            this.prepackVerificationQueueDetail = data;
             return data;
-          }                   
+          }
         }),
         shareReplay(1)
-      );            
+      );
   }
 
   ngOnInit() {
@@ -71,19 +71,19 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
     this.location.back();
   }
 
-  approve() {  
-    this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;    
+  approve() {
+    this.prepackVerificationQueueDetail.QuantityToPackage = this.validatedQuantity;
     this.prepackVerificationService.approve(this.prepackVerificationQueueDetail).subscribe(
       success => {
         if (success == false){
           this.informAndReturn();
-        } 
+        }
         else {
           this.router.navigate(["core/prepackVerification"]);
-        }        
+        }
       }, error => {
         this.displayFailedToApproveError();
-    });       
+    });
   }
 
   delete() {
@@ -99,10 +99,11 @@ export class PrepackVerificationQueueDetailComponent implements OnInit {
     this.simpleDialogService.displayErrorOk("PRINTFAILED_HEADER_TEXT", "FAILEDTOSAVE_BODY_TEXT");
   }
 
-  informAndReturn() {    
+  informAndReturn() {
     this.simpleDialogService.getWarningOkPopup("MANUAL_PREPACK_VERIFICATION_COMPLETED_TITLE","MANUAL_PREPACK_VERIFICATION_COMPLETED_MESSAGE").subscribe((dialog) => {
       this.displayedDialog = dialog;
       dialog.didClickPrimaryButton.subscribe(() => this.router.navigate(["core/prepackVerification"]))
-    });           
-  }    
+      dialog.didTimeoutDialog.subscribe(() => this.router.navigate(["core/prepackVerification"]));
+    });
+  }
 }
